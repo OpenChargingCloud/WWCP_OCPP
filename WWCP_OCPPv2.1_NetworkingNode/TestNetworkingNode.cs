@@ -395,7 +395,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.SetNetworkProfileRequest>?                       CustomSetNetworkProfileRequestSerializer                     { get; set; }
             public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.ChangeAvailabilityRequest>?                      CustomChangeAvailabilityRequestSerializer                    { get; set; }
             public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.TriggerMessageRequest>?                          CustomTriggerMessageRequestSerializer                        { get; set; }
-            public CustomJObjectSerializerDelegate<OCPP.    CSMS.DataTransferRequest>?                            CustomIncomingDataTransferRequestSerializer                  { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.DataTransferRequest>?                            CustomIncomingDataTransferRequestSerializer                  { get; set; }
 
             public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.CertificateSignedRequest>?                       CustomCertificateSignedRequestSerializer                     { get; set; }
             public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.InstallCertificateRequest>?                      CustomInstallCertificateRequestSerializer                    { get; set; }
@@ -463,7 +463,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.NotifyReportResponse>?                           CustomNotifyReportResponseSerializer                         { get; set; }
             public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.NotifyMonitoringReportResponse>?                 CustomNotifyMonitoringReportResponseSerializer               { get; set; }
             public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.LogStatusNotificationResponse>?                  CustomLogStatusNotificationResponseSerializer                { get; set; }
-            public CustomJObjectSerializerDelegate<OCPP.    CSMS.DataTransferResponse>?                           CustomDataTransferResponseSerializer                         { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.DataTransferResponse>?                           CustomDataTransferResponseSerializer                         { get; set; }
 
             public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.SignCertificateResponse>?                        CustomSignCertificateResponseSerializer                      { get; set; }
             public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.Get15118EVCertificateResponse>?                  CustomGet15118EVCertificateResponseSerializer                { get; set; }
@@ -503,7 +503,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyReportRequest>?                                 CustomNotifyReportRequestSerializer                          { get; set; }
             public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyMonitoringReportRequest>?                       CustomNotifyMonitoringReportRequestSerializer                { get; set; }
             public CustomJObjectSerializerDelegate<OCPPv2_1.CS.LogStatusNotificationRequest>?                        CustomLogStatusNotificationRequestSerializer                 { get; set; }
-            public CustomJObjectSerializerDelegate<OCPP.    CS.DataTransferRequest>?                                 CustomDataTransferRequestSerializer                          { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.DataTransferRequest>?                                 CustomDataTransferRequestSerializer                          { get; set; }
 
             public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SignCertificateRequest>?                              CustomSignCertificateRequestSerializer                       { get; set; }
             public CustomJObjectSerializerDelegate<OCPPv2_1.CS.Get15118EVCertificateRequest>?                        CustomGet15118EVCertificateRequestSerializer                 { get; set; }
@@ -550,7 +550,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SetNetworkProfileResponse>?                           CustomSetNetworkProfileResponseSerializer                    { get; set; }
             public CustomJObjectSerializerDelegate<OCPPv2_1.CS.ChangeAvailabilityResponse>?                          CustomChangeAvailabilityResponseSerializer                   { get; set; }
             public CustomJObjectSerializerDelegate<OCPPv2_1.CS.TriggerMessageResponse>?                              CustomTriggerMessageResponseSerializer                       { get; set; }
-            public CustomJObjectSerializerDelegate<OCPP.    CS.DataTransferResponse>?                                CustomIncomingDataTransferResponseSerializer                 { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.DataTransferResponse>?                                CustomIncomingDataTransferResponseSerializer                 { get; set; }
 
             public CustomJObjectSerializerDelegate<OCPPv2_1.CS.CertificateSignedResponse>?                           CustomCertificateSignedResponseSerializer                    { get; set; }
             public CustomJObjectSerializerDelegate<OCPPv2_1.CS.InstallCertificateResponse>?                          CustomInstallCertificateResponseSerializer                   { get; set; }
@@ -858,12 +858,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event fired whenever a DataTransfer request will be sent to the CSMS.
             /// </summary>
-            public event OCPP.NetworkingNode.CS.OnDataTransferRequestDelegate?   OnDataTransferRequest;
+            public event OCPPv2_1.CS.OnDataTransferRequestDelegate?   OnDataTransferRequest;
 
             /// <summary>
             /// An event fired whenever a response to a DataTransfer request was received.
             /// </summary>
-            public event OCPP.NetworkingNode.CS.OnDataTransferResponseDelegate?  OnDataTransferResponse;
+            public event OCPPv2_1.CS.OnDataTransferResponseDelegate?  OnDataTransferResponse;
 
             #endregion
 
@@ -1130,12 +1130,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event fired whenever a BinaryDataTransfer request will be sent to the CSMS.
             /// </summary>
-            public event OCPP.NetworkingNode.CS.OnBinaryDataTransferRequestDelegate?   OnBinaryDataTransferRequest;
+            public event OCPP.CS.OnBinaryDataTransferRequestDelegate?   OnBinaryDataTransferRequest;
 
             /// <summary>
             /// An event fired whenever a response to a BinaryDataTransfer request was received.
             /// </summary>
-            public event OCPP.NetworkingNode.CS.OnBinaryDataTransferResponseDelegate?  OnBinaryDataTransferResponse;
+            public event OCPP.CS.OnBinaryDataTransferResponseDelegate?  OnBinaryDataTransferResponse;
 
             #endregion
 
@@ -1144,70 +1144,70 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region Charging Station <- CSMS
 
             //ToDo: Are those events really required here?
-            public event CS.OnResetDelegate?                             OnReset;
-            public event CS.OnUpdateFirmwareDelegate?                    OnUpdateFirmware;
-            public event CS.OnPublishFirmwareDelegate?                   OnPublishFirmware;
-            public event CS.OnUnpublishFirmwareDelegate?                 OnUnpublishFirmware;
-            public event CS.OnGetBaseReportDelegate?                     OnGetBaseReport;
-            public event CS.OnGetReportDelegate?                         OnGetReport;
-            public event CS.OnGetLogDelegate?                            OnGetLog;
-            public event CS.OnSetVariablesDelegate?                      OnSetVariables;
-            public event CS.OnGetVariablesDelegate?                      OnGetVariables;
-            public event CS.OnSetMonitoringBaseDelegate?                 OnSetMonitoringBase;
-            public event CS.OnGetMonitoringReportDelegate?               OnGetMonitoringReport;
-            public event CS.OnSetMonitoringLevelDelegate?                OnSetMonitoringLevel;
-            public event CS.OnSetVariableMonitoringDelegate?             OnSetVariableMonitoring;
-            public event CS.OnClearVariableMonitoringDelegate?           OnClearVariableMonitoring;
-            public event CS.OnSetNetworkProfileDelegate?                 OnSetNetworkProfile;
-            public event CS.OnChangeAvailabilityDelegate?                OnChangeAvailability;
-            public event CS.OnTriggerMessageDelegate?                    OnTriggerMessage;
-            public event OCPP.NetworkingNode.CS.OnIncomingDataTransferDelegate?         OnIncomingDataTransfer;
+            public event OCPPv2_1.CS.OnResetDelegate?                         OnReset;
+            public event OCPPv2_1.CS.OnUpdateFirmwareDelegate?                OnUpdateFirmware;
+            public event OCPPv2_1.CS.OnPublishFirmwareDelegate?               OnPublishFirmware;
+            public event OCPPv2_1.CS.OnUnpublishFirmwareDelegate?             OnUnpublishFirmware;
+            public event OCPPv2_1.CS.OnGetBaseReportDelegate?                 OnGetBaseReport;
+            public event OCPPv2_1.CS.OnGetReportDelegate?                     OnGetReport;
+            public event OCPPv2_1.CS.OnGetLogDelegate?                        OnGetLog;
+            public event OCPPv2_1.CS.OnSetVariablesDelegate?                  OnSetVariables;
+            public event OCPPv2_1.CS.OnGetVariablesDelegate?                  OnGetVariables;
+            public event OCPPv2_1.CS.OnSetMonitoringBaseDelegate?             OnSetMonitoringBase;
+            public event OCPPv2_1.CS.OnGetMonitoringReportDelegate?           OnGetMonitoringReport;
+            public event OCPPv2_1.CS.OnSetMonitoringLevelDelegate?            OnSetMonitoringLevel;
+            public event OCPPv2_1.CS.OnSetVariableMonitoringDelegate?         OnSetVariableMonitoring;
+            public event OCPPv2_1.CS.OnClearVariableMonitoringDelegate?       OnClearVariableMonitoring;
+            public event OCPPv2_1.CS.OnSetNetworkProfileDelegate?             OnSetNetworkProfile;
+            public event OCPPv2_1.CS.OnChangeAvailabilityDelegate?            OnChangeAvailability;
+            public event OCPPv2_1.CS.OnTriggerMessageDelegate?                OnTriggerMessage;
+            public event OCPPv2_1.CS.OnIncomingDataTransferDelegate?          OnIncomingDataTransfer;
 
-            public event CS.OnCertificateSignedDelegate?                 OnCertificateSigned;
-            public event CS.OnInstallCertificateDelegate?                OnInstallCertificate;
-            public event CS.OnGetInstalledCertificateIdsDelegate?        OnGetInstalledCertificateIds;
-            public event CS.OnDeleteCertificateDelegate?                 OnDeleteCertificate;
-            public event CS.OnNotifyCRLDelegate?                         OnNotifyCRL;
+            public event OCPPv2_1.CS.OnCertificateSignedDelegate?             OnCertificateSigned;
+            public event OCPPv2_1.CS.OnInstallCertificateDelegate?            OnInstallCertificate;
+            public event OCPPv2_1.CS.OnGetInstalledCertificateIdsDelegate?    OnGetInstalledCertificateIds;
+            public event OCPPv2_1.CS.OnDeleteCertificateDelegate?             OnDeleteCertificate;
+            public event OCPPv2_1.CS.OnNotifyCRLDelegate?                     OnNotifyCRL;
 
-            public event CS.OnGetLocalListVersionDelegate?               OnGetLocalListVersion;
-            public event CS.OnSendLocalListDelegate?                     OnSendLocalList;
-            public event CS.OnClearCacheDelegate?                        OnClearCache;
+            public event OCPPv2_1.CS.OnGetLocalListVersionDelegate?           OnGetLocalListVersion;
+            public event OCPPv2_1.CS.OnSendLocalListDelegate?                 OnSendLocalList;
+            public event OCPPv2_1.CS.OnClearCacheDelegate?                    OnClearCache;
 
-            public event CS.OnReserveNowDelegate?                        OnReserveNow;
-            public event CS.OnCancelReservationDelegate?                 OnCancelReservation;
-            public event CS.OnRequestStartTransactionDelegate?           OnRequestStartTransaction;
-            public event CS.OnRequestStopTransactionDelegate?            OnRequestStopTransaction;
-            public event CS.OnGetTransactionStatusDelegate?              OnGetTransactionStatus;
-            public event CS.OnSetChargingProfileDelegate?                OnSetChargingProfile;
-            public event CS.OnGetChargingProfilesDelegate?               OnGetChargingProfiles;
-            public event CS.OnClearChargingProfileDelegate?              OnClearChargingProfile;
-            public event CS.OnGetCompositeScheduleDelegate?              OnGetCompositeSchedule;
-            public event CS.OnUpdateDynamicScheduleDelegate?             OnUpdateDynamicSchedule;
-            public event CS.OnNotifyAllowedEnergyTransferDelegate?       OnNotifyAllowedEnergyTransfer;
-            public event CS.OnUsePriorityChargingDelegate?               OnUsePriorityCharging;
-            public event CS.OnUnlockConnectorDelegate?                   OnUnlockConnector;
+            public event OCPPv2_1.CS.OnReserveNowDelegate?                    OnReserveNow;
+            public event OCPPv2_1.CS.OnCancelReservationDelegate?             OnCancelReservation;
+            public event OCPPv2_1.CS.OnRequestStartTransactionDelegate?       OnRequestStartTransaction;
+            public event OCPPv2_1.CS.OnRequestStopTransactionDelegate?        OnRequestStopTransaction;
+            public event OCPPv2_1.CS.OnGetTransactionStatusDelegate?          OnGetTransactionStatus;
+            public event OCPPv2_1.CS.OnSetChargingProfileDelegate?            OnSetChargingProfile;
+            public event OCPPv2_1.CS.OnGetChargingProfilesDelegate?           OnGetChargingProfiles;
+            public event OCPPv2_1.CS.OnClearChargingProfileDelegate?          OnClearChargingProfile;
+            public event OCPPv2_1.CS.OnGetCompositeScheduleDelegate?          OnGetCompositeSchedule;
+            public event OCPPv2_1.CS.OnUpdateDynamicScheduleDelegate?         OnUpdateDynamicSchedule;
+            public event OCPPv2_1.CS.OnNotifyAllowedEnergyTransferDelegate?   OnNotifyAllowedEnergyTransfer;
+            public event OCPPv2_1.CS.OnUsePriorityChargingDelegate?           OnUsePriorityCharging;
+            public event OCPPv2_1.CS.OnUnlockConnectorDelegate?               OnUnlockConnector;
 
-            public event CS.OnAFRRSignalDelegate?                        OnAFRRSignal;
+            public event OCPPv2_1.CS.OnAFRRSignalDelegate?                    OnAFRRSignal;
 
-            public event CS.OnSetDisplayMessageDelegate?                 OnSetDisplayMessage;
-            public event CS.OnGetDisplayMessagesDelegate?                OnGetDisplayMessages;
-            public event CS.OnClearDisplayMessageDelegate?               OnClearDisplayMessage;
-            public event CS.OnCostUpdatedDelegate?                       OnCostUpdated;
-            public event CS.OnCustomerInformationDelegate?               OnCustomerInformation;
+            public event OCPPv2_1.CS.OnSetDisplayMessageDelegate?             OnSetDisplayMessage;
+            public event OCPPv2_1.CS.OnGetDisplayMessagesDelegate?            OnGetDisplayMessages;
+            public event OCPPv2_1.CS.OnClearDisplayMessageDelegate?           OnClearDisplayMessage;
+            public event OCPPv2_1.CS.OnCostUpdatedDelegate?                   OnCostUpdated;
+            public event OCPPv2_1.CS.OnCustomerInformationDelegate?           OnCustomerInformation;
 
             // Binary Data Streams Extensions
-            public event OCPP.NetworkingNode.CS.OnIncomingBinaryDataTransferDelegate?   OnIncomingBinaryDataTransfer;
-            public event OCPP.NetworkingNode.CS.OnGetFileDelegate?                      OnGetFile;
-            public event OCPP.NetworkingNode.CS.OnSendFileDelegate?                     OnSendFile;
-            public event OCPP.NetworkingNode.CS.OnDeleteFileDelegate?                   OnDeleteFile;
+            public event OCPP.CS.OnIncomingBinaryDataTransferDelegate?        OnIncomingBinaryDataTransfer;
+            public event OCPP.CS.OnGetFileDelegate?                           OnGetFile;
+            public event OCPP.CS.OnSendFileDelegate?                          OnSendFile;
+            public event OCPP.CS.OnDeleteFileDelegate?                        OnDeleteFile;
 
             // E2E Security Extensions
-            public event OCPP.NetworkingNode.CS.OnAddSignaturePolicyDelegate?           OnAddSignaturePolicy;
-            public event OCPP.NetworkingNode.CS.OnUpdateSignaturePolicyDelegate?        OnUpdateSignaturePolicy;
-            public event OCPP.NetworkingNode.CS.OnDeleteSignaturePolicyDelegate?        OnDeleteSignaturePolicy;
-            public event OCPP.NetworkingNode.CS.OnAddUserRoleDelegate?                  OnAddUserRole;
-            public event OCPP.NetworkingNode.CS.OnUpdateUserRoleDelegate?               OnUpdateUserRole;
-            public event OCPP.NetworkingNode.CS.OnDeleteUserRoleDelegate?               OnDeleteUserRole;
+            public event OCPP.CS.OnAddSignaturePolicyDelegate?                OnAddSignaturePolicy;
+            public event OCPP.CS.OnUpdateSignaturePolicyDelegate?             OnUpdateSignaturePolicy;
+            public event OCPP.CS.OnDeleteSignaturePolicyDelegate?             OnDeleteSignaturePolicy;
+            public event OCPP.CS.OnAddUserRoleDelegate?                       OnAddUserRole;
+            public event OCPP.CS.OnUpdateUserRoleDelegate?                    OnUpdateUserRole;
+            public event OCPP.CS.OnDeleteUserRoleDelegate?                    OnDeleteUserRole;
 
 
             #region Reset
@@ -1215,12 +1215,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event fired whenever a Reset request was received from the CSMS.
             /// </summary>
-            public event CS.OnResetRequestDelegate?   OnResetRequest;
+            public event OCPPv2_1.CS.OnResetRequestDelegate?   OnResetRequest;
 
             /// <summary>
             /// An event fired whenever a response to a Reset request was sent.
             /// </summary>
-            public event CS.OnResetResponseDelegate?  OnResetResponse;
+            public event OCPPv2_1.CS.OnResetResponseDelegate?  OnResetResponse;
 
             #endregion
 
@@ -1229,12 +1229,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event fired whenever an UpdateFirmware request was received from the CSMS.
             /// </summary>
-            public event CS.OnUpdateFirmwareRequestDelegate?   OnUpdateFirmwareRequest;
+            public event OCPPv2_1.CS.OnUpdateFirmwareRequestDelegate?   OnUpdateFirmwareRequest;
 
             /// <summary>
             /// An event fired whenever a response to an UpdateFirmware request was sent.
             /// </summary>
-            public event CS.OnUpdateFirmwareResponseDelegate?  OnUpdateFirmwareResponse;
+            public event OCPPv2_1.CS.OnUpdateFirmwareResponseDelegate?  OnUpdateFirmwareResponse;
 
             #endregion
 
@@ -1243,12 +1243,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event fired whenever a PublishFirmware request was received from the CSMS.
             /// </summary>
-            public event CS.OnPublishFirmwareRequestDelegate?   OnPublishFirmwareRequest;
+            public event OCPPv2_1.CS.OnPublishFirmwareRequestDelegate?   OnPublishFirmwareRequest;
 
             /// <summary>
             /// An event fired whenever a response to a PublishFirmware request was sent.
             /// </summary>
-            public event CS.OnPublishFirmwareResponseDelegate?  OnPublishFirmwareResponse;
+            public event OCPPv2_1.CS.OnPublishFirmwareResponseDelegate?  OnPublishFirmwareResponse;
 
             #endregion
 
@@ -1257,12 +1257,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event fired whenever an UnpublishFirmware request was received from the CSMS.
             /// </summary>
-            public event CS.OnUnpublishFirmwareRequestDelegate?   OnUnpublishFirmwareRequest;
+            public event OCPPv2_1.CS.OnUnpublishFirmwareRequestDelegate?   OnUnpublishFirmwareRequest;
 
             /// <summary>
             /// An event fired whenever a response to an UnpublishFirmware request was sent.
             /// </summary>
-            public event CS.OnUnpublishFirmwareResponseDelegate?  OnUnpublishFirmwareResponse;
+            public event OCPPv2_1.CS.OnUnpublishFirmwareResponseDelegate?  OnUnpublishFirmwareResponse;
 
             #endregion
 
@@ -1271,12 +1271,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event fired whenever a GetBaseReport request was received from the CSMS.
             /// </summary>
-            public event CS.OnGetBaseReportRequestDelegate?   OnGetBaseReportRequest;
+            public event OCPPv2_1.CS.OnGetBaseReportRequestDelegate?   OnGetBaseReportRequest;
 
             /// <summary>
             /// An event fired whenever a response to a GetBaseReport request was sent.
             /// </summary>
-            public event CS.OnGetBaseReportResponseDelegate?  OnGetBaseReportResponse;
+            public event OCPPv2_1.CS.OnGetBaseReportResponseDelegate?  OnGetBaseReportResponse;
 
             #endregion
 
@@ -1285,12 +1285,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event fired whenever a GetReport request was received from the CSMS.
             /// </summary>
-            public event CS.OnGetReportRequestDelegate?   OnGetReportRequest;
+            public event OCPPv2_1.CS.OnGetReportRequestDelegate?   OnGetReportRequest;
 
             /// <summary>
             /// An event fired whenever a response to a GetReport request was sent.
             /// </summary>
-            public event CS.OnGetReportResponseDelegate?  OnGetReportResponse;
+            public event OCPPv2_1.CS.OnGetReportResponseDelegate?  OnGetReportResponse;
 
             #endregion
 
@@ -1299,12 +1299,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event fired whenever a GetLog request was received from the CSMS.
             /// </summary>
-            public event CS.OnGetLogRequestDelegate?   OnGetLogRequest;
+            public event OCPPv2_1.CS.OnGetLogRequestDelegate?   OnGetLogRequest;
 
             /// <summary>
             /// An event fired whenever a response to a GetLog request was sent.
             /// </summary>
-            public event CS.OnGetLogResponseDelegate?  OnGetLogResponse;
+            public event OCPPv2_1.CS.OnGetLogResponseDelegate?  OnGetLogResponse;
 
             #endregion
 
@@ -1313,12 +1313,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event fired whenever a SetVariables request was received from the CSMS.
             /// </summary>
-            public event CS.OnSetVariablesRequestDelegate?   OnSetVariablesRequest;
+            public event OCPPv2_1.CS.OnSetVariablesRequestDelegate?   OnSetVariablesRequest;
 
             /// <summary>
             /// An event fired whenever a response to a SetVariables request was sent.
             /// </summary>
-            public event CS.OnSetVariablesResponseDelegate?  OnSetVariablesResponse;
+            public event OCPPv2_1.CS.OnSetVariablesResponseDelegate?  OnSetVariablesResponse;
 
             #endregion
 
@@ -1327,12 +1327,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event fired whenever a GetVariables request was received from the CSMS.
             /// </summary>
-            public event CS.OnGetVariablesRequestDelegate?   OnGetVariablesRequest;
+            public event OCPPv2_1.CS.OnGetVariablesRequestDelegate?   OnGetVariablesRequest;
 
             /// <summary>
             /// An event fired whenever a response to a GetVariables request was sent.
             /// </summary>
-            public event CS.OnGetVariablesResponseDelegate?  OnGetVariablesResponse;
+            public event OCPPv2_1.CS.OnGetVariablesResponseDelegate?  OnGetVariablesResponse;
 
             #endregion
 
@@ -1341,12 +1341,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event fired whenever a SetMonitoringBase request was received from the CSMS.
             /// </summary>
-            public event CS.OnSetMonitoringBaseRequestDelegate?   OnSetMonitoringBaseRequest;
+            public event OCPPv2_1.CS.OnSetMonitoringBaseRequestDelegate?   OnSetMonitoringBaseRequest;
 
             /// <summary>
             /// An event fired whenever a response to a SetMonitoringBase request was sent.
             /// </summary>
-            public event CS.OnSetMonitoringBaseResponseDelegate?  OnSetMonitoringBaseResponse;
+            public event OCPPv2_1.CS.OnSetMonitoringBaseResponseDelegate?  OnSetMonitoringBaseResponse;
 
             #endregion
 
@@ -1355,12 +1355,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event fired whenever a GetMonitoringReport request was received from the CSMS.
             /// </summary>
-            public event CS.OnGetMonitoringReportRequestDelegate?   OnGetMonitoringReportRequest;
+            public event OCPPv2_1.CS.OnGetMonitoringReportRequestDelegate?   OnGetMonitoringReportRequest;
 
             /// <summary>
             /// An event fired whenever a response to a GetMonitoringReport request was sent.
             /// </summary>
-            public event CS.OnGetMonitoringReportResponseDelegate?  OnGetMonitoringReportResponse;
+            public event OCPPv2_1.CS.OnGetMonitoringReportResponseDelegate?  OnGetMonitoringReportResponse;
 
             #endregion
 
@@ -1369,12 +1369,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event fired whenever a SetMonitoringLevel request was received from the CSMS.
             /// </summary>
-            public event CS.OnSetMonitoringLevelRequestDelegate?   OnSetMonitoringLevelRequest;
+            public event OCPPv2_1.CS.OnSetMonitoringLevelRequestDelegate?   OnSetMonitoringLevelRequest;
 
             /// <summary>
             /// An event fired whenever a response to a SetMonitoringLevel request was sent.
             /// </summary>
-            public event CS.OnSetMonitoringLevelResponseDelegate?  OnSetMonitoringLevelResponse;
+            public event OCPPv2_1.CS.OnSetMonitoringLevelResponseDelegate?  OnSetMonitoringLevelResponse;
 
             #endregion
 
@@ -1383,12 +1383,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event fired whenever a SetVariableMonitoring request was received from the CSMS.
             /// </summary>
-            public event CS.OnSetVariableMonitoringRequestDelegate?   OnSetVariableMonitoringRequest;
+            public event OCPPv2_1.CS.OnSetVariableMonitoringRequestDelegate?   OnSetVariableMonitoringRequest;
 
             /// <summary>
             /// An event fired whenever a response to a SetVariableMonitoring request was sent.
             /// </summary>
-            public event CS.OnSetVariableMonitoringResponseDelegate?  OnSetVariableMonitoringResponse;
+            public event OCPPv2_1.CS.OnSetVariableMonitoringResponseDelegate?  OnSetVariableMonitoringResponse;
 
             #endregion
 
@@ -1397,12 +1397,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event fired whenever a ClearVariableMonitoring request was received from the CSMS.
             /// </summary>
-            public event CS.OnClearVariableMonitoringRequestDelegate?   OnClearVariableMonitoringRequest;
+            public event OCPPv2_1.CS.OnClearVariableMonitoringRequestDelegate?   OnClearVariableMonitoringRequest;
 
             /// <summary>
             /// An event fired whenever a response to a ClearVariableMonitoring request was sent.
             /// </summary>
-            public event CS.OnClearVariableMonitoringResponseDelegate?  OnClearVariableMonitoringResponse;
+            public event OCPPv2_1.CS.OnClearVariableMonitoringResponseDelegate?  OnClearVariableMonitoringResponse;
 
             #endregion
 
@@ -1411,12 +1411,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event fired whenever a SetNetworkProfile request was received from the CSMS.
             /// </summary>
-            public event CS.OnSetNetworkProfileRequestDelegate?   OnSetNetworkProfileRequest;
+            public event OCPPv2_1.CS.OnSetNetworkProfileRequestDelegate?   OnSetNetworkProfileRequest;
 
             /// <summary>
             /// An event fired whenever a response to a SetNetworkProfile request was sent.
             /// </summary>
-            public event CS.OnSetNetworkProfileResponseDelegate?  OnSetNetworkProfileResponse;
+            public event OCPPv2_1.CS.OnSetNetworkProfileResponseDelegate?  OnSetNetworkProfileResponse;
 
             #endregion
 
@@ -1425,12 +1425,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event fired whenever a ChangeAvailability request was received from the CSMS.
             /// </summary>
-            public event CS.OnChangeAvailabilityRequestDelegate?   OnChangeAvailabilityRequest;
+            public event OCPPv2_1.CS.OnChangeAvailabilityRequestDelegate?   OnChangeAvailabilityRequest;
 
             /// <summary>
             /// An event fired whenever a response to a ChangeAvailability request was sent.
             /// </summary>
-            public event CS.OnChangeAvailabilityResponseDelegate?  OnChangeAvailabilityResponse;
+            public event OCPPv2_1.CS.OnChangeAvailabilityResponseDelegate?  OnChangeAvailabilityResponse;
 
             #endregion
 
@@ -1439,12 +1439,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event fired whenever a TriggerMessage request was received from the CSMS.
             /// </summary>
-            public event CS.OnTriggerMessageRequestDelegate?   OnTriggerMessageRequest;
+            public event OCPPv2_1.CS.OnTriggerMessageRequestDelegate?   OnTriggerMessageRequest;
 
             /// <summary>
             /// An event fired whenever a response to a TriggerMessage request was sent.
             /// </summary>
-            public event CS.OnTriggerMessageResponseDelegate?  OnTriggerMessageResponse;
+            public event OCPPv2_1.CS.OnTriggerMessageResponseDelegate?  OnTriggerMessageResponse;
 
             #endregion
 
@@ -1453,12 +1453,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event sent whenever a data transfer request was sent.
             /// </summary>
-            public event OCPP.NetworkingNode.CS.OnIncomingDataTransferRequestDelegate?   OnIncomingDataTransferRequest;
+            public event OCPPv2_1.CS.OnIncomingDataTransferRequestDelegate?   OnIncomingDataTransferRequest;
 
             /// <summary>
             /// An event sent whenever a response to a data transfer request was sent.
             /// </summary>
-            public event OCPP.NetworkingNode.CS.OnIncomingDataTransferResponseDelegate?  OnIncomingDataTransferResponse;
+            public event OCPPv2_1.CS.OnIncomingDataTransferResponseDelegate?  OnIncomingDataTransferResponse;
 
             #endregion
 
@@ -1468,12 +1468,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event fired whenever a SignedCertificate request was received from the CSMS.
             /// </summary>
-            public event CS.OnCertificateSignedRequestDelegate?   OnCertificateSignedRequest;
+            public event OCPPv2_1.CS.OnCertificateSignedRequestDelegate?   OnCertificateSignedRequest;
 
             /// <summary>
             /// An event fired whenever a response to a SignedCertificate request was sent.
             /// </summary>
-            public event CS.OnCertificateSignedResponseDelegate?  OnCertificateSignedResponse;
+            public event OCPPv2_1.CS.OnCertificateSignedResponseDelegate?  OnCertificateSignedResponse;
 
             #endregion
 
@@ -1482,12 +1482,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event fired whenever an InstallCertificate request was received from the CSMS.
             /// </summary>
-            public event CS.OnInstallCertificateRequestDelegate?   OnInstallCertificateRequest;
+            public event OCPPv2_1.CS.OnInstallCertificateRequestDelegate?   OnInstallCertificateRequest;
 
             /// <summary>
             /// An event fired whenever a response to an InstallCertificate request was sent.
             /// </summary>
-            public event CS.OnInstallCertificateResponseDelegate?  OnInstallCertificateResponse;
+            public event OCPPv2_1.CS.OnInstallCertificateResponseDelegate?  OnInstallCertificateResponse;
 
             #endregion
 
@@ -1496,12 +1496,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event fired whenever a GetInstalledCertificateIds request was received from the CSMS.
             /// </summary>
-            public event CS.OnGetInstalledCertificateIdsRequestDelegate?   OnGetInstalledCertificateIdsRequest;
+            public event OCPPv2_1.CS.OnGetInstalledCertificateIdsRequestDelegate?   OnGetInstalledCertificateIdsRequest;
 
             /// <summary>
             /// An event fired whenever a response to a GetInstalledCertificateIds request was sent.
             /// </summary>
-            public event CS.OnGetInstalledCertificateIdsResponseDelegate?  OnGetInstalledCertificateIdsResponse;
+            public event OCPPv2_1.CS.OnGetInstalledCertificateIdsResponseDelegate?  OnGetInstalledCertificateIdsResponse;
 
             #endregion
 
@@ -1510,12 +1510,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event fired whenever a DeleteCertificate request was received from the CSMS.
             /// </summary>
-            public event CS.OnDeleteCertificateRequestDelegate?   OnDeleteCertificateRequest;
+            public event OCPPv2_1.CS.OnDeleteCertificateRequestDelegate?   OnDeleteCertificateRequest;
 
             /// <summary>
             /// An event fired whenever a response to a DeleteCertificate request was sent.
             /// </summary>
-            public event CS.OnDeleteCertificateResponseDelegate?  OnDeleteCertificateResponse;
+            public event OCPPv2_1.CS.OnDeleteCertificateResponseDelegate?  OnDeleteCertificateResponse;
 
             #endregion
 
@@ -1524,12 +1524,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event fired whenever a NotifyCRL request was received from the CSMS.
             /// </summary>
-            public event CS.OnNotifyCRLRequestDelegate?   OnNotifyCRLRequest;
+            public event OCPPv2_1.CS.OnNotifyCRLRequestDelegate?   OnNotifyCRLRequest;
 
             /// <summary>
             /// An event fired whenever a response to a NotifyCRL request was sent.
             /// </summary>
-            public event CS.OnNotifyCRLResponseDelegate?  OnNotifyCRLResponse;
+            public event OCPPv2_1.CS.OnNotifyCRLResponseDelegate?  OnNotifyCRLResponse;
 
             #endregion
 
@@ -1539,12 +1539,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event fired whenever a GetLocalListVersion request was received from the CSMS.
             /// </summary>
-            public event CS.OnGetLocalListVersionRequestDelegate?   OnGetLocalListVersionRequest;
+            public event OCPPv2_1.CS.OnGetLocalListVersionRequestDelegate?   OnGetLocalListVersionRequest;
 
             /// <summary>
             /// An event fired whenever a response to a GetLocalListVersion request was sent.
             /// </summary>
-            public event CS.OnGetLocalListVersionResponseDelegate?  OnGetLocalListVersionResponse;
+            public event OCPPv2_1.CS.OnGetLocalListVersionResponseDelegate?  OnGetLocalListVersionResponse;
 
             #endregion
 
@@ -1553,12 +1553,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event fired whenever a SendLocalList request was received from the CSMS.
             /// </summary>
-            public event CS.OnSendLocalListRequestDelegate?   OnSendLocalListRequest;
+            public event OCPPv2_1.CS.OnSendLocalListRequestDelegate?   OnSendLocalListRequest;
 
             /// <summary>
             /// An event fired whenever a response to a SendLocalList request was sent.
             /// </summary>
-            public event CS.OnSendLocalListResponseDelegate?  OnSendLocalListResponse;
+            public event OCPPv2_1.CS.OnSendLocalListResponseDelegate?  OnSendLocalListResponse;
 
             #endregion
 
@@ -1567,12 +1567,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event fired whenever a ClearCache request was received from the CSMS.
             /// </summary>
-            public event CS.OnClearCacheRequestDelegate?   OnClearCacheRequest;
+            public event OCPPv2_1.CS.OnClearCacheRequestDelegate?   OnClearCacheRequest;
 
             /// <summary>
             /// An event fired whenever a response to a ClearCache request was sent.
             /// </summary>
-            public event CS.OnClearCacheResponseDelegate?  OnClearCacheResponse;
+            public event OCPPv2_1.CS.OnClearCacheResponseDelegate?  OnClearCacheResponse;
 
             #endregion
 
@@ -1582,12 +1582,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event fired whenever a ReserveNow request was received from the CSMS.
             /// </summary>
-            public event CS.OnReserveNowRequestDelegate?   OnReserveNowRequest;
+            public event OCPPv2_1.CS.OnReserveNowRequestDelegate?   OnReserveNowRequest;
 
             /// <summary>
             /// An event fired whenever a response to a ReserveNow request was sent.
             /// </summary>
-            public event CS.OnReserveNowResponseDelegate?  OnReserveNowResponse;
+            public event OCPPv2_1.CS.OnReserveNowResponseDelegate?  OnReserveNowResponse;
 
             #endregion
 
@@ -1596,12 +1596,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event fired whenever a CancelReservation request was received from the CSMS.
             /// </summary>
-            public event CS.OnCancelReservationRequestDelegate?   OnCancelReservationRequest;
+            public event OCPPv2_1.CS.OnCancelReservationRequestDelegate?   OnCancelReservationRequest;
 
             /// <summary>
             /// An event fired whenever a response to a CancelReservation request was sent.
             /// </summary>
-            public event CS.OnCancelReservationResponseDelegate?  OnCancelReservationResponse;
+            public event OCPPv2_1.CS.OnCancelReservationResponseDelegate?  OnCancelReservationResponse;
 
             #endregion
 
@@ -1610,12 +1610,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event fired whenever a RequestStartTransaction request was received from the CSMS.
             /// </summary>
-            public event CS.OnRequestStartTransactionRequestDelegate?   OnRequestStartTransactionRequest;
+            public event OCPPv2_1.CS.OnRequestStartTransactionRequestDelegate?   OnRequestStartTransactionRequest;
 
             /// <summary>
             /// An event fired whenever a response to a RequestStartTransaction request was sent.
             /// </summary>
-            public event CS.OnRequestStartTransactionResponseDelegate?  OnRequestStartTransactionResponse;
+            public event OCPPv2_1.CS.OnRequestStartTransactionResponseDelegate?  OnRequestStartTransactionResponse;
 
             #endregion
 
@@ -1624,12 +1624,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event fired whenever a RequestStopTransaction request was received from the CSMS.
             /// </summary>
-            public event CS.OnRequestStopTransactionRequestDelegate?   OnRequestStopTransactionRequest;
+            public event OCPPv2_1.CS.OnRequestStopTransactionRequestDelegate?   OnRequestStopTransactionRequest;
 
             /// <summary>
             /// An event fired whenever a response to a RequestStopTransaction request was sent.
             /// </summary>
-            public event CS.OnRequestStopTransactionResponseDelegate?  OnRequestStopTransactionResponse;
+            public event OCPPv2_1.CS.OnRequestStopTransactionResponseDelegate?  OnRequestStopTransactionResponse;
 
             #endregion
 
@@ -1638,12 +1638,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event fired whenever a GetTransactionStatus request was received from the CSMS.
             /// </summary>
-            public event CS.OnGetTransactionStatusRequestDelegate?   OnGetTransactionStatusRequest;
+            public event OCPPv2_1.CS.OnGetTransactionStatusRequestDelegate?   OnGetTransactionStatusRequest;
 
             /// <summary>
             /// An event fired whenever a response to a GetTransactionStatus request was sent.
             /// </summary>
-            public event CS.OnGetTransactionStatusResponseDelegate?  OnGetTransactionStatusResponse;
+            public event OCPPv2_1.CS.OnGetTransactionStatusResponseDelegate?  OnGetTransactionStatusResponse;
 
             #endregion
 
@@ -1652,12 +1652,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event fired whenever a SetChargingProfile request was received from the CSMS.
             /// </summary>
-            public event CS.OnSetChargingProfileRequestDelegate?   OnSetChargingProfileRequest;
+            public event OCPPv2_1.CS.OnSetChargingProfileRequestDelegate?   OnSetChargingProfileRequest;
 
             /// <summary>
             /// An event fired whenever a response to a SetChargingProfile request was sent.
             /// </summary>
-            public event CS.OnSetChargingProfileResponseDelegate?  OnSetChargingProfileResponse;
+            public event OCPPv2_1.CS.OnSetChargingProfileResponseDelegate?  OnSetChargingProfileResponse;
 
             #endregion
 
@@ -1666,12 +1666,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event fired whenever a GetChargingProfiles request was received from the CSMS.
             /// </summary>
-            public event CS.OnGetChargingProfilesRequestDelegate?   OnGetChargingProfilesRequest;
+            public event OCPPv2_1.CS.OnGetChargingProfilesRequestDelegate?   OnGetChargingProfilesRequest;
 
             /// <summary>
             /// An event fired whenever a response to a GetChargingProfiles request was sent.
             /// </summary>
-            public event CS.OnGetChargingProfilesResponseDelegate?  OnGetChargingProfilesResponse;
+            public event OCPPv2_1.CS.OnGetChargingProfilesResponseDelegate?  OnGetChargingProfilesResponse;
 
             #endregion
 
@@ -1680,12 +1680,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event fired whenever a ClearChargingProfile request was received from the CSMS.
             /// </summary>
-            public event CS.OnClearChargingProfileRequestDelegate?   OnClearChargingProfileRequest;
+            public event OCPPv2_1.CS.OnClearChargingProfileRequestDelegate?   OnClearChargingProfileRequest;
 
             /// <summary>
             /// An event fired whenever a response to a ClearChargingProfile request was sent.
             /// </summary>
-            public event CS.OnClearChargingProfileResponseDelegate?  OnClearChargingProfileResponse;
+            public event OCPPv2_1.CS.OnClearChargingProfileResponseDelegate?  OnClearChargingProfileResponse;
 
             #endregion
 
@@ -1694,12 +1694,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event fired whenever a GetCompositeSchedule request was received from the CSMS.
             /// </summary>
-            public event CS.OnGetCompositeScheduleRequestDelegate?   OnGetCompositeScheduleRequest;
+            public event OCPPv2_1.CS.OnGetCompositeScheduleRequestDelegate?   OnGetCompositeScheduleRequest;
 
             /// <summary>
             /// An event fired whenever a response to a GetCompositeSchedule request was sent.
             /// </summary>
-            public event CS.OnGetCompositeScheduleResponseDelegate?  OnGetCompositeScheduleResponse;
+            public event OCPPv2_1.CS.OnGetCompositeScheduleResponseDelegate?  OnGetCompositeScheduleResponse;
 
             #endregion
 
@@ -1708,12 +1708,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event fired whenever an UpdateDynamicSchedule request was received from the CSMS.
             /// </summary>
-            public event CS.OnUpdateDynamicScheduleRequestDelegate?   OnUpdateDynamicScheduleRequest;
+            public event OCPPv2_1.CS.OnUpdateDynamicScheduleRequestDelegate?   OnUpdateDynamicScheduleRequest;
 
             /// <summary>
             /// An event fired whenever a response to an UpdateDynamicSchedule request was sent.
             /// </summary>
-            public event CS.OnUpdateDynamicScheduleResponseDelegate?  OnUpdateDynamicScheduleResponse;
+            public event OCPPv2_1.CS.OnUpdateDynamicScheduleResponseDelegate?  OnUpdateDynamicScheduleResponse;
 
             #endregion
 
@@ -1722,12 +1722,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event fired whenever a NotifyAllowedEnergyTransfer request was received from the CSMS.
             /// </summary>
-            public event CS.OnNotifyAllowedEnergyTransferRequestDelegate?   OnNotifyAllowedEnergyTransferRequest;
+            public event OCPPv2_1.CS.OnNotifyAllowedEnergyTransferRequestDelegate?   OnNotifyAllowedEnergyTransferRequest;
 
             /// <summary>
             /// An event fired whenever a response to a NotifyAllowedEnergyTransfer request was sent.
             /// </summary>
-            public event CS.OnNotifyAllowedEnergyTransferResponseDelegate?  OnNotifyAllowedEnergyTransferResponse;
+            public event OCPPv2_1.CS.OnNotifyAllowedEnergyTransferResponseDelegate?  OnNotifyAllowedEnergyTransferResponse;
 
             #endregion
 
@@ -1736,12 +1736,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event fired whenever a UsePriorityCharging request was received from the CSMS.
             /// </summary>
-            public event CS.OnUsePriorityChargingRequestDelegate?   OnUsePriorityChargingRequest;
+            public event OCPPv2_1.CS.OnUsePriorityChargingRequestDelegate?   OnUsePriorityChargingRequest;
 
             /// <summary>
             /// An event fired whenever a response to a UsePriorityCharging request was sent.
             /// </summary>
-            public event CS.OnUsePriorityChargingResponseDelegate?  OnUsePriorityChargingResponse;
+            public event OCPPv2_1.CS.OnUsePriorityChargingResponseDelegate?  OnUsePriorityChargingResponse;
 
             #endregion
 
@@ -1750,12 +1750,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event fired whenever an UnlockConnector request was received from the CSMS.
             /// </summary>
-            public event CS.OnUnlockConnectorRequestDelegate?   OnUnlockConnectorRequest;
+            public event OCPPv2_1.CS.OnUnlockConnectorRequestDelegate?   OnUnlockConnectorRequest;
 
             /// <summary>
             /// An event fired whenever a response to an UnlockConnector request was sent.
             /// </summary>
-            public event CS.OnUnlockConnectorResponseDelegate?  OnUnlockConnectorResponse;
+            public event OCPPv2_1.CS.OnUnlockConnectorResponseDelegate?  OnUnlockConnectorResponse;
 
             #endregion
 
@@ -1765,12 +1765,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event fired whenever an AFRR signal request was received from the CSMS.
             /// </summary>
-            public event CS.OnAFRRSignalRequestDelegate?   OnAFRRSignalRequest;
+            public event OCPPv2_1.CS.OnAFRRSignalRequestDelegate?   OnAFRRSignalRequest;
 
             /// <summary>
             /// An event fired whenever a response to an AFRR signal request was sent.
             /// </summary>
-            public event CS.OnAFRRSignalResponseDelegate?  OnAFRRSignalResponse;
+            public event OCPPv2_1.CS.OnAFRRSignalResponseDelegate?  OnAFRRSignalResponse;
 
             #endregion
 
@@ -1780,12 +1780,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event fired whenever a SetDisplayMessage request was received from the CSMS.
             /// </summary>
-            public event CS.OnSetDisplayMessageRequestDelegate?   OnSetDisplayMessageRequest;
+            public event OCPPv2_1.CS.OnSetDisplayMessageRequestDelegate?   OnSetDisplayMessageRequest;
 
             /// <summary>
             /// An event fired whenever a response to a SetDisplayMessage request was sent.
             /// </summary>
-            public event CS.OnSetDisplayMessageResponseDelegate?  OnSetDisplayMessageResponse;
+            public event OCPPv2_1.CS.OnSetDisplayMessageResponseDelegate?  OnSetDisplayMessageResponse;
 
             #endregion
 
@@ -1794,12 +1794,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event fired whenever a GetDisplayMessages request was received from the CSMS.
             /// </summary>
-            public event CS.OnGetDisplayMessagesRequestDelegate?   OnGetDisplayMessagesRequest;
+            public event OCPPv2_1.CS.OnGetDisplayMessagesRequestDelegate?   OnGetDisplayMessagesRequest;
 
             /// <summary>
             /// An event fired whenever a response to a GetDisplayMessages request was sent.
             /// </summary>
-            public event CS.OnGetDisplayMessagesResponseDelegate?  OnGetDisplayMessagesResponse;
+            public event OCPPv2_1.CS.OnGetDisplayMessagesResponseDelegate?  OnGetDisplayMessagesResponse;
 
             #endregion
 
@@ -1808,12 +1808,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event fired whenever a ClearDisplayMessage request was received from the CSMS.
             /// </summary>
-            public event CS.OnClearDisplayMessageRequestDelegate?   OnClearDisplayMessageRequest;
+            public event OCPPv2_1.CS.OnClearDisplayMessageRequestDelegate?   OnClearDisplayMessageRequest;
 
             /// <summary>
             /// An event fired whenever a response to a ClearDisplayMessage request was sent.
             /// </summary>
-            public event CS.OnClearDisplayMessageResponseDelegate?  OnClearDisplayMessageResponse;
+            public event OCPPv2_1.CS.OnClearDisplayMessageResponseDelegate?  OnClearDisplayMessageResponse;
 
             #endregion
 
@@ -1822,12 +1822,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event fired whenever a CostUpdated request was received from the CSMS.
             /// </summary>
-            public event CS.OnCostUpdatedRequestDelegate?   OnCostUpdatedRequest;
+            public event OCPPv2_1.CS.OnCostUpdatedRequestDelegate?   OnCostUpdatedRequest;
 
             /// <summary>
             /// An event fired whenever a response to a CostUpdated request was sent.
             /// </summary>
-            public event CS.OnCostUpdatedResponseDelegate?  OnCostUpdatedResponse;
+            public event OCPPv2_1.CS.OnCostUpdatedResponseDelegate?  OnCostUpdatedResponse;
 
             #endregion
 
@@ -1836,12 +1836,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event fired whenever a CustomerInformation request was received from the CSMS.
             /// </summary>
-            public event CS.OnCustomerInformationRequestDelegate?   OnCustomerInformationRequest;
+            public event OCPPv2_1.CS.OnCustomerInformationRequestDelegate?   OnCustomerInformationRequest;
 
             /// <summary>
             /// An event fired whenever a response to a CustomerInformation request was sent.
             /// </summary>
-            public event CS.OnCustomerInformationResponseDelegate?  OnCustomerInformationResponse;
+            public event OCPPv2_1.CS.OnCustomerInformationResponseDelegate?  OnCustomerInformationResponse;
 
             #endregion
 
@@ -1853,12 +1853,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event sent whenever a binary data transfer request was sent.
             /// </summary>
-            public event OCPP.NetworkingNode.CS.OnIncomingBinaryDataTransferRequestDelegate?   OnIncomingBinaryDataTransferRequest;
+            public event OCPP.CS.OnIncomingBinaryDataTransferRequestDelegate?   OnIncomingBinaryDataTransferRequest;
 
             /// <summary>
             /// An event sent whenever a response to a binary data transfer request was sent.
             /// </summary>
-            public event OCPP.NetworkingNode.CS.OnIncomingBinaryDataTransferResponseDelegate?  OnIncomingBinaryDataTransferResponse;
+            public event OCPP.CS.OnIncomingBinaryDataTransferResponseDelegate?  OnIncomingBinaryDataTransferResponse;
 
             #endregion
 
@@ -1867,12 +1867,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event sent whenever a GetFile request was sent.
             /// </summary>
-            public event OCPP.NetworkingNode.CS.OnGetFileRequestDelegate?   OnGetFileRequest;
+            public event OCPP.CS.OnGetFileRequestDelegate?   OnGetFileRequest;
 
             /// <summary>
             /// An event sent whenever a response to a GetFile request was sent.
             /// </summary>
-            public event OCPP.NetworkingNode.CS.OnGetFileResponseDelegate?  OnGetFileResponse;
+            public event OCPP.CS.OnGetFileResponseDelegate?  OnGetFileResponse;
 
             #endregion
 
@@ -1881,12 +1881,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event sent whenever a SendFile request was sent.
             /// </summary>
-            public event OCPP.NetworkingNode.CS.OnSendFileRequestDelegate?   OnSendFileRequest;
+            public event OCPP.CS.OnSendFileRequestDelegate?   OnSendFileRequest;
 
             /// <summary>
             /// An event sent whenever a response to a SendFile request was sent.
             /// </summary>
-            public event OCPP.NetworkingNode.CS.OnSendFileResponseDelegate?  OnSendFileResponse;
+            public event OCPP.CS.OnSendFileResponseDelegate?  OnSendFileResponse;
 
             #endregion
 
@@ -1895,12 +1895,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event sent whenever a DeleteFile request was sent.
             /// </summary>
-            public event OCPP.NetworkingNode.CS.OnDeleteFileRequestDelegate?   OnDeleteFileRequest;
+            public event OCPP.CS.OnDeleteFileRequestDelegate?   OnDeleteFileRequest;
 
             /// <summary>
             /// An event sent whenever a response to a DeleteFile request was sent.
             /// </summary>
-            public event OCPP.NetworkingNode.CS.OnDeleteFileResponseDelegate?  OnDeleteFileResponse;
+            public event OCPP.CS.OnDeleteFileResponseDelegate?  OnDeleteFileResponse;
 
             #endregion
 
@@ -1912,12 +1912,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event fired whenever a AddSignaturePolicy request was received from the CSMS.
             /// </summary>
-            public event OCPP.NetworkingNode.CS.OnAddSignaturePolicyRequestDelegate?   OnAddSignaturePolicyRequest;
+            public event OCPP.CS.OnAddSignaturePolicyRequestDelegate?   OnAddSignaturePolicyRequest;
 
             /// <summary>
             /// An event fired whenever a response to a AddSignaturePolicy request was sent.
             /// </summary>
-            public event OCPP.NetworkingNode.CS.OnAddSignaturePolicyResponseDelegate?  OnAddSignaturePolicyResponse;
+            public event OCPP.CS.OnAddSignaturePolicyResponseDelegate?  OnAddSignaturePolicyResponse;
 
             #endregion
 
@@ -1926,12 +1926,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event fired whenever a UpdateSignaturePolicy request was received from the CSMS.
             /// </summary>
-            public event OCPP.NetworkingNode.CS.OnUpdateSignaturePolicyRequestDelegate?   OnUpdateSignaturePolicyRequest;
+            public event OCPP.CS.OnUpdateSignaturePolicyRequestDelegate?   OnUpdateSignaturePolicyRequest;
 
             /// <summary>
             /// An event fired whenever a response to a UpdateSignaturePolicy request was sent.
             /// </summary>
-            public event OCPP.NetworkingNode.CS.OnUpdateSignaturePolicyResponseDelegate?  OnUpdateSignaturePolicyResponse;
+            public event OCPP.CS.OnUpdateSignaturePolicyResponseDelegate?  OnUpdateSignaturePolicyResponse;
 
             #endregion
 
@@ -1940,12 +1940,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event fired whenever a DeleteSignaturePolicy request was received from the CSMS.
             /// </summary>
-            public event OCPP.NetworkingNode.CS.OnDeleteSignaturePolicyRequestDelegate?   OnDeleteSignaturePolicyRequest;
+            public event OCPP.CS.OnDeleteSignaturePolicyRequestDelegate?   OnDeleteSignaturePolicyRequest;
 
             /// <summary>
             /// An event fired whenever a response to a DeleteSignaturePolicy request was sent.
             /// </summary>
-            public event OCPP.NetworkingNode.CS.OnDeleteSignaturePolicyResponseDelegate?  OnDeleteSignaturePolicyResponse;
+            public event OCPP.CS.OnDeleteSignaturePolicyResponseDelegate?  OnDeleteSignaturePolicyResponse;
 
             #endregion
 
@@ -1954,12 +1954,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event fired whenever a AddUserRole request was received from the CSMS.
             /// </summary>
-            public event OCPP.NetworkingNode.CS.OnAddUserRoleRequestDelegate?   OnAddUserRoleRequest;
+            public event OCPP.CS.OnAddUserRoleRequestDelegate?   OnAddUserRoleRequest;
 
             /// <summary>
             /// An event fired whenever a response to a AddUserRole request was sent.
             /// </summary>
-            public event OCPP.NetworkingNode.CS.OnAddUserRoleResponseDelegate?  OnAddUserRoleResponse;
+            public event OCPP.CS.OnAddUserRoleResponseDelegate?  OnAddUserRoleResponse;
 
             #endregion
 
@@ -1968,12 +1968,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event fired whenever a UpdateUserRole request was received from the CSMS.
             /// </summary>
-            public event OCPP.NetworkingNode.CS.OnUpdateUserRoleRequestDelegate?   OnUpdateUserRoleRequest;
+            public event OCPP.CS.OnUpdateUserRoleRequestDelegate?   OnUpdateUserRoleRequest;
 
             /// <summary>
             /// An event fired whenever a response to a UpdateUserRole request was sent.
             /// </summary>
-            public event OCPP.NetworkingNode.CS.OnUpdateUserRoleResponseDelegate?  OnUpdateUserRoleResponse;
+            public event OCPP.CS.OnUpdateUserRoleResponseDelegate?  OnUpdateUserRoleResponse;
 
             #endregion
 
@@ -1982,12 +1982,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event fired whenever a DeleteUserRole request was received from the CSMS.
             /// </summary>
-            public event OCPP.NetworkingNode.CS.OnDeleteUserRoleRequestDelegate?   OnDeleteUserRoleRequest;
+            public event OCPP.CS.OnDeleteUserRoleRequestDelegate?   OnDeleteUserRoleRequest;
 
             /// <summary>
             /// An event fired whenever a response to a DeleteUserRole request was sent.
             /// </summary>
-            public event OCPP.NetworkingNode.CS.OnDeleteUserRoleResponseDelegate?  OnDeleteUserRoleResponse;
+            public event OCPP.CS.OnDeleteUserRoleResponseDelegate?  OnDeleteUserRoleResponse;
 
             #endregion
 
@@ -1999,14 +1999,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event fired whenever a SetDefaultChargingTariff request was received from the CSMS.
             /// </summary>
-            public event CS.OnSetDefaultChargingTariffRequestDelegate?   OnSetDefaultChargingTariffRequest;
+            public event OCPPv2_1.CS.OnSetDefaultChargingTariffRequestDelegate?   OnSetDefaultChargingTariffRequest;
 
-            public event CS.OnSetDefaultChargingTariffDelegate?          OnSetDefaultChargingTariff;
+            public event OCPPv2_1.CS.OnSetDefaultChargingTariffDelegate?          OnSetDefaultChargingTariff;
 
             /// <summary>
             /// An event fired whenever a response to a SetDefaultChargingTariff request was sent.
             /// </summary>
-            public event CS.OnSetDefaultChargingTariffResponseDelegate?  OnSetDefaultChargingTariffResponse;
+            public event OCPPv2_1.CS.OnSetDefaultChargingTariffResponseDelegate?  OnSetDefaultChargingTariffResponse;
 
             #endregion
 
@@ -2015,14 +2015,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event fired whenever a GetDefaultChargingTariff request was received from the CSMS.
             /// </summary>
-            public event CS.OnGetDefaultChargingTariffRequestDelegate?   OnGetDefaultChargingTariffRequest;
+            public event OCPPv2_1.CS.OnGetDefaultChargingTariffRequestDelegate?   OnGetDefaultChargingTariffRequest;
 
-            public event CS.OnGetDefaultChargingTariffDelegate?          OnGetDefaultChargingTariff;
+            public event OCPPv2_1.CS.OnGetDefaultChargingTariffDelegate?          OnGetDefaultChargingTariff;
 
             /// <summary>
             /// An event fired whenever a response to a GetDefaultChargingTariff request was sent.
             /// </summary>
-            public event CS.OnGetDefaultChargingTariffResponseDelegate?  OnGetDefaultChargingTariffResponse;
+            public event OCPPv2_1.CS.OnGetDefaultChargingTariffResponseDelegate?  OnGetDefaultChargingTariffResponse;
 
             #endregion
 
@@ -2031,14 +2031,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event fired whenever a RemoveDefaultChargingTariff request was received from the CSMS.
             /// </summary>
-            public event CS.OnRemoveDefaultChargingTariffRequestDelegate?   OnRemoveDefaultChargingTariffRequest;
+            public event OCPPv2_1.CS.OnRemoveDefaultChargingTariffRequestDelegate?   OnRemoveDefaultChargingTariffRequest;
 
-            public event CS.OnRemoveDefaultChargingTariffDelegate?          OnRemoveDefaultChargingTariff;
+            public event OCPPv2_1.CS.OnRemoveDefaultChargingTariffDelegate?          OnRemoveDefaultChargingTariff;
 
             /// <summary>
             /// An event fired whenever a response to a RemoveDefaultChargingTariff request was sent.
             /// </summary>
-            public event CS.OnRemoveDefaultChargingTariffResponseDelegate?  OnRemoveDefaultChargingTariffResponse;
+            public event OCPPv2_1.CS.OnRemoveDefaultChargingTariffResponseDelegate?  OnRemoveDefaultChargingTariffResponse;
 
             #endregion
 
@@ -2268,9 +2268,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CS.OnResetRequestDelegate>().
+                                                               OfType <OCPPv2_1.CS.OnResetRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -2397,9 +2398,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CS.OnResetResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CS.OnResetResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -2445,9 +2447,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CS.OnUpdateFirmwareRequestDelegate>().
+                                                               OfType <OCPPv2_1.CS.OnUpdateFirmwareRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -2559,9 +2562,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CS.OnUpdateFirmwareResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CS.OnUpdateFirmwareResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -2607,9 +2611,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CS.OnPublishFirmwareRequestDelegate>().
+                                                               OfType <OCPPv2_1.CS.OnPublishFirmwareRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -2721,9 +2726,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CS.OnPublishFirmwareResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CS.OnPublishFirmwareResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -2769,9 +2775,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CS.OnUnpublishFirmwareRequestDelegate>().
+                                                               OfType <OCPPv2_1.CS.OnUnpublishFirmwareRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -2877,9 +2884,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CS.OnUnpublishFirmwareResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CS.OnUnpublishFirmwareResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -2925,9 +2933,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CS.OnGetBaseReportRequestDelegate>().
+                                                               OfType <OCPPv2_1.CS.OnGetBaseReportRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -3036,9 +3045,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CS.OnGetBaseReportResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CS.OnGetBaseReportResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -3084,9 +3094,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CS.OnGetReportRequestDelegate>().
+                                                               OfType <OCPPv2_1.CS.OnGetReportRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -3200,9 +3211,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CS.OnGetReportResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CS.OnGetReportResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -3248,9 +3260,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CS.OnGetLogRequestDelegate>().
+                                                               OfType <OCPPv2_1.CS.OnGetLogRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -3363,9 +3376,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CS.OnGetLogResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CS.OnGetLogResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -3411,9 +3425,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CS.OnSetVariablesRequestDelegate>().
+                                                               OfType <OCPPv2_1.CS.OnSetVariablesRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -3535,9 +3550,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CS.OnSetVariablesResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CS.OnSetVariablesResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -3583,9 +3599,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CS.OnGetVariablesRequestDelegate>().
+                                                               OfType <OCPPv2_1.CS.OnGetVariablesRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -3708,9 +3725,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CS.OnGetVariablesResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CS.OnGetVariablesResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -3756,9 +3774,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CS.OnSetMonitoringBaseRequestDelegate>().
+                                                               OfType <OCPPv2_1.CS.OnSetMonitoringBaseRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -3866,9 +3885,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CS.OnSetMonitoringBaseResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CS.OnSetMonitoringBaseResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -3914,9 +3934,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CS.OnGetMonitoringReportRequestDelegate>().
+                                                               OfType <OCPPv2_1.CS.OnGetMonitoringReportRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -4030,9 +4051,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CS.OnGetMonitoringReportResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CS.OnGetMonitoringReportResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -4078,9 +4100,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CS.OnSetMonitoringLevelRequestDelegate>().
+                                                               OfType <OCPPv2_1.CS.OnSetMonitoringLevelRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -4188,9 +4211,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CS.OnSetMonitoringLevelResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CS.OnSetMonitoringLevelResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -4236,9 +4260,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CS.OnSetVariableMonitoringRequestDelegate>().
+                                                               OfType <OCPPv2_1.CS.OnSetVariableMonitoringRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -4363,9 +4388,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CS.OnSetVariableMonitoringResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CS.OnSetVariableMonitoringResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -4411,9 +4437,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CS.OnClearVariableMonitoringRequestDelegate>().
+                                                               OfType <OCPPv2_1.CS.OnClearVariableMonitoringRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -4526,9 +4553,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CS.OnClearVariableMonitoringResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CS.OnClearVariableMonitoringResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -4574,9 +4602,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CS.OnSetNetworkProfileRequestDelegate>().
+                                                               OfType <OCPPv2_1.CS.OnSetNetworkProfileRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -4687,9 +4716,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CS.OnSetNetworkProfileResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CS.OnSetNetworkProfileResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -4735,9 +4765,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CS.OnChangeAvailabilityRequestDelegate>().
+                                                               OfType <OCPPv2_1.CS.OnChangeAvailabilityRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -4854,9 +4885,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CS.OnChangeAvailabilityResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CS.OnChangeAvailabilityResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -4902,9 +4934,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CS.OnTriggerMessageRequestDelegate>().
+                                                               OfType <OCPPv2_1.CS.OnTriggerMessageRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -5089,9 +5122,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CS.OnTriggerMessageResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CS.OnTriggerMessageResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -5137,9 +5171,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <OCPP.CS.OnIncomingDataTransferRequestDelegate>().
+                                                               OfType <OCPPv2_1.CS.OnIncomingDataTransferRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -5163,7 +5198,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Check charging station identification
 
-                    OCPP.CS.DataTransferResponse? response = null;
+                    OCPPv2_1.CS.DataTransferResponse? response = null;
 
                     //if (request.ChargingStationId != Id)
                     //{
@@ -5194,7 +5229,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                              ))
                         {
 
-                            response = new OCPP.CS.DataTransferResponse(
+                            response = new OCPPv2_1.CS.DataTransferResponse(
                                            Request:  request,
                                            Result:   Result.SignatureError(
                                                          $"Invalid signature: {errorResponse}"
@@ -5255,14 +5290,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                             if (request.VendorId == Vendor_Id.GraphDefined)
                             {
-                                response = new OCPP.CS.DataTransferResponse(
+                                response = new OCPPv2_1.CS.DataTransferResponse(
                                                request,
                                                DataTransferStatus.Accepted,
                                                responseData
                                            );
                             }
                             else
-                                response = new OCPP.CS.DataTransferResponse(
+                                response = new OCPPv2_1.CS.DataTransferResponse(
                                                request,
                                                DataTransferStatus.Rejected
                                            );
@@ -5295,9 +5330,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <OCPP.CS.OnIncomingDataTransferResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CS.OnIncomingDataTransferResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -5344,9 +5380,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CS.OnCertificateSignedRequestDelegate>().
+                                                               OfType <OCPPv2_1.CS.OnCertificateSignedRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -5457,9 +5494,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CS.OnCertificateSignedResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CS.OnCertificateSignedResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -5505,9 +5543,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CS.OnInstallCertificateRequestDelegate>().
+                                                               OfType <OCPPv2_1.CS.OnInstallCertificateRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -5622,9 +5661,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CS.OnInstallCertificateResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CS.OnInstallCertificateResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -5670,9 +5710,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CS.OnGetInstalledCertificateIdsRequestDelegate>().
+                                                               OfType <OCPPv2_1.CS.OnGetInstalledCertificateIdsRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -5798,9 +5839,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CS.OnGetInstalledCertificateIdsResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CS.OnGetInstalledCertificateIdsResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -5846,9 +5888,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CS.OnDeleteCertificateRequestDelegate>().
+                                                               OfType <OCPPv2_1.CS.OnDeleteCertificateRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -5963,9 +6006,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CS.OnDeleteCertificateResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CS.OnDeleteCertificateResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -6011,9 +6055,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CS.OnNotifyCRLRequestDelegate>().
+                                                               OfType <OCPPv2_1.CS.OnNotifyCRLRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -6120,9 +6165,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CS.OnNotifyCRLResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CS.OnNotifyCRLResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -6169,9 +6215,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CS.OnGetLocalListVersionRequestDelegate>().
+                                                               OfType <OCPPv2_1.CS.OnGetLocalListVersionRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -6277,9 +6324,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CS.OnGetLocalListVersionResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CS.OnGetLocalListVersionResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -6325,9 +6373,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CS.OnSendLocalListRequestDelegate>().
+                                                               OfType <OCPPv2_1.CS.OnSendLocalListRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -6441,9 +6490,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CS.OnSendLocalListResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CS.OnSendLocalListResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -6489,9 +6539,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CS.OnClearCacheRequestDelegate>().
+                                                               OfType <OCPPv2_1.CS.OnClearCacheRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -6598,9 +6649,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CS.OnClearCacheResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CS.OnClearCacheResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -6647,9 +6699,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CS.OnReserveNowRequestDelegate>().
+                                                               OfType <OCPPv2_1.CS.OnReserveNowRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -6769,9 +6822,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CS.OnReserveNowResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CS.OnReserveNowResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -6817,9 +6871,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CS.OnCancelReservationRequestDelegate>().
+                                                               OfType <OCPPv2_1.CS.OnCancelReservationRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -6933,9 +6988,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CS.OnCancelReservationResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CS.OnCancelReservationResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -6981,9 +7037,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CS.OnRequestStartTransactionRequestDelegate>().
+                                                               OfType <OCPPv2_1.CS.OnRequestStartTransactionRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -7118,9 +7175,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CS.OnRequestStartTransactionResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CS.OnRequestStartTransactionResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -7166,9 +7224,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CS.OnRequestStopTransactionRequestDelegate>().
+                                                               OfType <OCPPv2_1.CS.OnRequestStopTransactionRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -7274,9 +7333,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CS.OnRequestStopTransactionResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CS.OnRequestStopTransactionResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -7322,9 +7382,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CS.OnGetTransactionStatusRequestDelegate>().
+                                                               OfType <OCPPv2_1.CS.OnGetTransactionStatusRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -7430,9 +7491,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CS.OnGetTransactionStatusResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CS.OnGetTransactionStatusResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -7478,9 +7540,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CS.OnSetChargingProfileRequestDelegate>().
+                                                               OfType <OCPPv2_1.CS.OnSetChargingProfileRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -7612,9 +7675,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CS.OnSetChargingProfileResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CS.OnSetChargingProfileResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -7660,9 +7724,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CS.OnGetChargingProfilesRequestDelegate>().
+                                                               OfType <OCPPv2_1.CS.OnGetChargingProfilesRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -7771,9 +7836,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CS.OnGetChargingProfilesResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CS.OnGetChargingProfilesResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -7819,9 +7885,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CS.OnClearChargingProfileRequestDelegate>().
+                                                               OfType <OCPPv2_1.CS.OnClearChargingProfileRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -7931,9 +7998,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CS.OnClearChargingProfileResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CS.OnClearChargingProfileResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -7979,9 +8047,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CS.OnGetCompositeScheduleRequestDelegate>().
+                                                               OfType <OCPPv2_1.CS.OnGetCompositeScheduleRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -8094,9 +8163,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CS.OnGetCompositeScheduleResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CS.OnGetCompositeScheduleResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -8142,9 +8212,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CS.OnUpdateDynamicScheduleRequestDelegate>().
+                                                               OfType <OCPPv2_1.CS.OnUpdateDynamicScheduleRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -8268,9 +8339,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CS.OnUpdateDynamicScheduleResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CS.OnUpdateDynamicScheduleResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -8316,9 +8388,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CS.OnNotifyAllowedEnergyTransferRequestDelegate>().
+                                                               OfType <OCPPv2_1.CS.OnNotifyAllowedEnergyTransferRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -8426,9 +8499,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CS.OnNotifyAllowedEnergyTransferResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CS.OnNotifyAllowedEnergyTransferResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -8474,9 +8548,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CS.OnUsePriorityChargingRequestDelegate>().
+                                                               OfType <OCPPv2_1.CS.OnUsePriorityChargingRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -8585,9 +8660,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CS.OnUsePriorityChargingResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CS.OnUsePriorityChargingResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -8633,9 +8709,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CS.OnUnlockConnectorRequestDelegate>().
+                                                               OfType <OCPPv2_1.CS.OnUnlockConnectorRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -8744,9 +8821,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CS.OnUnlockConnectorResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CS.OnUnlockConnectorResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -8793,9 +8871,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CS.OnAFRRSignalRequestDelegate>().
+                                                               OfType <OCPPv2_1.CS.OnAFRRSignalRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -8906,9 +8985,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CS.OnAFRRSignalResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CS.OnAFRRSignalResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -8955,9 +9035,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CS.OnSetDisplayMessageRequestDelegate>().
+                                                               OfType <OCPPv2_1.CS.OnSetDisplayMessageRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -9082,9 +9163,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CS.OnSetDisplayMessageResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CS.OnSetDisplayMessageResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -9130,9 +9212,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CS.OnGetDisplayMessagesRequestDelegate>().
+                                                               OfType <OCPPv2_1.CS.OnGetDisplayMessagesRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -9259,9 +9342,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CS.OnGetDisplayMessagesResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CS.OnGetDisplayMessagesResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -9307,9 +9391,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CS.OnClearDisplayMessageRequestDelegate>().
+                                                               OfType <OCPPv2_1.CS.OnClearDisplayMessageRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -9426,9 +9511,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CS.OnClearDisplayMessageResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CS.OnClearDisplayMessageResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -9474,9 +9560,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CS.OnCostUpdatedRequestDelegate>().
+                                                               OfType <OCPPv2_1.CS.OnCostUpdatedRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -9594,9 +9681,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CS.OnCostUpdatedResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CS.OnCostUpdatedResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -9642,9 +9730,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CS.OnCustomerInformationRequestDelegate>().
+                                                               OfType <OCPPv2_1.CS.OnCustomerInformationRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -9794,9 +9883,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CS.OnCustomerInformationResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CS.OnCustomerInformationResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -9848,6 +9938,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                OfType <OCPP.CS.OnIncomingBinaryDataTransferRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -9974,6 +10065,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                   OfType <OCPP.CS.OnIncomingBinaryDataTransferResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -10022,6 +10114,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                OfType <OCPP.CS.OnGetFileRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -10141,6 +10234,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                   OfType <OCPP.CS.OnGetFileResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -10189,6 +10283,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                OfType <OCPP.CS.OnSendFileRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -10304,6 +10399,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                   OfType <OCPP.CS.OnSendFileResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -10352,6 +10448,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                OfType <OCPP.CS.OnDeleteFileRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -10467,6 +10564,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                   OfType <OCPP.CS.OnDeleteFileResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -10501,10 +10599,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #region OnAddSignaturePolicy
 
                 ChargingStationServer.OnAddSignaturePolicy += async (timestamp,
-                                                                    sender,
-                                                                    connection,
-                                                                    request,
-                                                                    cancellationToken) => {
+                                                                     sender,
+                                                                     connection,
+                                                                     request,
+                                                                     cancellationToken) => {
 
                     #region Send OnAddSignaturePolicyRequest event
 
@@ -10518,6 +10616,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                OfType <OCPP.CS.OnAddSignaturePolicyRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -10634,6 +10733,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                   OfType <OCPP.CS.OnAddSignaturePolicyResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -10665,10 +10765,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #region OnUpdateSignaturePolicy
 
                 ChargingStationServer.OnUpdateSignaturePolicy += async (timestamp,
-                                                                    sender,
-                                                                    connection,
-                                                                    request,
-                                                                    cancellationToken) => {
+                                                                        sender,
+                                                                        connection,
+                                                                        request,
+                                                                        cancellationToken) => {
 
                     #region Send OnUpdateSignaturePolicyRequest event
 
@@ -10682,6 +10782,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                OfType <OCPP.CS.OnUpdateSignaturePolicyRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -10796,6 +10897,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                   OfType <OCPP.CS.OnUpdateSignaturePolicyResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -10827,10 +10929,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #region OnDeleteSignaturePolicy
 
                 ChargingStationServer.OnDeleteSignaturePolicy += async (timestamp,
-                                                                    sender,
-                                                                    connection,
-                                                                    request,
-                                                                    cancellationToken) => {
+                                                                        sender,
+                                                                        connection,
+                                                                        request,
+                                                                        cancellationToken) => {
 
                     #region Send OnDeleteSignaturePolicyRequest event
 
@@ -10844,6 +10946,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                OfType <OCPP.CS.OnDeleteSignaturePolicyRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -10958,6 +11061,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                   OfType <OCPP.CS.OnDeleteSignaturePolicyResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -10989,10 +11093,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #region OnAddUserRole
 
                 ChargingStationServer.OnAddUserRole += async (timestamp,
-                                                                    sender,
-                                                                    connection,
-                                                                    request,
-                                                                    cancellationToken) => {
+                                                              sender,
+                                                              connection,
+                                                              request,
+                                                              cancellationToken) => {
 
                     #region Send OnAddUserRoleRequest event
 
@@ -11006,6 +11110,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                OfType <OCPP.CS.OnAddUserRoleRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -11120,6 +11225,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                   OfType <OCPP.CS.OnAddUserRoleResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -11151,10 +11257,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #region OnUpdateUserRole
 
                 ChargingStationServer.OnUpdateUserRole += async (timestamp,
-                                                                    sender,
-                                                                    connection,
-                                                                    request,
-                                                                    cancellationToken) => {
+                                                                 sender,
+                                                                 connection,
+                                                                 request,
+                                                                 cancellationToken) => {
 
                     #region Send OnUpdateUserRoleRequest event
 
@@ -11168,6 +11274,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                OfType <OCPP.CS.OnUpdateUserRoleRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -11282,6 +11389,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                   OfType <OCPP.CS.OnUpdateUserRoleResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -11313,10 +11421,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #region OnDeleteUserRole
 
                 ChargingStationServer.OnDeleteUserRole += async (timestamp,
-                                                                    sender,
-                                                                    connection,
-                                                                    request,
-                                                                    cancellationToken) => {
+                                                                 sender,
+                                                                 connection,
+                                                                 request,
+                                                                 cancellationToken) => {
 
                     #region Send OnDeleteUserRoleRequest event
 
@@ -11330,6 +11438,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                OfType <OCPP.CS.OnDeleteUserRoleRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -11444,6 +11553,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                   OfType <OCPP.CS.OnDeleteUserRoleResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -11492,9 +11602,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CS.OnSetDefaultChargingTariffRequestDelegate>().
+                                                               OfType <OCPPv2_1.CS.OnSetDefaultChargingTariffRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -11677,9 +11788,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CS.OnSetDefaultChargingTariffResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CS.OnSetDefaultChargingTariffResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -11725,9 +11837,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CS.OnGetDefaultChargingTariffRequestDelegate>().
+                                                               OfType <OCPPv2_1.CS.OnGetDefaultChargingTariffRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -11846,9 +11959,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CS.OnGetDefaultChargingTariffResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CS.OnGetDefaultChargingTariffResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -11894,9 +12008,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CS.OnRemoveDefaultChargingTariffRequestDelegate>().
+                                                               OfType <OCPPv2_1.CS.OnRemoveDefaultChargingTariffRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -12004,9 +12119,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CS.OnRemoveDefaultChargingTariffResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CS.OnRemoveDefaultChargingTariffResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -13156,8 +13272,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <param name="RequestTimeout">An optional timeout for this request.</param>
             /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
             /// <param name="CancellationToken">An optional token to cancel this request.</param>
-            public async Task<OCPP.CSMS.DataTransferResponse>
-                TransferData(OCPP.CS.DataTransferRequest Request)
+            public async Task<OCPPv2_1.CSMS.DataTransferResponse>
+                TransferData(OCPPv2_1.CS.DataTransferRequest Request)
 
             {
 
@@ -13195,12 +13311,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                          ? await CSClient.TransferData(Request)
 
-                                         : new OCPP.CSMS.DataTransferResponse(
+                                         : new OCPPv2_1.CSMS.DataTransferResponse(
                                                Request,
                                                Result.SignatureError(errorResponse)
                                            )
 
-                                   : new OCPP.CSMS.DataTransferResponse(
+                                   : new OCPPv2_1.CSMS.DataTransferResponse(
                                          Request,
                                          Result.Server("Unknown or unreachable charging station!")
                                      );
@@ -15551,415 +15667,415 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region NetworkingNode <- Charging Station
 
-            #region OnBootNotification (-Request/-Response)
+            #region OnBootNotification (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a BootNotification request was sent from a charging station.
             /// </summary>
-            public event CSMS.OnBootNotificationRequestDelegate?   OnBootNotificationRequest;
+            public event OCPPv2_1.CSMS.OnBootNotificationRequestDelegate?   OnBootNotificationRequest;
 
             /// <summary>
             /// An event fired whenever a response to a BootNotification request was received.
             /// </summary>
-            public event CSMS.OnBootNotificationResponseDelegate?  OnBootNotificationResponse;
+            public event OCPPv2_1.CSMS.OnBootNotificationResponseDelegate?  OnBootNotificationResponse;
 
             #endregion
 
-            #region OnFirmwareStatusNotification (-Request/-Response)
+            #region OnFirmwareStatusNotification (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a FirmwareStatusNotification request was sent from a charging station.
             /// </summary>
-            public event CSMS.OnFirmwareStatusNotificationRequestDelegate?   OnFirmwareStatusNotificationRequest;
+            public event OCPPv2_1.CSMS.OnFirmwareStatusNotificationRequestDelegate?   OnFirmwareStatusNotificationRequest;
 
             /// <summary>
             /// An event fired whenever a response to a FirmwareStatusNotification request was received.
             /// </summary>
-            public event CSMS.OnFirmwareStatusNotificationResponseDelegate?  OnFirmwareStatusNotificationResponse;
+            public event OCPPv2_1.CSMS.OnFirmwareStatusNotificationResponseDelegate?  OnFirmwareStatusNotificationResponse;
 
             #endregion
 
-            #region OnPublishFirmwareStatusNotification (-Request/-Response)
+            #region OnPublishFirmwareStatusNotification (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a PublishFirmwareStatusNotification request was sent from a charging station.
             /// </summary>
-            public event CSMS.OnPublishFirmwareStatusNotificationRequestDelegate?   OnPublishFirmwareStatusNotificationRequest;
+            public event OCPPv2_1.CSMS.OnPublishFirmwareStatusNotificationRequestDelegate?   OnPublishFirmwareStatusNotificationRequest;
 
             /// <summary>
             /// An event fired whenever a response to a PublishFirmwareStatusNotification request was received.
             /// </summary>
-            public event CSMS.OnPublishFirmwareStatusNotificationResponseDelegate?  OnPublishFirmwareStatusNotificationResponse;
+            public event OCPPv2_1.CSMS.OnPublishFirmwareStatusNotificationResponseDelegate?  OnPublishFirmwareStatusNotificationResponse;
 
             #endregion
 
-            #region OnHeartbeat (-Request/-Response)
+            #region OnHeartbeat (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a Heartbeat request was sent from a charging station.
             /// </summary>
-            public event CSMS.OnHeartbeatRequestDelegate?   OnHeartbeatRequest;
+            public event OCPPv2_1.CSMS.OnHeartbeatRequestDelegate?   OnHeartbeatRequest;
 
             /// <summary>
             /// An event fired whenever a response to a Heartbeat request was received.
             /// </summary>
-            public event CSMS.OnHeartbeatResponseDelegate?  OnHeartbeatResponse;
+            public event OCPPv2_1.CSMS.OnHeartbeatResponseDelegate?  OnHeartbeatResponse;
 
             #endregion
 
-            #region OnNotifyEvent (-Request/-Response)
+            #region OnNotifyEvent (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a NotifyEvent request was sent from a charging station.
             /// </summary>
-            public event CSMS.OnNotifyEventRequestDelegate?   OnNotifyEventRequest;
+            public event OCPPv2_1.CSMS.OnNotifyEventRequestDelegate?   OnNotifyEventRequest;
 
             /// <summary>
             /// An event fired whenever a response to a NotifyEvent request was received.
             /// </summary>
-            public event CSMS.OnNotifyEventResponseDelegate?  OnNotifyEventResponse;
+            public event OCPPv2_1.CSMS.OnNotifyEventResponseDelegate?  OnNotifyEventResponse;
 
             #endregion
 
-            #region OnSecurityEventNotification (-Request/-Response)
+            #region OnSecurityEventNotification (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a SecurityEventNotification request was sent from a charging station.
             /// </summary>
-            public event CSMS.OnSecurityEventNotificationRequestDelegate?   OnSecurityEventNotificationRequest;
+            public event OCPPv2_1.CSMS.OnSecurityEventNotificationRequestDelegate?   OnSecurityEventNotificationRequest;
 
             /// <summary>
             /// An event fired whenever a response to a SecurityEventNotification request was received.
             /// </summary>
-            public event CSMS.OnSecurityEventNotificationResponseDelegate?  OnSecurityEventNotificationResponse;
+            public event OCPPv2_1.CSMS.OnSecurityEventNotificationResponseDelegate?  OnSecurityEventNotificationResponse;
 
             #endregion
 
-            #region OnNotifyReport (-Request/-Response)
+            #region OnNotifyReport (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a NotifyReport request was sent from a charging station.
             /// </summary>
-            public event CSMS.OnNotifyReportRequestDelegate?   OnNotifyReportRequest;
+            public event OCPPv2_1.CSMS.OnNotifyReportRequestDelegate?   OnNotifyReportRequest;
 
             /// <summary>
             /// An event fired whenever a response to a NotifyReport request was received.
             /// </summary>
-            public event CSMS.OnNotifyReportResponseDelegate?  OnNotifyReportResponse;
+            public event OCPPv2_1.CSMS.OnNotifyReportResponseDelegate?  OnNotifyReportResponse;
 
             #endregion
 
-            #region OnNotifyMonitoringReport (-Request/-Response)
+            #region OnNotifyMonitoringReport (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a NotifyMonitoringReport request was sent from a charging station.
             /// </summary>
-            public event CSMS.OnNotifyMonitoringReportRequestDelegate?   OnNotifyMonitoringReportRequest;
+            public event OCPPv2_1.CSMS.OnNotifyMonitoringReportRequestDelegate?   OnNotifyMonitoringReportRequest;
 
             /// <summary>
             /// An event fired whenever a response to a NotifyMonitoringReport request was received.
             /// </summary>
-            public event CSMS.OnNotifyMonitoringReportResponseDelegate?  OnNotifyMonitoringReportResponse;
+            public event OCPPv2_1.CSMS.OnNotifyMonitoringReportResponseDelegate?  OnNotifyMonitoringReportResponse;
 
             #endregion
 
-            #region OnLogStatusNotification (-Request/-Response)
+            #region OnLogStatusNotification (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a LogStatusNotification request was sent from a charging station.
             /// </summary>
-            public event CSMS.OnLogStatusNotificationRequestDelegate?   OnLogStatusNotificationRequest;
+            public event OCPPv2_1.CSMS.OnLogStatusNotificationRequestDelegate?   OnLogStatusNotificationRequest;
 
             /// <summary>
             /// An event fired whenever a response to a LogStatusNotification request was received.
             /// </summary>
-            public event CSMS.OnLogStatusNotificationResponseDelegate?  OnLogStatusNotificationResponse;
+            public event OCPPv2_1.CSMS.OnLogStatusNotificationResponseDelegate?  OnLogStatusNotificationResponse;
 
             #endregion
 
-            #region OnIncomingDataTransfer (-Request/-Response)
+            #region OnIncomingDataTransfer (Request/-Response)
 
             /// <summary>
             /// An event sent whenever an IncomingDataTransfer request was received.
             /// </summary>
-            public event OCPP.NetworkingNode.CSMS.OnIncomingDataTransferRequestDelegate?   OnIncomingDataTransferRequest;
+            public event OCPPv2_1.CSMS.OnIncomingDataTransferRequestDelegate?   OnIncomingDataTransferRequest;
 
             /// <summary>
             /// An event sent whenever a response to an IncomingDataTransfer request was sent.
             /// </summary>
-            public event OCPP.NetworkingNode.CSMS.OnIncomingDataTransferResponseDelegate?  OnIncomingDataTransferResponse;
+            public event OCPPv2_1.CSMS.OnIncomingDataTransferResponseDelegate?  OnIncomingDataTransferResponse;
 
             #endregion
 
 
-            #region OnSignCertificate (-Request/-Response)
+            #region OnSignCertificate (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a SignCertificate request was sent from a charging station.
             /// </summary>
-            public event CSMS.OnSignCertificateRequestDelegate?   OnSignCertificateRequest;
+            public event OCPPv2_1.CSMS.OnSignCertificateRequestDelegate?   OnSignCertificateRequest;
 
             /// <summary>
             /// An event fired whenever a response to a SignCertificate request was received.
             /// </summary>
-            public event CSMS.OnSignCertificateResponseDelegate?  OnSignCertificateResponse;
+            public event OCPPv2_1.CSMS.OnSignCertificateResponseDelegate?  OnSignCertificateResponse;
 
             #endregion
 
-            #region OnGet15118EVCertificate (-Request/-Response)
+            #region OnGet15118EVCertificate (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a Get15118EVCertificate request was sent from a charging station.
             /// </summary>
-            public event CSMS.OnGet15118EVCertificateRequestDelegate?   OnGet15118EVCertificateRequest;
+            public event OCPPv2_1.CSMS.OnGet15118EVCertificateRequestDelegate?   OnGet15118EVCertificateRequest;
 
             /// <summary>
             /// An event fired whenever a response to a Get15118EVCertificate request was received.
             /// </summary>
-            public event CSMS.OnGet15118EVCertificateResponseDelegate?  OnGet15118EVCertificateResponse;
+            public event OCPPv2_1.CSMS.OnGet15118EVCertificateResponseDelegate?  OnGet15118EVCertificateResponse;
 
             #endregion
 
-            #region OnGetCertificateStatus (-Request/-Response)
+            #region OnGetCertificateStatus (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a GetCertificateStatus request was sent from a charging station.
             /// </summary>
-            public event CSMS.OnGetCertificateStatusRequestDelegate?   OnGetCertificateStatusRequest;
+            public event OCPPv2_1.CSMS.OnGetCertificateStatusRequestDelegate?   OnGetCertificateStatusRequest;
 
             /// <summary>
             /// An event fired whenever a response to a GetCertificateStatus request was received.
             /// </summary>
-            public event CSMS.OnGetCertificateStatusResponseDelegate?  OnGetCertificateStatusResponse;
+            public event OCPPv2_1.CSMS.OnGetCertificateStatusResponseDelegate?  OnGetCertificateStatusResponse;
 
             #endregion
 
-            #region OnGetCRL (-Request/-Response)
+            #region OnGetCRL (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a GetCRL request was sent from a charging station.
             /// </summary>
-            public event CSMS.OnGetCRLRequestDelegate?   OnGetCRLRequest;
+            public event OCPPv2_1.CSMS.OnGetCRLRequestDelegate?   OnGetCRLRequest;
 
             /// <summary>
             /// An event fired whenever a response to a GetCRL request was received.
             /// </summary>
-            public event CSMS.OnGetCRLResponseDelegate?  OnGetCRLResponse;
+            public event OCPPv2_1.CSMS.OnGetCRLResponseDelegate?  OnGetCRLResponse;
 
             #endregion
 
 
-            #region OnReservationStatusUpdate (-Request/-Response)
+            #region OnReservationStatusUpdate (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a ReservationStatusUpdate request was sent from a charging station.
             /// </summary>
-            public event CSMS.OnReservationStatusUpdateRequestDelegate?   OnReservationStatusUpdateRequest;
+            public event OCPPv2_1.CSMS.OnReservationStatusUpdateRequestDelegate?   OnReservationStatusUpdateRequest;
 
             /// <summary>
             /// An event fired whenever a response to a ReservationStatusUpdate request was received.
             /// </summary>
-            public event CSMS.OnReservationStatusUpdateResponseDelegate?  OnReservationStatusUpdateResponse;
+            public event OCPPv2_1.CSMS.OnReservationStatusUpdateResponseDelegate?  OnReservationStatusUpdateResponse;
 
             #endregion
 
-            #region OnAuthorize (-Request/-Response)
+            #region OnAuthorize (Request/-Response)
 
             /// <summary>
             /// An event fired whenever an Authorize request was sent from a charging station.
             /// </summary>
-            public event CSMS.OnAuthorizeRequestDelegate?   OnAuthorizeRequest;
+            public event OCPPv2_1.CSMS.OnAuthorizeRequestDelegate?   OnAuthorizeRequest;
 
             /// <summary>
             /// An event fired whenever a response to an Authorize request was received.
             /// </summary>
-            public event CSMS.OnAuthorizeResponseDelegate?  OnAuthorizeResponse;
+            public event OCPPv2_1.CSMS.OnAuthorizeResponseDelegate?  OnAuthorizeResponse;
 
             #endregion
 
-            #region OnNotifyEVChargingNeeds (-Request/-Response)
+            #region OnNotifyEVChargingNeeds (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a NotifyEVChargingNeeds request was sent from a charging station.
             /// </summary>
-            public event CSMS.OnNotifyEVChargingNeedsRequestDelegate?   OnNotifyEVChargingNeedsRequest;
+            public event OCPPv2_1.CSMS.OnNotifyEVChargingNeedsRequestDelegate?   OnNotifyEVChargingNeedsRequest;
 
             /// <summary>
             /// An event fired whenever a response to a NotifyEVChargingNeeds request was received.
             /// </summary>
-            public event CSMS.OnNotifyEVChargingNeedsResponseDelegate?  OnNotifyEVChargingNeedsResponse;
+            public event OCPPv2_1.CSMS.OnNotifyEVChargingNeedsResponseDelegate?  OnNotifyEVChargingNeedsResponse;
 
             #endregion
 
-            #region OnTransactionEvent (-Request/-Response)
+            #region OnTransactionEvent (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a TransactionEvent was sent from a charging station.
             /// </summary>
-            public event CSMS.OnTransactionEventRequestDelegate?   OnTransactionEventRequest;
+            public event OCPPv2_1.CSMS.OnTransactionEventRequestDelegate?   OnTransactionEventRequest;
 
             /// <summary>
             /// An event fired whenever a response to a TransactionEvent request was received.
             /// </summary>
-            public event CSMS.OnTransactionEventResponseDelegate?  OnTransactionEventResponse;
+            public event OCPPv2_1.CSMS.OnTransactionEventResponseDelegate?  OnTransactionEventResponse;
 
             #endregion
 
-            #region OnStatusNotification (-Request/-Response)
+            #region OnStatusNotification (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a StatusNotification request was sent from a charging station.
             /// </summary>
-            public event CSMS.OnStatusNotificationRequestDelegate?   OnStatusNotificationRequest;
+            public event OCPPv2_1.CSMS.OnStatusNotificationRequestDelegate?   OnStatusNotificationRequest;
 
             /// <summary>
             /// An event fired whenever a response to a StatusNotification request was received.
             /// </summary>
-            public event CSMS.OnStatusNotificationResponseDelegate?  OnStatusNotificationResponse;
+            public event OCPPv2_1.CSMS.OnStatusNotificationResponseDelegate?  OnStatusNotificationResponse;
 
             #endregion
 
-            #region OnMeterValues (-Request/-Response)
+            #region OnMeterValues (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a MeterValues request was sent from a charging station.
             /// </summary>
-            public event CSMS.OnMeterValuesRequestDelegate?   OnMeterValuesRequest;
+            public event OCPPv2_1.CSMS.OnMeterValuesRequestDelegate?   OnMeterValuesRequest;
 
             /// <summary>
             /// An event fired whenever a response to a MeterValues request was received.
             /// </summary>
-            public event CSMS.OnMeterValuesResponseDelegate?  OnMeterValuesResponse;
+            public event OCPPv2_1.CSMS.OnMeterValuesResponseDelegate?  OnMeterValuesResponse;
 
             #endregion
 
-            #region OnNotifyChargingLimit (-Request/-Response)
+            #region OnNotifyChargingLimit (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a NotifyChargingLimit request was sent from a charging station.
             /// </summary>
-            public event CSMS.OnNotifyChargingLimitRequestDelegate?   OnNotifyChargingLimitRequest;
+            public event OCPPv2_1.CSMS.OnNotifyChargingLimitRequestDelegate?   OnNotifyChargingLimitRequest;
 
             /// <summary>
             /// An event fired whenever a response to a NotifyChargingLimit request was received.
             /// </summary>
-            public event CSMS.OnNotifyChargingLimitResponseDelegate?  OnNotifyChargingLimitResponse;
+            public event OCPPv2_1.CSMS.OnNotifyChargingLimitResponseDelegate?  OnNotifyChargingLimitResponse;
 
             #endregion
 
-            #region OnClearedChargingLimit (-Request/-Response)
+            #region OnClearedChargingLimit (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a ClearedChargingLimit request was sent from a charging station.
             /// </summary>
-            public event CSMS.OnClearedChargingLimitRequestDelegate?   OnClearedChargingLimitRequest;
+            public event OCPPv2_1.CSMS.OnClearedChargingLimitRequestDelegate?   OnClearedChargingLimitRequest;
 
             /// <summary>
             /// An event fired whenever a response to a ClearedChargingLimit request was received.
             /// </summary>
-            public event CSMS.OnClearedChargingLimitResponseDelegate?  OnClearedChargingLimitResponse;
+            public event OCPPv2_1.CSMS.OnClearedChargingLimitResponseDelegate?  OnClearedChargingLimitResponse;
 
             #endregion
 
-            #region OnReportChargingProfiles (-Request/-Response)
+            #region OnReportChargingProfiles (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a ReportChargingProfiles request was sent from a charging station.
             /// </summary>
-            public event CSMS.OnReportChargingProfilesRequestDelegate?   OnReportChargingProfilesRequest;
+            public event OCPPv2_1.CSMS.OnReportChargingProfilesRequestDelegate?   OnReportChargingProfilesRequest;
 
             /// <summary>
             /// An event fired whenever a response to a ReportChargingProfiles request was received.
             /// </summary>
-            public event CSMS.OnReportChargingProfilesResponseDelegate?  OnReportChargingProfilesResponse;
+            public event OCPPv2_1.CSMS.OnReportChargingProfilesResponseDelegate?  OnReportChargingProfilesResponse;
 
             #endregion
 
-            #region OnNotifyEVChargingSchedule (-Request/-Response)
+            #region OnNotifyEVChargingSchedule (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a NotifyEVChargingSchedule request was sent from a charging station.
             /// </summary>
-            public event CSMS.OnNotifyEVChargingScheduleRequestDelegate?   OnNotifyEVChargingScheduleRequest;
+            public event OCPPv2_1.CSMS.OnNotifyEVChargingScheduleRequestDelegate?   OnNotifyEVChargingScheduleRequest;
 
             /// <summary>
             /// An event fired whenever a response to a NotifyEVChargingSchedule request was received.
             /// </summary>
-            public event CSMS.OnNotifyEVChargingScheduleResponseDelegate?  OnNotifyEVChargingScheduleResponse;
+            public event OCPPv2_1.CSMS.OnNotifyEVChargingScheduleResponseDelegate?  OnNotifyEVChargingScheduleResponse;
 
             #endregion
 
-            #region OnNotifyPriorityCharging (-Request/-Response)
+            #region OnNotifyPriorityCharging (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a NotifyPriorityCharging request was sent from a charging station.
             /// </summary>
-            public event CSMS.OnNotifyPriorityChargingRequestDelegate?   OnNotifyPriorityChargingRequest;
+            public event OCPPv2_1.CSMS.OnNotifyPriorityChargingRequestDelegate?   OnNotifyPriorityChargingRequest;
 
             /// <summary>
             /// An event fired whenever a response to a NotifyPriorityCharging request was received.
             /// </summary>
-            public event CSMS.OnNotifyPriorityChargingResponseDelegate?  OnNotifyPriorityChargingResponse;
+            public event OCPPv2_1.CSMS.OnNotifyPriorityChargingResponseDelegate?  OnNotifyPriorityChargingResponse;
 
             #endregion
 
-            #region OnPullDynamicScheduleUpdate (-Request/-Response)
+            #region OnPullDynamicScheduleUpdate (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a PullDynamicScheduleUpdate request was sent from a charging station.
             /// </summary>
-            public event CSMS.OnPullDynamicScheduleUpdateRequestDelegate?   OnPullDynamicScheduleUpdateRequest;
+            public event OCPPv2_1.CSMS.OnPullDynamicScheduleUpdateRequestDelegate?   OnPullDynamicScheduleUpdateRequest;
 
             /// <summary>
             /// An event fired whenever a response to a PullDynamicScheduleUpdate request was received.
             /// </summary>
-            public event CSMS.OnPullDynamicScheduleUpdateResponseDelegate?  OnPullDynamicScheduleUpdateResponse;
+            public event OCPPv2_1.CSMS.OnPullDynamicScheduleUpdateResponseDelegate?  OnPullDynamicScheduleUpdateResponse;
 
             #endregion
 
 
-            #region OnNotifyDisplayMessages (-Request/-Response)
+            #region OnNotifyDisplayMessages (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a NotifyDisplayMessages request was sent from a charging station.
             /// </summary>
-            public event CSMS.OnNotifyDisplayMessagesRequestDelegate?   OnNotifyDisplayMessagesRequest;
+            public event OCPPv2_1.CSMS.OnNotifyDisplayMessagesRequestDelegate?   OnNotifyDisplayMessagesRequest;
 
             /// <summary>
             /// An event fired whenever a response to a NotifyDisplayMessages request was received.
             /// </summary>
-            public event CSMS.OnNotifyDisplayMessagesResponseDelegate?  OnNotifyDisplayMessagesResponse;
+            public event OCPPv2_1.CSMS.OnNotifyDisplayMessagesResponseDelegate?  OnNotifyDisplayMessagesResponse;
 
             #endregion
 
-            #region OnNotifyCustomerInformation (-Request/-Response)
+            #region OnNotifyCustomerInformation (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a NotifyCustomerInformation request was sent from a charging station.
             /// </summary>
-            public event CSMS.OnNotifyCustomerInformationRequestDelegate?   OnNotifyCustomerInformationRequest;
+            public event OCPPv2_1.CSMS.OnNotifyCustomerInformationRequestDelegate?   OnNotifyCustomerInformationRequest;
 
             /// <summary>
             /// An event fired whenever a response to a NotifyCustomerInformation request was received.
             /// </summary>
-            public event CSMS.OnNotifyCustomerInformationResponseDelegate?  OnNotifyCustomerInformationResponse;
+            public event OCPPv2_1.CSMS.OnNotifyCustomerInformationResponseDelegate?  OnNotifyCustomerInformationResponse;
 
             #endregion
 
 
             // Binary Data Streams Extensions
 
-            #region OnIncomingBinaryDataTransfer (-Request/-Response)
+            #region OnIncomingBinaryDataTransfer (Request/-Response)
 
             /// <summary>
             /// An event sent whenever an IncomingBinaryDataTransfer request was received.
             /// </summary>
-            public event OCPP.NetworkingNode.CSMS.OnIncomingBinaryDataTransferRequestDelegate?   OnIncomingBinaryDataTransferRequest;
+            public event OCPP.CSMS.OnIncomingBinaryDataTransferRequestDelegate?   OnIncomingBinaryDataTransferRequest;
 
             /// <summary>
             /// An event sent whenever a response to an IncomingBinaryDataTransfer request was sent.
             /// </summary>
-            public event OCPP.NetworkingNode.CSMS.OnIncomingBinaryDataTransferResponseDelegate?  OnIncomingBinaryDataTransferResponse;
+            public event OCPP.CSMS.OnIncomingBinaryDataTransferResponseDelegate?  OnIncomingBinaryDataTransferResponse;
 
             #endregion
 
@@ -15968,829 +16084,829 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region NetworkingNode -> Charging Station
 
-            #region OnReset                       (-Request/-Response)
+            #region OnReset                       (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a Reset request will be sent to the charging station.
             /// </summary>
-            public event CSMS.OnResetRequestDelegate?   OnResetRequest;
+            public event OCPPv2_1.CSMS.OnResetRequestDelegate?   OnResetRequest;
 
             /// <summary>
             /// An event fired whenever a response to a Reset request was received.
             /// </summary>
-            public event CSMS.OnResetResponseDelegate?  OnResetResponse;
+            public event OCPPv2_1.CSMS.OnResetResponseDelegate?  OnResetResponse;
 
             #endregion
 
-            #region OnUpdateFirmware              (-Request/-Response)
+            #region OnUpdateFirmware              (Request/-Response)
 
             /// <summary>
             /// An event fired whenever an UpdateFirmware request will be sent to the charging station.
             /// </summary>
-            public event CSMS.OnUpdateFirmwareRequestDelegate?   OnUpdateFirmwareRequest;
+            public event OCPPv2_1.CSMS.OnUpdateFirmwareRequestDelegate?   OnUpdateFirmwareRequest;
 
             /// <summary>
             /// An event fired whenever a response to an UpdateFirmware request was received.
             /// </summary>
-            public event CSMS.OnUpdateFirmwareResponseDelegate?  OnUpdateFirmwareResponse;
+            public event OCPPv2_1.CSMS.OnUpdateFirmwareResponseDelegate?  OnUpdateFirmwareResponse;
 
             #endregion
 
-            #region OnPublishFirmware             (-Request/-Response)
+            #region OnPublishFirmware             (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a PublishFirmware request will be sent to the charging station.
             /// </summary>
-            public event CSMS.OnPublishFirmwareRequestDelegate?   OnPublishFirmwareRequest;
+            public event OCPPv2_1.CSMS.OnPublishFirmwareRequestDelegate?   OnPublishFirmwareRequest;
 
             /// <summary>
             /// An event fired whenever a response to a PublishFirmware request was received.
             /// </summary>
-            public event CSMS.OnPublishFirmwareResponseDelegate?  OnPublishFirmwareResponse;
+            public event OCPPv2_1.CSMS.OnPublishFirmwareResponseDelegate?  OnPublishFirmwareResponse;
 
             #endregion
 
-            #region OnUnpublishFirmware           (-Request/-Response)
+            #region OnUnpublishFirmware           (Request/-Response)
 
             /// <summary>
             /// An event fired whenever an UnpublishFirmware request will be sent to the charging station.
             /// </summary>
-            public event CSMS.OnUnpublishFirmwareRequestDelegate?   OnUnpublishFirmwareRequest;
+            public event OCPPv2_1.CSMS.OnUnpublishFirmwareRequestDelegate?   OnUnpublishFirmwareRequest;
 
             /// <summary>
             /// An event fired whenever a response to an UnpublishFirmware request was received.
             /// </summary>
-            public event CSMS.OnUnpublishFirmwareResponseDelegate?  OnUnpublishFirmwareResponse;
+            public event OCPPv2_1.CSMS.OnUnpublishFirmwareResponseDelegate?  OnUnpublishFirmwareResponse;
 
             #endregion
 
-            #region OnGetBaseReport               (-Request/-Response)
+            #region OnGetBaseReport               (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a GetBaseReport request will be sent to the charging station.
             /// </summary>
-            public event CSMS.OnGetBaseReportRequestDelegate?   OnGetBaseReportRequest;
+            public event OCPPv2_1.CSMS.OnGetBaseReportRequestDelegate?   OnGetBaseReportRequest;
 
             /// <summary>
             /// An event fired whenever a response to a GetBaseReport request was received.
             /// </summary>
-            public event CSMS.OnGetBaseReportResponseDelegate?  OnGetBaseReportResponse;
+            public event OCPPv2_1.CSMS.OnGetBaseReportResponseDelegate?  OnGetBaseReportResponse;
 
             #endregion
 
-            #region OnGetReport                   (-Request/-Response)
+            #region OnGetReport                   (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a GetReport request will be sent to the charging station.
             /// </summary>
-            public event CSMS.OnGetReportRequestDelegate?   OnGetReportRequest;
+            public event OCPPv2_1.CSMS.OnGetReportRequestDelegate?   OnGetReportRequest;
 
             /// <summary>
             /// An event fired whenever a response to a GetReport request was received.
             /// </summary>
-            public event CSMS.OnGetReportResponseDelegate?  OnGetReportResponse;
+            public event OCPPv2_1.CSMS.OnGetReportResponseDelegate?  OnGetReportResponse;
 
             #endregion
 
-            #region OnGetLog                      (-Request/-Response)
+            #region OnGetLog                      (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a GetLog request will be sent to the charging station.
             /// </summary>
-            public event CSMS.OnGetLogRequestDelegate?   OnGetLogRequest;
+            public event OCPPv2_1.CSMS.OnGetLogRequestDelegate?   OnGetLogRequest;
 
             /// <summary>
             /// An event fired whenever a response to a GetLog request was received.
             /// </summary>
-            public event CSMS.OnGetLogResponseDelegate?  OnGetLogResponse;
+            public event OCPPv2_1.CSMS.OnGetLogResponseDelegate?  OnGetLogResponse;
 
             #endregion
 
-            #region OnSetVariables                (-Request/-Response)
+            #region OnSetVariables                (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a SetVariables request will be sent to the charging station.
             /// </summary>
-            public event CSMS.OnSetVariablesRequestDelegate?   OnSetVariablesRequest;
+            public event OCPPv2_1.CSMS.OnSetVariablesRequestDelegate?   OnSetVariablesRequest;
 
             /// <summary>
             /// An event fired whenever a response to a SetVariables request was received.
             /// </summary>
-            public event CSMS.OnSetVariablesResponseDelegate?  OnSetVariablesResponse;
+            public event OCPPv2_1.CSMS.OnSetVariablesResponseDelegate?  OnSetVariablesResponse;
 
             #endregion
 
-            #region OnGetVariables                (-Request/-Response)
+            #region OnGetVariables                (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a GetVariables request will be sent to the charging station.
             /// </summary>
-            public event CSMS.OnGetVariablesRequestDelegate?   OnGetVariablesRequest;
+            public event OCPPv2_1.CSMS.OnGetVariablesRequestDelegate?   OnGetVariablesRequest;
 
             /// <summary>
             /// An event fired whenever a response to a GetVariables request was received.
             /// </summary>
-            public event CSMS.OnGetVariablesResponseDelegate?  OnGetVariablesResponse;
+            public event OCPPv2_1.CSMS.OnGetVariablesResponseDelegate?  OnGetVariablesResponse;
 
             #endregion
 
-            #region OnSetMonitoringBase           (-Request/-Response)
+            #region OnSetMonitoringBase           (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a SetMonitoringBase request will be sent to the charging station.
             /// </summary>
-            public event CSMS.OnSetMonitoringBaseRequestDelegate?   OnSetMonitoringBaseRequest;
+            public event OCPPv2_1.CSMS.OnSetMonitoringBaseRequestDelegate?   OnSetMonitoringBaseRequest;
 
             /// <summary>
             /// An event fired whenever a response to a SetMonitoringBase request was received.
             /// </summary>
-            public event CSMS.OnSetMonitoringBaseResponseDelegate?  OnSetMonitoringBaseResponse;
+            public event OCPPv2_1.CSMS.OnSetMonitoringBaseResponseDelegate?  OnSetMonitoringBaseResponse;
 
             #endregion
 
-            #region OnGetMonitoringReport         (-Request/-Response)
+            #region OnGetMonitoringReport         (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a GetMonitoringReport request will be sent to the charging station.
             /// </summary>
-            public event CSMS.OnGetMonitoringReportRequestDelegate?   OnGetMonitoringReportRequest;
+            public event OCPPv2_1.CSMS.OnGetMonitoringReportRequestDelegate?   OnGetMonitoringReportRequest;
 
             /// <summary>
             /// An event fired whenever a response to a GetMonitoringReport request was received.
             /// </summary>
-            public event CSMS.OnGetMonitoringReportResponseDelegate?  OnGetMonitoringReportResponse;
+            public event OCPPv2_1.CSMS.OnGetMonitoringReportResponseDelegate?  OnGetMonitoringReportResponse;
 
             #endregion
 
-            #region OnSetMonitoringLevel          (-Request/-Response)
+            #region OnSetMonitoringLevel          (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a SetMonitoringLevel request will be sent to the charging station.
             /// </summary>
-            public event CSMS.OnSetMonitoringLevelRequestDelegate?   OnSetMonitoringLevelRequest;
+            public event OCPPv2_1.CSMS.OnSetMonitoringLevelRequestDelegate?   OnSetMonitoringLevelRequest;
 
             /// <summary>
             /// An event fired whenever a response to a SetMonitoringLevel request was received.
             /// </summary>
-            public event CSMS.OnSetMonitoringLevelResponseDelegate?  OnSetMonitoringLevelResponse;
+            public event OCPPv2_1.CSMS.OnSetMonitoringLevelResponseDelegate?  OnSetMonitoringLevelResponse;
 
             #endregion
 
-            #region SetVariableMonitoring         (-Request/-Response)
+            #region SetVariableMonitoring         (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a SetVariableMonitoring request will be sent to the charging station.
             /// </summary>
-            public event CSMS.OnSetVariableMonitoringRequestDelegate?   OnSetVariableMonitoringRequest;
+            public event OCPPv2_1.CSMS.OnSetVariableMonitoringRequestDelegate?   OnSetVariableMonitoringRequest;
 
             /// <summary>
             /// An event fired whenever a response to a SetVariableMonitoring request was received.
             /// </summary>
-            public event CSMS.OnSetVariableMonitoringResponseDelegate?  OnSetVariableMonitoringResponse;
+            public event OCPPv2_1.CSMS.OnSetVariableMonitoringResponseDelegate?  OnSetVariableMonitoringResponse;
 
             #endregion
 
-            #region OnClearVariableMonitoring     (-Request/-Response)
+            #region OnClearVariableMonitoring     (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a ClearVariableMonitoring request will be sent to the charging station.
             /// </summary>
-            public event CSMS.OnClearVariableMonitoringRequestDelegate?   OnClearVariableMonitoringRequest;
+            public event OCPPv2_1.CSMS.OnClearVariableMonitoringRequestDelegate?   OnClearVariableMonitoringRequest;
 
             /// <summary>
             /// An event fired whenever a response to a ClearVariableMonitoring request was received.
             /// </summary>
-            public event CSMS.OnClearVariableMonitoringResponseDelegate?  OnClearVariableMonitoringResponse;
+            public event OCPPv2_1.CSMS.OnClearVariableMonitoringResponseDelegate?  OnClearVariableMonitoringResponse;
 
             #endregion
 
-            #region OnSetNetworkProfile           (-Request/-Response)
+            #region OnSetNetworkProfile           (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a SetNetworkProfile request will be sent to the charging station.
             /// </summary>
-            public event CSMS.OnSetNetworkProfileRequestDelegate?   OnSetNetworkProfileRequest;
+            public event OCPPv2_1.CSMS.OnSetNetworkProfileRequestDelegate?   OnSetNetworkProfileRequest;
 
             /// <summary>
             /// An event fired whenever a response to a SetNetworkProfile request was received.
             /// </summary>
-            public event CSMS.OnSetNetworkProfileResponseDelegate?  OnSetNetworkProfileResponse;
+            public event OCPPv2_1.CSMS.OnSetNetworkProfileResponseDelegate?  OnSetNetworkProfileResponse;
 
             #endregion
 
-            #region OnChangeAvailability          (-Request/-Response)
+            #region OnChangeAvailability          (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a ChangeAvailability request will be sent to the charging station.
             /// </summary>
-            public event CSMS.OnChangeAvailabilityRequestDelegate?   OnChangeAvailabilityRequest;
+            public event OCPPv2_1.CSMS.OnChangeAvailabilityRequestDelegate?   OnChangeAvailabilityRequest;
 
             /// <summary>
             /// An event fired whenever a response to a ChangeAvailability request was received.
             /// </summary>
-            public event CSMS.OnChangeAvailabilityResponseDelegate?  OnChangeAvailabilityResponse;
+            public event OCPPv2_1.CSMS.OnChangeAvailabilityResponseDelegate?  OnChangeAvailabilityResponse;
 
             #endregion
 
-            #region OnTriggerMessage              (-Request/-Response)
+            #region OnTriggerMessage              (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a TriggerMessage request will be sent to the charging station.
             /// </summary>
-            public event CSMS.OnTriggerMessageRequestDelegate?   OnTriggerMessageRequest;
+            public event OCPPv2_1.CSMS.OnTriggerMessageRequestDelegate?   OnTriggerMessageRequest;
 
             /// <summary>
             /// An event fired whenever a response to a TriggerMessage request was received.
             /// </summary>
-            public event CSMS.OnTriggerMessageResponseDelegate?  OnTriggerMessageResponse;
+            public event OCPPv2_1.CSMS.OnTriggerMessageResponseDelegate?  OnTriggerMessageResponse;
 
             #endregion
 
-            #region OnDataTransfer                (-Request/-Response)
+            #region OnDataTransfer                (Request/-Response)
 
             /// <summary>
             /// An event sent whenever a DataTransfer request will be sent to the charging station.
             /// </summary>
-            public event OCPP.NetworkingNode.CSMS.OnDataTransferRequestDelegate?   OnDataTransferRequest;
+            public event OCPPv2_1.CSMS.OnDataTransferRequestDelegate?   OnDataTransferRequest;
 
             /// <summary>
             /// An event sent whenever a response to a DataTransfer request was received.
             /// </summary>
-            public event OCPP.NetworkingNode.CSMS.OnDataTransferResponseDelegate?  OnDataTransferResponse;
+            public event OCPPv2_1.CSMS.OnDataTransferResponseDelegate?  OnDataTransferResponse;
 
             #endregion
 
 
-            #region OnCertificateSigned           (-Request/-Response)
+            #region OnCertificateSigned           (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a SignedCertificate request will be sent to the charging station.
             /// </summary>
-            public event CSMS.OnCertificateSignedRequestDelegate?   OnCertificateSignedRequest;
+            public event OCPPv2_1.CSMS.OnCertificateSignedRequestDelegate?   OnCertificateSignedRequest;
 
             /// <summary>
             /// An event fired whenever a response to a SignedCertificate request was received.
             /// </summary>
-            public event CSMS.OnCertificateSignedResponseDelegate?  OnCertificateSignedResponse;
+            public event OCPPv2_1.CSMS.OnCertificateSignedResponseDelegate?  OnCertificateSignedResponse;
 
             #endregion
 
-            #region OnInstallCertificate          (-Request/-Response)
+            #region OnInstallCertificate          (Request/-Response)
 
             /// <summary>
             /// An event fired whenever an InstallCertificate request will be sent to the charging station.
             /// </summary>
-            public event CSMS.OnInstallCertificateRequestDelegate?   OnInstallCertificateRequest;
+            public event OCPPv2_1.CSMS.OnInstallCertificateRequestDelegate?   OnInstallCertificateRequest;
 
             /// <summary>
             /// An event fired whenever a response to an InstallCertificate request was received.
             /// </summary>
-            public event CSMS.OnInstallCertificateResponseDelegate?  OnInstallCertificateResponse;
+            public event OCPPv2_1.CSMS.OnInstallCertificateResponseDelegate?  OnInstallCertificateResponse;
 
             #endregion
 
-            #region OnGetInstalledCertificateIds  (-Request/-Response)
+            #region OnGetInstalledCertificateIds  (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a GetInstalledCertificateIds request will be sent to the charging station.
             /// </summary>
-            public event CSMS.OnGetInstalledCertificateIdsRequestDelegate?   OnGetInstalledCertificateIdsRequest;
+            public event OCPPv2_1.CSMS.OnGetInstalledCertificateIdsRequestDelegate?   OnGetInstalledCertificateIdsRequest;
 
             /// <summary>
             /// An event fired whenever a response to a GetInstalledCertificateIds request was received.
             /// </summary>
-            public event CSMS.OnGetInstalledCertificateIdsResponseDelegate?  OnGetInstalledCertificateIdsResponse;
+            public event OCPPv2_1.CSMS.OnGetInstalledCertificateIdsResponseDelegate?  OnGetInstalledCertificateIdsResponse;
 
             #endregion
 
-            #region OnDeleteCertificate           (-Request/-Response)
+            #region OnDeleteCertificate           (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a DeleteCertificate request will be sent to the charging station.
             /// </summary>
-            public event CSMS.OnDeleteCertificateRequestDelegate?   OnDeleteCertificateRequest;
+            public event OCPPv2_1.CSMS.OnDeleteCertificateRequestDelegate?   OnDeleteCertificateRequest;
 
             /// <summary>
             /// An event fired whenever a response to a DeleteCertificate request was received.
             /// </summary>
-            public event CSMS.OnDeleteCertificateResponseDelegate?  OnDeleteCertificateResponse;
+            public event OCPPv2_1.CSMS.OnDeleteCertificateResponseDelegate?  OnDeleteCertificateResponse;
 
             #endregion
 
-            #region OnNotifyCRL                   (-Request/-Response)
+            #region OnNotifyCRL                   (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a NotifyCRL request will be sent to the charging station.
             /// </summary>
-            public event CSMS.OnNotifyCRLRequestDelegate?   OnNotifyCRLRequest;
+            public event OCPPv2_1.CSMS.OnNotifyCRLRequestDelegate?   OnNotifyCRLRequest;
 
             /// <summary>
             /// An event fired whenever a response to a NotifyCRL request was received.
             /// </summary>
-            public event CSMS.OnNotifyCRLResponseDelegate?  OnNotifyCRLResponse;
+            public event OCPPv2_1.CSMS.OnNotifyCRLResponseDelegate?  OnNotifyCRLResponse;
 
             #endregion
 
 
-            #region OnGetLocalListVersion         (-Request/-Response)
+            #region OnGetLocalListVersion         (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a GetLocalListVersion request will be sent to the charging station.
             /// </summary>
-            public event CSMS.OnGetLocalListVersionRequestDelegate?   OnGetLocalListVersionRequest;
+            public event OCPPv2_1.CSMS.OnGetLocalListVersionRequestDelegate?   OnGetLocalListVersionRequest;
 
             /// <summary>
             /// An event fired whenever a response to a GetLocalListVersion request was received.
             /// </summary>
-            public event CSMS.OnGetLocalListVersionResponseDelegate?  OnGetLocalListVersionResponse;
+            public event OCPPv2_1.CSMS.OnGetLocalListVersionResponseDelegate?  OnGetLocalListVersionResponse;
 
             #endregion
 
-            #region OnSendLocalList               (-Request/-Response)
+            #region OnSendLocalList               (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a SendLocalList request will be sent to the charging station.
             /// </summary>
-            public event CSMS.OnSendLocalListRequestDelegate?   OnSendLocalListRequest;
+            public event OCPPv2_1.CSMS.OnSendLocalListRequestDelegate?   OnSendLocalListRequest;
 
             /// <summary>
             /// An event fired whenever a response to a SendLocalList request was received.
             /// </summary>
-            public event CSMS.OnSendLocalListResponseDelegate?  OnSendLocalListResponse;
+            public event OCPPv2_1.CSMS.OnSendLocalListResponseDelegate?  OnSendLocalListResponse;
 
             #endregion
 
-            #region OnClearCache                  (-Request/-Response)
+            #region OnClearCache                  (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a ClearCache request will be sent to the charging station.
             /// </summary>
-            public event CSMS.OnClearCacheRequestDelegate?   OnClearCacheRequest;
+            public event OCPPv2_1.CSMS.OnClearCacheRequestDelegate?   OnClearCacheRequest;
 
             /// <summary>
             /// An event fired whenever a response to a ClearCache request was received.
             /// </summary>
-            public event CSMS.OnClearCacheResponseDelegate?  OnClearCacheResponse;
+            public event OCPPv2_1.CSMS.OnClearCacheResponseDelegate?  OnClearCacheResponse;
 
             #endregion
 
 
-            #region OnReserveNow                  (-Request/-Response)
+            #region OnReserveNow                  (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a ReserveNow request will be sent to the charging station.
             /// </summary>
-            public event CSMS.OnReserveNowRequestDelegate?   OnReserveNowRequest;
+            public event OCPPv2_1.CSMS.OnReserveNowRequestDelegate?   OnReserveNowRequest;
 
             /// <summary>
             /// An event fired whenever a response to a ReserveNow request was received.
             /// </summary>
-            public event CSMS.OnReserveNowResponseDelegate?  OnReserveNowResponse;
+            public event OCPPv2_1.CSMS.OnReserveNowResponseDelegate?  OnReserveNowResponse;
 
             #endregion
 
-            #region OnCancelReservation           (-Request/-Response)
+            #region OnCancelReservation           (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a CancelReservation request will be sent to the charging station.
             /// </summary>
-            public event CSMS.OnCancelReservationRequestDelegate?   OnCancelReservationRequest;
+            public event OCPPv2_1.CSMS.OnCancelReservationRequestDelegate?   OnCancelReservationRequest;
 
             /// <summary>
             /// An event fired whenever a response to a CancelReservation request was received.
             /// </summary>
-            public event CSMS.OnCancelReservationResponseDelegate?  OnCancelReservationResponse;
+            public event OCPPv2_1.CSMS.OnCancelReservationResponseDelegate?  OnCancelReservationResponse;
 
             #endregion
 
-            #region OnRequestStartTransaction     (-Request/-Response)
+            #region OnRequestStartTransaction     (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a RequestStartTransaction request will be sent to the charging station.
             /// </summary>
-            public event CSMS.OnRequestStartTransactionRequestDelegate?   OnRequestStartTransactionRequest;
+            public event OCPPv2_1.CSMS.OnRequestStartTransactionRequestDelegate?   OnRequestStartTransactionRequest;
 
             /// <summary>
             /// An event fired whenever a response to a RequestStartTransaction request was received.
             /// </summary>
-            public event CSMS.OnRequestStartTransactionResponseDelegate?  OnRequestStartTransactionResponse;
+            public event OCPPv2_1.CSMS.OnRequestStartTransactionResponseDelegate?  OnRequestStartTransactionResponse;
 
             #endregion
 
-            #region OnRequestStopTransaction      (-Request/-Response)
+            #region OnRequestStopTransaction      (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a RequestStopTransaction request will be sent to the charging station.
             /// </summary>
-            public event CSMS.OnRequestStopTransactionRequestDelegate?   OnRequestStopTransactionRequest;
+            public event OCPPv2_1.CSMS.OnRequestStopTransactionRequestDelegate?   OnRequestStopTransactionRequest;
 
             /// <summary>
             /// An event fired whenever a response to a RequestStopTransaction request was received.
             /// </summary>
-            public event CSMS.OnRequestStopTransactionResponseDelegate?  OnRequestStopTransactionResponse;
+            public event OCPPv2_1.CSMS.OnRequestStopTransactionResponseDelegate?  OnRequestStopTransactionResponse;
 
             #endregion
 
-            #region OnGetTransactionStatus        (-Request/-Response)
+            #region OnGetTransactionStatus        (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a GetTransactionStatus request will be sent to the charging station.
             /// </summary>
-            public event CSMS.OnGetTransactionStatusRequestDelegate?   OnGetTransactionStatusRequest;
+            public event OCPPv2_1.CSMS.OnGetTransactionStatusRequestDelegate?   OnGetTransactionStatusRequest;
 
             /// <summary>
             /// An event fired whenever a response to a GetTransactionStatus request was received.
             /// </summary>
-            public event CSMS.OnGetTransactionStatusResponseDelegate?  OnGetTransactionStatusResponse;
+            public event OCPPv2_1.CSMS.OnGetTransactionStatusResponseDelegate?  OnGetTransactionStatusResponse;
 
             #endregion
 
-            #region OnSetChargingProfile          (-Request/-Response)
+            #region OnSetChargingProfile          (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a SetChargingProfile request will be sent to the charging station.
             /// </summary>
-            public event CSMS.OnSetChargingProfileRequestDelegate?   OnSetChargingProfileRequest;
+            public event OCPPv2_1.CSMS.OnSetChargingProfileRequestDelegate?   OnSetChargingProfileRequest;
 
             /// <summary>
             /// An event fired whenever a response to a SetChargingProfile request was received.
             /// </summary>
-            public event CSMS.OnSetChargingProfileResponseDelegate?  OnSetChargingProfileResponse;
+            public event OCPPv2_1.CSMS.OnSetChargingProfileResponseDelegate?  OnSetChargingProfileResponse;
 
             #endregion
 
-            #region OnGetChargingProfiles         (-Request/-Response)
+            #region OnGetChargingProfiles         (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a GetChargingProfiles request will be sent to the charging station.
             /// </summary>
-            public event CSMS.OnGetChargingProfilesRequestDelegate?   OnGetChargingProfilesRequest;
+            public event OCPPv2_1.CSMS.OnGetChargingProfilesRequestDelegate?   OnGetChargingProfilesRequest;
 
             /// <summary>
             /// An event fired whenever a response to a GetChargingProfiles request was received.
             /// </summary>
-            public event CSMS.OnGetChargingProfilesResponseDelegate?  OnGetChargingProfilesResponse;
+            public event OCPPv2_1.CSMS.OnGetChargingProfilesResponseDelegate?  OnGetChargingProfilesResponse;
 
             #endregion
 
-            #region OnClearChargingProfile        (-Request/-Response)
+            #region OnClearChargingProfile        (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a ClearChargingProfile request will be sent to the charging station.
             /// </summary>
-            public event CSMS.OnClearChargingProfileRequestDelegate?   OnClearChargingProfileRequest;
+            public event OCPPv2_1.CSMS.OnClearChargingProfileRequestDelegate?   OnClearChargingProfileRequest;
 
             /// <summary>
             /// An event fired whenever a response to a ClearChargingProfile request was received.
             /// </summary>
-            public event CSMS.OnClearChargingProfileResponseDelegate?  OnClearChargingProfileResponse;
+            public event OCPPv2_1.CSMS.OnClearChargingProfileResponseDelegate?  OnClearChargingProfileResponse;
 
             #endregion
 
-            #region OnGetCompositeSchedule        (-Request/-Response)
+            #region OnGetCompositeSchedule        (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a GetCompositeSchedule request will be sent to the charging station.
             /// </summary>
-            public event CSMS.OnGetCompositeScheduleRequestDelegate?   OnGetCompositeScheduleRequest;
+            public event OCPPv2_1.CSMS.OnGetCompositeScheduleRequestDelegate?   OnGetCompositeScheduleRequest;
 
             /// <summary>
             /// An event fired whenever a response to a GetCompositeSchedule request was received.
             /// </summary>
-            public event CSMS.OnGetCompositeScheduleResponseDelegate?  OnGetCompositeScheduleResponse;
+            public event OCPPv2_1.CSMS.OnGetCompositeScheduleResponseDelegate?  OnGetCompositeScheduleResponse;
 
             #endregion
 
-            #region OnUpdateDynamicSchedule       (-Request/-Response)
+            #region OnUpdateDynamicSchedule       (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a UpdateDynamicSchedule request will be sent to the charging station.
             /// </summary>
-            public event CSMS.OnUpdateDynamicScheduleRequestDelegate?   OnUpdateDynamicScheduleRequest;
+            public event OCPPv2_1.CSMS.OnUpdateDynamicScheduleRequestDelegate?   OnUpdateDynamicScheduleRequest;
 
             /// <summary>
             /// An event fired whenever a response to a UpdateDynamicSchedule request was received.
             /// </summary>
-            public event CSMS.OnUpdateDynamicScheduleResponseDelegate?  OnUpdateDynamicScheduleResponse;
+            public event OCPPv2_1.CSMS.OnUpdateDynamicScheduleResponseDelegate?  OnUpdateDynamicScheduleResponse;
 
             #endregion
 
-            #region OnNotifyAllowedEnergyTransfer (-Request/-Response)
+            #region OnNotifyAllowedEnergyTransfer (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a NotifyAllowedEnergyTransfer request will be sent to the charging station.
             /// </summary>
-            public event CSMS.OnNotifyAllowedEnergyTransferRequestDelegate?   OnNotifyAllowedEnergyTransferRequest;
+            public event OCPPv2_1.CSMS.OnNotifyAllowedEnergyTransferRequestDelegate?   OnNotifyAllowedEnergyTransferRequest;
 
             /// <summary>
             /// An event fired whenever a response to a NotifyAllowedEnergyTransfer request was received.
             /// </summary>
-            public event CSMS.OnNotifyAllowedEnergyTransferResponseDelegate?  OnNotifyAllowedEnergyTransferResponse;
+            public event OCPPv2_1.CSMS.OnNotifyAllowedEnergyTransferResponseDelegate?  OnNotifyAllowedEnergyTransferResponse;
 
             #endregion
 
-            #region OnUsePriorityCharging         (-Request/-Response)
+            #region OnUsePriorityCharging         (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a UsePriorityCharging request will be sent to the charging station.
             /// </summary>
-            public event CSMS.OnUsePriorityChargingRequestDelegate?   OnUsePriorityChargingRequest;
+            public event OCPPv2_1.CSMS.OnUsePriorityChargingRequestDelegate?   OnUsePriorityChargingRequest;
 
             /// <summary>
             /// An event fired whenever a response to a UsePriorityCharging request was received.
             /// </summary>
-            public event CSMS.OnUsePriorityChargingResponseDelegate?  OnUsePriorityChargingResponse;
+            public event OCPPv2_1.CSMS.OnUsePriorityChargingResponseDelegate?  OnUsePriorityChargingResponse;
 
             #endregion
 
-            #region OnUnlockConnector             (-Request/-Response)
+            #region OnUnlockConnector             (Request/-Response)
 
             /// <summary>
             /// An event fired whenever an UnlockConnector request will be sent to the charging station.
             /// </summary>
-            public event CSMS.OnUnlockConnectorRequestDelegate?   OnUnlockConnectorRequest;
+            public event OCPPv2_1.CSMS.OnUnlockConnectorRequestDelegate?   OnUnlockConnectorRequest;
 
             /// <summary>
             /// An event fired whenever a response to an UnlockConnector request was received.
             /// </summary>
-            public event CSMS.OnUnlockConnectorResponseDelegate?  OnUnlockConnectorResponse;
+            public event OCPPv2_1.CSMS.OnUnlockConnectorResponseDelegate?  OnUnlockConnectorResponse;
 
             #endregion
 
 
-            #region OnAFRRSignal                  (-Request/-Response)
+            #region OnAFRRSignal                  (Request/-Response)
 
             /// <summary>
             /// An event fired whenever an AFRRSignal request will be sent to the charging station.
             /// </summary>
-            public event CSMS.OnAFRRSignalRequestDelegate?   OnAFRRSignalRequest;
+            public event OCPPv2_1.CSMS.OnAFRRSignalRequestDelegate?   OnAFRRSignalRequest;
 
             /// <summary>
             /// An event fired whenever a response to an AFRRSignal request was received.
             /// </summary>
-            public event CSMS.OnAFRRSignalResponseDelegate?  OnAFRRSignalResponse;
+            public event OCPPv2_1.CSMS.OnAFRRSignalResponseDelegate?  OnAFRRSignalResponse;
 
             #endregion
 
 
-            #region SetDisplayMessage/-Response   (-Request/-Response)
+            #region SetDisplayMessage/-Response   (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a SetDisplayMessage request will be sent to the charging station.
             /// </summary>
-            public event CSMS.OnSetDisplayMessageRequestDelegate?   OnSetDisplayMessageRequest;
+            public event OCPPv2_1.CSMS.OnSetDisplayMessageRequestDelegate?   OnSetDisplayMessageRequest;
 
             /// <summary>
             /// An event fired whenever a response to a SetDisplayMessage request was received.
             /// </summary>
-            public event CSMS.OnSetDisplayMessageResponseDelegate?  OnSetDisplayMessageResponse;
+            public event OCPPv2_1.CSMS.OnSetDisplayMessageResponseDelegate?  OnSetDisplayMessageResponse;
 
             #endregion
 
-            #region OnGetDisplayMessages          (-Request/-Response)
+            #region OnGetDisplayMessages          (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a GetDisplayMessages request will be sent to the charging station.
             /// </summary>
-            public event CSMS.OnGetDisplayMessagesRequestDelegate?   OnGetDisplayMessagesRequest;
+            public event OCPPv2_1.CSMS.OnGetDisplayMessagesRequestDelegate?   OnGetDisplayMessagesRequest;
 
             /// <summary>
             /// An event fired whenever a response to a GetDisplayMessages request was received.
             /// </summary>
-            public event CSMS.OnGetDisplayMessagesResponseDelegate?  OnGetDisplayMessagesResponse;
+            public event OCPPv2_1.CSMS.OnGetDisplayMessagesResponseDelegate?  OnGetDisplayMessagesResponse;
 
             #endregion
 
-            #region OnClearDisplayMessage         (-Request/-Response)
+            #region OnClearDisplayMessage         (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a ClearDisplayMessage request will be sent to the charging station.
             /// </summary>
-            public event CSMS.OnClearDisplayMessageRequestDelegate?   OnClearDisplayMessageRequest;
+            public event OCPPv2_1.CSMS.OnClearDisplayMessageRequestDelegate?   OnClearDisplayMessageRequest;
 
             /// <summary>
             /// An event fired whenever a response to a ClearDisplayMessage request was received.
             /// </summary>
-            public event CSMS.OnClearDisplayMessageResponseDelegate?  OnClearDisplayMessageResponse;
+            public event OCPPv2_1.CSMS.OnClearDisplayMessageResponseDelegate?  OnClearDisplayMessageResponse;
 
             #endregion
 
-            #region OnCostUpdated                 (-Request/-Response)
+            #region OnCostUpdated                 (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a CostUpdated request will be sent to the charging station.
             /// </summary>
-            public event CSMS.OnCostUpdatedRequestDelegate?   OnCostUpdatedRequest;
+            public event OCPPv2_1.CSMS.OnCostUpdatedRequestDelegate?   OnCostUpdatedRequest;
 
             /// <summary>
             /// An event fired whenever a response to a CostUpdated request was received.
             /// </summary>
-            public event CSMS.OnCostUpdatedResponseDelegate?  OnCostUpdatedResponse;
+            public event OCPPv2_1.CSMS.OnCostUpdatedResponseDelegate?  OnCostUpdatedResponse;
 
             #endregion
 
-            #region OnCustomerInformation         (-Request/-Response)
+            #region OnCustomerInformation         (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a CustomerInformation request will be sent to the charging station.
             /// </summary>
-            public event CSMS.OnCustomerInformationRequestDelegate?   OnCustomerInformationRequest;
+            public event OCPPv2_1.CSMS.OnCustomerInformationRequestDelegate?   OnCustomerInformationRequest;
 
             /// <summary>
             /// An event fired whenever a response to a CustomerInformation request was received.
             /// </summary>
-            public event CSMS.OnCustomerInformationResponseDelegate?  OnCustomerInformationResponse;
+            public event OCPPv2_1.CSMS.OnCustomerInformationResponseDelegate?  OnCustomerInformationResponse;
 
             #endregion
 
 
             // Binary Data Streams Extensions
 
-            #region OnBinaryDataTransfer          (-Request/-Response)
+            #region OnBinaryDataTransfer          (Request/-Response)
 
             /// <summary>
             /// An event sent whenever a BinaryDataTransfer request will be sent to the charging station.
             /// </summary>
-            public event OCPP.NetworkingNode.CSMS.OnBinaryDataTransferRequestDelegate?   OnBinaryDataTransferRequest;
+            public event OCPP.CSMS.OnBinaryDataTransferRequestDelegate?   OnBinaryDataTransferRequest;
 
             /// <summary>
             /// An event sent whenever a response to a BinaryDataTransfer request was received.
             /// </summary>
-            public event OCPP.NetworkingNode.CSMS.OnBinaryDataTransferResponseDelegate?  OnBinaryDataTransferResponse;
+            public event OCPP.CSMS.OnBinaryDataTransferResponseDelegate?  OnBinaryDataTransferResponse;
 
             #endregion
 
-            #region OnGetFile                     (-Request/-Response)
+            #region OnGetFile                     (Request/-Response)
 
             /// <summary>
             /// An event sent whenever a GetFile request will be sent to the charging station.
             /// </summary>
-            public event OCPP.NetworkingNode.CSMS.OnGetFileRequestDelegate?   OnGetFileRequest;
+            public event OCPP.CSMS.OnGetFileRequestDelegate?   OnGetFileRequest;
 
             /// <summary>
             /// An event sent whenever a response to a GetFile request was received.
             /// </summary>
-            public event OCPP.NetworkingNode.CSMS.OnGetFileResponseDelegate?  OnGetFileResponse;
+            public event OCPP.CSMS.OnGetFileResponseDelegate?  OnGetFileResponse;
 
             #endregion
 
-            #region OnSendFile                    (-Request/-Response)
+            #region OnSendFile                    (Request/-Response)
 
             /// <summary>
             /// An event sent whenever a SendFile request will be sent to the charging station.
             /// </summary>
-            public event OCPP.NetworkingNode.CSMS.OnSendFileRequestDelegate?   OnSendFileRequest;
+            public event OCPP.CSMS.OnSendFileRequestDelegate?   OnSendFileRequest;
 
             /// <summary>
             /// An event sent whenever a response to a SendFile request was received.
             /// </summary>
-            public event OCPP.NetworkingNode.CSMS.OnSendFileResponseDelegate?  OnSendFileResponse;
+            public event OCPP.CSMS.OnSendFileResponseDelegate?  OnSendFileResponse;
 
             #endregion
 
-            #region OnDeleteFile                  (-Request/-Response)
+            #region OnDeleteFile                  (Request/-Response)
 
             /// <summary>
             /// An event sent whenever a DeleteFile request will be sent to the charging station.
             /// </summary>
-            public event OCPP.NetworkingNode.CSMS.OnDeleteFileRequestDelegate?   OnDeleteFileRequest;
+            public event OCPP.CSMS.OnDeleteFileRequestDelegate?   OnDeleteFileRequest;
 
             /// <summary>
             /// An event sent whenever a response to a DeleteFile request was received.
             /// </summary>
-            public event OCPP.NetworkingNode.CSMS.OnDeleteFileResponseDelegate?  OnDeleteFileResponse;
+            public event OCPP.CSMS.OnDeleteFileResponseDelegate?  OnDeleteFileResponse;
 
             #endregion
 
 
             // E2E Security Extensions
 
-            #region AddSignaturePolicy            (-Request/-Response)
+            #region AddSignaturePolicy            (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a AddSignaturePolicy request will be sent to the charging station.
             /// </summary>
-            public event OCPP.NetworkingNode.CSMS.OnAddSignaturePolicyRequestDelegate?   OnAddSignaturePolicyRequest;
+            public event OCPP.CSMS.OnAddSignaturePolicyRequestDelegate?   OnAddSignaturePolicyRequest;
 
             /// <summary>
             /// An event fired whenever a response to a AddSignaturePolicy request was received.
             /// </summary>
-            public event OCPP.NetworkingNode.CSMS.OnAddSignaturePolicyResponseDelegate?  OnAddSignaturePolicyResponse;
+            public event OCPP.CSMS.OnAddSignaturePolicyResponseDelegate?  OnAddSignaturePolicyResponse;
 
             #endregion
 
-            #region UpdateSignaturePolicy         (-Request/-Response)
+            #region UpdateSignaturePolicy         (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a UpdateSignaturePolicy request will be sent to the charging station.
             /// </summary>
-            public event OCPP.NetworkingNode.CSMS.OnUpdateSignaturePolicyRequestDelegate?   OnUpdateSignaturePolicyRequest;
+            public event OCPP.CSMS.OnUpdateSignaturePolicyRequestDelegate?   OnUpdateSignaturePolicyRequest;
 
             /// <summary>
             /// An event fired whenever a response to a UpdateSignaturePolicy request was received.
             /// </summary>
-            public event OCPP.NetworkingNode.CSMS.OnUpdateSignaturePolicyResponseDelegate?  OnUpdateSignaturePolicyResponse;
+            public event OCPP.CSMS.OnUpdateSignaturePolicyResponseDelegate?  OnUpdateSignaturePolicyResponse;
 
             #endregion
 
-            #region DeleteSignaturePolicy         (-Request/-Response)
+            #region DeleteSignaturePolicy         (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a DeleteSignaturePolicy request will be sent to the charging station.
             /// </summary>
-            public event OCPP.NetworkingNode.CSMS.OnDeleteSignaturePolicyRequestDelegate?   OnDeleteSignaturePolicyRequest;
+            public event OCPP.CSMS.OnDeleteSignaturePolicyRequestDelegate?   OnDeleteSignaturePolicyRequest;
 
             /// <summary>
             /// An event fired whenever a response to a DeleteSignaturePolicy request was received.
             /// </summary>
-            public event OCPP.NetworkingNode.CSMS.OnDeleteSignaturePolicyResponseDelegate?  OnDeleteSignaturePolicyResponse;
+            public event OCPP.CSMS.OnDeleteSignaturePolicyResponseDelegate?  OnDeleteSignaturePolicyResponse;
 
             #endregion
 
-            #region AddUserRole                   (-Request/-Response)
+            #region AddUserRole                   (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a AddUserRole request will be sent to the charging station.
             /// </summary>
-            public event OCPP.NetworkingNode.CSMS.OnAddUserRoleRequestDelegate?   OnAddUserRoleRequest;
+            public event OCPP.CSMS.OnAddUserRoleRequestDelegate?   OnAddUserRoleRequest;
 
             /// <summary>
             /// An event fired whenever a response to a AddUserRole request was received.
             /// </summary>
-            public event OCPP.NetworkingNode.CSMS.OnAddUserRoleResponseDelegate?  OnAddUserRoleResponse;
+            public event OCPP.CSMS.OnAddUserRoleResponseDelegate?  OnAddUserRoleResponse;
 
             #endregion
 
-            #region UpdateUserRole                (-Request/-Response)
+            #region UpdateUserRole                (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a UpdateUserRole request will be sent to the charging station.
             /// </summary>
-            public event OCPP.NetworkingNode.CSMS.OnUpdateUserRoleRequestDelegate?   OnUpdateUserRoleRequest;
+            public event OCPP.CSMS.OnUpdateUserRoleRequestDelegate?   OnUpdateUserRoleRequest;
 
             /// <summary>
             /// An event fired whenever a response to a UpdateUserRole request was received.
             /// </summary>
-            public event OCPP.NetworkingNode.CSMS.OnUpdateUserRoleResponseDelegate?  OnUpdateUserRoleResponse;
+            public event OCPP.CSMS.OnUpdateUserRoleResponseDelegate?  OnUpdateUserRoleResponse;
 
             #endregion
 
-            #region DeleteUserRole                (-Request/-Response)
+            #region DeleteUserRole                (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a DeleteUserRole request will be sent to the charging station.
             /// </summary>
-            public event OCPP.NetworkingNode.CSMS.OnDeleteUserRoleRequestDelegate?   OnDeleteUserRoleRequest;
+            public event OCPP.CSMS.OnDeleteUserRoleRequestDelegate?   OnDeleteUserRoleRequest;
 
             /// <summary>
             /// An event fired whenever a response to a DeleteUserRole request was received.
             /// </summary>
-            public event OCPP.NetworkingNode.CSMS.OnDeleteUserRoleResponseDelegate?  OnDeleteUserRoleResponse;
+            public event OCPP.CSMS.OnDeleteUserRoleResponseDelegate?  OnDeleteUserRoleResponse;
 
             #endregion
 
 
             // E2E Charging Tariff Extensions
 
-            #region SetDefaultChargingTariff      (-Request/-Response)
+            #region SetDefaultChargingTariff      (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a SetDefaultChargingTariff request will be sent to the charging station.
             /// </summary>
-            public event CSMS.OnSetDefaultChargingTariffRequestDelegate?   OnSetDefaultChargingTariffRequest;
+            public event OCPPv2_1.CSMS.OnSetDefaultChargingTariffRequestDelegate?   OnSetDefaultChargingTariffRequest;
 
             /// <summary>
             /// An event fired whenever a response to a SetDefaultChargingTariff request was received.
             /// </summary>
-            public event CSMS.OnSetDefaultChargingTariffResponseDelegate?  OnSetDefaultChargingTariffResponse;
+            public event OCPPv2_1.CSMS.OnSetDefaultChargingTariffResponseDelegate?  OnSetDefaultChargingTariffResponse;
 
             #endregion
 
-            #region GetDefaultChargingTariff      (-Request/-Response)
+            #region GetDefaultChargingTariff      (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a GetDefaultChargingTariff request will be sent to the charging station.
             /// </summary>
-            public event CSMS.OnGetDefaultChargingTariffRequestDelegate?   OnGetDefaultChargingTariffRequest;
+            public event OCPPv2_1.CSMS.OnGetDefaultChargingTariffRequestDelegate?   OnGetDefaultChargingTariffRequest;
 
             /// <summary>
             /// An event fired whenever a response to a GetDefaultChargingTariff request was received.
             /// </summary>
-            public event CSMS.OnGetDefaultChargingTariffResponseDelegate?  OnGetDefaultChargingTariffResponse;
+            public event OCPPv2_1.CSMS.OnGetDefaultChargingTariffResponseDelegate?  OnGetDefaultChargingTariffResponse;
 
             #endregion
 
-            #region RemoveDefaultChargingTariff   (-Request/-Response)
+            #region RemoveDefaultChargingTariff   (Request/-Response)
 
             /// <summary>
             /// An event fired whenever a RemoveDefaultChargingTariff request will be sent to the charging station.
             /// </summary>
-            public event CSMS.OnRemoveDefaultChargingTariffRequestDelegate?   OnRemoveDefaultChargingTariffRequest;
+            public event OCPPv2_1.CSMS.OnRemoveDefaultChargingTariffRequestDelegate?   OnRemoveDefaultChargingTariffRequest;
 
             /// <summary>
             /// An event fired whenever a response to a RemoveDefaultChargingTariff request was received.
             /// </summary>
-            public event CSMS.OnRemoveDefaultChargingTariffResponseDelegate?  OnRemoveDefaultChargingTariffResponse;
+            public event OCPPv2_1.CSMS.OnRemoveDefaultChargingTariffResponseDelegate?  OnRemoveDefaultChargingTariffResponse;
 
             #endregion
 
@@ -16819,7 +16935,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.SetNetworkProfileRequest>?                            CustomSetNetworkProfileRequestSerializer                     { get; set; }
             public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.ChangeAvailabilityRequest>?                           CustomChangeAvailabilityRequestSerializer                    { get; set; }
             public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.TriggerMessageRequest>?                               CustomTriggerMessageRequestSerializer                        { get; set; }
-            public CustomJObjectSerializerDelegate<OCPP.    CSMS.DataTransferRequest>?                                 CustomDataTransferRequestSerializer                          { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.DataTransferRequest>?                                 CustomDataTransferRequestSerializer                          { get; set; }
 
 
             public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.CertificateSignedRequest>?                            CustomCertificateSignedRequestSerializer                     { get; set; }
@@ -16893,7 +17009,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.NotifyReportResponse>?                                CustomNotifyReportResponseSerializer                         { get; set; }
             public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.NotifyMonitoringReportResponse>?                      CustomNotifyMonitoringReportResponseSerializer               { get; set; }
             public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.LogStatusNotificationResponse>?                       CustomLogStatusNotificationResponseSerializer                { get; set; }
-            public CustomJObjectSerializerDelegate<OCPP.    CSMS.DataTransferResponse>?                                CustomIncomingDataTransferResponseSerializer                 { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.DataTransferResponse>?                                CustomIncomingDataTransferResponseSerializer                 { get; set; }
 
             public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.SignCertificateResponse>?                             CustomSignCertificateResponseSerializer                      { get; set; }
             public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.Get15118EVCertificateResponse>?                       CustomGet15118EVCertificateResponseSerializer                { get; set; }
@@ -16934,7 +17050,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyReportRequest>?                              CustomNotifyReportRequestSerializer                          { get; set; }
             public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyMonitoringReportRequest>?                    CustomNotifyMonitoringReportRequestSerializer                { get; set; }
             public CustomJObjectSerializerDelegate<OCPPv2_1.CS.LogStatusNotificationRequest>?                     CustomLogStatusNotificationRequestSerializer                 { get; set; }
-            public CustomJObjectSerializerDelegate<OCPP.    CS.DataTransferRequest>?                              CustomIncomingDataTransferRequestSerializer                  { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.DataTransferRequest>?                              CustomIncomingDataTransferRequestSerializer                  { get; set; }
 
             public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SignCertificateRequest>?                           CustomSignCertificateRequestSerializer                       { get; set; }
             public CustomJObjectSerializerDelegate<OCPPv2_1.CS.Get15118EVCertificateRequest>?                     CustomGet15118EVCertificateRequestSerializer                 { get; set; }
@@ -16983,7 +17099,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SetNetworkProfileResponse>?                        CustomSetNetworkProfileResponseSerializer                    { get; set; }
             public CustomJObjectSerializerDelegate<OCPPv2_1.CS.ChangeAvailabilityResponse>?                       CustomChangeAvailabilityResponseSerializer                   { get; set; }
             public CustomJObjectSerializerDelegate<OCPPv2_1.CS.TriggerMessageResponse>?                           CustomTriggerMessageResponseSerializer                       { get; set; }
-            public CustomJObjectSerializerDelegate<OCPP.    CS.DataTransferResponse>?                             CustomDataTransferResponseSerializer                         { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.DataTransferResponse>?                             CustomDataTransferResponseSerializer                         { get; set; }
 
             public CustomJObjectSerializerDelegate<OCPPv2_1.CS.CertificateSignedResponse>?                        CustomCertificateSignedResponseSerializer                    { get; set; }
             public CustomJObjectSerializerDelegate<OCPPv2_1.CS.InstallCertificateResponse>?                       CustomInstallCertificateResponseSerializer                   { get; set; }
@@ -17836,7 +17952,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CSMS.OnBootNotificationRequestDelegate>().
+                                                               OfType <OCPPv2_1.CSMS.OnBootNotificationRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
                                                                                                                  connection,
@@ -17948,7 +18064,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CSMS.OnBootNotificationResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CSMS.OnBootNotificationResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
                                                                                                                     connection,
@@ -17984,6 +18100,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 CSMSChannel.OnFirmwareStatusNotification += async (timestamp,
                                                                    sender,
+                                                                   connection,
                                                                    request,
                                                                    cancellationToken) => {
 
@@ -17996,9 +18113,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CSMS.OnFirmwareStatusNotificationRequestDelegate>().
+                                                               OfType <OCPPv2_1.CSMS.OnFirmwareStatusNotificationRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -18066,9 +18184,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CSMS.OnFirmwareStatusNotificationResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CSMS.OnFirmwareStatusNotificationResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -18101,6 +18220,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 CSMSChannel.OnPublishFirmwareStatusNotification += async (timestamp,
                                                                           sender,
+                                                                          connection,
                                                                           request,
                                                                           cancellationToken) => {
 
@@ -18113,9 +18233,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CSMS.OnPublishFirmwareStatusNotificationRequestDelegate>().
+                                                               OfType <OCPPv2_1.CSMS.OnPublishFirmwareStatusNotificationRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -18184,9 +18305,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CSMS.OnPublishFirmwareStatusNotificationResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CSMS.OnPublishFirmwareStatusNotificationResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -18219,6 +18341,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 CSMSChannel.OnHeartbeat += async (timestamp,
                                                   sender,
+                                                  connection,
                                                   request,
                                                   cancellationToken) => {
 
@@ -18231,9 +18354,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CSMS.OnHeartbeatRequestDelegate>().
+                                                               OfType <OCPPv2_1.CSMS.OnHeartbeatRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -18300,9 +18424,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CSMS.OnHeartbeatResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CSMS.OnHeartbeatResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -18335,6 +18460,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 CSMSChannel.OnNotifyEvent += async (timestamp,
                                                     sender,
+                                                    connection,
                                                     request,
                                                     cancellationToken) => {
 
@@ -18347,9 +18473,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CSMS.OnNotifyEventRequestDelegate>().
+                                                               OfType <OCPPv2_1.CSMS.OnNotifyEventRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -18423,9 +18550,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CSMS.OnNotifyEventResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CSMS.OnNotifyEventResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -18458,6 +18586,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 CSMSChannel.OnSecurityEventNotification += async (timestamp,
                                                                   sender,
+                                                                  connection,
                                                                   request,
                                                                   cancellationToken) => {
 
@@ -18470,9 +18599,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CSMS.OnSecurityEventNotificationRequestDelegate>().
+                                                               OfType <OCPPv2_1.CSMS.OnSecurityEventNotificationRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -18541,9 +18671,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CSMS.OnSecurityEventNotificationResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CSMS.OnSecurityEventNotificationResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -18576,6 +18707,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 CSMSChannel.OnNotifyReport += async (timestamp,
                                                      sender,
+                                                     connection,
                                                      request,
                                                      cancellationToken) => {
 
@@ -18588,9 +18720,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CSMS.OnNotifyReportRequestDelegate>().
+                                                               OfType <OCPPv2_1.CSMS.OnNotifyReportRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -18666,9 +18799,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CSMS.OnNotifyReportResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CSMS.OnNotifyReportResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -18701,6 +18835,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 CSMSChannel.OnNotifyMonitoringReport += async (timestamp,
                                                                sender,
+                                                               connection,
                                                                request,
                                                                cancellationToken) => {
 
@@ -18713,9 +18848,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CSMS.OnNotifyMonitoringReportRequestDelegate>().
+                                                               OfType <OCPPv2_1.CSMS.OnNotifyMonitoringReportRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -18791,9 +18927,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CSMS.OnNotifyMonitoringReportResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CSMS.OnNotifyMonitoringReportResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -18826,6 +18963,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 CSMSChannel.OnLogStatusNotification += async (timestamp,
                                                               sender,
+                                                              connection,
                                                               request,
                                                               cancellationToken) => {
 
@@ -18838,9 +18976,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CSMS.OnLogStatusNotificationRequestDelegate>().
+                                                               OfType <OCPPv2_1.CSMS.OnLogStatusNotificationRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -18908,9 +19047,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CSMS.OnLogStatusNotificationResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CSMS.OnLogStatusNotificationResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -18943,6 +19083,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 CSMSChannel.OnIncomingDataTransfer += async (timestamp,
                                                              sender,
+                                                             connection,
                                                              request,
                                                              cancellationToken) => {
 
@@ -18955,10 +19096,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <OCPP.CSMS.OnIncomingDataTransferRequestDelegate>().
+                                                               OfType <OCPPv2_1.CSMS.OnIncomingDataTransferRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
-                                                                                                                 null,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -19038,7 +19179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                        out var errorResponse
                                    )
 
-                                       ? new OCPP.CSMS.DataTransferResponse(
+                                       ? new OCPPv2_1.CSMS.DataTransferResponse(
                                              Request:      request,
                                              Result:       Result.SignatureError(
                                                                $"Invalid signature(s): {errorResponse}"
@@ -19047,7 +19188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                        : request.VendorId == Vendor_Id.GraphDefined
 
-                                             ? new OCPP.CSMS.DataTransferResponse(
+                                             ? new OCPPv2_1.CSMS.DataTransferResponse(
                                                    Request:      request,
                                                    Status:       DataTransferStatus.Accepted,
                                                    Data:         responseData,
@@ -19055,7 +19196,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                    CustomData:   null
                                                )
 
-                                             : new OCPP.CSMS.DataTransferResponse(
+                                             : new OCPPv2_1.CSMS.DataTransferResponse(
                                                    Request:      request,
                                                    Status:       DataTransferStatus.Rejected,
                                                    Data:         null,
@@ -19083,10 +19224,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <OCPP.CSMS.OnIncomingDataTransferResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CSMS.OnIncomingDataTransferResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
-                                                                                                                    null,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -19120,6 +19261,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 CSMSChannel.OnSignCertificate += async (timestamp,
                                                         sender,
+                                                        connection,
                                                         request,
                                                         cancellationToken) => {
 
@@ -19132,9 +19274,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CSMS.OnSignCertificateRequestDelegate>().
+                                                               OfType <OCPPv2_1.CSMS.OnSignCertificateRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -19205,9 +19348,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CSMS.OnSignCertificateResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CSMS.OnSignCertificateResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -19240,6 +19384,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 CSMSChannel.OnGet15118EVCertificate += async (timestamp,
                                                               sender,
+                                                              connection,
                                                               request,
                                                               cancellationToken) => {
 
@@ -19252,9 +19397,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CSMS.OnGet15118EVCertificateRequestDelegate>().
+                                                               OfType <OCPPv2_1.CSMS.OnGet15118EVCertificateRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -19330,9 +19476,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CSMS.OnGet15118EVCertificateResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CSMS.OnGet15118EVCertificateResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -19365,6 +19512,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 CSMSChannel.OnGetCertificateStatus += async (timestamp,
                                                              sender,
+                                                             connection,
                                                              request,
                                                              cancellationToken) => {
 
@@ -19377,9 +19525,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CSMS.OnGetCertificateStatusRequestDelegate>().
+                                                               OfType <OCPPv2_1.CSMS.OnGetCertificateStatusRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -19451,9 +19600,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CSMS.OnGetCertificateStatusResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CSMS.OnGetCertificateStatusResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -19486,6 +19636,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 CSMSChannel.OnGetCRL += async (timestamp,
                                                sender,
+                                               connection,
                                                request,
                                                cancellationToken) => {
 
@@ -19498,9 +19649,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CSMS.OnGetCRLRequestDelegate>().
+                                                               OfType <OCPPv2_1.CSMS.OnGetCRLRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -19573,9 +19725,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CSMS.OnGetCRLResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CSMS.OnGetCRLResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -19609,6 +19762,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 CSMSChannel.OnReservationStatusUpdate += async (timestamp,
                                                                 sender,
+                                                                connection,
                                                                 request,
                                                                 cancellationToken) => {
 
@@ -19621,9 +19775,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CSMS.OnReservationStatusUpdateRequestDelegate>().
+                                                               OfType <OCPPv2_1.CSMS.OnReservationStatusUpdateRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -19691,9 +19846,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CSMS.OnReservationStatusUpdateResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CSMS.OnReservationStatusUpdateResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -19726,6 +19882,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 CSMSChannel.OnAuthorize += async (timestamp,
                                                   sender,
+                                                  connection,
                                                   request,
                                                   cancellationToken) => {
 
@@ -19738,9 +19895,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CSMS.OnAuthorizeRequestDelegate>().
+                                                               OfType <OCPPv2_1.CSMS.OnAuthorizeRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -19823,9 +19981,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CSMS.OnAuthorizeResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CSMS.OnAuthorizeResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -19858,6 +20017,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 CSMSChannel.OnNotifyEVChargingNeeds += async (timestamp,
                                                               sender,
+                                                              connection,
                                                               request,
                                                               cancellationToken) => {
 
@@ -19870,9 +20030,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CSMS.OnNotifyEVChargingNeedsRequestDelegate>().
+                                                               OfType <OCPPv2_1.CSMS.OnNotifyEVChargingNeedsRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -19954,9 +20115,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CSMS.OnNotifyEVChargingNeedsResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CSMS.OnNotifyEVChargingNeedsResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -19989,6 +20151,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 CSMSChannel.OnTransactionEvent += async (timestamp,
                                                          sender,
+                                                         connection,
                                                          request,
                                                          cancellationToken) => {
 
@@ -20001,9 +20164,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CSMS.OnTransactionEventRequestDelegate>().
+                                                               OfType <OCPPv2_1.CSMS.OnTransactionEventRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -20101,9 +20265,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CSMS.OnTransactionEventResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CSMS.OnTransactionEventResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -20136,6 +20301,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 CSMSChannel.OnStatusNotification += async (timestamp,
                                                            sender,
+                                                           connection,
                                                            request,
                                                            cancellationToken) => {
 
@@ -20148,9 +20314,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CSMS.OnStatusNotificationRequestDelegate>().
+                                                               OfType <OCPPv2_1.CSMS.OnStatusNotificationRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -20220,9 +20387,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CSMS.OnStatusNotificationResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CSMS.OnStatusNotificationResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -20255,6 +20423,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 CSMSChannel.OnMeterValues += async (timestamp,
                                                     sender,
+                                                    connection,
                                                     request,
                                                     cancellationToken) => {
 
@@ -20267,9 +20436,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CSMS.OnMeterValuesRequestDelegate>().
+                                                               OfType <OCPPv2_1.CSMS.OnMeterValuesRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -20342,9 +20512,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CSMS.OnMeterValuesResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CSMS.OnMeterValuesResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -20377,6 +20548,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 CSMSChannel.OnNotifyChargingLimit += async (timestamp,
                                                             sender,
+                                                            connection,
                                                             request,
                                                             cancellationToken) => {
 
@@ -20389,9 +20561,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CSMS.OnNotifyChargingLimitRequestDelegate>().
+                                                               OfType <OCPPv2_1.CSMS.OnNotifyChargingLimitRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -20484,9 +20657,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CSMS.OnNotifyChargingLimitResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CSMS.OnNotifyChargingLimitResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -20519,6 +20693,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 CSMSChannel.OnClearedChargingLimit += async (timestamp,
                                                              sender,
+                                                             connection,
                                                              request,
                                                              cancellationToken) => {
 
@@ -20531,9 +20706,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CSMS.OnClearedChargingLimitRequestDelegate>().
+                                                               OfType <OCPPv2_1.CSMS.OnClearedChargingLimitRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -20601,9 +20777,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CSMS.OnClearedChargingLimitResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CSMS.OnClearedChargingLimitResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -20636,6 +20813,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 CSMSChannel.OnReportChargingProfiles += async (timestamp,
                                                                sender,
+                                                               connection,
                                                                request,
                                                                cancellationToken) => {
 
@@ -20648,9 +20826,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CSMS.OnReportChargingProfilesRequestDelegate>().
+                                                               OfType <OCPPv2_1.CSMS.OnReportChargingProfilesRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -20746,9 +20925,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CSMS.OnReportChargingProfilesResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CSMS.OnReportChargingProfilesResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -20781,6 +20961,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 CSMSChannel.OnNotifyEVChargingSchedule += async (timestamp,
                                                                  sender,
+                                                                 connection,
                                                                  request,
                                                                  cancellationToken) => {
 
@@ -20793,9 +20974,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CSMS.OnNotifyEVChargingScheduleRequestDelegate>().
+                                                               OfType <OCPPv2_1.CSMS.OnNotifyEVChargingScheduleRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -20893,9 +21075,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CSMS.OnNotifyEVChargingScheduleResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CSMS.OnNotifyEVChargingScheduleResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -20928,6 +21111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 CSMSChannel.OnNotifyPriorityCharging += async (timestamp,
                                                                sender,
+                                                               connection,
                                                                request,
                                                                cancellationToken) => {
 
@@ -20940,9 +21124,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CSMS.OnNotifyPriorityChargingRequestDelegate>().
+                                                               OfType <OCPPv2_1.CSMS.OnNotifyPriorityChargingRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -21010,9 +21195,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CSMS.OnNotifyPriorityChargingResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CSMS.OnNotifyPriorityChargingResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -21045,6 +21231,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 CSMSChannel.OnPullDynamicScheduleUpdate += async (timestamp,
                                                                   sender,
+                                                                  connection,
                                                                   request,
                                                                   cancellationToken) => {
 
@@ -21057,9 +21244,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CSMS.OnPullDynamicScheduleUpdateRequestDelegate>().
+                                                               OfType <OCPPv2_1.CSMS.OnPullDynamicScheduleUpdateRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -21145,9 +21333,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CSMS.OnPullDynamicScheduleUpdateResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CSMS.OnPullDynamicScheduleUpdateResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -21181,6 +21370,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 CSMSChannel.OnNotifyDisplayMessages += async (timestamp,
                                                               sender,
+                                                              connection,
                                                               request,
                                                               cancellationToken) => {
 
@@ -21193,9 +21383,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CSMS.OnNotifyDisplayMessagesRequestDelegate>().
+                                                               OfType <OCPPv2_1.CSMS.OnNotifyDisplayMessagesRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -21271,9 +21462,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CSMS.OnNotifyDisplayMessagesResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CSMS.OnNotifyDisplayMessagesResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -21306,6 +21498,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 CSMSChannel.OnNotifyCustomerInformation += async (timestamp,
                                                                   sender,
+                                                                  connection,
                                                                   request,
                                                                   cancellationToken) => {
 
@@ -21318,9 +21511,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <CSMS.OnNotifyCustomerInformationRequestDelegate>().
+                                                               OfType <OCPPv2_1.CSMS.OnNotifyCustomerInformationRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 connection,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -21391,9 +21585,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <CSMS.OnNotifyCustomerInformationResponseDelegate>().
+                                                                  OfType <OCPPv2_1.CSMS.OnNotifyCustomerInformationResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    connection,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -21429,6 +21624,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 CSMSChannel.OnIncomingBinaryDataTransfer += async (timestamp,
                                                                    sender,
+                                                                   connection,
                                                                    request,
                                                                    cancellationToken) => {
 
@@ -23260,8 +23456,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// Transfer the given data to the given charging station.
             /// </summary>
             /// <param name="Request">A DataTransfer request.</param>
-            public async Task<OCPP.CS.DataTransferResponse>
-                TransferData(OCPP.CSMS.DataTransferRequest Request)
+            public async Task<OCPPv2_1.CS.DataTransferResponse>
+                TransferData(OCPPv2_1.CSMS.DataTransferRequest Request)
 
             {
 
@@ -23299,12 +23495,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                           ? await centralSystem.Item1.TransferData(Request)
 
-                                          : new OCPP.CS.DataTransferResponse(
+                                          : new OCPPv2_1.CS.DataTransferResponse(
                                                 Request,
                                                 Result.SignatureError(errorResponse)
                                             )
 
-                                    : new OCPP.CS.DataTransferResponse(
+                                    : new OCPPv2_1.CS.DataTransferResponse(
                                           Request,
                                           Result.Server("Unknown or unreachable charging station!")
                                       );
@@ -29490,6 +29686,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             this.Description              = Description;
             this.SerialNumber             = SerialNumber;
             this.FirmwareVersion          = FirmwareVersion;
+            this.Modem                    = Modem;
 
 
             Directory.CreateDirectory(Path.Combine(AppContext.BaseDirectory, "HTTPSSEs"));

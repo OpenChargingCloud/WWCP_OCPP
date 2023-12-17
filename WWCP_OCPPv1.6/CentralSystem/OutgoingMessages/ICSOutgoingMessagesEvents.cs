@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     public interface ICSOutgoingMessagesEvents : OCPP.ICSMSOutgoingMessagesEvents
     {
 
-        #region Reset                          (-Request/-Response)
+        #region Reset                          (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a Reset request will be sent to a charge box.
@@ -44,7 +44,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region ChangeAvailability             (-Request/-Response)
+        #region ChangeAvailability             (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a ChangeAvailability request will be sent to a charge box.
@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region GetConfiguration               (-Request/-Response)
+        #region GetConfiguration               (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a GetConfiguration request will be sent to a charge box.
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region ChangeConfiguration            (-Request/-Response)
+        #region ChangeConfiguration            (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a ChangeConfiguration request will be sent to a charge box.
@@ -86,7 +86,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region DataTransfer                   (-Request/-Response)
+        #region DataTransfer                   (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a DataTransfer request will be sent to a charge box.
@@ -100,7 +100,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region GetDiagnostics                 (-Request/-Response)
+        #region GetDiagnostics                 (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a GetDiagnostics request will be sent to a charge box.
@@ -114,7 +114,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region TriggerMessage                 (-Request/-Response)
+        #region TriggerMessage                 (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a TriggerMessage request will be sent to a charge box.
@@ -128,7 +128,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region UpdateFirmware                 (-Request/-Response)
+        #region UpdateFirmware                 (Request/-Response)
 
         /// <summary>
         /// An event fired whenever an UpdateFirmware request will be sent to a charge box.
@@ -143,7 +143,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #endregion
 
 
-        #region ReserveNow                     (-Request/-Response)
+        #region ReserveNow                     (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a ReserveNow request will be sent to a charge box.
@@ -157,7 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region CancelReservation              (-Request/-Response)
+        #region CancelReservation              (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a CancelReservation request will be sent to a charge box.
@@ -171,7 +171,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region RemoteStartTransaction         (-Request/-Response)
+        #region RemoteStartTransaction         (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a RemoteStartTransaction request will be sent to a charge box.
@@ -185,7 +185,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region RemoteStopTransaction          (-Request/-Response)
+        #region RemoteStopTransaction          (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a RemoteStopTransaction request will be sent to a charge box.
@@ -199,7 +199,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region SetChargingProfile             (-Request/-Response)
+        #region SetChargingProfile             (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a SetChargingProfile request will be sent to a charge box.
@@ -213,7 +213,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region ClearChargingProfile           (-Request/-Response)
+        #region ClearChargingProfile           (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a ClearChargingProfile request will be sent to a charge box.
@@ -227,7 +227,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region GetCompositeSchedule           (-Request/-Response)
+        #region GetCompositeSchedule           (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a GetCompositeSchedule request will be sent to a charge box.
@@ -241,7 +241,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region UnlockConnector                (-Request/-Response)
+        #region UnlockConnector                (Request/-Response)
 
         /// <summary>
         /// An event fired whenever an UnlockConnector request will be sent to a charge box.
@@ -256,7 +256,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #endregion
 
 
-        #region GetLocalListVersion            (-Request/-Response)
+        #region GetLocalListVersion            (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a GetLocalListVersion request will be sent to a charge box.
@@ -270,7 +270,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region SendLocalList                  (-Request/-Response)
+        #region SendLocalList                  (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a SendLocalList request will be sent to a charge box.
@@ -284,7 +284,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region ClearCache                     (-Request/-Response)
+        #region ClearCache                     (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a ClearCache request will be sent to a charge box.
@@ -302,7 +302,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         // Security extensions
 
-        #region CertificateSigned              (-Request/-Response)
+        #region CertificateSigned              (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a SignedCertificate request will be sent to a charge box.
@@ -316,7 +316,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region DeleteCertificate              (-Request/-Response)
+        #region DeleteCertificate              (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a DeleteCertificate request will be sent to a charge box.
@@ -330,7 +330,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region ExtendedTriggerMessage         (-Request/-Response)
+        #region ExtendedTriggerMessage         (Request/-Response)
 
         /// <summary>
         /// An event fired whenever an ExtendedTriggerMessage request will be sent to a charge box.
@@ -344,7 +344,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region GetInstalledCertificateIds     (-Request/-Response)
+        #region GetInstalledCertificateIds     (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a GetInstalledCertificateIds request will be sent to a charge box.
@@ -358,7 +358,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region GetLog                         (-Request/-Response)
+        #region GetLog                         (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a GetLog request will be sent to a charge box.
@@ -372,7 +372,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region InstallCertificate             (-Request/-Response)
+        #region InstallCertificate             (Request/-Response)
 
         /// <summary>
         /// An event fired whenever an InstallCertificate request will be sent to a charge box.
@@ -386,7 +386,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region SignedUpdateFirmware           (-Request/-Response)
+        #region SignedUpdateFirmware           (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a SignedUpdateFirmware request will be sent to a charge box.

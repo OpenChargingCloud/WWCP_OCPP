@@ -18,8 +18,6 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
-using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
@@ -50,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a Reset request was sent.
         /// </summary>
-        public event CSMS.OnResetRequestDelegate?     OnResetRequest;
+        public event OCPPv2_1.CSMS.OnResetRequestDelegate?     OnResetRequest;
 
         /// <summary>
         /// An event sent whenever a response to a Reset request was sent.
         /// </summary>
-        public event CSMS.OnResetResponseDelegate?    OnResetResponse;
+        public event OCPPv2_1.CSMS.OnResetResponseDelegate?    OnResetResponse;
 
         #endregion
 

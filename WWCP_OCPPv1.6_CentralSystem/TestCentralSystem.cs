@@ -473,7 +473,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         // Binary Data Streams Extensions
 
-        #region OnIncomingBinaryDataTransfer (-Request/-Response)
+        #region OnIncomingBinaryDataTransfer (Request/-Response)
 
         /// <summary>
         /// An event sent whenever an IncomingBinaryDataTransfer request was received.
@@ -873,7 +873,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         // Binary Data Streams Extensions
 
-        #region OnBinaryDataTransfer          (-Request/-Response)
+        #region OnBinaryDataTransfer          (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a BinaryDataTransfer request will be sent to the charging station.
@@ -887,7 +887,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region OnGetFile                     (-Request/-Response)
+        #region OnGetFile                     (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a GetFile request will be sent to the charging station.
@@ -901,7 +901,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region OnSendFile                    (-Request/-Response)
+        #region OnSendFile                    (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a SendFile request will be sent to the charging station.
@@ -915,7 +915,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region OnDeleteFile                  (-Request/-Response)
+        #region OnDeleteFile                  (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a DeleteFile request will be sent to the charging station.
@@ -929,7 +929,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region OnListDirectory               (-Request/-Response)
+        #region OnListDirectory               (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a ListDirectory request will be sent to the charging station.
@@ -946,7 +946,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         // E2E Security Extensions
 
-        #region AddSignaturePolicy            (-Request/-Response)
+        #region AddSignaturePolicy            (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a AddSignaturePolicy request will be sent to the charging station.
@@ -960,7 +960,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region UpdateSignaturePolicy         (-Request/-Response)
+        #region UpdateSignaturePolicy         (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a UpdateSignaturePolicy request will be sent to the charging station.
@@ -974,7 +974,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region DeleteSignaturePolicy         (-Request/-Response)
+        #region DeleteSignaturePolicy         (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a DeleteSignaturePolicy request will be sent to the charging station.
@@ -988,7 +988,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region AddUserRole                   (-Request/-Response)
+        #region AddUserRole                   (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a AddUserRole request will be sent to the charging station.
@@ -1002,7 +1002,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region UpdateUserRole                (-Request/-Response)
+        #region UpdateUserRole                (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a UpdateUserRole request will be sent to the charging station.
@@ -1016,7 +1016,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region DeleteUserRole                (-Request/-Response)
+        #region DeleteUserRole                (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a DeleteUserRole request will be sent to the charging station.
@@ -1050,8 +1050,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public CustomJObjectSerializerDelegate<CP.GetConfigurationResponse>?            CustomGetConfigurationResponseSerializer                { get; set; }
         public CustomJObjectSerializerDelegate<ChangeConfigurationRequest>?             CustomChangeConfigurationRequestSerializer              { get; set; }
         public CustomJObjectSerializerDelegate<CP.ChangeConfigurationResponse>?         CustomChangeConfigurationResponseSerializer             { get; set; }
-        public CustomJObjectSerializerDelegate<OCPP.CSMS.DataTransferRequest>?          CustomDataTransferRequestSerializer                     { get; set; }
-        public CustomJObjectSerializerDelegate<OCPP.CS.DataTransferResponse>?           CustomDataTransferResponseSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<CS.DataTransferRequest>?                 CustomDataTransferRequestSerializer                     { get; set; }
+        public CustomJObjectSerializerDelegate<CP.DataTransferResponse>?                CustomDataTransferResponseSerializer                    { get; set; }
         public CustomJObjectSerializerDelegate<GetDiagnosticsRequest>?                  CustomGetDiagnosticsRequestSerializer                   { get; set; }
         public CustomJObjectSerializerDelegate<CP.GetDiagnosticsResponse>?              CustomGetDiagnosticsResponseSerializer                  { get; set; }
         public CustomJObjectSerializerDelegate<TriggerMessageRequest>?                  CustomTriggerMessageRequestSerializer                   { get; set; }
@@ -1144,7 +1144,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public CustomJObjectSerializerDelegate<CP.MeterValuesRequest>?                               CustomMeterValuesRequestSerializer                           { get; set; }
         public CustomJObjectSerializerDelegate<CP.StopTransactionRequest>?                           CustomStopTransactionRequestRequestSerializer                { get; set; }
 
-        public CustomJObjectSerializerDelegate<OCPP.CS.DataTransferRequest>?                         CustomIncomingDataTransferRequestSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<CP.DataTransferRequest>?                              CustomIncomingDataTransferRequestSerializer                  { get; set; }
         public CustomJObjectSerializerDelegate<CP.DiagnosticsStatusNotificationRequest>?             CustomDiagnosticsStatusNotificationRequestSerializer         { get; set; }
         public CustomJObjectSerializerDelegate<CP.FirmwareStatusNotificationRequest>?                CustomFirmwareStatusNotificationRequestSerializer            { get; set; }
 
@@ -2104,6 +2104,131 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             #endregion
 
+            #region OnDiagnosticsStatusNotification
+
+            CentralSystemServer.OnDiagnosticsStatusNotification += async (LogTimestamp,
+                                                                          Sender,
+                                                                          connection,
+                                                                          Request,
+                                                                          CancellationToken) => {
+
+                #region Send OnDiagnosticsStatusNotificationRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnDiagnosticsStatusNotificationRequest?.Invoke(startTime,
+                                                                   this,
+                                                                   connection,
+                                                                   Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnDiagnosticsStatusNotificationRequest));
+                }
+
+                #endregion
+
+
+                Console.WriteLine("OnDiagnosticsStatusNotification: " + Request.Status);
+
+
+                await Task.Delay(100, CancellationToken);
+
+                var response = new DiagnosticsStatusNotificationResponse(Request);
+
+
+                #region Send OnDiagnosticsStatusResponse event
+
+                try
+                {
+
+                    OnDiagnosticsStatusNotificationResponse?.Invoke(Timestamp.Now,
+                                                                    this,
+                                                                    connection,
+                                                                    Request,
+                                                                    response,
+                                                                    Timestamp.Now - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnDiagnosticsStatusNotificationResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnFirmwareStatusNotification
+
+            CentralSystemServer.OnFirmwareStatusNotification += async (LogTimestamp,
+                                                                       Sender,
+                                                                       connection,
+                                                                       Request,
+                                                                       CancellationToken) => {
+
+                #region Send OnFirmwareStatusNotificationRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnFirmwareStatusNotificationRequest?.Invoke(startTime,
+                                                                this,
+                                                                connection,
+                                                                Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnFirmwareStatusNotificationRequest));
+                }
+
+                #endregion
+
+
+                Console.WriteLine("OnFirmwareStatus: " + Request.Status);
+
+                await Task.Delay(100, CancellationToken);
+
+                var response = new FirmwareStatusNotificationResponse(Request);
+
+
+                #region Send OnFirmwareStatusResponse event
+
+                try
+                {
+
+                    OnFirmwareStatusNotificationResponse?.Invoke(Timestamp.Now,
+                                                                 this,
+                                                                 connection,
+                                                                 Request,
+                                                                 response,
+                                                                 Timestamp.Now - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnFirmwareStatusNotificationResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
 
             #region OnAuthorize
 
@@ -2603,131 +2728,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 catch (Exception e)
                 {
                     DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnIncomingDataTransferResponse));
-                }
-
-                #endregion
-
-                return response;
-
-            };
-
-            #endregion
-
-            #region OnDiagnosticsStatusNotification
-
-            CentralSystemServer.OnDiagnosticsStatusNotification += async (LogTimestamp,
-                                                                          Sender,
-                                                                          connection,
-                                                                          Request,
-                                                                          CancellationToken) => {
-
-                #region Send OnDiagnosticsStatusNotificationRequest event
-
-                var startTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnDiagnosticsStatusNotificationRequest?.Invoke(startTime,
-                                                                   this,
-                                                                   connection,
-                                                                   Request);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnDiagnosticsStatusNotificationRequest));
-                }
-
-                #endregion
-
-
-                Console.WriteLine("OnDiagnosticsStatusNotification: " + Request.Status);
-
-
-                await Task.Delay(100, CancellationToken);
-
-                var response = new DiagnosticsStatusNotificationResponse(Request);
-
-
-                #region Send OnDiagnosticsStatusResponse event
-
-                try
-                {
-
-                    OnDiagnosticsStatusNotificationResponse?.Invoke(Timestamp.Now,
-                                                                    this,
-                                                                    connection,
-                                                                    Request,
-                                                                    response,
-                                                                    Timestamp.Now - startTime);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnDiagnosticsStatusNotificationResponse));
-                }
-
-                #endregion
-
-                return response;
-
-            };
-
-            #endregion
-
-            #region OnFirmwareStatusNotification
-
-            CentralSystemServer.OnFirmwareStatusNotification += async (LogTimestamp,
-                                                                       Sender,
-                                                                       connection,
-                                                                       Request,
-                                                                       CancellationToken) => {
-
-                #region Send OnFirmwareStatusNotificationRequest event
-
-                var startTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnFirmwareStatusNotificationRequest?.Invoke(startTime,
-                                                                this,
-                                                                connection,
-                                                                Request);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnFirmwareStatusNotificationRequest));
-                }
-
-                #endregion
-
-
-                Console.WriteLine("OnFirmwareStatus: " + Request.Status);
-
-                await Task.Delay(100, CancellationToken);
-
-                var response = new FirmwareStatusNotificationResponse(Request);
-
-
-                #region Send OnFirmwareStatusResponse event
-
-                try
-                {
-
-                    OnFirmwareStatusNotificationResponse?.Invoke(Timestamp.Now,
-                                                                 this,
-                                                                 connection,
-                                                                 Request,
-                                                                 response,
-                                                                 Timestamp.Now - startTime);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnFirmwareStatusNotificationResponse));
                 }
 
                 #endregion
@@ -5524,7 +5524,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// DataTransfer the given charge box.
         /// </summary>
         /// <param name="Request">A DataTransfer request.</param>
-        public async Task<OCPP.CS.DataTransferResponse>
+        public async Task<CP.DataTransferResponse>
             DataTransfer(DataTransferRequest Request)
 
         {
@@ -5563,12 +5563,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                                       ? await centralSystem.Item1.DataTransfer(Request)
 
-                                      : new OCPP.CS.DataTransferResponse(
+                                      : new CP.DataTransferResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new OCPP.CS.DataTransferResponse(
+                                : new CP.DataTransferResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charge box!")
                                   );

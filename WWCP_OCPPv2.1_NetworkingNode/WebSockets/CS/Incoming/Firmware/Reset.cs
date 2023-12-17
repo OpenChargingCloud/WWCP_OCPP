@@ -56,22 +56,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a reset websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?     OnResetWSRequest;
+        public event WSClientJSONRequestLogHandler?                OnResetWSRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event CS.OnResetRequestDelegate?        OnResetRequest;
+        public event OCPPv2_1.CS.OnResetRequestDelegate?           OnResetRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event CS.OnResetDelegate?               OnReset;
+        public event OCPPv2_1.CS.OnResetDelegate?                  OnReset;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event CS.OnResetResponseDelegate?       OnResetResponse;
+        public event OCPPv2_1.CS.OnResetResponseDelegate?          OnResetResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a reset request was sent.
@@ -140,6 +140,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnResetRequest?.Invoke(Timestamp.Now,
                                                this,
+                                               WebSocketConnection,
                                                request);
 
                     }
@@ -183,6 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnResetResponse?.Invoke(Timestamp.Now,
                                                 this,
+                                                WebSocketConnection,
                                                 request,
                                                 response,
                                                 response.Runtime);

@@ -27,19 +27,19 @@ using cloud.charging.open.protocols.OCPP.CSMS;
 namespace cloud.charging.open.protocols.OCPP.CS
 {
 
-    #region OnAddUserRole
-
     /// <summary>
     /// An AddUserRole request.
     /// </summary>
     /// <param name="Timestamp">The log timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnAddUserRoleRequestDelegate(DateTime             Timestamp,
-                                     IEventSender         Sender,
-                                     AddUserRoleRequest   Request);
+        OnAddUserRoleRequestDelegate(DateTime                    Timestamp,
+                                     IEventSender                Sender,
+                                     WebSocketClientConnection   Connection,
+                                     AddUserRoleRequest          Request);
 
 
     /// <summary>
@@ -47,6 +47,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<AddUserRoleResponse>
@@ -63,17 +64,17 @@ namespace cloud.charging.open.protocols.OCPP.CS
     /// </summary>
     /// <param name="Timestamp">The log timestamp of the response.</param>
     /// <param name="Sender">The sender of the response.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnAddUserRoleResponseDelegate(DateTime              Timestamp,
-                                      IEventSender          Sender,
-                                      AddUserRoleRequest    Request,
-                                      AddUserRoleResponse   Response,
-                                      TimeSpan              Runtime);
-
-    #endregion
+        OnAddUserRoleResponseDelegate(DateTime                    Timestamp,
+                                      IEventSender                Sender,
+                                      WebSocketClientConnection   Connection,
+                                      AddUserRoleRequest          Request,
+                                      AddUserRoleResponse         Response,
+                                      TimeSpan                    Runtime);
 
 }

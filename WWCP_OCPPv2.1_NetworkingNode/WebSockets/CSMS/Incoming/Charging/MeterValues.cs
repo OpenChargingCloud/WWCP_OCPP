@@ -20,7 +20,6 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
@@ -53,27 +52,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a MeterValues WebSocket request was received.
         /// </summary>
-        public event CSMS.WebSocketJSONRequestLogHandler?               OnMeterValuesWSRequest;
+        public event WebSocketJSONRequestLogHandler?                 OnMeterValuesWSRequest;
 
         /// <summary>
         /// An event sent whenever a MeterValues request was received.
         /// </summary>
-        public event CSMS.OnMeterValuesRequestDelegate?                 OnMeterValuesRequest;
+        public event OCPPv2_1.CSMS.OnMeterValuesRequestDelegate?     OnMeterValuesRequest;
 
         /// <summary>
         /// An event sent whenever a MeterValues request was received.
         /// </summary>
-        public event CSMS.OnMeterValuesDelegate?                        OnMeterValues;
+        public event OCPPv2_1.CSMS.OnMeterValuesDelegate?            OnMeterValues;
 
         /// <summary>
         /// An event sent whenever a response to a MeterValues request was sent.
         /// </summary>
-        public event CSMS.OnMeterValuesResponseDelegate?                OnMeterValuesResponse;
+        public event OCPPv2_1.CSMS.OnMeterValuesResponseDelegate?    OnMeterValuesResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a MeterValues request was sent.
         /// </summary>
-        public event CSMS.WebSocketJSONRequestJSONResponseLogHandler?   OnMeterValuesWSResponse;
+        public event WebSocketJSONRequestJSONResponseLogHandler?     OnMeterValuesWSResponse;
 
         #endregion
 
@@ -139,6 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
                         OnMeterValuesRequest?.Invoke(Timestamp.Now,
                                                      this,
+                                                     Connection,
                                                      request);
 
                     }
@@ -157,6 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                                             GetInvocationList()?.
                                             SafeSelect(subscriber => (subscriber as OnMeterValuesDelegate)?.Invoke(Timestamp.Now,
                                                                                                                    this,
+                                                                                                                   Connection,
                                                                                                                    request,
                                                                                                                    CancellationToken)).
                                             ToArray();
@@ -178,6 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
                         OnMeterValuesResponse?.Invoke(Timestamp.Now,
                                                       this,
+                                                      Connection,
                                                       request,
                                                       response,
                                                       response.Runtime);

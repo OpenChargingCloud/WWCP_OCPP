@@ -20,7 +20,6 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
@@ -53,27 +52,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever an Authorize WebSocket request was received.
         /// </summary>
-        public event CSMS.WebSocketJSONRequestLogHandler?               OnAuthorizeWSRequest;
+        public event WebSocketJSONRequestLogHandler?               OnAuthorizeWSRequest;
 
         /// <summary>
         /// An event sent whenever an Authorize request was received.
         /// </summary>
-        public event CSMS.OnAuthorizeRequestDelegate?                   OnAuthorizeRequest;
+        public event OCPPv2_1.CSMS.OnAuthorizeRequestDelegate?     OnAuthorizeRequest;
 
         /// <summary>
         /// An event sent whenever an Authorize request was received.
         /// </summary>
-        public event CSMS.OnAuthorizeDelegate?                          OnAuthorize;
+        public event OCPPv2_1.CSMS.OnAuthorizeDelegate?            OnAuthorize;
 
         /// <summary>
         /// An event sent whenever an Authorize response was sent.
         /// </summary>
-        public event CSMS.OnAuthorizeResponseDelegate?                  OnAuthorizeResponse;
+        public event OCPPv2_1.CSMS.OnAuthorizeResponseDelegate?    OnAuthorizeResponse;
 
         /// <summary>
         /// An event sent whenever an Authorize WebSocket response was sent.
         /// </summary>
-        public event CSMS.WebSocketJSONRequestJSONResponseLogHandler?   OnAuthorizeWSResponse;
+        public event WebSocketJSONRequestJSONResponseLogHandler?   OnAuthorizeWSResponse;
 
         #endregion
 
@@ -139,6 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
                         OnAuthorizeRequest?.Invoke(Timestamp.Now,
                                                    this,
+                                                   Connection,
                                                    request);
 
                     }
@@ -157,6 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                                             GetInvocationList()?.
                                             SafeSelect(subscriber => (subscriber as OnAuthorizeDelegate)?.Invoke(Timestamp.Now,
                                                                                                                  this,
+                                                                                                                 Connection,
                                                                                                                  request,
                                                                                                                  CancellationToken)).
                                             ToArray();
@@ -178,6 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
                         OnAuthorizeResponse?.Invoke(Timestamp.Now,
                                                     this,
+                                                    Connection,
                                                     request,
                                                     response,
                                                     response.Runtime);

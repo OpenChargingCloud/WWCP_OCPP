@@ -53,6 +53,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
+        #region DiagnosticsStatusNotification
+
+        /// <summary>
+        /// Send a diagnostics status notification to the central system.
+        /// </summary>
+        /// <param name="Request">A diagnostics status notification request.</param>
+        public Task<DiagnosticsStatusNotificationResponse> DiagnosticsStatusNotification(DiagnosticsStatusNotificationRequest Request);
+
+        #endregion
+
+        #region FirmwareStatusNotification
+
+        /// <summary>
+        /// Send a firmware status notification to the central system.
+        /// </summary>
+        /// <param name="Request">A firmware status notification request.</param>
+        public Task<FirmwareStatusNotificationResponse> FirmwareStatusNotification(FirmwareStatusNotificationRequest Request);
+
+        #endregion
+
+
         #region Authorize
 
         /// <summary>
@@ -103,33 +124,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region TransferData
+
+        #region DataTransfer
 
         /// <summary>
         /// Send the given vendor-specific data to the central system.
         /// </summary>
         /// <param name="Request">A data transfer request.</param>
-        public Task<OCPP.CSMS.DataTransferResponse> DataTransfer(OCPP.CS.DataTransferRequest Request);
-
-        #endregion
-
-        #region DiagnosticsStatusNotification
-
-        /// <summary>
-        /// Send a diagnostics status notification to the central system.
-        /// </summary>
-        /// <param name="Request">A diagnostics status notification request.</param>
-        public Task<DiagnosticsStatusNotificationResponse> DiagnosticsStatusNotification(DiagnosticsStatusNotificationRequest Request);
-
-        #endregion
-
-        #region FirmwareStatusNotification
-
-        /// <summary>
-        /// Send a firmware status notification to the central system.
-        /// </summary>
-        /// <param name="Request">A firmware status notification request.</param>
-        public Task<FirmwareStatusNotificationResponse> FirmwareStatusNotification(FirmwareStatusNotificationRequest Request);
+        public Task<CS.DataTransferResponse> DataTransfer(DataTransferRequest Request);
 
         #endregion
 
@@ -156,7 +158,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="Request">A security event notification request.</param>
         public Task<SecurityEventNotificationResponse>
 
-            SendSecurityEventNotification(SecurityEventNotificationRequest  Request);
+            SecurityEventNotification(SecurityEventNotificationRequest  Request);
 
         #endregion
 

@@ -25,18 +25,18 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 namespace cloud.charging.open.protocols.OCPP.CS
 {
 
-    #region OnIncomingBinaryDataTransfer
-
     /// <summary>
     /// An incoming BinaryDataTransfer request.
     /// </summary>
     /// <param name="Timestamp">The log timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
     /// <param name="Request">The BinaryDataTransfer request.</param>
     public delegate Task
 
         OnIncomingBinaryDataTransferRequestDelegate(DateTime                         Timestamp,
                                                     IEventSender                     Sender,
+                                                    WebSocketClientConnection        Connection,
                                                     CSMS.BinaryDataTransferRequest   Request);
 
 
@@ -45,6 +45,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
     /// <param name="Request">The BinaryDataTransfer request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<BinaryDataTransferResponse>
@@ -61,6 +62,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
     /// </summary>
     /// <param name="Timestamp">The log timestamp of the response.</param>
     /// <param name="Sender">The sender of the response.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
     /// <param name="Request">The BinaryDataTransfer request.</param>
     /// <param name="Response">The BinaryDataTransfer response.</param>
     /// <param name="Runtime">The runtime of this request.</param>
@@ -68,10 +70,9 @@ namespace cloud.charging.open.protocols.OCPP.CS
 
         OnIncomingBinaryDataTransferResponseDelegate(DateTime                         Timestamp,
                                                      IEventSender                     Sender,
+                                                     WebSocketClientConnection        Connection,
                                                      CSMS.BinaryDataTransferRequest   Request,
                                                      BinaryDataTransferResponse       Response,
                                                      TimeSpan                         Runtime);
-
-    #endregion
 
 }

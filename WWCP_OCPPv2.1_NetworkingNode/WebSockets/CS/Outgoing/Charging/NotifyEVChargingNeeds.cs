@@ -18,7 +18,6 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
@@ -35,9 +34,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     /// A charging station HTTP Web Socket client.
     /// </summary>
     public partial class NetworkingNodeWSClient : WebSocketClient,
-                                                   INetworkingNodeWebSocketClient,
-                                                   INetworkingNodeServer,
-                                                   INetworkingNodeClientEvents
+                                                  INetworkingNodeWebSocketClient,
+                                                  INetworkingNodeServer,
+                                                  INetworkingNodeClientEvents
     {
 
         #region Custom JSON serializer delegates
@@ -53,22 +52,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever a notify EV charging needs request will be sent to the CSMS.
         /// </summary>
-        public event CS.OnNotifyEVChargingNeedsRequestDelegate?     OnNotifyEVChargingNeedsRequest;
+        public event OCPPv2_1.CS.OnNotifyEVChargingNeedsRequestDelegate?     OnNotifyEVChargingNeedsRequest;
 
         /// <summary>
         /// An event fired whenever a notify EV charging needs request will be sent to the CSMS.
         /// </summary>
-        public event ClientRequestLogHandler?                    OnNotifyEVChargingNeedsWSRequest;
+        public event ClientRequestLogHandler?                                OnNotifyEVChargingNeedsWSRequest;
 
         /// <summary>
         /// An event fired whenever a response to a notify EV charging needs request was received.
         /// </summary>
-        public event ClientResponseLogHandler?                   OnNotifyEVChargingNeedsWSResponse;
+        public event ClientResponseLogHandler?                               OnNotifyEVChargingNeedsWSResponse;
 
         /// <summary>
         /// An event fired whenever a response to a notify EV charging needs request was received.
         /// </summary>
-        public event CS.OnNotifyEVChargingNeedsResponseDelegate?    OnNotifyEVChargingNeedsResponse;
+        public event OCPPv2_1.CS.OnNotifyEVChargingNeedsResponseDelegate?    OnNotifyEVChargingNeedsResponse;
 
         #endregion
 

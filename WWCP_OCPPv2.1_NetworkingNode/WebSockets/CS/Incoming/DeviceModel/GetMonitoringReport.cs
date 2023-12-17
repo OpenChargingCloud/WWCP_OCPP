@@ -56,27 +56,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a get monitoring report websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?                OnGetMonitoringReportWSRequest;
+        public event WSClientJSONRequestLogHandler?                        OnGetMonitoringReportWSRequest;
 
         /// <summary>
         /// An event sent whenever a get monitoring report request was received.
         /// </summary>
-        public event CS.OnGetMonitoringReportRequestDelegate?     OnGetMonitoringReportRequest;
+        public event OCPPv2_1.CS.OnGetMonitoringReportRequestDelegate?     OnGetMonitoringReportRequest;
 
         /// <summary>
         /// An event sent whenever a get monitoring report request was received.
         /// </summary>
-        public event CS.OnGetMonitoringReportDelegate?            OnGetMonitoringReport;
+        public event OCPPv2_1.CS.OnGetMonitoringReportDelegate?            OnGetMonitoringReport;
 
         /// <summary>
         /// An event sent whenever a response to a get monitoring report request was sent.
         /// </summary>
-        public event CS.OnGetMonitoringReportResponseDelegate?    OnGetMonitoringReportResponse;
+        public event OCPPv2_1.CS.OnGetMonitoringReportResponseDelegate?    OnGetMonitoringReportResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a get monitoring report request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?               OnGetMonitoringReportWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?            OnGetMonitoringReportWSResponse;
 
         #endregion
 
@@ -140,6 +140,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnGetMonitoringReportRequest?.Invoke(Timestamp.Now,
                                                              this,
+                                                             WebSocketConnection,
                                                              request);
 
                     }
@@ -183,6 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnGetMonitoringReportResponse?.Invoke(Timestamp.Now,
                                                               this,
+                                                              WebSocketConnection,
                                                               request,
                                                               response,
                                                               response.Runtime);

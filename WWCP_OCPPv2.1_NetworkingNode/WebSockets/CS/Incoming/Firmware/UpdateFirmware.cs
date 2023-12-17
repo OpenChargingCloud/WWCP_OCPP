@@ -56,27 +56,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever an update firmware websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?           OnUpdateFirmwareWSRequest;
+        public event WSClientJSONRequestLogHandler?                   OnUpdateFirmwareWSRequest;
 
         /// <summary>
         /// An event sent whenever an update firmware request was received.
         /// </summary>
-        public event CS.OnUpdateFirmwareRequestDelegate?     OnUpdateFirmwareRequest;
+        public event OCPPv2_1.CS.OnUpdateFirmwareRequestDelegate?     OnUpdateFirmwareRequest;
 
         /// <summary>
         /// An event sent whenever an update firmware request was received.
         /// </summary>
-        public event CS.OnUpdateFirmwareDelegate?            OnUpdateFirmware;
+        public event OCPPv2_1.CS.OnUpdateFirmwareDelegate?            OnUpdateFirmware;
 
         /// <summary>
         /// An event sent whenever a response to an update firmware request was sent.
         /// </summary>
-        public event CS.OnUpdateFirmwareResponseDelegate?    OnUpdateFirmwareResponse;
+        public event OCPPv2_1.CS.OnUpdateFirmwareResponseDelegate?    OnUpdateFirmwareResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to an update firmware request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?          OnUpdateFirmwareWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?       OnUpdateFirmwareWSResponse;
 
         #endregion
 
@@ -140,6 +140,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnUpdateFirmwareRequest?.Invoke(Timestamp.Now,
                                                         this,
+                                                        WebSocketConnection,
                                                         request);
 
                     }
@@ -183,6 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnUpdateFirmwareResponse?.Invoke(Timestamp.Now,
                                                          this,
+                                                         WebSocketConnection,
                                                          request,
                                                          response,
                                                          response.Runtime);

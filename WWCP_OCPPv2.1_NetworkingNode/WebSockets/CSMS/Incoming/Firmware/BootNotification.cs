@@ -20,7 +20,6 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
@@ -53,27 +52,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a BootNotification WebSocket request was received.
         /// </summary>
-        public event CSMS.WebSocketJSONRequestLogHandler?               OnBootNotificationWSRequest;
+        public event WebSocketJSONRequestLogHandler?                      OnBootNotificationWSRequest;
 
         /// <summary>
         /// An event sent whenever a BootNotification request was received.
         /// </summary>
-        public event CSMS.OnBootNotificationRequestDelegate?            OnBootNotificationRequest;
+        public event OCPPv2_1.CSMS.OnBootNotificationRequestDelegate?     OnBootNotificationRequest;
 
         /// <summary>
         /// An event sent whenever a BootNotification was received.
         /// </summary>
-        public event CSMS.OnBootNotificationDelegate?                   OnBootNotification;
+        public event OCPPv2_1.CSMS.OnBootNotificationDelegate?            OnBootNotification;
 
         /// <summary>
         /// An event sent whenever a response to a BootNotification was sent.
         /// </summary>
-        public event CSMS.OnBootNotificationResponseDelegate?           OnBootNotificationResponse;
+        public event OCPPv2_1.CSMS.OnBootNotificationResponseDelegate?    OnBootNotificationResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a BootNotification was sent.
         /// </summary>
-        public event CSMS.WebSocketJSONRequestJSONResponseLogHandler?   OnBootNotificationWSResponse;
+        public event WebSocketJSONRequestJSONResponseLogHandler?          OnBootNotificationWSResponse;
 
         #endregion
 

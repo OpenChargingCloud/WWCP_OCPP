@@ -18,8 +18,6 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
-using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
@@ -50,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a GetInstalledCertificateIds request was sent.
         /// </summary>
-        public event CSMS.OnGetInstalledCertificateIdsRequestDelegate?     OnGetInstalledCertificateIdsRequest;
+        public event OCPPv2_1.CSMS.OnGetInstalledCertificateIdsRequestDelegate?     OnGetInstalledCertificateIdsRequest;
 
         /// <summary>
         /// An event sent whenever a response to a GetInstalledCertificateIds request was sent.
         /// </summary>
-        public event CSMS.OnGetInstalledCertificateIdsResponseDelegate?    OnGetInstalledCertificateIdsResponse;
+        public event OCPPv2_1.CSMS.OnGetInstalledCertificateIdsResponseDelegate?    OnGetInstalledCertificateIdsResponse;
 
         #endregion
 

@@ -18,7 +18,6 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
@@ -35,9 +34,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     /// A charging station HTTP Web Socket client.
     /// </summary>
     public partial class NetworkingNodeWSClient : WebSocketClient,
-                                                   INetworkingNodeWebSocketClient,
-                                                   INetworkingNodeServer,
-                                                   INetworkingNodeClientEvents
+                                                  INetworkingNodeWebSocketClient,
+                                                  INetworkingNodeServer,
+                                                  INetworkingNodeClientEvents
     {
 
         #region Custom JSON serializer delegates
@@ -53,22 +52,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever an authorize request will be sent to the CSMS.
         /// </summary>
-        public event CS.OnTransactionEventRequestDelegate?     OnTransactionEventRequest;
+        public event OCPPv2_1.CS.OnTransactionEventRequestDelegate?     OnTransactionEventRequest;
 
         /// <summary>
         /// An event fired whenever an authorize request will be sent to the CSMS.
         /// </summary>
-        public event ClientRequestLogHandler?               OnTransactionEventWSRequest;
+        public event ClientRequestLogHandler?                           OnTransactionEventWSRequest;
 
         /// <summary>
         /// An event fired whenever a response to an authorize request was received.
         /// </summary>
-        public event ClientResponseLogHandler?              OnTransactionEventWSResponse;
+        public event ClientResponseLogHandler?                          OnTransactionEventWSResponse;
 
         /// <summary>
         /// An event fired whenever a response to an authorize request was received.
         /// </summary>
-        public event CS.OnTransactionEventResponseDelegate?    OnTransactionEventResponse;
+        public event OCPPv2_1.CS.OnTransactionEventResponseDelegate?    OnTransactionEventResponse;
 
         #endregion
 

@@ -18,7 +18,6 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
@@ -35,9 +34,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     /// A charging station HTTP Web Socket client.
     /// </summary>
     public partial class NetworkingNodeWSClient : WebSocketClient,
-                                                   INetworkingNodeWebSocketClient,
-                                                   INetworkingNodeServer,
-                                                   INetworkingNodeClientEvents
+                                                  INetworkingNodeWebSocketClient,
+                                                  INetworkingNodeServer,
+                                                  INetworkingNodeClientEvents
     {
 
         #region Custom JSON serializer delegates
@@ -53,22 +52,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever a get 15118 EV certificate request will be sent to the CSMS.
         /// </summary>
-        public event CS.OnGet15118EVCertificateRequestDelegate?     OnGet15118EVCertificateRequest;
+        public event OCPPv2_1.CS.OnGet15118EVCertificateRequestDelegate?     OnGet15118EVCertificateRequest;
 
         /// <summary>
         /// An event fired whenever a get 15118 EV certificate request will be sent to the CSMS.
         /// </summary>
-        public event ClientRequestLogHandler?                    OnGet15118EVCertificateWSRequest;
+        public event ClientRequestLogHandler?                                OnGet15118EVCertificateWSRequest;
 
         /// <summary>
         /// An event fired whenever a response to a get 15118 EV certificate request was received.
         /// </summary>
-        public event ClientResponseLogHandler?                   OnGet15118EVCertificateWSResponse;
+        public event ClientResponseLogHandler?                               OnGet15118EVCertificateWSResponse;
 
         /// <summary>
         /// An event fired whenever a response to a get 15118 EV certificate request was received.
         /// </summary>
-        public event CS.OnGet15118EVCertificateResponseDelegate?    OnGet15118EVCertificateResponse;
+        public event OCPPv2_1.CS.OnGet15118EVCertificateResponseDelegate?    OnGet15118EVCertificateResponse;
 
         #endregion
 

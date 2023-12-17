@@ -26,7 +26,7 @@ using cloud.charging.open.protocols.OCPP.CS;
 namespace cloud.charging.open.protocols.OCPP.CSMS
 {
 
-    #region OnAddSignaturePolicy (-Request/-Response) Delegate
+    #region OnAddSignaturePolicy (Request/-Response) Delegate
 
     /// <summary>
     /// A delegate called whenever an AddSignaturePolicy request will be sent to a charging station.

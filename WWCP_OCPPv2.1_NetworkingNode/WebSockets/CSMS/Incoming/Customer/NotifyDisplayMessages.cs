@@ -20,7 +20,6 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
@@ -53,27 +52,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a NotifyDisplayMessages WebSocket request was received.
         /// </summary>
-        public event CSMS.WebSocketJSONRequestLogHandler?               OnNotifyDisplayMessagesWSRequest;
+        public event WebSocketJSONRequestLogHandler?                           OnNotifyDisplayMessagesWSRequest;
 
         /// <summary>
         /// An event sent whenever a NotifyDisplayMessages request was received.
         /// </summary>
-        public event CSMS.OnNotifyDisplayMessagesRequestDelegate?       OnNotifyDisplayMessagesRequest;
+        public event OCPPv2_1.CSMS.OnNotifyDisplayMessagesRequestDelegate?     OnNotifyDisplayMessagesRequest;
 
         /// <summary>
         /// An event sent whenever a NotifyDisplayMessages was received.
         /// </summary>
-        public event CSMS.OnNotifyDisplayMessagesDelegate?              OnNotifyDisplayMessages;
+        public event OCPPv2_1.CSMS.OnNotifyDisplayMessagesDelegate?            OnNotifyDisplayMessages;
 
         /// <summary>
         /// An event sent whenever a response to a NotifyDisplayMessages was sent.
         /// </summary>
-        public event CSMS.OnNotifyDisplayMessagesResponseDelegate?      OnNotifyDisplayMessagesResponse;
+        public event OCPPv2_1.CSMS.OnNotifyDisplayMessagesResponseDelegate?    OnNotifyDisplayMessagesResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a NotifyDisplayMessages was sent.
         /// </summary>
-        public event CSMS.WebSocketJSONRequestJSONResponseLogHandler?   OnNotifyDisplayMessagesWSResponse;
+        public event WebSocketJSONRequestJSONResponseLogHandler?               OnNotifyDisplayMessagesWSResponse;
 
         #endregion
 
@@ -139,6 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
                         OnNotifyDisplayMessagesRequest?.Invoke(Timestamp.Now,
                                                                this,
+                                                               Connection,
                                                                request);
 
                     }
@@ -157,6 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                                             GetInvocationList()?.
                                             SafeSelect(subscriber => (subscriber as OnNotifyDisplayMessagesDelegate)?.Invoke(Timestamp.Now,
                                                                                                                              this,
+                                                                                                                             Connection,
                                                                                                                              request,
                                                                                                                              CancellationToken)).
                                             ToArray();
@@ -178,6 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
                         OnNotifyDisplayMessagesResponse?.Invoke(Timestamp.Now,
                                                                 this,
+                                                                Connection,
                                                                 request,
                                                                 response,
                                                                 response.Runtime);

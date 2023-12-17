@@ -56,27 +56,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a get base report websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?          OnGetBaseReportWSRequest;
+        public event WSClientJSONRequestLogHandler?                  OnGetBaseReportWSRequest;
 
         /// <summary>
         /// An event sent whenever a get base report request was received.
         /// </summary>
-        public event CS.OnGetBaseReportRequestDelegate?     OnGetBaseReportRequest;
+        public event OCPPv2_1.CS.OnGetBaseReportRequestDelegate?     OnGetBaseReportRequest;
 
         /// <summary>
         /// An event sent whenever a get base report request was received.
         /// </summary>
-        public event CS.OnGetBaseReportDelegate?            OnGetBaseReport;
+        public event OCPPv2_1.CS.OnGetBaseReportDelegate?            OnGetBaseReport;
 
         /// <summary>
         /// An event sent whenever a response to a get base report request was sent.
         /// </summary>
-        public event CS.OnGetBaseReportResponseDelegate?    OnGetBaseReportResponse;
+        public event OCPPv2_1.CS.OnGetBaseReportResponseDelegate?    OnGetBaseReportResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a get base report request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?         OnGetBaseReportWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?      OnGetBaseReportWSResponse;
 
         #endregion
 
@@ -140,6 +140,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnGetBaseReportRequest?.Invoke(Timestamp.Now,
                                                        this,
+                                                       WebSocketConnection,
                                                        request);
 
                     }
@@ -183,6 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnGetBaseReportResponse?.Invoke(Timestamp.Now,
                                                         this,
+                                                        WebSocketConnection,
                                                         request,
                                                         response,
                                                         response.Runtime);

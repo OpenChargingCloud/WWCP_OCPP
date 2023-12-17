@@ -56,27 +56,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever an UsePriorityCharging websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?                OnUsePriorityChargingWSRequest;
+        public event WSClientJSONRequestLogHandler?                        OnUsePriorityChargingWSRequest;
 
         /// <summary>
         /// An event sent whenever an UsePriorityCharging request was received.
         /// </summary>
-        public event CS.OnUsePriorityChargingRequestDelegate?     OnUsePriorityChargingRequest;
+        public event OCPPv2_1.CS.OnUsePriorityChargingRequestDelegate?     OnUsePriorityChargingRequest;
 
         /// <summary>
         /// An event sent whenever an UsePriorityCharging request was received.
         /// </summary>
-        public event CS.OnUsePriorityChargingDelegate?            OnUsePriorityCharging;
+        public event OCPPv2_1.CS.OnUsePriorityChargingDelegate?            OnUsePriorityCharging;
 
         /// <summary>
         /// An event sent whenever a response to an UsePriorityCharging request was sent.
         /// </summary>
-        public event CS.OnUsePriorityChargingResponseDelegate?    OnUsePriorityChargingResponse;
+        public event OCPPv2_1.CS.OnUsePriorityChargingResponseDelegate?    OnUsePriorityChargingResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to an UsePriorityCharging request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?               OnUsePriorityChargingWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?            OnUsePriorityChargingWSResponse;
 
         #endregion
 
@@ -140,6 +140,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnUsePriorityChargingRequest?.Invoke(Timestamp.Now,
                                                              this,
+                                                             WebSocketConnection,
                                                              request);
 
                     }
@@ -183,6 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnUsePriorityChargingResponse?.Invoke(Timestamp.Now,
                                                               this,
+                                                              WebSocketConnection,
                                                               request,
                                                               response,
                                                               response.Runtime);

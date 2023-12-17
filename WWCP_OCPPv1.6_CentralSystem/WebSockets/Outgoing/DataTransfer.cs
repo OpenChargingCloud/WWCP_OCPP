@@ -36,9 +36,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region Custom JSON serializer delegates
 
-        public CustomJObjectSerializerDelegate<OCPP.CSMS.DataTransferRequest>?  CustomDataTransferRequestSerializer    { get; set; }
+        public CustomJObjectSerializerDelegate<DataTransferRequest>?  CustomDataTransferRequestSerializer    { get; set; }
 
-        public CustomJObjectParserDelegate<OCPP.CS.DataTransferResponse>?       CustomDataTransferResponseParser       { get; set; }
+        public CustomJObjectParserDelegate<CP.DataTransferResponse>?  CustomDataTransferResponseParser       { get; set; }
 
         #endregion
 
@@ -47,19 +47,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a DataTransfer request was sent.
         /// </summary>
-        public event OCPP.CSMS.OnDataTransferRequestDelegate?     OnDataTransferRequest;
+        public event OnDataTransferRequestDelegate?     OnDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a response to a DataTransfer request was sent.
         /// </summary>
-        public event OCPP.CSMS.OnDataTransferResponseDelegate?    OnDataTransferResponse;
+        public event OnDataTransferResponseDelegate?    OnDataTransferResponse;
 
         #endregion
 
 
         #region DataTransfer(Request)
 
-        public async Task<OCPP.CS.DataTransferResponse> DataTransfer(OCPP.CSMS.DataTransferRequest Request)
+        public async Task<CP.DataTransferResponse> DataTransfer(CS.DataTransferRequest Request)
         {
 
             #region Send OnDataTransferRequest event
@@ -81,7 +81,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             #endregion
 
 
-            OCPP.CS.DataTransferResponse? response = null;
+            CP.DataTransferResponse? response = null;
 
             try
             {
@@ -104,24 +104,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     sendRequestState.JSONResponse is not null)
                 {
 
-                    if (OCPP.CS.DataTransferResponse.TryParse(Request,
-                                                              sendRequestState.JSONResponse.Payload,
-                                                              out var dataTransferResponse,
-                                                              out var errorResponse,
-                                                              CustomDataTransferResponseParser) &&
+                    if (CP.DataTransferResponse.TryParse(Request,
+                                                         sendRequestState.JSONResponse.Payload,
+                                                         out var dataTransferResponse,
+                                                         out var errorResponse,
+                                                         CustomDataTransferResponseParser) &&
                         dataTransferResponse is not null)
                     {
                         response = dataTransferResponse;
                     }
 
-                    response ??= new OCPP.CS.DataTransferResponse(
+                    response ??= new CP.DataTransferResponse(
                                          Request,
                                          Result.Format(errorResponse)
                                      );
 
                 }
 
-                response ??= new OCPP.CS.DataTransferResponse(
+                response ??= new CP.DataTransferResponse(
                                      Request,
                                      Result.FromSendRequestState(sendRequestState)
                                  );
@@ -130,7 +130,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
 
-                response = new OCPP.CS.DataTransferResponse(
+                response = new CP.DataTransferResponse(
                                Request,
                                Result.FromException(e)
                            );

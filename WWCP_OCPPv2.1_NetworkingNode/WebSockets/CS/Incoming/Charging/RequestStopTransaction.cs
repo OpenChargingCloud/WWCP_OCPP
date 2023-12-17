@@ -56,27 +56,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a request stop transaction websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?                   OnRequestStopTransactionWSRequest;
+        public event WSClientJSONRequestLogHandler?                           OnRequestStopTransactionWSRequest;
 
         /// <summary>
         /// An event sent whenever a request stop transaction request was received.
         /// </summary>
-        public event CS.OnRequestStopTransactionRequestDelegate?     OnRequestStopTransactionRequest;
+        public event OCPPv2_1.CS.OnRequestStopTransactionRequestDelegate?     OnRequestStopTransactionRequest;
 
         /// <summary>
         /// An event sent whenever a request stop transaction request was received.
         /// </summary>
-        public event CS.OnRequestStopTransactionDelegate?            OnRequestStopTransaction;
+        public event OCPPv2_1.CS.OnRequestStopTransactionDelegate?            OnRequestStopTransaction;
 
         /// <summary>
         /// An event sent whenever a response to a request stop transaction request was sent.
         /// </summary>
-        public event CS.OnRequestStopTransactionResponseDelegate?    OnRequestStopTransactionResponse;
+        public event OCPPv2_1.CS.OnRequestStopTransactionResponseDelegate?    OnRequestStopTransactionResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a request stop transaction request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?                  OnRequestStopTransactionWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?               OnRequestStopTransactionWSResponse;
 
         #endregion
 
@@ -140,6 +140,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnRequestStopTransactionRequest?.Invoke(Timestamp.Now,
                                                                 this,
+                                                                WebSocketConnection,
                                                                 request);
 
                     }
@@ -183,6 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnRequestStopTransactionResponse?.Invoke(Timestamp.Now,
                                                                  this,
+                                                                 WebSocketConnection,
                                                                  request,
                                                                  response,
                                                                  response.Runtime);

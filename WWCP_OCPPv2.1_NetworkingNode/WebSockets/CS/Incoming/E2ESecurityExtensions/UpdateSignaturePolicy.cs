@@ -58,17 +58,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever an UpdateSignaturePolicy request was received.
         /// </summary>
-        public event OCPP.NetworkingNode.CS.OnUpdateSignaturePolicyRequestDelegate?     OnUpdateSignaturePolicyRequest;
+        public event OCPP.CS.OnUpdateSignaturePolicyRequestDelegate?     OnUpdateSignaturePolicyRequest;
 
         /// <summary>
         /// An event sent whenever an UpdateSignaturePolicy request was received.
         /// </summary>
-        public event OCPP.NetworkingNode.CS.OnUpdateSignaturePolicyDelegate?            OnUpdateSignaturePolicy;
+        public event OCPP.CS.OnUpdateSignaturePolicyDelegate?            OnUpdateSignaturePolicy;
 
         /// <summary>
         /// An event sent whenever a response to an UpdateSignaturePolicy request was sent.
         /// </summary>
-        public event OCPP.NetworkingNode.CS.OnUpdateSignaturePolicyResponseDelegate?    OnUpdateSignaturePolicyResponse;
+        public event OCPP.CS.OnUpdateSignaturePolicyResponseDelegate?    OnUpdateSignaturePolicyResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to an UpdateSignaturePolicy request was sent.
@@ -137,6 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnUpdateSignaturePolicyRequest?.Invoke(Timestamp.Now,
                                                                this,
+                                                               WebSocketConnection,
                                                                request);
 
                     }
@@ -180,6 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnUpdateSignaturePolicyResponse?.Invoke(Timestamp.Now,
                                                                 this,
+                                                                WebSocketConnection,
                                                                 request,
                                                                 response,
                                                                 response.Runtime);

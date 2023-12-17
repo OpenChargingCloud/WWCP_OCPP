@@ -20,7 +20,6 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
@@ -53,27 +52,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a TransactionEvent WebSocket request was received.
         /// </summary>
-        public event CSMS.WebSocketJSONRequestLogHandler?               OnTransactionEventWSRequest;
+        public event WebSocketJSONRequestLogHandler?                      OnTransactionEventWSRequest;
 
         /// <summary>
         /// An event sent whenever a TransactionEvent request was received.
         /// </summary>
-        public event CSMS.OnTransactionEventRequestDelegate?            OnTransactionEventRequest;
+        public event OCPPv2_1.CSMS.OnTransactionEventRequestDelegate?     OnTransactionEventRequest;
 
         /// <summary>
         /// An event sent whenever a TransactionEvent request was received.
         /// </summary>
-        public event CSMS.OnTransactionEventDelegate?                   OnTransactionEvent;
+        public event OCPPv2_1.CSMS.OnTransactionEventDelegate?            OnTransactionEvent;
 
         /// <summary>
         /// An event sent whenever a TransactionEvent response was sent.
         /// </summary>
-        public event CSMS.OnTransactionEventResponseDelegate?           OnTransactionEventResponse;
+        public event OCPPv2_1.CSMS.OnTransactionEventResponseDelegate?    OnTransactionEventResponse;
 
         /// <summary>
         /// An event sent whenever a TransactionEvent WebSocket response was sent.
         /// </summary>
-        public event CSMS.WebSocketJSONRequestJSONResponseLogHandler?   OnTransactionEventWSResponse;
+        public event WebSocketJSONRequestJSONResponseLogHandler?          OnTransactionEventWSResponse;
 
         #endregion
 
@@ -139,6 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
                         OnTransactionEventRequest?.Invoke(Timestamp.Now,
                                                           this,
+                                                          Connection,
                                                           request);
 
                     }
@@ -157,6 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                                             GetInvocationList()?.
                                             SafeSelect(subscriber => (subscriber as OnTransactionEventDelegate)?.Invoke(Timestamp.Now,
                                                                                                                         this,
+                                                                                                                        Connection,
                                                                                                                         request,
                                                                                                                         CancellationToken)).
                                             ToArray();
@@ -178,6 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
                         OnTransactionEventResponse?.Invoke(Timestamp.Now,
                                                            this,
+                                                           Connection,
                                                            request,
                                                            response,
                                                            response.Runtime);

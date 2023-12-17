@@ -18,7 +18,6 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
@@ -35,9 +34,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     /// A charging station HTTP Web Socket client.
     /// </summary>
     public partial class NetworkingNodeWSClient : WebSocketClient,
-                                                   INetworkingNodeWebSocketClient,
-                                                   INetworkingNodeServer,
-                                                   INetworkingNodeClientEvents
+                                                  INetworkingNodeWebSocketClient,
+                                                  INetworkingNodeServer,
+                                                  INetworkingNodeClientEvents
     {
 
         #region Custom JSON serializer delegates
@@ -53,22 +52,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever a NotifyPriorityCharging request will be sent to the CSMS.
         /// </summary>
-        public event CS.OnNotifyPriorityChargingRequestDelegate?     OnNotifyPriorityChargingRequest;
+        public event OCPPv2_1.CS.OnNotifyPriorityChargingRequestDelegate?     OnNotifyPriorityChargingRequest;
 
         /// <summary>
         /// An event fired whenever a NotifyPriorityCharging request will be sent to the CSMS.
         /// </summary>
-        public event ClientRequestLogHandler?                     OnNotifyPriorityChargingWSRequest;
+        public event ClientRequestLogHandler?                                 OnNotifyPriorityChargingWSRequest;
 
         /// <summary>
         /// An event fired whenever a response to a NotifyPriorityCharging request was received.
         /// </summary>
-        public event ClientResponseLogHandler?                    OnNotifyPriorityChargingWSResponse;
+        public event ClientResponseLogHandler?                                OnNotifyPriorityChargingWSResponse;
 
         /// <summary>
         /// An event fired whenever a response to a NotifyPriorityCharging request was received.
         /// </summary>
-        public event CS.OnNotifyPriorityChargingResponseDelegate?    OnNotifyPriorityChargingResponse;
+        public event OCPPv2_1.CS.OnNotifyPriorityChargingResponseDelegate?    OnNotifyPriorityChargingResponse;
 
         #endregion
 

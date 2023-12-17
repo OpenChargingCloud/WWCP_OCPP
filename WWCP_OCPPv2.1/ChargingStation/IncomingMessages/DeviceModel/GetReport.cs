@@ -32,12 +32,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// </summary>
     /// <param name="Timestamp">The log timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnGetReportRequestDelegate(DateTime           Timestamp,
-                                   IEventSender       Sender,
-                                   GetReportRequest   Request);
+        OnGetReportRequestDelegate(DateTime                    Timestamp,
+                                   IEventSender                Sender,
+                                   WebSocketClientConnection   Connection,
+                                   GetReportRequest            Request);
 
 
     /// <summary>
@@ -45,6 +47,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<GetReportResponse>
@@ -61,15 +64,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// </summary>
     /// <param name="Timestamp">The log timestamp of the response.</param>
     /// <param name="Sender">The sender of the response.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
     /// <param name="Request">The reserve now request.</param>
     /// <param name="Response">The reserve now response.</param>
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnGetReportResponseDelegate(DateTime            Timestamp,
-                                    IEventSender        Sender,
-                                    GetReportRequest    Request,
-                                    GetReportResponse   Response,
-                                    TimeSpan            Runtime);
+        OnGetReportResponseDelegate(DateTime                    Timestamp,
+                                    IEventSender                Sender,
+                                    WebSocketClientConnection   Connection,
+                                    GetReportRequest            Request,
+                                    GetReportResponse           Response,
+                                    TimeSpan                    Runtime);
 
 }

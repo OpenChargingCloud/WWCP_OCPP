@@ -27,19 +27,19 @@ using cloud.charging.open.protocols.OCPP.CSMS;
 namespace cloud.charging.open.protocols.OCPP.CS
 {
 
-    #region OnListDirectory
-
     /// <summary>
     /// A ListDirectory request.
     /// </summary>
     /// <param name="Timestamp">The log timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
     /// <param name="Request">The ListDirectory request.</param>
     public delegate Task
 
-        OnListDirectoryRequestDelegate(DateTime               Timestamp,
-                                       IEventSender           Sender,
-                                       ListDirectoryRequest   Request);
+        OnListDirectoryRequestDelegate(DateTime                    Timestamp,
+                                       IEventSender                Sender,
+                                       WebSocketClientConnection   Connection,
+                                       ListDirectoryRequest        Request);
 
 
     /// <summary>
@@ -47,6 +47,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
     /// <param name="Request">The ListDirectory request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<ListDirectoryResponse>
@@ -63,17 +64,17 @@ namespace cloud.charging.open.protocols.OCPP.CS
     /// </summary>
     /// <param name="Timestamp">The log timestamp of the response.</param>
     /// <param name="Sender">The sender of the response.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
     /// <param name="Request">The ListDirectory request.</param>
     /// <param name="Response">The ListDirectory response.</param>
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnListDirectoryResponseDelegate(DateTime                Timestamp,
-                                        IEventSender            Sender,
-                                        ListDirectoryRequest    Request,
-                                        ListDirectoryResponse   Response,
-                                        TimeSpan                Runtime);
-
-    #endregion
+        OnListDirectoryResponseDelegate(DateTime                    Timestamp,
+                                        IEventSender                Sender,
+                                        WebSocketClientConnection   Connection,
+                                        ListDirectoryRequest        Request,
+                                        ListDirectoryResponse       Response,
+                                        TimeSpan                    Runtime);
 
 }

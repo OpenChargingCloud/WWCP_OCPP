@@ -56,27 +56,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a set variable monitoring websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?                  OnSetVariableMonitoringWSRequest;
+        public event WSClientJSONRequestLogHandler?                          OnSetVariableMonitoringWSRequest;
 
         /// <summary>
         /// An event sent whenever a set variable monitoring request was received.
         /// </summary>
-        public event CS.OnSetVariableMonitoringRequestDelegate?     OnSetVariableMonitoringRequest;
+        public event OCPPv2_1.CS.OnSetVariableMonitoringRequestDelegate?     OnSetVariableMonitoringRequest;
 
         /// <summary>
         /// An event sent whenever a set variable monitoring request was received.
         /// </summary>
-        public event CS.OnSetVariableMonitoringDelegate?            OnSetVariableMonitoring;
+        public event OCPPv2_1.CS.OnSetVariableMonitoringDelegate?            OnSetVariableMonitoring;
 
         /// <summary>
         /// An event sent whenever a response to a set variable monitoring request was sent.
         /// </summary>
-        public event CS.OnSetVariableMonitoringResponseDelegate?    OnSetVariableMonitoringResponse;
+        public event OCPPv2_1.CS.OnSetVariableMonitoringResponseDelegate?    OnSetVariableMonitoringResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a set variable monitoring request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?                 OnSetVariableMonitoringWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?              OnSetVariableMonitoringWSResponse;
 
         #endregion
 
@@ -140,6 +140,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnSetVariableMonitoringRequest?.Invoke(Timestamp.Now,
                                                                this,
+                                                               WebSocketConnection,
                                                                request);
 
                     }
@@ -183,6 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnSetVariableMonitoringResponse?.Invoke(Timestamp.Now,
                                                                 this,
+                                                                WebSocketConnection,
                                                                 request,
                                                                 response,
                                                                 response.Runtime);

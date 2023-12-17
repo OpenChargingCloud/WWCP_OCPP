@@ -32,7 +32,7 @@ namespace cloud.charging.open.protocols.OCPP
 
         // Binary Data Streams Extensions
 
-        #region BinaryDataTransfer             (-Request/-Response)
+        #region BinaryDataTransfer             (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a Reset request will be sent to a charging station.
@@ -46,7 +46,7 @@ namespace cloud.charging.open.protocols.OCPP
 
         #endregion
 
-        #region GetFile                        (-Request/-Response)
+        #region GetFile                        (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a GetFile request will be sent to a charging station.
@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPP
 
         #endregion
 
-        #region SendFile                       (-Request/-Response)
+        #region SendFile                       (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a SendFile request will be sent to a charging station.
@@ -74,7 +74,7 @@ namespace cloud.charging.open.protocols.OCPP
 
         #endregion
 
-        #region DeleteFile                     (-Request/-Response)
+        #region DeleteFile                     (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a DeleteFile request will be sent to a charging station.
@@ -88,7 +88,7 @@ namespace cloud.charging.open.protocols.OCPP
 
         #endregion
 
-        #region ListDirectory                  (-Request/-Response)
+        #region ListDirectory                  (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a ListDirectory request will be sent to a charging station.
@@ -105,7 +105,7 @@ namespace cloud.charging.open.protocols.OCPP
 
         // E2E Security Extensions
 
-        #region AddSignaturePolicy             (-Request/-Response)
+        #region AddSignaturePolicy             (Request/-Response)
 
         /// <summary>
         /// An event fired whenever an AddSignaturePolicy request will be sent to a charging station.
@@ -119,7 +119,7 @@ namespace cloud.charging.open.protocols.OCPP
 
         #endregion
 
-        #region UpdateSignaturePolicy          (-Request/-Response)
+        #region UpdateSignaturePolicy          (Request/-Response)
 
         /// <summary>
         /// An event fired whenever an UpdateSignaturePolicy request will be sent to a charging station.
@@ -133,7 +133,7 @@ namespace cloud.charging.open.protocols.OCPP
 
         #endregion
 
-        #region DeleteSignaturePolicy          (-Request/-Response)
+        #region DeleteSignaturePolicy          (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a DeleteSignaturePolicy request will be sent to a charging station.
@@ -147,7 +147,7 @@ namespace cloud.charging.open.protocols.OCPP
 
         #endregion
 
-        #region AddUserRole                    (-Request/-Response)
+        #region AddUserRole                    (Request/-Response)
 
         /// <summary>
         /// An event fired whenever an AddUserRole request will be sent to a charging station.
@@ -161,7 +161,7 @@ namespace cloud.charging.open.protocols.OCPP
 
         #endregion
 
-        #region UpdateUserRole                 (-Request/-Response)
+        #region UpdateUserRole                 (Request/-Response)
 
         /// <summary>
         /// An event fired whenever an UpdateUserRole request will be sent to a charging station.
@@ -175,7 +175,7 @@ namespace cloud.charging.open.protocols.OCPP
 
         #endregion
 
-        #region DeleteUserRole                 (-Request/-Response)
+        #region DeleteUserRole                 (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a DeleteUserRole request will be sent to a charging station.

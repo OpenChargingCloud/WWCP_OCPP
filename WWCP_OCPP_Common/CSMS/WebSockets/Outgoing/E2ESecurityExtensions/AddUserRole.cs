@@ -26,7 +26,7 @@ using cloud.charging.open.protocols.OCPP.CS;
 namespace cloud.charging.open.protocols.OCPP.CSMS
 {
 
-    #region OnAddUserRole (-Request/-Response) Delegate
+    #region OnAddUserRole (Request/-Response) Delegate
 
     /// <summary>
     /// A delegate called whenever an AddUserRole request will be sent to a charging station.

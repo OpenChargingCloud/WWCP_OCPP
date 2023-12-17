@@ -20,7 +20,6 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
@@ -38,9 +37,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     /// and connects to a CSMS to invoke methods.
     /// </summary>
     public partial class NetworkingNodeWSClient : WebSocketClient,
-                                                   INetworkingNodeWebSocketClient,
-                                                   INetworkingNodeServer,
-                                                   INetworkingNodeClientEvents
+                                                  INetworkingNodeWebSocketClient,
+                                                  INetworkingNodeServer,
+                                                  INetworkingNodeClientEvents
     {
 
         #region Custom JSON parser delegates
@@ -56,27 +55,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a clear variable monitoring websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?                    OnClearVariableMonitoringWSRequest;
+        public event WSClientJSONRequestLogHandler?                            OnClearVariableMonitoringWSRequest;
 
         /// <summary>
         /// An event sent whenever a clear variable monitoring request was received.
         /// </summary>
-        public event CS.OnClearVariableMonitoringRequestDelegate?     OnClearVariableMonitoringRequest;
+        public event OCPPv2_1.CS.OnClearVariableMonitoringRequestDelegate?     OnClearVariableMonitoringRequest;
 
         /// <summary>
         /// An event sent whenever a clear variable monitoring request was received.
         /// </summary>
-        public event CS.OnClearVariableMonitoringDelegate?            OnClearVariableMonitoring;
+        public event OCPPv2_1.CS.OnClearVariableMonitoringDelegate?            OnClearVariableMonitoring;
 
         /// <summary>
         /// An event sent whenever a response to a clear variable monitoring request was sent.
         /// </summary>
-        public event CS.OnClearVariableMonitoringResponseDelegate?    OnClearVariableMonitoringResponse;
+        public event OCPPv2_1.CS.OnClearVariableMonitoringResponseDelegate?    OnClearVariableMonitoringResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a clear variable monitoring request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?                   OnClearVariableMonitoringWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?                OnClearVariableMonitoringWSResponse;
 
         #endregion
 
@@ -140,6 +139,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnClearVariableMonitoringRequest?.Invoke(Timestamp.Now,
                                                                  this,
+                                                                 WebSocketConnection,
                                                                  request);
 
                     }
@@ -183,6 +183,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnClearVariableMonitoringResponse?.Invoke(Timestamp.Now,
                                                                   this,
+                                                                  WebSocketConnection,
                                                                   request,
                                                                   response,
                                                                   response.Runtime);

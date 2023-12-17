@@ -21,27 +21,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     public interface ICPIncomingMessages : OCPP.CS.ICSIncomingMessages
     {
 
-        event OnResetDelegate                           OnReset;
-        event OnChangeAvailabilityDelegate              OnChangeAvailability;
-        event OnGetConfigurationDelegate                OnGetConfiguration;
-        event OnChangeConfigurationDelegate             OnChangeConfiguration;
-        event OCPP.CS.OnIncomingDataTransferDelegate    OnIncomingDataTransfer;
-        event OnGetDiagnosticsDelegate                  OnGetDiagnostics;
-        event OnTriggerMessageDelegate                  OnTriggerMessage;
-        event OnUpdateFirmwareDelegate                  OnUpdateFirmware;
+        event OnResetDelegate                    OnReset;
+        event OnChangeAvailabilityDelegate       OnChangeAvailability;
+        event OnGetConfigurationDelegate         OnGetConfiguration;
+        event OnChangeConfigurationDelegate      OnChangeConfiguration;
+        event OnIncomingDataTransferDelegate     OnIncomingDataTransfer;
+        event OnGetDiagnosticsDelegate           OnGetDiagnostics;
+        event OnTriggerMessageDelegate           OnTriggerMessage;
+        event OnUpdateFirmwareDelegate           OnUpdateFirmware;
 
-        event OnReserveNowDelegate                      OnReserveNow;
-        event OnCancelReservationDelegate               OnCancelReservation;
-        event OnRemoteStartTransactionDelegate          OnRemoteStartTransaction;
-        event OnRemoteStopTransactionDelegate           OnRemoteStopTransaction;
-        event OnSetChargingProfileDelegate              OnSetChargingProfile;
-        event OnClearChargingProfileDelegate            OnClearChargingProfile;
-        event OnGetCompositeScheduleDelegate            OnGetCompositeSchedule;
-        event OnUnlockConnectorDelegate                 OnUnlockConnector;
+        event OnReserveNowDelegate               OnReserveNow;
+        event OnCancelReservationDelegate        OnCancelReservation;
+        event OnRemoteStartTransactionDelegate   OnRemoteStartTransaction;
+        event OnRemoteStopTransactionDelegate    OnRemoteStopTransaction;
+        event OnSetChargingProfileDelegate       OnSetChargingProfile;
+        event OnClearChargingProfileDelegate     OnClearChargingProfile;
+        event OnGetCompositeScheduleDelegate     OnGetCompositeSchedule;
+        event OnUnlockConnectorDelegate          OnUnlockConnector;
 
-        event OnGetLocalListVersionDelegate             OnGetLocalListVersion;
-        event OnSendLocalListDelegate                   OnSendLocalList;
-        event OnClearCacheDelegate                      OnClearCache;
+        event OnGetLocalListVersionDelegate      OnGetLocalListVersion;
+        event OnSendLocalListDelegate            OnSendLocalList;
+        event OnClearCacheDelegate               OnClearCache;
 
     }
 

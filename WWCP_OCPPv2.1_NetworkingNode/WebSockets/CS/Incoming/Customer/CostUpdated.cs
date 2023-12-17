@@ -56,27 +56,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a cost updated websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?        OnCostUpdatedWSRequest;
+        public event WSClientJSONRequestLogHandler?                OnCostUpdatedWSRequest;
 
         /// <summary>
         /// An event sent whenever a cost updated request was received.
         /// </summary>
-        public event CS.OnCostUpdatedRequestDelegate?     OnCostUpdatedRequest;
+        public event OCPPv2_1.CS.OnCostUpdatedRequestDelegate?     OnCostUpdatedRequest;
 
         /// <summary>
         /// An event sent whenever a cost updated request was received.
         /// </summary>
-        public event CS.OnCostUpdatedDelegate?            OnCostUpdated;
+        public event OCPPv2_1.CS.OnCostUpdatedDelegate?            OnCostUpdated;
 
         /// <summary>
         /// An event sent whenever a response to a cost updated request was sent.
         /// </summary>
-        public event CS.OnCostUpdatedResponseDelegate?    OnCostUpdatedResponse;
+        public event OCPPv2_1.CS.OnCostUpdatedResponseDelegate?    OnCostUpdatedResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a cost updated request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?       OnCostUpdatedWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?    OnCostUpdatedWSResponse;
 
         #endregion
 
@@ -140,6 +140,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnCostUpdatedRequest?.Invoke(Timestamp.Now,
                                                      this,
+                                                     WebSocketConnection,
                                                      request);
 
                     }
@@ -183,6 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnCostUpdatedResponse?.Invoke(Timestamp.Now,
                                                       this,
+                                                      WebSocketConnection,
                                                       request,
                                                       response,
                                                       response.Runtime);

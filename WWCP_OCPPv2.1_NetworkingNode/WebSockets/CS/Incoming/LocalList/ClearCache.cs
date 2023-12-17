@@ -56,27 +56,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a reset websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?       OnClearCacheWSRequest;
+        public event WSClientJSONRequestLogHandler?                OnClearCacheWSRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event CS.OnClearCacheRequestDelegate?     OnClearCacheRequest;
+        public event OCPPv2_1.CS.OnClearCacheRequestDelegate?      OnClearCacheRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event CS.OnClearCacheDelegate?            OnClearCache;
+        public event OCPPv2_1.CS.OnClearCacheDelegate?             OnClearCache;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event CS.OnClearCacheResponseDelegate?    OnClearCacheResponse;
+        public event OCPPv2_1.CS.OnClearCacheResponseDelegate?     OnClearCacheResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a reset request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?      OnClearCacheWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?    OnClearCacheWSResponse;
 
         #endregion
 
@@ -140,6 +140,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnClearCacheRequest?.Invoke(Timestamp.Now,
                                                     this,
+                                                    WebSocketConnection,
                                                     request);
 
                     }
@@ -183,6 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnClearCacheResponse?.Invoke(Timestamp.Now,
                                                      this,
+                                                     WebSocketConnection,
                                                      request,
                                                      response,
                                                      response.Runtime);

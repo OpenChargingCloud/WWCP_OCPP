@@ -18,7 +18,6 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
@@ -35,9 +34,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     /// A charging station HTTP Web Socket client.
     /// </summary>
     public partial class NetworkingNodeWSClient : WebSocketClient,
-                                                   INetworkingNodeWebSocketClient,
-                                                   INetworkingNodeServer,
-                                                   INetworkingNodeClientEvents
+                                                  INetworkingNodeWebSocketClient,
+                                                  INetworkingNodeServer,
+                                                  INetworkingNodeClientEvents
     {
 
         #region Custom JSON serializer delegates
@@ -53,22 +52,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever a boot notification request will be sent to the CSMS.
         /// </summary>
-        public event CS.OnBootNotificationRequestDelegate?     OnBootNotificationRequest;
+        public event OCPPv2_1.CS.OnBootNotificationRequestDelegate?     OnBootNotificationRequest;
 
         /// <summary>
         /// An event fired whenever a boot notification request will be sent to the CSMS.
         /// </summary>
-        public event ClientRequestLogHandler?               OnBootNotificationWSRequest;
+        public event ClientRequestLogHandler?                           OnBootNotificationWSRequest;
 
         /// <summary>
         /// An event fired whenever a response to a boot notification request was received.
         /// </summary>
-        public event ClientResponseLogHandler?              OnBootNotificationWSResponse;
+        public event ClientResponseLogHandler?                          OnBootNotificationWSResponse;
 
         /// <summary>
         /// An event fired whenever a response to a boot notification request was received.
         /// </summary>
-        public event CS.OnBootNotificationResponseDelegate?    OnBootNotificationResponse;
+        public event OCPPv2_1.CS.OnBootNotificationResponseDelegate?    OnBootNotificationResponse;
 
         #endregion
 

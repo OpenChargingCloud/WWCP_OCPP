@@ -20,7 +20,6 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
@@ -53,27 +52,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a ClearedChargingLimit WebSocket request was received.
         /// </summary>
-        public event CSMS.WebSocketJSONRequestLogHandler?               OnClearedChargingLimitWSRequest;
+        public event WebSocketJSONRequestLogHandler?                          OnClearedChargingLimitWSRequest;
 
         /// <summary>
         /// An event sent whenever a ClearedChargingLimit request was received.
         /// </summary>
-        public event CSMS.OnClearedChargingLimitRequestDelegate?        OnClearedChargingLimitRequest;
+        public event OCPPv2_1.CSMS.OnClearedChargingLimitRequestDelegate?     OnClearedChargingLimitRequest;
 
         /// <summary>
         /// An event sent whenever a ClearedChargingLimit was received.
         /// </summary>
-        public event CSMS.OnClearedChargingLimitDelegate?               OnClearedChargingLimit;
+        public event OCPPv2_1.CSMS.OnClearedChargingLimitDelegate?            OnClearedChargingLimit;
 
         /// <summary>
         /// An event sent whenever a response to a ClearedChargingLimit was sent.
         /// </summary>
-        public event CSMS.OnClearedChargingLimitResponseDelegate?       OnClearedChargingLimitResponse;
+        public event OCPPv2_1.CSMS.OnClearedChargingLimitResponseDelegate?    OnClearedChargingLimitResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a ClearedChargingLimit was sent.
         /// </summary>
-        public event CSMS.WebSocketJSONRequestJSONResponseLogHandler?   OnClearedChargingLimitWSResponse;
+        public event WebSocketJSONRequestJSONResponseLogHandler?              OnClearedChargingLimitWSResponse;
 
         #endregion
 
@@ -139,6 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
                         OnClearedChargingLimitRequest?.Invoke(Timestamp.Now,
                                                               this,
+                                                              Connection,
                                                               request);
 
                     }
@@ -157,6 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                                             GetInvocationList()?.
                                             SafeSelect(subscriber => (subscriber as OnClearedChargingLimitDelegate)?.Invoke(Timestamp.Now,
                                                                                                                             this,
+                                                                                                                            Connection,
                                                                                                                             request,
                                                                                                                             CancellationToken)).
                                             ToArray();
@@ -178,6 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
                         OnClearedChargingLimitResponse?.Invoke(Timestamp.Now,
                                                                this,
+                                                               Connection,
                                                                request,
                                                                response,
                                                                response.Runtime);

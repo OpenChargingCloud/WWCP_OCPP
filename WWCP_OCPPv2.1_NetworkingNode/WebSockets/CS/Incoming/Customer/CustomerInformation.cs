@@ -56,27 +56,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a customer information websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?                OnCustomerInformationWSRequest;
+        public event WSClientJSONRequestLogHandler?                        OnCustomerInformationWSRequest;
 
         /// <summary>
         /// An event sent whenever a customer information request was received.
         /// </summary>
-        public event CS.OnCustomerInformationRequestDelegate?     OnCustomerInformationRequest;
+        public event OCPPv2_1.CS.OnCustomerInformationRequestDelegate?     OnCustomerInformationRequest;
 
         /// <summary>
         /// An event sent whenever a customer information request was received.
         /// </summary>
-        public event CS.OnCustomerInformationDelegate?            OnCustomerInformation;
+        public event OCPPv2_1.CS.OnCustomerInformationDelegate?            OnCustomerInformation;
 
         /// <summary>
         /// An event sent whenever a response to a customer information request was sent.
         /// </summary>
-        public event CS.OnCustomerInformationResponseDelegate?    OnCustomerInformationResponse;
+        public event OCPPv2_1.CS.OnCustomerInformationResponseDelegate?    OnCustomerInformationResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a customer information request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?               OnCustomerInformationWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?            OnCustomerInformationWSResponse;
 
         #endregion
 
@@ -140,6 +140,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnCustomerInformationRequest?.Invoke(Timestamp.Now,
                                                              this,
+                                                             WebSocketConnection,
                                                              request);
 
                     }
@@ -183,6 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnCustomerInformationResponse?.Invoke(Timestamp.Now,
                                                               this,
+                                                              WebSocketConnection,
                                                               request,
                                                               response,
                                                               response.Runtime);

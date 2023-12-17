@@ -20,7 +20,6 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
@@ -56,27 +55,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a certificate signed websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?              OnCertificateSignedWSRequest;
+        public event WSClientJSONRequestLogHandler?                      OnCertificateSignedWSRequest;
 
         /// <summary>
         /// An event sent whenever a certificate signed request was received.
         /// </summary>
-        public event CS.OnCertificateSignedRequestDelegate?     OnCertificateSignedRequest;
+        public event OCPPv2_1.CS.OnCertificateSignedRequestDelegate?     OnCertificateSignedRequest;
 
         /// <summary>
         /// An event sent whenever a certificate signed request was received.
         /// </summary>
-        public event CS.OnCertificateSignedDelegate?            OnCertificateSigned;
+        public event OCPPv2_1.CS.OnCertificateSignedDelegate?            OnCertificateSigned;
 
         /// <summary>
         /// An event sent whenever a response to a certificate signed request was sent.
         /// </summary>
-        public event CS.OnCertificateSignedResponseDelegate?    OnCertificateSignedResponse;
+        public event OCPPv2_1.CS.OnCertificateSignedResponseDelegate?    OnCertificateSignedResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a certificate signed request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?             OnCertificateSignedWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?          OnCertificateSignedWSResponse;
 
         #endregion
 
@@ -140,6 +139,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnCertificateSignedRequest?.Invoke(Timestamp.Now,
                                                            this,
+                                                           WebSocketConnection,
                                                            request);
 
                     }
@@ -183,6 +183,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnCertificateSignedResponse?.Invoke(Timestamp.Now,
                                                             this,
+                                                            WebSocketConnection,
                                                             request,
                                                             response,
                                                             response.Runtime);

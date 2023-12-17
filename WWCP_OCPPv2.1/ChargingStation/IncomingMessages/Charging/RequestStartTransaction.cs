@@ -32,11 +32,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// </summary>
     /// <param name="Timestamp">The log timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
     /// <param name="Request">The request.</param>
     public delegate Task
 
         OnRequestStartTransactionRequestDelegate(DateTime                         Timestamp,
                                                  IEventSender                     Sender,
+                                                 WebSocketClientConnection        Connection,
                                                  RequestStartTransactionRequest   Request);
 
 
@@ -45,6 +47,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<RequestStartTransactionResponse>
@@ -61,6 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// </summary>
     /// <param name="Timestamp">The log timestamp of the response.</param>
     /// <param name="Sender">The sender of the response.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of this request.</param>
@@ -68,6 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnRequestStartTransactionResponseDelegate(DateTime                          Timestamp,
                                                   IEventSender                      Sender,
+                                                  WebSocketClientConnection         Connection,
                                                   RequestStartTransactionRequest    Request,
                                                   RequestStartTransactionResponse   Response,
                                                   TimeSpan                          Runtime);

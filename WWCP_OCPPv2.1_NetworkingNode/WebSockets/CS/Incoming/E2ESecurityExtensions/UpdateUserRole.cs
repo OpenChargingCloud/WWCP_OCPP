@@ -58,17 +58,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever an UpdateUserRole request was received.
         /// </summary>
-        public event OCPP.NetworkingNode.CS.OnUpdateUserRoleRequestDelegate?      OnUpdateUserRoleRequest;
+        public event OCPP.CS.OnUpdateUserRoleRequestDelegate?      OnUpdateUserRoleRequest;
 
         /// <summary>
         /// An event sent whenever an UpdateUserRole request was received.
         /// </summary>
-        public event OCPP.NetworkingNode.CS.OnUpdateUserRoleDelegate?             OnUpdateUserRole;
+        public event OCPP.CS.OnUpdateUserRoleDelegate?             OnUpdateUserRole;
 
         /// <summary>
         /// An event sent whenever a response to an UpdateUserRole request was sent.
         /// </summary>
-        public event OCPP.NetworkingNode.CS.OnUpdateUserRoleResponseDelegate?     OnUpdateUserRoleResponse;
+        public event OCPP.CS.OnUpdateUserRoleResponseDelegate?     OnUpdateUserRoleResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to an UpdateUserRole request was sent.
@@ -137,6 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnUpdateUserRoleRequest?.Invoke(Timestamp.Now,
                                                         this,
+                                                        WebSocketConnection,
                                                         request);
 
                     }
@@ -180,6 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnUpdateUserRoleResponse?.Invoke(Timestamp.Now,
                                                          this,
+                                                         WebSocketConnection,
                                                          request,
                                                          response,
                                                          response.Runtime);

@@ -20,7 +20,6 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
@@ -53,27 +52,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a StatusNotification WebSocket request was received.
         /// </summary>
-        public event CSMS.WebSocketJSONRequestLogHandler?               OnStatusNotificationWSRequest;
+        public event WebSocketJSONRequestLogHandler?                        OnStatusNotificationWSRequest;
 
         /// <summary>
         /// An event sent whenever a StatusNotification request was received.
         /// </summary>
-        public event CSMS.OnStatusNotificationRequestDelegate?          OnStatusNotificationRequest;
+        public event OCPPv2_1.CSMS.OnStatusNotificationRequestDelegate?     OnStatusNotificationRequest;
 
         /// <summary>
         /// An event sent whenever a StatusNotification request was received.
         /// </summary>
-        public event CSMS.OnStatusNotificationDelegate?                 OnStatusNotification;
+        public event OCPPv2_1.CSMS.OnStatusNotificationDelegate?            OnStatusNotification;
 
         /// <summary>
         /// An event sent whenever a response to a StatusNotification request was sent.
         /// </summary>
-        public event CSMS.OnStatusNotificationResponseDelegate?         OnStatusNotificationResponse;
+        public event OCPPv2_1.CSMS.OnStatusNotificationResponseDelegate?    OnStatusNotificationResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a StatusNotification request was sent.
         /// </summary>
-        public event CSMS.WebSocketJSONRequestJSONResponseLogHandler?   OnStatusNotificationWSResponse;
+        public event WebSocketJSONRequestJSONResponseLogHandler?            OnStatusNotificationWSResponse;
 
         #endregion
 
@@ -139,6 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
                         OnStatusNotificationRequest?.Invoke(Timestamp.Now,
                                                             this,
+                                                            Connection,
                                                             request);
 
                     }
@@ -157,6 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                                             GetInvocationList()?.
                                             SafeSelect(subscriber => (subscriber as OnStatusNotificationDelegate)?.Invoke(Timestamp.Now,
                                                                                                                           this,
+                                                                                                                          Connection,
                                                                                                                           request,
                                                                                                                           CancellationToken)).
                                             ToArray();
@@ -178,6 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
                         OnStatusNotificationResponse?.Invoke(Timestamp.Now,
                                                              this,
+                                                             Connection,
                                                              request,
                                                              response,
                                                              response.Runtime);

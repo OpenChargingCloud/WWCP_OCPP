@@ -32,12 +32,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// </summary>
     /// <param name="Timestamp">The log timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnNotifyCRLRequestDelegate(DateTime           Timestamp,
-                                   IEventSender       Sender,
-                                   NotifyCRLRequest   Request);
+        OnNotifyCRLRequestDelegate(DateTime                    Timestamp,
+                                   IEventSender                Sender,
+                                   WebSocketClientConnection   Connection,
+                                   NotifyCRLRequest            Request);
 
 
     /// <summary>
@@ -61,15 +63,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// </summary>
     /// <param name="Timestamp">The log timestamp of the response.</param>
     /// <param name="Sender">The sender of the response.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
     /// <param name="Request">The reserve now request.</param>
     /// <param name="Response">The reserve now response.</param>
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnNotifyCRLResponseDelegate(DateTime            Timestamp,
-                                    IEventSender        Sender,
-                                    NotifyCRLRequest    Request,
-                                    NotifyCRLResponse   Response,
-                                    TimeSpan            Runtime);
+        OnNotifyCRLResponseDelegate(DateTime                    Timestamp,
+                                    IEventSender                Sender,
+                                    WebSocketClientConnection   Connection,
+                                    NotifyCRLRequest            Request,
+                                    NotifyCRLResponse           Response,
+                                    TimeSpan                    Runtime);
 
 }

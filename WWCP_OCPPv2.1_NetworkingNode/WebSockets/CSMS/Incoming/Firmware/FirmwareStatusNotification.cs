@@ -20,7 +20,6 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
@@ -53,27 +52,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a FirmwareStatusNotification WebSocket request was received.
         /// </summary>
-        public event CSMS.WebSocketJSONRequestLogHandler?                 OnFirmwareStatusNotificationWSRequest;
+        public event CSMS.WebSocketJSONRequestLogHandler?                           OnFirmwareStatusNotificationWSRequest;
 
         /// <summary>
         /// An event sent whenever a FirmwareStatusNotification request was received.
         /// </summary>
-        public event CSMS.OnFirmwareStatusNotificationRequestDelegate?    OnFirmwareStatusNotificationRequest;
+        public event OCPPv2_1.CSMS.OnFirmwareStatusNotificationRequestDelegate?     OnFirmwareStatusNotificationRequest;
 
         /// <summary>
         /// An event sent whenever a FirmwareStatusNotification request was received.
         /// </summary>
-        public event CSMS.OnFirmwareStatusNotificationDelegate?           OnFirmwareStatusNotification;
+        public event OCPPv2_1.CSMS.OnFirmwareStatusNotificationDelegate?            OnFirmwareStatusNotification;
 
         /// <summary>
         /// An event sent whenever a response to a FirmwareStatusNotification request was sent.
         /// </summary>
-        public event CSMS.OnFirmwareStatusNotificationResponseDelegate?   OnFirmwareStatusNotificationResponse;
+        public event OCPPv2_1.CSMS.OnFirmwareStatusNotificationResponseDelegate?    OnFirmwareStatusNotificationResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a FirmwareStatusNotification request was sent.
         /// </summary>
-        public event CSMS.WebSocketJSONRequestJSONResponseLogHandler?     OnFirmwareStatusNotificationWSResponse;
+        public event CSMS.WebSocketJSONRequestJSONResponseLogHandler?               OnFirmwareStatusNotificationWSResponse;
 
         #endregion
 
@@ -130,8 +129,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                                                                NetworkPath,
                                                                out var request,
                                                                out var errorResponse,
-                                                               CustomFirmwareStatusNotificationRequestParser) &&
-                    request is not null) {
+                                                               CustomFirmwareStatusNotificationRequestParser) && request is not null) {
 
                     #region Send OnFirmwareStatusNotificationRequest event
 
@@ -140,6 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
                         OnFirmwareStatusNotificationRequest?.Invoke(Timestamp.Now,
                                                                     this,
+                                                                    Connection,
                                                                     request);
 
                     }
@@ -158,6 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                                             GetInvocationList()?.
                                             SafeSelect(subscriber => (subscriber as OnFirmwareStatusNotificationDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                   this,
+                                                                                                                                  Connection,
                                                                                                                                   request,
                                                                                                                                   CancellationToken)).
                                             ToArray();
@@ -179,6 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
                         OnFirmwareStatusNotificationResponse?.Invoke(Timestamp.Now,
                                                                      this,
+                                                                     Connection,
                                                                      request,
                                                                      response,
                                                                      response.Runtime);

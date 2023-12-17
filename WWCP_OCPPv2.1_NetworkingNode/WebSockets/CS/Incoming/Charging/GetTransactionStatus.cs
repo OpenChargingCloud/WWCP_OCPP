@@ -56,27 +56,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a get transaction status websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?                 OnGetTransactionStatusWSRequest;
+        public event WSClientJSONRequestLogHandler?                         OnGetTransactionStatusWSRequest;
 
         /// <summary>
         /// An event sent whenever a get transaction status request was received.
         /// </summary>
-        public event CS.OnGetTransactionStatusRequestDelegate?     OnGetTransactionStatusRequest;
+        public event OCPPv2_1.CS.OnGetTransactionStatusRequestDelegate?     OnGetTransactionStatusRequest;
 
         /// <summary>
         /// An event sent whenever a get transaction status request was received.
         /// </summary>
-        public event CS.OnGetTransactionStatusDelegate?            OnGetTransactionStatus;
+        public event OCPPv2_1.CS.OnGetTransactionStatusDelegate?            OnGetTransactionStatus;
 
         /// <summary>
         /// An event sent whenever a response to a get transaction status request was sent.
         /// </summary>
-        public event CS.OnGetTransactionStatusResponseDelegate?    OnGetTransactionStatusResponse;
+        public event OCPPv2_1.CS.OnGetTransactionStatusResponseDelegate?    OnGetTransactionStatusResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a get transaction status request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?                OnGetTransactionStatusWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?             OnGetTransactionStatusWSResponse;
 
         #endregion
 
@@ -140,6 +140,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnGetTransactionStatusRequest?.Invoke(Timestamp.Now,
                                                               this,
+                                                              WebSocketConnection,
                                                               request);
 
                     }
@@ -183,6 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnGetTransactionStatusResponse?.Invoke(Timestamp.Now,
                                                                this,
+                                                               WebSocketConnection,
                                                                request,
                                                                response,
                                                                response.Runtime);

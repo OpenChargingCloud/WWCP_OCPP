@@ -20,7 +20,6 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
@@ -53,27 +52,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a NotifyEvent WebSocket request was received.
         /// </summary>
-        public event CSMS.WebSocketJSONRequestLogHandler?               OnNotifyEventWSRequest;
+        public event WebSocketJSONRequestLogHandler?                 OnNotifyEventWSRequest;
 
         /// <summary>
         /// An event sent whenever a NotifyEvent request was received.
         /// </summary>
-        public event CSMS.OnNotifyEventRequestDelegate?                 OnNotifyEventRequest;
+        public event OCPPv2_1.CSMS.OnNotifyEventRequestDelegate?     OnNotifyEventRequest;
 
         /// <summary>
         /// An event sent whenever a NotifyEvent was received.
         /// </summary>
-        public event CSMS.OnNotifyEventDelegate?                        OnNotifyEvent;
+        public event OCPPv2_1.CSMS.OnNotifyEventDelegate?            OnNotifyEvent;
 
         /// <summary>
         /// An event sent whenever a response to a NotifyEvent was sent.
         /// </summary>
-        public event CSMS.OnNotifyEventResponseDelegate?                OnNotifyEventResponse;
+        public event OCPPv2_1.CSMS.OnNotifyEventResponseDelegate?    OnNotifyEventResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a NotifyEvent was sent.
         /// </summary>
-        public event CSMS.WebSocketJSONRequestJSONResponseLogHandler?   OnNotifyEventWSResponse;
+        public event WebSocketJSONRequestJSONResponseLogHandler?     OnNotifyEventWSResponse;
 
         #endregion
 
@@ -139,6 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
                         OnNotifyEventRequest?.Invoke(Timestamp.Now,
                                                      this,
+                                                     Connection,
                                                      request);
 
                     }
@@ -157,6 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                                             GetInvocationList()?.
                                             SafeSelect(subscriber => (subscriber as OnNotifyEventDelegate)?.Invoke(Timestamp.Now,
                                                                                                                    this,
+                                                                                                                   Connection,
                                                                                                                    request,
                                                                                                                    CancellationToken)).
                                             ToArray();
@@ -178,6 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
                         OnNotifyEventResponse?.Invoke(Timestamp.Now,
                                                       this,
+                                                      Connection,
                                                       request,
                                                       response,
                                                       response.Runtime);

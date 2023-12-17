@@ -35,7 +35,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     public static class IChargingStationExtensions
     {
 
-        #region SendBootNotification                 (BootReason, ...)
+        #region SendBootNotification                  (BootReason, ...)
 
         /// <summary>
         /// Send a boot notification.
@@ -101,7 +101,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region SendFirmwareStatusNotification       (Status, ...)
+        #region SendFirmwareStatusNotification        (Status, ...)
 
         /// <summary>
         /// Send a firmware status notification to the CSMS.
@@ -158,7 +158,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region SendPublishFirmwareStatusNotification(Status, PublishFirmwareStatusNotificationRequestId, DownloadLocations, ...)
+        #region SendPublishFirmwareStatusNotification (Status, PublishFirmwareStatusNotificationRequestId, DownloadLocations, ...)
 
         /// <summary>
         /// Send a publish firmware status notification to the CSMS.
@@ -218,7 +218,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region SendHeartbeat                        (...)
+        #region SendHeartbeat                         (...)
 
         /// <summary>
         /// Send a heartbeat.
@@ -269,7 +269,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region NotifyEvent                          (GeneratedAt, SequenceNumber, EventData, ToBeContinued = null, ...)
+        #region NotifyEvent                           (GeneratedAt, SequenceNumber, EventData, ToBeContinued = null, ...)
 
         /// <summary>
         /// Notify about an event.
@@ -332,7 +332,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region SendSecurityEventNotification        (Type, Timestamp, TechInfo = null, TechInfo = null, ...)
+        #region SendSecurityEventNotification         (Type, Timestamp, TechInfo = null, TechInfo = null, ...)
 
         /// <summary>
         /// Send a security event notification.
@@ -392,7 +392,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region NotifyReport                         (SequenceNumber, GeneratedAt, ReportData, ...)
+        #region NotifyReport                          (SequenceNumber, GeneratedAt, ReportData, ...)
 
         /// <summary>
         /// Notify about a report.
@@ -458,7 +458,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region NotifyMonitoringReport               (NotifyMonitoringReportRequestId, SequenceNumber, GeneratedAt, MonitoringData, ToBeContinued = null, ...)
+        #region NotifyMonitoringReport                (NotifyMonitoringReportRequestId, SequenceNumber, GeneratedAt, MonitoringData, ToBeContinued = null, ...)
 
         /// <summary>
         /// Notify about a monitoring report.
@@ -524,7 +524,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region SendLogStatusNotification            (Status, LogRequestId = null, ...)
+        #region SendLogStatusNotification             (Status, LogRequestId = null, ...)
 
         /// <summary>
         /// Send a log status notification.
@@ -581,7 +581,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region TransferData                         (VendorId, MessageId = null, Data = null, ...)
+        #region TransferData                          (VendorId, MessageId = null, Data = null, ...)
 
         /// <summary>
         /// Send the given vendor-specific data to the CSMS.
@@ -596,7 +596,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<OCPP.CSMS.DataTransferResponse>
+        public static Task<CSMS.DataTransferResponse>
 
             TransferData(this IChargingStation         ChargingStation,
 
@@ -618,7 +618,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
                 => ChargingStation.DataTransfer(
-                       new OCPP.CS.DataTransferRequest(
+                       new DataTransferRequest(
                            ChargingStation.Id,
                            VendorId,
                            MessageId,
@@ -642,7 +642,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
 
-        #region SendCertificateSigningRequest        (CSR, SignCertificateRequestId, CertificateType = null, ...)
+        #region SendCertificateSigningRequest         (CSR, SignCertificateRequestId, CertificateType = null, ...)
 
         /// <summary>
         /// Send a heartbeat.
@@ -702,7 +702,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region Get15118EVCertificate                (ISO15118SchemaVersion, CertificateAction, EXIRequest, ...)
+        #region Get15118EVCertificate                 (ISO15118SchemaVersion, CertificateAction, EXIRequest, ...)
 
         /// <summary>
         /// Get an ISO 15118 contract certificate.
@@ -768,7 +768,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region GetCertificateStatus                 (OCSPRequestData, ...)
+        #region GetCertificateStatus                  (OCSPRequestData, ...)
 
         /// <summary>
         /// Get the status of a certificate.
@@ -822,7 +822,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region GetCRLRequest                        (GetCRLRequestId, CertificateHashData, ...)
+        #region GetCRLRequest                         (GetCRLRequestId, CertificateHashData, ...)
 
         /// <summary>
         /// Get a certificate revocation list from CSMS for the specified certificate.
@@ -881,7 +881,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
 
-        #region SendReservationStatusUpdate          (ReservationId, ReservationUpdateStatus, ...)
+        #region SendReservationStatusUpdate           (ReservationId, ReservationUpdateStatus, ...)
 
         /// <summary>
         /// Send a reservation status update.
@@ -938,7 +938,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region Authorize                            (IdToken, Certificate = null, ISO15118CertificateHashData = null, ...)
+        #region Authorize                             (IdToken, Certificate = null, ISO15118CertificateHashData = null, ...)
 
         /// <summary>
         /// Authorize the given token.
@@ -998,7 +998,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region NotifyEVChargingNeeds                (EVSEId, ChargingNeeds, ReceivedTimestamp = null, MaxScheduleTuples = null, ...)
+        #region NotifyEVChargingNeeds                 (EVSEId, ChargingNeeds, ReceivedTimestamp = null, MaxScheduleTuples = null, ...)
 
         /// <summary>
         /// Notify about EV charging needs.
@@ -1061,7 +1061,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region SendTransactionEvent                 (EventType, Timestamp, TriggerReason, SequenceNumber, TransactionInfo, ...)
+        #region SendTransactionEvent                  (EventType, Timestamp, TriggerReason, SequenceNumber, TransactionInfo, ...)
 
         /// <summary>
         /// Send a transaction event.
@@ -1155,7 +1155,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region SendStatusNotification               (EVSEId, ConnectorId, Timestamp, Status, ...)
+        #region SendStatusNotification                (EVSEId, ConnectorId, Timestamp, Status, ...)
 
         /// <summary>
         /// Send a status notification for the given connector.
@@ -1218,7 +1218,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region SendMeterValues                      (EVSEId, MeterValues, ...)
+        #region SendMeterValues                       (EVSEId, MeterValues, ...)
 
         /// <summary>
         /// Send a meter values for the given connector.
@@ -1275,7 +1275,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region NotifyChargingLimit                  (ChargingLimit, ChargingSchedules, EVSEId = null, ...)
+        #region NotifyChargingLimit                   (ChargingLimit, ChargingSchedules, EVSEId = null, ...)
 
         /// <summary>
         /// Notify about a charging limit.
@@ -1335,7 +1335,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region SendClearedChargingLimit             (ChargingLimitSource, EVSEId, ...)
+        #region SendClearedChargingLimit              (ChargingLimitSource, EVSEId, ...)
 
         /// <summary>
         /// Send a heartbeat.
@@ -1392,7 +1392,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region ReportChargingProfiles               (ReportChargingProfilesRequestId, ChargingLimitSource, EVSEId, ChargingProfiles, ToBeContinued = null, ...)
+        #region ReportChargingProfiles                (ReportChargingProfilesRequestId, ChargingLimitSource, EVSEId, ChargingProfiles, ToBeContinued = null, ...)
 
         /// <summary>
         /// Report about all charging profiles.
@@ -1458,7 +1458,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region NotifyEVChargingSchedule             (TimeBase, EVSEId, ChargingSchedule, SelectedScheduleTupleId = null, PowerToleranceAcceptance = null, ...)
+        #region NotifyEVChargingSchedule              (TimeBase, EVSEId, ChargingSchedule, SelectedScheduleTupleId = null, PowerToleranceAcceptance = null, ...)
 
         /// <summary>
         /// Notify about an EV charging schedule.
@@ -1524,7 +1524,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region NotifyPriorityCharging               (TransactionId, Activated, ...)
+        #region NotifyPriorityCharging                (TransactionId, Activated, ...)
 
         /// <summary>
         /// Notify about priority charging.
@@ -1581,7 +1581,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region PullDynamicScheduleUpdate            (ChargingProfileId, ...)
+        #region PullDynamicScheduleUpdate             (ChargingProfileId, ...)
 
         /// <summary>
         /// Report about all charging profiles.
@@ -1636,7 +1636,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
 
-        #region NotifyDisplayMessages                (NotifyDisplayMessagesRequestId, MessageInfos, ToBeContinued, ...)
+        #region NotifyDisplayMessages                 (NotifyDisplayMessagesRequestId, MessageInfos, ToBeContinued, ...)
 
         /// <summary>
         /// NotifyDisplayMessages the given token.
@@ -1696,7 +1696,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region NotifyCustomerInformation            (NotifyCustomerInformationRequestId, Data, SequenceNumber, GeneratedAt, ToBeContinued = null, ...)
+        #region NotifyCustomerInformation             (NotifyCustomerInformationRequestId, Data, SequenceNumber, GeneratedAt, ToBeContinued = null, ...)
 
         /// <summary>
         /// NotifyCustomerInformation the given token.
@@ -1765,7 +1765,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         // Binary Data Streams Extensions
 
-        #region TransferBinaryData                   (VendorId, MessageId = null, Data = null, ...)
+        #region TransferBinaryData                    (VendorId, MessageId = null, Data = null, ...)
 
         /// <summary>
         /// Transfer the given binary data to the CSMS.

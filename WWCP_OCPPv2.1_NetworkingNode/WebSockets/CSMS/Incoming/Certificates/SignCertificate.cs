@@ -20,7 +20,6 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
@@ -53,27 +52,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a SignCertificate WebSocket request was received.
         /// </summary>
-        public event CSMS.WebSocketJSONRequestLogHandler?               OnSignCertificateWSRequest;
+        public event WebSocketJSONRequestLogHandler?                     OnSignCertificateWSRequest;
 
         /// <summary>
         /// An event sent whenever a SignCertificate request was received.
         /// </summary>
-        public event CSMS.OnSignCertificateRequestDelegate?             OnSignCertificateRequest;
+        public event OCPPv2_1.CSMS.OnSignCertificateRequestDelegate?     OnSignCertificateRequest;
 
         /// <summary>
         /// An event sent whenever a SignCertificate request was received.
         /// </summary>
-        public event CSMS.OnSignCertificateDelegate?                    OnSignCertificate;
+        public event OCPPv2_1.CSMS.OnSignCertificateDelegate?            OnSignCertificate;
 
         /// <summary>
         /// An event sent whenever a response to a SignCertificate request was sent.
         /// </summary>
-        public event CSMS.OnSignCertificateResponseDelegate?            OnSignCertificateResponse;
+        public event OCPPv2_1.CSMS.OnSignCertificateResponseDelegate?    OnSignCertificateResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a SignCertificate request was sent.
         /// </summary>
-        public event CSMS.WebSocketJSONRequestJSONResponseLogHandler?   OnSignCertificateWSResponse;
+        public event WebSocketJSONRequestJSONResponseLogHandler?         OnSignCertificateWSResponse;
 
         #endregion
 
@@ -139,6 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
                         OnSignCertificateRequest?.Invoke(Timestamp.Now,
                                                          this,
+                                                         Connection,
                                                          request);
 
                     }
@@ -157,6 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                                             GetInvocationList()?.
                                             SafeSelect(subscriber => (subscriber as OnSignCertificateDelegate)?.Invoke(Timestamp.Now,
                                                                                                                        this,
+                                                                                                                       Connection,
                                                                                                                        request,
                                                                                                                        CancellationToken)).
                                             ToArray();
@@ -178,6 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
                         OnSignCertificateResponse?.Invoke(Timestamp.Now,
                                                           this,
+                                                          Connection,
                                                           request,
                                                           response,
                                                           response.Runtime);

@@ -24,7 +24,7 @@ using org.GraphDefined.Vanaheimr.Hermod;
 namespace cloud.charging.open.protocols.OCPP.CS
 {
 
-    #region OnBinaryDataTransfer (-Request/-Response) Delegate
+    #region OnBinaryDataTransfer (Request/-Response) Delegate
 
     /// <summary>
     /// A delegate called whenever a binary data transfer request will be sent to the CSMS.

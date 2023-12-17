@@ -56,27 +56,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a reserve now websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?       OnReserveNowWSRequest;
+        public event WSClientJSONRequestLogHandler?                OnReserveNowWSRequest;
 
         /// <summary>
         /// An event sent whenever a reserve now request was received.
         /// </summary>
-        public event CS.OnReserveNowRequestDelegate?     OnReserveNowRequest;
+        public event OCPPv2_1.CS.OnReserveNowRequestDelegate?      OnReserveNowRequest;
 
         /// <summary>
         /// An event sent whenever a reserve now request was received.
         /// </summary>
-        public event CS.OnReserveNowDelegate?            OnReserveNow;
+        public event OCPPv2_1.CS.OnReserveNowDelegate?             OnReserveNow;
 
         /// <summary>
         /// An event sent whenever a response to a reserve now request was sent.
         /// </summary>
-        public event CS.OnReserveNowResponseDelegate?    OnReserveNowResponse;
+        public event OCPPv2_1.CS.OnReserveNowResponseDelegate?     OnReserveNowResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a reserve now request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?      OnReserveNowWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?    OnReserveNowWSResponse;
 
         #endregion
 
@@ -140,6 +140,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnReserveNowRequest?.Invoke(Timestamp.Now,
                                                     this,
+                                                    WebSocketConnection,
                                                     request);
 
                     }
@@ -183,6 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnReserveNowResponse?.Invoke(Timestamp.Now,
                                                      this,
+                                                     WebSocketConnection,
                                                      request,
                                                      response,
                                                      response.Runtime);

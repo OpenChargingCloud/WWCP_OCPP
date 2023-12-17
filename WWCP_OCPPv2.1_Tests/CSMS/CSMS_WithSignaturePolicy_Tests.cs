@@ -146,7 +146,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var resetRequests = new ConcurrentList<ResetRequest>();
 
-                chargingStation1.OnResetRequest += (timestamp, sender, resetRequest) => {
+                chargingStation1.OnResetRequest += (timestamp, sender, connection, resetRequest) => {
                     resetRequests.TryAdd(resetRequest);
                     return Task.CompletedTask;
                 };

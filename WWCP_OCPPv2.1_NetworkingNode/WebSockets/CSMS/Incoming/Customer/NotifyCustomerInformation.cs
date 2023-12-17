@@ -20,7 +20,6 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
@@ -53,27 +52,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a NotifyCustomerInformation WebSocket request was received.
         /// </summary>
-        public event CSMS.WebSocketJSONRequestLogHandler?                OnNotifyCustomerInformationWSRequest;
+        public event CSMS.WebSocketJSONRequestLogHandler?                          OnNotifyCustomerInformationWSRequest;
 
         /// <summary>
         /// An event sent whenever a NotifyCustomerInformation request was received.
         /// </summary>
-        public event CSMS.OnNotifyCustomerInformationRequestDelegate?    OnNotifyCustomerInformationRequest;
+        public event OCPPv2_1.CSMS.OnNotifyCustomerInformationRequestDelegate?     OnNotifyCustomerInformationRequest;
 
         /// <summary>
         /// An event sent whenever a NotifyCustomerInformation was received.
         /// </summary>
-        public event CSMS.OnNotifyCustomerInformationDelegate?           OnNotifyCustomerInformation;
+        public event OCPPv2_1.CSMS.OnNotifyCustomerInformationDelegate?            OnNotifyCustomerInformation;
 
         /// <summary>
         /// An event sent whenever a response to a NotifyCustomerInformation was sent.
         /// </summary>
-        public event CSMS.OnNotifyCustomerInformationResponseDelegate?   OnNotifyCustomerInformationResponse;
+        public event OCPPv2_1.CSMS.OnNotifyCustomerInformationResponseDelegate?    OnNotifyCustomerInformationResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a NotifyCustomerInformation was sent.
         /// </summary>
-        public event CSMS.WebSocketJSONRequestJSONResponseLogHandler?    OnNotifyCustomerInformationWSResponse;
+        public event CSMS.WebSocketJSONRequestJSONResponseLogHandler?              OnNotifyCustomerInformationWSResponse;
 
         #endregion
 
@@ -139,6 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
                         OnNotifyCustomerInformationRequest?.Invoke(Timestamp.Now,
                                                                    this,
+                                                                   Connection,
                                                                    request);
 
                     }
@@ -157,6 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                                             GetInvocationList()?.
                                             SafeSelect(subscriber => (subscriber as OnNotifyCustomerInformationDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                  this,
+                                                                                                                                 Connection,
                                                                                                                                  request,
                                                                                                                                  CancellationToken)).
                                             ToArray();
@@ -178,6 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
                         OnNotifyCustomerInformationResponse?.Invoke(Timestamp.Now,
                                                                     this,
+                                                                    Connection,
                                                                     request,
                                                                     response,
                                                                     response.Runtime);

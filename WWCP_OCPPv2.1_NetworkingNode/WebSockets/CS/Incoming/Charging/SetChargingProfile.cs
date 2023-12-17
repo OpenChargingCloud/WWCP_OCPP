@@ -56,27 +56,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a set charging profile websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?               OnSetChargingProfileWSRequest;
+        public event WSClientJSONRequestLogHandler?                       OnSetChargingProfileWSRequest;
 
         /// <summary>
         /// An event sent whenever a set charging profile request was received.
         /// </summary>
-        public event CS.OnSetChargingProfileRequestDelegate?     OnSetChargingProfileRequest;
+        public event OCPPv2_1.CS.OnSetChargingProfileRequestDelegate?     OnSetChargingProfileRequest;
 
         /// <summary>
         /// An event sent whenever a set charging profile request was received.
         /// </summary>
-        public event CS.OnSetChargingProfileDelegate?            OnSetChargingProfile;
+        public event OCPPv2_1.CS.OnSetChargingProfileDelegate?            OnSetChargingProfile;
 
         /// <summary>
         /// An event sent whenever a response to a set charging profile request was sent.
         /// </summary>
-        public event CS.OnSetChargingProfileResponseDelegate?    OnSetChargingProfileResponse;
+        public event OCPPv2_1.CS.OnSetChargingProfileResponseDelegate?    OnSetChargingProfileResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a set charging profile request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?              OnSetChargingProfileWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?           OnSetChargingProfileWSResponse;
 
         #endregion
 
@@ -140,6 +140,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnSetChargingProfileRequest?.Invoke(Timestamp.Now,
                                                             this,
+                                                            WebSocketConnection,
                                                             request);
 
                     }
@@ -183,6 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnSetChargingProfileResponse?.Invoke(Timestamp.Now,
                                                              this,
+                                                             WebSocketConnection,
                                                              request,
                                                              response,
                                                              response.Runtime);

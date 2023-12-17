@@ -39,9 +39,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region Custom JSON parser delegates
 
-        public CustomJObjectParserDelegate<OCPP.CS.DataTransferRequest>?         CustomDataTransferRequestParser         { get; set; }
+        public CustomJObjectParserDelegate<CP.DataTransferRequest>?    CustomDataTransferRequestParser         { get; set; }
 
-        public CustomJObjectSerializerDelegate<OCPP.CSMS.DataTransferResponse>?  CustomDataTransferResponseSerializer    { get; set; }
+        public CustomJObjectSerializerDelegate<DataTransferResponse>?  CustomDataTransferResponseSerializer    { get; set; }
 
         #endregion
 
@@ -50,27 +50,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a DataTransfer WebSocket request was received.
         /// </summary>
-        public event OnOCPPJSONRequestLogDelegate?                        OnIncomingDataTransferWSRequest;
+        public event OnOCPPJSONRequestLogDelegate?                OnIncomingDataTransferWSRequest;
 
         /// <summary>
         /// An event sent whenever a DataTransfer request was received.
         /// </summary>
-        public event OCPP.CSMS.OnIncomingDataTransferRequestDelegate?     OnIncomingDataTransferRequest;
+        public event OnIncomingDataTransferRequestDelegate?       OnIncomingDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a DataTransfer request was received.
         /// </summary>
-        public event OCPP.CSMS.OnIncomingDataTransferDelegate?            OnIncomingDataTransfer;
+        public event OnIncomingDataTransferDelegate?              OnIncomingDataTransfer;
 
         /// <summary>
         /// An event sent whenever a response to a DataTransfer request was sent.
         /// </summary>
-        public event OCPP.CSMS.OnIncomingDataTransferResponseDelegate?    OnIncomingDataTransferResponse;
+        public event OnIncomingDataTransferResponseDelegate?      OnIncomingDataTransferResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a DataTransfer request was sent.
         /// </summary>
-        public event OnOCPPJSONRequestJSONResponseLogDelegate?            OnIncomingDataTransferWSResponse;
+        public event OnOCPPJSONRequestJSONResponseLogDelegate?    OnIncomingDataTransferWSResponse;
 
         #endregion
 
@@ -122,13 +122,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                if (OCPP.CS.DataTransferRequest.TryParse(JSONRequest,
-                                                         RequestId,
-                                                         NetworkingNodeId,
-                                                         NetworkPath,
-                                                         out var request,
-                                                         out var errorResponse,
-                                                         CustomDataTransferRequestParser) && request is not null) {
+                if (CP.DataTransferRequest.TryParse(JSONRequest,
+                                                    RequestId,
+                                                    NetworkingNodeId,
+                                                    NetworkPath,
+                                                    out var request,
+                                                    out var errorResponse,
+                                                    CustomDataTransferRequestParser) && request is not null) {
 
                     #region Send OnIncomingDataTransferRequest event
 
@@ -150,15 +150,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                     #region Call async subscribers
 
-                    OCPP.CSMS.DataTransferResponse? response = null;
+                    DataTransferResponse? response = null;
 
                     var responseTasks = OnIncomingDataTransfer?.
                                             GetInvocationList()?.
-                                            SafeSelect(subscriber => (subscriber as OCPP.CSMS.OnIncomingDataTransferDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                                      this,
-                                                                                                                                      Connection,
-                                                                                                                                      request,
-                                                                                                                                      CancellationToken)).
+                                            SafeSelect(subscriber => (subscriber as OnIncomingDataTransferDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                            this,
+                                                                                                                            Connection,
+                                                                                                                            request,
+                                                                                                                            CancellationToken)).
                                             ToArray();
 
                     if (responseTasks?.Length > 0)
@@ -167,7 +167,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         response = responseTasks.FirstOrDefault()?.Result;
                     }
 
-                    response ??= OCPP.CSMS.DataTransferResponse.Failed(request);
+                    response ??= DataTransferResponse.Failed(request);
 
                     #endregion
 

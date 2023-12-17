@@ -20,7 +20,6 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
@@ -53,27 +52,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a Get15118EVCertificate WebSocket request was received.
         /// </summary>
-        public event CSMS.WebSocketJSONRequestLogHandler?               OnGet15118EVCertificateWSRequest;
+        public event WebSocketJSONRequestLogHandler?                           OnGet15118EVCertificateWSRequest;
 
         /// <summary>
         /// An event sent whenever a Get15118EVCertificate request was received.
         /// </summary>
-        public event CSMS.OnGet15118EVCertificateRequestDelegate?       OnGet15118EVCertificateRequest;
+        public event OCPPv2_1.CSMS.OnGet15118EVCertificateRequestDelegate?     OnGet15118EVCertificateRequest;
 
         /// <summary>
         /// An event sent whenever a Get15118EVCertificate was received.
         /// </summary>
-        public event CSMS.OnGet15118EVCertificateDelegate?              OnGet15118EVCertificate;
+        public event OCPPv2_1.CSMS.OnGet15118EVCertificateDelegate?            OnGet15118EVCertificate;
 
         /// <summary>
         /// An event sent whenever a response to a Get15118EVCertificate was sent.
         /// </summary>
-        public event CSMS.OnGet15118EVCertificateResponseDelegate?      OnGet15118EVCertificateResponse;
+        public event OCPPv2_1.CSMS.OnGet15118EVCertificateResponseDelegate?    OnGet15118EVCertificateResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a Get15118EVCertificate was sent.
         /// </summary>
-        public event CSMS.WebSocketJSONRequestJSONResponseLogHandler?   OnGet15118EVCertificateWSResponse;
+        public event WebSocketJSONRequestJSONResponseLogHandler?               OnGet15118EVCertificateWSResponse;
 
         #endregion
 
@@ -139,6 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
                         OnGet15118EVCertificateRequest?.Invoke(Timestamp.Now,
                                                                this,
+                                                               Connection,
                                                                request);
 
                     }
@@ -157,6 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                                             GetInvocationList()?.
                                             SafeSelect(subscriber => (subscriber as OnGet15118EVCertificateDelegate)?.Invoke(Timestamp.Now,
                                                                                                                              this,
+                                                                                                                             Connection,
                                                                                                                              request,
                                                                                                                              CancellationToken)).
                                             ToArray();
@@ -178,6 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
                         OnGet15118EVCertificateResponse?.Invoke(Timestamp.Now,
                                                                 this,
+                                                                Connection,
                                                                 request,
                                                                 response,
                                                                 response.Runtime);

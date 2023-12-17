@@ -61,17 +61,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a GetFile request was received.
         /// </summary>
-        public event OCPP.NetworkingNode.CS.OnGetFileRequestDelegate?              OnGetFileRequest;
+        public event OCPP.CS.OnGetFileRequestDelegate?              OnGetFileRequest;
 
         /// <summary>
         /// An event sent whenever a GetFile request was received.
         /// </summary>
-        public event OCPP.NetworkingNode.CS.OnGetFileDelegate?                     OnGetFile;
+        public event OCPP.CS.OnGetFileDelegate?                     OnGetFile;
 
         /// <summary>
         /// An event sent whenever a response to a GetFile request was sent.
         /// </summary>
-        public event OCPP.NetworkingNode.CS.OnGetFileResponseDelegate?             OnGetFileResponse;
+        public event OCPP.CS.OnGetFileResponseDelegate?             OnGetFileResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a GetFile request was sent.
@@ -141,6 +141,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnGetFileRequest?.Invoke(Timestamp.Now,
                                                  this,
+                                                 WebSocketConnection,
                                                  request);
 
                     }
@@ -184,6 +185,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnGetFileResponse?.Invoke(Timestamp.Now,
                                                   this,
+                                                  WebSocketConnection,
                                                   request,
                                                   response,
                                                   response.Runtime);

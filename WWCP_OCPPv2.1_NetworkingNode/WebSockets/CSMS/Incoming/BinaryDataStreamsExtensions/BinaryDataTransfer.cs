@@ -53,17 +53,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a BinaryDataTransfer request was received.
         /// </summary>
-        public event OCPP.NetworkingNode.CSMS.OnIncomingBinaryDataTransferRequestDelegate?     OnIncomingBinaryDataTransferRequest;
+        public event OCPP.CSMS.OnIncomingBinaryDataTransferRequestDelegate?     OnIncomingBinaryDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a BinaryDataTransfer request was received.
         /// </summary>
-        public event OCPP.NetworkingNode.CSMS.OnIncomingBinaryDataTransferDelegate?            OnIncomingBinaryDataTransfer;
+        public event OCPP.CSMS.OnIncomingBinaryDataTransferDelegate?            OnIncomingBinaryDataTransfer;
 
         /// <summary>
         /// An event sent whenever a response to a BinaryDataTransfer request was sent.
         /// </summary>
-        public event OCPP.NetworkingNode.CSMS.OnIncomingBinaryDataTransferResponseDelegate?    OnIncomingBinaryDataTransferResponse;
+        public event OCPP.CSMS.OnIncomingBinaryDataTransferResponseDelegate?    OnIncomingBinaryDataTransferResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a BinaryDataTransfer request was sent.
@@ -134,6 +134,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
                         OnIncomingBinaryDataTransferRequest?.Invoke(Timestamp.Now,
                                                                     this,
+                                                                    Connection,
                                                                     request);
 
                     }
@@ -174,6 +175,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
                         OnIncomingBinaryDataTransferResponse?.Invoke(Timestamp.Now,
                                                                      this,
+                                                                     Connection,
                                                                      request,
                                                                      response,
                                                                      response.Runtime);

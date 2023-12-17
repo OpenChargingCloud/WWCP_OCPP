@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     public interface ICSMSOutgoingMessagesEvents : OCPP.ICSMSOutgoingMessagesEvents
     {
 
-        #region Reset                          (-Request/-Response)
+        #region Reset                          (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a Reset request will be sent to a charging station.
@@ -44,7 +44,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region UpdateFirmware                 (-Request/-Response)
+        #region UpdateFirmware                 (Request/-Response)
 
         /// <summary>
         /// An event fired whenever an UpdateFirmware request will be sent to a charging station.
@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region PublishFirmware                (-Request/-Response)
+        #region PublishFirmware                (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a PublishFirmware request will be sent to a charging station.
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region UnpublishFirmware              (-Request/-Response)
+        #region UnpublishFirmware              (Request/-Response)
 
         /// <summary>
         /// An event fired whenever an UnpublishFirmware request will be sent to a charging station.
@@ -86,7 +86,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region GetBaseReport                  (-Request/-Response)
+        #region GetBaseReport                  (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a GetBaseReport request will be sent to a charging station.
@@ -100,7 +100,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region GetReport                      (-Request/-Response)
+        #region GetReport                      (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a GetReport request will be sent to a charging station.
@@ -114,7 +114,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region GetLog                         (-Request/-Response)
+        #region GetLog                         (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a GetLog request will be sent to a charging station.
@@ -128,7 +128,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region SetVariables                   (-Request/-Response)
+        #region SetVariables                   (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a SetVariables request will be sent to a charging station.
@@ -142,7 +142,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region GetVariables                   (-Request/-Response)
+        #region GetVariables                   (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a GetVariables request will be sent to a charging station.
@@ -156,7 +156,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region SetMonitoringBase              (-Request/-Response)
+        #region SetMonitoringBase              (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a SetMonitoringBase request will be sent to a charging station.
@@ -170,7 +170,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region GetMonitoringReport            (-Request/-Response)
+        #region GetMonitoringReport            (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a GetMonitoringReport request will be sent to a charging station.
@@ -184,7 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region SetMonitoringLevel             (-Request/-Response)
+        #region SetMonitoringLevel             (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a SetMonitoringLevel request will be sent to a charging station.
@@ -198,7 +198,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region SetVariableMonitoring          (-Request/-Response)
+        #region SetVariableMonitoring          (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a SetVariableMonitoring request will be sent to a charging station.
@@ -212,7 +212,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region ClearVariableMonitoring        (-Request/-Response)
+        #region ClearVariableMonitoring        (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a ClearVariableMonitoring request will be sent to a charging station.
@@ -226,7 +226,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region SetNetworkProfile              (-Request/-Response)
+        #region SetNetworkProfile              (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a SetNetworkProfile request will be sent to a charging station.
@@ -240,7 +240,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region ChangeAvailability             (-Request/-Response)
+        #region ChangeAvailability             (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a ChangeAvailability request will be sent to a charging station.
@@ -254,7 +254,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region TriggerMessage                 (-Request/-Response)
+        #region TriggerMessage                 (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a TriggerMessage request will be sent to a charging station.
@@ -268,7 +268,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region DataTransfer                   (-Request/-Response)
+        #region DataTransfer                   (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a DataTransfer request will be sent to a charging station.
@@ -283,7 +283,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region CertificateSigned              (-Request/-Response)
+        #region CertificateSigned              (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a SignedCertificate request will be sent to a charging station.
@@ -297,7 +297,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region InstallCertificate             (-Request/-Response)
+        #region InstallCertificate             (Request/-Response)
 
         /// <summary>
         /// An event fired whenever an InstallCertificate request will be sent to a charging station.
@@ -311,7 +311,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region GetInstalledCertificateIds     (-Request/-Response)
+        #region GetInstalledCertificateIds     (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a GetInstalledCertificateIds request will be sent to a charging station.
@@ -325,7 +325,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region DeleteCertificate              (-Request/-Response)
+        #region DeleteCertificate              (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a DeleteCertificate request will be sent to a charging station.
@@ -339,7 +339,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region NotifyCRL                      (-Request/-Response)
+        #region NotifyCRL                      (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a NotifyCRL request will be sent to a charging station.
@@ -354,7 +354,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region GetLocalListVersion            (-Request/-Response)
+        #region GetLocalListVersion            (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a GetLocalListVersion request will be sent to a charging station.
@@ -368,7 +368,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region SendLocalList                  (-Request/-Response)
+        #region SendLocalList                  (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a SendLocalList request will be sent to a charging station.
@@ -382,7 +382,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region ClearCache                     (-Request/-Response)
+        #region ClearCache                     (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a ClearCache request will be sent to a charging station.
@@ -397,7 +397,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region ReserveNow                     (-Request/-Response)
+        #region ReserveNow                     (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a ReserveNow request will be sent to a charging station.
@@ -411,7 +411,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region CancelReservation              (-Request/-Response)
+        #region CancelReservation              (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a CancelReservation request will be sent to a charging station.
@@ -425,7 +425,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region RequestStartTransaction        (-Request/-Response)
+        #region RequestStartTransaction        (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a RequestStartTransaction request will be sent to a charging station.
@@ -439,7 +439,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region RequestStopTransaction         (-Request/-Response)
+        #region RequestStopTransaction         (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a RequestStopTransaction request will be sent to a charging station.
@@ -453,7 +453,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region GetTransactionStatus           (-Request/-Response)
+        #region GetTransactionStatus           (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a GetTransactionStatus request will be sent to a charging station.
@@ -467,7 +467,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region SetChargingProfile             (-Request/-Response)
+        #region SetChargingProfile             (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a SetChargingProfile request will be sent to a charging station.
@@ -481,7 +481,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region GetChargingProfiles            (-Request/-Response)
+        #region GetChargingProfiles            (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a GetChargingProfiles request will be sent to a charging station.
@@ -495,7 +495,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region ClearChargingProfile           (-Request/-Response)
+        #region ClearChargingProfile           (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a ClearChargingProfile request will be sent to a charging station.
@@ -509,7 +509,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region GetCompositeSchedule           (-Request/-Response)
+        #region GetCompositeSchedule           (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a GetCompositeSchedule request will be sent to a charging station.
@@ -523,7 +523,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region UpdateDynamicSchedule          (-Request/-Response)
+        #region UpdateDynamicSchedule          (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a UpdateDynamicSchedule request will be sent to a charging station.
@@ -537,7 +537,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region NotifyAllowedEnergyTransfer    (-Request/-Response)
+        #region NotifyAllowedEnergyTransfer    (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a NotifyAllowedEnergyTransfer request will be sent to a charging station.
@@ -551,7 +551,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region UsePriorityCharging            (-Request/-Response)
+        #region UsePriorityCharging            (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a UsePriorityCharging request will be sent to a charging station.
@@ -565,7 +565,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region UnlockConnector                (-Request/-Response)
+        #region UnlockConnector                (Request/-Response)
 
         /// <summary>
         /// An event fired whenever an UnlockConnector request will be sent to a charging station.
@@ -580,7 +580,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region AFRRSignal                     (-Request/-Response)
+        #region AFRRSignal                     (Request/-Response)
 
         /// <summary>
         /// An event fired whenever an AFRR signal request will be sent to a charging station.
@@ -595,7 +595,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region SetDisplayMessage              (-Request/-Response)
+        #region SetDisplayMessage              (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a SetDisplayMessage request will be sent to a charging station.
@@ -609,7 +609,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region GetDisplayMessages             (-Request/-Response)
+        #region GetDisplayMessages             (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a GetDisplayMessages request will be sent to a charging station.
@@ -623,7 +623,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region ClearDisplayMessage            (-Request/-Response)
+        #region ClearDisplayMessage            (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a ClearDisplayMessage request will be sent to a charging station.
@@ -637,7 +637,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region SendCostUpdated                (-Request/-Response)
+        #region SendCostUpdated                (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a CostUpdated request will be sent to a charging station.
@@ -651,7 +651,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region RequestCustomerInformation     (-Request/-Response)
+        #region RequestCustomerInformation     (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a CustomerInformation request will be sent to a charging station.

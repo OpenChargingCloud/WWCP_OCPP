@@ -364,36 +364,65 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         // Outgoing messages (to central system)
 
-        #region OnBootNotificationRequest/-Response
+        #region OnBootNotification    (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a boot notification request will be sent to the central system.
         /// </summary>
-        public event OnBootNotificationRequestDelegate?   OnBootNotificationRequest;
+        public event OnBootNotificationRequestDelegate?                  OnBootNotificationRequest;
 
         /// <summary>
         /// An event fired whenever a response to a boot notification request was received.
         /// </summary>
-        public event OnBootNotificationResponseDelegate?  OnBootNotificationResponse;
+        public event OnBootNotificationResponseDelegate?                 OnBootNotificationResponse;
 
         #endregion
 
-        #region OnHeartbeatRequest/-Response
+        #region OnHeartbeat    (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a heartbeat request will be sent to the central system.
         /// </summary>
-        public event OnHeartbeatRequestDelegate?   OnHeartbeatRequest;
+        public event OnHeartbeatRequestDelegate?                         OnHeartbeatRequest;
 
         /// <summary>
         /// An event fired whenever a response to a heartbeat request was received.
         /// </summary>
-        public event OnHeartbeatResponseDelegate?  OnHeartbeatResponse;
+        public event OnHeartbeatResponseDelegate?                        OnHeartbeatResponse;
+
+        #endregion
+
+        #region OnDiagnosticsStatusNotification    (Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a diagnostics status notification request will be sent to the central system.
+        /// </summary>
+        public event OnDiagnosticsStatusNotificationRequestDelegate?     OnDiagnosticsStatusNotificationRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a diagnostics status notification request was received.
+        /// </summary>
+        public event OnDiagnosticsStatusNotificationResponseDelegate?    OnDiagnosticsStatusNotificationResponse;
+
+        #endregion
+
+        #region OnFirmwareStatusNotification    (Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a firmware status notification request will be sent to the central system.
+        /// </summary>
+        public event OnFirmwareStatusNotificationRequestDelegate?        OnFirmwareStatusNotificationRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a firmware status notification request was received.
+        /// </summary>
+        public event OnFirmwareStatusNotificationResponseDelegate?       OnFirmwareStatusNotificationResponse;
 
         #endregion
 
 
-        #region OnAuthorizeRequest/-Response
+
+        #region OnAuthorize    (Request/-Response)
 
         /// <summary>
         /// An event fired whenever an authorize request will be sent to the central system.
@@ -407,7 +436,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region OnStartTransactionRequest/-Response
+        #region OnStartTransaction    (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a start transaction request will be sent to the central system.
@@ -421,7 +450,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region OnStatusNotificationRequest/-Response
+        #region OnStatusNotification    (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a status notification request will be sent to the central system.
@@ -435,7 +464,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region OnMeterValuesRequest/-Response
+        #region OnMeterValues    (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a meter values request will be sent to the central system.
@@ -449,7 +478,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region OnStopTransactionRequest/-Response
+        #region OnStopTransaction    (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a stop transaction request will be sent to the central system.
@@ -464,53 +493,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #endregion
 
 
-        #region OnDataTransferRequest/-Response
+        #region OnDataTransfer    (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a data transfer request will be sent to the central system.
         /// </summary>
-        public event OCPP.CS.OnDataTransferRequestDelegate?   OnDataTransferRequest;
+        public event OnDataTransferRequestDelegate?     OnDataTransferRequest;
 
         /// <summary>
         /// An event fired whenever a response to a data transfer request was received.
         /// </summary>
-        public event OCPP.CS.OnDataTransferResponseDelegate?  OnDataTransferResponse;
+        public event OnDataTransferResponseDelegate?    OnDataTransferResponse;
 
         #endregion
 
-        #region OnDiagnosticsStatusNotificationRequest/-Response
-
-        /// <summary>
-        /// An event fired whenever a diagnostics status notification request will be sent to the central system.
-        /// </summary>
-        public event OnDiagnosticsStatusNotificationRequestDelegate?   OnDiagnosticsStatusNotificationRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a diagnostics status notification request was received.
-        /// </summary>
-        public event OnDiagnosticsStatusNotificationResponseDelegate?  OnDiagnosticsStatusNotificationResponse;
-
-        #endregion
-
-        #region OnFirmwareStatusNotificationRequest/-Response
-
-        /// <summary>
-        /// An event fired whenever a firmware status notification request will be sent to the central system.
-        /// </summary>
-        public event OnFirmwareStatusNotificationRequestDelegate?   OnFirmwareStatusNotificationRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a firmware status notification request was received.
-        /// </summary>
-        public event OnFirmwareStatusNotificationResponseDelegate?  OnFirmwareStatusNotificationResponse;
-
-        #endregion
 
 
 
         // Incoming messages (from central system)
 
-        #region OnResetRequest/-Response
+        #region OnReset    (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a reset request was received.
@@ -524,7 +526,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region ChangeAvailabilityRequest/-Response
+        #region ChangeAvailability    (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a reset request was received.
@@ -538,7 +540,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region GetConfigurationRequest/-Response
+        #region GetConfiguration    (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a reset request was received.
@@ -552,7 +554,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region ChangeConfigurationRequest/-Response
+        #region ChangeConfiguration    (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a reset request was received.
@@ -566,21 +568,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region OnIncomingDataTransferRequest/-Response
+        #region OnIncomingDataTransfer    (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a data transfer request was received.
         /// </summary>
-        public event OCPP.CSMS.OnIncomingDataTransferRequestDelegate?   OnIncomingDataTransferRequest;
+        public event CS.OnIncomingDataTransferRequestDelegate?   OnIncomingDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a response to a data transfer request was sent.
         /// </summary>
-        public event OCPP.CSMS.OnIncomingDataTransferResponseDelegate?  OnIncomingDataTransferResponse;
+        public event CS.OnIncomingDataTransferResponseDelegate?  OnIncomingDataTransferResponse;
 
         #endregion
 
-        #region GetDiagnosticsRequest/-Response
+        #region GetDiagnostics    (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a reset request was received.
@@ -594,7 +596,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region TriggerMessageRequest/-Response
+        #region TriggerMessage    (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a reset request was received.
@@ -608,7 +610,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region UpdateFirmwareRequest/-Response
+        #region UpdateFirmware    (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a reset request was received.
@@ -623,7 +625,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #endregion
 
 
-        #region OnReserveNowRequest/-Response
+        #region OnReserveNow    (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a reserve now request was received.
@@ -637,7 +639,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region OnCancelReservationRequest/-Response
+        #region OnCancelReservation    (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a cancel reservation request was received.
@@ -651,7 +653,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region OnRemoteStartTransactionRequest/-Response
+        #region OnRemoteStartTransaction    (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a remote start transaction request was received.
@@ -665,7 +667,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region OnRemoteStopTransactionRequest/-Response
+        #region OnRemoteStopTransaction    (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a remote stop transaction request was received.
@@ -679,7 +681,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region SetChargingProfileRequest/-Response
+        #region SetChargingProfile    (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a reset request was received.
@@ -693,7 +695,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region ClearChargingProfileRequest/-Response
+        #region ClearChargingProfile    (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a reset request was received.
@@ -707,7 +709,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region GetCompositeScheduleRequest/-Response
+        #region GetCompositeSchedule    (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a reset request was received.
@@ -721,7 +723,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region UnlockConnectorRequest/-Response
+        #region UnlockConnector    (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a reset request was received.
@@ -736,7 +738,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #endregion
 
 
-        #region GetLocalListVersionRequest/-Response
+        #region GetLocalListVersion    (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a reset request was received.
@@ -750,7 +752,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region SendLocalListRequest/-Response
+        #region SendLocalList    (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a reset request was received.
@@ -764,7 +766,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region ClearCacheRequest/-Response
+        #region ClearCache    (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a reset request was received.

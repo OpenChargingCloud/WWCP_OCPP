@@ -56,27 +56,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a NotifyCRL websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?      OnNotifyCRLWSRequest;
+        public event WSClientJSONRequestLogHandler?                OnNotifyCRLWSRequest;
 
         /// <summary>
         /// An event sent whenever a NotifyCRL request was received.
         /// </summary>
-        public event CS.OnNotifyCRLRequestDelegate?     OnNotifyCRLRequest;
+        public event OCPPv2_1.CS.OnNotifyCRLRequestDelegate?       OnNotifyCRLRequest;
 
         /// <summary>
         /// An event sent whenever a NotifyCRL request was received.
         /// </summary>
-        public event CS.OnNotifyCRLDelegate?            OnNotifyCRL;
+        public event OCPPv2_1.CS.OnNotifyCRLDelegate?              OnNotifyCRL;
 
         /// <summary>
         /// An event sent whenever a response to a NotifyCRL request was sent.
         /// </summary>
-        public event CS.OnNotifyCRLResponseDelegate?    OnNotifyCRLResponse;
+        public event OCPPv2_1.CS.OnNotifyCRLResponseDelegate?      OnNotifyCRLResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a NotifyCRL request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?     OnNotifyCRLWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?    OnNotifyCRLWSResponse;
 
         #endregion
 
@@ -140,6 +140,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnNotifyCRLRequest?.Invoke(Timestamp.Now,
                                                    this,
+                                                   WebSocketConnection,
                                                    request);
 
                     }
@@ -183,6 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnNotifyCRLResponse?.Invoke(Timestamp.Now,
                                                     this,
+                                                    WebSocketConnection,
                                                     request,
                                                     response,
                                                     response.Runtime);

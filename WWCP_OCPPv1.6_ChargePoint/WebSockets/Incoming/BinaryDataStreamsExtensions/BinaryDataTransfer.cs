@@ -137,6 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                         OnIncomingBinaryDataTransferRequest?.Invoke(Timestamp.Now,
                                                                     this,
+                                                                    WebSocketConnection,
                                                                     request);
 
                     }
@@ -180,6 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                         OnIncomingBinaryDataTransferResponse?.Invoke(Timestamp.Now,
                                                                      this,
+                                                                     WebSocketConnection,
                                                                      request,
                                                                      response,
                                                                      response.Runtime);

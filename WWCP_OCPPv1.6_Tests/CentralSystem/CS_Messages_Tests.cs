@@ -656,7 +656,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
                 chargePoint3            is not null)
             {
 
-                var dataTransferRequests = new List<OCPP.CSMS.DataTransferRequest>();
+                var dataTransferRequests = new List<DataTransferRequest>();
 
                 chargePoint1.OnIncomingDataTransferRequest += async (timestamp, sender, dataTransferRequest) => {
                     dataTransferRequests.Add(dataTransferRequest);
@@ -721,7 +721,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
                 chargePoint3            is not null)
             {
 
-                var dataTransferRequests = new List<OCPP.CSMS.DataTransferRequest>();
+                var dataTransferRequests = new List<DataTransferRequest>();
 
                 chargePoint1.OnIncomingDataTransferRequest += async (timestamp, sender, dataTransferRequest) => {
                     dataTransferRequests.Add(dataTransferRequest);
@@ -790,7 +790,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
                 chargePoint3            is not null)
             {
 
-                var dataTransferRequests = new List<OCPP.CSMS.DataTransferRequest>();
+                var dataTransferRequests = new List<DataTransferRequest>();
 
                 chargePoint1.OnIncomingDataTransferRequest += async (timestamp, sender, dataTransferRequest) => {
                     dataTransferRequests.Add(dataTransferRequest);
@@ -857,7 +857,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
                 chargePoint3        is not null)
             {
 
-                var dataTransferRequests = new List<OCPP.CSMS.DataTransferRequest>();
+                var dataTransferRequests = new List<DataTransferRequest>();
 
                 chargePoint1.OnIncomingDataTransferRequest += async (timestamp, sender, dataTransferRequest) => {
                     dataTransferRequests.Add(dataTransferRequest);

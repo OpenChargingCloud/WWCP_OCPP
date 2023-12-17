@@ -140,6 +140,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                         OnDeleteFileRequest?.Invoke(Timestamp.Now,
                                                     this,
+                                                    WebSocketConnection,
                                                     request);
 
                     }
@@ -182,10 +183,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     {
 
                         OnDeleteFileResponse?.Invoke(Timestamp.Now,
-                                                  this,
-                                                  request,
-                                                  response,
-                                                  response.Runtime);
+                                                     this,
+                                                     WebSocketConnection,
+                                                     request,
+                                                     response,
+                                                     response.Runtime);
 
                     }
                     catch (Exception e)

@@ -56,27 +56,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a reset websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?          OnSendLocalListWSRequest;
+        public event WSClientJSONRequestLogHandler?                  OnSendLocalListWSRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event CS.OnSendLocalListRequestDelegate?     OnSendLocalListRequest;
+        public event OCPPv2_1.CS.OnSendLocalListRequestDelegate?     OnSendLocalListRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event CS.OnSendLocalListDelegate?            OnSendLocalList;
+        public event OCPPv2_1.CS.OnSendLocalListDelegate?            OnSendLocalList;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event CS.OnSendLocalListResponseDelegate?    OnSendLocalListResponse;
+        public event OCPPv2_1.CS.OnSendLocalListResponseDelegate?    OnSendLocalListResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a reset request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?         OnSendLocalListWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?      OnSendLocalListWSResponse;
 
         #endregion
 
@@ -140,6 +140,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnSendLocalListRequest?.Invoke(Timestamp.Now,
                                                        this,
+                                                       WebSocketConnection,
                                                        request);
 
                     }
@@ -183,6 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnSendLocalListResponse?.Invoke(Timestamp.Now,
                                                         this,
+                                                        WebSocketConnection,
                                                         request,
                                                         response,
                                                         response.Runtime);

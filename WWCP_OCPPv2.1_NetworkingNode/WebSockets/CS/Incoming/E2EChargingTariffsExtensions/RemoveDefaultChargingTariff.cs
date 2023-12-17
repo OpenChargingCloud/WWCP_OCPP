@@ -54,27 +54,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a RemoveDefaultChargingTariff websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?                        OnRemoveDefaultChargingTariffWSRequest;
+        public event WSClientJSONRequestLogHandler?                                OnRemoveDefaultChargingTariffWSRequest;
 
         /// <summary>
         /// An event sent whenever a RemoveDefaultChargingTariff request was received.
         /// </summary>
-        public event CS.OnRemoveDefaultChargingTariffRequestDelegate?     OnRemoveDefaultChargingTariffRequest;
+        public event OCPPv2_1.CS.OnRemoveDefaultChargingTariffRequestDelegate?     OnRemoveDefaultChargingTariffRequest;
 
         /// <summary>
         /// An event sent whenever a RemoveDefaultChargingTariff request was received.
         /// </summary>
-        public event CS.OnRemoveDefaultChargingTariffDelegate?            OnRemoveDefaultChargingTariff;
+        public event OCPPv2_1.CS.OnRemoveDefaultChargingTariffDelegate?            OnRemoveDefaultChargingTariff;
 
         /// <summary>
         /// An event sent whenever a response to a RemoveDefaultChargingTariff request was sent.
         /// </summary>
-        public event CS.OnRemoveDefaultChargingTariffResponseDelegate?    OnRemoveDefaultChargingTariffResponse;
+        public event OCPPv2_1.CS.OnRemoveDefaultChargingTariffResponseDelegate?    OnRemoveDefaultChargingTariffResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a RemoveDefaultChargingTariff request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?                       OnRemoveDefaultChargingTariffWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?                    OnRemoveDefaultChargingTariffWSResponse;
 
         #endregion
 
@@ -138,6 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnRemoveDefaultChargingTariffRequest?.Invoke(Timestamp.Now,
                                                                      this,
+                                                                     WebSocketConnection,
                                                                      request);
 
                     }
@@ -181,6 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnRemoveDefaultChargingTariffResponse?.Invoke(Timestamp.Now,
                                                                       this,
+                                                                      WebSocketConnection,
                                                                       request,
                                                                       response,
                                                                       response.Runtime);

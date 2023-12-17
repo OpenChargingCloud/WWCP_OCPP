@@ -20,7 +20,6 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
@@ -53,27 +52,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a NotifyEVChargingNeeds WebSocket request was received.
         /// </summary>
-        public event CSMS.WebSocketJSONRequestLogHandler?               OnNotifyEVChargingNeedsWSRequest;
+        public event WebSocketJSONRequestLogHandler?                           OnNotifyEVChargingNeedsWSRequest;
 
         /// <summary>
         /// An event sent whenever a NotifyEVChargingNeeds request was received.
         /// </summary>
-        public event CSMS.OnNotifyEVChargingNeedsRequestDelegate?       OnNotifyEVChargingNeedsRequest;
+        public event OCPPv2_1.CSMS.OnNotifyEVChargingNeedsRequestDelegate?     OnNotifyEVChargingNeedsRequest;
 
         /// <summary>
         /// An event sent whenever a NotifyEVChargingNeeds was received.
         /// </summary>
-        public event CSMS.OnNotifyEVChargingNeedsDelegate?              OnNotifyEVChargingNeeds;
+        public event OCPPv2_1.CSMS.OnNotifyEVChargingNeedsDelegate?            OnNotifyEVChargingNeeds;
 
         /// <summary>
         /// An event sent whenever a response to a NotifyEVChargingNeeds was sent.
         /// </summary>
-        public event CSMS.OnNotifyEVChargingNeedsResponseDelegate?      OnNotifyEVChargingNeedsResponse;
+        public event OCPPv2_1.CSMS.OnNotifyEVChargingNeedsResponseDelegate?    OnNotifyEVChargingNeedsResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a NotifyEVChargingNeeds was sent.
         /// </summary>
-        public event CSMS.WebSocketJSONRequestJSONResponseLogHandler?   OnNotifyEVChargingNeedsWSResponse;
+        public event WebSocketJSONRequestJSONResponseLogHandler?               OnNotifyEVChargingNeedsWSResponse;
 
         #endregion
 
@@ -139,6 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
                         OnNotifyEVChargingNeedsRequest?.Invoke(Timestamp.Now,
                                                                this,
+                                                               Connection,
                                                                request);
 
                     }
@@ -157,6 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                                             GetInvocationList()?.
                                             SafeSelect(subscriber => (subscriber as OnNotifyEVChargingNeedsDelegate)?.Invoke(Timestamp.Now,
                                                                                                                              this,
+                                                                                                                             Connection,
                                                                                                                              request,
                                                                                                                              CancellationToken)).
                                             ToArray();
@@ -178,6 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
                         OnNotifyEVChargingNeedsResponse?.Invoke(Timestamp.Now,
                                                                 this,
+                                                                Connection,
                                                                 request,
                                                                 response,
                                                                 response.Runtime);

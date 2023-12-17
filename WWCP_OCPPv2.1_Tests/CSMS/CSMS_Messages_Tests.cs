@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var resetRequests = new ConcurrentList<ResetRequest>();
 
-                chargingStation1.OnResetRequest += (timestamp, sender, resetRequest) => {
+                chargingStation1.OnResetRequest += (timestamp, sender, connection, resetRequest) => {
                     resetRequests.TryAdd(resetRequest);
                     return Task.CompletedTask;
                 };
@@ -114,7 +114,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var resetRequests = new ConcurrentList<ResetRequest>();
 
-                chargingStation2.OnResetRequest += (timestamp, sender, resetRequest) => {
+                chargingStation2.OnResetRequest += (timestamp, sender, connection, resetRequest) => {
                     resetRequests.TryAdd(resetRequest);
                     return Task.CompletedTask;
                 };
@@ -162,7 +162,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var resetRequests = new ConcurrentList<ResetRequest>();
 
-                chargingStation1.OnResetRequest += (timestamp, sender, resetRequest) => {
+                chargingStation1.OnResetRequest += (timestamp, sender, connection, resetRequest) => {
                     resetRequests.TryAdd(resetRequest);
                     return Task.CompletedTask;
                 };
@@ -214,7 +214,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var resetRequests = new ConcurrentList<ResetRequest>();
 
-                chargingStation1.OnResetRequest += (timestamp, sender, resetRequest) => {
+                chargingStation1.OnResetRequest += (timestamp, sender, connection, resetRequest) => {
                     resetRequests.TryAdd(resetRequest);
                     return Task.CompletedTask;
                 };
@@ -267,7 +267,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var updateFirmwareRequests = new ConcurrentList<UpdateFirmwareRequest>();
 
-                chargingStation1.OnUpdateFirmwareRequest += (timestamp, sender, updateFirmwareRequest) => {
+                chargingStation1.OnUpdateFirmwareRequest += (timestamp, sender, connection, updateFirmwareRequest) => {
                     updateFirmwareRequests.TryAdd(updateFirmwareRequest);
                     return Task.CompletedTask;
                 };
@@ -323,7 +323,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var publishFirmwareRequests = new ConcurrentList<PublishFirmwareRequest>();
 
-                chargingStation1.OnPublishFirmwareRequest += (timestamp, sender, publishFirmwareRequest) => {
+                chargingStation1.OnPublishFirmwareRequest += (timestamp, sender, connection, publishFirmwareRequest) => {
                     publishFirmwareRequests.TryAdd(publishFirmwareRequest);
                     return Task.CompletedTask;
                 };
@@ -373,7 +373,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var unpublishFirmwareRequests = new ConcurrentList<UnpublishFirmwareRequest>();
 
-                chargingStation1.OnUnpublishFirmwareRequest += (timestamp, sender, unpublishFirmwareRequest) => {
+                chargingStation1.OnUnpublishFirmwareRequest += (timestamp, sender, connection, unpublishFirmwareRequest) => {
                     unpublishFirmwareRequests.TryAdd(unpublishFirmwareRequest);
                     return Task.CompletedTask;
                 };
@@ -419,7 +419,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var getBaseReportRequests = new ConcurrentList<GetBaseReportRequest>();
 
-                chargingStation1.OnGetBaseReportRequest += (timestamp, sender, getBaseReportRequest) => {
+                chargingStation1.OnGetBaseReportRequest += (timestamp, sender, connection, getBaseReportRequest) => {
                     getBaseReportRequests.TryAdd(getBaseReportRequest);
                     return Task.CompletedTask;
                 };
@@ -466,7 +466,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var getReportRequests = new ConcurrentList<GetReportRequest>();
 
-                chargingStation1.OnGetReportRequest += (timestamp, sender, getReportRequest) => {
+                chargingStation1.OnGetReportRequest += (timestamp, sender, connection, getReportRequest) => {
                     getReportRequests.TryAdd(getReportRequest);
                     return Task.CompletedTask;
                 };
@@ -535,7 +535,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var getLogRequests = new ConcurrentList<GetLogRequest>();
 
-                chargingStation1.OnGetLogRequest += (timestamp, sender, getLogRequest) => {
+                chargingStation1.OnGetLogRequest += (timestamp, sender, connection, getLogRequest) => {
                     getLogRequests.TryAdd(getLogRequest);
                     return Task.CompletedTask;
                 };
@@ -588,7 +588,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var getLogRequests = new ConcurrentList<SetVariablesRequest>();
 
-                chargingStation1.OnSetVariablesRequest += (timestamp, sender, getLogRequest) => {
+                chargingStation1.OnSetVariablesRequest += (timestamp, sender, connection, getLogRequest) => {
                     getLogRequests.TryAdd(getLogRequest);
                     return Task.CompletedTask;
                 };
@@ -655,7 +655,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var getLogRequests = new ConcurrentList<GetVariablesRequest>();
 
-                chargingStation1.OnGetVariablesRequest += (timestamp, sender, getLogRequest) => {
+                chargingStation1.OnGetVariablesRequest += (timestamp, sender, connection, getLogRequest) => {
                     getLogRequests.TryAdd(getLogRequest);
                     return Task.CompletedTask;
                 };
@@ -721,7 +721,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var getLogRequests = new ConcurrentList<SetMonitoringBaseRequest>();
 
-                chargingStation1.OnSetMonitoringBaseRequest += (timestamp, sender, getLogRequest) => {
+                chargingStation1.OnSetMonitoringBaseRequest += (timestamp, sender, connection, getLogRequest) => {
                     getLogRequests.TryAdd(getLogRequest);
                     return Task.CompletedTask;
                 };
@@ -767,7 +767,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var getLogRequests = new ConcurrentList<GetMonitoringReportRequest>();
 
-                chargingStation1.OnGetMonitoringReportRequest += (timestamp, sender, getLogRequest) => {
+                chargingStation1.OnGetMonitoringReportRequest += (timestamp, sender, connection, getLogRequest) => {
                     getLogRequests.TryAdd(getLogRequest);
                     return Task.CompletedTask;
                 };
@@ -835,7 +835,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var getLogRequests = new ConcurrentList<SetMonitoringLevelRequest>();
 
-                chargingStation1.OnSetMonitoringLevelRequest += (timestamp, sender, getLogRequest) => {
+                chargingStation1.OnSetMonitoringLevelRequest += (timestamp, sender, connection, getLogRequest) => {
                     getLogRequests.TryAdd(getLogRequest);
                     return Task.CompletedTask;
                 };
@@ -881,7 +881,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var getLogRequests = new ConcurrentList<SetVariableMonitoringRequest>();
 
-                chargingStation1.OnSetVariableMonitoringRequest += (timestamp, sender, getLogRequest) => {
+                chargingStation1.OnSetVariableMonitoringRequest += (timestamp, sender, connection, getLogRequest) => {
                     getLogRequests.TryAdd(getLogRequest);
                     return Task.CompletedTask;
                 };
@@ -951,7 +951,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var getLogRequests = new ConcurrentList<ClearVariableMonitoringRequest>();
 
-                chargingStation1.OnClearVariableMonitoringRequest += (timestamp, sender, getLogRequest) => {
+                chargingStation1.OnClearVariableMonitoringRequest += (timestamp, sender, connection, getLogRequest) => {
                     getLogRequests.TryAdd(getLogRequest);
                     return Task.CompletedTask;
                 };
@@ -999,7 +999,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var setNetworkProfileRequests = new ConcurrentList<SetNetworkProfileRequest>();
 
-                chargingStation1.OnSetNetworkProfileRequest += (timestamp, sender, setNetworkProfileRequest) => {
+                chargingStation1.OnSetNetworkProfileRequest += (timestamp, sender, connection, setNetworkProfileRequest) => {
                     setNetworkProfileRequests.TryAdd(setNetworkProfileRequest);
                     return Task.CompletedTask;
                 };
@@ -1088,7 +1088,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var changeAvailabilityRequests = new ConcurrentList<ChangeAvailabilityRequest>();
 
-                chargingStation1.OnChangeAvailabilityRequest += (timestamp, sender, changeAvailabilityRequest) => {
+                chargingStation1.OnChangeAvailabilityRequest += (timestamp, sender, connection, changeAvailabilityRequest) => {
                     changeAvailabilityRequests.TryAdd(changeAvailabilityRequest);
                     return Task.CompletedTask;
                 };
@@ -1157,7 +1157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var triggerMessageRequests = new ConcurrentList<TriggerMessageRequest>();
 
-                chargingStation1.OnTriggerMessageRequest += (timestamp, sender, triggerMessageRequest) => {
+                chargingStation1.OnTriggerMessageRequest += (timestamp, sender, connection, triggerMessageRequest) => {
                     triggerMessageRequests.TryAdd(triggerMessageRequest);
                     return Task.CompletedTask;
                 };
@@ -1209,9 +1209,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 chargingStation3        is not null)
             {
 
-                var dataTransferRequests = new ConcurrentList<OCPP.CSMS.DataTransferRequest>();
+                var dataTransferRequests = new ConcurrentList<DataTransferRequest>();
 
-                chargingStation1.OnIncomingDataTransferRequest += (timestamp, sender, dataTransferRequest) => {
+                chargingStation1.OnIncomingDataTransferRequest += (timestamp, sender, connection, dataTransferRequest) => {
                     dataTransferRequests.TryAdd(dataTransferRequest);
                     return Task.CompletedTask;
                 };
@@ -1266,9 +1266,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 chargingStation3        is not null)
             {
 
-                var dataTransferRequests = new ConcurrentList<OCPP.CSMS.DataTransferRequest>();
+                var dataTransferRequests = new ConcurrentList<DataTransferRequest>();
 
-                chargingStation1.OnIncomingDataTransferRequest += (timestamp, sender, dataTransferRequest) => {
+                chargingStation1.OnIncomingDataTransferRequest += (timestamp, sender, connection, dataTransferRequest) => {
                     dataTransferRequests.TryAdd(dataTransferRequest);
                     return Task.CompletedTask;
                 };
@@ -1330,9 +1330,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 chargingStation3        is not null)
             {
 
-                var dataTransferRequests = new ConcurrentList<OCPP.CSMS.DataTransferRequest>();
+                var dataTransferRequests = new ConcurrentList<DataTransferRequest>();
 
-                chargingStation1.OnIncomingDataTransferRequest += (timestamp, sender, dataTransferRequest) => {
+                chargingStation1.OnIncomingDataTransferRequest += (timestamp, sender, connection, dataTransferRequest) => {
                     dataTransferRequests.TryAdd(dataTransferRequest);
                     return Task.CompletedTask;
                 };
@@ -1391,9 +1391,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 chargingStation3        is not null)
             {
 
-                var dataTransferRequests = new ConcurrentList<OCPP.CSMS.DataTransferRequest>();
+                var dataTransferRequests = new ConcurrentList<DataTransferRequest>();
 
-                chargingStation1.OnIncomingDataTransferRequest += (timestamp, sender, dataTransferRequest) => {
+                chargingStation1.OnIncomingDataTransferRequest += (timestamp, sender, connection, dataTransferRequest) => {
                     dataTransferRequests.TryAdd(dataTransferRequest);
                     return Task.CompletedTask;
                 };
@@ -1449,7 +1449,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var certificateSignedRequests = new ConcurrentList<CertificateSignedRequest>();
 
-                chargingStation1.OnCertificateSignedRequest += (timestamp, sender, certificateSignedRequest) => {
+                chargingStation1.OnCertificateSignedRequest += (timestamp, sender, connection, certificateSignedRequest) => {
                     certificateSignedRequests.TryAdd(certificateSignedRequest);
                     return Task.CompletedTask;
                 };
@@ -1538,7 +1538,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var installCertificateRequests = new ConcurrentList<InstallCertificateRequest>();
 
-                chargingStation1.OnInstallCertificateRequest += (timestamp, sender, installCertificateRequest) => {
+                chargingStation1.OnInstallCertificateRequest += (timestamp, sender, connection, installCertificateRequest) => {
                     installCertificateRequests.TryAdd(installCertificateRequest);
                     return Task.CompletedTask;
                 };
@@ -1623,7 +1623,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var installCertificateRequests = new ConcurrentList<InstallCertificateRequest>();
 
-                chargingStation1.OnInstallCertificateRequest += (timestamp, sender, installCertificateRequest) => {
+                chargingStation1.OnInstallCertificateRequest += (timestamp, sender, connection, installCertificateRequest) => {
                     installCertificateRequests.TryAdd(installCertificateRequest);
                     return Task.CompletedTask;
                 };
@@ -1683,7 +1683,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var getInstalledCertificateIdsRequests = new ConcurrentList<GetInstalledCertificateIdsRequest>();
 
-                chargingStation1.OnGetInstalledCertificateIdsRequest += (timestamp, sender, getInstalledCertificateIdsRequest) => {
+                chargingStation1.OnGetInstalledCertificateIdsRequest += (timestamp, sender, connection, getInstalledCertificateIdsRequest) => {
                     getInstalledCertificateIdsRequests.TryAdd(getInstalledCertificateIdsRequest);
                     return Task.CompletedTask;
                 };
@@ -1735,7 +1735,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var installCertificateRequests = new ConcurrentList<InstallCertificateRequest>();
 
-                chargingStation1.OnInstallCertificateRequest += (timestamp, sender, installCertificateRequest) => {
+                chargingStation1.OnInstallCertificateRequest += (timestamp, sender, connection, installCertificateRequest) => {
                     installCertificateRequests.TryAdd(installCertificateRequest);
                     return Task.CompletedTask;
                 };
@@ -1798,7 +1798,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var getInstalledCertificateIdsRequests = new ConcurrentList<GetInstalledCertificateIdsRequest>();
 
-                chargingStation1.OnGetInstalledCertificateIdsRequest += (timestamp, sender, getInstalledCertificateIdsRequest) => {
+                chargingStation1.OnGetInstalledCertificateIdsRequest += (timestamp, sender, connection, getInstalledCertificateIdsRequest) => {
                     getInstalledCertificateIdsRequests.TryAdd(getInstalledCertificateIdsRequest);
                     return Task.CompletedTask;
                 };
@@ -1828,7 +1828,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var deleteCertificateRequests = new ConcurrentList<DeleteCertificateRequest>();
 
-                chargingStation1.OnDeleteCertificateRequest += (timestamp, sender, deleteCertificateRequest) => {
+                chargingStation1.OnDeleteCertificateRequest += (timestamp, sender, connection, deleteCertificateRequest) => {
                     deleteCertificateRequests.TryAdd(deleteCertificateRequest);
                     return Task.CompletedTask;
                 };
@@ -1902,7 +1902,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var notifyCRLRequests = new ConcurrentList<NotifyCRLRequest>();
 
-                chargingStation1.OnNotifyCRLRequest += (timestamp, sender, notifyCRLRequest) => {
+                chargingStation1.OnNotifyCRLRequest += (timestamp, sender, connection, notifyCRLRequest) => {
                     notifyCRLRequests.TryAdd(notifyCRLRequest);
                     return Task.CompletedTask;
                 };
@@ -1952,7 +1952,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var getLocalListVersionRequests = new ConcurrentList<GetLocalListVersionRequest>();
 
-                chargingStation1.OnGetLocalListVersionRequest += (timestamp, sender, getLocalListVersionRequest) => {
+                chargingStation1.OnGetLocalListVersionRequest += (timestamp, sender, connection, getLocalListVersionRequest) => {
                     getLocalListVersionRequests.TryAdd(getLocalListVersionRequest);
                     return Task.CompletedTask;
                 };
@@ -1999,7 +1999,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var sendLocalListRequests = new ConcurrentList<SendLocalListRequest>();
 
-                chargingStation1.OnSendLocalListRequest += (timestamp, sender, sendLocalListRequest) => {
+                chargingStation1.OnSendLocalListRequest += (timestamp, sender, connection, sendLocalListRequest) => {
                     sendLocalListRequests.TryAdd(sendLocalListRequest);
                     return Task.CompletedTask;
                 };
@@ -2094,7 +2094,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var clearCacheRequests = new ConcurrentList<ClearCacheRequest>();
 
-                chargingStation1.OnClearCacheRequest += (timestamp, sender, clearCacheRequest) => {
+                chargingStation1.OnClearCacheRequest += (timestamp, sender, connection, clearCacheRequest) => {
                     clearCacheRequests.TryAdd(clearCacheRequest);
                     return Task.CompletedTask;
                 };
@@ -2142,7 +2142,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var reserveNowRequests = new ConcurrentList<ReserveNowRequest>();
 
-                chargingStation1.OnReserveNowRequest += (timestamp, sender, reserveNowRequest) => {
+                chargingStation1.OnReserveNowRequest += (timestamp, sender, connection, reserveNowRequest) => {
                     reserveNowRequests.TryAdd(reserveNowRequest);
                     return Task.CompletedTask;
                 };
@@ -2222,7 +2222,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var cancelReservationRequests = new ConcurrentList<CancelReservationRequest>();
 
-                chargingStation1.OnCancelReservationRequest += (timestamp, sender, cancelReservationRequest) => {
+                chargingStation1.OnCancelReservationRequest += (timestamp, sender, connection, cancelReservationRequest) => {
                     cancelReservationRequests.TryAdd(cancelReservationRequest);
                     return Task.CompletedTask;
                 };
@@ -2273,12 +2273,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 var requestStartTransactionRequests  = new ConcurrentList<RequestStartTransactionRequest>();
                 var requestStopTransactionRequests   = new ConcurrentList<RequestStopTransactionRequest>();
 
-                chargingStation1.OnRequestStartTransactionRequest += (timestamp, sender, requestStartTransactionRequest) => {
+                chargingStation1.OnRequestStartTransactionRequest += (timestamp, sender, connection, requestStartTransactionRequest) => {
                     requestStartTransactionRequests.TryAdd(requestStartTransactionRequest);
                     return Task.CompletedTask;
                 };
 
-                chargingStation1.OnRequestStopTransactionRequest  += (timestamp, sender, requestStopTransactionRequest) => {
+                chargingStation1.OnRequestStopTransactionRequest  += (timestamp, sender, connection, requestStopTransactionRequest) => {
                     requestStopTransactionRequests. TryAdd(requestStopTransactionRequest);
                     return Task.CompletedTask;
                 };
@@ -2361,7 +2361,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var unlockConnectorRequests = new ConcurrentList<GetTransactionStatusRequest>();
 
-                chargingStation1.OnGetTransactionStatusRequest += (timestamp, sender, unlockConnectorRequest) => {
+                chargingStation1.OnGetTransactionStatusRequest += (timestamp, sender, connection, unlockConnectorRequest) => {
                     unlockConnectorRequests.TryAdd(unlockConnectorRequest);
                     return Task.CompletedTask;
                 };
@@ -2409,7 +2409,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var setChargingProfileRequests = new ConcurrentList<SetChargingProfileRequest>();
 
-                chargingStation1.OnSetChargingProfileRequest += (timestamp, sender, setChargingProfileRequest) => {
+                chargingStation1.OnSetChargingProfileRequest += (timestamp, sender, connection, setChargingProfileRequest) => {
                     setChargingProfileRequests.TryAdd(setChargingProfileRequest);
                     return Task.CompletedTask;
                 };
@@ -2517,7 +2517,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var getChargingProfilesRequests = new ConcurrentList<GetChargingProfilesRequest>();
 
-                chargingStation1.OnGetChargingProfilesRequest += (timestamp, sender, getChargingProfilesRequest) => {
+                chargingStation1.OnGetChargingProfilesRequest += (timestamp, sender, connection, getChargingProfilesRequest) => {
                     getChargingProfilesRequests.TryAdd(getChargingProfilesRequest);
                     return Task.CompletedTask;
                 };
@@ -2577,7 +2577,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var getChargingProfilesRequests = new ConcurrentList<ClearChargingProfileRequest>();
 
-                chargingStation1.OnClearChargingProfileRequest += (timestamp, sender, getChargingProfilesRequest) => {
+                chargingStation1.OnClearChargingProfileRequest += (timestamp, sender, connection, getChargingProfilesRequest) => {
                     getChargingProfilesRequests.TryAdd(getChargingProfilesRequest);
                     return Task.CompletedTask;
                 };
@@ -2631,7 +2631,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var getCompositeScheduleRequests = new ConcurrentList<GetCompositeScheduleRequest>();
 
-                chargingStation1.OnGetCompositeScheduleRequest += (timestamp, sender, getCompositeScheduleRequest) => {
+                chargingStation1.OnGetCompositeScheduleRequest += (timestamp, sender, connection, getCompositeScheduleRequest) => {
                     getCompositeScheduleRequests.TryAdd(getCompositeScheduleRequest);
                     return Task.CompletedTask;
                 };
@@ -2681,7 +2681,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var updateDynamicScheduleRequests = new ConcurrentList<UpdateDynamicScheduleRequest>();
 
-                chargingStation1.OnUpdateDynamicScheduleRequest += (timestamp, sender, updateDynamicScheduleRequest) => {
+                chargingStation1.OnUpdateDynamicScheduleRequest += (timestamp, sender, connection, updateDynamicScheduleRequest) => {
                     updateDynamicScheduleRequests.TryAdd(updateDynamicScheduleRequest);
                     return Task.CompletedTask;
                 };
@@ -2749,7 +2749,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var unlockConnectorRequests = new ConcurrentList<NotifyAllowedEnergyTransferRequest>();
 
-                chargingStation1.OnNotifyAllowedEnergyTransferRequest += (timestamp, sender, unlockConnectorRequest) => {
+                chargingStation1.OnNotifyAllowedEnergyTransferRequest += (timestamp, sender, connection, unlockConnectorRequest) => {
                     unlockConnectorRequests.TryAdd(unlockConnectorRequest);
                     return Task.CompletedTask;
                 };
@@ -2800,7 +2800,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var usePriorityChargingRequests = new ConcurrentList<UsePriorityChargingRequest>();
 
-                chargingStation1.OnUsePriorityChargingRequest += (timestamp, sender, usePriorityChargingRequest) => {
+                chargingStation1.OnUsePriorityChargingRequest += (timestamp, sender, connection, usePriorityChargingRequest) => {
                     usePriorityChargingRequests.TryAdd(usePriorityChargingRequest);
                     return Task.CompletedTask;
                 };
@@ -2849,7 +2849,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var unlockConnectorRequests = new ConcurrentList<UnlockConnectorRequest>();
 
-                chargingStation1.OnUnlockConnectorRequest += (timestamp, sender, unlockConnectorRequest) => {
+                chargingStation1.OnUnlockConnectorRequest += (timestamp, sender, connection, unlockConnectorRequest) => {
                     unlockConnectorRequests.TryAdd(unlockConnectorRequest);
                     return Task.CompletedTask;
                 };
@@ -2899,7 +2899,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var afrrSignalRequestRequests = new ConcurrentList<AFRRSignalRequest>();
 
-                chargingStation1.OnAFRRSignalRequest += (timestamp, sender, afrrSignalRequestRequest) => {
+                chargingStation1.OnAFRRSignalRequest += (timestamp, sender, connection, afrrSignalRequestRequest) => {
                     afrrSignalRequestRequests.TryAdd(afrrSignalRequestRequest);
                     return Task.CompletedTask;
                 };
@@ -2949,7 +2949,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var setDisplayMessageRequests = new ConcurrentList<SetDisplayMessageRequest>();
 
-                chargingStation1.OnSetDisplayMessageRequest += (timestamp, sender, setDisplayMessageRequest) => {
+                chargingStation1.OnSetDisplayMessageRequest += (timestamp, sender, connection, setDisplayMessageRequest) => {
                     setDisplayMessageRequests.TryAdd(setDisplayMessageRequest);
                     return Task.CompletedTask;
                 };
@@ -3030,7 +3030,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var setDisplayMessageRequests = new ConcurrentList<SetDisplayMessageRequest>();
 
-                chargingStation1.OnSetDisplayMessageRequest += (timestamp, sender, setDisplayMessageRequest) => {
+                chargingStation1.OnSetDisplayMessageRequest += (timestamp, sender, connection, setDisplayMessageRequest) => {
                     setDisplayMessageRequests.TryAdd(setDisplayMessageRequest);
                     return Task.CompletedTask;
                 };
@@ -3094,7 +3094,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 var getDisplayMessagesRequests     = new ConcurrentList<GetDisplayMessagesRequest>();
                 var notifyDisplayMessagesRequests  = new ConcurrentList<CS.NotifyDisplayMessagesRequest>();
 
-                chargingStation1.OnGetDisplayMessagesRequest += (timestamp, sender, getDisplayMessagesRequest) => {
+                chargingStation1.OnGetDisplayMessagesRequest += (timestamp, sender, connection, getDisplayMessagesRequest) => {
                     getDisplayMessagesRequests.   TryAdd(getDisplayMessagesRequest);
                     return Task.CompletedTask;
                 };
@@ -3231,7 +3231,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var setDisplayMessageRequests = new ConcurrentList<SetDisplayMessageRequest>();
 
-                chargingStation1.OnSetDisplayMessageRequest += (timestamp, sender, setDisplayMessageRequest) => {
+                chargingStation1.OnSetDisplayMessageRequest += (timestamp, sender, connection, setDisplayMessageRequest) => {
                     setDisplayMessageRequests.TryAdd(setDisplayMessageRequest);
                     return Task.CompletedTask;
                 };
@@ -3293,7 +3293,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 // Get Messages BEFORE
                 var getDisplayMessagesRequests = new ConcurrentList<GetDisplayMessagesRequest>();
 
-                chargingStation1.OnGetDisplayMessagesRequest += (timestamp, sender, getDisplayMessagesRequest) => {
+                chargingStation1.OnGetDisplayMessagesRequest += (timestamp, sender, connection, getDisplayMessagesRequest) => {
                     getDisplayMessagesRequests.TryAdd(getDisplayMessagesRequest);
                     return Task.CompletedTask;
                 };
@@ -3326,7 +3326,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 // Delete message #1
                 var clearDisplayMessageRequests = new ConcurrentList<ClearDisplayMessageRequest>();
 
-                chargingStation1.OnClearDisplayMessageRequest += (timestamp, sender, clearDisplayMessageRequest) => {
+                chargingStation1.OnClearDisplayMessageRequest += (timestamp, sender, connection, clearDisplayMessageRequest) => {
                     clearDisplayMessageRequests.TryAdd(clearDisplayMessageRequest);
                     return Task.CompletedTask;
                 };
@@ -3406,7 +3406,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var costUpdatedRequests = new ConcurrentList<CostUpdatedRequest>();
 
-                chargingStation1.OnCostUpdatedRequest += (timestamp, sender, costUpdatedRequest) => {
+                chargingStation1.OnCostUpdatedRequest += (timestamp, sender, connection, costUpdatedRequest) => {
                     costUpdatedRequests.TryAdd(costUpdatedRequest);
                     return Task.CompletedTask;
                 };
@@ -3461,7 +3461,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 var customerInformationRequests        = new ConcurrentList<CustomerInformationRequest>();
                 var notifyCustomerInformationRequests  = new ConcurrentList<CS.NotifyCustomerInformationRequest>();
 
-                chargingStation1.OnCustomerInformationRequest += (timestamp, sender, customerInformationRequest) => {
+                chargingStation1.OnCustomerInformationRequest += (timestamp, sender, connection, customerInformationRequest) => {
                     customerInformationRequests.      TryAdd(customerInformationRequest);
                     return Task.CompletedTask;
                 };

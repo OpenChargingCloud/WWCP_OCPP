@@ -27,19 +27,19 @@ using cloud.charging.open.protocols.OCPP.CSMS;
 namespace cloud.charging.open.protocols.OCPP.CS
 {
 
-    #region OnDeleteUserRole
-
     /// <summary>
     /// An DeleteUserRole request.
     /// </summary>
     /// <param name="Timestamp">The log timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnDeleteUserRoleRequestDelegate(DateTime                Timestamp,
-                                        IEventSender            Sender,
-                                        DeleteUserRoleRequest   Request);
+        OnDeleteUserRoleRequestDelegate(DateTime                    Timestamp,
+                                        IEventSender                Sender,
+                                        WebSocketClientConnection   Connection,
+                                        DeleteUserRoleRequest       Request);
 
 
     /// <summary>
@@ -47,6 +47,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<DeleteUserRoleResponse>
@@ -63,17 +64,17 @@ namespace cloud.charging.open.protocols.OCPP.CS
     /// </summary>
     /// <param name="Timestamp">The log timestamp of the response.</param>
     /// <param name="Sender">The sender of the response.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnDeleteUserRoleResponseDelegate(DateTime                 Timestamp,
-                                         IEventSender             Sender,
-                                         DeleteUserRoleRequest    Request,
-                                         DeleteUserRoleResponse   Response,
-                                         TimeSpan                 Runtime);
-
-    #endregion
+        OnDeleteUserRoleResponseDelegate(DateTime                    Timestamp,
+                                         IEventSender                Sender,
+                                         WebSocketClientConnection   Connection,
+                                         DeleteUserRoleRequest       Request,
+                                         DeleteUserRoleResponse      Response,
+                                         TimeSpan                    Runtime);
 
 }

@@ -208,27 +208,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a data transfer SOAP request was received.
         /// </summary>
-        public event RequestLogHandler?                                 OnIncomingDataTransferSOAPRequest;
+        public event RequestLogHandler?                         OnIncomingDataTransferSOAPRequest;
 
         /// <summary>
         /// An event sent whenever a data transfer request was received.
         /// </summary>
-        public event OCPP.CS.OnIncomingDataTransferRequestDelegate?     OnIncomingDataTransferRequest;
+        public event OnIncomingDataTransferRequestDelegate?     OnIncomingDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a data transfer request was received.
         /// </summary>
-        public event OCPP.CS.OnIncomingDataTransferDelegate?            OnIncomingDataTransfer;
+        public event OnIncomingDataTransferDelegate?            OnIncomingDataTransfer;
 
         /// <summary>
         /// An event sent whenever a response to a data transfer request was sent.
         /// </summary>
-        public event OCPP.CS.OnIncomingDataTransferResponseDelegate?    OnIncomingDataTransferResponse;
+        public event OnIncomingDataTransferResponseDelegate?    OnIncomingDataTransferResponse;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a data transfer request was sent.
         /// </summary>
-        public event AccessLogHandler?                                  OnIncomingDataTransferSOAPResponse;
+        public event AccessLogHandler?                          OnIncomingDataTransferSOAPResponse;
 
         #endregion
 
@@ -1463,13 +1463,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
 
                                                 var OCPPHeader  = SOAPHeader.Parse(HeaderXML);
-                                                var request     = OCPP.CSMS.DataTransferRequest.Parse(DataTransferXML,
-                                                                                                      OCPPNS.OCPPv1_6_CS,
-                                                                                                      Request_Id.Parse(OCPPHeader.MessageId),
-                                                                                                      NetworkPath.Empty,
-                                                                                                      OCPPHeader.ChargeBoxIdentity);
+                                                var request     = CS.DataTransferRequest.Parse(DataTransferXML,
+                                                                                               OCPPNS.OCPPv1_6_CS,
+                                                                                               Request_Id.Parse(OCPPHeader.MessageId),
+                                                                                               NetworkPath.Empty,
+                                                                                               OCPPHeader.ChargeBoxIdentity);
 
-                                                OCPP.CS.DataTransferResponse? response = null;
+                                                DataTransferResponse? response = null;
 
 
 
@@ -1480,11 +1480,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                     var results = OnIncomingDataTransfer?.
                                                                       GetInvocationList()?.
-                                                                      SafeSelect(subscriber => (subscriber as OCPP.CS.OnIncomingDataTransferDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                                                              this,
-                                                                                                                                                              null,
-                                                                                                                                                              request,
-                                                                                                                                                              Request.CancellationToken)).
+                                                                      SafeSelect(subscriber => (subscriber as OnIncomingDataTransferDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                                      this,
+                                                                                                                                                      null,
+                                                                                                                                                      request,
+                                                                                                                                                      Request.CancellationToken)).
                                                                       ToArray();
 
                                                     if (results?.Length > 0)
@@ -1497,7 +1497,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                     }
 
                                                     if (results?.Length == 0 || response == null)
-                                                        response = OCPP.CS.DataTransferResponse.Failed(request);
+                                                        response = DataTransferResponse.Failed(request);
 
                                                 }
 

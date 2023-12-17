@@ -18,7 +18,6 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
@@ -35,9 +34,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     /// A charging station HTTP Web Socket client.
     /// </summary>
     public partial class NetworkingNodeWSClient : WebSocketClient,
-                                                   INetworkingNodeWebSocketClient,
-                                                   INetworkingNodeServer,
-                                                   INetworkingNodeClientEvents
+                                                  INetworkingNodeWebSocketClient,
+                                                  INetworkingNodeServer,
+                                                  INetworkingNodeClientEvents
     {
 
         #region Custom JSON serializer delegates
@@ -53,22 +52,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever a cleared charging limit request will be sent to the CSMS.
         /// </summary>
-        public event CS.OnClearedChargingLimitRequestDelegate?     OnClearedChargingLimitRequest;
+        public event OCPPv2_1.CS.OnClearedChargingLimitRequestDelegate?     OnClearedChargingLimitRequest;
 
         /// <summary>
         /// An event fired whenever a cleared charging limit request will be sent to the CSMS.
         /// </summary>
-        public event ClientRequestLogHandler?                   OnClearedChargingLimitWSRequest;
+        public event ClientRequestLogHandler?                               OnClearedChargingLimitWSRequest;
 
         /// <summary>
         /// An event fired whenever a response to a cleared charging limit request was received.
         /// </summary>
-        public event ClientResponseLogHandler?                  OnClearedChargingLimitWSResponse;
+        public event ClientResponseLogHandler?                              OnClearedChargingLimitWSResponse;
 
         /// <summary>
         /// An event fired whenever a response to a cleared charging limit request was received.
         /// </summary>
-        public event CS.OnClearedChargingLimitResponseDelegate?    OnClearedChargingLimitResponse;
+        public event OCPPv2_1.CS.OnClearedChargingLimitResponseDelegate?    OnClearedChargingLimitResponse;
 
         #endregion
 

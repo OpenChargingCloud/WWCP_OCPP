@@ -1087,7 +1087,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<OCPP.CS.DataTransferResponse>
+        public static Task<CS.DataTransferResponse>
 
             TransferData(this ICSMS                    CSMS,
                          NetworkingNode_Id             NetworkingNodeId,
@@ -1109,7 +1109,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 => CSMS.TransferData(
-                       new OCPP.CSMS.DataTransferRequest(
+                       new DataTransferRequest(
                            NetworkingNodeId,
                            VendorId,
                            MessageId,

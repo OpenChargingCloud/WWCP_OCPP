@@ -55,27 +55,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a cancel reservation websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?              OnCancelReservationWSRequest;
+        public event WSClientJSONRequestLogHandler?                      OnCancelReservationWSRequest;
 
         /// <summary>
         /// An event sent whenever a cancel reservation request was received.
         /// </summary>
-        public event CS.OnCancelReservationRequestDelegate?     OnCancelReservationRequest;
+        public event OCPPv2_1.CS.OnCancelReservationRequestDelegate?     OnCancelReservationRequest;
 
         /// <summary>
         /// An event sent whenever a cancel reservation request was received.
         /// </summary>
-        public event CS.OnCancelReservationDelegate?            OnCancelReservation;
+        public event OCPPv2_1.CS.OnCancelReservationDelegate?            OnCancelReservation;
 
         /// <summary>
         /// An event sent whenever a response to a cancel reservation request was sent.
         /// </summary>
-        public event CS.OnCancelReservationResponseDelegate?    OnCancelReservationResponse;
+        public event OCPPv2_1.CS.OnCancelReservationResponseDelegate?    OnCancelReservationResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a cancel reservation request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?             OnCancelReservationWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?          OnCancelReservationWSResponse;
 
         #endregion
 
@@ -139,6 +139,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnCancelReservationRequest?.Invoke(Timestamp.Now,
                                                            this,
+                                                           WebSocketConnection,
                                                            request);
 
                     }
@@ -182,6 +183,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnCancelReservationResponse?.Invoke(Timestamp.Now,
                                                             this,
+                                                            WebSocketConnection,
                                                             request,
                                                             response,
                                                             response.Runtime);

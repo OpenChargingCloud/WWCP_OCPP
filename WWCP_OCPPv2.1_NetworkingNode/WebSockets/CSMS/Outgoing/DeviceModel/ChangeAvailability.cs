@@ -18,8 +18,6 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
-using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
@@ -50,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a ChangeAvailability request was sent.
         /// </summary>
-        public event CSMS.OnChangeAvailabilityRequestDelegate?     OnChangeAvailabilityRequest;
+        public event OCPPv2_1.CSMS.OnChangeAvailabilityRequestDelegate?     OnChangeAvailabilityRequest;
 
         /// <summary>
         /// An event sent whenever a response to a ChangeAvailability request was sent.
         /// </summary>
-        public event CSMS.OnChangeAvailabilityResponseDelegate?    OnChangeAvailabilityResponse;
+        public event OCPPv2_1.CSMS.OnChangeAvailabilityResponseDelegate?    OnChangeAvailabilityResponse;
 
         #endregion
 

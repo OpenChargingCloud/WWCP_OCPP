@@ -76,7 +76,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Transfer the given data to the given charge box.
         /// </summary>
         /// <param name="Request">A data transfer request.</param>
-        Task<OCPP.CS.DataTransferResponse> DataTransfer(OCPP.CSMS.DataTransferRequest Request);
+        Task<CP.DataTransferResponse> DataTransfer(DataTransferRequest Request);
 
         #endregion
 

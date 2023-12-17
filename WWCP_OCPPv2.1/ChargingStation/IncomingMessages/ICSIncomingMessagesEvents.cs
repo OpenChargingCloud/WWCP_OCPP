@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     public interface ICSIncomingMessagesEvents : OCPP.CS.ICSIncomingMessagesEvents
     {
 
-        #region OnReset                         (-Request/-Response)
+        #region OnReset                         (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a reset request was received.
@@ -44,7 +44,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region OnUpdateFirmware                (-Request/-Response)
+        #region OnUpdateFirmware                (Request/-Response)
 
         /// <summary>
         /// An event sent whenever an update firmware request was received.
@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region OnPublishFirmware               (-Request/-Response)
+        #region OnPublishFirmware               (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a publish firmware request was received.
@@ -311,7 +311,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region OnGetInstalledCertificateIds    (-Request/-Response)
+        #region OnGetInstalledCertificateIds    (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a get installed certificate ids request was received.

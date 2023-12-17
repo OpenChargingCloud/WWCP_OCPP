@@ -1475,7 +1475,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                     {
 
                                         var response = await testCentralSystemV1_6.DataTransfer(
-                                                           new cloud.charging.open.protocols.OCPP.CSMS.DataTransferRequest(
+                                                           new cloud.charging.open.protocols.OCPPv1_6.CS.DataTransferRequest(
                                                                NetworkingNodeId:   NetworkingNode_Id.Parse(chargingStationId),
                                                                VendorId:           Vendor_Id.Parse(commandArray[1])
                                                            )
@@ -1489,7 +1489,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                     {
 
                                         var response = await testCSMSv2_1.TransferData(
-                                                           new cloud.charging.open.protocols.OCPP.CSMS.DataTransferRequest(
+                                                           new cloud.charging.open.protocols.OCPPv2_1.CSMS.DataTransferRequest(
                                                                NetworkingNodeId:   NetworkingNode_Id.Parse(chargingStationId),
                                                                VendorId:           Vendor_Id.Parse(commandArray[1])
                                                            )
@@ -1513,7 +1513,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                     {
 
                                         var response = await testCentralSystemV1_6.DataTransfer(
-                                                           new cloud.charging.open.protocols.OCPP.CSMS.DataTransferRequest(
+                                                           new cloud.charging.open.protocols.OCPPv1_6.CS.DataTransferRequest(
                                                                NetworkingNodeId:   NetworkingNode_Id.Parse(chargingStationId),
                                                                VendorId:           Vendor_Id.Parse(commandArray[1]),
                                                                MessageId:          commandArray.Length == 3 ? Message_Id.Parse(commandArray[2]) : null
@@ -1528,7 +1528,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                     {
 
                                         var response = await testCSMSv2_1.TransferData(
-                                                           new cloud.charging.open.protocols.OCPP.CSMS.DataTransferRequest(
+                                                           new cloud.charging.open.protocols.OCPPv2_1.CSMS.DataTransferRequest(
                                                                NetworkingNodeId:    NetworkingNode_Id.Parse(chargingStationId),
                                                                VendorId:            Vendor_Id.   Parse(commandArray[1]),
                                                                MessageId:           commandArray.Length == 3 ? Message_Id.Parse(commandArray[2]) : null
@@ -1553,7 +1553,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                     {
 
                                         var response = await testCentralSystemV1_6.DataTransfer(
-                                                           new cloud.charging.open.protocols.OCPP.CSMS.DataTransferRequest(
+                                                           new cloud.charging.open.protocols.OCPPv1_6.CS.DataTransferRequest(
                                                                NetworkingNodeId:   NetworkingNode_Id.Parse(chargingStationId),
                                                                VendorId:           Vendor_Id. Parse(commandArray[1]),
                                                                MessageId:          Message_Id.Parse(commandArray[2]),
@@ -1569,7 +1569,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                     {
 
                                         var response = await testCSMSv2_1.TransferData(
-                                                           new cloud.charging.open.protocols.OCPP.CSMS.DataTransferRequest(
+                                                           new cloud.charging.open.protocols.OCPPv2_1.CSMS.DataTransferRequest(
                                                                NetworkingNodeId:   NetworkingNode_Id.Parse(chargingStationId),
                                                                VendorId:           Vendor_Id. Parse(commandArray[1]),
                                                                MessageId:          Message_Id.Parse(commandArray[2]),

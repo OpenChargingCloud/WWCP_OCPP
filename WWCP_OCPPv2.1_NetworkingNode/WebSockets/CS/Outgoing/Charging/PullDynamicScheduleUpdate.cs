@@ -18,7 +18,6 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
@@ -35,9 +34,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     /// A charging station HTTP Web Socket client.
     /// </summary>
     public partial class NetworkingNodeWSClient : WebSocketClient,
-                                                   INetworkingNodeWebSocketClient,
-                                                   INetworkingNodeServer,
-                                                   INetworkingNodeClientEvents
+                                                  INetworkingNodeWebSocketClient,
+                                                  INetworkingNodeServer,
+                                                  INetworkingNodeClientEvents
     {
 
         #region Custom JSON serializer delegates
@@ -53,22 +52,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever a PullDynamicScheduleUpdate request will be sent to the CSMS.
         /// </summary>
-        public event CS.OnPullDynamicScheduleUpdateRequestDelegate?     OnPullDynamicScheduleUpdateRequest;
+        public event OCPPv2_1.CS.OnPullDynamicScheduleUpdateRequestDelegate?     OnPullDynamicScheduleUpdateRequest;
 
         /// <summary>
         /// An event fired whenever a PullDynamicScheduleUpdate request will be sent to the CSMS.
         /// </summary>
-        public event ClientRequestLogHandler?                        OnPullDynamicScheduleUpdateWSRequest;
+        public event ClientRequestLogHandler?                                    OnPullDynamicScheduleUpdateWSRequest;
 
         /// <summary>
         /// An event fired whenever a response to a PullDynamicScheduleUpdate request was received.
         /// </summary>
-        public event ClientResponseLogHandler?                       OnPullDynamicScheduleUpdateWSResponse;
+        public event ClientResponseLogHandler?                                   OnPullDynamicScheduleUpdateWSResponse;
 
         /// <summary>
         /// An event fired whenever a response to a PullDynamicScheduleUpdate request was received.
         /// </summary>
-        public event CS.OnPullDynamicScheduleUpdateResponseDelegate?    OnPullDynamicScheduleUpdateResponse;
+        public event OCPPv2_1.CS.OnPullDynamicScheduleUpdateResponseDelegate?    OnPullDynamicScheduleUpdateResponse;
 
         #endregion
 

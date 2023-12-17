@@ -18,7 +18,6 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
@@ -35,9 +34,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     /// A charging station HTTP Web Socket client.
     /// </summary>
     public partial class NetworkingNodeWSClient : WebSocketClient,
-                                                   INetworkingNodeWebSocketClient,
-                                                   INetworkingNodeServer,
-                                                   INetworkingNodeClientEvents
+                                                  INetworkingNodeWebSocketClient,
+                                                  INetworkingNodeServer,
+                                                  INetworkingNodeClientEvents
     {
 
         #region Custom JSON serializer delegates
@@ -53,22 +52,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever a log status notification request will be sent to the CSMS.
         /// </summary>
-        public event CS.OnLogStatusNotificationRequestDelegate?     OnLogStatusNotificationRequest;
+        public event OCPPv2_1.CS.OnLogStatusNotificationRequestDelegate?     OnLogStatusNotificationRequest;
 
         /// <summary>
         /// An event fired whenever a log status notification request will be sent to the CSMS.
         /// </summary>
-        public event ClientRequestLogHandler?                    OnLogStatusNotificationWSRequest;
+        public event ClientRequestLogHandler?                                OnLogStatusNotificationWSRequest;
 
         /// <summary>
         /// An event fired whenever a response to a log status notification request was received.
         /// </summary>
-        public event ClientResponseLogHandler?                   OnLogStatusNotificationWSResponse;
+        public event ClientResponseLogHandler?                               OnLogStatusNotificationWSResponse;
 
         /// <summary>
         /// An event fired whenever a response to a log status notification request was received.
         /// </summary>
-        public event CS.OnLogStatusNotificationResponseDelegate?    OnLogStatusNotificationResponse;
+        public event OCPPv2_1.CS.OnLogStatusNotificationResponseDelegate?    OnLogStatusNotificationResponse;
 
         #endregion
 

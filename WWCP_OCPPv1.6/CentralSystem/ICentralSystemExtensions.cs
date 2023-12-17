@@ -17,13 +17,13 @@
 
 #region Usings
 
-using org.GraphDefined.Vanaheimr.Illias;
+using Newtonsoft.Json.Linq;
 
+using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv1_6.CP;
-using Newtonsoft.Json.Linq;
 
 #endregion
 
@@ -49,6 +49,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
         public static Task<ResetResponse> Reset(this ICentralSystem           ICentralSystem,
+
                                                 NetworkingNode_Id             NetworkingNodeId,
                                                 ResetTypes                    ResetType,
 
@@ -101,6 +102,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
         public static Task<ChangeAvailabilityResponse> ChangeAvailability(this ICentralSystem           ICentralSystem,
+
                                                                           NetworkingNode_Id             NetworkingNodeId,
                                                                           Connector_Id                  ConnectorId,
                                                                           Availabilities                Availability,
@@ -154,6 +156,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
         public static Task<GetConfigurationResponse> GetConfiguration(this ICentralSystem           ICentralSystem,
+
                                                                       NetworkingNode_Id             NetworkingNodeId,
                                                                       IEnumerable<String>?          Keys                = null,
 
@@ -206,6 +209,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
         public static Task<ChangeConfigurationResponse> ChangeConfiguration(this ICentralSystem           ICentralSystem,
+
                                                                             NetworkingNode_Id             NetworkingNodeId,
                                                                             String                        Key,
                                                                             String                        Value,
@@ -260,27 +264,28 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
-        public static Task<OCPP.CS.DataTransferResponse> TransferData(this ICentralSystem           ICentralSystem,
-                                                                      NetworkingNode_Id             NetworkingNodeId,
-                                                                      Vendor_Id                     VendorId,
-                                                                      Message_Id                    MessageId,
-                                                                      JToken                        Data,
+        public static Task<CP.DataTransferResponse> TransferData(this ICentralSystem           ICentralSystem,
 
-                                                                      IEnumerable<KeyPair>?         SignKeys            = null,
-                                                                      IEnumerable<SignInfo>?        SignInfos           = null,
-                                                                      IEnumerable<OCPP.Signature>?  Signatures          = null,
+                                                                 NetworkingNode_Id             NetworkingNodeId,
+                                                                 Vendor_Id                     VendorId,
+                                                                 Message_Id                    MessageId,
+                                                                 JToken                        Data,
 
-                                                                      CustomData?                   CustomData          = null,
+                                                                 IEnumerable<KeyPair>?         SignKeys            = null,
+                                                                 IEnumerable<SignInfo>?        SignInfos           = null,
+                                                                 IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                                                                      Request_Id?                   RequestId           = null,
-                                                                      DateTime?                     RequestTimestamp    = null,
-                                                                      TimeSpan?                     RequestTimeout      = null,
-                                                                      EventTracking_Id?             EventTrackingId     = null,
-                                                                      NetworkPath?                  NetworkPath         = null,
-                                                                      CancellationToken             CancellationToken   = default)
+                                                                 CustomData?                   CustomData          = null,
+
+                                                                 Request_Id?                   RequestId           = null,
+                                                                 DateTime?                     RequestTimestamp    = null,
+                                                                 TimeSpan?                     RequestTimeout      = null,
+                                                                 EventTracking_Id?             EventTrackingId     = null,
+                                                                 NetworkPath?                  NetworkPath         = null,
+                                                                 CancellationToken             CancellationToken   = default)
 
             => ICentralSystem.DataTransfer(
-                   new OCPP.CSMS.DataTransferRequest(
+                   new DataTransferRequest(
                        NetworkingNodeId,
                        VendorId,
                        MessageId,
@@ -320,6 +325,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
         public static Task<GetDiagnosticsResponse> GetDiagnostics(this ICentralSystem           ICentralSystem,
+
                                                                   NetworkingNode_Id             NetworkingNodeId,
                                                                   String                        Location,
                                                                   DateTime?                     StartTime           = null,
@@ -380,6 +386,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
         public static Task<TriggerMessageResponse> TriggerMessage(this ICentralSystem           ICentralSystem,
+
                                                                   NetworkingNode_Id             NetworkingNodeId,
                                                                   MessageTriggers               RequestedMessage,
                                                                   Connector_Id?                 ConnectorId         = null,
@@ -435,6 +442,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
         public static Task<UpdateFirmwareResponse> UpdateFirmware(this ICentralSystem           ICentralSystem,
+
                                                                   NetworkingNode_Id             NetworkingNodeId,
                                                                   URL                           FirmwareURL,
                                                                   DateTime                      RetrieveTimestamp,
@@ -496,6 +504,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
         public static Task<ReserveNowResponse> ReserveNow(this ICentralSystem           ICentralSystem,
+
                                                           NetworkingNode_Id             NetworkingNodeId,
                                                           Connector_Id                  ConnectorId,
                                                           Reservation_Id                ReservationId,
@@ -554,6 +563,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
         public static Task<CancelReservationResponse> CancelReservation(this ICentralSystem           ICentralSystem,
+
                                                                         NetworkingNode_Id             NetworkingNodeId,
                                                                         Reservation_Id                ReservationId,
 
@@ -606,6 +616,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
         public static Task<RemoteStartTransactionResponse> RemoteStartTransaction(this ICentralSystem           ICentralSystem,
+
                                                                                   NetworkingNode_Id             NetworkingNodeId,
                                                                                   IdToken                       IdTag,
                                                                                   Connector_Id?                 ConnectorId         = null,
@@ -660,6 +671,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
         public static Task<RemoteStopTransactionResponse> RemoteStopTransaction(this ICentralSystem           ICentralSystem,
+
                                                                                 NetworkingNode_Id             NetworkingNodeId,
                                                                                 Transaction_Id                TransactionId,
 
@@ -711,6 +723,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
         public static Task<SetChargingProfileResponse> SetChargingProfile(this ICentralSystem           ICentralSystem,
+
                                                                           NetworkingNode_Id             NetworkingNodeId,
                                                                           Connector_Id                  ConnectorId,
                                                                           ChargingProfile               ChargingProfile,
@@ -767,6 +780,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
         public static Task<ClearChargingProfileResponse> ClearChargingProfile(this ICentralSystem           ICentralSystem,
+
                                                                               NetworkingNode_Id             NetworkingNodeId,
                                                                               ChargingProfile_Id?           ChargingProfileId        = null,
                                                                               Connector_Id?                 ConnectorId              = null,
@@ -826,6 +840,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
         public static Task<GetCompositeScheduleResponse> GetCompositeSchedule(this ICentralSystem           ICentralSystem,
+
                                                                               NetworkingNode_Id             NetworkingNodeId,
                                                                               Connector_Id                  ConnectorId,
                                                                               TimeSpan                      Duration,
@@ -881,6 +896,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
         public static Task<UnlockConnectorResponse> UnlockConnector(this ICentralSystem           ICentralSystem,
+
                                                                     NetworkingNode_Id             NetworkingNodeId,
                                                                     Connector_Id                  ConnectorId,
 
@@ -932,6 +948,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
         public static Task<GetLocalListVersionResponse> GetLocalListVersion(this ICentralSystem           ICentralSystem,
+
                                                                             NetworkingNode_Id             NetworkingNodeId,
 
                                                                             IEnumerable<KeyPair>?         SignKeys            = null,
@@ -981,7 +998,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
-        public static Task<SendLocalListResponse> SendLocalList(this ICentralSystem        ICentralSystem,
+        public static Task<SendLocalListResponse> SendLocalList(this ICentralSystem              ICentralSystem,
+
                                                                 NetworkingNode_Id                NetworkingNodeId,
                                                                 UInt64                           ListVersion,
                                                                 UpdateTypes                      UpdateType,
@@ -1036,6 +1054,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
         public static Task<ClearCacheResponse> ClearCache(this ICentralSystem           ICentralSystem,
+
                                                           NetworkingNode_Id             NetworkingNodeId,
 
                                                           IEnumerable<KeyPair>?         SignKeys            = null,

@@ -56,27 +56,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a GetCompositeSchedule websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?                 OnGetCompositeScheduleWSRequest;
+        public event WSClientJSONRequestLogHandler?                         OnGetCompositeScheduleWSRequest;
 
         /// <summary>
         /// An event sent whenever a GetCompositeSchedule request was received.
         /// </summary>
-        public event CS.OnGetCompositeScheduleRequestDelegate?     OnGetCompositeScheduleRequest;
+        public event OCPPv2_1.CS.OnGetCompositeScheduleRequestDelegate?     OnGetCompositeScheduleRequest;
 
         /// <summary>
         /// An event sent whenever a GetCompositeSchedule request was received.
         /// </summary>
-        public event CS.OnGetCompositeScheduleDelegate?            OnGetCompositeSchedule;
+        public event OCPPv2_1.CS.OnGetCompositeScheduleDelegate?            OnGetCompositeSchedule;
 
         /// <summary>
         /// An event sent whenever a response to a GetCompositeSchedule request was sent.
         /// </summary>
-        public event CS.OnGetCompositeScheduleResponseDelegate?    OnGetCompositeScheduleResponse;
+        public event OCPPv2_1.CS.OnGetCompositeScheduleResponseDelegate?    OnGetCompositeScheduleResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a GetCompositeSchedule request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?                OnGetCompositeScheduleWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?             OnGetCompositeScheduleWSResponse;
 
         #endregion
 
@@ -140,6 +140,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnGetCompositeScheduleRequest?.Invoke(Timestamp.Now,
                                                               this,
+                                                              WebSocketConnection,
                                                               request);
 
                     }
@@ -183,6 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnGetCompositeScheduleResponse?.Invoke(Timestamp.Now,
                                                                this,
+                                                               WebSocketConnection,
                                                                request,
                                                                response,
                                                                response.Runtime);

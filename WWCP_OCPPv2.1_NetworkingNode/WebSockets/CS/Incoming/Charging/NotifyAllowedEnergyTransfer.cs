@@ -56,27 +56,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a NotifyAllowedEnergyTransfer websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?                        OnNotifyAllowedEnergyTransferWSRequest;
+        public event WSClientJSONRequestLogHandler?                                OnNotifyAllowedEnergyTransferWSRequest;
 
         /// <summary>
         /// An event sent whenever a NotifyAllowedEnergyTransfer request was received.
         /// </summary>
-        public event CS.OnNotifyAllowedEnergyTransferRequestDelegate?     OnNotifyAllowedEnergyTransferRequest;
+        public event OCPPv2_1.CS.OnNotifyAllowedEnergyTransferRequestDelegate?     OnNotifyAllowedEnergyTransferRequest;
 
         /// <summary>
         /// An event sent whenever a NotifyAllowedEnergyTransfer request was received.
         /// </summary>
-        public event CS.OnNotifyAllowedEnergyTransferDelegate?            OnNotifyAllowedEnergyTransfer;
+        public event OCPPv2_1.CS.OnNotifyAllowedEnergyTransferDelegate?            OnNotifyAllowedEnergyTransfer;
 
         /// <summary>
         /// An event sent whenever a response to a NotifyAllowedEnergyTransfer request was sent.
         /// </summary>
-        public event CS.OnNotifyAllowedEnergyTransferResponseDelegate?    OnNotifyAllowedEnergyTransferResponse;
+        public event OCPPv2_1.CS.OnNotifyAllowedEnergyTransferResponseDelegate?    OnNotifyAllowedEnergyTransferResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a NotifyAllowedEnergyTransfer request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?                       OnNotifyAllowedEnergyTransferWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?                    OnNotifyAllowedEnergyTransferWSResponse;
 
         #endregion
 
@@ -140,6 +140,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnNotifyAllowedEnergyTransferRequest?.Invoke(Timestamp.Now,
                                                                      this,
+                                                                     WebSocketConnection,
                                                                      request);
 
                     }
@@ -183,6 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnNotifyAllowedEnergyTransferResponse?.Invoke(Timestamp.Now,
                                                                       this,
+                                                                      WebSocketConnection,
                                                                       request,
                                                                       response,
                                                                       response.Runtime);

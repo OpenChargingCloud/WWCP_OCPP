@@ -38,9 +38,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     /// and connects to a CSMS to invoke methods.
     /// </summary>
     public partial class NetworkingNodeWSClient : WebSocketClient,
-                                                   INetworkingNodeWebSocketClient,
-                                                   INetworkingNodeServer,
-                                                   INetworkingNodeClientEvents
+                                                  INetworkingNodeWebSocketClient,
+                                                  INetworkingNodeServer,
+                                                  INetworkingNodeClientEvents
     {
 
         #region Custom JSON parser delegates
@@ -61,17 +61,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a DeleteFile request was received.
         /// </summary>
-        public event OCPP.NetworkingNode.CS.OnDeleteFileRequestDelegate?          OnDeleteFileRequest;
+        public event OCPP.CS.OnDeleteFileRequestDelegate?          OnDeleteFileRequest;
 
         /// <summary>
         /// An event sent whenever a DeleteFile request was received.
         /// </summary>
-        public event OCPP.NetworkingNode.CS.OnDeleteFileDelegate?                 OnDeleteFile;
+        public event OCPP.CS.OnDeleteFileDelegate?                 OnDeleteFile;
 
         /// <summary>
         /// An event sent whenever a response to a DeleteFile request was sent.
         /// </summary>
-        public event OCPP.NetworkingNode.CS.OnDeleteFileResponseDelegate?         OnDeleteFileResponse;
+        public event OCPP.CS.OnDeleteFileResponseDelegate?         OnDeleteFileResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a DeleteFile request was sent.
@@ -141,6 +141,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnDeleteFileRequest?.Invoke(Timestamp.Now,
                                                     this,
+                                                    WebSocketConnection,
                                                     request);
 
                     }
@@ -184,6 +185,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnDeleteFileResponse?.Invoke(Timestamp.Now,
                                                      this,
+                                                     WebSocketConnection,
                                                      request,
                                                      response,
                                                      response.Runtime);

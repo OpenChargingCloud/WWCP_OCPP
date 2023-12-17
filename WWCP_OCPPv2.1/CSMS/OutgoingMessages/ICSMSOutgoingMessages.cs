@@ -365,7 +365,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// Send the given vendor-specific data.
         /// </summary>
         /// <param name="Request">A data transfer request.</param>
-        Task<OCPP.CS.DataTransferResponse> TransferData(OCPP.CSMS.DataTransferRequest Request);
+        Task<CS.DataTransferResponse> TransferData(DataTransferRequest Request);
 
         #endregion
 

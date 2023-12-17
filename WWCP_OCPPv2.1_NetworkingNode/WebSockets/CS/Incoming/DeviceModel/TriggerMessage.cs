@@ -56,27 +56,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a trigger message websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?           OnTriggerMessageWSRequest;
+        public event WSClientJSONRequestLogHandler?                   OnTriggerMessageWSRequest;
 
         /// <summary>
         /// An event sent whenever a trigger message request was received.
         /// </summary>
-        public event CS.OnTriggerMessageRequestDelegate?     OnTriggerMessageRequest;
+        public event OCPPv2_1.CS.OnTriggerMessageRequestDelegate?     OnTriggerMessageRequest;
 
         /// <summary>
         /// An event sent whenever a trigger message request was received.
         /// </summary>
-        public event CS.OnTriggerMessageDelegate?            OnTriggerMessage;
+        public event OCPPv2_1.CS.OnTriggerMessageDelegate?            OnTriggerMessage;
 
         /// <summary>
         /// An event sent whenever a response to a trigger message request was sent.
         /// </summary>
-        public event CS.OnTriggerMessageResponseDelegate?    OnTriggerMessageResponse;
+        public event OCPPv2_1.CS.OnTriggerMessageResponseDelegate?    OnTriggerMessageResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a trigger message request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?          OnTriggerMessageWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?       OnTriggerMessageWSResponse;
 
         #endregion
 
@@ -140,6 +140,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnTriggerMessageRequest?.Invoke(Timestamp.Now,
                                                         this,
+                                                        WebSocketConnection,
                                                         request);
 
                     }
@@ -183,6 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnTriggerMessageResponse?.Invoke(Timestamp.Now,
                                                          this,
+                                                         WebSocketConnection,
                                                          request,
                                                          response,
                                                          response.Runtime);

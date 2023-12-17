@@ -27,18 +27,18 @@ using cloud.charging.open.protocols.OCPP.CSMS;
 namespace cloud.charging.open.protocols.OCPP.CS
 {
 
-    #region OnDeleteSignaturePolicy
-
     /// <summary>
     /// An DeleteSignaturePolicy request.
     /// </summary>
     /// <param name="Timestamp">The log timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
     /// <param name="Request">The request.</param>
     public delegate Task
 
         OnDeleteSignaturePolicyRequestDelegate(DateTime                       Timestamp,
                                                IEventSender                   Sender,
+                                               WebSocketClientConnection      Connection,
                                                DeleteSignaturePolicyRequest   Request);
 
 
@@ -47,6 +47,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<DeleteSignaturePolicyResponse>
@@ -63,6 +64,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
     /// </summary>
     /// <param name="Timestamp">The log timestamp of the response.</param>
     /// <param name="Sender">The sender of the response.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of this request.</param>
@@ -70,10 +72,9 @@ namespace cloud.charging.open.protocols.OCPP.CS
 
         OnDeleteSignaturePolicyResponseDelegate(DateTime                        Timestamp,
                                                 IEventSender                    Sender,
+                                                WebSocketClientConnection       Connection,
                                                 DeleteSignaturePolicyRequest    Request,
                                                 DeleteSignaturePolicyResponse   Response,
                                                 TimeSpan                        Runtime);
-
-    #endregion
 
 }

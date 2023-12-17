@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// </summary>
     public interface IChargingStation : ICSOutgoingMessages,
                                         ICSOutgoingMessagesEvents,
-                                        ICSIncomingMessages,
+                                        //ICSIncomingMessages,
                                         ICSIncomingMessagesEvents,
                                         IHTTPClient
     {

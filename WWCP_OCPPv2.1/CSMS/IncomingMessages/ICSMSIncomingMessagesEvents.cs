@@ -24,7 +24,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     public interface ICSMSIncomingMessagesEvents : OCPP.CSMS.ICSMSIncomingMessagesEvents
     {
 
-        #region OnBootNotification                     (-Request/-Response)
+        #region OnBootNotification                  (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a boot notification request was received.
@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnFirmwareStatusNotification           (-Request/-Response)
+        #region OnFirmwareStatusNotification        (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a firmware status notification request was received.
@@ -52,7 +52,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnPublishFirmwareStatusNotification    (-Request/-Response)
+        #region OnPublishFirmwareStatusNotification (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a publish firmware status notification request was received.
@@ -66,7 +66,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnHeartbeat                            (-Request/-Response)
+        #region OnHeartbeat                         (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a heartbeat request was received.
@@ -80,7 +80,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnNotifyEvent                          (-Request/-Response)
+        #region OnNotifyEvent                       (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a notify event request was received.
@@ -94,7 +94,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnSecurityEventNotification            (-Request/-Response)
+        #region OnSecurityEventNotification         (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a security event notification request was received.
@@ -108,7 +108,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnNotifyReport                         (-Request/-Response)
+        #region OnNotifyReport                      (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a notify report request was received.
@@ -122,7 +122,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnNotifyMonitoringReport               (-Request/-Response)
+        #region OnNotifyMonitoringReport            (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a notify monitoring report request was received.
@@ -136,7 +136,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnLogStatusNotification                (-Request/-Response)
+        #region OnLogStatusNotification             (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a log status notification request was received.
@@ -150,22 +150,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnDataTransfer                         (-Request/-Response)
+        #region OnDataTransfer                      (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a data transfer request was received.
         /// </summary>
-        event OCPP.CSMS.OnIncomingDataTransferRequestDelegate    OnIncomingDataTransferRequest;
+        event OnIncomingDataTransferRequestDelegate    OnIncomingDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a response to a data transfer request was sent.
         /// </summary>
-        event OCPP.CSMS.OnIncomingDataTransferResponseDelegate   OnIncomingDataTransferResponse;
+        event OnIncomingDataTransferResponseDelegate   OnIncomingDataTransferResponse;
 
         #endregion
 
 
-        #region OnSignCertificate                      (-Request/-Response)
+        #region OnSignCertificate                   (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a sign certificate request was received.
@@ -179,7 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnGet15118EVCertificate                (-Request/-Response)
+        #region OnGet15118EVCertificate             (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a get 15118 EV certificate request was received.
@@ -193,7 +193,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnGetCertificateStatus                 (-Request/-Response)
+        #region OnGetCertificateStatus              (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a get certificate status request was received.
@@ -207,7 +207,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnGetCRL                               (-Request/-Response)
+        #region OnGetCRL                            (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a get certificate revocation list request was received.
@@ -222,7 +222,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region OnReservationStatusUpdate              (-Request/-Response)
+        #region OnReservationStatusUpdate           (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a reservation status update request was received.
@@ -236,7 +236,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnAuthorize                            (-Request/-Response)
+        #region OnAuthorize                         (Request/-Response)
 
         /// <summary>
         /// An event sent whenever an authorize request was received.
@@ -250,7 +250,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnNotifyEVChargingNeeds                (-Request/-Response)
+        #region OnNotifyEVChargingNeeds             (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a notify EV charging needs request was received.
@@ -264,7 +264,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnTransactionEvent                     (-Request/-Response)
+        #region OnTransactionEvent                  (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a transaction event request was received.
@@ -278,7 +278,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnStatusNotification                   (-Request/-Response)
+        #region OnStatusNotification                (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a status notification request was received.
@@ -292,7 +292,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnMeterValues                          (-Request/-Response)
+        #region OnMeterValues                       (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a meter values request was received.
@@ -306,7 +306,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnNotifyChargingLimit                  (-Request/-Response)
+        #region OnNotifyChargingLimit               (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a notify charging limit request was received.
@@ -320,7 +320,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnClearedChargingLimit                 (-Request/-Response)
+        #region OnClearedChargingLimit              (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a cleared charging limit request was received.
@@ -334,7 +334,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnReportChargingProfiles               (-Request/-Response)
+        #region OnReportChargingProfiles            (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a ReportChargingProfiles request was received.
@@ -348,7 +348,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnNotifyEVChargingSchedule             (-Request/-Response)
+        #region OnNotifyEVChargingSchedule          (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a NotifyEVChargingSchedule request was received.
@@ -362,7 +362,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnNotifyPriorityCharging               (-Request/-Response)
+        #region OnNotifyPriorityCharging            (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a NotifyPriorityCharging request was received.
@@ -376,7 +376,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnPullDynamicScheduleUpdate            (-Request/-Response)
+        #region OnPullDynamicScheduleUpdate         (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a PullDynamicScheduleUpdate request was received.
@@ -391,7 +391,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region OnNotifyDisplayMessages                (-Request/-Response)
+        #region OnNotifyDisplayMessages             (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a notify display messages request was received.
@@ -405,7 +405,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnNotifyCustomerInformation            (-Request/-Response)
+        #region OnNotifyCustomerInformation         (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a notify customer information request was received.

@@ -18,7 +18,6 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
@@ -35,9 +34,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     /// A charging station HTTP Web Socket client.
     /// </summary>
     public partial class NetworkingNodeWSClient : WebSocketClient,
-                                                   INetworkingNodeWebSocketClient,
-                                                   INetworkingNodeServer,
-                                                   INetworkingNodeClientEvents
+                                                  INetworkingNodeWebSocketClient,
+                                                  INetworkingNodeServer,
+                                                  INetworkingNodeClientEvents
     {
 
         #region Custom JSON serializer delegates
@@ -53,22 +52,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever a heartbeat request will be sent to the CSMS.
         /// </summary>
-        public event CS.OnHeartbeatRequestDelegate?     OnHeartbeatRequest;
+        public event OCPPv2_1.CS.OnHeartbeatRequestDelegate?     OnHeartbeatRequest;
 
         /// <summary>
         /// An event fired whenever a heartbeat request will be sent to the CSMS.
         /// </summary>
-        public event ClientRequestLogHandler?        OnHeartbeatWSRequest;
+        public event ClientRequestLogHandler?                    OnHeartbeatWSRequest;
 
         /// <summary>
         /// An event fired whenever a response to a heartbeat request was received.
         /// </summary>
-        public event ClientResponseLogHandler?       OnHeartbeatWSResponse;
+        public event ClientResponseLogHandler?                   OnHeartbeatWSResponse;
 
         /// <summary>
         /// An event fired whenever a response to a heartbeat request was received.
         /// </summary>
-        public event CS.OnHeartbeatResponseDelegate?    OnHeartbeatResponse;
+        public event OCPPv2_1.CS.OnHeartbeatResponseDelegate?    OnHeartbeatResponse;
 
         #endregion
 

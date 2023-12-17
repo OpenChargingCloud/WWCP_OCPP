@@ -329,8 +329,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #region OnIncomingDataTransferRequest/-Response
 
             this.ChargingStation.OnIncomingDataTransferRequest += async (logTimestamp,
-                                                                       sender,
-                                                                       request) =>
+                                                                         sender,
+                                                                         connection,
+                                                                         request) =>
 
                 await this.EventLog.SubmitEvent("OnIncomingDataTransferRequest",
                                                 new JObject(
@@ -342,10 +343,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
             this.ChargingStation.OnIncomingDataTransferResponse += async (logTimestamp,
-                                                                        sender,
-                                                                        request,
-                                                                        response,
-                                                                        runtime) =>
+                                                                          sender,
+                                                                          connection,
+                                                                          request,
+                                                                          response,
+                                                                          runtime) =>
 
                 await this.EventLog.SubmitEvent("OnIncomingDataTransferResponse",
                                                 new JObject(
@@ -399,8 +401,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #region OnResetRequest/-Response
 
             this.ChargingStation.OnResetRequest += async (logTimestamp,
-                                                        sender,
-                                                        request) =>
+                                                          sender,
+                                                          connection,
+                                                          request) =>
 
                 await this.EventLog.SubmitEvent("OnResetRequest",
                                                 new JObject(
@@ -412,10 +415,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
             this.ChargingStation.OnResetResponse += async (logTimestamp,
-                                                         sender,
-                                                         request,
-                                                         response,
-                                                         runtime) =>
+                                                           sender,
+                                                           connection,
+                                                           request,
+                                                           response,
+                                                           runtime) =>
 
                 await this.EventLog.SubmitEvent("OnResetResponse",
                                                 new JObject(
@@ -432,8 +436,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #region OnChangeAvailabilityRequest/-Response
 
             this.ChargingStation.OnChangeAvailabilityRequest += async (logTimestamp,
-                                                                     sender,
-                                                                     request) =>
+                                                                       sender,
+                                                                       connection,
+                                                                       request) =>
 
                 await this.EventLog.SubmitEvent("OnChangeAvailabilityRequest",
                                                 new JObject(
@@ -445,10 +450,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
             this.ChargingStation.OnChangeAvailabilityResponse += async (logTimestamp,
-                                                                      sender,
-                                                                      request,
-                                                                      response,
-                                                                      runtime) =>
+                                                                        sender,
+                                                                        connection,
+                                                                        request,
+                                                                        response,
+                                                                        runtime) =>
 
                 await this.EventLog.SubmitEvent("OnChangeAvailabilityResponse",
                                                 new JObject(
@@ -465,8 +471,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #region OnDataTransferRequest/-Response
 
             this.ChargingStation.OnDataTransferRequest += async (logTimestamp,
-                                                               sender,
-                                                               request) =>
+                                                                 sender,
+                                                                 //connection,
+                                                                 request) =>
 
                 await this.EventLog.SubmitEvent("OnDataTransferRequest",
                                                 new JObject(
@@ -478,10 +485,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
             this.ChargingStation.OnDataTransferResponse += async (logTimestamp,
-                                                                sender,
-                                                                request,
-                                                                response,
-                                                                runtime) =>
+                                                                  sender,
+                                                                  //connection,
+                                                                  request,
+                                                                  response,
+                                                                  runtime) =>
 
                 await this.EventLog.SubmitEvent("OnDataTransferResponse",
                                                 new JObject(
@@ -498,8 +506,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #region OnTriggerMessageRequest/-Response
 
             this.ChargingStation.OnTriggerMessageRequest += async (logTimestamp,
-                                                                 sender,
-                                                                 request) =>
+                                                                   sender,
+                                                                   connection,
+                                                                   request) =>
 
                 await this.EventLog.SubmitEvent("OnTriggerMessageRequest",
                                                 new JObject(
@@ -511,10 +520,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
             this.ChargingStation.OnTriggerMessageResponse += async (logTimestamp,
-                                                                  sender,
-                                                                  request,
-                                                                  response,
-                                                                  runtime) =>
+                                                                    sender,
+                                                                    connection,
+                                                                    request,
+                                                                    response,
+                                                                    runtime) =>
 
                 await this.EventLog.SubmitEvent("OnTriggerMessageResponse",
                                                 new JObject(
@@ -531,8 +541,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #region OnUpdateFirmwareRequest/-Response
 
             this.ChargingStation.OnUpdateFirmwareRequest += async (logTimestamp,
-                                                                 sender,
-                                                                 request) =>
+                                                                   sender,
+                                                                   connection,
+                                                                   request) =>
 
                 await this.EventLog.SubmitEvent("OnUpdateFirmwareRequest",
                                                 new JObject(
@@ -544,10 +555,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
             this.ChargingStation.OnUpdateFirmwareResponse += async (logTimestamp,
-                                                                  sender,
-                                                                  request,
-                                                                  response,
-                                                                  runtime) =>
+                                                                    sender,
+                                                                    connection,
+                                                                    request,
+                                                                    response,
+                                                                    runtime) =>
 
                 await this.EventLog.SubmitEvent("OnUpdateFirmwareResponse",
                                                 new JObject(
@@ -565,8 +577,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #region OnReserveNowRequest/-Response
 
             this.ChargingStation.OnReserveNowRequest += async (logTimestamp,
-                                                             sender,
-                                                             request) =>
+                                                               sender,
+                                                               connection,
+                                                               request) =>
 
                 await this.EventLog.SubmitEvent("OnReserveNowRequest",
                                                 new JObject(
@@ -578,10 +591,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
             this.ChargingStation.OnReserveNowResponse += async (logTimestamp,
-                                                              sender,
-                                                              request,
-                                                              response,
-                                                              runtime) =>
+                                                                sender,
+                                                                connection,
+                                                                request,
+                                                                response,
+                                                                runtime) =>
 
                 await this.EventLog.SubmitEvent("OnReserveNowResponse",
                                                 new JObject(
@@ -598,8 +612,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #region OnCancelReservationRequest/-Response
 
             this.ChargingStation.OnCancelReservationRequest += async (logTimestamp,
-                                                                    sender,
-                                                                    request) =>
+                                                                      sender,
+                                                                      connection,
+                                                                      request) =>
 
                 await this.EventLog.SubmitEvent("OnCancelReservationRequest",
                                                 new JObject(
@@ -611,10 +626,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
             this.ChargingStation.OnCancelReservationResponse += async (logTimestamp,
-                                                                     sender,
-                                                                     request,
-                                                                     response,
-                                                                     runtime) =>
+                                                                       sender,
+                                                                       connection,
+                                                                       request,
+                                                                       response,
+                                                                       runtime) =>
 
                 await this.EventLog.SubmitEvent("OnCancelReservationResponse",
                                                 new JObject(
@@ -631,8 +647,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #region OnSetChargingProfileRequest/-Response
 
             this.ChargingStation.OnSetChargingProfileRequest += async (logTimestamp,
-                                                                     sender,
-                                                                     request) =>
+                                                                       sender,
+                                                                       connection,
+                                                                       request) =>
 
                 await this.EventLog.SubmitEvent("OnSetChargingProfileRequest",
                                                 new JObject(
@@ -644,10 +661,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
             this.ChargingStation.OnSetChargingProfileResponse += async (logTimestamp,
-                                                                      sender,
-                                                                      request,
-                                                                      response,
-                                                                      runtime) =>
+                                                                        sender,
+                                                                        connection,
+                                                                        request,
+                                                                        response,
+                                                                        runtime) =>
 
                 await this.EventLog.SubmitEvent("OnSetChargingProfileResponse",
                                                 new JObject(
@@ -664,8 +682,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #region OnClearChargingProfileRequest/-Response
 
             this.ChargingStation.OnClearChargingProfileRequest += async (logTimestamp,
-                                                                       sender,
-                                                                       request) =>
+                                                                         sender,
+                                                                         connection,
+                                                                         request) =>
 
                 await this.EventLog.SubmitEvent("OnClearChargingProfileRequest",
                                                 new JObject(
@@ -677,10 +696,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
             this.ChargingStation.OnClearChargingProfileResponse += async (logTimestamp,
-                                                                        sender,
-                                                                        request,
-                                                                        response,
-                                                                        runtime) =>
+                                                                          sender,
+                                                                          connection,
+                                                                          request,
+                                                                          response,
+                                                                          runtime) =>
 
                 await this.EventLog.SubmitEvent("OnClearChargingProfileResponse",
                                                 new JObject(
@@ -697,8 +717,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #region OnGetCompositeScheduleRequest/-Response
 
             this.ChargingStation.OnGetCompositeScheduleRequest += async (logTimestamp,
-                                                                       sender,
-                                                                       request) =>
+                                                                         sender,
+                                                                         connection,
+                                                                         request) =>
 
                 await this.EventLog.SubmitEvent("OnGetCompositeScheduleRequest",
                                                 new JObject(
@@ -710,10 +731,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
             this.ChargingStation.OnGetCompositeScheduleResponse += async (logTimestamp,
-                                                                        sender,
-                                                                        request,
-                                                                        response,
-                                                                        runtime) =>
+                                                                          sender,
+                                                                          connection,
+                                                                          request,
+                                                                          response,
+                                                                          runtime) =>
 
                 await this.EventLog.SubmitEvent("OnGetCompositeScheduleResponse",
                                                 new JObject(
@@ -730,8 +752,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #region OnUnlockConnectorRequest/-Response
 
             this.ChargingStation.OnUnlockConnectorRequest += async (logTimestamp,
-                                                                  sender,
-                                                                  request) =>
+                                                                    sender,
+                                                                    connection,
+                                                                    request) =>
 
                 await this.EventLog.SubmitEvent("OnUnlockConnectorRequest",
                                                 new JObject(
@@ -743,10 +766,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
             this.ChargingStation.OnUnlockConnectorResponse += async (logTimestamp,
-                                                                   sender,
-                                                                   request,
-                                                                   response,
-                                                                   runtime) =>
+                                                                     sender,
+                                                                     connection,
+                                                                     request,
+                                                                     response,
+                                                                     runtime) =>
 
                 await this.EventLog.SubmitEvent("OnUnlockConnectorResponse",
                                                 new JObject(
@@ -764,8 +788,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #region OnGetLocalListVersionRequest/-Response
 
             this.ChargingStation.OnGetLocalListVersionRequest += async (logTimestamp,
-                                                                      sender,
-                                                                      request) =>
+                                                                        sender,
+                                                                        connection,
+                                                                        request) =>
 
                 await this.EventLog.SubmitEvent("OnGetLocalListVersionRequest",
                                                 new JObject(
@@ -777,10 +802,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
             this.ChargingStation.OnGetLocalListVersionResponse += async (logTimestamp,
-                                                                       sender,
-                                                                       request,
-                                                                       response,
-                                                                       runtime) =>
+                                                                         sender,
+                                                                         connection,
+                                                                         request,
+                                                                         response,
+                                                                         runtime) =>
 
                 await this.EventLog.SubmitEvent("OnGetLocalListVersionResponse",
                                                 new JObject(
@@ -797,8 +823,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #region OnSendLocalListRequest/-Response
 
             this.ChargingStation.OnSendLocalListRequest += async (logTimestamp,
-                                                                sender,
-                                                                request) =>
+                                                                  sender,
+                                                                  connection,
+                                                                  request) =>
 
                 await this.EventLog.SubmitEvent("OnSendLocalListRequest",
                                                 new JObject(
@@ -810,10 +837,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
             this.ChargingStation.OnSendLocalListResponse += async (logTimestamp,
-                                                                 sender,
-                                                                 request,
-                                                                 response,
-                                                                 runtime) =>
+                                                                   sender,
+                                                                   connection,
+                                                                   request,
+                                                                   response,
+                                                                   runtime) =>
 
                 await this.EventLog.SubmitEvent("OnSendLocalListResponse",
                                                 new JObject(
@@ -830,8 +858,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #region OnClearCacheRequest/-Response
 
             this.ChargingStation.OnClearCacheRequest += async (logTimestamp,
-                                                             sender,
-                                                             request) =>
+                                                               sender,
+                                                               connection,
+                                                               request) =>
 
                 await this.EventLog.SubmitEvent("OnClearCacheRequest",
                                                 new JObject(
@@ -843,10 +872,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
             this.ChargingStation.OnClearCacheResponse += async (logTimestamp,
-                                                              sender,
-                                                              request,
-                                                              response,
-                                                              runtime) =>
+                                                                sender,
+                                                                connection,
+                                                                request,
+                                                                response,
+                                                                runtime) =>
 
                 await this.EventLog.SubmitEvent("OnClearCacheResponse",
                                                 new JObject(

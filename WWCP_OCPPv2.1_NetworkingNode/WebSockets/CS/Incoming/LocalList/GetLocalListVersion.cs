@@ -56,27 +56,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a reset websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?                OnGetLocalListVersionWSRequest;
+        public event WSClientJSONRequestLogHandler?                        OnGetLocalListVersionWSRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event CS.OnGetLocalListVersionRequestDelegate?     OnGetLocalListVersionRequest;
+        public event OCPPv2_1.CS.OnGetLocalListVersionRequestDelegate?     OnGetLocalListVersionRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event CS.OnGetLocalListVersionDelegate?            OnGetLocalListVersion;
+        public event OCPPv2_1.CS.OnGetLocalListVersionDelegate?            OnGetLocalListVersion;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event CS.OnGetLocalListVersionResponseDelegate?    OnGetLocalListVersionResponse;
+        public event OCPPv2_1.CS.OnGetLocalListVersionResponseDelegate?    OnGetLocalListVersionResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a reset request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?               OnGetLocalListVersionWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?            OnGetLocalListVersionWSResponse;
 
         #endregion
 
@@ -140,6 +140,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnGetLocalListVersionRequest?.Invoke(Timestamp.Now,
                                                              this,
+                                                             WebSocketConnection,
                                                              request);
 
                     }
@@ -183,6 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnGetLocalListVersionResponse?.Invoke(Timestamp.Now,
                                                               this,
+                                                              WebSocketConnection,
                                                               request,
                                                               response,
                                                               response.Runtime);

@@ -56,17 +56,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a BinaryDataTransfer request was received.
         /// </summary>
-        public event OCPP.NetworkingNode.CS.OnIncomingBinaryDataTransferRequestDelegate?     OnIncomingBinaryDataTransferRequest;
+        public event OCPP.CS.OnIncomingBinaryDataTransferRequestDelegate?     OnIncomingBinaryDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a BinaryDataTransfer request was received.
         /// </summary>
-        public event OCPP.NetworkingNode.CS.OnIncomingBinaryDataTransferDelegate?            OnIncomingBinaryDataTransfer;
+        public event OCPP.CS.OnIncomingBinaryDataTransferDelegate?            OnIncomingBinaryDataTransfer;
 
         /// <summary>
         /// An event sent whenever a response to a BinaryDataTransfer request was sent.
         /// </summary>
-        public event OCPP.NetworkingNode.CS.OnIncomingBinaryDataTransferResponseDelegate?    OnIncomingBinaryDataTransferResponse;
+        public event OCPP.CS.OnIncomingBinaryDataTransferResponseDelegate?    OnIncomingBinaryDataTransferResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a BinaryDataTransfer request was sent.
@@ -136,6 +136,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnIncomingBinaryDataTransferRequest?.Invoke(Timestamp.Now,
                                                                     this,
+                                                                    WebSocketConnection,
                                                                     request);
 
                     }
@@ -179,6 +180,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnIncomingBinaryDataTransferResponse?.Invoke(Timestamp.Now,
                                                                      this,
+                                                                     WebSocketConnection,
                                                                      request,
                                                                      response,
                                                                      response.Runtime);

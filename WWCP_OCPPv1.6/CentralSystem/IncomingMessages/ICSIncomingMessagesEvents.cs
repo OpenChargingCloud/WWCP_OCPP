@@ -24,7 +24,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     public interface ICSIncomingMessagesEvents : OCPP.CSMS.ICSMSIncomingMessagesEvents
     {
 
-        #region OnBootNotification
+        #region OnBootNotification (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a boot notification request was received.
@@ -129,12 +129,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a data transfer request was received.
         /// </summary>
-        event OCPP.CSMS.OnIncomingDataTransferRequestDelegate    OnIncomingDataTransferRequest;
+        event OnIncomingDataTransferRequestDelegate    OnIncomingDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a response to a data transfer request was sent.
         /// </summary>
-        event OCPP.CSMS.OnIncomingDataTransferResponseDelegate   OnIncomingDataTransferResponse;
+        event OnIncomingDataTransferResponseDelegate   OnIncomingDataTransferResponse;
 
         #endregion
 

@@ -56,27 +56,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a set network profile websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?              OnSetNetworkProfileWSRequest;
+        public event WSClientJSONRequestLogHandler?                      OnSetNetworkProfileWSRequest;
 
         /// <summary>
         /// An event sent whenever a set network profile request was received.
         /// </summary>
-        public event CS.OnSetNetworkProfileRequestDelegate?     OnSetNetworkProfileRequest;
+        public event OCPPv2_1.CS.OnSetNetworkProfileRequestDelegate?     OnSetNetworkProfileRequest;
 
         /// <summary>
         /// An event sent whenever a set network profile request was received.
         /// </summary>
-        public event CS.OnSetNetworkProfileDelegate?            OnSetNetworkProfile;
+        public event OCPPv2_1.CS.OnSetNetworkProfileDelegate?            OnSetNetworkProfile;
 
         /// <summary>
         /// An event sent whenever a response to a set network profile request was sent.
         /// </summary>
-        public event CS.OnSetNetworkProfileResponseDelegate?    OnSetNetworkProfileResponse;
+        public event OCPPv2_1.CS.OnSetNetworkProfileResponseDelegate?    OnSetNetworkProfileResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a set network profile request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?             OnSetNetworkProfileWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?          OnSetNetworkProfileWSResponse;
 
         #endregion
 
@@ -140,6 +140,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnSetNetworkProfileRequest?.Invoke(Timestamp.Now,
                                                            this,
+                                                           WebSocketConnection,
                                                            request);
 
                     }
@@ -183,6 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnSetNetworkProfileResponse?.Invoke(Timestamp.Now,
                                                             this,
+                                                            WebSocketConnection,
                                                             request,
                                                             response,
                                                             response.Runtime);

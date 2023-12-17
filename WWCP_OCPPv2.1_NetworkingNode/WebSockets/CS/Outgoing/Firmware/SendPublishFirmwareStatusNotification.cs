@@ -18,7 +18,6 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
@@ -53,22 +52,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever a publish firmware status notification request will be sent to the CSMS.
         /// </summary>
-        public event CS.OnPublishFirmwareStatusNotificationRequestDelegate?     OnPublishFirmwareStatusNotificationRequest;
+        public event OCPPv2_1.CS.OnPublishFirmwareStatusNotificationRequestDelegate?     OnPublishFirmwareStatusNotificationRequest;
 
         /// <summary>
         /// An event fired whenever a publish firmware status notification request will be sent to the CSMS.
         /// </summary>
-        public event ClientRequestLogHandler?                                OnPublishFirmwareStatusNotificationWSRequest;
+        public event ClientRequestLogHandler?                                            OnPublishFirmwareStatusNotificationWSRequest;
 
         /// <summary>
         /// An event fired whenever a response to a publish firmware status notification request was received.
         /// </summary>
-        public event ClientResponseLogHandler?                               OnPublishFirmwareStatusNotificationWSResponse;
+        public event ClientResponseLogHandler?                                           OnPublishFirmwareStatusNotificationWSResponse;
 
         /// <summary>
         /// An event fired whenever a response to a publish firmware status notification request was received.
         /// </summary>
-        public event CS.OnPublishFirmwareStatusNotificationResponseDelegate?    OnPublishFirmwareStatusNotificationResponse;
+        public event OCPPv2_1.CS.OnPublishFirmwareStatusNotificationResponseDelegate?    OnPublishFirmwareStatusNotificationResponse;
 
         #endregion
 

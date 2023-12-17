@@ -18,8 +18,6 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
-using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
@@ -50,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a RequestStopTransaction request was sent.
         /// </summary>
-        public event CSMS.OnRequestStopTransactionRequestDelegate?     OnRequestStopTransactionRequest;
+        public event OCPPv2_1.CSMS.OnRequestStopTransactionRequestDelegate?     OnRequestStopTransactionRequest;
 
         /// <summary>
         /// An event sent whenever a response to a RequestStopTransaction request was sent.
         /// </summary>
-        public event CSMS.OnRequestStopTransactionResponseDelegate?    OnRequestStopTransactionResponse;
+        public event OCPPv2_1.CSMS.OnRequestStopTransactionResponseDelegate?    OnRequestStopTransactionResponse;
 
         #endregion
 

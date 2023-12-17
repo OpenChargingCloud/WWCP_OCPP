@@ -18,8 +18,6 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
-using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
@@ -50,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a NotifyCRL request was sent.
         /// </summary>
-        public event CSMS.OnNotifyCRLRequestDelegate?     OnNotifyCRLRequest;
+        public event OCPPv2_1.CSMS.OnNotifyCRLRequestDelegate?     OnNotifyCRLRequest;
 
         /// <summary>
         /// An event sent whenever a response to a NotifyCRL request was sent.
         /// </summary>
-        public event CSMS.OnNotifyCRLResponseDelegate?    OnNotifyCRLResponse;
+        public event OCPPv2_1.CSMS.OnNotifyCRLResponseDelegate?    OnNotifyCRLResponse;
 
         #endregion
 

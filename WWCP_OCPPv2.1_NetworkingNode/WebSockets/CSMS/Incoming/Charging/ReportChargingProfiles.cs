@@ -20,7 +20,6 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
@@ -53,27 +52,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a ReportChargingProfiles WebSocket request was received.
         /// </summary>
-        public event CSMS.WebSocketJSONRequestLogHandler?               OnReportChargingProfilesWSRequest;
+        public event WebSocketJSONRequestLogHandler?                            OnReportChargingProfilesWSRequest;
 
         /// <summary>
         /// An event sent whenever a ReportChargingProfiles request was received.
         /// </summary>
-        public event CSMS.OnReportChargingProfilesRequestDelegate?      OnReportChargingProfilesRequest;
+        public event OCPPv2_1.CSMS.OnReportChargingProfilesRequestDelegate?     OnReportChargingProfilesRequest;
 
         /// <summary>
         /// An event sent whenever a ReportChargingProfiles was received.
         /// </summary>
-        public event CSMS.OnReportChargingProfilesDelegate?             OnReportChargingProfiles;
+        public event OCPPv2_1.CSMS.OnReportChargingProfilesDelegate?            OnReportChargingProfiles;
 
         /// <summary>
         /// An event sent whenever a response to a ReportChargingProfiles was sent.
         /// </summary>
-        public event CSMS.OnReportChargingProfilesResponseDelegate?     OnReportChargingProfilesResponse;
+        public event OCPPv2_1.CSMS.OnReportChargingProfilesResponseDelegate?    OnReportChargingProfilesResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a ReportChargingProfiles was sent.
         /// </summary>
-        public event CSMS.WebSocketJSONRequestJSONResponseLogHandler?   OnReportChargingProfilesWSResponse;
+        public event WebSocketJSONRequestJSONResponseLogHandler?                OnReportChargingProfilesWSResponse;
 
         #endregion
 
@@ -139,6 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
                         OnReportChargingProfilesRequest?.Invoke(Timestamp.Now,
                                                                 this,
+                                                                Connection,
                                                                 request);
 
                     }
@@ -157,6 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                                             GetInvocationList()?.
                                             SafeSelect(subscriber => (subscriber as OnReportChargingProfilesDelegate)?.Invoke(Timestamp.Now,
                                                                                                                               this,
+                                                                                                                              Connection,
                                                                                                                               request,
                                                                                                                               CancellationToken)).
                                             ToArray();
@@ -178,6 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
                         OnReportChargingProfilesResponse?.Invoke(Timestamp.Now,
                                                                  this,
+                                                                 Connection,
                                                                  request,
                                                                  response,
                                                                  response.Runtime);

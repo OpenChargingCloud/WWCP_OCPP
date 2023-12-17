@@ -58,17 +58,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever an AddUserRole request was received.
         /// </summary>
-        public event OCPP.NetworkingNode.CS.OnAddUserRoleRequestDelegate?         OnAddUserRoleRequest;
+        public event OCPP.CS.OnAddUserRoleRequestDelegate?         OnAddUserRoleRequest;
 
         /// <summary>
         /// An event sent whenever an AddUserRole request was received.
         /// </summary>
-        public event OCPP.NetworkingNode.CS.OnAddUserRoleDelegate?                OnAddUserRole;
+        public event OCPP.CS.OnAddUserRoleDelegate?                OnAddUserRole;
 
         /// <summary>
         /// An event sent whenever a response to an AddUserRole request was sent.
         /// </summary>
-        public event OCPP.NetworkingNode.CS.OnAddUserRoleResponseDelegate?        OnAddUserRoleResponse;
+        public event OCPP.CS.OnAddUserRoleResponseDelegate?        OnAddUserRoleResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to an AddUserRole request was sent.
@@ -137,6 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnAddUserRoleRequest?.Invoke(Timestamp.Now,
                                                      this,
+                                                     WebSocketConnection,
                                                      request);
 
                     }
@@ -180,6 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnAddUserRoleResponse?.Invoke(Timestamp.Now,
                                                       this,
+                                                      WebSocketConnection,
                                                       request,
                                                       response,
                                                       response.Runtime);

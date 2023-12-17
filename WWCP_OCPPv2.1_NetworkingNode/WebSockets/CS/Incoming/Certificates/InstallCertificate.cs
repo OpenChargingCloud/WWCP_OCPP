@@ -56,27 +56,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever an install certificate websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?                  OnInstallCertificateWSRequest;
+        public event WSClientJSONRequestLogHandler?                       OnInstallCertificateWSRequest;
 
         /// <summary>
         /// An event sent whenever an install certificate request was received.
         /// </summary>
-        public event CS.OnInstallCertificateRequestDelegate?        OnInstallCertificateRequest;
+        public event OCPPv2_1.CS.OnInstallCertificateRequestDelegate?     OnInstallCertificateRequest;
 
         /// <summary>
         /// An event sent whenever an install certificate request was received.
         /// </summary>
-        public event CS.OnInstallCertificateDelegate?               OnInstallCertificate;
+        public event OCPPv2_1.CS.OnInstallCertificateDelegate?            OnInstallCertificate;
 
         /// <summary>
         /// An event sent whenever a response to an install certificate request was sent.
         /// </summary>
-        public event CS.OnInstallCertificateResponseDelegate?       OnInstallCertificateResponse;
+        public event OCPPv2_1.CS.OnInstallCertificateResponseDelegate?    OnInstallCertificateResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to an install certificate request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?                 OnInstallCertificateWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?           OnInstallCertificateWSResponse;
 
         #endregion
 
@@ -140,6 +140,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnInstallCertificateRequest?.Invoke(Timestamp.Now,
                                                             this,
+                                                            WebSocketConnection,
                                                             request);
 
                     }
@@ -183,6 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnInstallCertificateResponse?.Invoke(Timestamp.Now,
                                                              this,
+                                                             WebSocketConnection,
                                                              request,
                                                              response,
                                                              response.Runtime);

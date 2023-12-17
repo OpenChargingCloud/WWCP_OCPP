@@ -56,27 +56,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a clear display message websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?                OnClearDisplayMessageWSRequest;
+        public event WSClientJSONRequestLogHandler?                        OnClearDisplayMessageWSRequest;
 
         /// <summary>
         /// An event sent whenever a clear display message request was received.
         /// </summary>
-        public event CS.OnClearDisplayMessageRequestDelegate?     OnClearDisplayMessageRequest;
+        public event OCPPv2_1.CS.OnClearDisplayMessageRequestDelegate?     OnClearDisplayMessageRequest;
 
         /// <summary>
         /// An event sent whenever a clear display message request was received.
         /// </summary>
-        public event CS.OnClearDisplayMessageDelegate?            OnClearDisplayMessage;
+        public event OCPPv2_1.CS.OnClearDisplayMessageDelegate?            OnClearDisplayMessage;
 
         /// <summary>
         /// An event sent whenever a response to a clear display message request was sent.
         /// </summary>
-        public event CS.OnClearDisplayMessageResponseDelegate?    OnClearDisplayMessageResponse;
+        public event OCPPv2_1.CS.OnClearDisplayMessageResponseDelegate?    OnClearDisplayMessageResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a clear display message request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?               OnClearDisplayMessageWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?            OnClearDisplayMessageWSResponse;
 
         #endregion
 
@@ -140,6 +140,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnClearDisplayMessageRequest?.Invoke(Timestamp.Now,
                                                              this,
+                                                             WebSocketConnection,
                                                              request);
 
                     }
@@ -183,6 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnClearDisplayMessageResponse?.Invoke(Timestamp.Now,
                                                               this,
+                                                              WebSocketConnection,
                                                               request,
                                                               response,
                                                               response.Runtime);

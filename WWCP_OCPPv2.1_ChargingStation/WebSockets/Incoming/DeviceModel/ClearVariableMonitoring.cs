@@ -139,6 +139,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                         OnClearVariableMonitoringRequest?.Invoke(Timestamp.Now,
                                                                  this,
+                                                                 WebSocketConnection,
                                                                  request);
 
                     }
@@ -182,6 +183,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                         OnClearVariableMonitoringResponse?.Invoke(Timestamp.Now,
                                                                   this,
+                                                                  WebSocketConnection,
                                                                   request,
                                                                   response,
                                                                   response.Runtime);

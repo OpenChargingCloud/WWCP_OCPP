@@ -56,27 +56,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever an UpdateDynamicSchedule websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?                  OnUpdateDynamicScheduleWSRequest;
+        public event WSClientJSONRequestLogHandler?                          OnUpdateDynamicScheduleWSRequest;
 
         /// <summary>
         /// An event sent whenever an UpdateDynamicSchedule request was received.
         /// </summary>
-        public event CS.OnUpdateDynamicScheduleRequestDelegate?     OnUpdateDynamicScheduleRequest;
+        public event OCPPv2_1.CS.OnUpdateDynamicScheduleRequestDelegate?     OnUpdateDynamicScheduleRequest;
 
         /// <summary>
         /// An event sent whenever an UpdateDynamicSchedule request was received.
         /// </summary>
-        public event CS.OnUpdateDynamicScheduleDelegate?            OnUpdateDynamicSchedule;
+        public event OCPPv2_1.CS.OnUpdateDynamicScheduleDelegate?            OnUpdateDynamicSchedule;
 
         /// <summary>
         /// An event sent whenever a response to an UpdateDynamicSchedule request was sent.
         /// </summary>
-        public event CS.OnUpdateDynamicScheduleResponseDelegate?    OnUpdateDynamicScheduleResponse;
+        public event OCPPv2_1.CS.OnUpdateDynamicScheduleResponseDelegate?    OnUpdateDynamicScheduleResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to an UpdateDynamicSchedule request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?                 OnUpdateDynamicScheduleWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?              OnUpdateDynamicScheduleWSResponse;
 
         #endregion
 
@@ -140,6 +140,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnUpdateDynamicScheduleRequest?.Invoke(Timestamp.Now,
                                                                this,
+                                                               WebSocketConnection,
                                                                request);
 
                     }
@@ -183,6 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnUpdateDynamicScheduleResponse?.Invoke(Timestamp.Now,
                                                                 this,
+                                                                WebSocketConnection,
                                                                 request,
                                                                 response,
                                                                 response.Runtime);

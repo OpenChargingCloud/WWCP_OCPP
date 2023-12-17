@@ -138,6 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                         OnSendFileRequest?.Invoke(Timestamp.Now,
                                                   this,
+                                                  WebSocketConnection,
                                                   request);
 
                     }
@@ -181,6 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                         OnSendFileResponse?.Invoke(Timestamp.Now,
                                                    this,
+                                                   WebSocketConnection,
                                                    request,
                                                    response,
                                                    response.Runtime);

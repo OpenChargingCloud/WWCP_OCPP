@@ -56,27 +56,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever an UnlockConnector websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?            OnUnlockConnectorWSRequest;
+        public event WSClientJSONRequestLogHandler?                    OnUnlockConnectorWSRequest;
 
         /// <summary>
         /// An event sent whenever an UnlockConnector request was received.
         /// </summary>
-        public event CS.OnUnlockConnectorRequestDelegate?     OnUnlockConnectorRequest;
+        public event OCPPv2_1.CS.OnUnlockConnectorRequestDelegate?     OnUnlockConnectorRequest;
 
         /// <summary>
         /// An event sent whenever an UnlockConnector request was received.
         /// </summary>
-        public event CS.OnUnlockConnectorDelegate?            OnUnlockConnector;
+        public event OCPPv2_1.CS.OnUnlockConnectorDelegate?            OnUnlockConnector;
 
         /// <summary>
         /// An event sent whenever a response to an UnlockConnector request was sent.
         /// </summary>
-        public event CS.OnUnlockConnectorResponseDelegate?    OnUnlockConnectorResponse;
+        public event OCPPv2_1.CS.OnUnlockConnectorResponseDelegate?    OnUnlockConnectorResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to an UnlockConnector request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?           OnUnlockConnectorWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?        OnUnlockConnectorWSResponse;
 
         #endregion
 
@@ -140,6 +140,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnUnlockConnectorRequest?.Invoke(Timestamp.Now,
                                                          this,
+                                                         WebSocketConnection,
                                                          request);
 
                     }
@@ -183,6 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnUnlockConnectorResponse?.Invoke(Timestamp.Now,
                                                           this,
+                                                          WebSocketConnection,
                                                           request,
                                                           response,
                                                           response.Runtime);

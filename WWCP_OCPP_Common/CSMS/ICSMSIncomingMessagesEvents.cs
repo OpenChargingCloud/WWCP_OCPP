@@ -77,7 +77,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
 
         // Binary Data Streams Extensions
 
-        #region OnIncomingBinaryDataTransfer (-Request/-Response)
+        #region OnIncomingBinaryDataTransfer (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a firmware status notification request was received.

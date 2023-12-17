@@ -18,8 +18,6 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
-using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
@@ -50,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a SetMonitoringLevel request was sent.
         /// </summary>
-        public event CSMS.OnSetMonitoringLevelRequestDelegate?     OnSetMonitoringLevelRequest;
+        public event OCPPv2_1.CSMS.OnSetMonitoringLevelRequestDelegate?     OnSetMonitoringLevelRequest;
 
         /// <summary>
         /// An event sent whenever a response to a SetMonitoringLevel request was sent.
         /// </summary>
-        public event CSMS.OnSetMonitoringLevelResponseDelegate?    OnSetMonitoringLevelResponse;
+        public event OCPPv2_1.CSMS.OnSetMonitoringLevelResponseDelegate?    OnSetMonitoringLevelResponse;
 
         #endregion
 

@@ -56,27 +56,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a set variables websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?         OnSetVariablesWSRequest;
+        public event WSClientJSONRequestLogHandler?                 OnSetVariablesWSRequest;
 
         /// <summary>
         /// An event sent whenever a set variables request was received.
         /// </summary>
-        public event CS.OnSetVariablesRequestDelegate?     OnSetVariablesRequest;
+        public event OCPPv2_1.CS.OnSetVariablesRequestDelegate?     OnSetVariablesRequest;
 
         /// <summary>
         /// An event sent whenever a set variables request was received.
         /// </summary>
-        public event CS.OnSetVariablesDelegate?            OnSetVariables;
+        public event OCPPv2_1.CS.OnSetVariablesDelegate?            OnSetVariables;
 
         /// <summary>
         /// An event sent whenever a response to a set variables request was sent.
         /// </summary>
-        public event CS.OnSetVariablesResponseDelegate?    OnSetVariablesResponse;
+        public event OCPPv2_1.CS.OnSetVariablesResponseDelegate?    OnSetVariablesResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a set variables request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?        OnSetVariablesWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?     OnSetVariablesWSResponse;
 
         #endregion
 
@@ -140,6 +140,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnSetVariablesRequest?.Invoke(Timestamp.Now,
                                                       this,
+                                                      WebSocketConnection,
                                                       request);
 
                     }
@@ -183,6 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnSetVariablesResponse?.Invoke(Timestamp.Now,
                                                        this,
+                                                       WebSocketConnection,
                                                        request,
                                                        response,
                                                        response.Runtime);

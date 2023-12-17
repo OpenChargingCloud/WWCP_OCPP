@@ -64,12 +64,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
                 var nnResetRequests = new ConcurrentList<ResetRequest>();
                 var csResetRequests = new ConcurrentList<ResetRequest>();
 
-                networkingNode1.AsCS.OnResetRequest += (timestamp, sender, resetRequest) => {
+                networkingNode1.AsCS.OnResetRequest += (timestamp, sender, connection, resetRequest) => {
                     nnResetRequests.TryAdd(resetRequest);
                     return Task.CompletedTask;
                 };
 
-                chargingStation1.OnResetRequest += (timestamp, sender, resetRequest) => {
+                chargingStation1.OnResetRequest += (timestamp, sender, connection, resetRequest) => {
                     csResetRequests.TryAdd(resetRequest);
                     return Task.CompletedTask;
                 };

@@ -56,27 +56,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a delete certificate websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?              OnDeleteCertificateWSRequest;
+        public event WSClientJSONRequestLogHandler?                      OnDeleteCertificateWSRequest;
 
         /// <summary>
         /// An event sent whenever a delete certificate request was received.
         /// </summary>
-        public event CS.OnDeleteCertificateRequestDelegate?     OnDeleteCertificateRequest;
+        public event OCPPv2_1.CS.OnDeleteCertificateRequestDelegate?     OnDeleteCertificateRequest;
 
         /// <summary>
         /// An event sent whenever a delete certificate request was received.
         /// </summary>
-        public event CS.OnDeleteCertificateDelegate?            OnDeleteCertificate;
+        public event OCPPv2_1.CS.OnDeleteCertificateDelegate?            OnDeleteCertificate;
 
         /// <summary>
         /// An event sent whenever a response to a delete certificate request was sent.
         /// </summary>
-        public event CS.OnDeleteCertificateResponseDelegate?    OnDeleteCertificateResponse;
+        public event OCPPv2_1.CS.OnDeleteCertificateResponseDelegate?    OnDeleteCertificateResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a delete certificate request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?             OnDeleteCertificateWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?          OnDeleteCertificateWSResponse;
 
         #endregion
 
@@ -140,6 +140,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnDeleteCertificateRequest?.Invoke(Timestamp.Now,
                                                            this,
+                                                           WebSocketConnection,
                                                            request);
 
                     }
@@ -183,6 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnDeleteCertificateResponse?.Invoke(Timestamp.Now,
                                                             this,
+                                                            WebSocketConnection,
                                                             request,
                                                             response,
                                                             response.Runtime);

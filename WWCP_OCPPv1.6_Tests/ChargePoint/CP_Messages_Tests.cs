@@ -772,7 +772,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                 chargePoint3            is not null)
             {
 
-                var dataTransferRequests = new List<OCPP.CS.DataTransferRequest>();
+                var dataTransferRequests = new List<DataTransferRequest>();
 
                 testCentralSystem01.OnIncomingDataTransferRequest += (timestamp, sender, connection, dataTransferRequest) => {
                     dataTransferRequests.Add(dataTransferRequest);
@@ -835,7 +835,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                 chargePoint3            is not null)
             {
 
-                var dataTransferRequests = new List<OCPP.CS.DataTransferRequest>();
+                var dataTransferRequests = new List<DataTransferRequest>();
 
                 testCentralSystem01.OnIncomingDataTransferRequest += (timestamp, sender, connection, dataTransferRequest) => {
                     dataTransferRequests.Add(dataTransferRequest);
@@ -904,7 +904,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                 chargePoint3            is not null)
             {
 
-                var dataTransferRequests = new List<OCPP.CS.DataTransferRequest>();
+                var dataTransferRequests = new List<DataTransferRequest>();
 
                 testCentralSystem01.OnIncomingDataTransferRequest += (timestamp, sender, connection, dataTransferRequest) => {
                     dataTransferRequests.Add(dataTransferRequest);

@@ -20,7 +20,6 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
@@ -53,27 +52,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a NotifyChargingLimit WebSocket request was received.
         /// </summary>
-        public event CSMS.WebSocketJSONRequestLogHandler?               OnNotifyChargingLimitWSRequest;
+        public event WebSocketJSONRequestLogHandler?                         OnNotifyChargingLimitWSRequest;
 
         /// <summary>
         /// An event sent whenever a NotifyChargingLimit request was received.
         /// </summary>
-        public event CSMS.OnNotifyChargingLimitRequestDelegate?         OnNotifyChargingLimitRequest;
+        public event OCPPv2_1.CSMS.OnNotifyChargingLimitRequestDelegate?     OnNotifyChargingLimitRequest;
 
         /// <summary>
         /// An event sent whenever a NotifyChargingLimit was received.
         /// </summary>
-        public event CSMS.OnNotifyChargingLimitDelegate?                OnNotifyChargingLimit;
+        public event OCPPv2_1.CSMS.OnNotifyChargingLimitDelegate?            OnNotifyChargingLimit;
 
         /// <summary>
         /// An event sent whenever a response to a NotifyChargingLimit was sent.
         /// </summary>
-        public event CSMS.OnNotifyChargingLimitResponseDelegate?        OnNotifyChargingLimitResponse;
+        public event OCPPv2_1.CSMS.OnNotifyChargingLimitResponseDelegate?    OnNotifyChargingLimitResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a NotifyChargingLimit was sent.
         /// </summary>
-        public event CSMS.WebSocketJSONRequestJSONResponseLogHandler?   OnNotifyChargingLimitWSResponse;
+        public event WebSocketJSONRequestJSONResponseLogHandler?             OnNotifyChargingLimitWSResponse;
 
         #endregion
 
@@ -139,6 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
                         OnNotifyChargingLimitRequest?.Invoke(Timestamp.Now,
                                                              this,
+                                                             Connection,
                                                              request);
 
                     }
@@ -157,6 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                                             GetInvocationList()?.
                                             SafeSelect(subscriber => (subscriber as OnNotifyChargingLimitDelegate)?.Invoke(Timestamp.Now,
                                                                                                                            this,
+                                                                                                                           Connection,
                                                                                                                            request,
                                                                                                                            CancellationToken)).
                                             ToArray();
@@ -178,6 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
                         OnNotifyChargingLimitResponse?.Invoke(Timestamp.Now,
                                                               this,
+                                                              Connection,
                                                               request,
                                                               response,
                                                               response.Runtime);

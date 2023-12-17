@@ -56,27 +56,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a change availability websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?               OnChangeAvailabilityWSRequest;
+        public event WSClientJSONRequestLogHandler?                       OnChangeAvailabilityWSRequest;
 
         /// <summary>
         /// An event sent whenever a change availability request was received.
         /// </summary>
-        public event CS.OnChangeAvailabilityRequestDelegate?     OnChangeAvailabilityRequest;
+        public event OCPPv2_1.CS.OnChangeAvailabilityRequestDelegate?     OnChangeAvailabilityRequest;
 
         /// <summary>
         /// An event sent whenever a change availability request was received.
         /// </summary>
-        public event CS.OnChangeAvailabilityDelegate?            OnChangeAvailability;
+        public event OCPPv2_1.CS.OnChangeAvailabilityDelegate?            OnChangeAvailability;
 
         /// <summary>
         /// An event sent whenever a response to a change availability request was sent.
         /// </summary>
-        public event CS.OnChangeAvailabilityResponseDelegate?    OnChangeAvailabilityResponse;
+        public event OCPPv2_1.CS.OnChangeAvailabilityResponseDelegate?    OnChangeAvailabilityResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a change availability request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?              OnChangeAvailabilityWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?           OnChangeAvailabilityWSResponse;
 
         #endregion
 
@@ -140,6 +140,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnChangeAvailabilityRequest?.Invoke(Timestamp.Now,
                                                             this,
+                                                            WebSocketConnection,
                                                             request);
 
                     }
@@ -183,6 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnChangeAvailabilityResponse?.Invoke(Timestamp.Now,
                                                              this,
+                                                             WebSocketConnection,
                                                              request,
                                                              response,
                                                              response.Runtime);

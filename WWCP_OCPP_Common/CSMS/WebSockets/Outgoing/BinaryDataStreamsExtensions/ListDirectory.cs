@@ -26,7 +26,7 @@ using cloud.charging.open.protocols.OCPP.CS;
 namespace cloud.charging.open.protocols.OCPP.CSMS
 {
 
-    #region OnListDirectory (-Request/-Response) Delegate
+    #region OnListDirectory (Request/-Response) Delegate
 
     /// <summary>
     /// A delegate called whenever a ListDirectory request will be sent to a charging station.

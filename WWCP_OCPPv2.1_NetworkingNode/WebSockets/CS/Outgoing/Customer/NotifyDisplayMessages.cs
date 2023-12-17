@@ -18,7 +18,6 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
@@ -53,22 +52,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever a notify display messages request will be sent to the CSMS.
         /// </summary>
-        public event CS.OnNotifyDisplayMessagesRequestDelegate?     OnNotifyDisplayMessagesRequest;
+        public event OCPPv2_1.CS.OnNotifyDisplayMessagesRequestDelegate?     OnNotifyDisplayMessagesRequest;
 
         /// <summary>
         /// An event fired whenever a notify display messages request will be sent to the CSMS.
         /// </summary>
-        public event ClientRequestLogHandler?                    OnNotifyDisplayMessagesWSRequest;
+        public event ClientRequestLogHandler?                                OnNotifyDisplayMessagesWSRequest;
 
         /// <summary>
         /// An event fired whenever a response to a notify display messages request was received.
         /// </summary>
-        public event ClientResponseLogHandler?                   OnNotifyDisplayMessagesWSResponse;
+        public event ClientResponseLogHandler?                               OnNotifyDisplayMessagesWSResponse;
 
         /// <summary>
         /// An event fired whenever a response to a notify display messages request was received.
         /// </summary>
-        public event CS.OnNotifyDisplayMessagesResponseDelegate?    OnNotifyDisplayMessagesResponse;
+        public event OCPPv2_1.CS.OnNotifyDisplayMessagesResponseDelegate?    OnNotifyDisplayMessagesResponse;
 
         #endregion
 

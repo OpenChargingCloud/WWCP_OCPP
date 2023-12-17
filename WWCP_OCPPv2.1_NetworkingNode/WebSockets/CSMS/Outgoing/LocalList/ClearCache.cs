@@ -18,8 +18,6 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
-using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
@@ -50,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a ClearCache request was sent.
         /// </summary>
-        public event CSMS.OnClearCacheRequestDelegate?     OnClearCacheRequest;
+        public event OCPPv2_1.CSMS.OnClearCacheRequestDelegate?     OnClearCacheRequest;
 
         /// <summary>
         /// An event sent whenever a response to a ClearCache request was sent.
         /// </summary>
-        public event CSMS.OnClearCacheResponseDelegate?    OnClearCacheResponse;
+        public event OCPPv2_1.CSMS.OnClearCacheResponseDelegate?    OnClearCacheResponse;
 
         #endregion
 

@@ -27,19 +27,19 @@ using cloud.charging.open.protocols.OCPP.CSMS;
 namespace cloud.charging.open.protocols.OCPP.CS
 {
 
-    #region OnGetFile
-
     /// <summary>
     /// A GetFile request.
     /// </summary>
     /// <param name="Timestamp">The log timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
     /// <param name="Request">The GetFile request.</param>
     public delegate Task
 
-        OnGetFileRequestDelegate(DateTime         Timestamp,
-                                 IEventSender     Sender,
-                                 GetFileRequest   Request);
+        OnGetFileRequestDelegate(DateTime                    Timestamp,
+                                 IEventSender                Sender,
+                                 WebSocketClientConnection   Connection,
+                                 GetFileRequest              Request);
 
 
     /// <summary>
@@ -47,6 +47,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
     /// <param name="Request">The GetFile request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<GetFileResponse>
@@ -63,17 +64,17 @@ namespace cloud.charging.open.protocols.OCPP.CS
     /// </summary>
     /// <param name="Timestamp">The log timestamp of the response.</param>
     /// <param name="Sender">The sender of the response.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
     /// <param name="Request">The GetFile request.</param>
     /// <param name="Response">The GetFile response.</param>
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnGetFileResponseDelegate(DateTime          Timestamp,
-                                  IEventSender      Sender,
-                                  GetFileRequest    Request,
-                                  GetFileResponse   Response,
-                                  TimeSpan          Runtime);
-
-    #endregion
+        OnGetFileResponseDelegate(DateTime                    Timestamp,
+                                  IEventSender                Sender,
+                                  WebSocketClientConnection   Connection,
+                                  GetFileRequest              Request,
+                                  GetFileResponse             Response,
+                                  TimeSpan                    Runtime);
 
 }

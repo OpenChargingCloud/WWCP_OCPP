@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.extensions.BinaryStreamsE
 
                 var getFileRequests = new ConcurrentList<GetFileRequest>();
 
-                chargePoint1.OnGetFileRequest += (timestamp, sender, getFileRequest) => {
+                chargePoint1.OnGetFileRequest += (timestamp, sender, connection, getFileRequest) => {
                     getFileRequests.TryAdd(getFileRequest);
                     return Task.CompletedTask;
                 };
@@ -123,7 +123,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.extensions.BinaryStreamsE
 
                 var sendFileRequests = new ConcurrentList<SendFileRequest>();
 
-                chargePoint1.OnSendFileRequest += (timestamp, sender, sendFileRequest) => {
+                chargePoint1.OnSendFileRequest += (timestamp, sender, connection, sendFileRequest) => {
                     sendFileRequests.TryAdd(sendFileRequest);
                     return Task.CompletedTask;
                 };
@@ -184,7 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.extensions.BinaryStreamsE
 
                 var deleteFileRequests = new ConcurrentList<DeleteFileRequest>();
 
-                chargePoint1.OnDeleteFileRequest += (timestamp, sender, deleteFileRequest) => {
+                chargePoint1.OnDeleteFileRequest += (timestamp, sender, connection, deleteFileRequest) => {
                     deleteFileRequests.TryAdd(deleteFileRequest);
                     return Task.CompletedTask;
                 };

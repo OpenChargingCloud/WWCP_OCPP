@@ -17,7 +17,7 @@
 
 #region Usings
 
-using cloud.charging.open.protocols.OCPP.NetworkingNode.CSMS;
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
 
@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
     public interface INetworkingNodeClientEvents
     {
 
-        #region Reset                          (-Request/-Response)
+        #region Reset                          (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a Reset request will be sent to the CSMS.
@@ -44,7 +44,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #endregion
 
-        #region UpdateFirmware                 (-Request/-Response)
+        #region UpdateFirmware                 (Request/-Response)
 
         /// <summary>
         /// An event fired whenever an UpdateFirmware request will be sent to the CSMS.
@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #endregion
 
-        #region PublishFirmware                (-Request/-Response)
+        #region PublishFirmware                (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a PublishFirmware request will be sent to the CSMS.
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #endregion
 
-        #region UnpublishFirmware              (-Request/-Response)
+        #region UnpublishFirmware              (Request/-Response)
 
         /// <summary>
         /// An event fired whenever an UnpublishFirmware request will be sent to the CSMS.
@@ -86,7 +86,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #endregion
 
-        #region GetBaseReport                  (-Request/-Response)
+        #region GetBaseReport                  (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a GetBaseReport request will be sent to the CSMS.
@@ -273,12 +273,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event fired whenever a DataTransfer request will be sent to the CSMS.
         /// </summary>
-        event OnDataTransferRequestDelegate?   OnDataTransferRequest;
+        event OCPPv2_1.CSMS.OnDataTransferRequestDelegate?   OnDataTransferRequest;
 
         /// <summary>
         /// An event fired whenever a response to a DataTransfer request was received.
         /// </summary>
-        event OnDataTransferResponseDelegate?  OnDataTransferResponse;
+        event OCPPv2_1.CSMS.OnDataTransferResponseDelegate?  OnDataTransferResponse;
 
         #endregion
 
@@ -537,7 +537,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #endregion
 
-        #region NotifyAllowedEnergyTransfer    (-Request/-Response)
+        #region NotifyAllowedEnergyTransfer    (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a NotifyAllowedEnergyTransfer request will be sent to the CSMS.

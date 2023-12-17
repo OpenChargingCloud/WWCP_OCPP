@@ -122,12 +122,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
                                     )
                                 );
 
-                ClassicAssert.AreEqual (ResultCode.OK,                          response.Result.ResultCode);
-                ClassicAssert.AreEqual (RegistrationStatus.Accepted,            response.Status);
+                ClassicAssert.AreEqual (ResultCode.OK,                         response.Result.ResultCode);
+                ClassicAssert.AreEqual (RegistrationStatus.Accepted,           response.Status);
 
-                ClassicAssert.AreEqual (1,                                      csmsBootNotificationRequests.Count, "The BootNotification did not reach the CSMS!");
-                ClassicAssert.AreEqual (networkingNode1.Id.ToString(),          csmsBootNotificationRequests.First().NetworkPath.Origin.ToString());
-                ClassicAssert.AreEqual (reason,                                 csmsBootNotificationRequests.First().Reason);
+                ClassicAssert.AreEqual (1,                                     csmsBootNotificationRequests.Count, "The BootNotification did not reach the CSMS!");
+                ClassicAssert.AreEqual (networkingNode1.Id.ToString(),         csmsBootNotificationRequests.First().NetworkPath.Origin.ToString());
+                ClassicAssert.AreEqual (reason,                                csmsBootNotificationRequests.First().Reason);
 
                 var chargingStation = csmsBootNotificationRequests.First().ChargingStation;
 
@@ -135,18 +135,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
                 if (chargingStation is not null)
                 {
 
-                    ClassicAssert.AreEqual(chargingStation1.Model,              chargingStation.Model);
-                    ClassicAssert.AreEqual(chargingStation1.VendorName,         chargingStation.VendorName);
-                    ClassicAssert.AreEqual(chargingStation1.SerialNumber,       chargingStation.SerialNumber);
-                    ClassicAssert.AreEqual(chargingStation1.FirmwareVersion,    chargingStation.FirmwareVersion);
+                    ClassicAssert.AreEqual(networkingNode1.Model,              chargingStation.Model);
+                    ClassicAssert.AreEqual(networkingNode1.VendorName,         chargingStation.VendorName);
+                    ClassicAssert.AreEqual(networkingNode1.SerialNumber,       chargingStation.SerialNumber);
+                    ClassicAssert.AreEqual(networkingNode1.FirmwareVersion,    chargingStation.FirmwareVersion);
 
                     var modem = chargingStation.Modem;
 
                     ClassicAssert.IsNotNull(modem);
                     if (modem is not null)
                     {
-                        ClassicAssert.AreEqual(chargingStation1.Modem!.ICCID,   modem.ICCID);
-                        ClassicAssert.AreEqual(chargingStation1.Modem!.IMSI,    modem.IMSI);
+                        ClassicAssert.AreEqual(networkingNode1.Modem!.ICCID,   modem.ICCID);
+                        ClassicAssert.AreEqual(networkingNode1.Modem!.IMSI,    modem.IMSI);
                     }
 
                 }

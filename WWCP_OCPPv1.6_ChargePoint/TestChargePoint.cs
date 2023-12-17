@@ -368,225 +368,301 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region Events
 
-        // Outgoing messages (to central system)
+        #region Outgoing messages: Charge Point --(NN)-> Central System
 
-        #region OnBootNotificationRequest/-Response
-
-        /// <summary>
-        /// An event fired whenever a boot notification request will be sent to the central system.
-        /// </summary>
-        public event OnBootNotificationRequestDelegate?   OnBootNotificationRequest;
+        #region OnBootNotification                 (Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a response to a boot notification request was received.
+        /// An event fired whenever a BootNotification request will be sent to the central system.
         /// </summary>
-        public event OnBootNotificationResponseDelegate?  OnBootNotificationResponse;
+        public event OnBootNotificationRequestDelegate?                     OnBootNotificationRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a BootNotification request was received.
+        /// </summary>
+        public event OnBootNotificationResponseDelegate?                    OnBootNotificationResponse;
 
         #endregion
 
-        #region OnHeartbeatRequest/-Response
+        #region OnHeartbeat                        (Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a heartbeat request will be sent to the central system.
+        /// An event fired whenever a Heartbeat request will be sent to the central system.
         /// </summary>
-        public event OnHeartbeatRequestDelegate?   OnHeartbeatRequest;
+        public event OnHeartbeatRequestDelegate?                            OnHeartbeatRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a heartbeat request was received.
+        /// An event fired whenever a response to a Heartbeat request was received.
         /// </summary>
-        public event OnHeartbeatResponseDelegate?  OnHeartbeatResponse;
+        public event OnHeartbeatResponseDelegate?                           OnHeartbeatResponse;
 
         #endregion
 
-
-        #region OnAuthorizeRequest/-Response
-
-        /// <summary>
-        /// An event fired whenever an authorize request will be sent to the central system.
-        /// </summary>
-        public event OnAuthorizeRequestDelegate?   OnAuthorizeRequest;
+        #region OnDiagnosticsStatusNotification    (Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a response to an authorize request was received.
+        /// An event fired whenever a DiagnosticsStatusNotification request will be sent to the central system.
         /// </summary>
-        public event OnAuthorizeResponseDelegate?  OnAuthorizeResponse;
+        public event OnDiagnosticsStatusNotificationRequestDelegate?        OnDiagnosticsStatusNotificationRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a DiagnosticsStatusNotification request was received.
+        /// </summary>
+        public event OnDiagnosticsStatusNotificationResponseDelegate?       OnDiagnosticsStatusNotificationResponse;
 
         #endregion
 
-        #region OnStartTransactionRequest/-Response
+        #region OnFirmwareStatusNotification       (Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a start transaction request will be sent to the central system.
+        /// An event fired whenever a FirmwareStatusNotification request will be sent to the central system.
         /// </summary>
-        public event OnStartTransactionRequestDelegate?   OnStartTransactionRequest;
+        public event OnFirmwareStatusNotificationRequestDelegate?           OnFirmwareStatusNotificationRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a start transaction request was received.
+        /// An event fired whenever a response to a FirmwareStatusNotification request was received.
         /// </summary>
-        public event OnStartTransactionResponseDelegate?  OnStartTransactionResponse;
-
-        #endregion
-
-        #region OnStatusNotificationRequest/-Response
-
-        /// <summary>
-        /// An event fired whenever a status notification request will be sent to the central system.
-        /// </summary>
-        public event OnStatusNotificationRequestDelegate?   OnStatusNotificationRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a status notification request was received.
-        /// </summary>
-        public event OnStatusNotificationResponseDelegate?  OnStatusNotificationResponse;
-
-        #endregion
-
-        #region OnMeterValuesRequest/-Response
-
-        /// <summary>
-        /// An event fired whenever a meter values request will be sent to the central system.
-        /// </summary>
-        public event OnMeterValuesRequestDelegate?   OnMeterValuesRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a meter values request was received.
-        /// </summary>
-        public event OnMeterValuesResponseDelegate?  OnMeterValuesResponse;
-
-        #endregion
-
-        #region OnStopTransactionRequest/-Response
-
-        /// <summary>
-        /// An event fired whenever a stop transaction request will be sent to the central system.
-        /// </summary>
-        public event OnStopTransactionRequestDelegate?   OnStopTransactionRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a stop transaction request was received.
-        /// </summary>
-        public event OnStopTransactionResponseDelegate?  OnStopTransactionResponse;
+        public event OnFirmwareStatusNotificationResponseDelegate?          OnFirmwareStatusNotificationResponse;
 
         #endregion
 
 
-        #region OnDataTransferRequest/-Response
+        #region OnAuthorize                        (Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a data transfer request will be sent to the central system.
+        /// An event fired whenever an Authorize request will be sent to the central system.
         /// </summary>
-        public event OCPP.CS.OnDataTransferRequestDelegate?   OnDataTransferRequest;
+        public event OnAuthorizeRequestDelegate?                            OnAuthorizeRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a data transfer request was received.
+        /// An event fired whenever a response to an Authorize request was received.
         /// </summary>
-        public event OCPP.CS.OnDataTransferResponseDelegate?  OnDataTransferResponse;
+        public event OnAuthorizeResponseDelegate?                           OnAuthorizeResponse;
 
         #endregion
 
-        #region OnDiagnosticsStatusNotificationRequest/-Response
+        #region OnStartTransaction                 (Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a diagnostics status notification request will be sent to the central system.
+        /// An event fired whenever a StartTransaction request will be sent to the central system.
         /// </summary>
-        public event OnDiagnosticsStatusNotificationRequestDelegate?   OnDiagnosticsStatusNotificationRequest;
+        public event OnStartTransactionRequestDelegate?                     OnStartTransactionRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a diagnostics status notification request was received.
+        /// An event fired whenever a response to a StartTransaction request was received.
         /// </summary>
-        public event OnDiagnosticsStatusNotificationResponseDelegate?  OnDiagnosticsStatusNotificationResponse;
+        public event OnStartTransactionResponseDelegate?                    OnStartTransactionResponse;
 
         #endregion
 
-        #region OnFirmwareStatusNotificationRequest/-Response
+        #region OnStatusNotification               (Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a firmware status notification request will be sent to the central system.
+        /// An event fired whenever a StatusNotification request will be sent to the central system.
         /// </summary>
-        public event OnFirmwareStatusNotificationRequestDelegate?   OnFirmwareStatusNotificationRequest;
+        public event OnStatusNotificationRequestDelegate?                   OnStatusNotificationRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a firmware status notification request was received.
+        /// An event fired whenever a response to a StatusNotification request was received.
         /// </summary>
-        public event OnFirmwareStatusNotificationResponseDelegate?  OnFirmwareStatusNotificationResponse;
+        public event OnStatusNotificationResponseDelegate?                  OnStatusNotificationResponse;
+
+        #endregion
+
+        #region OnMeterValues                      (Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a MeterValues request will be sent to the central system.
+        /// </summary>
+        public event OnMeterValuesRequestDelegate?                          OnMeterValuesRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a MeterValues request was received.
+        /// </summary>
+        public event OnMeterValuesResponseDelegate?                         OnMeterValuesResponse;
+
+        #endregion
+
+        #region OnStopTransaction                  (Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a StopTransaction request will be sent to the central system.
+        /// </summary>
+        public event OnStopTransactionRequestDelegate?                      OnStopTransactionRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a StopTransaction request was received.
+        /// </summary>
+        public event OnStopTransactionResponseDelegate?                     OnStopTransactionResponse;
 
         #endregion
 
 
+        #region OnDataTransfer                     (Request/-Response)
 
-        // Incoming messages (from central system)
+        /// <summary>
+        /// An event fired whenever a DataTransfer request will be sent to the central system.
+        /// </summary>
+        public event OnDataTransferRequestDelegate?                         OnDataTransferRequest;
 
-        #region OnResetRequest/-Response
+        /// <summary>
+        /// An event fired whenever a response to a DataTransfer request was received.
+        /// </summary>
+        public event OnDataTransferResponseDelegate?                        OnDataTransferResponse;
+
+        #endregion
+
+
+        // Security Extensions
+
+        #region OnLogStatusNotification            (Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a LogStatusNotification request will be sent to the central system.
+        /// </summary>
+        public event OnLogStatusNotificationRequestDelegate?                OnLogStatusNotificationRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a LogStatusNotification request was received.
+        /// </summary>
+        public event OnLogStatusNotificationResponseDelegate?               OnLogStatusNotificationResponse;
+
+        #endregion
+
+        #region OnSecurityEventNotification        (Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a SecurityEventNotification request will be sent to the central system.
+        /// </summary>
+        public event OnSecurityEventNotificationRequestDelegate?            OnSecurityEventNotificationRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a SecurityEventNotification request was received.
+        /// </summary>
+        public event OnSecurityEventNotificationResponseDelegate?           OnSecurityEventNotificationResponse;
+
+        #endregion
+
+        #region OnSignCertificate                  (Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a SignCertificate request will be sent to the central system.
+        /// </summary>
+        public event OnSignCertificateRequestDelegate?                      OnSignCertificateRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a SignCertificate request was received.
+        /// </summary>
+        public event OnSignCertificateResponseDelegate?                     OnSignCertificateResponse;
+
+        #endregion
+
+        #region OnSignedFirmwareStatusNotification (Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a SignedFirmwareStatusNotification request will be sent to the central system.
+        /// </summary>
+        public event OnSignedFirmwareStatusNotificationRequestDelegate?     OnSignedFirmwareStatusNotificationRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a SignedFirmwareStatusNotification request was received.
+        /// </summary>
+        public event OnSignedFirmwareStatusNotificationResponseDelegate?    OnSignedFirmwareStatusNotificationResponse;
+
+        #endregion
+
+
+        // Binary Data Streams Extensions
+
+        #region OnBinaryDataTransfer               (Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a BinaryDataTransfer request will be sent to the central system.
+        /// </summary>
+        public event OCPP.CS.OnBinaryDataTransferRequestDelegate?           OnBinaryDataTransferRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a BinaryDataTransfer request was received.
+        /// </summary>
+        public event OCPP.CS.OnBinaryDataTransferResponseDelegate?          OnBinaryDataTransferResponse;
+
+        #endregion
+
+        #endregion
+
+        #region Incoming messages: Charge Point <-(NN)-- Central System
+
+        #region OnReset                  (Request/-Response)
+
+        /// <summary>
+        /// An event sent whenever a Reset request was received.
+        /// </summary>
+        public event OnResetRequestDelegate?                      OnResetRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a Reset request was sent.
+        /// </summary>
+        public event OnResetResponseDelegate?                     OnResetResponse;
+
+        #endregion
+
+        #region OnChangeAvailability     (Request/-Response)
+
+        /// <summary>
+        /// An event sent whenever a ChangeAvailability request was received.
+        /// </summary>
+        public event OnChangeAvailabilityRequestDelegate?         OnChangeAvailabilityRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a ChangeAvailability request was sent.
+        /// </summary>
+        public event OnChangeAvailabilityResponseDelegate?        OnChangeAvailabilityResponse;
+
+        #endregion
+
+        #region OnGetConfiguration       (Request/-Response)
+
+        /// <summary>
+        /// An event sent whenever a GetConfiguration request was received.
+        /// </summary>
+        public event OnGetConfigurationRequestDelegate?           OnGetConfigurationRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a GetConfiguration request was sent.
+        /// </summary>
+        public event OnGetConfigurationResponseDelegate?          OnGetConfigurationResponse;
+
+        #endregion
+
+        #region OnChangeConfiguration    (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnResetRequestDelegate?   OnResetRequest;
+        public event OnChangeConfigurationRequestDelegate?        OnChangeConfigurationRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event OnResetResponseDelegate?  OnResetResponse;
+        public event OnChangeConfigurationResponseDelegate?       OnChangeConfigurationResponse;
 
         #endregion
 
-        #region ChangeAvailabilityRequest/-Response
-
-        /// <summary>
-        /// An event sent whenever a reset request was received.
-        /// </summary>
-        public event OnChangeAvailabilityRequestDelegate?   OnChangeAvailabilityRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
-        /// </summary>
-        public event OnChangeAvailabilityResponseDelegate?  OnChangeAvailabilityResponse;
-
-        #endregion
-
-        #region GetConfigurationRequest/-Response
-
-        /// <summary>
-        /// An event sent whenever a reset request was received.
-        /// </summary>
-        public event OnGetConfigurationRequestDelegate?   OnGetConfigurationRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
-        /// </summary>
-        public event OnGetConfigurationResponseDelegate?  OnGetConfigurationResponse;
-
-        #endregion
-
-        #region ChangeConfigurationRequest/-Response
-
-        /// <summary>
-        /// An event sent whenever a reset request was received.
-        /// </summary>
-        public event OnChangeConfigurationRequestDelegate?   OnChangeConfigurationRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
-        /// </summary>
-        public event OnChangeConfigurationResponseDelegate?  OnChangeConfigurationResponse;
-
-        #endregion
-
-        #region OnIncomingDataTransferRequest/-Response
+        #region OnIncomingDataTransfer   (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a data transfer request was received.
         /// </summary>
-        public event OCPP.CS.OnIncomingDataTransferRequestDelegate?   OnIncomingDataTransferRequest;
+        public event OnIncomingDataTransferRequestDelegate?   OnIncomingDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a response to a data transfer request was sent.
         /// </summary>
-        public event OCPP.CS.OnIncomingDataTransferResponseDelegate?  OnIncomingDataTransferResponse;
+        public event OnIncomingDataTransferResponseDelegate?  OnIncomingDataTransferResponse;
 
         #endregion
 
-        #region GetDiagnosticsRequest/-Response
+        #region GetDiagnostics (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a reset request was received.
@@ -600,7 +676,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region TriggerMessageRequest/-Response
+        #region TriggerMessage (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a reset request was received.
@@ -614,7 +690,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region UpdateFirmwareRequest/-Response
+        #region UpdateFirmware (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a reset request was received.
@@ -629,7 +705,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #endregion
 
 
-        #region OnReserveNowRequest/-Response
+        #region OnReserveNow (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a reserve now request was received.
@@ -643,35 +719,35 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region OnCancelReservationRequest/-Response
+        #region OnCancelReservation      (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a cancel reservation request was received.
         /// </summary>
-        public event OnCancelReservationRequestDelegate?   OnCancelReservationRequest;
+        public event OnCancelReservationRequestDelegate?          OnCancelReservationRequest;
 
         /// <summary>
         /// An event sent whenever a response to a cancel reservation request was sent.
         /// </summary>
-        public event OnCancelReservationResponseDelegate?  OnCancelReservationResponse;
+        public event OnCancelReservationResponseDelegate?         OnCancelReservationResponse;
 
         #endregion
 
-        #region OnRemoteStartTransactionRequest/-Response
+        #region OnRemoteStartTransaction (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a remote start transaction request was received.
         /// </summary>
-        public event OnRemoteStartTransactionRequestDelegate?   OnRemoteStartTransactionRequest;
+        public event OnRemoteStartTransactionRequestDelegate?     OnRemoteStartTransactionRequest;
 
         /// <summary>
         /// An event sent whenever a response to a remote start transaction request was sent.
         /// </summary>
-        public event OnRemoteStartTransactionResponseDelegate?  OnRemoteStartTransactionResponse;
+        public event OnRemoteStartTransactionResponseDelegate?    OnRemoteStartTransactionResponse;
 
         #endregion
 
-        #region OnRemoteStopTransactionRequest/-Response
+        #region OnRemoteStopTransaction  (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a remote stop transaction request was received.
@@ -685,7 +761,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region SetChargingProfileRequest/-Response
+        #region SetChargingProfile (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a reset request was received.
@@ -699,7 +775,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region ClearChargingProfileRequest/-Response
+        #region ClearChargingProfile (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a reset request was received.
@@ -713,7 +789,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region GetCompositeScheduleRequest/-Response
+        #region GetCompositeSchedule (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a reset request was received.
@@ -727,7 +803,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region UnlockConnectorRequest/-Response
+        #region UnlockConnector (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a reset request was received.
@@ -742,7 +818,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #endregion
 
 
-        #region GetLocalListVersionRequest/-Response
+        #region GetLocalListVersion (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a reset request was received.
@@ -756,7 +832,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region SendLocalListRequest/-Response
+        #region SendLocalList (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a reset request was received.
@@ -770,7 +846,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region ClearCacheRequest/-Response
+        #region ClearCache (Request/-Response)
 
         /// <summary>
         /// An event sent whenever a reset request was received.
@@ -785,78 +861,45 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #endregion
 
 
-        public event OnResetDelegate OnReset;
-        public event OnChangeAvailabilityDelegate OnChangeAvailability;
-        public event OnGetConfigurationDelegate OnGetConfiguration;
-        public event OnChangeConfigurationDelegate OnChangeConfiguration;
-        public event OCPP.CS.OnIncomingDataTransferDelegate OnIncomingDataTransfer;
-        public event OnGetDiagnosticsDelegate OnGetDiagnostics;
-        public event OnTriggerMessageDelegate OnTriggerMessage;
-        public event OnUpdateFirmwareDelegate OnUpdateFirmware;
-        public event OnReserveNowDelegate OnReserveNow;
-        public event OnCancelReservationDelegate OnCancelReservation;
-        public event OnRemoteStartTransactionDelegate OnRemoteStartTransaction;
-        public event OnRemoteStopTransactionDelegate OnRemoteStopTransaction;
-        public event OnSetChargingProfileDelegate OnSetChargingProfile;
-        public event OnClearChargingProfileDelegate OnClearChargingProfile;
-        public event OnGetCompositeScheduleDelegate OnGetCompositeSchedule;
-        public event OnUnlockConnectorDelegate OnUnlockConnector;
-        public event OnGetLocalListVersionDelegate OnGetLocalListVersion;
-        public event OnSendLocalListDelegate OnSendLocalList;
-        public event OnClearCacheDelegate OnClearCache;
+        public event OCPP.CS.OnIncomingBinaryDataTransferRequestDelegate?     OnIncomingBinaryDataTransferRequest;
+        public event OCPP.CS.OnIncomingBinaryDataTransferResponseDelegate?    OnIncomingBinaryDataTransferResponse;
 
+        public event OCPP.CS.OnGetFileRequestDelegate?                        OnGetFileRequest;
+        public event OCPP.CS.OnGetFileResponseDelegate?                       OnGetFileResponse;
 
-        public event OCPP.CS.OnIncomingBinaryDataTransferRequestDelegate     OnIncomingBinaryDataTransferRequest;
-        public event OCPP.CS.OnIncomingBinaryDataTransferDelegate            OnIncomingBinaryDataTransfer;
-        public event OCPP.CS.OnIncomingBinaryDataTransferResponseDelegate    OnIncomingBinaryDataTransferResponse;
+        public event OCPP.CS.OnSendFileRequestDelegate?                       OnSendFileRequest;
+        public event OCPP.CS.OnSendFileResponseDelegate?                      OnSendFileResponse;
 
-        public event OCPP.CS.OnGetFileRequestDelegate                        OnGetFileRequest;
-        public event OCPP.CS.OnGetFileDelegate                               OnGetFile;
-        public event OCPP.CS.OnGetFileResponseDelegate                       OnGetFileResponse;
+        public event OCPP.CS.OnDeleteFileRequestDelegate?                     OnDeleteFileRequest;
+        public event OCPP.CS.OnDeleteFileResponseDelegate?                    OnDeleteFileResponse;
 
-        public event OCPP.CS.OnSendFileRequestDelegate                       OnSendFileRequest;
-        public event OCPP.CS.OnSendFileDelegate                              OnSendFile;
-        public event OCPP.CS.OnSendFileResponseDelegate                      OnSendFileResponse;
+        public event OCPP.CS.OnAddSignaturePolicyRequestDelegate?             OnAddSignaturePolicyRequest;
+        public event OCPP.CS.OnAddSignaturePolicyResponseDelegate?            OnAddSignaturePolicyResponse;
 
-        public event OCPP.CS.OnDeleteFileRequestDelegate                     OnDeleteFileRequest;
-        public event OCPP.CS.OnDeleteFileDelegate                            OnDeleteFile;
-        public event OCPP.CS.OnDeleteFileResponseDelegate                    OnDeleteFileResponse;
+        public event OCPP.CS.OnUpdateSignaturePolicyRequestDelegate?          OnUpdateSignaturePolicyRequest;
+        public event OCPP.CS.OnUpdateSignaturePolicyResponseDelegate?         OnUpdateSignaturePolicyResponse;
 
-        public event OCPP.CS.OnAddSignaturePolicyRequestDelegate             OnAddSignaturePolicyRequest;
-        public event OCPP.CS.OnAddSignaturePolicyDelegate                    OnAddSignaturePolicy;
-        public event OCPP.CS.OnAddSignaturePolicyResponseDelegate            OnAddSignaturePolicyResponse;
+        public event OCPP.CS.OnDeleteSignaturePolicyRequestDelegate?          OnDeleteSignaturePolicyRequest;
+        public event OCPP.CS.OnDeleteSignaturePolicyResponseDelegate?         OnDeleteSignaturePolicyResponse;
 
-        public event OCPP.CS.OnUpdateSignaturePolicyRequestDelegate          OnUpdateSignaturePolicyRequest;
-        public event OCPP.CS.OnUpdateSignaturePolicyDelegate                 OnUpdateSignaturePolicy;
-        public event OCPP.CS.OnUpdateSignaturePolicyResponseDelegate         OnUpdateSignaturePolicyResponse;
+        public event OCPP.CS.OnAddUserRoleRequestDelegate?                    OnAddUserRoleRequest;
+        public event OCPP.CS.OnAddUserRoleResponseDelegate?                   OnAddUserRoleResponse;
 
-        public event OCPP.CS.OnDeleteSignaturePolicyRequestDelegate          OnDeleteSignaturePolicyRequest;
-        public event OCPP.CS.OnDeleteSignaturePolicyDelegate                 OnDeleteSignaturePolicy;
-        public event OCPP.CS.OnDeleteSignaturePolicyResponseDelegate         OnDeleteSignaturePolicyResponse;
+        public event OCPP.CS.OnUpdateUserRoleRequestDelegate?                 OnUpdateUserRoleRequest;
+        public event OCPP.CS.OnUpdateUserRoleResponseDelegate?                OnUpdateUserRoleResponse;
 
-        public event OCPP.CS.OnAddUserRoleRequestDelegate                    OnAddUserRoleRequest;
-        public event OCPP.CS.OnAddUserRoleDelegate                           OnAddUserRole;
-        public event OCPP.CS.OnAddUserRoleResponseDelegate                   OnAddUserRoleResponse;
+        public event OCPP.CS.OnDeleteUserRoleRequestDelegate?                 OnDeleteUserRoleRequest;
+        public event OCPP.CS.OnDeleteUserRoleResponseDelegate?                OnDeleteUserRoleResponse;
 
-        public event OCPP.CS.OnUpdateUserRoleRequestDelegate                 OnUpdateUserRoleRequest;
-        public event OCPP.CS.OnUpdateUserRoleDelegate                        OnUpdateUserRole;
-        public event OCPP.CS.OnUpdateUserRoleResponseDelegate                OnUpdateUserRoleResponse;
-
-        public event OCPP.CS.OnDeleteUserRoleRequestDelegate                 OnDeleteUserRoleRequest;
-        public event OCPP.CS.OnDeleteUserRoleDelegate                        OnDeleteUserRole;
-        public event OCPP.CS.OnDeleteUserRoleResponseDelegate                OnDeleteUserRoleResponse;
-
-
-        public event OCPP.CS.OnBinaryDataTransferRequestDelegate?            OnBinaryDataTransferRequest;
-        public event OCPP.CS.OnBinaryDataTransferResponseDelegate?           OnBinaryDataTransferResponse;
+        #endregion
 
         #endregion
 
         #region Custom JSON serializer delegates
 
         #region Request/Response Messages
-        public CustomJObjectSerializerDelegate<OCPP.CSMS.DataTransferRequest>?                       CustomIncomingDataTransferRequestSerializer                  { get; set; }
-        public CustomJObjectSerializerDelegate<OCPP.CS.DataTransferResponse>?                        CustomIncomingDataTransferResponseSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<CS.DataTransferRequest>?                              CustomIncomingDataTransferRequestSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<CP.DataTransferResponse>?                             CustomIncomingDataTransferResponseSerializer                 { get; set; }
 
 
         // Binary Data Streams Extensions
@@ -1548,7 +1591,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                     {
 
                         await Task.WhenAll(onIncomingDataTransferRequest.GetInvocationList().
-                                               OfType <OCPP.CS.OnIncomingDataTransferRequestDelegate>().
+                                               OfType <OnIncomingDataTransferRequestDelegate>().
                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                  this,
                                                                                                  request)).
@@ -1571,11 +1614,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 #region Check charging station identification
 
-                OCPP.CS.DataTransferResponse? response = null;
+                DataTransferResponse? response = null;
 
                 if (request.NetworkingNodeId != Id)
                 {
-                    response = new OCPP.CS.DataTransferResponse(
+                    response = new DataTransferResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
                                                  $"Charging station '{Id}': Invalid DataTransfer request for charging station '{request.NetworkingNodeId}'!"
@@ -1601,7 +1644,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                          ))
                     {
 
-                        response = new OCPP.CS.DataTransferResponse(
+                        response = new DataTransferResponse(
                                        Request:  request,
                                        Result:   Result.SignatureError(
                                                      $"Invalid signature: {errorResponse}"
@@ -1662,14 +1705,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                         if (request.VendorId == Vendor_Id.GraphDefined)
                         {
-                            response = new OCPP.CS.DataTransferResponse(
+                            response = new DataTransferResponse(
                                            request,
                                            DataTransferStatus.Accepted,
                                            responseData
                                        );
                         }
                         else
-                            response = new OCPP.CS.DataTransferResponse(
+                            response = new DataTransferResponse(
                                            request,
                                            DataTransferStatus.Rejected
                                        );
@@ -1702,7 +1745,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                     var responseTime         = Timestamp.Now;
 
                     var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                              OfType <OCPP.CS.OnIncomingDataTransferResponseDelegate>().
+                                                              OfType <OnIncomingDataTransferResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
                                                                                                                 request,
@@ -2825,6 +2868,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             //ToDo: Add security extensions
 
+            //ToDo: Add Binary Data Streams Extensions
+
         }
 
         #endregion
@@ -2930,7 +2975,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        public string? ClientCloseMessage => throw new NotImplementedException();
+        public String? ClientCloseMessage => throw new NotImplementedException();
 
         public URL RemoteURL => throw new NotImplementedException();
 
@@ -2944,23 +2989,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         public SslProtocols TLSProtocol => throw new NotImplementedException();
 
-        public bool PreferIPv4 => throw new NotImplementedException();
+        public Boolean PreferIPv4 => throw new NotImplementedException();
 
-        public string HTTPUserAgent => throw new NotImplementedException();
+        public String HTTPUserAgent => throw new NotImplementedException();
 
         public TimeSpan RequestTimeout { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public TransmissionRetryDelayDelegate TransmissionRetryDelay => throw new NotImplementedException();
 
-        public ushort MaxNumberOfRetries => throw new NotImplementedException();
+        public UInt16 MaxNumberOfRetries => throw new NotImplementedException();
 
-        public bool UseHTTPPipelining => throw new NotImplementedException();
+        public Boolean UseHTTPPipelining => throw new NotImplementedException();
 
         public HTTPClientLogger? HTTPLogger => throw new NotImplementedException();
 
 
 
-        #region BootNotification              (Request)
+        #region Charge Point -> Central System Messages
+
+        #region BootNotification                 (Request)
 
         /// <summary>
         /// Send a boot notification to the central system.
@@ -2992,7 +3039,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             CS.BootNotificationResponse? response = null;
 
             if (CPClient is not null)
-                response = await CPClient.BootNotification(Request);
+                response = await CPClient.BootNotification   (Request);
 
             if (response is not null)
             {
@@ -3048,7 +3095,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region Heartbeat                     (Request)
+        #region Heartbeat                        (Request)
 
         /// <summary>
         /// Send a heartbeat to the central system.
@@ -3080,7 +3127,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             CS.HeartbeatResponse? response = null;
 
             if (CPClient is not null)
-                response = await CPClient.Heartbeat(Request);
+                response = await CPClient.Heartbeat   (Request);
 
             if (response is not null)
             {
@@ -3118,7 +3165,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region DiagnosticsStatusNotification (Request)
+        #region DiagnosticsStatusNotification    (Request)
 
         /// <summary>
         /// Send a diagnostics status notification to the central system.
@@ -3150,7 +3197,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             CS.DiagnosticsStatusNotificationResponse? response = null;
 
             if (CPClient is not null)
-                response = await CPClient.DiagnosticsStatusNotification(Request);
+                response = await CPClient.DiagnosticsStatusNotification   (Request);
 
             response ??= new CS.DiagnosticsStatusNotificationResponse(Request,
                                                                       Result.Server("Response is null!"));
@@ -3183,7 +3230,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region FirmwareStatusNotification    (Request)
+        #region FirmwareStatusNotification       (Request)
 
         /// <summary>
         /// Send a firmware status notification to the central system.
@@ -3215,7 +3262,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             CS.FirmwareStatusNotificationResponse? response = null;
 
             if (CPClient is not null)
-                response = await CPClient.FirmwareStatusNotification(Request);
+                response = await CPClient.FirmwareStatusNotification   (Request);
 
             response ??= new CS.FirmwareStatusNotificationResponse(Request,
                                                                    Result.Server("Response is null!"));
@@ -3249,7 +3296,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #endregion
 
 
-        #region Authorize                     (Request)
+        #region Authorize                        (Request)
 
         /// <summary>
         /// Authorize the given (RFID) token.
@@ -3281,7 +3328,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             CS.AuthorizeResponse? response = null;
 
             if (CPClient is not null)
-                response = await CPClient.Authorize(Request);
+                response = await CPClient.Authorize   (Request);
 
             response ??= new CS.AuthorizeResponse(Request,
                                                   Result.Server("Response is null!"));
@@ -3314,7 +3361,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region StartTransaction              (Request)
+        #region StartTransaction                 (Request)
 
         /// <summary>
         /// Send a notification about a started charging process at the given connector.
@@ -3346,7 +3393,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             CS.StartTransactionResponse? response = null;
 
             if (CPClient is not null)
-                response = await CPClient.StartTransaction(Request);
+                response = await CPClient.StartTransaction   (Request);
 
             if (response is not null)
             {
@@ -3398,7 +3445,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region StatusNotification            (Request)
+        #region StatusNotification               (Request)
 
         /// <summary>
         /// Send a status notification for the given connector.
@@ -3430,7 +3477,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             CS.StatusNotificationResponse? response = null;
 
             if (CPClient is not null)
-                response = await CPClient.StatusNotification(Request);
+                response = await CPClient.StatusNotification   (Request);
 
             response ??= new CS.StatusNotificationResponse(Request,
                                                            Result.Server("Response is null!"));
@@ -3463,7 +3510,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region MeterValues                   (Request)
+        #region MeterValues                      (Request)
 
         /// <summary>
         /// Send meter values for the given connector.
@@ -3495,7 +3542,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             CS.MeterValuesResponse? response = null;
 
             if (CPClient is not null)
-                response = await CPClient.MeterValues(Request);
+                response = await CPClient.MeterValues   (Request);
 
             response ??= new CS.MeterValuesResponse(Request,
                                                     Result.Server("Response is null!"));
@@ -3528,7 +3575,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region StopTransaction               (Request)
+        #region StopTransaction                  (Request)
 
         /// <summary>
         /// Stop a charging process at the given connector.
@@ -3560,7 +3607,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             CS.StopTransactionResponse? response = null;
 
             if (CPClient is not null)
-                response = await CPClient.StopTransaction(Request);
+                response = await CPClient.StopTransaction   (Request);
 
             response ??= new CS.StopTransactionResponse(Request,
                                                         Result.Server("Response is null!"));
@@ -3594,13 +3641,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #endregion
 
 
-        #region TransferData                  (Request)
+        #region DataTransfer                     (Request)
 
         /// <summary>
         /// Send the given vendor-specific data to the central system.
         /// </summary>
         /// <param name="Request">A DataTransfer request.</param>
-        public async Task<OCPP.CSMS.DataTransferResponse> DataTransfer(OCPP.CS.DataTransferRequest Request)
+        public async Task<CS.DataTransferResponse> DataTransfer(CP.DataTransferRequest Request)
         {
 
             #region Send OnDataTransferRequest event
@@ -3623,13 +3670,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            OCPP.CSMS.DataTransferResponse? response = null;
+            CS.DataTransferResponse? response = null;
 
             if (CPClient is not null)
                 response = await CPClient.DataTransfer(Request);
 
-            response ??= new OCPP.CSMS.DataTransferResponse(Request,
-                                                            Result.Server("Response is null!"));
+            response ??= new CS.DataTransferResponse(Request,
+                                                     Result.Server("Response is null!"));
 
 
             #region Send OnDataTransferResponse event
@@ -3660,34 +3707,272 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #endregion
 
 
+        // Security Extensions
 
-        //ToDo: Add security extensions
+        #region LogStatusNotification            (Request)
 
-        public Task<CS.LogStatusNotificationResponse> LogStatusNotification(LogStatusNotificationRequest Request)
+        /// <summary>
+        /// Stop a charging process at the given connector.
+        /// </summary>
+        /// <param name="Request">A LogStatusNotification request.</param>
+        public async Task<CS.LogStatusNotificationResponse> LogStatusNotification(LogStatusNotificationRequest Request)
         {
-            throw new NotImplementedException();
+
+            #region Send OnLogStatusNotificationRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnLogStatusNotificationRequest?.Invoke(startTime,
+                                                       this,
+                                                       Request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnLogStatusNotificationRequest));
+            }
+
+            #endregion
+
+
+            CS.LogStatusNotificationResponse? response = null;
+
+            if (CPClient is not null)
+                response = await CPClient.LogStatusNotification(Request);
+
+            response ??= new CS.LogStatusNotificationResponse(Request,
+                                                        Result.Server("Response is null!"));
+
+
+            #region Send OnLogStatusNotificationResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnLogStatusNotificationResponse?.Invoke(endTime,
+                                                        this,
+                                                        Request,
+                                                        response,
+                                                        endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnLogStatusNotificationResponse));
+            }
+
+            #endregion
+
+            return response;
+
         }
 
-        public Task<CS.SecurityEventNotificationResponse> SendSecurityEventNotification(SecurityEventNotificationRequest Request)
+        #endregion
+
+        #region SecurityEventNotification        (Request)
+
+        /// <summary>
+        /// Stop a charging process at the given connector.
+        /// </summary>
+        /// <param name="Request">A SendSecurityEventNotification request.</param>
+        public async Task<CS.SecurityEventNotificationResponse> SecurityEventNotification(SecurityEventNotificationRequest Request)
         {
-            throw new NotImplementedException();
+
+            #region Send OnSecurityEventNotificationRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnSecurityEventNotificationRequest?.Invoke(startTime,
+                                                           this,
+                                                           Request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnSecurityEventNotificationRequest));
+            }
+
+            #endregion
+
+
+            CS.SecurityEventNotificationResponse? response = null;
+
+            if (CPClient is not null)
+                response = await CPClient.SecurityEventNotification(Request);
+
+            response ??= new CS.SecurityEventNotificationResponse(Request,
+                                                                  Result.Server("Response is null!"));
+
+
+            #region Send OnSecurityEventNotificationResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnSecurityEventNotificationResponse?.Invoke(endTime,
+                                                            this,
+                                                            Request,
+                                                            response,
+                                                            endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnSecurityEventNotificationResponse));
+            }
+
+            #endregion
+
+            return response;
+
         }
 
-        public Task<CS.SignCertificateResponse> SignCertificate(SignCertificateRequest Request)
+        #endregion
+
+        #region SignCertificate                  (Request)
+
+        /// <summary>
+        /// Stop a charging process at the given connector.
+        /// </summary>
+        /// <param name="Request">A SignCertificate request.</param>
+        public async Task<CS.SignCertificateResponse> SignCertificate(SignCertificateRequest Request)
         {
-            throw new NotImplementedException();
+
+            #region Send OnSignCertificateRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnSignCertificateRequest?.Invoke(startTime,
+                                                 this,
+                                                 Request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnSignCertificateRequest));
+            }
+
+            #endregion
+
+
+            CS.SignCertificateResponse? response = null;
+
+            if (CPClient is not null)
+                response = await CPClient.SignCertificate(Request);
+
+            response ??= new CS.SignCertificateResponse(Request,
+                                                        Result.Server("Response is null!"));
+
+
+            #region Send OnSignCertificateResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnSignCertificateResponse?.Invoke(endTime,
+                                                  this,
+                                                  Request,
+                                                  response,
+                                                  endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnSignCertificateResponse));
+            }
+
+            #endregion
+
+            return response;
+
         }
 
-        public Task<CS.SignedFirmwareStatusNotificationResponse> SignedFirmwareStatusNotification(SignedFirmwareStatusNotificationRequest Request)
+        #endregion
+
+        #region SignedFirmwareStatusNotification (Request)
+
+        /// <summary>
+        /// Stop a charging process at the given connector.
+        /// </summary>
+        /// <param name="Request">A SignedFirmwareStatusNotification request.</param>
+        public async Task<CS.SignedFirmwareStatusNotificationResponse> SignedFirmwareStatusNotification(SignedFirmwareStatusNotificationRequest Request)
         {
-            throw new NotImplementedException();
+
+            #region Send OnSignedFirmwareStatusNotificationRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnSignedFirmwareStatusNotificationRequest?.Invoke(startTime,
+                                                                  this,
+                                                                  Request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnSignedFirmwareStatusNotificationRequest));
+            }
+
+            #endregion
+
+
+            CS.SignedFirmwareStatusNotificationResponse? response = null;
+
+            if (CPClient is not null)
+                response = await CPClient.SignedFirmwareStatusNotification(Request);
+
+            response ??= new CS.SignedFirmwareStatusNotificationResponse(Request,
+                                                                         Result.Server("Response is null!"));
+
+
+            #region Send OnSignedFirmwareStatusNotificationResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnSignedFirmwareStatusNotificationResponse?.Invoke(endTime,
+                                                                   this,
+                                                                   Request,
+                                                                   response,
+                                                                   endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnSignedFirmwareStatusNotificationResponse));
+            }
+
+            #endregion
+
+            return response;
+
         }
 
+        #endregion
 
 
         // Binary Data Streams Extensions
 
-        #region TransferBinaryData                    (Request)
+        #region BinaryDataTransfer               (Request)
 
         /// <summary>
         /// Send the given vendor-specific binary data to the central system.
@@ -3781,11 +4066,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
+        #endregion
+
+
+        #region Dispose()
 
         public void Dispose()
         {
             throw new NotImplementedException();
         }
+
+        #endregion
+
 
     }
 

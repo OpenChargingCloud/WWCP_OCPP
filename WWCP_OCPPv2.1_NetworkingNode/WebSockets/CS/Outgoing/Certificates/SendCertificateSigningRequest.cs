@@ -35,9 +35,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     /// A charging station HTTP Web Socket client.
     /// </summary>
     public partial class NetworkingNodeWSClient : WebSocketClient,
-                                                   INetworkingNodeWebSocketClient,
-                                                   INetworkingNodeServer,
-                                                   INetworkingNodeClientEvents
+                                                  INetworkingNodeWebSocketClient,
+                                                  INetworkingNodeServer,
+                                                  INetworkingNodeClientEvents
     {
 
         #region Custom JSON serializer delegates
@@ -53,22 +53,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever a sign certificate request will be sent to the CSMS.
         /// </summary>
-        public event CS.OnSignCertificateRequestDelegate?     OnSignCertificateRequest;
+        public event OCPPv2_1.CS.OnSignCertificateRequestDelegate?     OnSignCertificateRequest;
 
         /// <summary>
         /// An event fired whenever a sign certificate request will be sent to the CSMS.
         /// </summary>
-        public event ClientRequestLogHandler?              OnSignCertificateWSRequest;
+        public event ClientRequestLogHandler?                          OnSignCertificateWSRequest;
 
         /// <summary>
         /// An event fired whenever a response to a sign certificate request was received.
         /// </summary>
-        public event ClientResponseLogHandler?             OnSignCertificateWSResponse;
+        public event ClientResponseLogHandler?                         OnSignCertificateWSResponse;
 
         /// <summary>
         /// An event fired whenever a response to a sign certificate request was received.
         /// </summary>
-        public event CS.OnSignCertificateResponseDelegate?    OnSignCertificateResponse;
+        public event OCPPv2_1.CS.OnSignCertificateResponseDelegate?    OnSignCertificateResponse;
 
         #endregion
 

@@ -32,12 +32,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// </summary>
     /// <param name="Timestamp">The log timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnSetNetworkProfileRequestDelegate(DateTime                   Timestamp,
-                                           IEventSender               Sender,
-                                           SetNetworkProfileRequest   Request);
+        OnSetNetworkProfileRequestDelegate(DateTime                    Timestamp,
+                                           IEventSender                Sender,
+                                           WebSocketClientConnection   Connection,
+                                           SetNetworkProfileRequest    Request);
 
 
     /// <summary>
@@ -45,6 +47,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<SetNetworkProfileResponse>
@@ -61,6 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// </summary>
     /// <param name="Timestamp">The log timestamp of the response.</param>
     /// <param name="Sender">The sender of the response.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
     /// <param name="Request">The reserve now request.</param>
     /// <param name="Response">The reserve now response.</param>
     /// <param name="Runtime">The runtime of this request.</param>
@@ -68,6 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnSetNetworkProfileResponseDelegate(DateTime                    Timestamp,
                                             IEventSender                Sender,
+                                            WebSocketClientConnection   Connection,
                                             SetNetworkProfileRequest    Request,
                                             SetNetworkProfileResponse   Response,
                                             TimeSpan                    Runtime);

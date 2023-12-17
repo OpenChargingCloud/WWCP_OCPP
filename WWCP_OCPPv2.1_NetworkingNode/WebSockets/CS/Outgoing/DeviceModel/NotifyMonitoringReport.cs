@@ -18,7 +18,6 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
@@ -35,9 +34,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     /// A charging station HTTP Web Socket client.
     /// </summary>
     public partial class NetworkingNodeWSClient : WebSocketClient,
-                                                   INetworkingNodeWebSocketClient,
-                                                   INetworkingNodeServer,
-                                                   INetworkingNodeClientEvents
+                                                  INetworkingNodeWebSocketClient,
+                                                  INetworkingNodeServer,
+                                                  INetworkingNodeClientEvents
     {
 
         #region Custom JSON serializer delegates
@@ -53,22 +52,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever a notify monitoring report request will be sent to the CSMS.
         /// </summary>
-        public event CS.OnNotifyMonitoringReportRequestDelegate?     OnNotifyMonitoringReportRequest;
+        public event OCPPv2_1.CS.OnNotifyMonitoringReportRequestDelegate?     OnNotifyMonitoringReportRequest;
 
         /// <summary>
         /// An event fired whenever a notify monitoring report request will be sent to the CSMS.
         /// </summary>
-        public event ClientRequestLogHandler?                     OnNotifyMonitoringReportWSRequest;
+        public event ClientRequestLogHandler?                                 OnNotifyMonitoringReportWSRequest;
 
         /// <summary>
         /// An event fired whenever a response to a notify monitoring report request was received.
         /// </summary>
-        public event ClientResponseLogHandler?                    OnNotifyMonitoringReportWSResponse;
+        public event ClientResponseLogHandler?                                OnNotifyMonitoringReportWSResponse;
 
         /// <summary>
         /// An event fired whenever a response to a notify monitoring report request was received.
         /// </summary>
-        public event CS.OnNotifyMonitoringReportResponseDelegate?    OnNotifyMonitoringReportResponse;
+        public event OCPPv2_1.CS.OnNotifyMonitoringReportResponseDelegate?    OnNotifyMonitoringReportResponse;
 
         #endregion
 

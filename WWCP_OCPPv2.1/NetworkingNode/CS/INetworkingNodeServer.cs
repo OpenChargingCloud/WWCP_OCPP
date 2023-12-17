@@ -17,7 +17,8 @@
 
 #region Usings
 
-using cloud.charging.open.protocols.OCPP.NetworkingNode.CS;
+using cloud.charging.open.protocols.OCPP.CS;
+using cloud.charging.open.protocols.OCPPv2_1.CS;
 
 #endregion
 
@@ -188,7 +189,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a data transfer request was received.
         /// </summary>
-        event OCPP.NetworkingNode.CS.OnIncomingDataTransferDelegate           OnIncomingDataTransfer;
+        event OnIncomingDataTransferDelegate           OnIncomingDataTransfer;
 
         #endregion
 
@@ -487,7 +488,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever an AddSignaturePolicy request was received.
         /// </summary>
-        event OCPP.NetworkingNode.CS.OnAddSignaturePolicyDelegate            OnAddSignaturePolicy;
+        event OnAddSignaturePolicyDelegate            OnAddSignaturePolicy;
 
         #endregion
 

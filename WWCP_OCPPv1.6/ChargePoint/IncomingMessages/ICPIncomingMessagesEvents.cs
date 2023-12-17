@@ -21,65 +21,65 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     public interface ICPIncomingMessagesEvents : OCPP.CS.ICSIncomingMessagesEvents
     {
 
-        event OnResetRequestDelegate                            OnResetRequest;
-        event OnResetResponseDelegate                           OnResetResponse;
+        event OnResetRequestDelegate                     OnResetRequest;
+        event OnResetResponseDelegate                    OnResetResponse;
 
-        event OnChangeAvailabilityRequestDelegate               OnChangeAvailabilityRequest;
-        event OnChangeAvailabilityResponseDelegate              OnChangeAvailabilityResponse;
+        event OnChangeAvailabilityRequestDelegate        OnChangeAvailabilityRequest;
+        event OnChangeAvailabilityResponseDelegate       OnChangeAvailabilityResponse;
 
-        event OnGetConfigurationRequestDelegate                 OnGetConfigurationRequest;
-        event OnGetConfigurationResponseDelegate                OnGetConfigurationResponse;
+        event OnGetConfigurationRequestDelegate          OnGetConfigurationRequest;
+        event OnGetConfigurationResponseDelegate         OnGetConfigurationResponse;
 
-        event OnChangeConfigurationRequestDelegate              OnChangeConfigurationRequest;
-        event OnChangeConfigurationResponseDelegate             OnChangeConfigurationResponse;
+        event OnChangeConfigurationRequestDelegate       OnChangeConfigurationRequest;
+        event OnChangeConfigurationResponseDelegate      OnChangeConfigurationResponse;
 
-        event OCPP.CS.OnIncomingDataTransferRequestDelegate     OnIncomingDataTransferRequest;
-        event OCPP.CS.OnIncomingDataTransferResponseDelegate    OnIncomingDataTransferResponse;
+        event OnIncomingDataTransferRequestDelegate      OnIncomingDataTransferRequest;
+        event OnIncomingDataTransferResponseDelegate     OnIncomingDataTransferResponse;
 
-        event OnGetDiagnosticsRequestDelegate                   OnGetDiagnosticsRequest;
-        event OnGetDiagnosticsResponseDelegate                  OnGetDiagnosticsResponse;
+        event OnGetDiagnosticsRequestDelegate            OnGetDiagnosticsRequest;
+        event OnGetDiagnosticsResponseDelegate           OnGetDiagnosticsResponse;
 
-        event OnTriggerMessageRequestDelegate                   OnTriggerMessageRequest;
-        event OnTriggerMessageResponseDelegate                  OnTriggerMessageResponse;
+        event OnTriggerMessageRequestDelegate            OnTriggerMessageRequest;
+        event OnTriggerMessageResponseDelegate           OnTriggerMessageResponse;
 
-        event OnUpdateFirmwareRequestDelegate                   OnUpdateFirmwareRequest;
-        event OnUpdateFirmwareResponseDelegate                  OnUpdateFirmwareResponse;
-
-
-        event OnReserveNowRequestDelegate                       OnReserveNowRequest;
-        event OnReserveNowResponseDelegate                      OnReserveNowResponse;
-
-        event OnCancelReservationRequestDelegate                OnCancelReservationRequest;
-        event OnCancelReservationResponseDelegate               OnCancelReservationResponse;
-
-        event OnRemoteStartTransactionRequestDelegate           OnRemoteStartTransactionRequest;
-        event OnRemoteStartTransactionResponseDelegate          OnRemoteStartTransactionResponse;
-
-        event OnRemoteStopTransactionRequestDelegate            OnRemoteStopTransactionRequest;
-        event OnRemoteStopTransactionResponseDelegate           OnRemoteStopTransactionResponse;
-
-        event OnSetChargingProfileRequestDelegate               OnSetChargingProfileRequest;
-        event OnSetChargingProfileResponseDelegate              OnSetChargingProfileResponse;
-
-        event OnClearChargingProfileRequestDelegate             OnClearChargingProfileRequest;
-        event OnClearChargingProfileResponseDelegate            OnClearChargingProfileResponse;
-
-        event OnGetCompositeScheduleRequestDelegate             OnGetCompositeScheduleRequest;
-        event OnGetCompositeScheduleResponseDelegate            OnGetCompositeScheduleResponse;
-
-        event OnUnlockConnectorRequestDelegate                  OnUnlockConnectorRequest;
-        event OnUnlockConnectorResponseDelegate                 OnUnlockConnectorResponse;
+        event OnUpdateFirmwareRequestDelegate            OnUpdateFirmwareRequest;
+        event OnUpdateFirmwareResponseDelegate           OnUpdateFirmwareResponse;
 
 
+        event OnReserveNowRequestDelegate                OnReserveNowRequest;
+        event OnReserveNowResponseDelegate               OnReserveNowResponse;
 
-        event OnGetLocalListVersionRequestDelegate              OnGetLocalListVersionRequest;
-        event OnGetLocalListVersionResponseDelegate             OnGetLocalListVersionResponse;
+        event OnCancelReservationRequestDelegate         OnCancelReservationRequest;
+        event OnCancelReservationResponseDelegate        OnCancelReservationResponse;
 
-        event OnSendLocalListRequestDelegate                    OnSendLocalListRequest;
-        event OnSendLocalListResponseDelegate                   OnSendLocalListResponse;
+        event OnRemoteStartTransactionRequestDelegate    OnRemoteStartTransactionRequest;
+        event OnRemoteStartTransactionResponseDelegate   OnRemoteStartTransactionResponse;
 
-        event OnClearCacheRequestDelegate                       OnClearCacheRequest;
-        event OnClearCacheResponseDelegate                      OnClearCacheResponse;
+        event OnRemoteStopTransactionRequestDelegate     OnRemoteStopTransactionRequest;
+        event OnRemoteStopTransactionResponseDelegate    OnRemoteStopTransactionResponse;
+
+        event OnSetChargingProfileRequestDelegate        OnSetChargingProfileRequest;
+        event OnSetChargingProfileResponseDelegate       OnSetChargingProfileResponse;
+
+        event OnClearChargingProfileRequestDelegate      OnClearChargingProfileRequest;
+        event OnClearChargingProfileResponseDelegate     OnClearChargingProfileResponse;
+
+        event OnGetCompositeScheduleRequestDelegate      OnGetCompositeScheduleRequest;
+        event OnGetCompositeScheduleResponseDelegate     OnGetCompositeScheduleResponse;
+
+        event OnUnlockConnectorRequestDelegate           OnUnlockConnectorRequest;
+        event OnUnlockConnectorResponseDelegate          OnUnlockConnectorResponse;
+
+
+
+        event OnGetLocalListVersionRequestDelegate       OnGetLocalListVersionRequest;
+        event OnGetLocalListVersionResponseDelegate      OnGetLocalListVersionResponse;
+
+        event OnSendLocalListRequestDelegate             OnSendLocalListRequest;
+        event OnSendLocalListResponseDelegate            OnSendLocalListResponse;
+
+        event OnClearCacheRequestDelegate                OnClearCacheRequest;
+        event OnClearCacheResponseDelegate               OnClearCacheResponse;
 
     }
 

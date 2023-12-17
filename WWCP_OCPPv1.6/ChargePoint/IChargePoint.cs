@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// </summary>
     public interface IChargePoint : ICPOutgoingMessages,
                                     ICPOutgoingMessagesEvents,
-                                    ICPIncomingMessages,
+                                    //ICPIncomingMessages,
                                     ICPIncomingMessagesEvents,
                                     IHTTPClient
     {

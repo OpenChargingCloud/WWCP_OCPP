@@ -187,22 +187,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event fired whenever a data transfer request will be sent to a charge point.
         /// </summary>
-        public event OCPP.CSMS.OnDataTransferRequestDelegate?     OnDataTransferRequest;
+        public event OnDataTransferRequestDelegate?     OnDataTransferRequest;
 
         /// <summary>
         /// An event fired whenever a data transfer SOAP request will be sent to a charge point.
         /// </summary>
-        public event ClientRequestLogHandler?                     OnDataTransferSOAPRequest;
+        public event ClientRequestLogHandler?           OnDataTransferSOAPRequest;
 
         /// <summary>
         /// An event fired whenever a response to a data transfer SOAP request was received.
         /// </summary>
-        public event ClientResponseLogHandler?                    OnDataTransferSOAPResponse;
+        public event ClientResponseLogHandler?          OnDataTransferSOAPResponse;
 
         /// <summary>
         /// An event fired whenever a response to a data transfer request was received.
         /// </summary>
-        public event OCPP.CSMS.OnDataTransferResponseDelegate?    OnDataTransferResponse;
+        public event OnDataTransferResponseDelegate?    OnDataTransferResponse;
 
         #endregion
 
@@ -1498,9 +1498,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Transfer the given data to the given charge box.
         /// </summary>
         /// <param name="Request">A data transfer request.</param>
-        public async Task<OCPP.CS.DataTransferResponse>
+        public async Task<CP.DataTransferResponse>
 
-            DataTransfer(OCPP.CSMS.DataTransferRequest Request)
+            DataTransfer(DataTransferRequest Request)
 
         {
 
@@ -1524,7 +1524,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             #endregion
 
 
-            HTTPResponse<OCPP.CS.DataTransferResponse>? result = null;
+            HTTPResponse<CP.DataTransferResponse>? result = null;
 
             try
             {
@@ -1569,7 +1569,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     #region OnSuccess
 
                     OnSuccess: XMLResponse => XMLResponse.ConvertContent(Request,
-                                                                         (req, xml) => OCPP.CS.DataTransferResponse.Parse(req, xml, OCPPNS.OCPPv1_6_CP)),
+                                                                         (req, xml) => CP.DataTransferResponse.Parse(req, xml, OCPPNS.OCPPv1_6_CP)),
 
                     #endregion
 
@@ -1579,8 +1579,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         SendSOAPError(timestamp, this, httpresponse.Content);
 
-                        return HTTPResponse<OCPP.CS.DataTransferResponse>.IsFault(httpresponse,
-                                                                             new OCPP.CS.DataTransferResponse(
+                        return HTTPResponse<CP.DataTransferResponse>.IsFault(httpresponse,
+                                                                             new CP.DataTransferResponse(
                                                                                  Request,
                                                                                  OCPP.Result.Format(
                                                                                      "Invalid SOAP => " +
@@ -1598,8 +1598,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         SendHTTPError(timestamp, this, httpresponse);
 
-                        return HTTPResponse<OCPP.CS.DataTransferResponse>.IsFault(httpresponse,
-                                                                             new OCPP.CS.DataTransferResponse(
+                        return HTTPResponse<CP.DataTransferResponse>.IsFault(httpresponse,
+                                                                             new CP.DataTransferResponse(
                                                                                  Request,
                                                                                  OCPP.Result.Server(
                                                                                       httpresponse.HTTPStatusCode.ToString() +
@@ -1618,7 +1618,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         SendException(timestamp, sender, exception);
 
-                        return HTTPResponse<OCPP.CS.DataTransferResponse>.ExceptionThrown(new OCPP.CS.DataTransferResponse(
+                        return HTTPResponse<CP.DataTransferResponse>.ExceptionThrown(new CP.DataTransferResponse(
                                                                                          Request,
                                                                                          OCPP.Result.Format(exception.Message +
                                                                                                        " => " +
@@ -1639,8 +1639,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 DebugX.LogException(e, nameof(CentralSystemSOAPClient) + "." + nameof(DataTransfer));
             }
 
-            result ??= HTTPResponse<OCPP.CS.DataTransferResponse>.OK(new OCPP.CS.DataTransferResponse(Request,
-                                                                                                      OCPP.Result.OK("Nothing to upload!")));
+            result ??= HTTPResponse<CP.DataTransferResponse>.OK(new CP.DataTransferResponse(Request,
+                                                                                            OCPP.Result.OK("Nothing to upload!")));
 
 
             #region Send OnDataTransferResponse event

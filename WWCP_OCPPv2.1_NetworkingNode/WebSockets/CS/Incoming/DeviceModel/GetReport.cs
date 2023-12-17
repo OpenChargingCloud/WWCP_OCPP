@@ -56,27 +56,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a get report websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?      OnGetReportWSRequest;
+        public event WSClientJSONRequestLogHandler?                OnGetReportWSRequest;
 
         /// <summary>
         /// An event sent whenever a get report request was received.
         /// </summary>
-        public event CS.OnGetReportRequestDelegate?     OnGetReportRequest;
+        public event OCPPv2_1.CS.OnGetReportRequestDelegate?       OnGetReportRequest;
 
         /// <summary>
         /// An event sent whenever a get report request was received.
         /// </summary>
-        public event CS.OnGetReportDelegate?            OnGetReport;
+        public event OCPPv2_1.CS.OnGetReportDelegate?              OnGetReport;
 
         /// <summary>
         /// An event sent whenever a response to a get report request was sent.
         /// </summary>
-        public event CS.OnGetReportResponseDelegate?    OnGetReportResponse;
+        public event OCPPv2_1.CS.OnGetReportResponseDelegate?      OnGetReportResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a get report request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?     OnGetReportWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?    OnGetReportWSResponse;
 
         #endregion
 
@@ -140,6 +140,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnGetReportRequest?.Invoke(Timestamp.Now,
                                                    this,
+                                                   WebSocketConnection,
                                                    request);
 
                     }
@@ -183,6 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnGetReportResponse?.Invoke(Timestamp.Now,
                                                     this,
+                                                    WebSocketConnection,
                                                     request,
                                                     response,
                                                     response.Runtime);

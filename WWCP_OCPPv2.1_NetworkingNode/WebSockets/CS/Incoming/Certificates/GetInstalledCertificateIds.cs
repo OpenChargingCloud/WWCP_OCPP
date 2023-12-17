@@ -56,27 +56,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a get installed certificate ids websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?                       OnGetInstalledCertificateIdsWSRequest;
+        public event WSClientJSONRequestLogHandler?                               OnGetInstalledCertificateIdsWSRequest;
 
         /// <summary>
         /// An event sent whenever a get installed certificate ids request was received.
         /// </summary>
-        public event CS.OnGetInstalledCertificateIdsRequestDelegate?     OnGetInstalledCertificateIdsRequest;
+        public event OCPPv2_1.CS.OnGetInstalledCertificateIdsRequestDelegate?     OnGetInstalledCertificateIdsRequest;
 
         /// <summary>
         /// An event sent whenever a get installed certificate ids request was received.
         /// </summary>
-        public event CS.OnGetInstalledCertificateIdsDelegate?            OnGetInstalledCertificateIds;
+        public event OCPPv2_1.CS.OnGetInstalledCertificateIdsDelegate?            OnGetInstalledCertificateIds;
 
         /// <summary>
         /// An event sent whenever a response to a get installed certificate ids request was sent.
         /// </summary>
-        public event CS.OnGetInstalledCertificateIdsResponseDelegate?    OnGetInstalledCertificateIdsResponse;
+        public event OCPPv2_1.CS.OnGetInstalledCertificateIdsResponseDelegate?    OnGetInstalledCertificateIdsResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a get installed certificate ids request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?                      OnGetInstalledCertificateIdsWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?                   OnGetInstalledCertificateIdsWSResponse;
 
         #endregion
 
@@ -140,6 +140,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnGetInstalledCertificateIdsRequest?.Invoke(Timestamp.Now,
                                                                     this,
+                                                                    WebSocketConnection,
                                                                     request);
 
                     }
@@ -183,6 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnGetInstalledCertificateIdsResponse?.Invoke(Timestamp.Now,
                                                                      this,
+                                                                     WebSocketConnection,
                                                                      request,
                                                                      response,
                                                                      response.Runtime);

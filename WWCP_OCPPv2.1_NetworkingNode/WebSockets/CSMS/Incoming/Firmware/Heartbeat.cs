@@ -20,7 +20,6 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
@@ -53,27 +52,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a Heartbeat WebSocket request was received.
         /// </summary>
-        public event CSMS.WebSocketJSONRequestLogHandler?               OnHeartbeatWSRequest;
+        public event WebSocketJSONRequestLogHandler?               OnHeartbeatWSRequest;
 
         /// <summary>
         /// An event sent whenever a Heartbeat request was received.
         /// </summary>
-        public event CSMS.OnHeartbeatRequestDelegate?                   OnHeartbeatRequest;
+        public event OCPPv2_1.CSMS.OnHeartbeatRequestDelegate?     OnHeartbeatRequest;
 
         /// <summary>
         /// An event sent whenever a Heartbeat was received.
         /// </summary>
-        public event CSMS.OnHeartbeatDelegate?                          OnHeartbeat;
+        public event OCPPv2_1.CSMS.OnHeartbeatDelegate?            OnHeartbeat;
 
         /// <summary>
         /// An event sent whenever a response to a Heartbeat was sent.
         /// </summary>
-        public event CSMS.OnHeartbeatResponseDelegate?                  OnHeartbeatResponse;
+        public event OCPPv2_1.CSMS.OnHeartbeatResponseDelegate?    OnHeartbeatResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a Heartbeat was sent.
         /// </summary>
-        public event CSMS.WebSocketJSONRequestJSONResponseLogHandler?   OnHeartbeatWSResponse;
+        public event WebSocketJSONRequestJSONResponseLogHandler?   OnHeartbeatWSResponse;
 
         #endregion
 
@@ -139,6 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
                         OnHeartbeatRequest?.Invoke(Timestamp.Now,
                                                    this,
+                                                   Connection,
                                                    request);
 
                     }
@@ -157,6 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                                             GetInvocationList()?.
                                             SafeSelect(subscriber => (subscriber as OnHeartbeatDelegate)?.Invoke(Timestamp.Now,
                                                                                                                  this,
+                                                                                                                 Connection,
                                                                                                                  request,
                                                                                                                  CancellationToken)).
                                             ToArray();
@@ -178,6 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
                         OnHeartbeatResponse?.Invoke(Timestamp.Now,
                                                     this,
+                                                    Connection,
                                                     request,
                                                     response,
                                                     response.Runtime);

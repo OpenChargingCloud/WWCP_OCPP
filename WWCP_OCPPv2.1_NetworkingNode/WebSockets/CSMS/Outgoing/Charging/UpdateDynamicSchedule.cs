@@ -18,8 +18,6 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
-using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
@@ -50,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a UpdateDynamicSchedule request was sent.
         /// </summary>
-        public event CSMS.OnUpdateDynamicScheduleRequestDelegate?     OnUpdateDynamicScheduleRequest;
+        public event OCPPv2_1.CSMS.OnUpdateDynamicScheduleRequestDelegate?     OnUpdateDynamicScheduleRequest;
 
         /// <summary>
         /// An event sent whenever a response to a UpdateDynamicSchedule request was sent.
         /// </summary>
-        public event CSMS.OnUpdateDynamicScheduleResponseDelegate?    OnUpdateDynamicScheduleResponse;
+        public event OCPPv2_1.CSMS.OnUpdateDynamicScheduleResponseDelegate?    OnUpdateDynamicScheduleResponse;
 
         #endregion
 

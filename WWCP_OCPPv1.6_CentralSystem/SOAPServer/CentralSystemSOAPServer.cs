@@ -44,32 +44,32 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// The default HTTP/SOAP/XML server name.
         /// </summary>
-        public new const           String           DefaultHTTPServerName  = $"GraphDefined OCPP {Version.String} HTTP/SOAP/XML Central System API";
+        public new const           String           DefaultHTTPServerName   = $"GraphDefined OCPP {Version.String} HTTP/SOAP/XML Central System API";
 
         /// <summary>
         /// The default HTTP/SOAP/XML server TCP port.
         /// </summary>
-        public new static readonly IPPort           DefaultHTTPServerPort  = IPPort.Parse(2010);
+        public new static readonly IPPort           DefaultHTTPServerPort   = IPPort.Parse(2010);
 
         /// <summary>
         /// The default TCP service name shown e.g. on service startup.
         /// </summary>
-        public     const           String           DefaultServiceName     = $"OCPP {Version.String} Central System API";
+        public     const           String           DefaultServiceName      = $"OCPP {Version.String} Central System API";
 
         /// <summary>
         /// The default HTTP/SOAP/XML server URI prefix.
         /// </summary>
-        public new static readonly HTTPPath         DefaultURLPrefix       = HTTPPath.Parse("/" + Version.String);
+        public new static readonly HTTPPath         DefaultURLPrefix        = HTTPPath.Parse("/" + Version.String);
 
         /// <summary>
         /// The default HTTP/SOAP/XML content type.
         /// </summary>
-        public new static readonly HTTPContentType  DefaultContentType     = HTTPContentType.Text.XML_UTF8;
+        public new static readonly HTTPContentType  DefaultContentType      = HTTPContentType.Text.XML_UTF8;
 
         /// <summary>
         /// The default request timeout.
         /// </summary>
-        public new static readonly TimeSpan         DefaultRequestTimeout  = TimeSpan.FromMinutes(1);
+        public new static readonly TimeSpan         DefaultRequestTimeout   = TimeSpan.FromMinutes(1);
 
         #endregion
 
@@ -94,58 +94,116 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region OnBootNotification
 
         /// <summary>
-        /// An event sent whenever a boot notification SOAP request was received.
+        /// An event sent whenever a BootNotification SOAP request was received.
         /// </summary>
-        public event RequestLogHandler?                    OnBootNotificationSOAPRequest;
+        public event RequestLogHandler?                     OnBootNotificationSOAPRequest;
 
         /// <summary>
-        /// An event sent whenever a boot notification request was received.
+        /// An event sent whenever a BootNotification request was received.
         /// </summary>
-        public event OnBootNotificationRequestDelegate?    OnBootNotificationRequest;
+        public event OnBootNotificationRequestDelegate?     OnBootNotificationRequest;
 
         /// <summary>
-        /// An event sent whenever a boot notification was received.
+        /// An event sent whenever aBootNotification was received.
         /// </summary>
-        public event OnBootNotificationDelegate?           OnBootNotification;
+        public event OnBootNotificationDelegate?            OnBootNotification;
 
         /// <summary>
-        /// An event sent whenever a response to a boot notification was sent.
+        /// An event sent whenever a response to a BootNotification was sent.
         /// </summary>
-        public event OnBootNotificationResponseDelegate?   OnBootNotificationResponse;
+        public event OnBootNotificationResponseDelegate?    OnBootNotificationResponse;
 
         /// <summary>
-        /// An event sent whenever a SOAP response to a boot notification was sent.
+        /// An event sent whenever a SOAP response to a BootNotification was sent.
         /// </summary>
-        public event AccessLogHandler?                     OnBootNotificationSOAPResponse;
+        public event AccessLogHandler?                      OnBootNotificationSOAPResponse;
 
         #endregion
 
         #region OnHeartbeat
 
         /// <summary>
-        /// An event sent whenever a heartbeat SOAP request was received.
+        /// An event sent whenever a Heartbeat SOAP request was received.
         /// </summary>
-        public event RequestLogHandler?             OnHeartbeatSOAPRequest;
+        public event RequestLogHandler?              OnHeartbeatSOAPRequest;
 
         /// <summary>
-        /// An event sent whenever a heartbeat request was received.
+        /// An event sent whenever a Heartbeat request was received.
         /// </summary>
-        public event OnHeartbeatRequestDelegate?    OnHeartbeatRequest;
+        public event OnHeartbeatRequestDelegate?     OnHeartbeatRequest;
 
         /// <summary>
-        /// An event sent whenever a heartbeat was received.
+        /// An event sent whenever a Heartbeat was received.
         /// </summary>
-        public event OnHeartbeatDelegate?           OnHeartbeat;
+        public event OnHeartbeatDelegate?            OnHeartbeat;
 
         /// <summary>
-        /// An event sent whenever a response to a heartbeat was sent.
+        /// An event sent whenever a response to a Heartbeat was sent.
         /// </summary>
-        public event OnHeartbeatResponseDelegate?   OnHeartbeatResponse;
+        public event OnHeartbeatResponseDelegate?    OnHeartbeatResponse;
 
         /// <summary>
-        /// An event sent whenever a SOAP response to a heartbeat was sent.
+        /// An event sent whenever a SOAP response to a Heartbeat was sent.
         /// </summary>
-        public event AccessLogHandler?              OnHeartbeatSOAPResponse;
+        public event AccessLogHandler?               OnHeartbeatSOAPResponse;
+
+        #endregion
+
+        #region OnDiagnosticsStatusNotification
+
+        /// <summary>
+        /// An event sent whenever a DiagnosticsStatusNotification SOAP request was received.
+        /// </summary>
+        public event RequestLogHandler?                                  OnDiagnosticsStatusNotificationSOAPRequest;
+
+        /// <summary>
+        /// An event sent whenever a DiagnosticsStatusNotification request was received.
+        /// </summary>
+        public event OnDiagnosticsStatusNotificationRequestDelegate?     OnDiagnosticsStatusNotificationRequest;
+
+        /// <summary>
+        /// An event sent whenever a DiagnosticsStatusNotification request was received.
+        /// </summary>
+        public event OnDiagnosticsStatusNotificationDelegate?            OnDiagnosticsStatusNotification;
+
+        /// <summary>
+        /// An event sent whenever a response to a DiagnosticsStatusNotification request was sent.
+        /// </summary>
+        public event OnDiagnosticsStatusNotificationResponseDelegate?    OnDiagnosticsStatusNotificationResponse;
+
+        /// <summary>
+        /// An event sent whenever a SOAP response to a DiagnosticsStatusNotification request was sent.
+        /// </summary>
+        public event AccessLogHandler?                                   OnDiagnosticsStatusNotificationSOAPResponse;
+
+        #endregion
+
+        #region OnFirmwareStatusNotification
+
+        /// <summary>
+        /// An event sent whenever a FirmwareStatusNotification SOAP request was received.
+        /// </summary>
+        public event RequestLogHandler?                               OnFirmwareStatusNotificationSOAPRequest;
+
+        /// <summary>
+        /// An event sent whenever a FirmwareStatusNotification request was received.
+        /// </summary>
+        public event OnFirmwareStatusNotificationRequestDelegate?     OnFirmwareStatusNotificationRequest;
+
+        /// <summary>
+        /// An event sent whenever a FirmwareStatusNotification request was received.
+        /// </summary>
+        public event OnFirmwareStatusNotificationDelegate?            OnFirmwareStatusNotification;
+
+        /// <summary>
+        /// An event sent whenever a response to a FirmwareStatusNotification request was sent.
+        /// </summary>
+        public event OnFirmwareStatusNotificationResponseDelegate?    OnFirmwareStatusNotificationResponse;
+
+        /// <summary>
+        /// An event sent whenever a SOAP response to a FirmwareStatusNotification request was sent.
+        /// </summary>
+        public event AccessLogHandler?                                OnFirmwareStatusNotificationSOAPResponse;
 
         #endregion
 
@@ -153,257 +211,200 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region OnAuthorize
 
         /// <summary>
-        /// An event sent whenever an authorize SOAP request was received.
+        /// An event sent whenever an Authorize SOAP request was received.
         /// </summary>
-        public event RequestLogHandler?             OnAuthorizeSOAPRequest;
+        public event RequestLogHandler?              OnAuthorizeSOAPRequest;
 
         /// <summary>
-        /// An event sent whenever an authorize request was received.
+        /// An event sent whenever an Authorize request was received.
         /// </summary>
-        public event OnAuthorizeRequestDelegate?    OnAuthorizeRequest;
+        public event OnAuthorizeRequestDelegate?     OnAuthorizeRequest;
 
         /// <summary>
-        /// An event sent whenever an authorize request was received.
+        /// An event sent whenever an Authorize request was received.
         /// </summary>
-        public event OnAuthorizeDelegate?           OnAuthorize;
+        public event OnAuthorizeDelegate?            OnAuthorize;
 
         /// <summary>
-        /// An event sent whenever an authorize response was sent.
+        /// An event sent whenever an Authorize response was sent.
         /// </summary>
-        public event OnAuthorizeResponseDelegate?   OnAuthorizeResponse;
+        public event OnAuthorizeResponseDelegate?    OnAuthorizeResponse;
 
         /// <summary>
-        /// An event sent whenever an authorize SOAP response was sent.
+        /// An event sent whenever an Authorize SOAP response was sent.
         /// </summary>
-        public event AccessLogHandler?              OnAuthorizeSOAPResponse;
+        public event AccessLogHandler?               OnAuthorizeSOAPResponse;
 
         #endregion
 
         #region OnStartTransaction
 
         /// <summary>
-        /// An event sent whenever a start transaction SOAP request was received.
+        /// An event sent whenever a StartTransaction SOAP request was received.
         /// </summary>
-        public event RequestLogHandler?                    OnStartTransactionSOAPRequest;
+        public event RequestLogHandler?                     OnStartTransactionSOAPRequest;
 
         /// <summary>
-        /// An event sent whenever a start transaction request was received.
+        /// An event sent whenever a StartTransaction request was received.
         /// </summary>
-        public event OnStartTransactionRequestDelegate?    OnStartTransactionRequest;
+        public event OnStartTransactionRequestDelegate?     OnStartTransactionRequest;
 
         /// <summary>
-        /// An event sent whenever a start transaction request was received.
+        /// An event sent whenever a StartTransaction request was received.
         /// </summary>
-        public event OnStartTransactionDelegate?           OnStartTransaction;
+        public event OnStartTransactionDelegate?            OnStartTransaction;
 
         /// <summary>
-        /// An event sent whenever a response to a start transaction request was sent.
+        /// An event sent whenever a response to a StartTransaction request was sent.
         /// </summary>
-        public event OnStartTransactionResponseDelegate?   OnStartTransactionResponse;
+        public event OnStartTransactionResponseDelegate?    OnStartTransactionResponse;
 
         /// <summary>
-        /// An event sent whenever a SOAP response to a start transaction request was sent.
+        /// An event sent whenever a SOAP response to a StartTransaction request was sent.
         /// </summary>
-        public event AccessLogHandler?                     OnStartTransactionSOAPResponse;
+        public event AccessLogHandler?                      OnStartTransactionSOAPResponse;
 
         #endregion
 
         #region OnStatusNotification
 
         /// <summary>
-        /// An event sent whenever a status notification SOAP request was received.
+        /// An event sent whenever a StatusNotification SOAP request was received.
         /// </summary>
-        public event RequestLogHandler?                      OnStatusNotificationSOAPRequest;
+        public event RequestLogHandler?                       OnStatusNotificationSOAPRequest;
 
         /// <summary>
-        /// An event sent whenever a status notification request was received.
+        /// An event sent whenever a StatusNotification request was received.
         /// </summary>
-        public event OnStatusNotificationRequestDelegate?    OnStatusNotificationRequest;
+        public event OnStatusNotificationRequestDelegate?     OnStatusNotificationRequest;
 
         /// <summary>
-        /// An event sent whenever a status notification request was received.
+        /// An event sent whenever a StatusNotification request was received.
         /// </summary>
-        public event OnStatusNotificationDelegate?           OnStatusNotification;
+        public event OnStatusNotificationDelegate?            OnStatusNotification;
 
         /// <summary>
-        /// An event sent whenever a response to a status notification request was sent.
+        /// An event sent whenever a response to a StatusNotification request was sent.
         /// </summary>
-        public event OnStatusNotificationResponseDelegate?   OnStatusNotificationResponse;
+        public event OnStatusNotificationResponseDelegate?    OnStatusNotificationResponse;
 
         /// <summary>
-        /// An event sent whenever a SOAP response to a status notification request was sent.
+        /// An event sent whenever a SOAP response to a StatusNotification request was sent.
         /// </summary>
-        public event AccessLogHandler?                       OnStatusNotificationSOAPResponse;
+        public event AccessLogHandler?                        OnStatusNotificationSOAPResponse;
 
         #endregion
 
         #region OnMeterValues
 
         /// <summary>
-        /// An event sent whenever a meter values SOAP request was received.
+        /// An event sent whenever a MeterValues SOAP request was received.
         /// </summary>
-        public event RequestLogHandler?               OnMeterValuesSOAPRequest;
+        public event RequestLogHandler?                OnMeterValuesSOAPRequest;
 
         /// <summary>
-        /// An event sent whenever a meter values request was received.
+        /// An event sent whenever a MeterValues request was received.
         /// </summary>
-        public event OnMeterValuesRequestDelegate?    OnMeterValuesRequest;
+        public event OnMeterValuesRequestDelegate?     OnMeterValuesRequest;
 
         /// <summary>
-        /// An event sent whenever a meter values request was received.
+        /// An event sent whenever a MeterValues request was received.
         /// </summary>
-        public event OnMeterValuesDelegate?           OnMeterValues;
+        public event OnMeterValuesDelegate?            OnMeterValues;
 
         /// <summary>
-        /// An event sent whenever a response to a meter values request was sent.
+        /// An event sent whenever a response to a MeterValues request was sent.
         /// </summary>
-        public event OnMeterValuesResponseDelegate?   OnMeterValuesResponse;
+        public event OnMeterValuesResponseDelegate?    OnMeterValuesResponse;
 
         /// <summary>
-        /// An event sent whenever a SOAP response to a meter values request was sent.
+        /// An event sent whenever a SOAP response to a MeterValues request was sent.
         /// </summary>
-        public event AccessLogHandler?                OnMeterValuesSOAPResponse;
+        public event AccessLogHandler?                 OnMeterValuesSOAPResponse;
 
         #endregion
 
         #region OnStopTransaction
 
         /// <summary>
-        /// An event sent whenever a stop transaction SOAP request was received.
+        /// An event sent whenever a StopTransaction SOAP request was received.
         /// </summary>
-        public event RequestLogHandler?                   OnStopTransactionSOAPRequest;
+        public event RequestLogHandler?                    OnStopTransactionSOAPRequest;
 
         /// <summary>
-        /// An event sent whenever a stop transaction request was received.
+        /// An event sent whenever a StopTransaction request was received.
         /// </summary>
-        public event OnStopTransactionRequestDelegate?    OnStopTransactionRequest;
+        public event OnStopTransactionRequestDelegate?     OnStopTransactionRequest;
 
         /// <summary>
-        /// An event sent whenever a stop transaction request was received.
+        /// An event sent whenever a StopTransaction request was received.
         /// </summary>
-        public event OnStopTransactionDelegate?           OnStopTransaction;
+        public event OnStopTransactionDelegate?            OnStopTransaction;
 
         /// <summary>
-        /// An event sent whenever a response to a stop transaction request was sent.
+        /// An event sent whenever a response to a StopTransaction request was sent.
         /// </summary>
-        public event OnStopTransactionResponseDelegate?   OnStopTransactionResponse;
+        public event OnStopTransactionResponseDelegate?    OnStopTransactionResponse;
 
         /// <summary>
-        /// An event sent whenever a SOAP response to a stop transaction request was sent.
+        /// An event sent whenever a SOAP response to a StopTransaction request was sent.
         /// </summary>
-        public event AccessLogHandler?                    OnStopTransactionSOAPResponse;
+        public event AccessLogHandler?                     OnStopTransactionSOAPResponse;
 
         #endregion
 
 
-        #region OnDataTransfer
+        #region IncomingDataTransfer
 
         /// <summary>
-        /// An event sent whenever a data transfer SOAP request was received.
+        /// An event sent whenever a DataTransfer SOAP request was received.
         /// </summary>
-        public event RequestLogHandler?                                  OnIncomingDataTransferSOAPRequest;
+        public event RequestLogHandler?                         OnIncomingDataTransferSOAPRequest;
 
         /// <summary>
-        /// An event sent whenever a data transfer request was received.
+        /// An event sent whenever a DataTransfer request was received.
         /// </summary>
-        public event OCPP.CSMS.OnIncomingDataTransferRequestDelegate?    OnIncomingDataTransferRequest;
+        public event OnIncomingDataTransferRequestDelegate?     OnIncomingDataTransferRequest;
 
         /// <summary>
-        /// An event sent whenever a data transfer request was received.
+        /// An event sent whenever a DataTransfer request was received.
         /// </summary>
-        public event OCPP.CSMS.OnIncomingDataTransferDelegate?           OnIncomingDataTransfer;
+        public event OnIncomingDataTransferDelegate?            OnIncomingDataTransfer;
 
         /// <summary>
-        /// An event sent whenever a response to a data transfer request was sent.
+        /// An event sent whenever a response to a DataTransfer request was sent.
         /// </summary>
-        public event OCPP.CSMS.OnIncomingDataTransferResponseDelegate?   OnIncomingDataTransferResponse;
+        public event OnIncomingDataTransferResponseDelegate?    OnIncomingDataTransferResponse;
 
         /// <summary>
-        /// An event sent whenever a SOAP response to a data transfer request was sent.
+        /// An event sent whenever a SOAP response to a DataTransfer request was sent.
         /// </summary>
-        public event AccessLogHandler?                                   OnIncomingDataTransferSOAPResponse;
-
-        #endregion
-
-        #region OnDiagnosticsStatusNotification
-
-        /// <summary>
-        /// An event sent whenever a diagnostics status notification SOAP request was received.
-        /// </summary>
-        public event RequestLogHandler?                                 OnDiagnosticsStatusNotificationSOAPRequest;
-
-        /// <summary>
-        /// An event sent whenever a diagnostics status notification request was received.
-        /// </summary>
-        public event OnDiagnosticsStatusNotificationRequestDelegate?    OnDiagnosticsStatusNotificationRequest;
-
-        /// <summary>
-        /// An event sent whenever a diagnostics status notification request was received.
-        /// </summary>
-        public event OnDiagnosticsStatusNotificationDelegate?           OnDiagnosticsStatusNotification;
-
-        /// <summary>
-        /// An event sent whenever a response to a diagnostics status notification request was sent.
-        /// </summary>
-        public event OnDiagnosticsStatusNotificationResponseDelegate?   OnDiagnosticsStatusNotificationResponse;
-
-        /// <summary>
-        /// An event sent whenever a SOAP response to a diagnostics status notification request was sent.
-        /// </summary>
-        public event AccessLogHandler?                                  OnDiagnosticsStatusNotificationSOAPResponse;
-
-        #endregion
-
-        #region OnFirmwareStatusNotification
-
-        /// <summary>
-        /// An event sent whenever a firmware status notification SOAP request was received.
-        /// </summary>
-        public event RequestLogHandler?                              OnFirmwareStatusNotificationSOAPRequest;
-
-        /// <summary>
-        /// An event sent whenever a firmware status notification request was received.
-        /// </summary>
-        public event OnFirmwareStatusNotificationRequestDelegate?    OnFirmwareStatusNotificationRequest;
-
-        /// <summary>
-        /// An event sent whenever a firmware status notification request was received.
-        /// </summary>
-        public event OnFirmwareStatusNotificationDelegate?           OnFirmwareStatusNotification;
-
-        /// <summary>
-        /// An event sent whenever a response to a firmware status notification request was sent.
-        /// </summary>
-        public event OnFirmwareStatusNotificationResponseDelegate?   OnFirmwareStatusNotificationResponse;
-
-        /// <summary>
-        /// An event sent whenever a SOAP response to a firmware status notification request was sent.
-        /// </summary>
-        public event AccessLogHandler?                               OnFirmwareStatusNotificationSOAPResponse;
+        public event AccessLogHandler?                          OnIncomingDataTransferSOAPResponse;
 
         #endregion
 
 
+        // Security extensions
 
-        public event OnSecurityEventNotificationRequestDelegate OnSecurityEventNotificationRequest;
-        public event OnSecurityEventNotificationDelegate OnSecurityEventNotification;
-        public event OnSecurityEventNotificationResponseDelegate OnSecurityEventNotificationResponse;
+        public event OnSecurityEventNotificationRequestDelegate            OnSecurityEventNotificationRequest;
+        public event OnSecurityEventNotificationDelegate                   OnSecurityEventNotification;
+        public event OnSecurityEventNotificationResponseDelegate           OnSecurityEventNotificationResponse;
 
-        public event OnLogStatusNotificationRequestDelegate OnLogStatusNotificationRequest;
-        public event OnLogStatusNotificationDelegate OnLogStatusNotification;
-        public event OnLogStatusNotificationResponseDelegate OnLogStatusNotificationResponse;
+        public event OnLogStatusNotificationRequestDelegate                OnLogStatusNotificationRequest;
+        public event OnLogStatusNotificationDelegate                       OnLogStatusNotification;
+        public event OnLogStatusNotificationResponseDelegate               OnLogStatusNotificationResponse;
 
-        public event OnSignCertificateRequestDelegate OnSignCertificateRequest;
-        public event OnSignCertificateDelegate OnSignCertificate;
-        public event OnSignCertificateResponseDelegate OnSignCertificateResponse;
+        public event OnSignCertificateRequestDelegate                      OnSignCertificateRequest;
+        public event OnSignCertificateDelegate                             OnSignCertificate;
+        public event OnSignCertificateResponseDelegate                     OnSignCertificateResponse;
 
-        public event OnSignedFirmwareStatusNotificationRequestDelegate OnSignedFirmwareStatusNotificationRequest;
-        public event OnSignedFirmwareStatusNotificationDelegate OnSignedFirmwareStatusNotification;
-        public event OnSignedFirmwareStatusNotificationResponseDelegate OnSignedFirmwareStatusNotificationResponse;
+        public event OnSignedFirmwareStatusNotificationRequestDelegate     OnSignedFirmwareStatusNotificationRequest;
+        public event OnSignedFirmwareStatusNotificationDelegate            OnSignedFirmwareStatusNotification;
+        public event OnSignedFirmwareStatusNotificationResponseDelegate    OnSignedFirmwareStatusNotificationResponse;
 
-        public event OnIncomingBinaryDataTransferRequestDelegate OnIncomingBinaryDataTransferRequest;
-        public event OnIncomingBinaryDataTransferDelegate OnIncomingBinaryDataTransfer;
-        public event OnIncomingBinaryDataTransferResponseDelegate OnIncomingBinaryDataTransferResponse;
+        public event OnIncomingBinaryDataTransferRequestDelegate           OnIncomingBinaryDataTransferRequest;
+        public event OnIncomingBinaryDataTransferDelegate                  OnIncomingBinaryDataTransfer;
+        public event OnIncomingBinaryDataTransferResponseDelegate          OnIncomingBinaryDataTransferResponse;
 
         #endregion
 
@@ -805,6 +806,338 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 catch (Exception e)
                 {
                     DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnHeartbeatSOAPResponse));
+                }
+
+                #endregion
+
+                return HTTPResponse;
+
+            });
+
+            #endregion
+
+            #region / - DiagnosticsStatusNotification
+
+            SOAPServer.RegisterSOAPDelegate(null,
+                                            HTTPHostname.Any,
+                                            URLPrefix,
+                                            "DiagnosticsStatusNotification",
+                                            XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "diagnosticsStatusNotificationRequest").FirstOrDefault()!,
+                                            async (Request, HeaderXML, DiagnosticsStatusNotificationXML) => {
+
+                #region Send OnDiagnosticsStatusNotificationSOAPRequest event
+
+                var requestTimestamp = Timestamp.Now;
+
+                try
+                {
+
+                    OnDiagnosticsStatusNotificationSOAPRequest?.Invoke(requestTimestamp,
+                                                                       SOAPServer.HTTPServer,
+                                                                       Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnDiagnosticsStatusNotificationSOAPRequest));
+                }
+
+                #endregion
+
+
+                DiagnosticsStatusNotificationResponse? response      = null;
+                HTTPResponse?                          HTTPResponse  = null;
+
+                try
+                {
+
+                    var OCPPHeader  = SOAPHeader.Parse(HeaderXML);
+                    var request     = DiagnosticsStatusNotificationRequest.Parse(DiagnosticsStatusNotificationXML,
+                                                                                 Request_Id.Parse(OCPPHeader.MessageId),
+                                                                                 NetworkingNode_Id.Parse(OCPPHeader.ChargeBoxIdentity.ToString()));
+
+                    #region Send OnDiagnosticsStatusNotificationRequest event
+
+                    try
+                    {
+
+                        OnDiagnosticsStatusNotificationRequest?.Invoke(request.RequestTimestamp,
+                                                                       this,
+                                                                       null,
+                                                                       request);
+
+                    }
+                    catch (Exception e)
+                    {
+                        DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnDiagnosticsStatusNotificationRequest));
+                    }
+
+                    #endregion
+
+                    #region Call async subscribers
+
+                    if (response is null)
+                    {
+
+                        var results = OnDiagnosticsStatusNotification?.
+                                          GetInvocationList()?.
+                                          SafeSelect(subscriber => (subscriber as OnDiagnosticsStatusNotificationDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                   this,
+                                                                                                                                   null,
+                                                                                                                                   request,
+                                                                                                                                   Request.CancellationToken)).
+                                          ToArray();
+
+                        if (results?.Length > 0)
+                        {
+
+                            await Task.WhenAll(results!);
+
+                            response = results.First()?.Result!;
+
+                        }
+
+                        if (results?.Length == 0 || response == null)
+                            response = DiagnosticsStatusNotificationResponse.Failed(request);
+
+                    }
+
+                    #endregion
+
+                    #region Send OnDiagnosticsStatusNotificationResponse event
+
+                    try
+                    {
+
+                        var responseTimestamp = Timestamp.Now;
+
+                        OnDiagnosticsStatusNotificationResponse?.Invoke(responseTimestamp,
+                                                                        this,
+                                                                        null,
+                                                                        request,
+                                                                        response,
+                                                                        responseTimestamp - requestTimestamp);
+
+                    }
+                    catch (Exception e)
+                    {
+                        DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnDiagnosticsStatusNotificationResponse));
+                    }
+
+                    #endregion
+
+
+                    #region Create HTTP Response
+
+                    HTTPResponse = new HTTPResponse.Builder(Request) {
+                        HTTPStatusCode  = HTTPStatusCode.OK,
+                        Server          = SOAPServer.HTTPServer.DefaultServerName,
+                        Date            = Timestamp.Now,
+                        ContentType     = HTTPContentType.Text.XML_UTF8,
+                        Content         = SOAP.Encapsulation(OCPPHeader.ChargeBoxIdentity,
+                                                             "/DiagnosticsStatusNotificationResponse",
+                                                             Request_Id.NewRandom().ToString(),
+                                                             OCPPHeader.MessageId,  // MessageId from the request as RelatesTo Id!
+                                                             OCPPHeader.From,
+                                                             OCPPHeader.To,
+                                                             response.ToXML()).ToUTF8Bytes()
+                    };
+
+                    #endregion
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.LogException(e, nameof(CentralSystemSOAPServer) + "." + "/DiagnosticsStatusNotification");
+                }
+
+                HTTPResponse ??= new HTTPResponse.Builder(Request) {
+                                     HTTPStatusCode  = HTTPStatusCode.BadRequest,
+                                     Server          = SOAPServer.HTTPServer.DefaultServerName,
+                                     Date            = Timestamp.Now
+                                 };
+
+
+                #region Send OnDiagnosticsStatusNotificationSOAPResponse event
+
+                try
+                {
+
+                    OnDiagnosticsStatusNotificationSOAPResponse?.Invoke(Timestamp.Now,
+                                                                        SOAPServer.HTTPServer,
+                                                                        Request,
+                                                                        HTTPResponse);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnDiagnosticsStatusNotificationSOAPResponse));
+                }
+
+                #endregion
+
+                return HTTPResponse;
+
+            });
+
+            #endregion
+
+            #region / - FirmwareStatusNotification
+
+            SOAPServer.RegisterSOAPDelegate(null,
+                                            HTTPHostname.Any,
+                                            URLPrefix,
+                                            "FirmwareStatusNotification",
+                                            XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "firmwareStatusNotificationRequest").FirstOrDefault()!,
+                                            async (Request, HeaderXML, FirmwareStatusNotificationXML) => {
+
+                #region Send OnFirmwareStatusNotificationSOAPRequest event
+
+                var requestTimestamp = Timestamp.Now;
+
+                try
+                {
+
+                    OnFirmwareStatusNotificationSOAPRequest?.Invoke(requestTimestamp,
+                                                                    SOAPServer.HTTPServer,
+                                                                    Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnFirmwareStatusNotificationSOAPRequest));
+                }
+
+                #endregion
+
+
+                FirmwareStatusNotificationResponse? response      = null;
+                HTTPResponse?                       HTTPResponse  = null;
+
+                try
+                {
+
+                    var OCPPHeader  = SOAPHeader.Parse(HeaderXML);
+                    var request     = FirmwareStatusNotificationRequest.Parse(FirmwareStatusNotificationXML,
+                                                                              Request_Id.Parse(OCPPHeader.MessageId),
+                                                                              NetworkingNode_Id.Parse(OCPPHeader.ChargeBoxIdentity.ToString()));
+
+                    #region Send OnFirmwareStatusNotificationRequest event
+
+                    try
+                    {
+
+                        OnFirmwareStatusNotificationRequest?.Invoke(request.RequestTimestamp,
+                                                                    this,
+                                                                    null,
+                                                                    request);
+
+                    }
+                    catch (Exception e)
+                    {
+                        DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnFirmwareStatusNotificationRequest));
+                    }
+
+                    #endregion
+
+                    #region Call async subscribers
+
+                    if (response is null)
+                    {
+
+                        var results = OnFirmwareStatusNotification?.
+                                          GetInvocationList()?.
+                                          SafeSelect(subscriber => (subscriber as OnFirmwareStatusNotificationDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                this,
+                                                                                                                                null,
+                                                                                                                                request,
+                                                                                                                                Request.CancellationToken)).
+                                          ToArray();
+
+                        if (results?.Length > 0)
+                        {
+
+                            await Task.WhenAll(results!);
+
+                            response = results.First()?.Result!;
+
+                        }
+
+                        if (results?.Length == 0 || response == null)
+                            response = FirmwareStatusNotificationResponse.Failed(request);
+
+                    }
+
+                    #endregion
+
+                    #region Send OnFirmwareStatusNotificationResponse event
+
+                    try
+                    {
+
+                        var responseTimestamp = Timestamp.Now;
+
+                        OnFirmwareStatusNotificationResponse?.Invoke(responseTimestamp,
+                                                                     this,
+                                                                     null,
+                                                                     request,
+                                                                     response,
+                                                                     responseTimestamp - requestTimestamp);
+
+                    }
+                    catch (Exception e)
+                    {
+                        DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnFirmwareStatusNotificationResponse));
+                    }
+
+                    #endregion
+
+
+                    #region Create HTTP Response
+
+                    HTTPResponse = new HTTPResponse.Builder(Request) {
+                        HTTPStatusCode  = HTTPStatusCode.OK,
+                        Server          = SOAPServer.HTTPServer.DefaultServerName,
+                        Date            = Timestamp.Now,
+                        ContentType     = HTTPContentType.Text.XML_UTF8,
+                        Content         = SOAP.Encapsulation(OCPPHeader.ChargeBoxIdentity,
+                                                             "/FirmwareStatusNotificationResponse",
+                                                             Request_Id.NewRandom().ToString(),
+                                                             OCPPHeader.MessageId,  // MessageId from the request as RelatesTo Id!
+                                                             OCPPHeader.From,
+                                                             OCPPHeader.To,
+                                                             response.ToXML()).ToUTF8Bytes()
+                    };
+
+                    #endregion
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.LogException(e, nameof(CentralSystemSOAPServer) + "." + "/FirmwareStatusNotification");
+                }
+
+                HTTPResponse ??= new HTTPResponse.Builder(Request) {
+                                     HTTPStatusCode  = HTTPStatusCode.BadRequest,
+                                     Server          = SOAPServer.HTTPServer.DefaultServerName,
+                                     Date            = Timestamp.Now
+                                 };
+
+
+                #region Send OnFirmwareStatusNotificationSOAPResponse event
+
+                try
+                {
+
+                    OnFirmwareStatusNotificationSOAPResponse?.Invoke(Timestamp.Now,
+                                                                     SOAPServer.HTTPServer,
+                                                                     Request,
+                                                                     HTTPResponse);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnFirmwareStatusNotificationSOAPResponse));
                 }
 
                 #endregion
@@ -1671,18 +2004,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 #endregion
 
 
-                OCPP.CSMS.DataTransferResponse? response      = null;
-                HTTPResponse?                   HTTPResponse  = null;
+                DataTransferResponse?  response       = null;
+                HTTPResponse?          HTTPResponse   = null;
 
                 try
                 {
 
                     var OCPPHeader  = SOAPHeader.Parse(HeaderXML);
-                    var request     = OCPP.CS.DataTransferRequest.Parse(DataTransferXML,
-                                                                        OCPPNS.OCPPv1_6_CS,
-                                                                        Request_Id.Parse(OCPPHeader.MessageId),
-                                                                        NetworkPath.Empty,
-                                                                        NetworkingNode_Id.Parse(OCPPHeader.ChargeBoxIdentity.ToString()));
+                    var request     = CP.DataTransferRequest.Parse(DataTransferXML,
+                                                                   OCPPNS.OCPPv1_6_CS,
+                                                                   Request_Id.Parse(OCPPHeader.MessageId),
+                                                                   NetworkPath.Empty,
+                                                                   NetworkingNode_Id.Parse(OCPPHeader.ChargeBoxIdentity.ToString()));
 
                     #region Send OnIncomingDataTransferRequest event
 
@@ -1709,11 +2042,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         var results = OnIncomingDataTransfer?.
                                           GetInvocationList()?.
-                                          SafeSelect(subscriber => (subscriber as OCPP.CSMS.OnIncomingDataTransferDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                                    this,
-                                                                                                                                    null,
-                                                                                                                                    request,
-                                                                                                                                    Request.CancellationToken)).
+                                          SafeSelect(subscriber => (subscriber as OnIncomingDataTransferDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                          this,
+                                                                                                                          null,
+                                                                                                                          request,
+                                                                                                                          Request.CancellationToken)).
                                           ToArray();
 
                         if (results?.Length > 0)
@@ -1726,7 +2059,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         }
 
                         if (results?.Length == 0 || response == null)
-                            response = OCPP.CSMS.DataTransferResponse.Failed(request);
+                            response = DataTransferResponse.Failed(request);
 
                     }
 
@@ -1800,338 +2133,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 catch (Exception e)
                 {
                     DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnIncomingDataTransferSOAPResponse));
-                }
-
-                #endregion
-
-                return HTTPResponse;
-
-            });
-
-            #endregion
-
-            #region / - DiagnosticsStatusNotification
-
-            SOAPServer.RegisterSOAPDelegate(null,
-                                            HTTPHostname.Any,
-                                            URLPrefix,
-                                            "DiagnosticsStatusNotification",
-                                            XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "diagnosticsStatusNotificationRequest").FirstOrDefault()!,
-                                            async (Request, HeaderXML, DiagnosticsStatusNotificationXML) => {
-
-                #region Send OnDiagnosticsStatusNotificationSOAPRequest event
-
-                var requestTimestamp = Timestamp.Now;
-
-                try
-                {
-
-                    OnDiagnosticsStatusNotificationSOAPRequest?.Invoke(requestTimestamp,
-                                                                       SOAPServer.HTTPServer,
-                                                                       Request);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnDiagnosticsStatusNotificationSOAPRequest));
-                }
-
-                #endregion
-
-
-                DiagnosticsStatusNotificationResponse? response      = null;
-                HTTPResponse?                          HTTPResponse  = null;
-
-                try
-                {
-
-                    var OCPPHeader  = SOAPHeader.Parse(HeaderXML);
-                    var request     = DiagnosticsStatusNotificationRequest.Parse(DiagnosticsStatusNotificationXML,
-                                                                                 Request_Id.Parse(OCPPHeader.MessageId),
-                                                                                 NetworkingNode_Id.Parse(OCPPHeader.ChargeBoxIdentity.ToString()));
-
-                    #region Send OnDiagnosticsStatusNotificationRequest event
-
-                    try
-                    {
-
-                        OnDiagnosticsStatusNotificationRequest?.Invoke(request.RequestTimestamp,
-                                                                       this,
-                                                                       null,
-                                                                       request);
-
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnDiagnosticsStatusNotificationRequest));
-                    }
-
-                    #endregion
-
-                    #region Call async subscribers
-
-                    if (response is null)
-                    {
-
-                        var results = OnDiagnosticsStatusNotification?.
-                                          GetInvocationList()?.
-                                          SafeSelect(subscriber => (subscriber as OnDiagnosticsStatusNotificationDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                                   this,
-                                                                                                                                   null,
-                                                                                                                                   request,
-                                                                                                                                   Request.CancellationToken)).
-                                          ToArray();
-
-                        if (results?.Length > 0)
-                        {
-
-                            await Task.WhenAll(results!);
-
-                            response = results.First()?.Result!;
-
-                        }
-
-                        if (results?.Length == 0 || response == null)
-                            response = DiagnosticsStatusNotificationResponse.Failed(request);
-
-                    }
-
-                    #endregion
-
-                    #region Send OnDiagnosticsStatusNotificationResponse event
-
-                    try
-                    {
-
-                        var responseTimestamp = Timestamp.Now;
-
-                        OnDiagnosticsStatusNotificationResponse?.Invoke(responseTimestamp,
-                                                                        this,
-                                                                        null,
-                                                                        request,
-                                                                        response,
-                                                                        responseTimestamp - requestTimestamp);
-
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnDiagnosticsStatusNotificationResponse));
-                    }
-
-                    #endregion
-
-
-                    #region Create HTTP Response
-
-                    HTTPResponse = new HTTPResponse.Builder(Request) {
-                        HTTPStatusCode  = HTTPStatusCode.OK,
-                        Server          = SOAPServer.HTTPServer.DefaultServerName,
-                        Date            = Timestamp.Now,
-                        ContentType     = HTTPContentType.Text.XML_UTF8,
-                        Content         = SOAP.Encapsulation(OCPPHeader.ChargeBoxIdentity,
-                                                             "/DiagnosticsStatusNotificationResponse",
-                                                             Request_Id.NewRandom().ToString(),
-                                                             OCPPHeader.MessageId,  // MessageId from the request as RelatesTo Id!
-                                                             OCPPHeader.From,
-                                                             OCPPHeader.To,
-                                                             response.ToXML()).ToUTF8Bytes()
-                    };
-
-                    #endregion
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.LogException(e, nameof(CentralSystemSOAPServer) + "." + "/DiagnosticsStatusNotification");
-                }
-
-                HTTPResponse ??= new HTTPResponse.Builder(Request) {
-                                     HTTPStatusCode  = HTTPStatusCode.BadRequest,
-                                     Server          = SOAPServer.HTTPServer.DefaultServerName,
-                                     Date            = Timestamp.Now
-                                 };
-
-
-                #region Send OnDiagnosticsStatusNotificationSOAPResponse event
-
-                try
-                {
-
-                    OnDiagnosticsStatusNotificationSOAPResponse?.Invoke(Timestamp.Now,
-                                                                        SOAPServer.HTTPServer,
-                                                                        Request,
-                                                                        HTTPResponse);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnDiagnosticsStatusNotificationSOAPResponse));
-                }
-
-                #endregion
-
-                return HTTPResponse;
-
-            });
-
-            #endregion
-
-            #region / - FirmwareStatusNotification
-
-            SOAPServer.RegisterSOAPDelegate(null,
-                                            HTTPHostname.Any,
-                                            URLPrefix,
-                                            "FirmwareStatusNotification",
-                                            XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "firmwareStatusNotificationRequest").FirstOrDefault()!,
-                                            async (Request, HeaderXML, FirmwareStatusNotificationXML) => {
-
-                #region Send OnFirmwareStatusNotificationSOAPRequest event
-
-                var requestTimestamp = Timestamp.Now;
-
-                try
-                {
-
-                    OnFirmwareStatusNotificationSOAPRequest?.Invoke(requestTimestamp,
-                                                                    SOAPServer.HTTPServer,
-                                                                    Request);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnFirmwareStatusNotificationSOAPRequest));
-                }
-
-                #endregion
-
-
-                FirmwareStatusNotificationResponse? response      = null;
-                HTTPResponse?                       HTTPResponse  = null;
-
-                try
-                {
-
-                    var OCPPHeader  = SOAPHeader.Parse(HeaderXML);
-                    var request     = FirmwareStatusNotificationRequest.Parse(FirmwareStatusNotificationXML,
-                                                                              Request_Id.Parse(OCPPHeader.MessageId),
-                                                                              NetworkingNode_Id.Parse(OCPPHeader.ChargeBoxIdentity.ToString()));
-
-                    #region Send OnFirmwareStatusNotificationRequest event
-
-                    try
-                    {
-
-                        OnFirmwareStatusNotificationRequest?.Invoke(request.RequestTimestamp,
-                                                                    this,
-                                                                    null,
-                                                                    request);
-
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnFirmwareStatusNotificationRequest));
-                    }
-
-                    #endregion
-
-                    #region Call async subscribers
-
-                    if (response is null)
-                    {
-
-                        var results = OnFirmwareStatusNotification?.
-                                          GetInvocationList()?.
-                                          SafeSelect(subscriber => (subscriber as OnFirmwareStatusNotificationDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                                this,
-                                                                                                                                null,
-                                                                                                                                request,
-                                                                                                                                Request.CancellationToken)).
-                                          ToArray();
-
-                        if (results?.Length > 0)
-                        {
-
-                            await Task.WhenAll(results!);
-
-                            response = results.First()?.Result!;
-
-                        }
-
-                        if (results?.Length == 0 || response == null)
-                            response = FirmwareStatusNotificationResponse.Failed(request);
-
-                    }
-
-                    #endregion
-
-                    #region Send OnFirmwareStatusNotificationResponse event
-
-                    try
-                    {
-
-                        var responseTimestamp = Timestamp.Now;
-
-                        OnFirmwareStatusNotificationResponse?.Invoke(responseTimestamp,
-                                                                     this,
-                                                                     null,
-                                                                     request,
-                                                                     response,
-                                                                     responseTimestamp - requestTimestamp);
-
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnFirmwareStatusNotificationResponse));
-                    }
-
-                    #endregion
-
-
-                    #region Create HTTP Response
-
-                    HTTPResponse = new HTTPResponse.Builder(Request) {
-                        HTTPStatusCode  = HTTPStatusCode.OK,
-                        Server          = SOAPServer.HTTPServer.DefaultServerName,
-                        Date            = Timestamp.Now,
-                        ContentType     = HTTPContentType.Text.XML_UTF8,
-                        Content         = SOAP.Encapsulation(OCPPHeader.ChargeBoxIdentity,
-                                                             "/FirmwareStatusNotificationResponse",
-                                                             Request_Id.NewRandom().ToString(),
-                                                             OCPPHeader.MessageId,  // MessageId from the request as RelatesTo Id!
-                                                             OCPPHeader.From,
-                                                             OCPPHeader.To,
-                                                             response.ToXML()).ToUTF8Bytes()
-                    };
-
-                    #endregion
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.LogException(e, nameof(CentralSystemSOAPServer) + "." + "/FirmwareStatusNotification");
-                }
-
-                HTTPResponse ??= new HTTPResponse.Builder(Request) {
-                                     HTTPStatusCode  = HTTPStatusCode.BadRequest,
-                                     Server          = SOAPServer.HTTPServer.DefaultServerName,
-                                     Date            = Timestamp.Now
-                                 };
-
-
-                #region Send OnFirmwareStatusNotificationSOAPResponse event
-
-                try
-                {
-
-                    OnFirmwareStatusNotificationSOAPResponse?.Invoke(Timestamp.Now,
-                                                                     SOAPServer.HTTPServer,
-                                                                     Request,
-                                                                     HTTPResponse);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(CentralSystemSOAPServer) + "." + nameof(OnFirmwareStatusNotificationSOAPResponse));
                 }
 
                 #endregion

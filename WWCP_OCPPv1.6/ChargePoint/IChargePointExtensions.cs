@@ -670,7 +670,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// 
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<OCPP.CSMS.DataTransferResponse>
+        public static Task<CS.DataTransferResponse>
 
             TransferData(this IChargePoint             ChargePoint,
 
@@ -692,7 +692,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
 
                 => ChargePoint.DataTransfer(
-                       new OCPP.CS.DataTransferRequest(
+                       new DataTransferRequest(
 
                            ChargePoint.Id,
 
@@ -717,6 +717,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                    );
 
         #endregion
+
+
+        //ToDo: Add Security Extensions
 
 
         // Binary Data Streams Extensions

@@ -18,7 +18,6 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
@@ -35,9 +34,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     /// A charging station HTTP Web Socket client.
     /// </summary>
     public partial class NetworkingNodeWSClient : WebSocketClient,
-                                                   INetworkingNodeWebSocketClient,
-                                                   INetworkingNodeServer,
-                                                   INetworkingNodeClientEvents
+                                                  INetworkingNodeWebSocketClient,
+                                                  INetworkingNodeServer,
+                                                  INetworkingNodeClientEvents
     {
 
         #region Custom JSON serializer delegates
@@ -53,22 +52,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever a status notification request will be sent to the CSMS.
         /// </summary>
-        public event CS.OnStatusNotificationRequestDelegate?     OnStatusNotificationRequest;
+        public event OCPPv2_1.CS.OnStatusNotificationRequestDelegate?     OnStatusNotificationRequest;
 
         /// <summary>
         /// An event fired whenever a status notification request will be sent to the CSMS.
         /// </summary>
-        public event ClientRequestLogHandler?                 OnStatusNotificationWSRequest;
+        public event ClientRequestLogHandler?                             OnStatusNotificationWSRequest;
 
         /// <summary>
         /// An event fired whenever a response to a status notification request was received.
         /// </summary>
-        public event ClientResponseLogHandler?                OnStatusNotificationWSResponse;
+        public event ClientResponseLogHandler?                            OnStatusNotificationWSResponse;
 
         /// <summary>
         /// An event fired whenever a response to a status notification request was received.
         /// </summary>
-        public event CS.OnStatusNotificationResponseDelegate?    OnStatusNotificationResponse;
+        public event OCPPv2_1.CS.OnStatusNotificationResponseDelegate?    OnStatusNotificationResponse;
 
         #endregion
 

@@ -20,7 +20,6 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
@@ -53,27 +52,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a ReservationStatusUpdate WebSocket request was received.
         /// </summary>
-        public event CSMS.WebSocketJSONRequestLogHandler?               OnReservationStatusUpdateWSRequest;
+        public event WebSocketJSONRequestLogHandler?                             OnReservationStatusUpdateWSRequest;
 
         /// <summary>
         /// An event sent whenever a ReservationStatusUpdate request was received.
         /// </summary>
-        public event CSMS.OnReservationStatusUpdateRequestDelegate?     OnReservationStatusUpdateRequest;
+        public event OCPPv2_1.CSMS.OnReservationStatusUpdateRequestDelegate?     OnReservationStatusUpdateRequest;
 
         /// <summary>
         /// An event sent whenever a ReservationStatusUpdate was received.
         /// </summary>
-        public event CSMS.OnReservationStatusUpdateDelegate?            OnReservationStatusUpdate;
+        public event OCPPv2_1.CSMS.OnReservationStatusUpdateDelegate?            OnReservationStatusUpdate;
 
         /// <summary>
         /// An event sent whenever a response to a ReservationStatusUpdate was sent.
         /// </summary>
-        public event CSMS.OnReservationStatusUpdateResponseDelegate?    OnReservationStatusUpdateResponse;
+        public event OCPPv2_1.CSMS.OnReservationStatusUpdateResponseDelegate?    OnReservationStatusUpdateResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a ReservationStatusUpdate was sent.
         /// </summary>
-        public event CSMS.WebSocketJSONRequestJSONResponseLogHandler?   OnReservationStatusUpdateWSResponse;
+        public event WebSocketJSONRequestJSONResponseLogHandler?                 OnReservationStatusUpdateWSResponse;
 
         #endregion
 
@@ -139,6 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
                         OnReservationStatusUpdateRequest?.Invoke(Timestamp.Now,
                                                                  this,
+                                                                 Connection,
                                                                  request);
 
                     }
@@ -157,6 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                                             GetInvocationList()?.
                                             SafeSelect(subscriber => (subscriber as OnReservationStatusUpdateDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                this,
+                                                                                                                               Connection,
                                                                                                                                request,
                                                                                                                                CancellationToken)).
                                             ToArray();
@@ -178,6 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
                         OnReservationStatusUpdateResponse?.Invoke(Timestamp.Now,
                                                                   this,
+                                                                  Connection,
                                                                   request,
                                                                   response,
                                                                   response.Runtime);
@@ -257,6 +259,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         }
 
         #endregion
+
 
     }
 

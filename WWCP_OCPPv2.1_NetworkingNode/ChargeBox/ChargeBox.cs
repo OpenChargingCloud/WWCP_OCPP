@@ -402,12 +402,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a data transfer request will be sent to the central system.
         /// </summary>
-        public event OCPP.CS.OnDataTransferRequestDelegate?   OnDataTransferRequest;
+        public event OnDataTransferRequestDelegate?   OnDataTransferRequest;
 
         /// <summary>
         /// An event fired whenever a response to a data transfer request was received.
         /// </summary>
-        public event OCPP.CS.OnDataTransferResponseDelegate?  OnDataTransferResponse;
+        public event OnDataTransferResponseDelegate?  OnDataTransferResponse;
 
         #endregion
 
@@ -462,12 +462,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a data transfer request was received.
         /// </summary>
-        public event OCPP.CS.OnIncomingDataTransferRequestDelegate?   OnIncomingDataTransferRequest;
+        public event OnIncomingDataTransferRequestDelegate?   OnIncomingDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a response to a data transfer request was sent.
         /// </summary>
-        public event OCPP.CS.OnIncomingDataTransferResponseDelegate?  OnIncomingDataTransferResponse;
+        public event OnIncomingDataTransferResponseDelegate?  OnIncomingDataTransferResponse;
 
         #endregion
 

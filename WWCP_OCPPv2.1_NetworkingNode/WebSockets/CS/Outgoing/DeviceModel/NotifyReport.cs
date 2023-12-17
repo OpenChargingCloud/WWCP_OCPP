@@ -18,7 +18,6 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
@@ -35,9 +34,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     /// A charging station HTTP Web Socket client.
     /// </summary>
     public partial class NetworkingNodeWSClient : WebSocketClient,
-                                                   INetworkingNodeWebSocketClient,
-                                                   INetworkingNodeServer,
-                                                   INetworkingNodeClientEvents
+                                                  INetworkingNodeWebSocketClient,
+                                                  INetworkingNodeServer,
+                                                  INetworkingNodeClientEvents
     {
 
         #region Custom JSON serializer delegates
@@ -53,22 +52,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever a notify report request will be sent to the CSMS.
         /// </summary>
-        public event CS.OnNotifyReportRequestDelegate?     OnNotifyReportRequest;
+        public event OCPPv2_1.CS.OnNotifyReportRequestDelegate?     OnNotifyReportRequest;
 
         /// <summary>
         /// An event fired whenever a notify report request will be sent to the CSMS.
         /// </summary>
-        public event ClientRequestLogHandler?           OnNotifyReportWSRequest;
+        public event ClientRequestLogHandler?                       OnNotifyReportWSRequest;
 
         /// <summary>
         /// An event fired whenever a response to a notify report request was received.
         /// </summary>
-        public event ClientResponseLogHandler?          OnNotifyReportWSResponse;
+        public event ClientResponseLogHandler?                      OnNotifyReportWSResponse;
 
         /// <summary>
         /// An event fired whenever a response to a notify report request was received.
         /// </summary>
-        public event CS.OnNotifyReportResponseDelegate?    OnNotifyReportResponse;
+        public event OCPPv2_1.CS.OnNotifyReportResponseDelegate?    OnNotifyReportResponse;
 
         #endregion
 

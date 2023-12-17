@@ -56,27 +56,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever an AFRRSignal websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?       OnAFRRSignalWSRequest;
+        public event WSClientJSONRequestLogHandler?                OnAFRRSignalWSRequest;
 
         /// <summary>
         /// An event sent whenever an AFRRSignal request was received.
         /// </summary>
-        public event CS.OnAFRRSignalRequestDelegate?     OnAFRRSignalRequest;
+        public event OCPPv2_1.CS.OnAFRRSignalRequestDelegate?      OnAFRRSignalRequest;
 
         /// <summary>
         /// An event sent whenever an AFRRSignal request was received.
         /// </summary>
-        public event CS.OnAFRRSignalDelegate?            OnAFRRSignal;
+        public event OCPPv2_1.CS.OnAFRRSignalDelegate?             OnAFRRSignal;
 
         /// <summary>
         /// An event sent whenever a response to an AFRRSignal request was sent.
         /// </summary>
-        public event CS.OnAFRRSignalResponseDelegate?    OnAFRRSignalResponse;
+        public event OCPPv2_1.CS.OnAFRRSignalResponseDelegate?     OnAFRRSignalResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to an AFRRSignal request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?      OnAFRRSignalWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?    OnAFRRSignalWSResponse;
 
         #endregion
 
@@ -140,6 +140,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnAFRRSignalRequest?.Invoke(Timestamp.Now,
                                                     this,
+                                                    WebSocketConnection,
                                                     request);
 
                     }
@@ -183,6 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnAFRRSignalResponse?.Invoke(Timestamp.Now,
                                                      this,
+                                                     WebSocketConnection,
                                                      request,
                                                      response,
                                                      response.Runtime);

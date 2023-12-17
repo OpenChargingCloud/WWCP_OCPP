@@ -20,7 +20,6 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
@@ -53,27 +52,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a GetCertificateStatus WebSocket request was received.
         /// </summary>
-        public event CSMS.WebSocketJSONRequestLogHandler?               OnGetCertificateStatusWSRequest;
+        public event WebSocketJSONRequestLogHandler?                          OnGetCertificateStatusWSRequest;
 
         /// <summary>
         /// An event sent whenever a GetCertificateStatus request was received.
         /// </summary>
-        public event CSMS.OnGetCertificateStatusRequestDelegate?        OnGetCertificateStatusRequest;
+        public event OCPPv2_1.CSMS.OnGetCertificateStatusRequestDelegate?     OnGetCertificateStatusRequest;
 
         /// <summary>
         /// An event sent whenever a GetCertificateStatus was received.
         /// </summary>
-        public event CSMS.OnGetCertificateStatusDelegate?               OnGetCertificateStatus;
+        public event OCPPv2_1.CSMS.OnGetCertificateStatusDelegate?            OnGetCertificateStatus;
 
         /// <summary>
         /// An event sent whenever a response to a GetCertificateStatus was sent.
         /// </summary>
-        public event CSMS.OnGetCertificateStatusResponseDelegate?       OnGetCertificateStatusResponse;
+        public event OCPPv2_1.CSMS.OnGetCertificateStatusResponseDelegate?    OnGetCertificateStatusResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a GetCertificateStatus was sent.
         /// </summary>
-        public event CSMS.WebSocketJSONRequestJSONResponseLogHandler?   OnGetCertificateStatusWSResponse;
+        public event WebSocketJSONRequestJSONResponseLogHandler?              OnGetCertificateStatusWSResponse;
 
         #endregion
 
@@ -118,8 +117,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
             #endregion
 
 
-            OCPP_JSONResponseMessage?     OCPPResponse        = null;
-            OCPP_JSONErrorMessage?  OCPPErrorResponse   = null;
+            OCPP_JSONResponseMessage?  OCPPResponse        = null;
+            OCPP_JSONErrorMessage?     OCPPErrorResponse   = null;
 
             try
             {
@@ -139,6 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
                         OnGetCertificateStatusRequest?.Invoke(Timestamp.Now,
                                                               this,
+                                                              Connection,
                                                               request);
 
                     }
@@ -157,6 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                                             GetInvocationList()?.
                                             SafeSelect(subscriber => (subscriber as OnGetCertificateStatusDelegate)?.Invoke(Timestamp.Now,
                                                                                                                             this,
+                                                                                                                            Connection,
                                                                                                                             request,
                                                                                                                             CancellationToken)).
                                             ToArray();
@@ -178,6 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
                         OnGetCertificateStatusResponse?.Invoke(Timestamp.Now,
                                                                this,
+                                                               Connection,
                                                                request,
                                                                response,
                                                                response.Runtime);

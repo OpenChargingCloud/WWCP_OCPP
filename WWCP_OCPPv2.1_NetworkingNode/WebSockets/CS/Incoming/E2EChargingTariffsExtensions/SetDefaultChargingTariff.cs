@@ -54,27 +54,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a SetDefaultChargingTariff websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?                     OnSetDefaultChargingTariffWSRequest;
+        public event WSClientJSONRequestLogHandler?                             OnSetDefaultChargingTariffWSRequest;
 
         /// <summary>
         /// An event sent whenever a SetDefaultChargingTariff request was received.
         /// </summary>
-        public event CS.OnSetDefaultChargingTariffRequestDelegate?     OnSetDefaultChargingTariffRequest;
+        public event OCPPv2_1.CS.OnSetDefaultChargingTariffRequestDelegate?     OnSetDefaultChargingTariffRequest;
 
         /// <summary>
         /// An event sent whenever a SetDefaultChargingTariff request was received.
         /// </summary>
-        public event CS.OnSetDefaultChargingTariffDelegate?            OnSetDefaultChargingTariff;
+        public event OCPPv2_1.CS.OnSetDefaultChargingTariffDelegate?            OnSetDefaultChargingTariff;
 
         /// <summary>
         /// An event sent whenever a response to a SetDefaultChargingTariff request was sent.
         /// </summary>
-        public event CS.OnSetDefaultChargingTariffResponseDelegate?    OnSetDefaultChargingTariffResponse;
+        public event OCPPv2_1.CS.OnSetDefaultChargingTariffResponseDelegate?    OnSetDefaultChargingTariffResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a SetDefaultChargingTariff request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?                    OnSetDefaultChargingTariffWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?                 OnSetDefaultChargingTariffWSResponse;
 
         #endregion
 
@@ -138,6 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnSetDefaultChargingTariffRequest?.Invoke(Timestamp.Now,
                                                                   this,
+                                                                  WebSocketConnection,
                                                                   request);
 
                     }
@@ -181,6 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                         OnSetDefaultChargingTariffResponse?.Invoke(Timestamp.Now,
                                                                    this,
+                                                                   WebSocketConnection,
                                                                    request,
                                                                    response,
                                                                    response.Runtime);

@@ -26,7 +26,7 @@ using cloud.charging.open.protocols.OCPP.CS;
 namespace cloud.charging.open.protocols.OCPP.CSMS
 {
 
-    #region OnSendFile (-Request/-Response) Delegate
+    #region OnSendFile (Request/-Response) Delegate
 
     /// <summary>
     /// A delegate called whenever a SendFile request will be sent to a charging station.

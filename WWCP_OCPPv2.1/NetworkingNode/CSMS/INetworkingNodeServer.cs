@@ -17,7 +17,8 @@
 
 #region Usings
 
-using cloud.charging.open.protocols.OCPP.NetworkingNode.CSMS;
+using cloud.charging.open.protocols.OCPP.CSMS;
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
 
@@ -107,7 +108,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a log status notification was received.
         /// </summary>
-        event OnLogStatusNotificationDelegate           OnLogStatusNotification;
+        event OnLogStatusNotificationDelegate                 OnLogStatusNotification;
 
         #endregion
 
@@ -116,7 +117,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a data transfer request was received.
         /// </summary>
-        event OCPP.NetworkingNode.CSMS.OnIncomingDataTransferDelegate           OnIncomingDataTransfer;
+        event OCPPv2_1.CSMS.OnIncomingDataTransferDelegate    OnIncomingDataTransfer;
 
         #endregion
 
