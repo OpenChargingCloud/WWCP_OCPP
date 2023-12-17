@@ -388,7 +388,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public static Task<TriggerMessageResponse> TriggerMessage(this ICentralSystem           ICentralSystem,
 
                                                                   NetworkingNode_Id             NetworkingNodeId,
-                                                                  MessageTriggers               RequestedMessage,
+                                                                  MessageTrigger                RequestedMessage,
                                                                   Connector_Id?                 ConnectorId         = null,
 
                                                                   IEnumerable<KeyPair>?         SignKeys            = null,

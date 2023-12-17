@@ -19,18 +19,18 @@ namespace cloud.charging.open.protocols.OCPP
 {
 
     /// <summary>
-    /// Tag a method, class, property or struct as part of the official 'OCPP v1.6 Security Extensions'.
+    /// Tag a method, class, property or struct as part of the 'Charging Tickets Extensions'.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Property,
                     AllowMultiple  = false,
                     Inherited      = true)]
-    public class SecurityExtensionsAttribute : Attribute
+    public class ChargingTicketsExtensionsAttribute : Attribute
     {
 
         /// <summary>
-        /// Create a new 'OCPP v1.6 Security Extensions' attribute.
+        /// Create a new 'Charging Tickets Extensions' attribute.
         /// </summary>
-        public SecurityExtensionsAttribute()
+        public ChargingTicketsExtensionsAttribute()
         { }
 
     }

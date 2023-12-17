@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// The JSON-LD context of this object.
         /// </summary>
-        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/csms/triggerMessageRequest");
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/v2.1/csms/triggerMessageRequest");
 
         #endregion
 
@@ -325,7 +325,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 if (!JSON.ParseMandatory("requestedMessage",
                                          "requested message",
-                                         OCPPv2_1.MessageTrigger.TryParse,
+                                         OCPP.MessageTrigger.TryParse,
                                          out MessageTrigger MessageTrigger,
                                          out ErrorResponse))
                 {

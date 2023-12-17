@@ -50,19 +50,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// The JSON-LD context of this object.
         /// </summary>
-        public JSONLDContext    Context
+        public JSONLDContext   Context
             => DefaultJSONLDContext;
 
         /// <summary>
         /// The message to trigger.
         /// </summary>
-        public MessageTriggers  RequestedMessage    { get; }
+        public MessageTrigger  RequestedMessage    { get; }
 
         /// <summary>
         /// Optional connector identification whenever the message
         /// applies to a specific connector.
         /// </summary>
-        public Connector_Id?    ConnectorId         { get; }
+        public Connector_Id?   ConnectorId         { get; }
 
         #endregion
 
@@ -85,7 +85,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public ExtendedTriggerMessageRequest(NetworkingNode_Id             NetworkingNodeId,
-                                             MessageTriggers               RequestedMessage,
+                                             MessageTrigger                RequestedMessage,
                                              Connector_Id?                 ConnectorId         = null,
 
                                              IEnumerable<KeyPair>?         SignKeys            = null,
@@ -271,11 +271,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #region MessageExtendedTriggers    [mandatory]
 
-                if (!JSON.MapMandatory("requestedMessage",
-                                       "requested message",
-                                       MessageTriggersExtensions.Parse,
-                                       out MessageTriggers  MessageExtendedTriggers,
-                                       out                  ErrorResponse))
+                if (!JSON.ParseMandatory("requestedMessage",
+                                         "requested message",
+                                         MessageTrigger.TryParse,
+                                         out MessageTrigger  MessageExtendedTriggers,
+                                         out                 ErrorResponse))
                 {
                     return false;
                 }
@@ -378,19 +378,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("requestedMessage",    RequestedMessage.AsText()),
+                                 new JProperty("requestedMessage",   RequestedMessage.ToString()),
 
                            ConnectorId.HasValue
-                               ? new JProperty("connectorId",         ConnectorId.Value.Value)
+                               ? new JProperty("connectorId",        ConnectorId.Value.Value)
                                : null,
 
                            Signatures.Any()
-                               ? new JProperty("signatures",          new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
-                                                                                                                                 CustomCustomDataSerializer))))
+                               ? new JProperty("signatures",         new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                                CustomCustomDataSerializer))))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",          CustomData.      ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",         CustomData.      ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

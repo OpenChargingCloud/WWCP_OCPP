@@ -51,19 +51,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// The JSON-LD context of this object.
         /// </summary>
-        public JSONLDContext    Context
+        public JSONLDContext   Context
             => DefaultJSONLDContext;
 
         /// <summary>
         /// The message to trigger.
         /// </summary>
-        public MessageTriggers  RequestedMessage    { get; }
+        public MessageTrigger  RequestedMessage    { get; }
 
         /// <summary>
         /// Optional connector identification whenever the message
         /// applies to a specific connector.
         /// </summary>
-        public Connector_Id?    ConnectorId         { get; }
+        public Connector_Id?   ConnectorId         { get; }
 
         #endregion
 
@@ -86,7 +86,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public TriggerMessageRequest(NetworkingNode_Id             NetworkingNodeId,
-                                     MessageTriggers               RequestedMessage,
+                                     MessageTrigger                RequestedMessage,
                                      Connector_Id?                 ConnectorId         = null,
 
                                      IEnumerable<KeyPair>?         SignKeys            = null,
@@ -277,7 +277,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             NetworkingNodeId,
 
                                             XML.MapEnumValuesOrFail(OCPPNS.OCPPv1_6_CP + "requestedMessage",
-                                                                    MessageTriggersExtensions.Parse),
+                                                                    MessageTrigger.Parse),
 
                                             XML.MapValueOrNullable (OCPPNS.OCPPv1_6_CP + "connectorId",
                                                                     Connector_Id.Parse),
@@ -357,11 +357,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #region MessageTriggers    [mandatory]
 
-                if (!JSON.MapMandatory("requestedMessage",
-                                       "requested message",
-                                       MessageTriggersExtensions.Parse,
-                                       out MessageTriggers MessageTriggers,
-                                       out ErrorResponse))
+                if (!JSON.ParseMandatory("requestedMessage",
+                                         "requested message",
+                                         MessageTrigger.TryParse,
+                                         out MessageTrigger MessageTriggers,
+                                         out ErrorResponse))
                 {
                     return false;
                 }
@@ -458,10 +458,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             => new (OCPPNS.OCPPv1_6_CP + "triggerMessageRequest",
 
-                   new XElement(OCPPNS.OCPPv1_6_CP + "requestedMessage",   RequestedMessage.AsText()),
+                         new XElement(OCPPNS.OCPPv1_6_CP + "requestedMessage",   RequestedMessage.ToString()),
 
                    ConnectorId.HasValue
-                       ? new XElement(OCPPNS.OCPPv1_6_CP + "connectorId",  ConnectorId.ToString())
+                       ? new XElement(OCPPNS.OCPPv1_6_CP + "connectorId",        ConnectorId.     ToString())
                        : null
 
                );
@@ -483,7 +483,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("requestedMessage",   RequestedMessage.AsText()),
+                                 new JProperty("requestedMessage",   RequestedMessage.ToString()),
 
                            ConnectorId.HasValue
                                ? new JProperty("connectorId",        ConnectorId.Value.Value)
@@ -495,7 +495,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",         CustomData.     ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",         CustomData.      ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
@@ -620,7 +620,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             => String.Concat(
 
-                   RequestedMessage.AsText(),
+                   RequestedMessage.ToString(),
 
                    ConnectorId.HasValue
                        ? $" at connector '{ConnectorId}'"

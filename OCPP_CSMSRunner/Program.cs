@@ -1255,14 +1255,14 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                            new OCPPv1_6.CS.TriggerMessageRequest(
                                                                NetworkingNodeId:   NetworkingNode_Id.Parse(chargingStationId),
                                                                RequestedMessage:   commandArray[1].ToLower() switch {
-                                                                                       "bootnotification"               => OCPPv1_6.MessageTriggers.BootNotification,
-                                                                                       "logstatusnotification"          => OCPPv1_6.MessageTriggers.LogStatusNotification,
-                                                                                       "diagnosticsstatusnotification"  => OCPPv1_6.MessageTriggers.DiagnosticsStatusNotification,
-                                                                                       "firmwarestatusnotification"     => OCPPv1_6.MessageTriggers.FirmwareStatusNotification,
-                                                                                       "metervalues"                    => OCPPv1_6.MessageTriggers.MeterValues,
-                                                                                       "signchargepointcertificate"     => OCPPv1_6.MessageTriggers.SignChargePointCertificate,
-                                                                                       "statusnotification"             => OCPPv1_6.MessageTriggers.StatusNotification,
-                                                                                       _                                => OCPPv1_6.MessageTriggers.Heartbeat
+                                                                                       "bootnotification"               => cloud.charging.open.protocols.OCPP.MessageTrigger.BootNotification,
+                                                                                       "logstatusnotification"          => cloud.charging.open.protocols.OCPP.MessageTrigger.LogStatusNotification,
+                                                                                       "diagnosticsstatusnotification"  => cloud.charging.open.protocols.OCPP.MessageTrigger.DiagnosticsStatusNotification,
+                                                                                       "firmwarestatusnotification"     => cloud.charging.open.protocols.OCPP.MessageTrigger.FirmwareStatusNotification,
+                                                                                       "metervalues"                    => cloud.charging.open.protocols.OCPP.MessageTrigger.MeterValues,
+                                                                                       "signchargepointcertificate"     => cloud.charging.open.protocols.OCPP.MessageTrigger.SignChargePointCertificate,
+                                                                                       "statusnotification"             => cloud.charging.open.protocols.OCPP.MessageTrigger.StatusNotification,
+                                                                                       _                                => cloud.charging.open.protocols.OCPP.MessageTrigger.Heartbeat
                                                                                    }
                                                            )
                                                        );
@@ -1278,14 +1278,14 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                            new OCPPv2_1.CSMS.TriggerMessageRequest(
                                                                NetworkingNodeId:   NetworkingNode_Id.Parse(chargingStationId),
                                                                RequestedMessage:   commandArray[1].ToLower() switch {
-                                                                                       "bootnotification"                => OCPPv2_1.MessageTrigger.BootNotification,
-                                                                                       "logstatusnotification"           => OCPPv2_1.MessageTrigger.LogStatusNotification,
-                                                                                       "diagnosticsstatusnotification"   => OCPPv2_1.MessageTrigger.DiagnosticsStatusNotification,
-                                                                                       "firmwarestatusnotification"      => OCPPv2_1.MessageTrigger.FirmwareStatusNotification,
-                                                                                       "metervalues"                     => OCPPv2_1.MessageTrigger.MeterValues,
-                                                                                       "SignChargingStationCertificate"  => OCPPv2_1.MessageTrigger.SignChargingStationCertificate,
-                                                                                       "statusnotification"              => OCPPv2_1.MessageTrigger.StatusNotification,
-                                                                                       _                                 => OCPPv2_1.MessageTrigger.Heartbeat
+                                                                                       "bootnotification"                => cloud.charging.open.protocols.OCPP.MessageTrigger.BootNotification,
+                                                                                       "logstatusnotification"           => cloud.charging.open.protocols.OCPP.MessageTrigger.LogStatusNotification,
+                                                                                       "diagnosticsstatusnotification"   => cloud.charging.open.protocols.OCPP.MessageTrigger.DiagnosticsStatusNotification,
+                                                                                       "firmwarestatusnotification"      => cloud.charging.open.protocols.OCPP.MessageTrigger.FirmwareStatusNotification,
+                                                                                       "metervalues"                     => cloud.charging.open.protocols.OCPP.MessageTrigger.MeterValues,
+                                                                                       "SignChargingStationCertificate"  => cloud.charging.open.protocols.OCPP.MessageTrigger.SignChargingStationCertificate,
+                                                                                       "statusnotification"              => cloud.charging.open.protocols.OCPP.MessageTrigger.StatusNotification,
+                                                                                       _                                 => cloud.charging.open.protocols.OCPP.MessageTrigger.Heartbeat
                                                                                    }
                                                            )
                                                        );
@@ -1316,14 +1316,14 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                            new OCPPv1_6.CS.TriggerMessageRequest(
                                                                NetworkingNodeId:   NetworkingNode_Id.Parse(chargingStationId),
                                                                RequestedMessage:   commandArray[2].ToLower() switch {
-                                                                                       "bootnotification"               => OCPPv1_6.MessageTriggers.BootNotification,
-                                                                                       "logstatusnotification"          => OCPPv1_6.MessageTriggers.LogStatusNotification,
-                                                                                       "diagnosticsstatusnotification"  => OCPPv1_6.MessageTriggers.DiagnosticsStatusNotification,
-                                                                                       "firmwarestatusnotification"     => OCPPv1_6.MessageTriggers.FirmwareStatusNotification,
-                                                                                       "metervalues"                    => OCPPv1_6.MessageTriggers.MeterValues,
-                                                                                       "signchargepointcertificate"     => OCPPv1_6.MessageTriggers.SignChargePointCertificate,
-                                                                                       "statusnotification"             => OCPPv1_6.MessageTriggers.StatusNotification,
-                                                                                       _                                => OCPPv1_6.MessageTriggers.Heartbeat
+                                                                                       "bootnotification"               => cloud.charging.open.protocols.OCPP.MessageTrigger.BootNotification,
+                                                                                       "logstatusnotification"          => cloud.charging.open.protocols.OCPP.MessageTrigger.LogStatusNotification,
+                                                                                       "diagnosticsstatusnotification"  => cloud.charging.open.protocols.OCPP.MessageTrigger.DiagnosticsStatusNotification,
+                                                                                       "firmwarestatusnotification"     => cloud.charging.open.protocols.OCPP.MessageTrigger.FirmwareStatusNotification,
+                                                                                       "metervalues"                    => cloud.charging.open.protocols.OCPP.MessageTrigger.MeterValues,
+                                                                                       "signchargepointcertificate"     => cloud.charging.open.protocols.OCPP.MessageTrigger.SignChargePointCertificate,
+                                                                                       "statusnotification"             => cloud.charging.open.protocols.OCPP.MessageTrigger.StatusNotification,
+                                                                                       _                                => cloud.charging.open.protocols.OCPP.MessageTrigger.Heartbeat
                                                                                    },
                                                                ConnectorId:        OCPPv1_6.Connector_Id.Parse(commandArray[1])
                                                            )
@@ -1340,14 +1340,14 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                            new OCPPv2_1.CSMS.TriggerMessageRequest(
                                                                NetworkingNodeId:   NetworkingNode_Id.Parse(chargingStationId),
                                                                RequestedMessage:   commandArray[2].ToLower() switch {
-                                                                                       "bootnotification"                => OCPPv2_1.MessageTrigger.BootNotification,
-                                                                                       "logstatusnotification"           => OCPPv2_1.MessageTrigger.LogStatusNotification,
-                                                                                       "diagnosticsstatusnotification"   => OCPPv2_1.MessageTrigger.DiagnosticsStatusNotification,
-                                                                                       "firmwarestatusnotification"      => OCPPv2_1.MessageTrigger.FirmwareStatusNotification,
-                                                                                       "metervalues"                     => OCPPv2_1.MessageTrigger.MeterValues,
-                                                                                       "SignChargingStationCertificate"  => OCPPv2_1.MessageTrigger.SignChargingStationCertificate,
-                                                                                       "statusnotification"              => OCPPv2_1.MessageTrigger.StatusNotification,
-                                                                                       _                                 => OCPPv2_1.MessageTrigger.Heartbeat
+                                                                                       "bootnotification"                => cloud.charging.open.protocols.OCPP.MessageTrigger.BootNotification,
+                                                                                       "logstatusnotification"           => cloud.charging.open.protocols.OCPP.MessageTrigger.LogStatusNotification,
+                                                                                       "diagnosticsstatusnotification"   => cloud.charging.open.protocols.OCPP.MessageTrigger.DiagnosticsStatusNotification,
+                                                                                       "firmwarestatusnotification"      => cloud.charging.open.protocols.OCPP.MessageTrigger.FirmwareStatusNotification,
+                                                                                       "metervalues"                     => cloud.charging.open.protocols.OCPP.MessageTrigger.MeterValues,
+                                                                                       "SignChargingStationCertificate"  => cloud.charging.open.protocols.OCPP.MessageTrigger.SignChargingStationCertificate,
+                                                                                       "statusnotification"              => cloud.charging.open.protocols.OCPP.MessageTrigger.StatusNotification,
+                                                                                       _                                 => cloud.charging.open.protocols.OCPP.MessageTrigger.Heartbeat
                                                                                    },
                                                                EVSE:               new OCPPv2_1.EVSE(
                                                                                        OCPPv2_1.EVSE_Id.Parse(commandArray[1])
@@ -1378,14 +1378,14 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                            new OCPPv2_1.CSMS.TriggerMessageRequest(
                                                                NetworkingNodeId:   NetworkingNode_Id.Parse(chargingStationId),
                                                                RequestedMessage:   commandArray[3].ToLower() switch {
-                                                                                       "bootnotification"                => OCPPv2_1.MessageTrigger.BootNotification,
-                                                                                       "logstatusnotification"           => OCPPv2_1.MessageTrigger.LogStatusNotification,
-                                                                                       "diagnosticsstatusnotification"   => OCPPv2_1.MessageTrigger.DiagnosticsStatusNotification,
-                                                                                       "firmwarestatusnotification"      => OCPPv2_1.MessageTrigger.FirmwareStatusNotification,
-                                                                                       "metervalues"                     => OCPPv2_1.MessageTrigger.MeterValues,
-                                                                                       "SignChargingStationCertificate"  => OCPPv2_1.MessageTrigger.SignChargingStationCertificate,
-                                                                                       "statusnotification"              => OCPPv2_1.MessageTrigger.StatusNotification,
-                                                                                       _                                 => OCPPv2_1.MessageTrigger.Heartbeat
+                                                                                       "bootnotification"                => cloud.charging.open.protocols.OCPP.MessageTrigger.BootNotification,
+                                                                                       "logstatusnotification"           => cloud.charging.open.protocols.OCPP.MessageTrigger.LogStatusNotification,
+                                                                                       "diagnosticsstatusnotification"   => cloud.charging.open.protocols.OCPP.MessageTrigger.DiagnosticsStatusNotification,
+                                                                                       "firmwarestatusnotification"      => cloud.charging.open.protocols.OCPP.MessageTrigger.FirmwareStatusNotification,
+                                                                                       "metervalues"                     => cloud.charging.open.protocols.OCPP.MessageTrigger.MeterValues,
+                                                                                       "SignChargingStationCertificate"  => cloud.charging.open.protocols.OCPP.MessageTrigger.SignChargingStationCertificate,
+                                                                                       "statusnotification"              => cloud.charging.open.protocols.OCPP.MessageTrigger.StatusNotification,
+                                                                                       _                                 => cloud.charging.open.protocols.OCPP.MessageTrigger.Heartbeat
                                                                                    },
                                                                EVSE:               new OCPPv2_1.EVSE(
                                                                                        OCPPv2_1.EVSE_Id.     Parse(commandArray[1]),
@@ -2901,14 +2901,14 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                        new OCPPv1_6.CS.ExtendedTriggerMessageRequest(
                                                            NetworkingNodeId:   NetworkingNode_Id.Parse(chargingStationId),
                                                            RequestedMessage:   commandArray[1].ToLower() switch {
-                                                                                   "bootnotification"               => OCPPv1_6.MessageTriggers.BootNotification,
-                                                                                   "logstatusnotification"          => OCPPv1_6.MessageTriggers.LogStatusNotification,
-                                                                                   "diagnosticsstatusnotification"  => OCPPv1_6.MessageTriggers.DiagnosticsStatusNotification,
-                                                                                   "firmwarestatusnotification"     => OCPPv1_6.MessageTriggers.FirmwareStatusNotification,
-                                                                                   "metervalues"                    => OCPPv1_6.MessageTriggers.MeterValues,
-                                                                                   "signchargepointcertificate"     => OCPPv1_6.MessageTriggers.SignChargePointCertificate,
-                                                                                   "statusnotification"             => OCPPv1_6.MessageTriggers.StatusNotification,
-                                                                                   _                                => OCPPv1_6.MessageTriggers.Heartbeat
+                                                                                   "bootnotification"               => cloud.charging.open.protocols.OCPP.MessageTrigger.BootNotification,
+                                                                                   "logstatusnotification"          => cloud.charging.open.protocols.OCPP.MessageTrigger.LogStatusNotification,
+                                                                                   "diagnosticsstatusnotification"  => cloud.charging.open.protocols.OCPP.MessageTrigger.DiagnosticsStatusNotification,
+                                                                                   "firmwarestatusnotification"     => cloud.charging.open.protocols.OCPP.MessageTrigger.FirmwareStatusNotification,
+                                                                                   "metervalues"                    => cloud.charging.open.protocols.OCPP.MessageTrigger.MeterValues,
+                                                                                   "signchargepointcertificate"     => cloud.charging.open.protocols.OCPP.MessageTrigger.SignChargePointCertificate,
+                                                                                   "statusnotification"             => cloud.charging.open.protocols.OCPP.MessageTrigger.StatusNotification,
+                                                                                   _                                => cloud.charging.open.protocols.OCPP.MessageTrigger.Heartbeat
                                                                                }
                                                        )
                                                    );
@@ -2936,14 +2936,14 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                        new OCPPv1_6.CS.ExtendedTriggerMessageRequest(
                                                            NetworkingNodeId:   NetworkingNode_Id.Parse(chargingStationId),
                                                            RequestedMessage:   commandArray[2].ToLower() switch {
-                                                                                   "bootnotification"               => OCPPv1_6.MessageTriggers.BootNotification,
-                                                                                   "logstatusnotification"          => OCPPv1_6.MessageTriggers.LogStatusNotification,
-                                                                                   "diagnosticsstatusnotification"  => OCPPv1_6.MessageTriggers.DiagnosticsStatusNotification,
-                                                                                   "firmwarestatusnotification"     => OCPPv1_6.MessageTriggers.FirmwareStatusNotification,
-                                                                                   "metervalues"                    => OCPPv1_6.MessageTriggers.MeterValues,
-                                                                                   "signchargepointcertificate"     => OCPPv1_6.MessageTriggers.SignChargePointCertificate,
-                                                                                   "statusnotification"             => OCPPv1_6.MessageTriggers.StatusNotification,
-                                                                                   _                                => OCPPv1_6.MessageTriggers.Heartbeat
+                                                                                   "bootnotification"               => cloud.charging.open.protocols.OCPP.MessageTrigger.BootNotification,
+                                                                                   "logstatusnotification"          => cloud.charging.open.protocols.OCPP.MessageTrigger.LogStatusNotification,
+                                                                                   "diagnosticsstatusnotification"  => cloud.charging.open.protocols.OCPP.MessageTrigger.DiagnosticsStatusNotification,
+                                                                                   "firmwarestatusnotification"     => cloud.charging.open.protocols.OCPP.MessageTrigger.FirmwareStatusNotification,
+                                                                                   "metervalues"                    => cloud.charging.open.protocols.OCPP.MessageTrigger.MeterValues,
+                                                                                   "signchargepointcertificate"     => cloud.charging.open.protocols.OCPP.MessageTrigger.SignChargePointCertificate,
+                                                                                   "statusnotification"             => cloud.charging.open.protocols.OCPP.MessageTrigger.StatusNotification,
+                                                                                   _                                => cloud.charging.open.protocols.OCPP.MessageTrigger.Heartbeat
                                                                                },
                                                            ConnectorId:        OCPPv1_6.Connector_Id.Parse(commandArray[1])
                                                        )

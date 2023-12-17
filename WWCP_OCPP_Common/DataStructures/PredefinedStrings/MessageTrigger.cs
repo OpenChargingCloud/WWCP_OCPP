@@ -21,7 +21,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1
+namespace cloud.charging.open.protocols.OCPP
 {
 
     /// <summary>
@@ -229,7 +229,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             = Register("MeterValues");
 
         /// <summary>
-        /// To trigger a SignCertificate.req with certificateType: ChargingStationCertificate
+        /// To trigger an OCPP v1.x SignCertificate request with certificateType: SignChargePointCertificate
+        /// </summary>
+        public static MessageTrigger SignChargePointCertificate           { get; }
+            = Register("SignChargePointCertificate");
+
+        /// <summary>
+        /// To trigger an OCPP v2.x SignCertificate request with certificateType: ChargingStationCertificate
         /// </summary>
         public static MessageTrigger SignChargingStationCertificate       { get; }
             = Register("SignChargingStationCertificate");
