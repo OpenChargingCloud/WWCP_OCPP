@@ -44,7 +44,9 @@ This project provides additional data structures and commands to ensure a secure
 
 #### Controllable Loads (German §14a EnWG)
 
-...
+Renewable energy sources and smart grids allow an efficient energy demand-side management (DSM) by a mutual information exchange between the distribution grid operator (DSO) and the smart devices in real-time. However all this communication is highly regulated and requires strong cyber security methods to ensure, that this energy management will not become an attack vector against the entire energy grid.
+
+In contrast to the *Smart Meter Infrastructure*, which only defines perimeter security based on *Smart Meter GateWays (SMGW)*, this project uses *end-to-end* signatures to control the energy loads and inform the end users about time spans of *"dimmed"* energy availability.
 
 
 #### European General Data Protection Regulation (GDPR)
