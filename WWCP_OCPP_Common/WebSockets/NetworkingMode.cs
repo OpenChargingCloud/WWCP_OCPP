@@ -20,10 +20,8 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
     public enum NetworkingMode
     {
-
         Standard,
         NetworkingExtensions
-
     }
 
 }

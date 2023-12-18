@@ -37,7 +37,8 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
     /// <param name="Action">An OCPP action/method name.</param>
     /// <param name="Payload">A JSON request message payload.</param>
     /// <param name="ErrorMessage">An optional error message, e.g. during sending of the message.</param>
-    public class OCPP_JSONRequestMessage(NetworkingNode_Id  DestinationNodeId,
+    public class OCPP_JSONRequestMessage(NetworkingMode     NetworkingMode,
+                                         NetworkingNode_Id  DestinationNodeId,
                                          NetworkPath        NetworkPath,
                                          Request_Id         RequestId,
                                          String             Action,
@@ -46,6 +47,11 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
     {
 
         #region Properties
+
+        /// <summary>
+        /// The OCPP networking mode to use.
+        /// </summary>
+        public NetworkingMode      NetworkingMode       { get; } = NetworkingMode;
 
         /// <summary>
         /// The networking node identification of the message destination.
@@ -135,6 +141,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                         return false;
 
                     RequestMessage = new OCPP_JSONRequestMessage(
+                                         NetworkingMode.Standard,
                                          NetworkingNode_Id.Zero,
                                          NetworkPath.Empty,
                                          requestId,
@@ -172,7 +179,8 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                     if (!NetworkingNode_Id.TryParse(JSONArray[1]?.Value<String>() ?? "", out var networkingNodeId))
                         return false;
 
-                    if (!NetworkPath.      TryParse(JSONArray[2] as JArray        ?? [], out var networkPath, out _))
+                    if (JSONArray[2] is not JArray networkPathJSONArray ||
+                        !NetworkPath.      TryParse(networkPathJSONArray, out var networkPath, out _))
                         return false;
 
                     if (!Request_Id.       TryParse(JSONArray[3]?.Value<String>() ?? "", out var requestId))
@@ -186,6 +194,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                         return false;
 
                     RequestMessage = new OCPP_JSONRequestMessage(
+                                         NetworkingMode.NetworkingExtensions,
                                          networkingNodeId,
                                          networkPath ?? NetworkPath.Empty,
                                          requestId,
@@ -207,34 +216,14 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
         #endregion
 
-        #region ToJSON(NetworkingMode = Standard)
+        #region ToJSON()
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="NetworkingMode">The networking mode to use.</param>
-        public JArray ToJSON(NetworkingMode NetworkingMode = NetworkingMode.Standard)
+        public JArray ToJSON()
 
-            => NetworkingMode == NetworkingMode.Standard
-
-                   // OCPP Standard:
-
-                   // [
-                   //     2,                  // MessageType: CALL (Client-to-Server)
-                   //    "19223201",          // RequestId
-                   //    "BootNotification",  // Action
-                   //    {
-                   //        "chargePointVendor": "VendorX",
-                   //        "chargePointModel":  "SingleSocketCharger"
-                   //    }
-                   // ]
-                   ? new (2,
-                          RequestId.ToString(),
-                          Action,
-                          Payload)
-
-
-                   // Networking Nodes Extensions:
+            => NetworkingMode switch {
 
                    // [
                    //     2,                  // MessageType: CALL (Client-to-Server)
@@ -247,12 +236,30 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                    //        "chargePointModel":  "SingleSocketCharger"
                    //    }
                    // ]
-                   : new (2,
-                          DestinationNodeId?.ToString() ?? "",
-                          NetworkPath?.      ToJSON()   ?? [],
-                          RequestId.         ToString(),
-                          Action,
-                          Payload);
+                   NetworkingMode.NetworkingExtensions
+                       => new (2,
+                               DestinationNodeId?.ToString() ?? "",
+                               NetworkPath?.      ToJSON()   ?? [],
+                               RequestId.         ToString(),
+                               Action,
+                               Payload),
+
+
+                    // [
+                   //     2,                  // MessageType: CALL (Client-to-Server)
+                   //    "19223201",          // RequestId
+                   //    "BootNotification",  // Action
+                   //    {
+                   //        "chargePointVendor": "VendorX",
+                   //        "chargePointModel":  "SingleSocketCharger"
+                   //    }
+                   // ]
+                   _   => new (2,
+                               RequestId.ToString(),
+                               Action,
+                               Payload)
+
+                };
 
         #endregion
 

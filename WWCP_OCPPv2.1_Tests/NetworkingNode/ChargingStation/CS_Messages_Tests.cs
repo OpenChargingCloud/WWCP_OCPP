@@ -112,6 +112,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CS
                     return Task.CompletedTask;
                 };
 
+                chargingStation1.NetworkingMode = OCPP.WebSockets.NetworkingMode.NetworkingExtensions;
+
 
                 var reason    = BootReason.PowerUp;
                 var response  = await chargingStation1.SendBootNotification(
@@ -119,20 +121,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CS
                                     CustomData:   null
                                 );
 
+
                 Assert.Multiple(() => {
 
                     Assert.That(response.Result.ResultCode,                                Is.EqualTo(ResultCode.OK));
                     Assert.That(response.Status,                                           Is.EqualTo(RegistrationStatus.Accepted));
 
                     Assert.That(nnBootNotificationRequests.  Count,                        Is.EqualTo(1), "The BootNotification did not reach the networking node!");
-                    Assert.That(nnBootNotificationRequests.  First().DestinationNodeId,    Is.EqualTo(chargingStation1.Id));
+                    Assert.That(nnBootNotificationRequests.  First().DestinationNodeId,    Is.EqualTo(NetworkingNode_Id.CSMS));
                     Assert.That(nnBootNotificationRequests.  First().NetworkPath.Length,   Is.EqualTo(1));
                     Assert.That(nnBootNotificationRequests.  First().NetworkPath.Source,   Is.EqualTo(chargingStation1.Id));
                     Assert.That(nnBootNotificationRequests.  First().NetworkPath.Last,     Is.EqualTo(chargingStation1.Id));
                     Assert.That(nnBootNotificationRequests.  First().Reason,               Is.EqualTo(reason));
 
                     Assert.That(csmsBootNotificationRequests.Count,                        Is.EqualTo(1), "The BootNotification did not reach the CSMS!");
-                    Assert.That(csmsBootNotificationRequests.First().DestinationNodeId,    Is.EqualTo(networkingNode1. Id));
+                    Assert.That(csmsBootNotificationRequests.First().DestinationNodeId,    Is.EqualTo(NetworkingNode_Id.CSMS));
                     Assert.That(csmsBootNotificationRequests.First().NetworkPath.Length,   Is.EqualTo(2));
                     Assert.That(csmsBootNotificationRequests.First().NetworkPath.Source,   Is.EqualTo(chargingStation1.Id));
                     Assert.That(csmsBootNotificationRequests.First().NetworkPath.Last,     Is.EqualTo(networkingNode1. Id));

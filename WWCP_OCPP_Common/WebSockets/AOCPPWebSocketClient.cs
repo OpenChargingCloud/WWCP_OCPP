@@ -711,15 +711,16 @@ namespace cloud.charging.open.protocols.OCPP.CS
                     {
 
                         jsonRequestMessage = new OCPP_JSONRequestMessage(
+                                                 NetworkingMode,
                                                  DestinationNodeId,
-                                                (NetworkPath ?? NetworkPath.Empty).Append(Id),
+                                                 NetworkPath.Append(Id),
                                                  RequestId,
                                                  Action,
                                                  JSONMessage
                                              );
 
                         await SendText(jsonRequestMessage.
-                                           ToJSON  (NetworkingMode).
+                                           ToJSON  ().
                                            ToString(JSONFormatting));
 
                         requests.TryAdd(RequestId,
@@ -735,6 +736,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
                     {
 
                         jsonRequestMessage = new OCPP_JSONRequestMessage(
+                                                 NetworkingMode,
                                                  DestinationNodeId,
                                                  NetworkPath ?? NetworkPath.Empty,
                                                  RequestId,
@@ -753,6 +755,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
                         e = e.InnerException;
 
                     jsonRequestMessage = new OCPP_JSONRequestMessage(
+                                             NetworkingMode,
                                              DestinationNodeId,
                                              NetworkPath ?? NetworkPath.Empty,
                                              RequestId,
@@ -772,6 +775,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
 
             else
                 jsonRequestMessage = new OCPP_JSONRequestMessage(
+                                         NetworkingMode,
                                          DestinationNodeId,
                                          NetworkPath ?? NetworkPath.Empty,
                                          RequestId,
@@ -819,7 +823,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
 
                         binaryRequestMessage = new OCPP_BinaryRequestMessage(
                                                    DestinationNodeId,
-                                                  (NetworkPath ?? NetworkPath.Empty).Append(Id),
+                                                   NetworkPath.Append(Id),
                                                    RequestId,
                                                    Action,
                                                    BinaryMessage

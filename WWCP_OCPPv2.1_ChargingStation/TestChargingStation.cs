@@ -34,6 +34,7 @@ using org.GraphDefined.Vanaheimr.Hermod.Logging;
 
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
+using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
 
@@ -380,6 +381,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public SignaturePolicy               SignaturePolicy
             => SignaturePolicies.First();
 
+
+        public NetworkingMode? NetworkingMode
+        {
+
+            get
+            {
+                return (CSClient as ChargingStationWSClient)?.NetworkingMode;
+            }
+
+            set
+            {
+
+                var cs = CSClient as ChargingStationWSClient;
+
+                if (cs is not null && value.HasValue)
+                    cs.NetworkingMode = value.Value;
+
+            }
+
+        }
 
 
         // Controlled by the CSMS!
@@ -2141,6 +2162,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                           UInt32?                              InternalBufferSize           = null,
 
                                                           IEnumerable<String>?                 SecWebSocketProtocols        = null,
+                                                          NetworkingMode?                      NetworkingMode               = null,
 
                                                           Boolean                              DisableMaintenanceTasks      = false,
                                                           TimeSpan?                            MaintenanceEvery             = null,
@@ -2177,7 +2199,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                               InternalBufferSize,
 
                                               SecWebSocketProtocols ?? new[] { Version.WebSocketSubProtocolId },
-                                              null,
+                                              NetworkingMode,
 
                                               DisableWebSocketPings,
                                               WebSocketPingEvery,
