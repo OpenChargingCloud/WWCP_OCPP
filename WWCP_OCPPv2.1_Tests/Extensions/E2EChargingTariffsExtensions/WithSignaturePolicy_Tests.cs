@@ -197,7 +197,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 #region Verify the request at the charging station
 
                 ClassicAssert.AreEqual(1,                                         setDefaultChargingTariffRequests.Count);
-                ClassicAssert.AreEqual(chargingStation1.Id,                       setDefaultChargingTariffRequests.First().NetworkingNodeId);
+                ClassicAssert.AreEqual(chargingStation1.Id,                       setDefaultChargingTariffRequests.First().DestinationNodeId);
 
                 ClassicAssert.AreEqual(chargingTariff.Id,                         setDefaultChargingTariffRequests.First().ChargingTariff.Id);
                 ClassicAssert.AreEqual(1,                                         setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.Count());
@@ -302,7 +302,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 #region Verify the request at the charging station
 
                 ClassicAssert.AreEqual(1,                                   getDefaultChargingTariffRequests.Count);
-                ClassicAssert.AreEqual(chargingStation2.Id,                 getDefaultChargingTariffRequests.First().NetworkingNodeId);
+                ClassicAssert.AreEqual(chargingStation2.Id,                 getDefaultChargingTariffRequests.First().DestinationNodeId);
 
                 ClassicAssert.AreEqual(1,                                   getDefaultChargingTariffRequests.First().Signatures.Count());
                 ClassicAssert.AreEqual(VerificationStatus.ValidSignature,   getDefaultChargingTariffRequests.First().Signatures.First().Status);
@@ -523,7 +523,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 #region Verify the request at the charging station
 
                 ClassicAssert.AreEqual(1,                                                 setDefaultChargingTariffRequests.Count);
-                ClassicAssert.AreEqual(chargingStation1.Id,                               setDefaultChargingTariffRequests.First().NetworkingNodeId);
+                ClassicAssert.AreEqual(chargingStation1.Id,                               setDefaultChargingTariffRequests.First().DestinationNodeId);
 
                 // Verify the signature of the charging tariff
                 ClassicAssert.AreEqual(chargingTariff.Id,                                 setDefaultChargingTariffRequests.First().ChargingTariff.Id);
@@ -567,7 +567,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 #region Verify the request at the charging station
 
                 ClassicAssert.AreEqual(1,                                                                 getDefaultChargingTariffRequests.Count);
-                ClassicAssert.AreEqual(chargingStation1.Id,                                               getDefaultChargingTariffRequests.First().NetworkingNodeId);
+                ClassicAssert.AreEqual(chargingStation1.Id,                                               getDefaultChargingTariffRequests.First().DestinationNodeId);
 
                 // Verify the signature of the request
                 ClassicAssert.AreEqual(1,                                                                 getDefaultChargingTariffRequests.First().Signatures.Count());
@@ -599,7 +599,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 #region Verify the request at the charging station
 
                 ClassicAssert.AreEqual(1,                                                                 removeDefaultChargingTariffRequests.Count);
-                ClassicAssert.AreEqual(chargingStation1.Id,                                               removeDefaultChargingTariffRequests.First().NetworkingNodeId);
+                ClassicAssert.AreEqual(chargingStation1.Id,                                               removeDefaultChargingTariffRequests.First().DestinationNodeId);
 
                 // Verify the signature of the request
                 ClassicAssert.AreEqual(1,                                                                 removeDefaultChargingTariffRequests.First().Signatures.Count());
@@ -633,7 +633,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 #region Verify the request at the charging station
 
                 ClassicAssert.AreEqual(2,                                                                 getDefaultChargingTariffRequests.Count);
-                ClassicAssert.AreEqual(chargingStation1.Id,                                               getDefaultChargingTariffRequests.ElementAt(1).NetworkingNodeId);
+                ClassicAssert.AreEqual(chargingStation1.Id,                                               getDefaultChargingTariffRequests.ElementAt(1).DestinationNodeId);
 
                 // Verify the signature of the request
                 ClassicAssert.AreEqual(1,                                                                 getDefaultChargingTariffRequests.ElementAt(1).Signatures.Count());
@@ -855,7 +855,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 #region Verify the request at the charging station
 
                 ClassicAssert.AreEqual(1,                                                 setDefaultChargingTariffRequests.Count);
-                ClassicAssert.AreEqual(chargingStation2.Id,                               setDefaultChargingTariffRequests.First().NetworkingNodeId);
+                ClassicAssert.AreEqual(chargingStation2.Id,                               setDefaultChargingTariffRequests.First().DestinationNodeId);
 
                 // Verify the signature of the charging tariff
                 ClassicAssert.AreEqual(chargingTariff.Id,                                 setDefaultChargingTariffRequests.First().ChargingTariff.Id);
@@ -899,7 +899,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 #region Verify the request at the charging station
 
                 ClassicAssert.AreEqual(1,                                                                 getDefaultChargingTariffRequests.Count);
-                ClassicAssert.AreEqual(chargingStation2.Id,                                               getDefaultChargingTariffRequests.First().NetworkingNodeId);
+                ClassicAssert.AreEqual(chargingStation2.Id,                                               getDefaultChargingTariffRequests.First().DestinationNodeId);
 
                 // Verify the signature of the request
                 ClassicAssert.AreEqual(1,                                                                 getDefaultChargingTariffRequests.First().Signatures.Count());
@@ -931,7 +931,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 #region Verify the request at the charging station
 
                 ClassicAssert.AreEqual(1,                                                                 removeDefaultChargingTariffRequests.Count);
-                ClassicAssert.AreEqual(chargingStation2.Id,                                               removeDefaultChargingTariffRequests.First().NetworkingNodeId);
+                ClassicAssert.AreEqual(chargingStation2.Id,                                               removeDefaultChargingTariffRequests.First().DestinationNodeId);
 
                 // Verify the signature of the request
                 ClassicAssert.AreEqual(1,                                                                 removeDefaultChargingTariffRequests.First().Signatures.Count());
@@ -965,7 +965,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 #region Verify the request at the charging station
 
                 ClassicAssert.AreEqual(2,                                                                 getDefaultChargingTariffRequests.Count);
-                ClassicAssert.AreEqual(chargingStation2.Id,                                               getDefaultChargingTariffRequests.ElementAt(1).NetworkingNodeId);
+                ClassicAssert.AreEqual(chargingStation2.Id,                                               getDefaultChargingTariffRequests.ElementAt(1).DestinationNodeId);
 
                 // Verify the signature of the request
                 ClassicAssert.AreEqual(1,                                                                 getDefaultChargingTariffRequests.ElementAt(1).Signatures.Count());
@@ -1190,7 +1190,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 #region Verify the request at the charging station
 
                 ClassicAssert.AreEqual(1,                                                 setDefaultChargingTariffRequests.Count);
-                ClassicAssert.AreEqual(chargingStation2.Id,                               setDefaultChargingTariffRequests.First().NetworkingNodeId);
+                ClassicAssert.AreEqual(chargingStation2.Id,                               setDefaultChargingTariffRequests.First().DestinationNodeId);
 
                 // Verify the signature of the charging tariff
                 ClassicAssert.AreEqual(chargingTariff.Id,                                setDefaultChargingTariffRequests.First().ChargingTariff.Id);
@@ -1234,7 +1234,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 #region Verify the request at the charging station
 
                 ClassicAssert.AreEqual(1,                                                                 getDefaultChargingTariffRequests.Count);
-                ClassicAssert.AreEqual(chargingStation2.Id,                                               getDefaultChargingTariffRequests.First().NetworkingNodeId);
+                ClassicAssert.AreEqual(chargingStation2.Id,                                               getDefaultChargingTariffRequests.First().DestinationNodeId);
 
                 // Verify the signature of the request
                 ClassicAssert.AreEqual(1,                                                                 getDefaultChargingTariffRequests.First().Signatures.Count());
@@ -1266,7 +1266,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 #region Verify the request at the charging station
 
                 ClassicAssert.AreEqual(1,                                                                 removeDefaultChargingTariffRequests.Count);
-                ClassicAssert.AreEqual(chargingStation2.Id,                                               removeDefaultChargingTariffRequests.First().NetworkingNodeId);
+                ClassicAssert.AreEqual(chargingStation2.Id,                                               removeDefaultChargingTariffRequests.First().DestinationNodeId);
 
                 // Verify the signature of the request
                 ClassicAssert.AreEqual(1,                                                                 removeDefaultChargingTariffRequests.First().Signatures.Count());
@@ -1300,7 +1300,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 #region Verify the request at the charging station
 
                 ClassicAssert.AreEqual(2,                                                                 getDefaultChargingTariffRequests.Count);
-                ClassicAssert.AreEqual(chargingStation2.Id,                                               getDefaultChargingTariffRequests.ElementAt(1).NetworkingNodeId);
+                ClassicAssert.AreEqual(chargingStation2.Id,                                               getDefaultChargingTariffRequests.ElementAt(1).DestinationNodeId);
 
                 // Verify the signature of the request
                 ClassicAssert.AreEqual(1,                                                                 getDefaultChargingTariffRequests.ElementAt(1).Signatures.Count());
@@ -1601,7 +1601,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 #region Verify the request at the charging station
 
                 ClassicAssert.AreEqual(1,                                                 setDefaultChargingTariffRequests.Count);
-                ClassicAssert.AreEqual(chargingStation2.Id,                               setDefaultChargingTariffRequests.First().NetworkingNodeId);
+                ClassicAssert.AreEqual(chargingStation2.Id,                               setDefaultChargingTariffRequests.First().DestinationNodeId);
 
                 // Verify the signature of the charging tariff
                 ClassicAssert.AreEqual(chargingTariff1.Id,                                setDefaultChargingTariffRequests.First().ChargingTariff.Id);
@@ -1646,7 +1646,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 #region Verify the request at the charging station
 
                 ClassicAssert.AreEqual(2,                                                 setDefaultChargingTariffRequests.Count);
-                ClassicAssert.AreEqual(chargingStation2.Id,                               setDefaultChargingTariffRequests.ElementAt(1).NetworkingNodeId);
+                ClassicAssert.AreEqual(chargingStation2.Id,                               setDefaultChargingTariffRequests.ElementAt(1).DestinationNodeId);
 
                 // Verify the signature of the charging tariff
                 ClassicAssert.AreEqual(chargingTariff2.Id,                                setDefaultChargingTariffRequests.ElementAt(1).ChargingTariff.Id);
@@ -1691,7 +1691,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 #region Verify the request at the charging station
 
                 ClassicAssert.AreEqual(1,                                                                 getDefaultChargingTariffRequests.Count);
-                ClassicAssert.AreEqual(chargingStation2.Id,                                               getDefaultChargingTariffRequests.First().NetworkingNodeId);
+                ClassicAssert.AreEqual(chargingStation2.Id,                                               getDefaultChargingTariffRequests.First().DestinationNodeId);
 
                 // Verify the signature of the request
                 ClassicAssert.AreEqual(1,                                                                 getDefaultChargingTariffRequests.First().Signatures.Count());
@@ -1723,7 +1723,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 #region Verify the request at the charging station
 
                 ClassicAssert.AreEqual(1,                                                                 removeDefaultChargingTariffRequests.Count);
-                ClassicAssert.AreEqual(chargingStation2.Id,                                               removeDefaultChargingTariffRequests.First().NetworkingNodeId);
+                ClassicAssert.AreEqual(chargingStation2.Id,                                               removeDefaultChargingTariffRequests.First().DestinationNodeId);
 
                 // Verify the signature of the request
                 ClassicAssert.AreEqual(1,                                                                 removeDefaultChargingTariffRequests.First().Signatures.Count());
@@ -1757,7 +1757,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 #region Verify the request at the charging station
 
                 ClassicAssert.AreEqual(2,                                                                 getDefaultChargingTariffRequests.Count);
-                ClassicAssert.AreEqual(chargingStation2.Id,                                               getDefaultChargingTariffRequests.ElementAt(1).NetworkingNodeId);
+                ClassicAssert.AreEqual(chargingStation2.Id,                                               getDefaultChargingTariffRequests.ElementAt(1).DestinationNodeId);
 
                 // Verify the signature of the request
                 ClassicAssert.AreEqual(1,                                                                 getDefaultChargingTariffRequests.ElementAt(1).Signatures.Count());

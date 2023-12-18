@@ -85,11 +85,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
                 ClassicAssert.AreEqual(ResetStatus.Accepted,   response.Status);
 
                 ClassicAssert.AreEqual(1,                      nnResetRequests.Count);
-                ClassicAssert.AreEqual(chargingStation1.Id,    nnResetRequests.First().NetworkingNodeId);
+                ClassicAssert.AreEqual(chargingStation1.Id,    nnResetRequests.First().DestinationNodeId);
                 ClassicAssert.AreEqual(resetType,              nnResetRequests.First().ResetType);
 
                 ClassicAssert.AreEqual(1,                      csResetRequests.Count);
-                ClassicAssert.AreEqual(chargingStation1.Id,    csResetRequests.First().NetworkingNodeId);
+                ClassicAssert.AreEqual(chargingStation1.Id,    csResetRequests.First().DestinationNodeId);
                 ClassicAssert.AreEqual(resetType,              csResetRequests.First().ResetType);
 
             }

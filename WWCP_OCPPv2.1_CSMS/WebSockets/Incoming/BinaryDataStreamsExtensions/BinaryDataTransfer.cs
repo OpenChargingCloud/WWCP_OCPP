@@ -21,6 +21,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPP.CSMS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
@@ -31,7 +32,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <summary>
     /// The CSMS HTTP/WebSocket/JSON server.
     /// </summary>ACSMSWSServer,
-    public partial class CSMSWSServer : ACSMSWSServer,
+    public partial class CSMSWSServer : AOCPPWebSocketServer,
                                         ICSMSChannel
     {
 
@@ -80,7 +81,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             Receive_BinaryDataTransfer(DateTime                   RequestTimestamp,
                                        WebSocketServerConnection  Connection,
-                                       NetworkingNode_Id          NetworkingNodeId,
+                                       NetworkingNode_Id          DestinationNodeId,
                                        NetworkPath                NetworkPath,
                                        EventTracking_Id           EventTrackingId,
                                        Request_Id                 RequestId,
@@ -99,7 +100,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 OnIncomingBinaryDataTransferWSRequest?.Invoke(startTime,
                                                               this,
                                                               Connection,
-                                                              NetworkingNodeId,
+                                                              DestinationNodeId,
                                                               EventTrackingId,
                                                               RequestTimestamp,
                                                               BinaryRequest,
@@ -121,12 +122,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             {
 
                 if (OCPP.CS.BinaryDataTransferRequest.TryParse(BinaryRequest,
-                                                          RequestId,
-                                                          NetworkingNodeId,
-                                                          NetworkPath,
-                                                          out var request,
-                                                          out var errorResponse,
-                                                          CustomBinaryDataTransferRequestParser) && request is not null) {
+                                                               RequestId,
+                                                               DestinationNodeId,
+                                                               NetworkPath,
+                                                               out var request,
+                                                               out var errorResponse,
+                                                               CustomBinaryDataTransferRequestParser) && request is not null) {
 
                     #region Send OnIncomingBinaryDataTransferRequest event
 
@@ -190,6 +191,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     #endregion
 
                     OCPPResponse  = new OCPP_BinaryResponseMessage(
+                                        NetworkPath.Source,
                                         RequestId,
                                         response.ToBinary(
                                             CustomBinaryDataTransferResponseSerializer,
@@ -233,7 +235,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 OnIncomingBinaryDataTransferWSResponse?.Invoke(endTime,
                                                                this,
                                                                Connection,
-                                                               NetworkingNodeId,
+                                                               DestinationNodeId,
                                                                EventTrackingId,
                                                                RequestTimestamp,
                                                                BinaryRequest,

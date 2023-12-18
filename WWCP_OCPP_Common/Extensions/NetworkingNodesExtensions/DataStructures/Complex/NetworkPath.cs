@@ -52,26 +52,35 @@ namespace cloud.charging.open.protocols.OCPP
 
 
         /// <summary>
+        /// The length of the network path.
+        /// </summary>
+        [Mandatory]
+        public UInt16                          Length
+
+            => (UInt16) networkingNodeIds.Count;
+
+
+        /// <summary>
         /// The first networking node aka the origin of the network path
         /// and thus often a charging station identification.
         /// </summary>
         [Optional]
-        public NetworkingNode_Id?              Origin
+        public NetworkingNode_Id               Source
 
             => NetworkingNodeIds.Any()
                    ? NetworkingNodeIds.First()
-                   : null;
+                   : NetworkingNode_Id.Zero;
 
 
         /// <summary>
         /// The last networking node aka the sender of the current message.
         /// </summary>
         [Optional]
-        public NetworkingNode_Id?              Sender
+        public NetworkingNode_Id               Last
 
             => NetworkingNodeIds.Any()
                    ? NetworkingNodeIds.Last()
-                   : null;
+                   : NetworkingNode_Id.Zero;
 
 
         /// <summary>
@@ -79,7 +88,7 @@ namespace cloud.charging.open.protocols.OCPP
         /// </summary>
         public static NetworkPath               Empty    { get; }
 
-            = new(Array.Empty<NetworkingNode_Id>());
+            = new (Array.Empty<NetworkingNode_Id>());
 
         #endregion
 
@@ -244,13 +253,15 @@ namespace cloud.charging.open.protocols.OCPP
         public NetworkPath Append(NetworkingNode_Id NetworkingNodeId)
         {
 
-            if (networkingNodeIds.Count  == 0 ||
-                networkingNodeIds.Last() != NetworkingNodeId)
+            var newPath = networkingNodeIds.ToList();
+
+            if (newPath.Count  == 0 ||
+                newPath.Last() != NetworkingNodeId)
             {
-                networkingNodeIds.Add(NetworkingNodeId);
+                newPath.Add(NetworkingNodeId);
             }
 
-            return this;
+            return new (newPath);
 
         }
 

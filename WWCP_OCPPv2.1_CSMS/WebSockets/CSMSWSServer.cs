@@ -28,6 +28,7 @@ using org.GraphDefined.Vanaheimr.Hermod.Sockets;
 using org.GraphDefined.Vanaheimr.Hermod.Sockets.TCP;
 
 using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPP.CSMS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
@@ -38,7 +39,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <summary>
     /// The CSMS HTTP/WebSocket/JSON server.
     /// </summary>
-    public partial class CSMSWSServer : ACSMSWSServer,
+    public partial class CSMSWSServer : AOCPPWebSocketServer,
                                         ICSMSWebsocketsChannel
     {
 
@@ -283,58 +284,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         }
 
         #endregion
-
-
-        #region AddOrUpdateHTTPBasicAuth(NetworkingNodeId, Password)
-
-        /// <summary>
-        /// Add the given HTTP Basic Authentication password for the given networking node.
-        /// </summary>
-        /// <param name="NetworkingNodeId">The unique identification of the networking node.</param>
-        /// <param name="Password">The password of the charging station.</param>
-        public void AddOrUpdateHTTPBasicAuth(NetworkingNode_Id  NetworkingNodeId,
-                                             String             Password)
-        {
-
-            ChargingBoxLogins.AddOrUpdate(NetworkingNodeId,
-                                          Password,
-                                          (chargingStationId, password) => Password);
-
-        }
-
-        #endregion
-
-        #region RemoveHTTPBasicAuth     (NetworkingNodeId)
-
-        /// <summary>
-        /// Remove the given HTTP Basic Authentication for the given networking node.
-        /// </summary>
-        /// <param name="NetworkingNodeId">The unique identification of the networking node.</param>
-        public Boolean RemoveHTTPBasicAuth(NetworkingNode_Id NetworkingNodeId)
-        {
-
-            if (ChargingBoxLogins.ContainsKey(NetworkingNodeId))
-                return ChargingBoxLogins.TryRemove(NetworkingNodeId, out _);
-
-            return true;
-
-        }
-
-        #endregion
-
-
-
-        private Task HandleErrors(String     Module,
-                                  String     Caller,
-                                  Exception  Exception,
-                                  String?    Description   = null)
-        {
-
-            DebugX.LogException(Exception, $"{Module}.{Caller}{(Description is not null ? $" {Description}" : "")}");
-
-            return Task.CompletedTask;
-
-        }
 
 
     }

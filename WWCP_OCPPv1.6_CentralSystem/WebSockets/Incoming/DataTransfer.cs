@@ -23,6 +23,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPP.CSMS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
@@ -33,7 +34,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <summary>
     /// The CSMS HTTP/WebSocket/JSON server.
     /// </summary>
-    public partial class CentralSystemWSServer : ACSMSWSServer,
+    public partial class CentralSystemWSServer : AOCPPWebSocketServer,
                                                  ICSMSChannel
     {
 
@@ -82,7 +83,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             Receive_DataTransfer(DateTime                   RequestTimestamp,
                                  WebSocketServerConnection  Connection,
-                                 NetworkingNode_Id          NetworkingNodeId,
+                                 NetworkingNode_Id          DestinationNodeId,
                                  NetworkPath                NetworkPath,
                                  EventTracking_Id           EventTrackingId,
                                  Request_Id                 RequestId,
@@ -101,7 +102,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 OnIncomingDataTransferWSRequest?.Invoke(startTime,
                                                         this,
                                                         Connection,
-                                                        NetworkingNodeId,
+                                                        DestinationNodeId,
                                                         EventTrackingId,
                                                         RequestTimestamp,
                                                         JSONRequest,
@@ -124,7 +125,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 if (CP.DataTransferRequest.TryParse(JSONRequest,
                                                     RequestId,
-                                                    NetworkingNodeId,
+                                                    DestinationNodeId,
                                                     NetworkPath,
                                                     out var request,
                                                     out var errorResponse,
@@ -192,6 +193,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     #endregion
 
                     OCPPResponse = new OCPP_JSONResponseMessage(
+                                       NetworkPath.Source,
                                        RequestId,
                                        response.ToJSON(
                                            CustomDataTransferResponseSerializer,
@@ -235,7 +237,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 OnIncomingDataTransferWSResponse?.Invoke(endTime,
                                                          this,
                                                          Connection,
-                                                         NetworkingNodeId,
+                                                         DestinationNodeId,
                                                          EventTrackingId,
                                                          RequestTimestamp,
                                                          JSONRequest,

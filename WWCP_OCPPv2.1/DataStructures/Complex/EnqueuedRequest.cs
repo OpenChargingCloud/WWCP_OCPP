@@ -26,8 +26,8 @@ using cloud.charging.open.protocols.OCPP;
 namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
-    public class EnqueuedRequest(NetworkingNode_Id?              NetworkingNodeId,
-                                 NetworkPath?                    NetworkPath,
+    public class EnqueuedRequest(NetworkingNode_Id               NetworkingNodeId,
+                                 NetworkPath                     NetworkPath,
                                  String                          Command,
                                  IRequest                        Request,
                                  JObject                         RequestJSON,
@@ -44,21 +44,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         }
 
 
-        public NetworkingNode_Id?  NetworkingNodeId    { get; }       = NetworkingNodeId;
+        public NetworkingNode_Id  NetworkingNodeId    { get; }       = NetworkingNodeId;
 
-        public NetworkPath?        NetworkPath         { get; }       = NetworkPath;
+        public NetworkPath        NetworkPath         { get; }       = NetworkPath;
 
-        public String              Command             { get; }       = Command;
+        public String             Command             { get; }       = Command;
 
-        public IRequest            Request             { get; }       = Request;
+        public IRequest           Request             { get; }       = Request;
 
-        public JObject             RequestJSON         { get; }       = RequestJSON;
+        public JObject            RequestJSON         { get; }       = RequestJSON;
 
-        public DateTime            EnqueTimestamp      { get; }       = EnqueTimestamp;
+        public DateTime           EnqueTimestamp      { get; }       = EnqueTimestamp;
 
-        public EnqueuedStatus      Status              { get; set; }  = Status;
+        public EnqueuedStatus     Status              { get; set; }  = Status;
 
-        public Action<Object>      ResponseAction      { get; }       = ResponseAction;
+        public Action<Object>     ResponseAction      { get; }       = ResponseAction;
 
     }
 

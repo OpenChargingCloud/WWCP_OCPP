@@ -66,7 +66,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// The charge point HTTP web socket client runs on a charge point
     /// and connects to a central system to invoke methods.
     /// </summary>
-    public partial class ChargePointWSClient : AChargingStationWSClient,
+    public partial class ChargePointWSClient : AOCPPWebSocketClient,
                                                IChargePointWebSocketClient,
                                                ICPIncomingMessages
     {
@@ -194,6 +194,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                    InternalBufferSize,
 
                    SecWebSocketProtocols,
+                   null,
 
                    DisableWebSocketPings,
                    WebSocketPingEvery,

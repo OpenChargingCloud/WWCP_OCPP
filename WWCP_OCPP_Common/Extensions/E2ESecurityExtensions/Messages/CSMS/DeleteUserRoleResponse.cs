@@ -422,9 +422,9 @@ namespace cloud.charging.open.protocols.OCPP.CS
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<DeleteUserRoleResponse>?  CustomDeleteUserRoleResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<StatusInfo>?                CustomStatusInfoSerializer                 = null,
-                              CustomJObjectSerializerDelegate<Signature>?                 CustomSignatureSerializer                  = null,
-                              CustomJObjectSerializerDelegate<CustomData>?                CustomCustomDataSerializer                 = null)
+                              CustomJObjectSerializerDelegate<StatusInfo>?              CustomStatusInfoSerializer               = null,
+                              CustomJObjectSerializerDelegate<Signature>?               CustomSignatureSerializer                = null,
+                              CustomJObjectSerializerDelegate<CustomData>?              CustomCustomDataSerializer               = null)
         {
 
             var json = JSONObject.Create(

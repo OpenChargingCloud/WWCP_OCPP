@@ -126,7 +126,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
                 ClassicAssert.AreEqual (RegistrationStatus.Accepted,           response.Status);
 
                 ClassicAssert.AreEqual (1,                                     csmsBootNotificationRequests.Count, "The BootNotification did not reach the CSMS!");
-                ClassicAssert.AreEqual (networkingNode1.Id.ToString(),         csmsBootNotificationRequests.First().NetworkPath.Origin.ToString());
+                ClassicAssert.AreEqual (networkingNode1.Id.ToString(),         csmsBootNotificationRequests.First().NetworkPath.Source.ToString());
                 ClassicAssert.AreEqual (reason,                                csmsBootNotificationRequests.First().Reason);
 
                 var chargingStation = csmsBootNotificationRequests.First().ChargingStation;

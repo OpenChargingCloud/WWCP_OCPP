@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <summary>
     /// A charging station HTTP Web Socket client.
     /// </summary>
-    public partial class ChargingStationWSClient : AChargingStationWSClient,
+    public partial class ChargingStationWSClient : AOCPPWebSocketClient,
                                                    IChargingStationWebSocketClient,
                                                    ICSIncomingMessages,
                                                    ICSOutgoingMessagesEvents
@@ -108,8 +108,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             {
 
                 var requestMessage = await SendRequest(
-                                               Request.NetworkingNodeId,
-                                               Request.NetworkPath,
+                                               Request.DestinationNodeId,
                                                Request.Action,
                                                Request.RequestId,
                                                Request.ToJSON(

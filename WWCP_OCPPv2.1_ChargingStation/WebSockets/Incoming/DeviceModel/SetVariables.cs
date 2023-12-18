@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// The charging station HTTP WebSocket client runs on a charging station
     /// and connects to a CSMS to invoke methods.
     /// </summary>
-    public partial class ChargingStationWSClient : AChargingStationWSClient,
+    public partial class ChargingStationWSClient : AOCPPWebSocketClient,
                                                    IChargingStationWebSocketClient,
                                                    ICSIncomingMessages,
                                                    ICSOutgoingMessagesEvents
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             Receive_SetVariables(DateTime                   RequestTimestamp,
                                  WebSocketClientConnection  WebSocketConnection,
-                                 NetworkingNode_Id          NetworkingNodeId,
+                                 NetworkingNode_Id          DestinationNodeId,
                                  NetworkPath                NetworkPath,
                                  EventTracking_Id           EventTrackingId,
                                  Request_Id                 RequestId,
@@ -105,7 +105,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 OnSetVariablesWSRequest?.Invoke(startTime,
                                                 WebSocketConnection,
-                                                NetworkingNodeId,
+                                                DestinationNodeId,
                                                 NetworkPath,
                                                 EventTrackingId,
                                                 RequestJSON);
@@ -126,7 +126,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 if (SetVariablesRequest.TryParse(RequestJSON,
                                                  RequestId,
-                                                 NetworkingNodeId,
+                                                 DestinationNodeId,
                                                  NetworkPath,
                                                  out var request,
                                                  out var errorResponse,
@@ -197,6 +197,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     #endregion
 
                     OCPPResponse = new OCPP_JSONResponseMessage(
+                                       NetworkPath.Source,
                                        RequestId,
                                        response.ToJSON(
                                            CustomSetVariablesResponseSerializer,
@@ -240,7 +241,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 OnSetVariablesWSResponse?.Invoke(endTime,
                                                  WebSocketConnection,
-                                                 NetworkingNodeId,
+                                                 DestinationNodeId,
                                                  NetworkPath,
                                                  EventTrackingId,
                                                  RequestTimestamp,

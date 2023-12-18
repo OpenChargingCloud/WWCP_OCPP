@@ -19,8 +19,6 @@
 
 using Newtonsoft.Json.Linq;
 
-using cloud.charging.open.protocols.OCPP;
-
 #endregion
 
 namespace cloud.charging.open.protocols.OCPP.WebSockets
@@ -29,23 +27,37 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
     /// <summary>
     /// An OCPP HTTP Web Socket JSON response message.
     /// </summary>
+    /// <param name="DestinationNodeId">The networking node identification of the message destination.</param>
     /// <param name="RequestId">An unique request identification.</param>
     /// <param name="Payload">A JSON response message payload.</param>
-    public class OCPP_JSONResponseMessage(Request_Id  RequestId,
-                                          JObject     Payload)
+    /// <param name="NetworkPath">The optional (recorded) path of the request through the overlay network.</param>
+    public class OCPP_JSONResponseMessage(NetworkingNode_Id  DestinationNodeId,
+                                          Request_Id         RequestId,
+                                          JObject            Payload,
+                                          NetworkPath?       NetworkPath   = null)
     {
 
         #region Properties
 
         /// <summary>
-        /// The unique request identification.
+        /// The networking node identification of the message destination.
         /// </summary>
-        public Request_Id  RequestId    { get; } = RequestId;
+        public NetworkingNode_Id?  DestinationNodeId    { get; } = DestinationNodeId;
+
+        /// <summary>
+        /// The unique request identification copied from the request.
+        /// </summary>
+        public Request_Id          RequestId            { get; } = RequestId;
 
         /// <summary>
         /// The JSON response message payload.
         /// </summary>
-        public JObject     Payload      { get; } = Payload;
+        public JObject             Payload              { get; } = Payload;
+
+        /// <summary>
+        /// The (recorded) path of the request through the overlay network.
+        /// </summary>
+        public NetworkPath         NetworkPath          { get; } = NetworkPath ?? NetworkPath.Empty;
 
         #endregion
 
@@ -95,8 +107,10 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                     return false;
 
                 ResponseMessage = new OCPP_JSONResponseMessage(
+                                      NetworkingNode_Id.Zero,
                                       responseId,
-                                      payload
+                                      payload,
+                                      NetworkPath.Empty
                                   );
 
                 return true;
@@ -111,26 +125,52 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
         #endregion
 
-        #region ToJSON()
+        #region ToJSON(NetworkingMode = Standard)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        public JArray ToJSON()
+        /// <param name="NetworkingMode">The networking mode to use.</param>
+        public JArray ToJSON(NetworkingMode NetworkingMode = NetworkingMode.Standard)
 
-            // [
-            //     3,                         // MessageType: CALLRESULT (Server-to-Client)
-            //    "19223201",                 // RequestId copied from request
-            //    {
-            //        "status":            "Accepted",
-            //        "currentTime":       "2013-02-01T20:53:32.486Z",
-            //        "heartbeatInterval":  300
-            //    }
-            // ]
+            => NetworkingMode == NetworkingMode.Standard
 
-            => new (3,
-                    RequestId.ToString(),
-                    Payload);
+                   // OCPP Standard:
+
+                   // [
+                   //     3,                         // MessageType: CALLRESULT (Server-to-Client)
+                   //    "19223201",                 // RequestId copied from request
+                   //    {
+                   //        "status":            "Accepted",
+                   //        "currentTime":       "2013-02-01T20:53:32.486Z",
+                   //        "heartbeatInterval":  300
+                   //    }
+                   // ]
+
+                   ? new (3,
+                          RequestId.ToString(),
+                          Payload)
+
+
+                   // Networking Nodes Extensions:
+
+                   // [
+                   //     3,                         // MessageType: CALLRESULT (Server-to-Client)
+                   //     "CSMS",
+                   //     [ "CS01", "NN01" ],
+                   //    "19223201",                 // RequestId copied from request
+                   //    {
+                   //        "status":            "Accepted",
+                   //        "currentTime":       "2013-02-01T20:53:32.486Z",
+                   //        "heartbeatInterval":  300
+                   //    }
+                   // ]
+
+                   : new (3,
+                          DestinationNodeId?.ToString() ?? "",
+                          NetworkPath?.      ToJSON()   ?? [],
+                          RequestId.         ToString(),
+                          Payload);
 
         #endregion
 

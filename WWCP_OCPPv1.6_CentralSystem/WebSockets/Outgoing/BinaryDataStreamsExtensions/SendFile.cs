@@ -22,7 +22,6 @@ using org.GraphDefined.Vanaheimr.Illias;
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.CS;
 using cloud.charging.open.protocols.OCPP.CSMS;
-using cloud.charging.open.protocols.OCPPv1_6.CS;
 
 #endregion
 
@@ -32,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <summary>
     /// The CSMS HTTP/WebSocket/JSON server.
     /// </summary>
-    public partial class CentralSystemWSServer : ACSMSWSServer,
+    public partial class CentralSystemWSServer : AOCPPWebSocketServer,
                                                  ICSMSChannel,
                                                  ICentralSystemChannel
     {
@@ -91,7 +90,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 var sendRequestState = await SendBinaryAndWait(
                                                  Request.EventTrackingId,
-                                                 Request.NetworkingNodeId,
+                                                 Request.DestinationNodeId,
                                                  Request.NetworkPath,
                                                  Request.RequestId,
                                                  Request.Action,

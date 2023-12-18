@@ -18,7 +18,6 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.OCPP;
@@ -32,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <summary>
     /// A charging station HTTP Web Socket client.
     /// </summary>
-    public partial class ChargingStationWSClient : AChargingStationWSClient,
+    public partial class ChargingStationWSClient : AOCPPWebSocketClient,
                                                    IChargingStationWebSocketClient,
                                                    ICSIncomingMessages,
                                                    ICSOutgoingMessagesEvents
@@ -40,9 +39,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Custom binary serializer delegates
 
-        public CustomBinarySerializerDelegate<OCPP.CS.BinaryDataTransferRequest>?  CustomBinaryDataTransferRequestSerializer    { get; set; }
+        public CustomBinarySerializerDelegate<BinaryDataTransferRequest>?         CustomBinaryDataTransferRequestSerializer    { get; set; }
 
-        public CustomBinaryParserDelegate<OCPP.CSMS.BinaryDataTransferResponse>?   CustomBinaryDataTransferResponseParser       { get; set; }
+        public CustomBinaryParserDelegate<OCPP.CSMS.BinaryDataTransferResponse>?  CustomBinaryDataTransferResponseParser       { get; set; }
 
         #endregion
 
@@ -51,22 +50,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event fired whenever a BinaryDataTransfer request will be sent to the CSMS.
         /// </summary>
-        public event OCPP.CS.OnBinaryDataTransferRequestDelegate?     OnBinaryDataTransferRequest;
+        public event OnBinaryDataTransferRequestDelegate?     OnBinaryDataTransferRequest;
 
         /// <summary>
         /// An event fired whenever a BinaryDataTransfer request will be sent to the CSMS.
         /// </summary>
-        public event ClientRequestLogHandler?                         OnBinaryDataTransferWSRequest;
+        public event ClientRequestLogHandler?                 OnBinaryDataTransferWSRequest;
 
         /// <summary>
         /// An event fired whenever a response to a BinaryDataTransfer request was received.
         /// </summary>
-        public event ClientResponseLogHandler?                        OnBinaryDataTransferWSResponse;
+        public event ClientResponseLogHandler?                OnBinaryDataTransferWSResponse;
 
         /// <summary>
         /// An event fired whenever a response to a BinaryDataTransfer request was received.
         /// </summary>
-        public event OCPP.CS.OnBinaryDataTransferResponseDelegate?    OnBinaryDataTransferResponse;
+        public event OnBinaryDataTransferResponseDelegate?    OnBinaryDataTransferResponse;
 
         #endregion
 
@@ -79,7 +78,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Request">A BinaryDataTransfer request.</param>
         public async Task<OCPP.CSMS.BinaryDataTransferResponse>
 
-            BinaryDataTransfer(OCPP.CS.BinaryDataTransferRequest Request)
+            BinaryDataTransfer(BinaryDataTransferRequest Request)
 
         {
 
@@ -109,8 +108,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             {
 
                 var requestMessage = await SendRequest(
-                                               Request.NetworkingNodeId,
-                                               Request.NetworkPath,
+                                               Request.DestinationNodeId,
                                                Request.Action,
                                                Request.RequestId,
                                                Request.ToBinary(

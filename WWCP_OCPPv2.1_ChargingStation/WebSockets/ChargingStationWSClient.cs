@@ -41,7 +41,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// The charging station HTTP WebSocket client runs on a charging station
     /// and connects to a CSMS to invoke methods.
     /// </summary>
-    public partial class ChargingStationWSClient : AChargingStationWSClient,
+    public partial class ChargingStationWSClient : AOCPPWebSocketClient,
                                                    IChargingStationWebSocketClient,
                                                    ICSIncomingMessages,
                                                    ICSOutgoingMessagesEvents
@@ -190,6 +190,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                        UInt32?                              InternalBufferSize           = null,
 
                                        IEnumerable<String>?                 SecWebSocketProtocols        = null,
+                                       NetworkingMode?                      NetworkingMode               = null,
 
                                        Boolean                              DisableWebSocketPings        = false,
                                        TimeSpan?                            WebSocketPingEvery           = null,
@@ -224,6 +225,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    InternalBufferSize,
 
                    SecWebSocketProtocols,
+                   NetworkingMode,
 
                    DisableWebSocketPings,
                    WebSocketPingEvery,
@@ -269,6 +271,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         }
 
         #endregion
+
 
     }
 

@@ -44,15 +44,6 @@ namespace cloud.charging.open.protocols.OCPP
         public static Boolean IsNotNullOrEmpty(this NetworkingNode_Id? NetworkingNodeId)
             => NetworkingNodeId.HasValue && NetworkingNodeId.Value.IsNotNullOrEmpty;
 
-
-        //public static ChargingStation_Id  ToChargingStationId(this NetworkingNode_Id  NetworkingNodeId)
-        //    => ChargingStation_Id.Parse(NetworkingNodeId.ToString());
-
-        //public static ChargingStation_Id? ToChargingStationId(this NetworkingNode_Id? NetworkingNodeId)
-        //    => NetworkingNodeId.HasValue
-        //           ? ChargingStation_Id.Parse(NetworkingNodeId.Value.ToString())
-        //           : null;
-
     }
 
 
@@ -200,10 +191,16 @@ namespace cloud.charging.open.protocols.OCPP
         #region Static definitions
 
         /// <summary>
-        /// 0 / Zero.
+        /// Do not route this message over multiple hops.
         /// </summary>
-        public static NetworkingNode_Id Zero { get; }
+        public static NetworkingNode_Id  Zero    { get; }
             = new ("0");
+
+        /// <summary>
+        /// Route this message to the next Charging Station Management System (OCPP v1.x: Central System).
+        /// </summary>
+        public static NetworkingNode_Id  CSMS    { get; }
+            = new ("CSMS");
 
         #endregion
 

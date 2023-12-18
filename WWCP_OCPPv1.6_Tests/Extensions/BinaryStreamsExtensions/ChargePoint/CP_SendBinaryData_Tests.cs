@@ -86,7 +86,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.extensions.BinaryStreamsE
                     Assert.That(response.Data?.ToUTF8String(),                         Is.EqualTo(data.Reverse().ToUTF8String()));
 
                     Assert.That(binaryDataTransferRequests.Count,                      Is.EqualTo(1));
-                    Assert.That(binaryDataTransferRequests.First().NetworkingNodeId,   Is.EqualTo(chargePoint1.Id));
+                    Assert.That(binaryDataTransferRequests.First().DestinationNodeId,   Is.EqualTo(chargePoint1.Id));
                     Assert.That(binaryDataTransferRequests.First().VendorId,           Is.EqualTo(vendorId));
                     Assert.That(binaryDataTransferRequests.First().MessageId,          Is.EqualTo(messageId));
                     Assert.That(binaryDataTransferRequests.First().Data,               Is.EqualTo(data));

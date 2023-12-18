@@ -20,6 +20,7 @@
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPP.CSMS;
 
 #endregion
 
@@ -29,15 +30,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
     /// <summary>
     /// The CSMS HTTP/WebSocket/JSON server.
     /// </summary>
-    public partial class NetworkingNodeWSServer : ACSMSWSServer,
+    public partial class NetworkingNodeWSServer : AOCPPWebSocketServer,
                                                   INetworkingNodeChannel
     {
 
         #region Custom binary serializer delegates
 
-        public CustomBinarySerializerDelegate<OCPP.CSMS.BinaryDataTransferRequest>?  CustomBinaryDataTransferRequestSerializer    { get; set; }
+        public CustomBinarySerializerDelegate<BinaryDataTransferRequest>?       CustomBinaryDataTransferRequestSerializer    { get; set; }
 
-        public CustomBinaryParserDelegate<OCPP.CS.BinaryDataTransferResponse>?       CustomBinaryDataTransferResponseParser       { get; set; }
+        public CustomBinaryParserDelegate<OCPP.CS.BinaryDataTransferResponse>?  CustomBinaryDataTransferResponseParser       { get; set; }
 
         #endregion
 
@@ -46,19 +47,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a BinaryDataTransfer request was sent.
         /// </summary>
-        public event OCPP.CSMS.OnBinaryDataTransferRequestDelegate?     OnBinaryDataTransferRequest;
+        public event OnBinaryDataTransferRequestDelegate?     OnBinaryDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a response to a BinaryDataTransfer request was sent.
         /// </summary>
-        public event OCPP.CSMS.OnBinaryDataTransferResponseDelegate?    OnBinaryDataTransferResponse;
+        public event OnBinaryDataTransferResponseDelegate?    OnBinaryDataTransferResponse;
 
         #endregion
 
 
-        #region TransferBinaryData(Request)
+        #region BinaryDataTransfer(Request)
 
-        public async Task<OCPP.CS.BinaryDataTransferResponse> TransferBinaryData(OCPP.CSMS.BinaryDataTransferRequest Request)
+        public async Task<OCPP.CS.BinaryDataTransferResponse> BinaryDataTransfer(BinaryDataTransferRequest Request)
         {
 
             #region Send OnBinaryDataTransferRequest event
@@ -87,7 +88,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
                 var sendRequestState = await SendBinaryAndWait(
                                                  Request.EventTrackingId,
-                                                 Request.NetworkingNodeId,
+                                                 Request.DestinationNodeId,
                                                  Request.NetworkPath,
                                                  Request.RequestId,
                                                  Request.Action,

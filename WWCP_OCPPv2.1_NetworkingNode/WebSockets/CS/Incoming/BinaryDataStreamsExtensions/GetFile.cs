@@ -37,10 +37,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     /// The charging station HTTP WebSocket client runs on a charging station
     /// and connects to a CSMS to invoke methods.
     /// </summary>
-    public partial class NetworkingNodeWSClient : WebSocketClient,
-                                                   INetworkingNodeWebSocketClient,
-                                                   INetworkingNodeServer,
-                                                   INetworkingNodeClientEvents
+    public partial class NetworkingNodeWSClient : AOCPPWebSocketClient,
+                                                  INetworkingNodeWebSocketClient,
+                                                  INetworkingNodeServer,
+                                                  INetworkingNodeClientEvents
     {
 
         #region Custom JSON parser delegates
@@ -88,7 +88,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
             Receive_GetFile(DateTime                   RequestTimestamp,
                             WebSocketClientConnection  WebSocketConnection,
-                            NetworkingNode_Id          NetworkingNodeId,
+                            NetworkingNode_Id          DestinationNodeId,
                             NetworkPath                NetworkPath,
                             EventTracking_Id           EventTrackingId,
                             Request_Id                 RequestId,
@@ -106,7 +106,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                 OnGetFileWSRequest?.Invoke(startTime,
                                            WebSocketConnection,
-                                           NetworkingNodeId,
+                                           DestinationNodeId,
                                            NetworkPath,
                                            EventTrackingId,
                                            RequestJSON);
@@ -127,12 +127,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                 if (GetFileRequest.TryParse(RequestJSON,
                                             RequestId,
-                                            NetworkingNodeId,
+                                            DestinationNodeId,
                                             NetworkPath,
                                             out var request,
                                             out var errorResponse,
-                                            CustomGetFileRequestParser) &&
-                    request is not null) {
+                                            CustomGetFileRequestParser) && request is not null) {
 
                     #region Send OnGetFileRequest event
 
@@ -199,6 +198,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
                     #endregion
 
                     OCPPResponse = new OCPP_BinaryResponseMessage(
+                                       NetworkPath.Source,
                                        RequestId,
                                        response.ToBinary(
                                            CustomGetFileResponseSerializer,
@@ -238,7 +238,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                 OnGetFileWSResponse?.Invoke(endTime,
                                             WebSocketConnection,
-                                            NetworkingNodeId,
+                                            DestinationNodeId,
                                             NetworkPath,
                                             EventTrackingId,
                                             RequestTimestamp,

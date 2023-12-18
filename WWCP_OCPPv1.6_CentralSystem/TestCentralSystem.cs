@@ -1967,7 +1967,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 #endregion
 
 
-                Console.WriteLine("OnBootNotification: " + request.NetworkingNodeId             + ", " +
+                Console.WriteLine("OnBootNotification: " + request.DestinationNodeId             + ", " +
                                                            request.ChargePointVendor       + ", " +
                                                            request.ChargePointModel        + ", " +
                                                            request.ChargePointSerialNumber + ", " +
@@ -2068,7 +2068,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 #endregion
 
 
-                Console.WriteLine("OnHeartbeat: " + Request.NetworkingNodeId);
+                Console.WriteLine("OnHeartbeat: " + Request.DestinationNodeId);
 
 
                 await Task.Delay(100, CancellationToken);
@@ -2259,7 +2259,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 #endregion
 
 
-                Console.WriteLine("OnAuthorize: " + Request.NetworkingNodeId + ", " +
+                Console.WriteLine("OnAuthorize: " + Request.DestinationNodeId + ", " +
                                                     Request.IdTag);
 
                 await Task.Delay(100, CancellationToken);
@@ -2328,7 +2328,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 #endregion
 
 
-                Console.WriteLine("OnStartTransaction: " + Request.NetworkingNodeId + ", " +
+                Console.WriteLine("OnStartTransaction: " + Request.DestinationNodeId + ", " +
                                                            Request.ConnectorId + ", " +
                                                            Request.IdTag + ", " +
                                                            Request.StartTimestamp + ", " +
@@ -2342,7 +2342,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                             IdTagInfo:      new IdTagInfo(Status:      AuthorizationStatus.Accepted,
                                                                                           ExpiryDate:  Timestamp.Now.AddDays(3)));
 
-                var key = Request.NetworkingNodeId + "*" + Request.ConnectorId;
+                var key = Request.DestinationNodeId + "*" + Request.ConnectorId;
 
                 if (TransactionIds.ContainsKey(key))
                     TransactionIds[key] = response.TransactionId;
@@ -5171,7 +5171,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -5265,7 +5265,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -5359,7 +5359,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -5454,7 +5454,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -5548,7 +5548,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -5643,7 +5643,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -5737,7 +5737,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -5831,7 +5831,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -5926,7 +5926,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -6020,7 +6020,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -6114,7 +6114,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -6211,7 +6211,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -6305,7 +6305,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -6402,7 +6402,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -6496,7 +6496,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -6592,7 +6592,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -6687,7 +6687,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -6781,7 +6781,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -6877,7 +6877,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -6974,7 +6974,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -7068,7 +7068,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -7163,7 +7163,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -7257,7 +7257,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -7352,7 +7352,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -7447,7 +7447,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -7541,7 +7541,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -7639,7 +7639,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -7734,7 +7734,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -7829,7 +7829,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -7923,7 +7923,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -8020,7 +8020,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -8119,7 +8119,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -8218,7 +8218,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -8317,7 +8317,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -8416,7 +8416,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -8515,7 +8515,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(

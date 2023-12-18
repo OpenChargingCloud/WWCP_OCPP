@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
     /// <summary>
     /// The CSMS HTTP/WebSocket/JSON server.
     /// </summary>
-    public partial class NetworkingNodeWSServer : ACSMSWSServer,
+    public partial class NetworkingNodeWSServer : AOCPPWebSocketServer,
                                                   INetworkingNodeChannel
     {
 
@@ -89,7 +89,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
                 var sendRequestState = await SendBinaryAndWait(
                                                  Request.EventTrackingId,
-                                                 Request.NetworkingNodeId,
+                                                 Request.DestinationNodeId,
                                                  Request.NetworkPath,
                                                  Request.RequestId,
                                                  Request.Action,

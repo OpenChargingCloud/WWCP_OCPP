@@ -37,7 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     /// The charging station HTTP WebSocket client runs on a charging station
     /// and connects to a CSMS to invoke methods.
     /// </summary>
-    public partial class NetworkingNodeWSClient : WebSocketClient,
+    public partial class NetworkingNodeWSClient : AOCPPWebSocketClient,
                                                   INetworkingNodeWebSocketClient,
                                                   INetworkingNodeServer,
                                                   INetworkingNodeClientEvents
@@ -88,7 +88,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
             Receive_DeleteFile(DateTime                   RequestTimestamp,
                                WebSocketClientConnection  WebSocketConnection,
-                               NetworkingNode_Id          NetworkingNodeId,
+                               NetworkingNode_Id          DestinationNodeId,
                                NetworkPath                NetworkPath,
                                EventTracking_Id           EventTrackingId,
                                Request_Id                 RequestId,
@@ -106,7 +106,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                 OnDeleteFileWSRequest?.Invoke(startTime,
                                               WebSocketConnection,
-                                              NetworkingNodeId,
+                                              DestinationNodeId,
                                               NetworkPath,
                                               EventTrackingId,
                                               RequestJSON);
@@ -127,12 +127,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                 if (DeleteFileRequest.TryParse(RequestJSON,
                                                RequestId,
-                                               NetworkingNodeId,
+                                               DestinationNodeId,
                                                NetworkPath,
                                                out var request,
                                                out var errorResponse,
-                                               CustomDeleteFileRequestParser) &&
-                    request is not null) {
+                                               CustomDeleteFileRequestParser) && request is not null) {
 
                     #region Send OnDeleteFileRequest event
 
@@ -199,6 +198,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
                     #endregion
 
                     OCPPResponse = new OCPP_JSONResponseMessage(
+                                       NetworkPath.Source,
                                        RequestId,
                                        response.ToJSON(
                                            CustomDeleteFileResponseSerializer,
@@ -238,7 +238,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                 OnDeleteFileWSResponse?.Invoke(endTime,
                                                WebSocketConnection,
-                                               NetworkingNodeId,
+                                               DestinationNodeId,
                                                NetworkPath,
                                                EventTrackingId,
                                                RequestTimestamp,

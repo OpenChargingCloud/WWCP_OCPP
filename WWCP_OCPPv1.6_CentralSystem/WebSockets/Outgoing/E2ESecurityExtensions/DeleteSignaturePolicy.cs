@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <summary>
     /// The CSMS HTTP/WebSocket/JSON server.
     /// </summary>
-    public partial class CentralSystemWSServer : ACSMSWSServer,
+    public partial class CentralSystemWSServer : AOCPPWebSocketServer,
                                                  ICSMSChannel,
                                                  ICentralSystemChannel
     {
@@ -90,7 +90,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 var sendRequestState = await SendJSONAndWait(
                                                  Request.EventTrackingId,
-                                                 Request.NetworkingNodeId,
+                                                 Request.DestinationNodeId,
                                                  Request.NetworkPath,
                                                  Request.RequestId,
                                                  Request.Action,

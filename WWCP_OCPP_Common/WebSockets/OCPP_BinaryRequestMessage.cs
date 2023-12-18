@@ -29,41 +29,41 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
     /// <summary>
     /// An OCPP HTTP Web Socket binary request message.
     /// </summary>
-    /// <param name="NetworkingNodeId">The optional networking node identification.</param>
-    /// <param name="NetworkPath">The optional network path.</param>
+    /// <param name="DestinationNodeId">The networking node identification of the message destination.</param>
+    /// <param name="NetworkPath">The (recorded) path of the request through the overlay network.</param>
     /// <param name="RequestId">An unique request identification.</param>
     /// <param name="Action">An OCPP action/method name.</param>
     /// <param name="Payload">The binary request message payload.</param>
     /// <param name="ErrorMessage">An optional error message, e.g. during sending of the message.</param>
-    public class OCPP_BinaryRequestMessage(NetworkingNode_Id?  NetworkingNodeId,
-                                           NetworkPath?        NetworkPath,
-                                           Request_Id          RequestId,
-                                           String              Action,
-                                           Byte[]              Payload,
-                                           String?             ErrorMessage   = null)
+    public class OCPP_BinaryRequestMessage(NetworkingNode_Id  DestinationNodeId,
+                                           NetworkPath        NetworkPath,
+                                           Request_Id         RequestId,
+                                           String             Action,
+                                           Byte[]             Payload,
+                                           String?            ErrorMessage   = null)
     {
 
         #region Properties
 
         /// <summary>
-        /// The optional networking node identification.
+        /// The networking node identification of the message destination.
         /// </summary>
-        public NetworkingNode_Id?  NetworkingNodeId    { get; } = NetworkingNodeId;
+        public NetworkingNode_Id  DestinationNodeId    { get; } = DestinationNodeId;
 
         /// <summary>
-        /// The optional network path.
+        /// The (recorded) path of the request through the overlay network.
         /// </summary>
-        public NetworkPath?        NetworkPath         { get; } = NetworkPath;
+        public NetworkPath        NetworkPath          { get; } = NetworkPath;
 
         /// <summary>
         /// The unique request identification.
         /// </summary>
-        public Request_Id          RequestId           { get; } = RequestId;
+        public Request_Id         RequestId            { get; } = RequestId;
 
         /// <summary>
         /// An OCPP action/method name.
         /// </summary>
-        public String              Action              { get; } = Action;
+        public String             Action               { get; } = Action;
 
         /// <summary>
         /// The binary request message payload.
@@ -73,13 +73,13 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         /// <summary>
         /// The optional error message, e.g. during sending of the message.
         /// </summary>
-        public String?             ErrorMessage        { get; } = ErrorMessage;
+        public String?            ErrorMessage        { get; } = ErrorMessage;
 
 
-        public Boolean             NoErrors
+        public Boolean            NoErrors
             => ErrorMessage is null;
 
-        public Boolean             HasErrors
+        public Boolean            HasErrors
             => ErrorMessage is not null;
 
         #endregion
@@ -139,8 +139,8 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                 var payload           = stream.ReadBytes(payloadLength);
 
                 BinaryRequestMessage  = new OCPP_BinaryRequestMessage(
-                                            null,
-                                            null,
+                                            NetworkingNode_Id.Zero,
+                                            NetworkPath.Empty,
                                             requestId,
                                             action,
                                             payload
@@ -160,12 +160,13 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
         #endregion
 
-        #region ToByteArray()
+        #region ToByteArray(NetworkingMode = Standard)
 
         /// <summary>
         /// Return a binary representation of this object.
         /// </summary>
-        public Byte[] ToByteArray()
+        /// <param name="NetworkingMode">The networking mode to use.</param>
+        public Byte[] ToByteArray(NetworkingMode NetworkingMode = NetworkingMode.Standard)
         {
 
             var binaryStream = new MemoryStream();

@@ -5147,20 +5147,20 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         protected internal virtual async Task _DoMaintenance(Object State)
         {
 
-            foreach (var enquedRequest in EnqueuedRequests.ToArray())
+            foreach (var enqueuedRequest in EnqueuedRequests.ToArray())
             {
                 if (CSClient is ChargingStationWSClient wsClient)
                 {
 
                     var response = await wsClient.SendRequest(
-                                             enquedRequest.Command,
-                                             enquedRequest.Request.RequestId,
-                                             enquedRequest.RequestJSON
+                                             enqueuedRequest.Command,
+                                             enqueuedRequest.Request.RequestId,
+                                             enqueuedRequest.RequestJSON
                                          );
 
-                    enquedRequest.ResponseAction(response);
+                    enqueuedRequest.ResponseAction(response);
 
-                    EnqueuedRequests.Remove(enquedRequest);
+                    EnqueuedRequests.Remove(enqueuedRequest);
 
                 }
             }

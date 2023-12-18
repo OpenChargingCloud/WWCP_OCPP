@@ -33,7 +33,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// The charging station HTTP WebSocket client runs on a charging station
     /// and connects to a CSMS to invoke methods.
     /// </summary>
-    public partial class ChargePointWSClient : AChargingStationWSClient,
+    public partial class ChargePointWSClient : AOCPPWebSocketClient,
                                                IChargePointWebSocketClient,
                                                ICPIncomingMessages,
                                                ICPOutgoingMessagesEvents
@@ -84,7 +84,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             Receive_BinaryDataTransfer(DateTime                   RequestTimestamp,
                                        WebSocketClientConnection  WebSocketConnection,
-                                       NetworkingNode_Id          NetworkingNodeId,
+                                       NetworkingNode_Id          DestinationNodeId,
                                        NetworkPath                NetworkPath,
                                        EventTracking_Id           EventTrackingId,
                                        Request_Id                 RequestId,
@@ -102,7 +102,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 OnIncomingBinaryDataTransferWSRequest?.Invoke(startTime,
                                                               WebSocketConnection,
-                                                              NetworkingNodeId,
+                                                              DestinationNodeId,
                                                               NetworkPath,
                                                               EventTrackingId,
                                                               RequestBinary);
@@ -123,12 +123,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 if (OCPP.CSMS.BinaryDataTransferRequest.TryParse(RequestBinary,
                                                                  RequestId,
-                                                                 NetworkingNodeId,
+                                                                 DestinationNodeId,
                                                                  NetworkPath,
                                                                  out var request,
                                                                  out var errorResponse,
-                                                                 CustomBinaryDataTransferRequestParser) &&
-                    request is not null) {
+                                                                 CustomBinaryDataTransferRequestParser) && request is not null) {
 
                     #region Send OnIncomingBinaryDataTransferRequest event
 
@@ -195,6 +194,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                     #endregion
 
                     OCPPResponse = new OCPP_BinaryResponseMessage(
+                                       NetworkPath.Source,
                                        RequestId,
                                        response.ToBinary(
                                            CustomBinaryDataTransferResponseSerializer,
@@ -234,7 +234,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 OnIncomingBinaryDataTransferWSResponse?.Invoke(endTime,
                                                                WebSocketConnection,
-                                                               NetworkingNodeId,
+                                                               DestinationNodeId,
                                                                NetworkPath,
                                                                EventTrackingId,
                                                                RequestTimestamp,

@@ -511,7 +511,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                    DNSClient))
             {
 
-                result = await soapClient.Query(SOAP.Encapsulation(Request.NetworkingNodeId,
+                result = await soapClient.Query(SOAP.Encapsulation(Request.DestinationNodeId,
                                                                    "/" + Request.Action,
                                                                    Request_Id.NewRandom().ToString(),
                                                                    From,
@@ -678,7 +678,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                    DNSClient))
             {
 
-                result = await soapClient.Query(SOAP.Encapsulation(Request.NetworkingNodeId,
+                result = await soapClient.Query(SOAP.Encapsulation(Request.DestinationNodeId,
                                                                     "/Heartbeat",
                                                                     Request_Id.NewRandom().ToString(),
                                                                     From,
@@ -843,7 +843,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                    DNSClient))
             {
 
-                result = await soapClient.Query(SOAP.Encapsulation(Request.NetworkingNodeId,
+                result = await soapClient.Query(SOAP.Encapsulation(Request.DestinationNodeId,
                                                                     "/DiagnosticsStatusNotification",
                                                                     Request_Id.NewRandom().ToString(),
                                                                     From,
@@ -1009,7 +1009,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                    DNSClient))
             {
 
-                result = await soapClient.Query(SOAP.Encapsulation(Request.NetworkingNodeId,
+                result = await soapClient.Query(SOAP.Encapsulation(Request.DestinationNodeId,
                                                                    "/FirmwareStatusNotification",
                                                                    Request_Id.NewRandom().ToString(),
                                                                    From,
@@ -1177,7 +1177,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                    DNSClient))
             {
 
-                result = await soapClient.Query(SOAP.Encapsulation(Request.NetworkingNodeId,
+                result = await soapClient.Query(SOAP.Encapsulation(Request.DestinationNodeId,
                                                                     "/Authorize",
                                                                     Request_Id.NewRandom().ToString(),
                                                                     From,
@@ -1344,7 +1344,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                    DNSClient))
             {
 
-                result = await soapClient.Query(SOAP.Encapsulation(Request.NetworkingNodeId,
+                result = await soapClient.Query(SOAP.Encapsulation(Request.DestinationNodeId,
                                                                     "/StartTransaction",
                                                                     Request_Id.NewRandom().ToString(),
                                                                     From,
@@ -1511,7 +1511,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                     DNSClient))
             {
 
-                result = await soapClient.Query(SOAP.Encapsulation(Request.NetworkingNodeId,
+                result = await soapClient.Query(SOAP.Encapsulation(Request.DestinationNodeId,
                                                                     "/StatusNotification",
                                                                     Request_Id.NewRandom().ToString(),
                                                                     From,
@@ -1678,7 +1678,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                    DNSClient))
             {
 
-                result = await soapClient.Query(SOAP.Encapsulation(Request.NetworkingNodeId,
+                result = await soapClient.Query(SOAP.Encapsulation(Request.DestinationNodeId,
                                                                     "/MeterValues",
                                                                     Request_Id.NewRandom().ToString(),
                                                                     From,
@@ -1845,7 +1845,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                    DNSClient))
             {
 
-                result = await soapClient.Query(SOAP.Encapsulation(Request.NetworkingNodeId,
+                result = await soapClient.Query(SOAP.Encapsulation(Request.DestinationNodeId,
                                                                     "/StopTransaction",
                                                                     Request_Id.NewRandom().ToString(),
                                                                     From,
@@ -2012,7 +2012,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                    DNSClient))
             {
 
-                result = await soapClient.Query(SOAP.Encapsulation(Request.NetworkingNodeId,
+                result = await soapClient.Query(SOAP.Encapsulation(Request.DestinationNodeId,
                                                                    "/DataTransfer",
                                                                    Request_Id.NewRandom().ToString(),
                                                                    From,

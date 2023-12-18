@@ -19,9 +19,9 @@
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
-using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPP.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
@@ -33,7 +33,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     /// <summary>
     /// A charging station HTTP Web Socket client.
     /// </summary>
-    public partial class NetworkingNodeWSClient : WebSocketClient,
+    public partial class NetworkingNodeWSClient : AOCPPWebSocketClient,
                                                    INetworkingNodeWebSocketClient,
                                                    INetworkingNodeServer,
                                                    INetworkingNodeClientEvents
@@ -110,7 +110,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
             {
 
                 var requestMessage = await SendRequest(
-                                         Request.NetworkingNodeId,
+                                         Request.DestinationNodeId,
                                          Request.NetworkPath,
                                          Request.Action,
                                          Request.RequestId,

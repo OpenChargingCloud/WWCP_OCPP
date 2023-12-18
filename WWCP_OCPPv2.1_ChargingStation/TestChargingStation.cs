@@ -2177,6 +2177,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                               InternalBufferSize,
 
                                               SecWebSocketProtocols ?? new[] { Version.WebSocketSubProtocolId },
+                                              null,
 
                                               DisableWebSocketPings,
                                               WebSocketPingEvery,
@@ -2262,12 +2263,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 ResetResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new ResetResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid reset request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid reset request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -2453,12 +2454,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 UpdateFirmwareResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new UpdateFirmwareResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid UpdateFirmware request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid UpdateFirmware request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -2616,12 +2617,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 PublishFirmwareResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new PublishFirmwareResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid PublishFirmware request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid PublishFirmware request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -2779,12 +2780,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 UnpublishFirmwareResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new UnpublishFirmwareResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid UnpublishFirmware request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid UnpublishFirmware request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -2936,12 +2937,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 GetBaseReportResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new GetBaseReportResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid GetBaseReport request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid GetBaseReport request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -3096,12 +3097,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 GetReportResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new GetReportResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid GetReport request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid GetReport request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -3261,12 +3262,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 GetLogResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new GetLogResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid GetLog request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid GetLog request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -3425,12 +3426,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 SetVariablesResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new SetVariablesResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid SetVariables request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid SetVariables request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -3598,12 +3599,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 GetVariablesResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new GetVariablesResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid GetVariables request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid GetVariables request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -3772,12 +3773,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 SetMonitoringBaseResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new SetMonitoringBaseResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid SetMonitoringBase request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid SetMonitoringBase request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -3931,12 +3932,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 GetMonitoringReportResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new GetMonitoringReportResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid GetMonitoringReport request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid GetMonitoringReport request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -4096,12 +4097,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 SetMonitoringLevelResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new SetMonitoringLevelResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid SetMonitoringLevel request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid SetMonitoringLevel request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -4255,12 +4256,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 SetVariableMonitoringResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new SetVariableMonitoringResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid SetVariableMonitoring request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid SetVariableMonitoring request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -4431,12 +4432,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 ClearVariableMonitoringResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new ClearVariableMonitoringResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid ClearVariableMonitoring request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid ClearVariableMonitoring request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -4595,12 +4596,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 SetNetworkProfileResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new SetNetworkProfileResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid SetNetworkProfile request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid SetNetworkProfile request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -4757,12 +4758,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 ChangeAvailabilityResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new ChangeAvailabilityResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid ChangeAvailability request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid ChangeAvailability request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -4970,12 +4971,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 TriggerMessageResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new TriggerMessageResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid TriggerMessage request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid TriggerMessage request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -5205,12 +5206,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 DataTransferResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new DataTransferResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid DataTransfer request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid DataTransfer request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -5413,12 +5414,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 CertificateSignedResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new CertificateSignedResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid CertificateSigned request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid CertificateSigned request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -5575,12 +5576,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 InstallCertificateResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new InstallCertificateResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid InstallCertificate request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid InstallCertificate request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -5741,12 +5742,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 GetInstalledCertificateIdsResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new GetInstalledCertificateIdsResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid GetInstalledCertificateIds request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid GetInstalledCertificateIds request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -5918,12 +5919,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 DeleteCertificateResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new DeleteCertificateResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid DeleteCertificate request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid DeleteCertificate request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -6084,12 +6085,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 NotifyCRLResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new NotifyCRLResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid NotifyCRL request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid NotifyCRL request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -6243,12 +6244,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 GetLocalListVersionResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new GetLocalListVersionResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid GetLocalListVersion request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid GetLocalListVersion request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -6400,12 +6401,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 SendLocalListResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new SendLocalListResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid SendLocalList request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid SendLocalList request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -6565,12 +6566,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 ClearCacheResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new ClearCacheResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid ClearCache request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid ClearCache request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -6724,12 +6725,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 ReserveNowResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new ReserveNowResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid ReserveNow request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid ReserveNow request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -6895,12 +6896,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 CancelReservationResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new CancelReservationResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid CancelReservation request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid CancelReservation request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -7060,12 +7061,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 RequestStartTransactionResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new RequestStartTransactionResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid RequestStartTransaction request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid RequestStartTransaction request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -7336,12 +7337,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 RequestStopTransactionResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new RequestStopTransactionResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid RequestStopTransaction request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid RequestStopTransaction request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -7570,12 +7571,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 GetTransactionStatusResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new GetTransactionStatusResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid GetTransactionStatus request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid GetTransactionStatus request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -7759,12 +7760,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 SetChargingProfileResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new SetChargingProfileResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid SetChargingProfile request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid SetChargingProfile request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -7976,12 +7977,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 GetChargingProfilesResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new GetChargingProfilesResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid GetChargingProfiles request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid GetChargingProfiles request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -8148,12 +8149,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 ClearChargingProfileResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new ClearChargingProfileResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid ClearChargingProfile request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid ClearChargingProfile request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -8309,12 +8310,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 GetCompositeScheduleResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new GetCompositeScheduleResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid GetCompositeSchedule request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid GetCompositeSchedule request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -8473,12 +8474,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 UpdateDynamicScheduleResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new UpdateDynamicScheduleResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid UpdateDynamicSchedule request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid UpdateDynamicSchedule request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -8648,12 +8649,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 NotifyAllowedEnergyTransferResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new NotifyAllowedEnergyTransferResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid NotifyAllowedEnergyTransfer request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid NotifyAllowedEnergyTransfer request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -8807,12 +8808,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 UsePriorityChargingResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new UsePriorityChargingResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid UsePriorityCharging request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid UsePriorityCharging request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -8967,12 +8968,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 UnlockConnectorResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new UnlockConnectorResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid UnlockConnector request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid UnlockConnector request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -9145,12 +9146,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 AFRRSignalResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new AFRRSignalResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid AFRRSignal request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid AFRRSignal request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -9308,12 +9309,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 SetDisplayMessageResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new SetDisplayMessageResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid SetDisplayMessage request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid SetDisplayMessage request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -9484,12 +9485,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 GetDisplayMessagesResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new GetDisplayMessagesResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid GetDisplayMessages request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid GetDisplayMessages request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -9662,12 +9663,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 ClearDisplayMessageResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new ClearDisplayMessageResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid ClearDisplayMessage request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid ClearDisplayMessage request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -9829,12 +9830,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 CostUpdatedResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new CostUpdatedResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid CostUpdated request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid CostUpdated request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -9999,12 +10000,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 CustomerInformationResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new CustomerInformationResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid CustomerInformation request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid CustomerInformation request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -10203,12 +10204,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 OCPP.CS.BinaryDataTransferResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new OCPP.CS.BinaryDataTransferResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid BinaryDataTransfer request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid BinaryDataTransfer request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -10378,12 +10379,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 OCPP.CS.GetFileResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new OCPP.CS.GetFileResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid GetFile request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid GetFile request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -10546,12 +10547,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 OCPP.CS.SendFileResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new OCPP.CS.SendFileResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid SendFile request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid SendFile request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -10710,12 +10711,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 OCPP.CS.DeleteFileResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new OCPP.CS.DeleteFileResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid DeleteFile request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid DeleteFile request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -10877,12 +10878,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 OCPP.CS.AddSignaturePolicyResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new OCPP.CS.AddSignaturePolicyResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid AddSignaturePolicy request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid AddSignaturePolicy request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -11042,12 +11043,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 OCPP.CS.UpdateSignaturePolicyResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new OCPP.CS.UpdateSignaturePolicyResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid UpdateSignaturePolicy request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid UpdateSignaturePolicy request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -11205,12 +11206,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 OCPP.CS.DeleteSignaturePolicyResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new OCPP.CS.DeleteSignaturePolicyResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid DeleteSignaturePolicy request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid DeleteSignaturePolicy request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -11368,12 +11369,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 OCPP.CS.AddUserRoleResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new OCPP.CS.AddUserRoleResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid AddUserRole request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid AddUserRole request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -11531,12 +11532,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 OCPP.CS.UpdateUserRoleResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new OCPP.CS.UpdateUserRoleResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid UpdateUserRole request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid UpdateUserRole request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -11694,12 +11695,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 OCPP.CS.DeleteUserRoleResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new OCPP.CS.DeleteUserRoleResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid DeleteUserRole request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid DeleteUserRole request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -11860,12 +11861,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 SetDefaultChargingTariffResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new SetDefaultChargingTariffResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid SetDefaultChargingTariff request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid SetDefaultChargingTariff request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -12102,12 +12103,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 GetDefaultChargingTariffResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new GetDefaultChargingTariffResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid GetDefaultChargingTariff request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid GetDefaultChargingTariff request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -12292,12 +12293,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 RemoveDefaultChargingTariffResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new RemoveDefaultChargingTariffResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid RemoveDefaultChargingTariff request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid RemoveDefaultChargingTariff request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -12473,22 +12474,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         protected internal virtual async Task _DoMaintenance(Object State)
         {
 
-            foreach (var enquedRequest in EnqueuedRequests.ToArray())
+            foreach (var enqueuedRequest in EnqueuedRequests.ToArray())
             {
                 if (CSClient is ChargingStationWSClient wsClient)
                 {
 
                     var response = await wsClient.SendRequest(
-                                             enquedRequest.NetworkingNodeId,
-                                             enquedRequest.NetworkPath,
-                                             enquedRequest.Command,
-                                             enquedRequest.Request.RequestId,
-                                             enquedRequest.RequestJSON
+                                             enqueuedRequest.NetworkingNodeId,
+                                             enqueuedRequest.Command,
+                                             enqueuedRequest.Request.RequestId,
+                                             enqueuedRequest.RequestJSON
                                          );
 
-                    enquedRequest.ResponseAction(response);
+                    enqueuedRequest.ResponseAction(response);
 
-                    EnqueuedRequests.Remove(enquedRequest);
+                    EnqueuedRequests.Remove(enqueuedRequest);
 
                 }
             }

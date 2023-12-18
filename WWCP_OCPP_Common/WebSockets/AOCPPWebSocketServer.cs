@@ -37,14 +37,16 @@ using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPP
+namespace cloud.charging.open.protocols.OCPP.CSMS
 {
 
     /// <summary>
-    /// The CSMS HTTP/WebSocket/JSON server.
+    /// An OCPP HTTP Web Socket server runs on a CSMS or a networking node
+    /// accepting connections from charging stations or other networking nodes
+    /// to invoke OCPP commands.
     /// </summary>
-    public abstract class ACSMSWSServer : WebSocketServer,
-                                          ICSMSChannel
+    public abstract class AOCPPWebSocketServer : WebSocketServer,
+                                                 ICSMSChannel
     {
 
         #region Data
@@ -69,18 +71,13 @@ namespace cloud.charging.open.protocols.OCPP
         /// </summary>
         public static readonly  TimeSpan                                                                              DefaultRequestTimeout             = TimeSpan.FromSeconds(30);
 
-
-        public  const           String                                                                                networkingNodeId_WebSocketKey     = "networkingNodeId";
-        public  const           String                                                                                networkingMode_WebSocketKey       = "networkingMode";
-
-        private readonly        ConcurrentDictionary<NetworkingNode_Id, Tuple<WebSocketServerConnection, DateTime>>   connectedNetworkingNodes          = new();
-
-        private readonly        ConcurrentDictionary<Request_Id, SendRequestState>                                    requests                          = new();
-
-
-        private const           String                                                                                LogfileName                       = "CSMSWSServer.log";
-
         protected readonly      Dictionary<String, MethodInfo>                                                        incomingMessageProcessorsLookup   = [];
+        protected readonly      ConcurrentDictionary<NetworkingNode_Id, Tuple<WebSocketServerConnection, DateTime>>   connectedNetworkingNodes          = [];
+        protected readonly      ConcurrentDictionary<Request_Id, SendRequestState>                                    requests                          = [];
+
+        public    const         String                                                                                networkingNodeId_WebSocketKey     = "networkingNodeId";
+        public    const         String                                                                                networkingMode_WebSocketKey       = "networkingMode";
+        public    const         String                                                                                LogfileName                       = "CSMSWSServer.log";
 
         #endregion
 
@@ -215,7 +212,7 @@ namespace cloud.charging.open.protocols.OCPP
 
         #endregion
 
-
+        #region Custom JSON serializer delegates
 
         public CustomJObjectSerializerDelegate<StatusInfo>?                                          CustomStatusInfoSerializer                                   { get; set; }
         public CustomJObjectSerializerDelegate<OCPP.Signature>?                                      CustomSignatureSerializer                                    { get; set; }
@@ -225,7 +222,7 @@ namespace cloud.charging.open.protocols.OCPP
         // Binary Data Streams Extensions
         public CustomBinarySerializerDelegate<OCPP.Signature>?                                       CustomBinarySignatureSerializer                              { get; set; }
 
-
+        #endregion
 
         #region Constructor(s)
 
@@ -238,7 +235,7 @@ namespace cloud.charging.open.protocols.OCPP
         /// <param name="RequireAuthentication">Require a HTTP Basic Authentication of all charging boxes.</param>
         /// <param name="DNSClient">An optional DNS client to use.</param>
         /// <param name="AutoStart">Start the server immediately.</param>
-        public ACSMSWSServer(IEnumerable<String>                  SupportedOCPPWebSocketSubprotocols,
+        public AOCPPWebSocketServer(IEnumerable<String>                  SupportedOCPPWebSocketSubprotocols,
                              String                               HTTPServiceName              = DefaultHTTPServiceName,
                              IIPAddress?                          IPAddress                    = null,
                              IPPort?                              TCPPort                      = null,
@@ -431,15 +428,15 @@ namespace cloud.charging.open.protocols.OCPP
                     if (ChargingBoxLogins.TryGetValue(NetworkingNode_Id.Parse(basicAuthentication.Username), out var password) &&
                         basicAuthentication.Password == password)
                     {
-                        DebugX.Log(nameof(ACSMSWSServer), " connection from " + Connection.RemoteSocket + " using authorization: " + basicAuthentication.Username + "/" + basicAuthentication.Password);
+                        DebugX.Log(nameof(AOCPPWebSocketServer), " connection from " + Connection.RemoteSocket + " using authorization: " + basicAuthentication.Username + "/" + basicAuthentication.Password);
                         return Task.FromResult<HTTPResponse?>(null);
                     }
                     else
-                        DebugX.Log(nameof(ACSMSWSServer), " connection from " + Connection.RemoteSocket + " invalid authorization: " + basicAuthentication.Username + "/" + basicAuthentication.Password);
+                        DebugX.Log(nameof(AOCPPWebSocketServer), " connection from " + Connection.RemoteSocket + " invalid authorization: " + basicAuthentication.Username + "/" + basicAuthentication.Password);
 
                 }
                 else
-                    DebugX.Log(nameof(ACSMSWSServer), " connection from " + Connection.RemoteSocket + " missing authorization!");
+                    DebugX.Log(nameof(AOCPPWebSocketServer), " connection from " + Connection.RemoteSocket + " missing authorization!");
 
                 return Task.FromResult<HTTPResponse?>(
                            new HTTPResponse.Builder() {
@@ -494,7 +491,7 @@ namespace cloud.charging.open.protocols.OCPP
                         else
                         {
 
-                            DebugX.Log($"{nameof(ACSMSWSServer)} Duplicate networking node '{networkingNodeId}' detected!");
+                            DebugX.Log($"{nameof(AOCPPWebSocketServer)} Duplicate networking node '{networkingNodeId}' detected!");
 
                             var oldNetworkingNode_WebSocketConnection = value.Item1;
 
@@ -507,7 +504,7 @@ namespace cloud.charging.open.protocols.OCPP
                             }
                             catch (Exception e)
                             {
-                                DebugX.Log($"{nameof(ACSMSWSServer)} Closing old HTTP WebSocket connection failed: {e.Message}");
+                                DebugX.Log($"{nameof(AOCPPWebSocketServer)} Closing old HTTP WebSocket connection failed: {e.Message}");
                             }
 
                         }
@@ -532,7 +529,7 @@ namespace cloud.charging.open.protocols.OCPP
                     else
                     {
 
-                        DebugX.Log($"{nameof(ACSMSWSServer)} Duplicate charging station '{networkingNodeId}' detected!");
+                        DebugX.Log($"{nameof(AOCPPWebSocketServer)} Duplicate charging station '{networkingNodeId}' detected!");
 
                         var oldChargingStation_WebSocketConnection = value.Item1;
 
@@ -545,7 +542,7 @@ namespace cloud.charging.open.protocols.OCPP
                         }
                         catch (Exception e)
                         {
-                            DebugX.Log($"{nameof(ACSMSWSServer)} Closing old HTTP WebSocket connection failed: {e.Message}");
+                            DebugX.Log($"{nameof(AOCPPWebSocketServer)} Closing old HTTP WebSocket connection failed: {e.Message}");
                         }
 
                     }
@@ -582,7 +579,7 @@ namespace cloud.charging.open.protocols.OCPP
                 catch (Exception e)
                 {
                     await HandleErrors(
-                              nameof(ACSMSWSServer),
+                              nameof(AOCPPWebSocketServer),
                               nameof(OnCSMSNewWebSocketConnection),
                               e
                           );
@@ -637,7 +634,7 @@ namespace cloud.charging.open.protocols.OCPP
                     catch (Exception e)
                     {
                         await HandleErrors(
-                                  nameof(ACSMSWSServer),
+                                  nameof(AOCPPWebSocketServer),
                                   nameof(OnCSMSCloseMessageReceived),
                                   e
                               );
@@ -708,7 +705,7 @@ namespace cloud.charging.open.protocols.OCPP
                         }
                         catch (Exception e)
                         {
-                            DebugX.Log(e, nameof(ACSMSWSServer) + "." + nameof(OnJSONMessageRequestReceived));
+                            DebugX.Log(e, nameof(AOCPPWebSocketServer) + "." + nameof(OnJSONMessageRequestReceived));
                         }
                     }
 
@@ -716,7 +713,13 @@ namespace cloud.charging.open.protocols.OCPP
 
                     #region Initial checks
 
-                    var requestData = jsonArray[3]?.Value<JObject>();
+                    var networkingMode = jsonArray.Count == 6
+                                             ? NetworkingMode.NetworkingExtensions
+                                             : NetworkingMode.Standard;
+
+                    var requestData = networkingMode == NetworkingMode.Standard
+                                          ? jsonArray[3]?.Value<JObject>()
+                                          : jsonArray[5]?.Value<JObject>();
 
                     if (requestData is null)
                         OCPPErrorResponse  = new OCPP_JSONErrorMessage(
@@ -740,8 +743,8 @@ namespace cloud.charging.open.protocols.OCPP
 
                         var networkPath = jsonRequest.NetworkPath ?? NetworkPath.Empty;
 
-                        if (networkPath.Sender! != networkingNodeId)
-                            networkPath.Append(networkingNodeId);
+                        if (networkPath.Last! != networkingNodeId)
+                            networkPath = networkPath.Append(networkingNodeId);
 
                         #endregion
 
@@ -761,7 +764,7 @@ namespace cloud.charging.open.protocols.OCPP
                         }
 
                         else
-                            DebugX.Log($"Received undefined '{jsonRequest.Action}' JSON request message handler within {nameof(ACSMSWSServer)}!");
+                            DebugX.Log($"Received undefined '{jsonRequest.Action}' JSON request message handler within {nameof(AOCPPWebSocketServer)}!");
 
                     }
 
@@ -772,7 +775,7 @@ namespace cloud.charging.open.protocols.OCPP
                     else
                     {
 
-                        DebugX.Log($"Received unknown '{jsonRequest.Action}' JSON request message handler within {nameof(ACSMSWSServer)}!");
+                        DebugX.Log($"Received unknown '{jsonRequest.Action}' JSON request message handler within {nameof(AOCPPWebSocketServer)}!");
 
                         OCPPErrorResponse = new OCPP_JSONErrorMessage(
                                                  jsonRequest.RequestId,
@@ -822,7 +825,7 @@ namespace cloud.charging.open.protocols.OCPP
                             }
                             catch (Exception e)
                             {
-                                DebugX.Log(e, nameof(ACSMSWSServer) + "." + nameof(OnJSONMessageResponseSent));
+                                DebugX.Log(e, nameof(AOCPPWebSocketServer) + "." + nameof(OnJSONMessageResponseSent));
                             }
                         }
 
@@ -870,7 +873,7 @@ namespace cloud.charging.open.protocols.OCPP
                             }
                             catch (Exception e)
                             {
-                                DebugX.Log(e, nameof(ACSMSWSServer) + "." + nameof(OnJSONMessageResponseReceived));
+                                DebugX.Log(e, nameof(AOCPPWebSocketServer) + "." + nameof(OnJSONMessageResponseReceived));
                             }
                         }
 
@@ -926,7 +929,7 @@ namespace cloud.charging.open.protocols.OCPP
                             }
                             catch (Exception e)
                             {
-                                DebugX.Log(e, nameof(ACSMSWSServer) + "." + nameof(OnJSONErrorResponseReceived));
+                                DebugX.Log(e, nameof(AOCPPWebSocketServer) + "." + nameof(OnJSONErrorResponseReceived));
                             }
                         }
 
@@ -939,20 +942,20 @@ namespace cloud.charging.open.protocols.OCPP
                 }
 
                 else if (requestParsingError  is not null)
-                    DebugX.Log($"Failed to parse a JSON request message within {nameof(ACSMSWSServer)}: '{requestParsingError}'{Environment.NewLine}'{TextMessage}'!");
+                    DebugX.Log($"Failed to parse a JSON request message within {nameof(AOCPPWebSocketServer)}: '{requestParsingError}'{Environment.NewLine}'{TextMessage}'!");
 
                 else if (responseParsingError is not null)
-                    DebugX.Log($"Failed to parse a JSON response message within {nameof(ACSMSWSServer)}: '{responseParsingError}'{Environment.NewLine}'{TextMessage}'!");
+                    DebugX.Log($"Failed to parse a JSON response message within {nameof(AOCPPWebSocketServer)}: '{responseParsingError}'{Environment.NewLine}'{TextMessage}'!");
 
                 else
-                    DebugX.Log($"Received unknown text message within {nameof(ACSMSWSServer)}: '{TextMessage}'!");
+                    DebugX.Log($"Received unknown text message within {nameof(AOCPPWebSocketServer)}: '{TextMessage}'!");
 
             }
             catch (Exception e)
             {
 
                 OCPPErrorResponse = OCPP_JSONErrorMessage.InternalError(
-                                        nameof(ACSMSWSServer),
+                                        nameof(AOCPPWebSocketServer),
                                         EventTrackingId,
                                         TextMessage,
                                         e
@@ -993,7 +996,7 @@ namespace cloud.charging.open.protocols.OCPP
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(ACSMSWSServer) + "." + nameof(OnJSONErrorResponseSent));
+                        DebugX.Log(e, nameof(AOCPPWebSocketServer) + "." + nameof(OnJSONErrorResponseSent));
                     }
                 }
 
@@ -1068,7 +1071,7 @@ namespace cloud.charging.open.protocols.OCPP
                         }
                         catch (Exception e)
                         {
-                            DebugX.Log(e, nameof(ACSMSWSServer) + "." + nameof(OnBinaryMessageRequestReceived));
+                            DebugX.Log(e, nameof(AOCPPWebSocketServer) + "." + nameof(OnBinaryMessageRequestReceived));
                         }
                     }
 
@@ -1097,7 +1100,7 @@ namespace cloud.charging.open.protocols.OCPP
                         }
 
                         else
-                            DebugX.Log($"Received undefined '{binaryRequest.Action}' binary request message handler within {nameof(ACSMSWSServer)}!");
+                            DebugX.Log($"Received undefined '{binaryRequest.Action}' binary request message handler within {nameof(AOCPPWebSocketServer)}!");
 
                     }
 
@@ -1106,7 +1109,7 @@ namespace cloud.charging.open.protocols.OCPP
                     else
                     {
 
-                        DebugX.Log($"Received unknown '{binaryRequest.Action}' binary request message handler within {nameof(ACSMSWSServer)}!");
+                        DebugX.Log($"Received unknown '{binaryRequest.Action}' binary request message handler within {nameof(AOCPPWebSocketServer)}!");
 
                         OCPPErrorResponse = new OCPP_JSONErrorMessage(
                                                  binaryRequest.RequestId,
@@ -1159,7 +1162,7 @@ namespace cloud.charging.open.protocols.OCPP
                             }
                             catch (Exception e)
                             {
-                                DebugX.Log(e, nameof(ACSMSWSServer) + "." + nameof(OnBinaryMessageResponseReceived));
+                                DebugX.Log(e, nameof(AOCPPWebSocketServer) + "." + nameof(OnBinaryMessageResponseReceived));
                             }
                         }
 
@@ -1168,25 +1171,25 @@ namespace cloud.charging.open.protocols.OCPP
                     }
 
                     else
-                        DebugX.Log(nameof(ACSMSWSServer), " Received unknown binary OCPP response message!");
+                        DebugX.Log(nameof(AOCPPWebSocketServer), " Received unknown binary OCPP response message!");
 
                 }
 
                 else if (requestParsingError  is not null)
-                    DebugX.Log($"Failed to parse a binary request message within {nameof(ACSMSWSServer)}: '{requestParsingError}'{Environment.NewLine}'{BinaryMessage.ToBase64()}'!");
+                    DebugX.Log($"Failed to parse a binary request message within {nameof(AOCPPWebSocketServer)}: '{requestParsingError}'{Environment.NewLine}'{BinaryMessage.ToBase64()}'!");
 
                 else if (responseParsingError is not null)
-                    DebugX.Log($"Failed to parse a binary response message within {nameof(ACSMSWSServer)}: '{responseParsingError}'{Environment.NewLine}'{BinaryMessage.ToBase64()}'!");
+                    DebugX.Log($"Failed to parse a binary response message within {nameof(AOCPPWebSocketServer)}: '{responseParsingError}'{Environment.NewLine}'{BinaryMessage.ToBase64()}'!");
 
                 else
-                    DebugX.Log($"Received unknown binary message within {nameof(ACSMSWSServer)}: '{BinaryMessage.ToBase64()}'!");
+                    DebugX.Log($"Received unknown binary message within {nameof(AOCPPWebSocketServer)}: '{BinaryMessage.ToBase64()}'!");
 
             }
             catch (Exception e)
             {
 
                 OCPPErrorResponse = OCPP_JSONErrorMessage.InternalError(
-                                        nameof(ACSMSWSServer),
+                                        nameof(AOCPPWebSocketServer),
                                         EventTrackingId,
                                         BinaryMessage,
                                         e
@@ -1260,8 +1263,8 @@ namespace cloud.charging.open.protocols.OCPP
                     foreach (var webSocketConnection in webSocketConnections)
                     {
 
-                        var networkingMode   = webSocketConnection.TryGetCustomDataAs<Boolean>(networkingMode_WebSocketKey);
-                        var ocppJSONMessage  = jsonRequestMessage. ToJSON(networkingMode ?? false);
+                        var networkingMode   = webSocketConnection.TryGetCustomDataAs<NetworkingMode>(networkingMode_WebSocketKey);
+                        var ocppJSONMessage  = jsonRequestMessage. ToJSON(networkingMode ?? NetworkingMode.Standard);
 
                         #region OnTextMessageRequestSent
 
@@ -1286,7 +1289,7 @@ namespace cloud.charging.open.protocols.OCPP
                             }
                             catch (Exception e)
                             {
-                                DebugX.Log(e, nameof(ACSMSWSServer) + "." + nameof(OnJSONMessageRequestSent));
+                                DebugX.Log(e, nameof(AOCPPWebSocketServer) + "." + nameof(OnJSONMessageRequestSent));
                             }
                         }
 
@@ -1397,7 +1400,7 @@ namespace cloud.charging.open.protocols.OCPP
                             }
                             catch (Exception e)
                             {
-                                DebugX.Log(e, nameof(ACSMSWSServer) + "." + nameof(OnBinaryMessageRequestSent));
+                                DebugX.Log(e, nameof(AOCPPWebSocketServer) + "." + nameof(OnBinaryMessageRequestSent));
                             }
 
                         }
@@ -1487,7 +1490,7 @@ namespace cloud.charging.open.protocols.OCPP
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(String.Concat(nameof(ACSMSWSServer), ".", nameof(SendJSONAndWait), " exception occured: ", e.Message));
+                        DebugX.Log(String.Concat(nameof(AOCPPWebSocketServer), ".", nameof(SendJSONAndWait), " exception occured: ", e.Message));
                     }
 
                 }
@@ -1602,7 +1605,7 @@ namespace cloud.charging.open.protocols.OCPP
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(String.Concat(nameof(ACSMSWSServer), ".", nameof(SendJSONAndWait), " exception occured: ", e.Message));
+                        DebugX.Log(String.Concat(nameof(AOCPPWebSocketServer), ".", nameof(SendJSONAndWait), " exception occured: ", e.Message));
                     }
 
                 }

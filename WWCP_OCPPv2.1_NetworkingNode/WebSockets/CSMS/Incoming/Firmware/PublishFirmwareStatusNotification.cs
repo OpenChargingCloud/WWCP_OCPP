@@ -23,6 +23,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPP.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
@@ -35,7 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
     /// <summary>
     /// The CSMS HTTP/WebSocket/JSON server.
     /// </summary>
-    public partial class NetworkingNodeWSServer : ACSMSWSServer,
+    public partial class NetworkingNodeWSServer : AOCPPWebSocketServer,
                                                   INetworkingNodeChannel
     {
 
@@ -84,7 +85,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
             Receive_PublishFirmwareStatusNotification(DateTime                   RequestTimestamp,
                                                       WebSocketServerConnection  Connection,
-                                                      NetworkingNode_Id          NetworkingNodeId,
+                                                      NetworkingNode_Id          DestinationNodeId,
                                                       NetworkPath                NetworkPath,
                                                       EventTracking_Id           EventTrackingId,
                                                       Request_Id                 RequestId,
@@ -103,7 +104,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                 OnPublishFirmwareStatusNotificationWSRequest?.Invoke(startTime,
                                                                      this,
                                                                      Connection,
-                                                                     NetworkingNodeId,
+                                                                     DestinationNodeId,
                                                                      EventTrackingId,
                                                                      RequestTimestamp,
                                                                      JSONRequest);
@@ -125,7 +126,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
                 if (PublishFirmwareStatusNotificationRequest.TryParse(JSONRequest,
                                                                       RequestId,
-                                                                      NetworkingNodeId,
+                                                                      DestinationNodeId,
                                                                       NetworkPath,
                                                                       out var request,
                                                                       out var errorResponse,
@@ -193,6 +194,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                     #endregion
 
                     OCPPResponse = new OCPP_JSONResponseMessage(
+                                       NetworkPath.Source,
                                        RequestId,
                                        response.ToJSON(
                                            CustomPublishFirmwareStatusNotificationResponseSerializer,
@@ -235,7 +237,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                 OnPublishFirmwareStatusNotificationWSResponse?.Invoke(endTime,
                                                                       this,
                                                                       Connection,
-                                                                      NetworkingNodeId,
+                                                                      DestinationNodeId,
                                                                       EventTrackingId,
                                                                       RequestTimestamp,
                                                                       JSONRequest,

@@ -29,23 +29,37 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
     /// <summary>
     /// An OCPP HTTP Web Socket binary response message.
     /// </summary>
+    /// <param name="DestinationNodeId">The networking node identification of the message destination.</param>
     /// <param name="RequestId">An unique request identification.</param>
     /// <param name="Payload">The binary response message payload.</param>
-    public class OCPP_BinaryResponseMessage(Request_Id  RequestId,
-                                            Byte[]      Payload)
+    /// <param name="NetworkPath">The optional (recorded) path of the response through the overlay network.</param>
+    public class OCPP_BinaryResponseMessage(NetworkingNode_Id  DestinationNodeId,
+                                            Request_Id         RequestId,
+                                            Byte[]             Payload,
+                                            NetworkPath?       NetworkPath   = null)
     {
 
         #region Properties
 
         /// <summary>
+        /// The networking node identification of the message destination.
+        /// </summary>
+        public NetworkingNode_Id?  DestinationNodeId    { get; } = DestinationNodeId;
+
+        /// <summary>
         /// The unique request identification.
         /// </summary>
-        public Request_Id  RequestId    { get; } = RequestId;
+        public Request_Id          RequestId            { get; } = RequestId;
 
         /// <summary>
         /// The binary response message payload.
         /// </summary>
-        public Byte[]      Payload      { get; } = Payload;
+        public Byte[]              Payload              { get; } = Payload;
+
+        /// <summary>
+        /// The (recorded) path of the response through the overlay network.
+        /// </summary>
+        public NetworkPath         NetworkPath          { get; } = NetworkPath ?? NetworkPath.Empty;
 
         #endregion
 
@@ -95,8 +109,10 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                 var payload            = stream.ReadBytes(payloadLength);
 
                 BinaryResponseMessage  = new OCPP_BinaryResponseMessage(
+                                             NetworkingNode_Id.Zero,
                                              requestId,
-                                             payload
+                                             payload,
+                                             NetworkPath.Empty
                                          );
 
                 return true;

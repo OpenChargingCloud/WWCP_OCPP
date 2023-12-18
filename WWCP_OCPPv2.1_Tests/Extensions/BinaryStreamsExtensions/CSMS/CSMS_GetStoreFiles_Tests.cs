@@ -90,7 +90,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                 ClassicAssert.AreEqual(SHA512.HashData("Hello world!".ToUTF8Bytes()).ToHexString(),   response.FileSHA512.ToHexString());
 
                 ClassicAssert.AreEqual(1,                                                             getFileRequests.Count);
-                ClassicAssert.AreEqual(chargingStation1.Id,                                           getFileRequests.First().NetworkingNodeId);
+                ClassicAssert.AreEqual(chargingStation1.Id,                                           getFileRequests.First().DestinationNodeId);
                 ClassicAssert.AreEqual(filename,                                                      getFileRequests.First().FileName);
 
             }
@@ -148,7 +148,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                 ClassicAssert.AreEqual(filename,                                                      response.FileName);
 
                 ClassicAssert.AreEqual(1,                                                             sendFileRequests.Count);
-                ClassicAssert.AreEqual(chargingStation1.Id,                                           sendFileRequests.First().NetworkingNodeId);
+                ClassicAssert.AreEqual(chargingStation1.Id,                                           sendFileRequests.First().DestinationNodeId);
                 ClassicAssert.AreEqual("Hello world!",                                                sendFileRequests.First().FileContent.ToUTF8String());
                 ClassicAssert.AreEqual(ContentType.Text.Plain,                                        sendFileRequests.First().FileContentType);
                 ClassicAssert.AreEqual(SHA256.HashData("Hello world!".ToUTF8Bytes()).ToHexString(),   sendFileRequests.First().FileSHA256.ToHexString());
@@ -205,7 +205,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                 ClassicAssert.AreEqual(filename,                   response.FileName);
 
                 ClassicAssert.AreEqual(1,                          deleteFileRequests.Count);
-                ClassicAssert.AreEqual(chargingStation1.Id,        deleteFileRequests.First().NetworkingNodeId);
+                ClassicAssert.AreEqual(chargingStation1.Id,        deleteFileRequests.First().DestinationNodeId);
 
             }
 

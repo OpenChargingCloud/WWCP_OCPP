@@ -81,7 +81,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
                     Assert.That(response.Status,                          Is.EqualTo(ResetStatus.Accepted));
 
                     Assert.That(resetRequests.Count,                      Is.EqualTo(1));
-                    Assert.That(resetRequests.First().NetworkingNodeId,   Is.EqualTo(chargePoint1.Id));
+                    Assert.That(resetRequests.First().DestinationNodeId,   Is.EqualTo(chargePoint1.Id));
                     Assert.That(resetRequests.First().ResetType,          Is.EqualTo(resetType));
 
                 });
@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
                     Assert.That(response.Status,                                       Is.EqualTo(AvailabilityStatus.Accepted));
 
                     Assert.That(changeAvailabilityRequests.Count,                      Is.EqualTo(1));
-                    Assert.That(changeAvailabilityRequests.First().NetworkingNodeId,   Is.EqualTo(chargePoint1.Id));
+                    Assert.That(changeAvailabilityRequests.First().DestinationNodeId,   Is.EqualTo(chargePoint1.Id));
                     Assert.That(changeAvailabilityRequests.First().ConnectorId,        Is.EqualTo(connectorId));
                     Assert.That(changeAvailabilityRequests.First().Availability,       Is.EqualTo(availability));
 
@@ -295,7 +295,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
                     Assert.That(response.UnknownKeys.      Count(),                  Is.EqualTo(0));
 
                     Assert.That(getConfigurationRequests.Count,                      Is.EqualTo(1));
-                    Assert.That(getConfigurationRequests.First().NetworkingNodeId,   Is.EqualTo(chargePoint1.Id));
+                    Assert.That(getConfigurationRequests.First().DestinationNodeId,   Is.EqualTo(chargePoint1.Id));
 
                 });
 
@@ -347,7 +347,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
                     Assert.That(response.UnknownKeys.      Count(),                  Is.EqualTo(0));
 
                     Assert.That(getConfigurationRequests.Count,                      Is.EqualTo(1));
-                    Assert.That(getConfigurationRequests.First().NetworkingNodeId,   Is.EqualTo(chargePoint1.Id));
+                    Assert.That(getConfigurationRequests.First().DestinationNodeId,   Is.EqualTo(chargePoint1.Id));
 
                 });
 
@@ -399,7 +399,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
                     Assert.That(response.UnknownKeys.      Count(),                  Is.EqualTo(2));
 
                     Assert.That(getConfigurationRequests.Count,                      Is.EqualTo(1));
-                    Assert.That(getConfigurationRequests.First().NetworkingNodeId,   Is.EqualTo(chargePoint1.Id));
+                    Assert.That(getConfigurationRequests.First().DestinationNodeId,   Is.EqualTo(chargePoint1.Id));
 
                 });
 
@@ -454,7 +454,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
                     Assert.That(response.Status,                                        Is.EqualTo(ConfigurationStatus.Rejected));
 
                     Assert.That(changeConfigurationRequests.Count,                      Is.EqualTo(1));
-                    Assert.That(changeConfigurationRequests.First().NetworkingNodeId,   Is.EqualTo(chargePoint1.Id));
+                    Assert.That(changeConfigurationRequests.First().DestinationNodeId,   Is.EqualTo(chargePoint1.Id));
                     Assert.That(changeConfigurationRequests.First().Key,                Is.EqualTo(key));
                     Assert.That(changeConfigurationRequests.First().Value,              Is.EqualTo(value));
 
@@ -510,7 +510,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
                     Assert.That(response1.Status,                                       Is.EqualTo(ConfigurationStatus.Accepted));
 
                     Assert.That(changeConfigurationRequests.Count,                      Is.EqualTo(1));
-                    Assert.That(changeConfigurationRequests.First().NetworkingNodeId,   Is.EqualTo(chargePoint1.Id));
+                    Assert.That(changeConfigurationRequests.First().DestinationNodeId,   Is.EqualTo(chargePoint1.Id));
                     Assert.That(changeConfigurationRequests.First().Key,                Is.EqualTo(key));
                     Assert.That(changeConfigurationRequests.First().Value,              Is.EqualTo(value));
 
@@ -538,7 +538,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
                     Assert.That(response2.ConfigurationKeys.First().Value,              Is.EqualTo(value));
 
                     Assert.That(getConfigurationRequests.Count,                         Is.EqualTo(1));
-                    Assert.That(getConfigurationRequests.First().NetworkingNodeId,      Is.EqualTo(chargePoint1.Id));
+                    Assert.That(getConfigurationRequests.First().DestinationNodeId,      Is.EqualTo(chargePoint1.Id));
 
                 });
 
@@ -592,7 +592,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
                     Assert.That(response1.Status,                                       Is.EqualTo(ConfigurationStatus.Rejected));
 
                     Assert.That(changeConfigurationRequests.Count,                      Is.EqualTo(1));
-                    Assert.That(changeConfigurationRequests.First().NetworkingNodeId,   Is.EqualTo(chargePoint1.Id));
+                    Assert.That(changeConfigurationRequests.First().DestinationNodeId,   Is.EqualTo(chargePoint1.Id));
                     Assert.That(changeConfigurationRequests.First().Key,                Is.EqualTo(key));
                     Assert.That(changeConfigurationRequests.First().Value,              Is.EqualTo(value));
 
@@ -620,7 +620,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
                     Assert.That(response2.ConfigurationKeys.First().Value,              Is.EqualTo("world"));
 
                     Assert.That(getConfigurationRequests.Count,                         Is.EqualTo(1));
-                    Assert.That(getConfigurationRequests.First().NetworkingNodeId,      Is.EqualTo(chargePoint1.Id));
+                    Assert.That(getConfigurationRequests.First().DestinationNodeId,      Is.EqualTo(chargePoint1.Id));
 
                 });
 
@@ -683,7 +683,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
                     Assert.That(response.Data?.ToString(),                       Is.EqualTo(data.Reverse()));
 
                     Assert.That(dataTransferRequests.Count,                      Is.EqualTo(1));
-                    Assert.That(dataTransferRequests.First().NetworkingNodeId,   Is.EqualTo(chargePoint1.Id));
+                    Assert.That(dataTransferRequests.First().DestinationNodeId,   Is.EqualTo(chargePoint1.Id));
                     Assert.That(dataTransferRequests.First().VendorId,           Is.EqualTo(vendorId));
                     Assert.That(dataTransferRequests.First().MessageId,          Is.EqualTo(messageId));
                     Assert.That(dataTransferRequests.First().Data?.Type,         Is.EqualTo(JTokenType.String));
@@ -752,7 +752,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
                     Assert.That(response.Data?["key"]?.Value<String>()?.Reverse(),            Is.EqualTo(data["key"]?.Value<String>()));
 
                     Assert.That(dataTransferRequests.Count,                                   Is.EqualTo(1));
-                    Assert.That(dataTransferRequests.First().NetworkingNodeId,                Is.EqualTo(chargePoint1.Id));
+                    Assert.That(dataTransferRequests.First().DestinationNodeId,                Is.EqualTo(chargePoint1.Id));
                     Assert.That(dataTransferRequests.First().VendorId,                        Is.EqualTo(vendorId));
                     Assert.That(dataTransferRequests.First().MessageId,                       Is.EqualTo(messageId));
                     Assert.That(dataTransferRequests.First().Data?.Type,                      Is.EqualTo(JTokenType.Object));
@@ -819,7 +819,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
                     Assert.That(response.Data?[0]?.Value<String>()?.Reverse(),            Is.EqualTo(data[0]?.Value<String>()));
 
                     Assert.That(dataTransferRequests.Count,                               Is.EqualTo(1));
-                    Assert.That(dataTransferRequests.First().NetworkingNodeId,            Is.EqualTo(chargePoint1.Id));
+                    Assert.That(dataTransferRequests.First().DestinationNodeId,            Is.EqualTo(chargePoint1.Id));
                     Assert.That(dataTransferRequests.First().VendorId,                    Is.EqualTo(vendorId));
                     Assert.That(dataTransferRequests.First().MessageId,                   Is.EqualTo(messageId));
                     Assert.That(dataTransferRequests.First().Data?.Type,                  Is.EqualTo(JTokenType.Array));
@@ -881,7 +881,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
                     Assert.That(response.Data,                                   Is.Null);
 
                     Assert.That(dataTransferRequests.Count,                      Is.EqualTo(1));
-                    Assert.That(dataTransferRequests.First().NetworkingNodeId,   Is.EqualTo(chargePoint1.Id));
+                    Assert.That(dataTransferRequests.First().DestinationNodeId,   Is.EqualTo(chargePoint1.Id));
                     Assert.That(dataTransferRequests.First().VendorId,           Is.EqualTo(vendorId));
                     Assert.That(dataTransferRequests.First().MessageId,          Is.EqualTo(messageId));
                     Assert.That(dataTransferRequests.First().Data?.Type,         Is.EqualTo(JTokenType.String));

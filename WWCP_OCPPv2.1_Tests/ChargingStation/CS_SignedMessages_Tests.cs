@@ -127,7 +127,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
 
                 ClassicAssert.AreEqual(1,                                       bootNotificationRequests.Count);
-                ClassicAssert.AreEqual(chargingStation1.Id,                     bootNotificationRequests.First().NetworkingNodeId);
+                ClassicAssert.AreEqual(chargingStation1.Id,                     bootNotificationRequests.First().DestinationNodeId);
                 ClassicAssert.AreEqual(reason,                                  bootNotificationRequests.First().Reason);
                 ClassicAssert.AreEqual(1,                                       bootNotificationRequests.First().Signatures.Count());
                 ClassicAssert.AreEqual(VerificationStatus.ValidSignature,       bootNotificationRequests.First().Signatures.First().Status);

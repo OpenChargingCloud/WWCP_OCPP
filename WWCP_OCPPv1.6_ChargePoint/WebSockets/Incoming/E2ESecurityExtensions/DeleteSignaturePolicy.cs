@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// The charging station HTTP WebSocket client runs on a charging station
     /// and connects to a CSMS to invoke methods.
     /// </summary>
-    public partial class ChargePointWSClient : AChargingStationWSClient,
+    public partial class ChargePointWSClient : AOCPPWebSocketClient,
                                                IChargePointWebSocketClient,
                                                ICPIncomingMessages,
                                                ICPOutgoingMessagesEvents
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             Receive_DeleteSignaturePolicy(DateTime                   RequestTimestamp,
                                           WebSocketClientConnection  WebSocketConnection,
-                                          NetworkingNode_Id          NetworkingNodeId,
+                                          NetworkingNode_Id          DestinationNodeId,
                                           NetworkPath                NetworkPath,
                                           EventTracking_Id           EventTrackingId,
                                           Request_Id                 RequestId,
@@ -105,7 +105,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 OnDeleteSignaturePolicyWSRequest?.Invoke(startTime,
                                                          WebSocketConnection,
-                                                         NetworkingNodeId,
+                                                         DestinationNodeId,
                                                          NetworkPath,
                                                          EventTrackingId,
                                                          RequestJSON);
@@ -126,7 +126,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 if (DeleteSignaturePolicyRequest.TryParse(RequestJSON,
                                                           RequestId,
-                                                          NetworkingNodeId,
+                                                          DestinationNodeId,
                                                           NetworkPath,
                                                           out var request,
                                                           out var errorResponse,
@@ -197,6 +197,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                     #endregion
 
                     OCPPResponse = new OCPP_JSONResponseMessage(
+                                       NetworkPath.Source,
                                        RequestId,
                                        response.ToJSON()
                                    );
@@ -231,7 +232,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 OnDeleteSignaturePolicyWSResponse?.Invoke(endTime,
                                                           WebSocketConnection,
-                                                          NetworkingNodeId,
+                                                          DestinationNodeId,
                                                           NetworkPath,
                                                           EventTrackingId,
                                                           RequestTimestamp,

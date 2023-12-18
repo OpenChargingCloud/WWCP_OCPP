@@ -32,7 +32,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <summary>
     /// A charge point HTTP Web Socket client.
     /// </summary>
-    public partial class ChargePointWSClient : AChargingStationWSClient,
+    public partial class ChargePointWSClient : AOCPPWebSocketClient,
                                                IChargePointWebSocketClient,
                                                ICPIncomingMessages,
                                                ICPOutgoingMessagesEvents
@@ -109,8 +109,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             {
 
                 var requestMessage = await SendRequest(
-                                               Request.NetworkingNodeId,
-                                               Request.NetworkPath,
+                                               Request.DestinationNodeId,
                                                Request.Action,
                                                Request.RequestId,
                                                Request.ToBinary(

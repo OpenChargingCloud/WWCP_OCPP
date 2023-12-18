@@ -36,10 +36,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     /// The charging station HTTP WebSocket client runs on a charging station
     /// and connects to a CSMS to invoke methods.
     /// </summary>
-    public partial class NetworkingNodeWSClient : WebSocketClient,
-                                                   INetworkingNodeWebSocketClient,
-                                                   INetworkingNodeServer,
-                                                   INetworkingNodeClientEvents
+    public partial class NetworkingNodeWSClient : AOCPPWebSocketClient,
+                                                  INetworkingNodeWebSocketClient,
+                                                  INetworkingNodeServer,
+                                                  INetworkingNodeClientEvents
     {
 
         #region Custom JSON parser delegates
@@ -85,7 +85,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
             Receive_DeleteUserRole(DateTime                   RequestTimestamp,
                                    WebSocketClientConnection  WebSocketConnection,
-                                   NetworkingNode_Id          NetworkingNodeId,
+                                   NetworkingNode_Id          DestinationNodeId,
                                    NetworkPath                NetworkPath,
                                    EventTracking_Id           EventTrackingId,
                                    Request_Id                 RequestId,
@@ -103,7 +103,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                 OnDeleteUserRoleWSRequest?.Invoke(startTime,
                                                   WebSocketConnection,
-                                                  NetworkingNodeId,
+                                                  DestinationNodeId,
                                                   NetworkPath,
                                                   EventTrackingId,
                                                   RequestJSON);
@@ -124,7 +124,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                 if (DeleteUserRoleRequest.TryParse(RequestJSON,
                                                    RequestId,
-                                                   NetworkingNodeId,
+                                                   DestinationNodeId,
                                                    NetworkPath,
                                                    out var request,
                                                    out var errorResponse,
@@ -195,6 +195,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
                     #endregion
 
                     OCPPResponse = new OCPP_JSONResponseMessage(
+                                       NetworkPath.Source,
                                        RequestId,
                                        response.ToJSON()
                                    );
@@ -229,7 +230,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                 OnDeleteUserRoleWSResponse?.Invoke(endTime,
                                                    WebSocketConnection,
-                                                   NetworkingNodeId,
+                                                   DestinationNodeId,
                                                    NetworkPath,
                                                    EventTrackingId,
                                                    RequestTimestamp,

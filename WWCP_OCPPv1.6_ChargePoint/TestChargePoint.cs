@@ -1621,12 +1621,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 DataTransferResponse? response = null;
 
-                if (request.NetworkingNodeId != Id)
+                if (request.DestinationNodeId != Id)
                 {
                     response = new DataTransferResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
-                                                 $"Charging station '{Id}': Invalid DataTransfer request for charging station '{request.NetworkingNodeId}'!"
+                                                 $"Charging station '{Id}': Invalid DataTransfer request for charging station '{request.DestinationNodeId}'!"
                                              )
                                );
                 }
@@ -2920,20 +2920,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         protected internal virtual async Task _DoMaintenance(Object State)
         {
 
-            foreach (var enquedRequest in EnqueuedRequests.ToArray())
+            foreach (var enqueuedRequest in EnqueuedRequests.ToArray())
             {
                 if (CPClient is ChargePointWSClient wsClient)
                 {
 
                     //var response = await wsClient.SendRequest(
-                    //                         enquedRequest.Command,
-                    //                         enquedRequest.Request.RequestId,
-                    //                         enquedRequest.RequestJSON
+                    //                         enqueuedRequest.Command,
+                    //                         enqueuedRequest.Request.RequestId,
+                    //                         enqueuedRequest.RequestJSON
                     //                     );
 
-                    //enquedRequest.ResponseAction(response);
+                    //enqueuedRequest.ResponseAction(response);
 
-                    //EnqueuedRequests.Remove(enquedRequest);
+                    //EnqueuedRequests.Remove(enqueuedRequest);
 
                 }
             }

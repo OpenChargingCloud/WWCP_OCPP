@@ -155,7 +155,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode
                                        To:                      "To:OCPPTest01",
                                        RemoteURL:               URL.Parse("http://127.0.0.1:" + testBackendWebSockets01.IPPort.ToString() + "/" + networkingNode1.Id),
                                        HTTPAuthentication:      HTTPBasicAuthentication.Create(networkingNode1Id.ToString(), "1234abcd"),
-                                       DisableWebSocketPings:   true
+                                       DisableWebSocketPings:   true,
+                                       NetworkingMode:          OCPP.WebSockets.NetworkingMode.NetworkingExtensions
                                    ).Result;
 
                     ClassicAssert.IsNotNull(response);
