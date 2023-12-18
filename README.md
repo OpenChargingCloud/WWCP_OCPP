@@ -39,12 +39,14 @@ This project provides fills these gaps via *Digital Signatures* on all requests,
 
 The software aspects of the German Calibration Law (Eichrecht) demand a secure communication of meter values, errors (and charging tariff information for ad hoc charging sessions) and a Charging Transparency Software for end users and regulators. Currently OCPP only supports minimal support for this regulatory requirements and thus the expected security benefit does not reach the end users.
 
-This project provides additional data structures and commands to ensure a secure exchange of cryptographic and metrological data.
+This project provides additional data structures and commands to ensure a secure exchange of cryptographic and metrological data and digital calibration certificates.
 
 
 #### European General Data Protection Regulation (GDPR)
 
 Neither RFID cards, nor AutoCharge, smartphone apps and even not ISO 15118 Plug & Charge currently provide a GDPR compliant protection of end users and their data.
+
+This project provides new data structures for encrypting privacy sensitive data and new EV driver authorization methods to avoid user tracking and data abuse.
 
 
 #### Overlay Networking
