@@ -9,30 +9,31 @@ For more details on the *Open Charge Point Protocol* please visit http://www.ope
 
 ## Versions
 
-- **OCPP v2.1** is a based on an internal OCA specification (Draft 2 v0.44) and currently
-under development. This version also comes with our [OCPP CSE](OCPP_CSE) extensions for
-cryptographically signed messages, security polices, user roles, end-to-end digital
-signed charging tariffs and charging tickets. This version was also tested on multiple
-Open Charge Alliance Plugfests.
-- **OCPP v2.0.1** is fully implemented and at least one tests exists for every charging
-station or CSMS message. This versions is not longer actively maintained and justs remains
-to reflect data structure changes within different OCPP version. Please use version v2.1.
-instead.
-- **OCPP v1.6** and the **Security Whitepaper** extensions are fully implemented
-and at least one tests exists for every charging station or CSMS message. This
-version was also tested on multiple *Open Charge Alliance Plugfests*.
-- **OCPP v1.5** is no longer maintained. If you still need this version please
-send us an e-mail.
+- **OCPP v2.1** is a based on an internal OCA specification (Draft 2 v0.44) and currently under development. This version is tested regularly at *Open Charge Alliance Plugfests*.
+
+- **OCPP v2.0.1** is fully implemented and at least one tests exists for every charging station or CSMS message. This versions is not longer actively maintained and justs remains to reflect data structure changes within different OCPP version. **Please use version v2.1. instead.**
+
+- **OCPP v1.6** and the **Security Whitepaper** extensions are fully implemented and at least one tests exists for every charging station or CSMS message. This version was also tested on multiple *Open Charge Alliance Plugfests*.
+
+- **OCPP v1.5** is no longer maintained. If you still need this version please send us an e-mail.
 
 ## Implementation Details and Differences
 
-The official protocol specifications of [OCPP v1.6](WWCP_OCPPv1.6/README.md), [OCPP v2.0.1](WWCP_OCPPv2.0.1/README.md) and [OCPP v2.1](WWCP_OCPPv2.1/README.md) have unfortunatelly still many protocol design flaws and security issues which are still not addressed properly by the *Open Charge Alliance Technical Working Group (TWG)*. Therefore this implementation provides a rich set of vendor extentions and work-arounds for most of these issues to simplify the daily operations business, high availability or to support additional concepts/methods.
+The official protocol specifications of [OCPP v1.6](WWCP_OCPPv1.6/README.md), [OCPP v2.0.1](WWCP_OCPPv2.0.1/README.md) and [OCPP v2.1](WWCP_OCPPv2.1/README.md) have unfortunatelly still many protocol design flaws and security issues which are still not addressed properly by the *Open Charge Alliance Technical Working Group (TWG)*. Therefore this implementation provides a rich set of vendor extentions, called [OCPP CSE](OCPP_CSE), and further work-arounds for most of these issues to simplify the daily operations business, high availability or to support additional concepts/methods.
+
 
 #### End-to-End Cyber Security
 
 OCCP currently on ly offers *hop-by-hop* security via *Transport-Layer-Security (TLS)*. This only provides communication privacy and security against external attackers, but can not secure more complex networking scenarios e.g. with local controllers between the charging stations and the backend(s).
 
-This project provides fills these gaps via *Digital Signatures* on all requests, responses and main data structures. Additional *Signature Policies* and *User Roles* will further limit the attack surface of your critical charging infrastructure and allow you to implement fine-grained access controls.
+This project provides fills these gaps via ***Digital Signatures*** on all requests, responses and main data structures. Additional ***Signature Policies*** and ***User Roles*** will further limit the attack surface of your critical charging infrastructure and allow you to implement fine-grained access controls. 
+
+
+#### Overlay Networking
+
+While in the past a single charging station was connected directly to an operator backend, todays charging infrastructure is far more complex. Today we have to support efficient and secure operations for a cluster of colocated charging stations connected to the same grid connection point. Those charging stations often come from different vendors and some sort of local load management shall reduce energy consumption peaks.
+
+This project provides additional data structures and commands to enable overlay networking between charging stations, additional energy meters, local controllers and operator backends. It also provides enhanced network configuration options for *high-available* networking setups to simplify European **AFIR regulations** and US **NEVI requirements** in the US.
 
 
 #### German Calibration Law (Eichrecht)
@@ -56,14 +57,7 @@ Neither RFID cards, nor AutoCharge, smartphone apps and even not ISO 15118 Plug 
 This project provides new data structures for encrypting privacy sensitive data and new EV driver authorization methods to avoid user tracking and data abuse.
 
 
-#### Overlay Networking
-
-While in the past a single charging station was connected directly to an operator backend, todays charging infrastructure is far more complex. Today we have to support efficient and secure operations for a cluster of colocated charging stations connected to the same grid connection point. Those charging stations oftern come from different vendors and some sort of local load management should reduce energy consumption peaks.
-
-This project provides additional data structures and commands to enable overlay networking between charging stations, local controllers and operator backends. It also provides enhanced network configuration options for High-Available network setups to simplify the *NEVI requirements* in the US.
-
-
-### Security Policy
+### Project Security Policy
 
 We take security very seriously. Therefore we not only created the *End-to-End-Security* extensions but also the *Calibration Law* extensions, but also continuously review security vulnerabilities within the code, and provide fixes in a timely manner.
 
