@@ -42,6 +42,11 @@ The software aspects of the German Calibration Law (Eichrecht) demand a secure c
 This project provides additional data structures and commands to ensure a secure exchange of cryptographic and metrological data and digital calibration certificates.
 
 
+#### Controllable Loads (German §14a EnWG)
+
+...
+
+
 #### European General Data Protection Regulation (GDPR)
 
 Neither RFID cards, nor AutoCharge, smartphone apps and even not ISO 15118 Plug & Charge currently provide a GDPR compliant protection of end users and their data.
@@ -54,7 +59,6 @@ This project provides new data structures for encrypting privacy sensitive data 
 While in the past a single charging station was connected directly to an operator backend, todays charging infrastructure is far more complex. Today we have to support efficient and secure operations for a cluster of colocated charging stations connected to the same grid connection point. Those charging stations oftern come from different vendors and some sort of local load management should reduce energy consumption peaks.
 
 This project provides additional data structures and commands to enable overlay networking between charging stations, local controllers and operator backends. It also provides enhanced network configuration options for High-Available network setups to simplify the *NEVI requirements* in the US.
-
 
 
 ### Security Policy
