@@ -52,9 +52,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="HTTPResponse">A HTTP error response.</param>
         /// <returns>True, when charging station identification was found; false else.</returns>
         public static Boolean ParseChargingStationId(this HTTPRequest           HTTPRequest,
-                                               CSMSWebAPI                 OCPPWebAPI,
-                                               out ChargingStation_Id?          ChargingStationId,
-                                               out HTTPResponse.Builder?  HTTPResponse)
+                                                     CSMSWebAPI                 OCPPWebAPI,
+                                                     out ChargingStation_Id?    ChargingStationId,
+                                                     out HTTPResponse.Builder?  HTTPResponse)
         {
 
             #region Initial checks
@@ -67,8 +67,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #endregion
 
-            ChargingStationId   = null;
-            HTTPResponse  = null;
+            ChargingStationId  = null;
+            HTTPResponse       = null;
 
             if (HTTPRequest.ParsedURLParameters.Length < 1)
             {
@@ -122,10 +122,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="HTTPResponse">A HTTP error response.</param>
         /// <returns>True, when charging station identification was found; false else.</returns>
         public static Boolean ParseChargingStation(this HTTPRequest           HTTPRequest,
-                                             CSMSWebAPI                 OCPPWebAPI,
-                                             out ChargingStation_Id?          ChargingStationId,
-                                             out CSMS.ChargingStation?             ChargingStation,
-                                             out HTTPResponse.Builder?  HTTPResponse)
+                                                   CSMSWebAPI                 OCPPWebAPI,
+                                                   out ChargingStation_Id?    ChargingStationId,
+                                                   out CSMS.ChargingStation?  ChargingStation,
+                                                   out HTTPResponse.Builder?  HTTPResponse)
         {
 
             #region Initial checks
@@ -138,9 +138,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #endregion
 
-            ChargingStationId   = null;
-            ChargingStation     = null;
-            HTTPResponse  = null;
+            ChargingStationId  = null;
+            ChargingStation    = null;
+            HTTPResponse       = null;
 
             if (HTTPRequest.ParsedURLParameters.Length < 1) {
 
@@ -583,29 +583,40 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             this.csmss.TryAdd(CSMS.Id, CSMS);
 
-            #region Generic Text Messages
+            #region Generic JSON Messages
 
-            #region OnTextMessageRequestReceived
+            #region OnJSONMessageRequestReceived
 
             CSMS.OnJSONMessageRequestReceived += async (timestamp,
                                                         webSocketServer,
                                                         webSocketConnection,
                                                         networkingNodeId,
+                                                        networkPath,
                                                         eventTrackingId,
                                                         requestTimestamp,
                                                         requestMessage,
                                                         cancellationToken) =>
 
-                await this.EventLog.SubmitEvent("OnTextMessageRequestReceived",
-                                                JSONObject.Create(
-                                                    new JProperty("timestamp",    timestamp.          ToIso8601()),
-                                                    new JProperty("connection",   webSocketConnection.ToJSON()),
-                                                    new JProperty("message",      requestMessage)
-                                                ));
+            //Timestamp,
+            //Server,
+            //Connection,
+            //NetworkingNodeId,
+            //NetworkPath,
+            //EventTrackingId,
+            //RequestTimestamp,
+            //RequestMessage,
+            //CancellationToken);
+
+            await this.EventLog.SubmitEvent("OnJSONMessageRequestReceived",
+                                            JSONObject.Create(
+                                                new JProperty("timestamp",    timestamp.          ToIso8601()),
+                                                new JProperty("connection",   webSocketConnection.ToJSON()),
+                                                new JProperty("message",      requestMessage)
+                                            ));
 
             #endregion
 
-            #region OnTextMessageResponseSent
+            #region OnJSONMessageResponseSent
 
             CSMS.OnJSONMessageResponseSent += async (timestamp,
                                                      webSocketServer,
@@ -619,7 +630,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                      responseMessage,
                                                      cancellationToken) =>
 
-                await this.EventLog.SubmitEvent("OnTextMessageResponseSent",
+                await this.EventLog.SubmitEvent("OnJSONMessageResponseSent",
                                                 JSONObject.Create(
                                                     new JProperty("timestamp",    timestamp.          ToIso8601()),
                                                     new JProperty("connection",   webSocketConnection.ToJSON()),
@@ -628,7 +639,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #endregion
 
-            #region OnTextErrorResponseSent
+            #region OnJSONErrorResponseSent
 
             CSMS.OnJSONErrorResponseSent += async (timestamp,
                                                    webSocketServer,
@@ -641,7 +652,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                    responseMessage,
                                                    cancellationToken) =>
 
-                await this.EventLog.SubmitEvent("OnTextErrorResponseSent",
+                await this.EventLog.SubmitEvent("OnJSONErrorResponseSent",
                                                 JSONObject.Create(
                                                     new JProperty("timestamp",    timestamp.          ToIso8601()),
                                                     new JProperty("connection",   webSocketConnection.ToJSON()),
@@ -651,18 +662,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            #region OnTextMessageRequestSent
+            #region OnJSONMessageRequestSent
 
             CSMS.OnJSONMessageRequestSent += async (timestamp,
                                                     webSocketServer,
                                                     webSocketConnection,
                                                     networkingNodeId,
+                                                    networkPath,
                                                     eventTrackingId,
                                                     requestTimestamp,
                                                     requestMessage,
                                                     cancellationToken) =>
 
-                await this.EventLog.SubmitEvent("OnTextMessageRequestSent",
+                await this.EventLog.SubmitEvent("OnJSONMessageRequestSent",
                                                 JSONObject.Create(
                                                     new JProperty("timestamp",    timestamp.          ToIso8601()),
                                                     new JProperty("connection",   webSocketConnection.ToJSON()),
@@ -671,7 +683,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #endregion
 
-            #region OnTextMessageResponseReceived
+            #region OnJSONMessageResponseReceived
 
             CSMS.OnJSONMessageResponseReceived += async (timestamp,
                                                          webSocketServer,
@@ -685,7 +697,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                          responseMessage,
                                                          cancellationToken) =>
 
-                await this.EventLog.SubmitEvent("OnTextMessageResponseReceived",
+                await this.EventLog.SubmitEvent("OnJSONMessageResponseReceived",
                                                 JSONObject.Create(
                                                     new JProperty("timestamp",    timestamp.          ToIso8601()),
                                                     new JProperty("connection",   webSocketConnection.ToJSON()),
@@ -694,7 +706,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #endregion
 
-            #region OnTextErrorResponseReceived
+            #region OnJSONErrorResponseReceived
 
             CSMS.OnJSONErrorResponseReceived += async (timestamp,
                                                        webSocketServer,
@@ -707,7 +719,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                        responseMessage,
                                                        cancellationToken) =>
 
-                await this.EventLog.SubmitEvent("OnTextErrorResponseReceived",
+                await this.EventLog.SubmitEvent("OnJSONErrorResponseReceived",
                                                 JSONObject.Create(
                                                     new JProperty("timestamp",    timestamp.          ToIso8601()),
                                                     new JProperty("connection",   webSocketConnection.ToJSON()),
@@ -726,6 +738,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                           webSocketServer,
                                                           webSocketConnection,
                                                           networkingNodeId,
+                                                          networkPath,
                                                           eventTrackingId,
                                                           requestTimestamp,
                                                           requestMessage,
@@ -791,6 +804,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                       webSocketServer,
                                                       webSocketConnection,
                                                       networkingNodeId,
+                                                      networkPath,
                                                       eventTrackingId,
                                                       requestTimestamp,
                                                       requestMessage,

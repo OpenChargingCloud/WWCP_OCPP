@@ -92,20 +92,20 @@ function StartEventsSSE() {
                 console.debug(exception);
             }
         }, false);
-        eventsSource.addEventListener('OnTextMessageRequestReceived', function (event) {
+        eventsSource.addEventListener('OnJSONMessageRequestReceived', function (event) {
             try {
                 const request = JSON.parse(event.data);
-                CreateLogEntry(request.timestamp, request.connection.customData.chargeBoxId, request.eventTrackingId, "OnTextMessageRequestReceived", request.message, request.connection.remoteSocket // ConnectionColorKey
+                CreateLogEntry(request.timestamp, request.connection.customData.chargeBoxId, request.eventTrackingId, "OnJSONMessageRequestReceived", request.message, request.connection.remoteSocket // ConnectionColorKey
                 );
             }
             catch (exception) {
                 console.debug(exception);
             }
         }, false);
-        eventsSource.addEventListener('OnTextMessageResponseSent', function (event) {
+        eventsSource.addEventListener('OnJSONMessageResponseSent', function (event) {
             try {
                 const request = JSON.parse(event.data);
-                CreateLogEntry(request.timestamp, request.connection.customData.chargeBoxId, request.eventTrackingId, "OnTextMessageResponseSent", request.message, request.connection.remoteSocket // ConnectionColorKey
+                CreateLogEntry(request.timestamp, request.connection.customData.chargeBoxId, request.eventTrackingId, "OnJSONMessageResponseSent", request.message, request.connection.remoteSocket // ConnectionColorKey
                 );
             }
             catch (exception) {

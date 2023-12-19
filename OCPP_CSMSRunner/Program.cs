@@ -482,7 +482,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
             #region JSON Messages
 
-            testCSMSv2_1.OnJSONMessageRequestReceived     += async (timestamp, server, connection, networkingNodeId, eventTrackingId, requestTimestamp, requestMessage,     cancellationToken) => {
+            testCSMSv2_1.OnJSONMessageRequestReceived     += async (timestamp, server, connection, networkingNodeId, networkPath, eventTrackingId, requestTimestamp, requestMessage,     cancellationToken) => {
 
                 await DebugLog(
                     $"Received a JSON web socket request from '{networkingNodeId}': '{requestMessage.ToString(Formatting.None)}'!",
@@ -510,7 +510,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
             };
 
-            testCSMSv2_1.OnJSONMessageRequestSent         += async (timestamp, server, connection, networkingNodeId, eventTrackingId, requestTimestamp, requestMessage,     cancellationToken) => {
+            testCSMSv2_1.OnJSONMessageRequestSent         += async (timestamp, server, connection, networkingNodeId, networkPath, eventTrackingId, requestTimestamp, requestMessage,     cancellationToken) => {
 
                 await DebugLog(
                     $"Sent a JSON web socket request to '{networkingNodeId}': '{requestMessage.ToString(Formatting.None)}'!",
@@ -542,7 +542,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
             #region Binary Messages
 
-            testCSMSv2_1.OnBinaryMessageRequestReceived   += async (timestamp, server, connection, networkingNodeId, eventTrackingId, requestTimestamp, requestMessage,     cancellationToken) => {
+            testCSMSv2_1.OnBinaryMessageRequestReceived   += async (timestamp, server, connection, networkingNodeId, networkPath, eventTrackingId, requestTimestamp, requestMessage,     cancellationToken) => {
 
                 await DebugLog(
                     $"Received a binary web socket request from '{networkingNodeId}': '{requestMessage.ToBase64()}'!",
@@ -570,7 +570,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
             };
 
-            testCSMSv2_1.OnBinaryMessageRequestSent       += async (timestamp, server, connection, networkingNodeId, eventTrackingId, requestTimestamp, requestMessage,     cancellationToken) => {
+            testCSMSv2_1.OnBinaryMessageRequestSent       += async (timestamp, server, connection, networkingNodeId, networkPath, eventTrackingId, requestTimestamp, requestMessage,     cancellationToken) => {
 
                 await DebugLog(
                     $"Sent a binary web socket request to '{networkingNodeId}': '{requestMessage.ToBase64()}'!",

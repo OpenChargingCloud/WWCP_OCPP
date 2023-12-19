@@ -822,6 +822,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
                     {
 
                         binaryRequestMessage = new OCPP_BinaryRequestMessage(
+                                                   NetworkingMode,
                                                    DestinationNodeId,
                                                    NetworkPath.Append(Id),
                                                    RequestId,
@@ -844,6 +845,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
                     {
 
                         binaryRequestMessage = new OCPP_BinaryRequestMessage(
+                                                   NetworkingMode,
                                                    DestinationNodeId,
                                                    NetworkPath ?? NetworkPath.Empty,
                                                    RequestId,
@@ -862,6 +864,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
                         e = e.InnerException;
 
                     binaryRequestMessage = new OCPP_BinaryRequestMessage(
+                                               NetworkingMode,
                                                DestinationNodeId,
                                                NetworkPath ?? NetworkPath.Empty,
                                                RequestId,
@@ -881,6 +884,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
 
             else
                 binaryRequestMessage = new OCPP_BinaryRequestMessage(
+                                           NetworkingMode,
                                            DestinationNodeId,
                                            NetworkPath ?? NetworkPath.Empty,
                                            RequestId,

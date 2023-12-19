@@ -15660,7 +15660,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        #region TransferBinaryData                    (Request)
+        // Binary Data Streams Extensions
+
+        #region BinaryDataTransfer                    (Request)
 
         /// <summary>
         /// Send the given vendor-specific binary data to the CSMS.

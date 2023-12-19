@@ -151,7 +151,7 @@ function StartEventsSSE() {
 
         }, false);
 
-        eventsSource.addEventListener('OnTextMessageRequestReceived',  function (event) {
+        eventsSource.addEventListener('OnJSONMessageRequestReceived',  function (event) {
 
             try
             {
@@ -161,7 +161,7 @@ function StartEventsSSE() {
                 CreateLogEntry(request.timestamp,
                                request.connection.customData.chargeBoxId,
                                request.eventTrackingId,
-                               "OnTextMessageRequestReceived",
+                               "OnJSONMessageRequestReceived",
                                request.message,
                                request.connection.remoteSocket // ConnectionColorKey
                               );
@@ -173,7 +173,7 @@ function StartEventsSSE() {
 
         }, false);
 
-        eventsSource.addEventListener('OnTextMessageResponseSent',     function (event) {
+        eventsSource.addEventListener('OnJSONMessageResponseSent',     function (event) {
 
             try
             {
@@ -183,7 +183,7 @@ function StartEventsSSE() {
                 CreateLogEntry(request.timestamp,
                                request.connection.customData.chargeBoxId,
                                request.eventTrackingId,
-                               "OnTextMessageResponseSent",
+                               "OnJSONMessageResponseSent",
                                request.message,
                                request.connection.remoteSocket // ConnectionColorKey
                               );

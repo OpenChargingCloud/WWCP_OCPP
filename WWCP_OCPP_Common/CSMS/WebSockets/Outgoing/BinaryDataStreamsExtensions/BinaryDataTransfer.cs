@@ -32,9 +32,9 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
     /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
-    public delegate Task OnBinaryDataTransferRequestDelegate(DateTime                              Timestamp,
-                                                             IEventSender                          Sender,
-                                                             OCPP.CSMS.BinaryDataTransferRequest   Request);
+    public delegate Task OnBinaryDataTransferRequestDelegate(DateTime                    Timestamp,
+                                                             IEventSender                Sender,
+                                                             BinaryDataTransferRequest   Request);
 
     /// <summary>
     /// A delegate called whenever a response to a BinaryDataTransfer request was received.
@@ -44,11 +44,11 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
     /// <param name="Request">The request.</param>
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate Task OnBinaryDataTransferResponseDelegate(DateTime                              Timestamp,
-                                                              IEventSender                          Sender,
-                                                              OCPP.CSMS.BinaryDataTransferRequest   Request,
-                                                              OCPP.CS.BinaryDataTransferResponse    Response,
-                                                              TimeSpan                              Runtime);
+    public delegate Task OnBinaryDataTransferResponseDelegate(DateTime                        Timestamp,
+                                                              IEventSender                    Sender,
+                                                              BinaryDataTransferRequest       Request,
+                                                              CS.BinaryDataTransferResponse   Response,
+                                                              TimeSpan                        Runtime);
 
     #endregion
 

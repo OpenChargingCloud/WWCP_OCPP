@@ -34,6 +34,7 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.WebSockets;
+using System.Text.Json.Nodes;
 
 #endregion
 
@@ -1058,6 +1059,48 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                      if (OCPP_BinaryRequestMessage. TryParse(BinaryMessage, out var binaryRequest,  out var requestParsingError)  && binaryRequest  is not null)
                 {
 
+                    #region Get SourceNodeId
+
+                    var sourceNodeId = Connection.TryGetCustomDataAs<NetworkingNode_Id>(networkingNodeId_WebSocketKey) ?? NetworkingNode_Id.Zero;
+
+                    if (binaryRequest.NetworkingMode == NetworkingMode.NetworkingExtensions &&
+                        binaryRequest.NetworkPath is not null &&
+                        binaryRequest.NetworkPath.Source != NetworkingNode_Id.Zero)
+                    {
+                        sourceNodeId = binaryRequest.NetworkPath.Source;
+                    }
+
+                    #endregion
+
+                    #region Get LastHop
+
+                    var lastHop = Connection.TryGetCustomDataAs<NetworkingNode_Id>(networkingNodeId_WebSocketKey) ?? NetworkingNode_Id.Zero;
+
+                    if (binaryRequest.NetworkingMode == NetworkingMode.NetworkingExtensions &&
+                        binaryRequest.NetworkPath is not null &&
+                        binaryRequest.NetworkPath.Last != NetworkingNode_Id.Zero)
+                    {
+                        lastHop = binaryRequest.NetworkPath.Last;
+                    }
+
+                    #endregion
+
+                    #region Append network path
+
+                    var networkPath = binaryRequest.NetworkPath ?? NetworkPath.Empty;
+
+                    if (networkPath.Last != lastHop)
+                        networkPath = networkPath.Append(lastHop);
+
+                    #endregion
+
+                    #region Set destinationNodeId
+
+                    var destinationNodeId = binaryRequest.DestinationNodeId ?? NetworkingNode_Id.CSMS;
+
+                    #endregion
+
+
                     #region OnBinaryMessageRequestReceived
 
                     var onBinaryMessageRequestReceived = OnBinaryMessageRequestReceived;
@@ -1072,8 +1115,8 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                                                                                   Timestamp.Now,
                                                                                   this,
                                                                                   Connection,
-                                                                                  networkingNodeId,
-                                                                                  NetworkPath.Empty,
+                                                                                  destinationNodeId,
+                                                                                  networkPath,
                                                                                   EventTrackingId,
                                                                                   Timestamp.Now,
                                                                                   BinaryMessage,
@@ -1093,15 +1136,15 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
 
                     #region Try to call the matching 'incoming message processor'
 
-                    else if (incomingMessageProcessorsLookup.TryGetValue(binaryRequest.Action, out var methodInfo) &&
+                    if (incomingMessageProcessorsLookup.TryGetValue(binaryRequest.Action, out var methodInfo) &&
                         methodInfo is not null)
                     {
 
                         var result = methodInfo.Invoke(this,
                                                        [ RequestTimestamp,
                                                          Connection,
-                                                         networkingNodeId,
-                                                         NetworkPath.Empty,
+                                                         destinationNodeId,
+                                                         networkPath,
                                                          EventTrackingId,
                                                          binaryRequest.RequestId,
                                                          binaryRequest.Payload,
@@ -1260,7 +1303,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                     var networkingMode      = webSocketConnections.First().TryGetCustomDataAs<NetworkingMode>(networkingMode_WebSocketKey);
 
                     var jsonRequestMessage  = new OCPP_JSONRequestMessage(
-                                                  NetworkingMode.Standard,
+                                                  networkingMode ?? NetworkingMode.Standard,
                                                   DestinationNodeId,
                                                   NetworkPath,
                                                   RequestId,
@@ -1374,7 +1417,10 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                 if (webSocketConnections.Length != 0)
                 {
 
+                    var networkingMode        = webSocketConnections.First().TryGetCustomDataAs<NetworkingMode>(networkingMode_WebSocketKey);
+
                     var binaryRequestMessage  = new OCPP_BinaryRequestMessage(
+                                                    networkingMode ?? NetworkingMode.Standard,
                                                     DestinationNodeId,
                                                     NetworkPath,
                                                     RequestId,
@@ -1390,51 +1436,53 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                                         binaryRequestMessage
                                     ));
 
+                    var ocppBinaryMessage     = binaryRequestMessage.ToByteArray();
+
                     foreach (var webSocketConnection in webSocketConnections)
                     {
 
-                        var ocppBinaryMessage = binaryRequestMessage.ToByteArray();
-
-                        #region OnBinaryMessageRequestSent
-
-                        var requestLogger = OnBinaryMessageRequestSent;
-                        if (requestLogger is not null)
+                        if (SendStatus.Success == await SendBinaryMessage(
+                                                            webSocketConnection,
+                                                            ocppBinaryMessage,
+                                                            EventTrackingId,
+                                                            CancellationToken
+                                                        ))
                         {
 
-                            var loggerTasks = requestLogger.GetInvocationList().
-                                                            OfType <OnWebSocketBinaryMessageDelegate>().
-                                                            Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
-                                                                                                              this,
-                                                                                                              webSocketConnection,
-                                                                                                              EventTrackingId,
-                                                                                                              ocppBinaryMessage,
-                                                                                                              CancellationToken)).
-                                                            ToArray();
+                            #region OnBinaryMessageRequestSent
 
-                            try
+                            var requestLogger = OnBinaryMessageRequestSent;
+                            if (requestLogger is not null)
                             {
-                                await Task.WhenAll(loggerTasks);
+
+                                var loggerTasks = requestLogger.GetInvocationList().
+                                                                OfType <OnWebSocketBinaryMessageDelegate>().
+                                                                Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
+                                                                                                                  this,
+                                                                                                                  webSocketConnection,
+                                                                                                                  EventTrackingId,
+                                                                                                                  ocppBinaryMessage,
+                                                                                                                  CancellationToken)).
+                                                                ToArray();
+
+                                try
+                                {
+                                    await Task.WhenAll(loggerTasks);
+                                }
+                                catch (Exception e)
+                                {
+                                    DebugX.Log(e, nameof(AOCPPWebSocketServer) + "." + nameof(OnBinaryMessageRequestSent));
+                                }
+
                             }
-                            catch (Exception e)
-                            {
-                                DebugX.Log(e, nameof(AOCPPWebSocketServer) + "." + nameof(OnBinaryMessageRequestSent));
-                            }
+
+                            #endregion
+
+                            break;
 
                         }
 
-                        #endregion
-
-                        var success = await SendBinaryMessage(
-                                          webSocketConnection,
-                                          ocppBinaryMessage,
-                                          EventTrackingId
-                                      );
-
-                        if (success == SendStatus.Success)
-                            break;
-
-                        else
-                            RemoveConnection(webSocketConnection);
+                        RemoveConnection(webSocketConnection);
 
                     }
 
@@ -1670,6 +1718,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                        NetworkingNodeId,
                        now,
                        new OCPP_BinaryRequestMessage(
+                           NetworkingMode.Standard,
                            NetworkingNodeId,
                            NetworkPath,
                            RequestId,
@@ -1687,6 +1736,8 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         #endregion
 
 
+
+        #region (protected) HandleErrors(Module, Caller, Exception, Description = null)
         protected Task HandleErrors(String     Module,
                                     String     Caller,
                                     Exception  Exception,
@@ -1698,6 +1749,8 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
             return Task.CompletedTask;
 
         }
+
+        #endregion
 
 
     }

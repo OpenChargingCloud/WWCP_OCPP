@@ -172,6 +172,109 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CS
 
 
 
+
+        #region TransferBinaryData_Test()
+
+        /// <summary>
+        /// A test for transfering binary data to the CSMS.
+        /// </summary>
+        [Test]
+        public async Task TransferBinaryData_Test()
+        {
+
+            InitNetworkingNode1 = true;
+
+            Assert.Multiple(() => {
+                Assert.That(testCSMS01,                       Is.Not.Null);
+                Assert.That(testBackendWebSockets01,          Is.Not.Null);
+                Assert.That(networkingNode1,                  Is.Not.Null);
+                Assert.That(testNetworkingNodeWebSockets01,   Is.Not.Null);
+                Assert.That(chargingStation1,                 Is.Not.Null);
+                Assert.That(chargingStation2,                 Is.Not.Null);
+                Assert.That(chargingStation3,                 Is.Not.Null);
+            });
+
+            if (testCSMS01                     is not null &&
+                testBackendWebSockets01        is not null &&
+                networkingNode1                is not null &&
+                testNetworkingNodeWebSockets01 is not null &&
+                chargingStation1               is not null &&
+                chargingStation2               is not null &&
+                chargingStation3               is not null)
+            {
+
+                var nnIncomingBinaryDataTransferRequests    = new ConcurrentList<OCPP.CS.BinaryDataTransferRequest>();
+                var csmsIncomingBinaryDataTransferRequests  = new ConcurrentList<OCPP.CS.BinaryDataTransferRequest>();
+
+                networkingNode1.AsCSMS.OnIncomingBinaryDataTransferRequest += (timestamp, sender, connection, incomingBinaryDataTransferRequest) => {
+                    nnIncomingBinaryDataTransferRequests.  TryAdd(incomingBinaryDataTransferRequest);
+                    return Task.CompletedTask;
+                };
+
+                testCSMS01.            OnIncomingBinaryDataTransferRequest += (timestamp, sender, connection, incomingBinaryDataTransferRequest) => {
+                    csmsIncomingBinaryDataTransferRequests.TryAdd(incomingBinaryDataTransferRequest);
+                    return Task.CompletedTask;
+                };
+
+                chargingStation1.NetworkingMode = OCPP.WebSockets.NetworkingMode.NetworkingExtensions;
+
+
+
+                var binaryDataTransferRequests= new ConcurrentList<OCPP.CS.BinaryDataTransferRequest>();
+
+                testCSMS01.OnIncomingBinaryDataTransferRequest += (timestamp, sender, connection, binaryDataTransferRequest) => {
+                    binaryDataTransferRequests.TryAdd(binaryDataTransferRequest);
+                    return Task.CompletedTask;
+                };
+
+
+                var vendorId   = Vendor_Id. GraphDefined;
+                var messageId  = Message_Id.GraphDefined_TestMessage;
+                var data       = "Hello world!".ToUTF8Bytes();
+
+
+                var response   = await chargingStation1.TransferBinaryData(
+                                     VendorId:     vendorId,
+                                     MessageId:    messageId,
+                                     Data:         data,
+                                     Format:       BinaryFormats.TextIds
+                                 );
+
+
+                Assert.Multiple(() => {
+
+                    Assert.That(response.Result.ResultCode,                                          Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                                                     Is.EqualTo(RegistrationStatus.Accepted));
+                    Assert.That(response.Data?.ToUTF8String(),                                       Is.EqualTo(data.Reverse().ToUTF8String()));
+
+                    Assert.That(nnIncomingBinaryDataTransferRequests.  Count,                        Is.EqualTo(1), "The BinaryDataTransfer did not reach the networking node!");
+                    Assert.That(nnIncomingBinaryDataTransferRequests.  First().DestinationNodeId,    Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(nnIncomingBinaryDataTransferRequests.  First().NetworkPath.Length,   Is.EqualTo(1));
+                    Assert.That(nnIncomingBinaryDataTransferRequests.  First().NetworkPath.Source,   Is.EqualTo(chargingStation1.Id));
+                    Assert.That(nnIncomingBinaryDataTransferRequests.  First().NetworkPath.Last,     Is.EqualTo(chargingStation1.Id));
+                    Assert.That(nnIncomingBinaryDataTransferRequests.  First().VendorId,             Is.EqualTo(vendorId));
+                    Assert.That(nnIncomingBinaryDataTransferRequests.  First().MessageId,            Is.EqualTo(messageId));
+                    Assert.That(nnIncomingBinaryDataTransferRequests.  First().Data,                 Is.EqualTo(data));
+
+                    Assert.That(csmsIncomingBinaryDataTransferRequests.Count,                        Is.EqualTo(1), "The BinaryDataTransfer did not reach the CSMS!");
+                    Assert.That(csmsIncomingBinaryDataTransferRequests.First().DestinationNodeId,    Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(csmsIncomingBinaryDataTransferRequests.First().NetworkPath.Length,   Is.EqualTo(2));
+                    Assert.That(csmsIncomingBinaryDataTransferRequests.First().NetworkPath.Source,   Is.EqualTo(chargingStation1.Id));
+                    Assert.That(csmsIncomingBinaryDataTransferRequests.First().NetworkPath.Last,     Is.EqualTo(networkingNode1. Id));
+                    Assert.That(csmsIncomingBinaryDataTransferRequests.First().VendorId,             Is.EqualTo(vendorId));
+                    Assert.That(csmsIncomingBinaryDataTransferRequests.First().MessageId,            Is.EqualTo(messageId));
+                    Assert.That(csmsIncomingBinaryDataTransferRequests.First().Data,                 Is.EqualTo(data));
+
+                });
+
+            }
+
+        }
+
+        #endregion
+
+
+
     }
 
 }

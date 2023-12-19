@@ -36,10 +36,10 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
     /// <param name="Request">The binary data transfer request.</param>
     public delegate Task
 
-        OnIncomingBinaryDataTransferRequestDelegate(DateTime                            Timestamp,
-                                                    IEventSender                        Sender,
-                                                    WebSocketServerConnection           Connection,
-                                                    OCPP.CS.BinaryDataTransferRequest   Request);
+        OnIncomingBinaryDataTransferRequestDelegate(DateTime                       Timestamp,
+                                                    IEventSender                   Sender,
+                                                    WebSocketServerConnection      Connection,
+                                                    CS.BinaryDataTransferRequest   Request);
 
 
     /// <summary>
@@ -52,11 +52,11 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<OCPP.CSMS.BinaryDataTransferResponse>
 
-        OnIncomingBinaryDataTransferDelegate(DateTime                            Timestamp,
-                                             IEventSender                        Sender,
-                                             WebSocketServerConnection           Connection,
-                                             OCPP.CS.BinaryDataTransferRequest   Request,
-                                             CancellationToken                   CancellationToken);
+        OnIncomingBinaryDataTransferDelegate(DateTime                       Timestamp,
+                                             IEventSender                   Sender,
+                                             WebSocketServerConnection      Connection,
+                                             CS.BinaryDataTransferRequest   Request,
+                                             CancellationToken              CancellationToken);
 
 
     /// <summary>
@@ -70,12 +70,12 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task
 
-        OnIncomingBinaryDataTransferResponseDelegate(DateTime                               Timestamp,
-                                                     IEventSender                           Sender,
-                                                     WebSocketServerConnection              Connection,
-                                                     OCPP.CS.BinaryDataTransferRequest      Request,
-                                                     OCPP.CSMS.BinaryDataTransferResponse   Response,
-                                                     TimeSpan                               Runtime);
+        OnIncomingBinaryDataTransferResponseDelegate(DateTime                       Timestamp,
+                                                     IEventSender                   Sender,
+                                                     WebSocketServerConnection      Connection,
+                                                     CS.BinaryDataTransferRequest   Request,
+                                                     BinaryDataTransferResponse     Response,
+                                                     TimeSpan                       Runtime);
 
     #endregion
 

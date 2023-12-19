@@ -20,6 +20,7 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using System.Collections;
 
 #endregion
 
@@ -29,7 +30,8 @@ namespace cloud.charging.open.protocols.OCPP
     /// <summary>
     /// A network path.
     /// </summary>
-    public class NetworkPath : IEquatable<NetworkPath>,
+    public class NetworkPath : IEnumerable<NetworkingNode_Id>,
+                               IEquatable<NetworkPath>,
                                IComparable<NetworkPath>,
                                IComparable
     {
@@ -267,6 +269,16 @@ namespace cloud.charging.open.protocols.OCPP
 
         #endregion
 
+
+        #region IEnumerable members
+
+        public IEnumerator<NetworkingNode_Id> GetEnumerator()
+            => networkingNodeIds.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator()
+            => networkingNodeIds.GetEnumerator();
+
+        #endregion
 
         #region Operator overloading
 

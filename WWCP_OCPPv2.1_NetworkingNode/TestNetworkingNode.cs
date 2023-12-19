@@ -18029,7 +18029,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                         // ToDo: Add aditional request signature!
 
-                        // Implicit sending to upstream CSMS!
+                        // Explicit sending to upstream CSMS!
                         response  = await parentNetworkingNode.AsCS.SendBootNotification(request);
 
 
@@ -21673,46 +21673,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                   request.Data?.ToUTF8String() ?? "-");
 
 
-                    var responseBinaryData = new Byte[0];
-
-                    if (request.Data is not null)
-                    {
-                        responseBinaryData = ((Byte[]) request.Data.Clone()).Reverse();
-                    }
+                    // Explicit sending to upstream CSMS!
+                    var response  = await parentNetworkingNode.AsCS.TransferBinaryData(request);
 
 
-                    var response = !SignaturePolicy.VerifyRequestMessage(
-                                       request,
-                                       request.ToBinary(
-                                           CustomIncomingBinaryDataTransferRequestSerializer,
-                                           CustomBinarySignatureSerializer,
-                                           IncludeSignatures: false
-                                       ),
-                                       out var errorResponse
-                                   )
-
-                                       ? new OCPP.CSMS.BinaryDataTransferResponse(
-                                             Request:      request,
-                                             Result:       Result.SignatureError(
-                                                               $"Invalid signature(s): {errorResponse}"
-                                                           )
-                                         )
-
-                                       : request.VendorId == Vendor_Id.GraphDefined
-
-                                             ? new OCPP.CSMS.BinaryDataTransferResponse(
-                                                   Request:                request,
-                                                   Status:                 BinaryDataTransferStatus.Accepted,
-                                                   AdditionalStatusInfo:   null,
-                                                   Data:                   responseBinaryData
-                                               )
-
-                                             : new OCPP.CSMS.BinaryDataTransferResponse(
-                                                   Request:                request,
-                                                   Status:                 BinaryDataTransferStatus.Rejected,
-                                                   AdditionalStatusInfo:   null,
-                                                   Data:                   responseBinaryData
-                                               );
 
                     SignaturePolicy.SignResponseMessage(
                         response,
