@@ -18,6 +18,10 @@
 namespace cloud.charging.open.protocols.OCPP
 {
 
+    /// <summary>
+    /// The common interface of all outgoing OCPP messages
+    /// from a charging station management system.
+    /// </summary>
     public interface ICSMSOutgoingMessages
     {
 
@@ -60,6 +64,16 @@ namespace cloud.charging.open.protocols.OCPP
         /// </summary>
         /// <param name="Request">A DeleteFile request.</param>
         Task<CS.DeleteFileResponse> DeleteFile(CSMS.DeleteFileRequest Request);
+
+        #endregion
+
+        #region ListDirectory               (Request)
+
+        /// <summary>
+        /// List the given directory of the charging station or networking node.
+        /// </summary>
+        /// <param name="Request">A ListDirectory request.</param>
+        Task<CS.ListDirectoryResponse> ListDirectory(CSMS.ListDirectoryRequest Request);
 
         #endregion
 

@@ -2097,7 +2097,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
                 this.Id                       = NetworkingNode.Id;
-                this.parentNetworkingNode        = NetworkingNode;
+                this.parentNetworkingNode     = NetworkingNode;
 
                 //this.Configuration = new Dictionary<String, ConfigurationData> {
                 //    { "hello",          new ConfigurationData("world",    AccessRights.ReadOnly,  false) },
@@ -2296,82 +2296,73 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    #region Check charging station identification
+                    #region Check request signature(s)
 
                     OCPPv2_1.CS.ResetResponse? response = null;
 
-                    //if (request.ChargingStationId != Id)
-                    //{
-                    //    response = new OCPPv2_1.CS.ResetResponse(
-                    //                   Request:  request,
-                    //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid reset request for charging station '{request.ChargingStationId}'!"
-                    //                             )
-                    //               );
-                    //}
-                    if (1 == 2) { }
+                    if (!SignaturePolicy.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
+                                 CustomResetRequestSerializer,
+                                 CustomSignatureSerializer,
+                                 CustomCustomDataSerializer
+                             ),
+                             out var errorResponse
+                         ))
+                    {
+
+                        response = new OCPPv2_1.CS.ResetResponse(
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
+                                   );
+
+                    }
 
                     #endregion
 
-                    #region Check request signature(s)
+                    else if (request.DestinationNodeId != Id)
+                    {
+
+                        DebugX.Log($"Forwarding incoming '{request.ResetType}' reset request to '{request.DestinationNodeId}'!");
+
+                        response = await parentNetworkingNode.AsCSMS.Reset(request);
+
+                    }
 
                     else
                     {
 
-                        if (!SignaturePolicy.VerifyRequestMessage(
-                                 request,
-                                 request.ToJSON(
-                                     CustomResetRequestSerializer,
-                                     CustomSignatureSerializer,
-                                     CustomCustomDataSerializer
-                                 ),
-                                 out var errorResponse
-                             ))
+                        var me_or_not_me = request.DestinationNodeId;
+
+                        DebugX.Log($"Charging station '{Id}': Incoming '{request.ResetType}' reset request{(request.EVSEId.HasValue ? $" for EVSE '{request.EVSEId}" : "")}'!");
+
+                        // ResetType
+
+                        // Reset entire charging station
+                        if (!request.EVSEId.HasValue)
                         {
 
                             response = new OCPPv2_1.CS.ResetResponse(
-                                           Request:  request,
-                                           Result:   Result.SignatureError(
-                                                         $"Invalid signature: {errorResponse}"
-                                                     )
+                                           Request:      request,
+                                           Status:       ResetStatus.Accepted,
+                                           StatusInfo:   null,
+                                           CustomData:   null
                                        );
 
                         }
 
-                    #endregion
-
+                        // Unknown EVSE
                         else
                         {
 
-                            DebugX.Log($"Charging station '{Id}': Incoming '{request.ResetType}' reset request{(request.EVSEId.HasValue ? $" for EVSE '{request.EVSEId}" : "")}'!");
-
-                            // ResetType
-
-                            // Reset entire charging station
-                            if (!request.EVSEId.HasValue)
-                            {
-
-                                response = new OCPPv2_1.CS.ResetResponse(
-                                               Request:      request,
-                                               Status:       ResetStatus.Accepted,
-                                               StatusInfo:   null,
-                                               CustomData:   null
-                                           );
-
-                            }
-
-                            // Unknown EVSE
-                            else
-                            {
-
-                                response = new OCPPv2_1.CS.ResetResponse(
-                                               Request:      request,
-                                               Status:       ResetStatus.Rejected,
-                                               StatusInfo:   null,
-                                               CustomData:   null
-                                           );
-
-                            }
+                            response = new OCPPv2_1.CS.ResetResponse(
+                                           Request:      request,
+                                           Status:       ResetStatus.Rejected,
+                                           StatusInfo:   null,
+                                           CustomData:   null
+                                       );
 
                         }
 

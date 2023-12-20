@@ -1101,35 +1101,37 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
 
         // Binary Data Streams Extensions
-        public CustomBinarySerializerDelegate<OCPP.CSMS.BinaryDataTransferResponse>?    CustomIncomingBinaryDataTransferResponseSerializer      { get; set; }
+        public CustomBinarySerializerDelegate <BinaryDataTransferResponse>?             CustomIncomingBinaryDataTransferResponseSerializer      { get; set; }
 
 
         // Binary Data Streams Extensions
 
-        public CustomBinarySerializerDelegate <OCPP.CSMS.BinaryDataTransferRequest>?                 CustomBinaryDataTransferRequestSerializer                    { get; set; }
-        public CustomJObjectSerializerDelegate<OCPP.CSMS.GetFileRequest>?                            CustomGetFileRequestSerializer                               { get; set; }
-        public CustomBinarySerializerDelegate <OCPP.CSMS.SendFileRequest>?                           CustomSendFileRequestSerializer                              { get; set; }
-        public CustomJObjectSerializerDelegate<OCPP.CSMS.DeleteFileRequest>?                         CustomDeleteFileRequestSerializer                            { get; set; }
+        public CustomBinarySerializerDelegate <BinaryDataTransferRequest>?              CustomBinaryDataTransferRequestSerializer               { get; set; }
+        public CustomJObjectSerializerDelegate<GetFileRequest>?                         CustomGetFileRequestSerializer                          { get; set; }
+        public CustomBinarySerializerDelegate <SendFileRequest>?                        CustomSendFileRequestSerializer                         { get; set; }
+        public CustomJObjectSerializerDelegate<DeleteFileRequest>?                      CustomDeleteFileRequestSerializer                       { get; set; }
+        public CustomJObjectSerializerDelegate<ListDirectoryRequest>?                   CustomListDirectoryRequestSerializer                    { get; set; }
 
 
         // E2E Security Extensions
 
-        public CustomJObjectSerializerDelegate<OCPP.CSMS.AddSignaturePolicyRequest>?                 CustomAddSignaturePolicyRequestSerializer                    { get; set; }
-        public CustomJObjectSerializerDelegate<OCPP.CSMS.UpdateSignaturePolicyRequest>?              CustomUpdateSignaturePolicyRequestSerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<OCPP.CSMS.DeleteSignaturePolicyRequest>?              CustomDeleteSignaturePolicyRequestSerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<OCPP.CSMS.AddUserRoleRequest>?                        CustomAddUserRoleRequestSerializer                           { get; set; }
-        public CustomJObjectSerializerDelegate<OCPP.CSMS.UpdateUserRoleRequest>?                     CustomUpdateUserRoleRequestSerializer                        { get; set; }
-        public CustomJObjectSerializerDelegate<OCPP.CSMS.DeleteUserRoleRequest>?                     CustomDeleteUserRoleRequestSerializer                        { get; set; }
+        public CustomJObjectSerializerDelegate<AddSignaturePolicyRequest>?              CustomAddSignaturePolicyRequestSerializer               { get; set; }
+        public CustomJObjectSerializerDelegate<UpdateSignaturePolicyRequest>?           CustomUpdateSignaturePolicyRequestSerializer            { get; set; }
+        public CustomJObjectSerializerDelegate<DeleteSignaturePolicyRequest>?           CustomDeleteSignaturePolicyRequestSerializer            { get; set; }
+        public CustomJObjectSerializerDelegate<AddUserRoleRequest>?                     CustomAddUserRoleRequestSerializer                      { get; set; }
+        public CustomJObjectSerializerDelegate<UpdateUserRoleRequest>?                  CustomUpdateUserRoleRequestSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<DeleteUserRoleRequest>?                  CustomDeleteUserRoleRequestSerializer                   { get; set; }
 
 
         #endregion
 
 
         // Binary Data Streams Extensions
-        public CustomBinarySerializerDelegate <OCPP.CS.BinaryDataTransferResponse>?                  CustomBinaryDataTransferResponseSerializer                   { get; set; }
-        public CustomBinarySerializerDelegate <OCPP.CS.GetFileResponse>?                             CustomGetFileResponseSerializer                              { get; set; }
-        public CustomJObjectSerializerDelegate<OCPP.CS.SendFileResponse>?                            CustomSendFileResponseSerializer                             { get; set; }
-        public CustomJObjectSerializerDelegate<OCPP.CS.DeleteFileResponse>?                          CustomDeleteFileResponseSerializer                           { get; set; }
+        public CustomBinarySerializerDelegate <OCPP.CS.BinaryDataTransferResponse>?     CustomBinaryDataTransferResponseSerializer              { get; set; }
+        public CustomBinarySerializerDelegate <OCPP.CS.GetFileResponse>?                CustomGetFileResponseSerializer                         { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.CS.SendFileResponse>?               CustomSendFileResponseSerializer                        { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.CS.DeleteFileResponse>?             CustomDeleteFileResponseSerializer                      { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.CS.ListDirectoryResponse>?          CustomListDirectoryResponseSerializer                   { get; set; }
 
 
 
@@ -5151,9 +5153,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Reset the given charge box.
         /// </summary>
         /// <param name="Request">A Reset request.</param>
-        public async Task<CP.ResetResponse>
-            Reset(ResetRequest Request)
-
+        public async Task<CP.ResetResponse> Reset(ResetRequest Request)
         {
 
             #region Send OnResetRequest event
@@ -5239,15 +5239,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region ChangeAvailability                       (Request)
+        #region ChangeAvailability          (Request)
 
         /// <summary>
         /// ChangeAvailability the given charge box.
         /// </summary>
         /// <param name="Request">A ChangeAvailability request.</param>
-        public async Task<CP.ChangeAvailabilityResponse>
-            ChangeAvailability(ChangeAvailabilityRequest Request)
-
+        public async Task<CP.ChangeAvailabilityResponse> ChangeAvailability(ChangeAvailabilityRequest Request)
         {
 
             #region Send OnChangeAvailabilityRequest event
@@ -5333,15 +5331,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region GetConfiguration                       (Request)
+        #region GetConfiguration            (Request)
 
         /// <summary>
         /// GetConfiguration the given charge box.
         /// </summary>
         /// <param name="Request">A GetConfiguration request.</param>
-        public async Task<CP.GetConfigurationResponse>
-            GetConfiguration(GetConfigurationRequest Request)
-
+        public async Task<CP.GetConfigurationResponse> GetConfiguration(GetConfigurationRequest Request)
         {
 
             #region Send OnGetConfigurationRequest event
@@ -5428,15 +5424,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region ChangeConfiguration                       (Request)
+        #region ChangeConfiguration         (Request)
 
         /// <summary>
         /// ChangeConfiguration the given charge box.
         /// </summary>
         /// <param name="Request">A ChangeConfiguration request.</param>
-        public async Task<CP.ChangeConfigurationResponse>
-            ChangeConfiguration(ChangeConfigurationRequest Request)
-
+        public async Task<CP.ChangeConfigurationResponse> ChangeConfiguration(ChangeConfigurationRequest Request)
         {
 
             #region Send OnChangeConfigurationRequest event
@@ -5522,15 +5516,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region DataTransfer                       (Request)
+        #region DataTransfer                (Request)
 
         /// <summary>
         /// DataTransfer the given charge box.
         /// </summary>
         /// <param name="Request">A DataTransfer request.</param>
-        public async Task<CP.DataTransferResponse>
-            DataTransfer(DataTransferRequest Request)
-
+        public async Task<CP.DataTransferResponse> DataTransfer(DataTransferRequest Request)
         {
 
             #region Send OnDataTransferRequest event
@@ -5617,15 +5609,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region GetDiagnostics                       (Request)
+        #region GetDiagnostics              (Request)
 
         /// <summary>
         /// GetDiagnostics the given charge box.
         /// </summary>
         /// <param name="Request">A GetDiagnostics request.</param>
-        public async Task<CP.GetDiagnosticsResponse>
-            GetDiagnostics(GetDiagnosticsRequest Request)
-
+        public async Task<CP.GetDiagnosticsResponse> GetDiagnostics(GetDiagnosticsRequest Request)
         {
 
             #region Send OnGetDiagnosticsRequest event
@@ -5711,15 +5701,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region TriggerMessage                       (Request)
+        #region TriggerMessage              (Request)
 
         /// <summary>
         /// TriggerMessage the given charge box.
         /// </summary>
         /// <param name="Request">A TriggerMessage request.</param>
-        public async Task<CP.TriggerMessageResponse>
-            TriggerMessage(TriggerMessageRequest Request)
-
+        public async Task<CP.TriggerMessageResponse> TriggerMessage(TriggerMessageRequest Request)
         {
 
             #region Send OnTriggerMessageRequest event
@@ -5805,15 +5793,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region UpdateFirmware                       (Request)
+        #region UpdateFirmware              (Request)
 
         /// <summary>
         /// UpdateFirmware the given charge box.
         /// </summary>
         /// <param name="Request">A UpdateFirmware request.</param>
-        public async Task<CP.UpdateFirmwareResponse>
-            UpdateFirmware(UpdateFirmwareRequest Request)
-
+        public async Task<CP.UpdateFirmwareResponse> UpdateFirmware(UpdateFirmwareRequest Request)
         {
 
             #region Send OnUpdateFirmwareRequest event
@@ -5900,15 +5886,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #endregion
 
 
-        #region ReserveNow                       (Request)
+        #region ReserveNow                  (Request)
 
         /// <summary>
         /// ReserveNow the given charge box.
         /// </summary>
         /// <param name="Request">A ReserveNow request.</param>
-        public async Task<CP.ReserveNowResponse>
-            ReserveNow(ReserveNowRequest Request)
-
+        public async Task<CP.ReserveNowResponse> ReserveNow(ReserveNowRequest Request)
         {
 
             #region Send OnReserveNowRequest event
@@ -5994,15 +5978,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region CancelReservation                       (Request)
+        #region CancelReservation           (Request)
 
         /// <summary>
         /// CancelReservation the given charge box.
         /// </summary>
         /// <param name="Request">A CancelReservation request.</param>
-        public async Task<CP.CancelReservationResponse>
-            CancelReservation(CancelReservationRequest Request)
-
+        public async Task<CP.CancelReservationResponse> CancelReservation(CancelReservationRequest Request)
         {
 
             #region Send OnCancelReservationRequest event
@@ -6088,15 +6070,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region RemoteStartTransaction                       (Request)
+        #region RemoteStartTransaction      (Request)
 
         /// <summary>
         /// RemoteStartTransaction the given charge box.
         /// </summary>
         /// <param name="Request">A RemoteStartTransaction request.</param>
-        public async Task<CP.RemoteStartTransactionResponse>
-            RemoteStartTransaction(RemoteStartTransactionRequest Request)
-
+        public async Task<CP.RemoteStartTransactionResponse> RemoteStartTransaction(RemoteStartTransactionRequest Request)
         {
 
             #region Send OnRemoteStartTransactionRequest event
@@ -6185,15 +6165,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region RemoteStopTransaction                       (Request)
+        #region RemoteStopTransaction       (Request)
 
         /// <summary>
         /// RemoteStopTransaction the given charge box.
         /// </summary>
         /// <param name="Request">A RemoteStopTransaction request.</param>
-        public async Task<CP.RemoteStopTransactionResponse>
-            RemoteStopTransaction(RemoteStopTransactionRequest Request)
-
+        public async Task<CP.RemoteStopTransactionResponse> RemoteStopTransaction(RemoteStopTransactionRequest Request)
         {
 
             #region Send OnRemoteStopTransactionRequest event
@@ -6279,15 +6257,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region SetChargingProfile                       (Request)
+        #region SetChargingProfile          (Request)
 
         /// <summary>
         /// SetChargingProfile the given charge box.
         /// </summary>
         /// <param name="Request">A SetChargingProfile request.</param>
-        public async Task<CP.SetChargingProfileResponse>
-            SetChargingProfile(SetChargingProfileRequest Request)
-
+        public async Task<CP.SetChargingProfileResponse> SetChargingProfile(SetChargingProfileRequest Request)
         {
 
             #region Send OnSetChargingProfileRequest event
@@ -6376,15 +6352,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region ClearChargingProfile                       (Request)
+        #region ClearChargingProfile        (Request)
 
         /// <summary>
         /// ClearChargingProfile the given charge box.
         /// </summary>
         /// <param name="Request">A ClearChargingProfile request.</param>
-        public async Task<CP.ClearChargingProfileResponse>
-            ClearChargingProfile(ClearChargingProfileRequest Request)
-
+        public async Task<CP.ClearChargingProfileResponse> ClearChargingProfile(ClearChargingProfileRequest Request)
         {
 
             #region Send OnClearChargingProfileRequest event
@@ -6470,15 +6444,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region GetCompositeSchedule                       (Request)
+        #region GetCompositeSchedule        (Request)
 
         /// <summary>
         /// GetCompositeSchedule the given charge box.
         /// </summary>
         /// <param name="Request">A GetCompositeSchedule request.</param>
-        public async Task<CP.GetCompositeScheduleResponse>
-            GetCompositeSchedule(GetCompositeScheduleRequest Request)
-
+        public async Task<CP.GetCompositeScheduleResponse> GetCompositeSchedule(GetCompositeScheduleRequest Request)
         {
 
             #region Send OnGetCompositeScheduleRequest event
@@ -6566,15 +6538,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region UnlockConnector                       (Request)
+        #region UnlockConnector             (Request)
 
         /// <summary>
         /// UnlockConnector the given charge box.
         /// </summary>
         /// <param name="Request">A UnlockConnector request.</param>
-        public async Task<CP.UnlockConnectorResponse>
-            UnlockConnector(UnlockConnectorRequest Request)
-
+        public async Task<CP.UnlockConnectorResponse> UnlockConnector(UnlockConnectorRequest Request)
         {
 
             #region Send OnUnlockConnectorRequest event
@@ -6661,15 +6631,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #endregion
 
 
-        #region GetLocalListVersion                       (Request)
+        #region GetLocalListVersion         (Request)
 
         /// <summary>
         /// GetLocalListVersion the given charge box.
         /// </summary>
         /// <param name="Request">A GetLocalListVersion request.</param>
-        public async Task<CP.GetLocalListVersionResponse>
-            GetLocalListVersion(GetLocalListVersionRequest Request)
-
+        public async Task<CP.GetLocalListVersionResponse> GetLocalListVersion(GetLocalListVersionRequest Request)
         {
 
             #region Send OnGetLocalListVersionRequest event
@@ -6755,15 +6723,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region SendLocalList                       (Request)
+        #region SendLocalList               (Request)
 
         /// <summary>
         /// SendLocalList the given charge box.
         /// </summary>
         /// <param name="Request">A SendLocalList request.</param>
-        public async Task<CP.SendLocalListResponse>
-            SendLocalList(SendLocalListRequest Request)
-
+        public async Task<CP.SendLocalListResponse> SendLocalList(SendLocalListRequest Request)
         {
 
             #region Send OnSendLocalListRequest event
@@ -6851,15 +6817,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region ClearCache                       (Request)
+        #region ClearCache                  (Request)
 
         /// <summary>
         /// ClearCache the given charge box.
         /// </summary>
         /// <param name="Request">A ClearCache request.</param>
-        public async Task<CP.ClearCacheResponse>
-            ClearCache(ClearCacheRequest Request)
-
+        public async Task<CP.ClearCacheResponse> ClearCache(ClearCacheRequest Request)
         {
 
             #region Send OnClearCacheRequest event
@@ -6948,15 +6912,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         // Security extensions
 
-        #region CertificateSigned                       (Request)
+        #region CertificateSigned           (Request)
 
         /// <summary>
         /// CertificateSigned the given charge box.
         /// </summary>
         /// <param name="Request">A CertificateSigned request.</param>
-        public async Task<CP.CertificateSignedResponse>
-            CertificateSigned(CertificateSignedRequest Request)
-
+        public async Task<CP.CertificateSignedResponse> CertificateSigned(CertificateSignedRequest Request)
         {
 
             #region Send OnCertificateSignedRequest event
@@ -7042,15 +7004,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region DeleteCertificate                       (Request)
+        #region DeleteCertificate           (Request)
 
         /// <summary>
         /// DeleteCertificate the given charge box.
         /// </summary>
         /// <param name="Request">A DeleteCertificate request.</param>
-        public async Task<CP.DeleteCertificateResponse>
-            DeleteCertificate(DeleteCertificateRequest Request)
-
+        public async Task<CP.DeleteCertificateResponse> DeleteCertificate(DeleteCertificateRequest Request)
         {
 
             #region Send OnDeleteCertificateRequest event
@@ -7137,15 +7097,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region ExtendedTriggerMessage                       (Request)
+        #region ExtendedTriggerMessage      (Request)
 
         /// <summary>
         /// ExtendedTriggerMessage the given charge box.
         /// </summary>
         /// <param name="Request">A ExtendedTriggerMessage request.</param>
-        public async Task<CP.ExtendedTriggerMessageResponse>
-            ExtendedTriggerMessage(ExtendedTriggerMessageRequest Request)
-
+        public async Task<CP.ExtendedTriggerMessageResponse> ExtendedTriggerMessage(ExtendedTriggerMessageRequest Request)
         {
 
             #region Send OnExtendedTriggerMessageRequest event
@@ -7231,15 +7189,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region GetInstalledCertificateIds                       (Request)
+        #region GetInstalledCertificateIds  (Request)
 
         /// <summary>
         /// GetInstalledCertificateIds the given charge box.
         /// </summary>
         /// <param name="Request">A GetInstalledCertificateIds request.</param>
-        public async Task<CP.GetInstalledCertificateIdsResponse>
-            GetInstalledCertificateIds(GetInstalledCertificateIdsRequest Request)
-
+        public async Task<CP.GetInstalledCertificateIdsResponse> GetInstalledCertificateIds(GetInstalledCertificateIdsRequest Request)
         {
 
             #region Send OnGetInstalledCertificateIdsRequest event
@@ -7326,15 +7282,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region GetLog                       (Request)
+        #region GetLog                      (Request)
 
         /// <summary>
         /// GetLog the given charge box.
         /// </summary>
         /// <param name="Request">A GetLog request.</param>
-        public async Task<CP.GetLogResponse>
-            GetLog(GetLogRequest Request)
-
+        public async Task<CP.GetLogResponse> GetLog(GetLogRequest Request)
         {
 
             #region Send OnGetLogRequest event
@@ -7421,15 +7375,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region InstallCertificate                       (Request)
+        #region InstallCertificate          (Request)
 
         /// <summary>
         /// InstallCertificate the given charge box.
         /// </summary>
         /// <param name="Request">A InstallCertificate request.</param>
-        public async Task<CP.InstallCertificateResponse>
-            InstallCertificate(InstallCertificateRequest Request)
-
+        public async Task<CP.InstallCertificateResponse> InstallCertificate(InstallCertificateRequest Request)
         {
 
             #region Send OnInstallCertificateRequest event
@@ -7515,15 +7467,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region SignedUpdateFirmware                       (Request)
+        #region SignedUpdateFirmware        (Request)
 
         /// <summary>
         /// SignedUpdateFirmware the given charge box.
         /// </summary>
         /// <param name="Request">A SignedUpdateFirmware request.</param>
-        public async Task<CP.SignedUpdateFirmwareResponse>
-            SignedUpdateFirmware(SignedUpdateFirmwareRequest Request)
-
+        public async Task<CP.SignedUpdateFirmwareResponse> SignedUpdateFirmware(SignedUpdateFirmwareRequest Request)
         {
 
             #region Send OnSignedUpdateFirmwareRequest event
@@ -7619,9 +7569,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Transfer the given data to the given charging station.
         /// </summary>
         /// <param name="Request">A BinaryDataTransfer request.</param>
-        public async Task<OCPP.CS.BinaryDataTransferResponse>
-            BinaryDataTransfer(OCPP.CSMS.BinaryDataTransferRequest Request)
-
+        public async Task<OCPP.CS.BinaryDataTransferResponse> BinaryDataTransfer(BinaryDataTransferRequest Request)
         {
 
             #region Send OnBinaryDataTransferRequest event
@@ -7714,9 +7662,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Request the given file from the charging station.
         /// </summary>
         /// <param name="Request">A GetFile request.</param>
-        public async Task<OCPP.CS.GetFileResponse>
-            GetFile(OCPP.CSMS.GetFileRequest Request)
-
+        public async Task<OCPP.CS.GetFileResponse> GetFile(GetFileRequest Request)
         {
 
             #region Send OnGetFileRequest event
@@ -7809,9 +7755,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Request the given file from the charging station.
         /// </summary>
         /// <param name="Request">A SendFile request.</param>
-        public async Task<OCPP.CS.SendFileResponse>
-            SendFile(OCPP.CSMS.SendFileRequest Request)
-
+        public async Task<OCPP.CS.SendFileResponse> SendFile(SendFileRequest Request)
         {
 
             #region Send OnSendFileRequest event
@@ -7903,9 +7847,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Delete the given file from the charging station.
         /// </summary>
         /// <param name="Request">A DeleteFile request.</param>
-        public async Task<OCPP.CS.DeleteFileResponse>
-            DeleteFile(OCPP.CSMS.DeleteFileRequest Request)
-
+        public async Task<OCPP.CS.DeleteFileResponse> DeleteFile(DeleteFileRequest Request)
         {
 
             #region Send OnDeleteFileRequest event
@@ -7991,6 +7933,99 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
+        #region ListDirectory               (Request)
+
+        /// <summary>
+        /// Delete the given file from the charging station.
+        /// </summary>
+        /// <param name="Request">A ListDirectory request.</param>
+        public async Task<OCPP.CS.ListDirectoryResponse> ListDirectory(ListDirectoryRequest Request)
+        {
+
+            #region Send OnListDirectoryRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnListDirectoryRequest?.Invoke(startTime,
+                                               this,
+                                               Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnListDirectoryRequest));
+            }
+
+            #endregion
+
+
+            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                                centralSystem is not null
+
+                                ? SignaturePolicy.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomListDirectoryRequestSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      out var errorResponse
+                                  )
+
+                                      ? await centralSystem.Item1.ListDirectory(Request)
+
+                                      : new OCPP.CS.ListDirectoryResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new OCPP.CS.ListDirectoryResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomListDirectoryResponseSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer
+                ),
+                out errorResponse
+            );
+
+
+            #region Send OnListDirectoryResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnListDirectoryResponse?.Invoke(endTime,
+                                                this,
+                                                Request,
+                                                response,
+                                                endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnListDirectoryResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+
 
         // E2E Security Extensions
 
@@ -8000,9 +8035,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Add a signature policy.
         /// </summary>
         /// <param name="Request">An AddSignaturePolicy request.</param>
-        public async Task<OCPP.CS.AddSignaturePolicyResponse>
-            AddSignaturePolicy(OCPP.CSMS.AddSignaturePolicyRequest Request)
-
+        public async Task<OCPP.CS.AddSignaturePolicyResponse> AddSignaturePolicy(AddSignaturePolicyRequest Request)
         {
 
             #region Send OnAddSignaturePolicyRequest event
@@ -8099,9 +8132,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Set a display message.
         /// </summary>
         /// <param name="Request">A UpdateSignaturePolicy request.</param>
-        public async Task<OCPP.CS.UpdateSignaturePolicyResponse>
-            UpdateSignaturePolicy(OCPP.CSMS.UpdateSignaturePolicyRequest Request)
-
+        public async Task<OCPP.CS.UpdateSignaturePolicyResponse> UpdateSignaturePolicy(UpdateSignaturePolicyRequest Request)
         {
 
             #region Send OnUpdateSignaturePolicyRequest event
@@ -8198,9 +8229,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Set a display message.
         /// </summary>
         /// <param name="Request">A DeleteSignaturePolicy request.</param>
-        public async Task<OCPP.CS.DeleteSignaturePolicyResponse>
-            DeleteSignaturePolicy(OCPP.CSMS.DeleteSignaturePolicyRequest Request)
-
+        public async Task<OCPP.CS.DeleteSignaturePolicyResponse> DeleteSignaturePolicy(DeleteSignaturePolicyRequest Request)
         {
 
             #region Send OnDeleteSignaturePolicyRequest event
@@ -8297,9 +8326,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Set a display message.
         /// </summary>
         /// <param name="Request">A AddUserRole request.</param>
-        public async Task<OCPP.CS.AddUserRoleResponse>
-            AddUserRole(OCPP.CSMS.AddUserRoleRequest Request)
-
+        public async Task<OCPP.CS.AddUserRoleResponse> AddUserRole(AddUserRoleRequest Request)
         {
 
             #region Send OnAddUserRoleRequest event
@@ -8396,9 +8423,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Set a display message.
         /// </summary>
         /// <param name="Request">A UpdateUserRole request.</param>
-        public async Task<OCPP.CS.UpdateUserRoleResponse>
-            UpdateUserRole(OCPP.CSMS.UpdateUserRoleRequest Request)
-
+        public async Task<OCPP.CS.UpdateUserRoleResponse> UpdateUserRole(UpdateUserRoleRequest Request)
         {
 
             #region Send OnUpdateUserRoleRequest event
@@ -8495,9 +8520,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Set a display message.
         /// </summary>
         /// <param name="Request">A DeleteUserRole request.</param>
-        public async Task<OCPP.CS.DeleteUserRoleResponse>
-            DeleteUserRole(OCPP.CSMS.DeleteUserRoleRequest Request)
-
+        public async Task<OCPP.CS.DeleteUserRoleResponse> DeleteUserRole(DeleteUserRoleRequest Request)
         {
 
             #region Send OnDeleteUserRoleRequest event
@@ -8631,6 +8654,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
+
+        #region HandleErrors(Module, Caller, ExceptionOccured)
+
         private Task HandleErrors(String     Module,
                                   String     Caller,
                                   Exception  ExceptionOccured)
@@ -8641,6 +8667,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             return Task.CompletedTask;
 
         }
+
+        #endregion
 
 
     }

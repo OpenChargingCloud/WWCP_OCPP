@@ -4226,6 +4226,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         {
             throw new NotImplementedException();
         }
+        public Task<OCPP.CS.ListDirectoryResponse> ListDirectory(OCPP.CSMS.ListDirectoryRequest Request)
+        {
+            throw new NotImplementedException();
+        }
 
         public Task<OCPP.CS.AddSignaturePolicyResponse> AddSignaturePolicy(OCPP.CSMS.AddSignaturePolicyRequest Request)
         {

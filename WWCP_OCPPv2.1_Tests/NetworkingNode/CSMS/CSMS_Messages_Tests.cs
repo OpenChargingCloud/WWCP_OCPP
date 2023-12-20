@@ -46,12 +46,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
         public async Task Reset_ChargingStation_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
-            ClassicAssert.IsNotNull(networkingNode1);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            Assert.Multiple(() => {
+                Assert.That(testCSMS01,                       Is.Not.Null);
+                Assert.That(testBackendWebSockets01,          Is.Not.Null);
+                Assert.That(networkingNode1,                  Is.Not.Null);
+//                Assert.That(testNetworkingNodeWebSockets01,   Is.Not.Null);
+                Assert.That(chargingStation1,                 Is.Not.Null);
+                Assert.That(chargingStation2,                 Is.Not.Null);
+                Assert.That(chargingStation3,                 Is.Not.Null);
+            });
 
             if (testCSMS01              is not null &&
                 testBackendWebSockets01 is not null &&
@@ -74,12 +77,39 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
                     return Task.CompletedTask;
                 };
 
+                // Charging Station 1 is reachable via the networking node 1!
+                // Good old "static routing" ;)
+                testCSMS01.AddRedirect(chargingStation1.Id,
+                                       networkingNode1.Id);
+
+
                 var resetType  = ResetType.Immediate;
                 var response   = await testCSMS01.Reset(
                                      NetworkingNodeId:    chargingStation1.Id,
                                      ResetType:           resetType,
                                      CustomData:          null
                                  );
+
+
+                Assert.Multiple(() => {
+
+                    Assert.That(response.Result.ResultCode,                   Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                              Is.EqualTo(ResetStatus.Accepted));
+
+                    Assert.That(nnResetRequests.Count,                        Is.EqualTo(1), "The ResetRequest did not reach the networking node!");
+                    Assert.That(nnResetRequests.First().DestinationNodeId,    Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(nnResetRequests.First().NetworkPath.Length,   Is.EqualTo(1));
+                    Assert.That(nnResetRequests.First().NetworkPath.Source,   Is.EqualTo(chargingStation1.Id));
+                    Assert.That(nnResetRequests.First().NetworkPath.Last,     Is.EqualTo(chargingStation1.Id));
+
+                    Assert.That(csResetRequests.Count,                        Is.EqualTo(1), "The ResetRequest did not reach the charging station!");
+                    Assert.That(csResetRequests.First().DestinationNodeId,    Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(csResetRequests.First().NetworkPath.Length,   Is.EqualTo(2));
+                    Assert.That(csResetRequests.First().NetworkPath.Source,   Is.EqualTo(chargingStation1.Id));
+                    Assert.That(csResetRequests.First().NetworkPath.Last,     Is.EqualTo(networkingNode1. Id));
+
+                });
+
 
                 ClassicAssert.AreEqual(ResultCode.OK,          response.Result.ResultCode);
                 ClassicAssert.AreEqual(ResetStatus.Accepted,   response.Status);

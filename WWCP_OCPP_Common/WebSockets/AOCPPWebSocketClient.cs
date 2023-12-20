@@ -139,39 +139,39 @@ namespace cloud.charging.open.protocols.OCPP.CS
         /// <param name="HTTPLogger">A HTTP logger.</param>
         /// <param name="DNSClient">The DNS client to use.</param>
         public AOCPPWebSocketClient(NetworkingNode_Id                    ChargingStationIdentity,
-                                        String                               From,
-                                        String                               To,
+                                    String                               From,
+                                    String                               To,
 
-                                        URL                                  RemoteURL,
-                                        HTTPHostname?                        VirtualHostname              = null,
-                                        String?                              Description                  = null,
-                                        Boolean?                             PreferIPv4                   = null,
-                                        RemoteCertificateValidationHandler?  RemoteCertificateValidator   = null,
-                                        LocalCertificateSelectionHandler?    ClientCertificateSelector    = null,
-                                        X509Certificate?                     ClientCert                   = null,
-                                        SslProtocols?                        TLSProtocol                  = null,
-                                        String                               HTTPUserAgent                = DefaultHTTPUserAgent,
-                                        IHTTPAuthentication?                 HTTPAuthentication           = null,
-                                        TimeSpan?                            RequestTimeout               = null,
-                                        TransmissionRetryDelayDelegate?      TransmissionRetryDelay       = null,
-                                        UInt16?                              MaxNumberOfRetries           = 3,
-                                        UInt32?                              InternalBufferSize           = null,
+                                    URL                                  RemoteURL,
+                                    HTTPHostname?                        VirtualHostname              = null,
+                                    String?                              Description                  = null,
+                                    Boolean?                             PreferIPv4                   = null,
+                                    RemoteCertificateValidationHandler?  RemoteCertificateValidator   = null,
+                                    LocalCertificateSelectionHandler?    ClientCertificateSelector    = null,
+                                    X509Certificate?                     ClientCert                   = null,
+                                    SslProtocols?                        TLSProtocol                  = null,
+                                    String                               HTTPUserAgent                = DefaultHTTPUserAgent,
+                                    IHTTPAuthentication?                 HTTPAuthentication           = null,
+                                    TimeSpan?                            RequestTimeout               = null,
+                                    TransmissionRetryDelayDelegate?      TransmissionRetryDelay       = null,
+                                    UInt16?                              MaxNumberOfRetries           = 3,
+                                    UInt32?                              InternalBufferSize           = null,
 
-                                        IEnumerable<String>?                 SecWebSocketProtocols        = null,
-                                        NetworkingMode?                      NetworkingMode               = null,
+                                    IEnumerable<String>?                 SecWebSocketProtocols        = null,
+                                    NetworkingMode?                      NetworkingMode               = null,
 
-                                        Boolean                              DisableWebSocketPings        = false,
-                                        TimeSpan?                            WebSocketPingEvery           = null,
-                                        TimeSpan?                            SlowNetworkSimulationDelay   = null,
+                                    Boolean                              DisableWebSocketPings        = false,
+                                    TimeSpan?                            WebSocketPingEvery           = null,
+                                    TimeSpan?                            SlowNetworkSimulationDelay   = null,
 
-                                        Boolean                              DisableMaintenanceTasks      = false,
-                                        TimeSpan?                            MaintenanceEvery             = null,
+                                    Boolean                              DisableMaintenanceTasks      = false,
+                                    TimeSpan?                            MaintenanceEvery             = null,
 
-                                        String?                              LoggingPath                  = null,
-                                        String                               LoggingContext               = null, //CPClientLogger.DefaultContext,
-                                        LogfileCreatorDelegate?              LogfileCreator               = null,
-                                        HTTPClientLogger?                    HTTPLogger                   = null,
-                                        DNSClient?                           DNSClient                    = null)
+                                    String?                              LoggingPath                  = null,
+                                    String                               LoggingContext               = null, //CPClientLogger.DefaultContext,
+                                    LogfileCreatorDelegate?              LogfileCreator               = null,
+                                    HTTPClientLogger?                    HTTPLogger                   = null,
+                                    DNSClient?                           DNSClient                    = null)
 
             : base(RemoteURL,
                    VirtualHostname,
@@ -256,7 +256,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
                 var jsonArray = JArray.Parse(TextMessage);
               //  var sourceNodeId = Connection.TryGetCustomDataAs<NetworkingNode_Id>(networkingNodeId_WebSocketKey) ?? NetworkingNode_Id.Zero;
 
-                if      (OCPP_JSONRequestMessage. TryParse(jsonArray, out var jsonRequest,  out var requestParsingError, RequestTimestamp, EventTrackingId)  && jsonRequest       is not null)
+                if      (OCPP_JSONRequestMessage. TryParse(jsonArray, out var jsonRequest,  out var requestParsingError, RequestTimestamp, EventTrackingId, null, CancellationToken)  && jsonRequest       is not null)
                 {
 
                     OCPP_JSONResponseMessage?    OCPPJSONResponse     = null;
@@ -277,7 +277,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
                                                          jsonRequest.EventTrackingId,
                                                          jsonRequest.RequestId,
                                                          jsonRequest.Payload,
-                                                         CancellationToken ]);
+                                                         jsonRequest.CancellationToken ]);
 
                         #endregion
 
@@ -482,7 +482,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
 
               //  var sourceNodeId = Connection.TryGetCustomDataAs<NetworkingNode_Id>(networkingNodeId_WebSocketKey) ?? NetworkingNode_Id.Zero;
 
-                     if (OCPP_BinaryRequestMessage. TryParse(BinaryMessage, out var binaryRequest,  out var requestParsingError, RequestTimestamp, EventTrackingId)  && binaryRequest  is not null)
+                     if (OCPP_BinaryRequestMessage. TryParse(BinaryMessage, out var binaryRequest,  out var requestParsingError, RequestTimestamp, EventTrackingId, null, CancellationToken)  && binaryRequest  is not null)
                 {
 
                     OCPP_JSONResponseMessage?    OCPPJSONResponse     = null;
@@ -503,7 +503,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
                                                          binaryRequest.EventTrackingId,
                                                          binaryRequest.RequestId,
                                                          binaryRequest.Payload,
-                                                         CancellationToken ]);
+                                                         binaryRequest.CancellationToken ]);
 
                         #endregion
 

@@ -432,7 +432,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public CustomJObjectSerializerDelegate<CSMS.SetNetworkProfileRequest>?                       CustomSetNetworkProfileRequestSerializer                     { get; set; }
         public CustomJObjectSerializerDelegate<CSMS.ChangeAvailabilityRequest>?                      CustomChangeAvailabilityRequestSerializer                    { get; set; }
         public CustomJObjectSerializerDelegate<CSMS.TriggerMessageRequest>?                          CustomTriggerMessageRequestSerializer                        { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.DataTransferRequest>?                   CustomIncomingDataTransferRequestSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.DataTransferRequest>?                            CustomIncomingDataTransferRequestSerializer                  { get; set; }
 
         public CustomJObjectSerializerDelegate<CSMS.CertificateSignedRequest>?                       CustomCertificateSignedRequestSerializer                     { get; set; }
         public CustomJObjectSerializerDelegate<CSMS.InstallCertificateRequest>?                      CustomInstallCertificateRequestSerializer                    { get; set; }
@@ -472,6 +472,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public CustomJObjectSerializerDelegate<OCPP.CSMS.GetFileRequest>?                            CustomGetFileRequestSerializer                               { get; set; }
         public CustomBinarySerializerDelegate <OCPP.CSMS.SendFileRequest>?                           CustomSendFileRequestSerializer                              { get; set; }
         public CustomJObjectSerializerDelegate<OCPP.CSMS.DeleteFileRequest>?                         CustomDeleteFileRequestSerializer                            { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.CSMS.ListDirectoryRequest>?                      CustomListDirectoryRequestSerializer                         { get; set; }
 
 
         // E2E Security Extensions
@@ -500,7 +501,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public CustomJObjectSerializerDelegate<CSMS.NotifyReportResponse>?                           CustomNotifyReportResponseSerializer                         { get; set; }
         public CustomJObjectSerializerDelegate<CSMS.NotifyMonitoringReportResponse>?                 CustomNotifyMonitoringReportResponseSerializer               { get; set; }
         public CustomJObjectSerializerDelegate<CSMS.LogStatusNotificationResponse>?                  CustomLogStatusNotificationResponseSerializer                { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.DataTransferResponse>?                  CustomDataTransferResponseSerializer                         { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.DataTransferResponse>?                           CustomDataTransferResponseSerializer                         { get; set; }
 
         public CustomJObjectSerializerDelegate<CSMS.SignCertificateResponse>?                        CustomSignCertificateResponseSerializer                      { get; set; }
         public CustomJObjectSerializerDelegate<CSMS.Get15118EVCertificateResponse>?                  CustomGet15118EVCertificateResponseSerializer                { get; set; }
@@ -540,7 +541,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public CustomJObjectSerializerDelegate<NotifyReportRequest>?                                 CustomNotifyReportRequestSerializer                          { get; set; }
         public CustomJObjectSerializerDelegate<NotifyMonitoringReportRequest>?                       CustomNotifyMonitoringReportRequestSerializer                { get; set; }
         public CustomJObjectSerializerDelegate<LogStatusNotificationRequest>?                        CustomLogStatusNotificationRequestSerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.DataTransferRequest>?                     CustomDataTransferRequestSerializer                          { get; set; }
+        public CustomJObjectSerializerDelegate<DataTransferRequest>?                                 CustomDataTransferRequestSerializer                          { get; set; }
 
         public CustomJObjectSerializerDelegate<SignCertificateRequest>?                              CustomSignCertificateRequestSerializer                       { get; set; }
         public CustomJObjectSerializerDelegate<Get15118EVCertificateRequest>?                        CustomGet15118EVCertificateRequestSerializer                 { get; set; }
@@ -587,7 +588,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public CustomJObjectSerializerDelegate<SetNetworkProfileResponse>?                           CustomSetNetworkProfileResponseSerializer                    { get; set; }
         public CustomJObjectSerializerDelegate<ChangeAvailabilityResponse>?                          CustomChangeAvailabilityResponseSerializer                   { get; set; }
         public CustomJObjectSerializerDelegate<TriggerMessageResponse>?                              CustomTriggerMessageResponseSerializer                       { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.DataTransferResponse>?                    CustomIncomingDataTransferResponseSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<DataTransferResponse>?                                CustomIncomingDataTransferResponseSerializer                 { get; set; }
 
         public CustomJObjectSerializerDelegate<CertificateSignedResponse>?                           CustomCertificateSignedResponseSerializer                    { get; set; }
         public CustomJObjectSerializerDelegate<InstallCertificateResponse>?                          CustomInstallCertificateResponseSerializer                   { get; set; }
@@ -627,6 +628,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public CustomBinarySerializerDelegate <OCPP.CS.GetFileResponse>?                             CustomGetFileResponseSerializer                              { get; set; }
         public CustomJObjectSerializerDelegate<OCPP.CS.SendFileResponse>?                            CustomSendFileResponseSerializer                             { get; set; }
         public CustomJObjectSerializerDelegate<OCPP.CS.DeleteFileResponse>?                          CustomDeleteFileResponseSerializer                           { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.CS.ListDirectoryResponse>?                       CustomListDirectoryResponseSerializer                        { get; set; }
 
 
         // E2E Security Extensions
@@ -1871,6 +1873,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// An event sent whenever a response to a DeleteFile request was sent.
         /// </summary>
         public event OCPP.CS.OnDeleteFileResponseDelegate?  OnDeleteFileResponse;
+
+        #endregion
+
+        #region OnListDirectoryRequest/-Response
+
+        /// <summary>
+        /// An event sent whenever a ListDirectory request was sent.
+        /// </summary>
+        public event OCPP.CS.OnListDirectoryRequestDelegate?   OnListDirectoryRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a ListDirectory request was sent.
+        /// </summary>
+        public event OCPP.CS.OnListDirectoryResponseDelegate?  OnListDirectoryResponse;
 
         #endregion
 
@@ -9708,15 +9724,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     response = request.FileName.ToString() == "/hello/world.txt"
 
                                    ? new OCPP.CS.SendFileResponse(
-                                         Request:   request,
-                                         FileName:  request.FileName,
-                                         Status:    SendFileStatus.Success
+                                         Request:      request,
+                                         FileName:     request.FileName,
+                                         Status:       SendFileStatus.Success,
+                                         CustomData:   null
                                      )
 
                                    : new OCPP.CS.SendFileResponse(
-                                         Request:   request,
-                                         FileName:  request.FileName,
-                                         Status:    SendFileStatus.NotFound
+                                         Request:      request,
+                                         FileName:     request.FileName,
+                                         Status:       SendFileStatus.NotFound,
+                                         CustomData:   null
                                      );
 
                 }
@@ -9854,15 +9872,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     response = request.FileName.ToString() == "/hello/world.txt"
 
                                    ? new OCPP.CS.DeleteFileResponse(
-                                         Request:   request,
-                                         FileName:  request.FileName,
-                                         Status:    DeleteFileStatus.Success
+                                         Request:      request,
+                                         FileName:     request.FileName,
+                                         Status:       DeleteFileStatus.Success,
+                                         CustomData:   null
                                      )
 
                                    : new OCPP.CS.DeleteFileResponse(
-                                         Request:   request,
-                                         FileName:  request.FileName,
-                                         Status:    DeleteFileStatus.NotFound
+                                         Request:      request,
+                                         FileName:     request.FileName,
+                                         Status:       DeleteFileStatus.NotFound,
+                                         CustomData:   null
                                      );
 
                 }
@@ -9910,6 +9930,159 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         await HandleErrors(
                                   nameof(TestChargingStation),
                                   nameof(OnDeleteFileResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnListDirectory
+
+            ChargingStationServer.OnListDirectory += async (timestamp,
+                                                            sender,
+                                                            connection,
+                                                            request,
+                                                            cancellationToken) => {
+
+                #region Send OnListDirectoryRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnListDirectoryRequest;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OCPP.CS.OnListDirectoryRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             connection,
+                                                                                                             request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnListDirectoryRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+
+                #region Check request signature(s)
+
+                OCPP.CS.ListDirectoryResponse? response = null;
+
+                if (!SignaturePolicy.VerifyRequestMessage(
+                         request,
+                         request.ToJSON(
+                             CustomListDirectoryRequestSerializer,
+                             CustomSignatureSerializer,
+                             CustomCustomDataSerializer
+                         ),
+                         out var errorResponse
+                     ))
+                {
+
+                    response = new OCPP.CS.ListDirectoryResponse(
+                                   Request:  request,
+                                   Result:   Result.SignatureError(
+                                                 $"Invalid signature: {errorResponse}"
+                                             )
+                               );
+
+                }
+
+                #endregion
+
+                else
+                {
+
+                    var directoryListing = new DirectoryListing();
+                    directoryListing.AddFile("/hello/world.txt");
+
+                    DebugX.Log($"Charging Station '{Id}': Incoming ListDirectory request: {request.DirectoryPath}!");
+
+                    response = request.DirectoryPath.ToString() == "/hello"
+
+                                   ? new OCPP.CS.ListDirectoryResponse(
+                                         Request:            request,
+                                         DirectoryPath:      request.DirectoryPath,
+                                         Status:             ListDirectoryStatus.Success,
+                                         DirectoryListing:   new DirectoryListing(),
+                                         CustomData:         null
+                                     )
+
+                                   : new OCPP.CS.ListDirectoryResponse(
+                                         Request:            request,
+                                         DirectoryPath:      request.DirectoryPath,
+                                         Status:             ListDirectoryStatus.NotFound,
+                                         DirectoryListing:   null,
+                                         CustomData:         null
+                                     );
+
+                }
+
+
+                #region Sign response message
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomListDirectoryResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
+
+                #endregion
+
+
+                #region Send OnListDirectoryResponse event
+
+                var responseLogger = OnListDirectoryResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OCPP.CS.OnListDirectoryResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                connection,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnListDirectoryResponse),
                                   e
                               );
                     }

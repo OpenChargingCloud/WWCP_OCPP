@@ -641,46 +641,50 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #endregion
 
 
-        public event OnIncomingBinaryDataTransferRequestDelegate     OnIncomingBinaryDataTransferRequest;
-        public event OnIncomingBinaryDataTransferDelegate            OnIncomingBinaryDataTransfer;
-        public event OnIncomingBinaryDataTransferResponseDelegate    OnIncomingBinaryDataTransferResponse;
+        public event OnIncomingBinaryDataTransferRequestDelegate?     OnIncomingBinaryDataTransferRequest;
+        public event OnIncomingBinaryDataTransferDelegate?            OnIncomingBinaryDataTransfer;
+        public event OnIncomingBinaryDataTransferResponseDelegate?    OnIncomingBinaryDataTransferResponse;
 
-        public event OnGetFileRequestDelegate                        OnGetFileRequest;
-        public event OnGetFileDelegate                               OnGetFile;
-        public event OnGetFileResponseDelegate                       OnGetFileResponse;
+        public event OnGetFileRequestDelegate?                        OnGetFileRequest;
+        public event OnGetFileDelegate?                               OnGetFile;
+        public event OnGetFileResponseDelegate?                       OnGetFileResponse;
 
-        public event OnSendFileRequestDelegate                       OnSendFileRequest;
-        public event OnSendFileDelegate                              OnSendFile;
-        public event OnSendFileResponseDelegate                      OnSendFileResponse;
+        public event OnSendFileRequestDelegate?                       OnSendFileRequest;
+        public event OnSendFileDelegate?                              OnSendFile;
+        public event OnSendFileResponseDelegate?                      OnSendFileResponse;
 
-        public event OnDeleteFileRequestDelegate                     OnDeleteFileRequest;
-        public event OnDeleteFileDelegate                            OnDeleteFile;
-        public event OnDeleteFileResponseDelegate                    OnDeleteFileResponse;
+        public event OnDeleteFileRequestDelegate?                     OnDeleteFileRequest;
+        public event OnDeleteFileDelegate?                            OnDeleteFile;
+        public event OnDeleteFileResponseDelegate?                    OnDeleteFileResponse;
+
+        public event OnListDirectoryRequestDelegate?                  OnListDirectoryRequest;
+        public event OnListDirectoryDelegate?                         OnListDirectory;
+        public event OnListDirectoryResponseDelegate?                 OnListDirectoryResponse;
 
 
-        public event OnAddSignaturePolicyRequestDelegate             OnAddSignaturePolicyRequest;
-        public event OnAddSignaturePolicyDelegate                    OnAddSignaturePolicy;
-        public event OnAddSignaturePolicyResponseDelegate            OnAddSignaturePolicyResponse;
+        public event OnAddSignaturePolicyRequestDelegate?             OnAddSignaturePolicyRequest;
+        public event OnAddSignaturePolicyDelegate?                    OnAddSignaturePolicy;
+        public event OnAddSignaturePolicyResponseDelegate?            OnAddSignaturePolicyResponse;
 
-        public event OnUpdateSignaturePolicyRequestDelegate          OnUpdateSignaturePolicyRequest;
-        public event OnUpdateSignaturePolicyDelegate                 OnUpdateSignaturePolicy;
-        public event OnUpdateSignaturePolicyResponseDelegate         OnUpdateSignaturePolicyResponse;
+        public event OnUpdateSignaturePolicyRequestDelegate?          OnUpdateSignaturePolicyRequest;
+        public event OnUpdateSignaturePolicyDelegate?                 OnUpdateSignaturePolicy;
+        public event OnUpdateSignaturePolicyResponseDelegate?         OnUpdateSignaturePolicyResponse;
 
-        public event OnDeleteSignaturePolicyRequestDelegate          OnDeleteSignaturePolicyRequest;
-        public event OnDeleteSignaturePolicyDelegate                 OnDeleteSignaturePolicy;
-        public event OnDeleteSignaturePolicyResponseDelegate         OnDeleteSignaturePolicyResponse;
+        public event OnDeleteSignaturePolicyRequestDelegate?          OnDeleteSignaturePolicyRequest;
+        public event OnDeleteSignaturePolicyDelegate?                 OnDeleteSignaturePolicy;
+        public event OnDeleteSignaturePolicyResponseDelegate?         OnDeleteSignaturePolicyResponse;
 
-        public event OnAddUserRoleRequestDelegate                    OnAddUserRoleRequest;
-        public event OnAddUserRoleDelegate                           OnAddUserRole;
-        public event OnAddUserRoleResponseDelegate                   OnAddUserRoleResponse;
+        public event OnAddUserRoleRequestDelegate?                    OnAddUserRoleRequest;
+        public event OnAddUserRoleDelegate?                           OnAddUserRole;
+        public event OnAddUserRoleResponseDelegate?                   OnAddUserRoleResponse;
 
-        public event OnUpdateUserRoleRequestDelegate                 OnUpdateUserRoleRequest;
-        public event OnUpdateUserRoleDelegate                        OnUpdateUserRole;
-        public event OnUpdateUserRoleResponseDelegate                OnUpdateUserRoleResponse;
+        public event OnUpdateUserRoleRequestDelegate?                 OnUpdateUserRoleRequest;
+        public event OnUpdateUserRoleDelegate?                        OnUpdateUserRole;
+        public event OnUpdateUserRoleResponseDelegate?                OnUpdateUserRoleResponse;
 
-        public event OnDeleteUserRoleRequestDelegate                 OnDeleteUserRoleRequest;
-        public event OnDeleteUserRoleDelegate                        OnDeleteUserRole;
-        public event OnDeleteUserRoleResponseDelegate                OnDeleteUserRoleResponse;
+        public event OnDeleteUserRoleRequestDelegate?                 OnDeleteUserRoleRequest;
+        public event OnDeleteUserRoleDelegate?                        OnDeleteUserRole;
+        public event OnDeleteUserRoleResponseDelegate?                OnDeleteUserRoleResponse;
 
         #endregion
 

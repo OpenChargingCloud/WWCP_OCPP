@@ -18,6 +18,9 @@
 namespace cloud.charging.open.protocols.OCPP.CS
 {
 
+    /// <summary>
+    /// The common interface of all incoming OCPP messages at a charging station.
+    /// </summary>
     public interface ICSIncomingMessages
     {
 
@@ -56,6 +59,15 @@ namespace cloud.charging.open.protocols.OCPP.CS
         /// An event sent whenever a DeleteFile request was received.
         /// </summary>
         event OnDeleteFileDelegate                     OnDeleteFile;
+
+        #endregion
+
+        #region OnListDirectory
+
+        /// <summary>
+        /// An event sent whenever a ListDirectory request was received.
+        /// </summary>
+        event OnListDirectoryDelegate                  OnListDirectory;
 
         #endregion
 

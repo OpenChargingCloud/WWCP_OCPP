@@ -24,6 +24,9 @@ using org.GraphDefined.Vanaheimr.Hermod;
 namespace cloud.charging.open.protocols.OCPP.CS
 {
 
+    /// <summary>
+    /// The common interface of all events for outgoing OCPP messages from a charging station.
+    /// </summary>
     public interface ICSOutgoingMessagesEvents : IEventSender
     {
 

@@ -18,6 +18,9 @@
 namespace cloud.charging.open.protocols.OCPP.CS
 {
 
+    /// <summary>
+    /// The common interface of all outgoing OCPP messages from a charging station.
+    /// </summary>
     public interface ICSOutgoingMessages
     {
 

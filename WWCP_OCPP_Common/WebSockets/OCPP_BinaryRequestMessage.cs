@@ -44,7 +44,8 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                                            Request_Id         RequestId,
                                            String             Action,
                                            Byte[]             Payload,
-                                           String?            ErrorMessage   = null)
+                                           String?            ErrorMessage        = null,
+                                           CancellationToken  CancellationToken   = default)
     {
 
         #region Properties
@@ -87,6 +88,8 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         /// </summary>
         public String?            ErrorMessage         { get; } = ErrorMessage;
 
+        public CancellationToken  CancellationToken    { get; } = CancellationToken;
+
 
         public Boolean            NoErrors
             => ErrorMessage is null;
@@ -111,7 +114,8 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                                        out String?                     ErrorResponse,
                                        DateTime?                       RequestTimestamp       = null,
                                        EventTracking_Id?               EventTrackingId        = null,
-                                       NetworkingNode_Id?              ImplicitSourceNodeId   = null)
+                                       NetworkingNode_Id?              ImplicitSourceNodeId   = null,
+                                       CancellationToken               CancellationToken      = default)
         {
 
             BinaryRequestMessage  = null;
@@ -224,7 +228,9 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                                                    new NetworkPath(networkPath),
                                                    requestId,
                                                    action,
-                                                   payload
+                                                   payload,
+                                                   null,
+                                                   CancellationToken
                                                );
 
                 return true;

@@ -32,9 +32,7 @@ namespace cloud.charging.open.protocols.OCPP
     public interface ICSMSChannel : IWebSocketServer,
                                 //    ICSMSClient,
                                 //    ICSMSServerEvents
-
-
-        IEventSender
+                                    IEventSender
     {
 
 

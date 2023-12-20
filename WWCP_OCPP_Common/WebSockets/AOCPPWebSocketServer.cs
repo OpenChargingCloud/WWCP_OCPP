@@ -74,6 +74,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
 
         protected readonly      Dictionary<String, MethodInfo>                                                        incomingMessageProcessorsLookup   = [];
         protected readonly      ConcurrentDictionary<NetworkingNode_Id, Tuple<WebSocketServerConnection, DateTime>>   connectedNetworkingNodes          = [];
+        protected readonly      ConcurrentDictionary<NetworkingNode_Id, NetworkingNode_Id>                            reachableViaNetworkingHubs        = [];
         protected readonly      ConcurrentDictionary<Request_Id, SendRequestState>                                    requests                          = [];
 
         public    const         String                                                                                networkingNodeId_WebSocketKey     = "networkingNodeId";
@@ -678,7 +679,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                 var jsonArray     = JArray.Parse(TextMessage);
                 var sourceNodeId  = Connection.TryGetCustomDataAs<NetworkingNode_Id>(networkingNodeId_WebSocketKey);
 
-                if      (OCPP_JSONRequestMessage. TryParse(jsonArray, out var jsonRequest,  out var requestParsingError,  RequestTimestamp, EventTrackingId, sourceNodeId) && jsonRequest       is not null)
+                if      (OCPP_JSONRequestMessage. TryParse(jsonArray, out var jsonRequest,  out var requestParsingError,  RequestTimestamp, EventTrackingId, sourceNodeId, CancellationToken) && jsonRequest       is not null)
                 {
 
                     #region OnTextMessageRequestReceived
@@ -728,7 +729,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                                                          jsonRequest.EventTrackingId,
                                                          jsonRequest.RequestId,
                                                          jsonRequest.Payload,
-                                                         CancellationToken ]);
+                                                         jsonRequest.CancellationToken ]);
 
                         if (result is Task<Tuple<OCPP_JSONResponseMessage?, OCPP_JSONErrorMessage?>> textProcessor) {
                             (OCPPResponse, OCPPErrorResponse) = await textProcessor;
@@ -1065,7 +1066,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                                                          binaryRequest.EventTrackingId,
                                                          binaryRequest.RequestId,
                                                          binaryRequest.Payload,
-                                                         CancellationToken ]);
+                                                         binaryRequest.CancellationToken ]);
 
                         if (result is Task<Tuple<OCPP_BinaryResponseMessage?, OCPP_JSONErrorMessage?>> binaryProcessor)
                         {
@@ -1211,6 +1212,41 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         #endregion
 
 
+
+        private IEnumerable<WebSocketServerConnection> LookupNetworkingNode(NetworkingNode_Id NetworkingNodeId)
+        {
+
+            if (NetworkingNodeId == NetworkingNode_Id.Zero)
+                return Array.Empty<WebSocketServerConnection>();
+
+            var lookUpNetworkingNodeId = NetworkingNodeId;
+
+            if (reachableViaNetworkingHubs.TryGetValue(lookUpNetworkingNodeId, out var networkingHubId))
+                lookUpNetworkingNodeId = networkingHubId;
+
+            return WebSocketConnections.Where(connection => connection.TryGetCustomDataAs<NetworkingNode_Id>(networkingNodeId_WebSocketKey) == lookUpNetworkingNodeId);
+
+        }
+
+        public void AddRedirect(NetworkingNode_Id DestinationNodeId,
+                                NetworkingNode_Id NetworkingHubId)
+        {
+
+            reachableViaNetworkingHubs.TryAdd(DestinationNodeId,
+                                              NetworkingHubId);
+
+        }
+
+        public void RemoveRedirect(NetworkingNode_Id DestinationNodeId,
+                                   NetworkingNode_Id NetworkingHubId)
+        {
+
+            reachableViaNetworkingHubs.TryRemove(new KeyValuePair<NetworkingNode_Id, NetworkingNode_Id>(DestinationNodeId, NetworkingHubId));
+
+        }
+
+
+
         // Send data...
 
         #region SendJSONData     (EventTrackingId, DestinationNodeId, NetworkPath, RequestId, Action, JSONData,   RequestTimeout, ...)
@@ -1238,8 +1274,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
             try
             {
 
-                var webSocketConnections  = WebSocketConnections.Where  (connection => connection.TryGetCustomDataAs<NetworkingNode_Id>(networkingNodeId_WebSocketKey) == DestinationNodeId).
-                                                                 ToArray();
+                var webSocketConnections  = LookupNetworkingNode(DestinationNodeId).ToArray();
 
                 if (webSocketConnections.Length != 0)
                 {
@@ -1357,8 +1392,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
             try
             {
 
-                var webSocketConnections  = WebSocketConnections.Where  (ws => ws.TryGetCustomDataAs<NetworkingNode_Id>(networkingNodeId_WebSocketKey) == DestinationNodeId).
-                                                                 ToArray();
+                var webSocketConnections = LookupNetworkingNode(DestinationNodeId).ToArray();
 
                 if (webSocketConnections.Length != 0)
                 {
@@ -1466,15 +1500,15 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
             var endTime         = Timestamp.Now + (RequestTimeout ?? this.RequestTimeout ?? DefaultRequestTimeout);
 
             var sendJSONResult  = await SendJSONData(
-                                      EventTrackingId,
-                                      NetworkingNodeId,
-                                      NetworkPath,
-                                      RequestId,
-                                      OCPPAction,
-                                      JSONPayload,
-                                      endTime,
-                                      CancellationToken
-                                  );
+                                            EventTrackingId,
+                                            NetworkingNodeId,
+                                            NetworkPath,
+                                            RequestId,
+                                            OCPPAction,
+                                            JSONPayload,
+                                            endTime,
+                                            CancellationToken
+                                        );
 
             if (sendJSONResult == SendOCPPMessageResults.Success) {
 
@@ -1584,15 +1618,15 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
             var endTime         = Timestamp.Now + (RequestTimeout ?? this.RequestTimeout ?? DefaultRequestTimeout);
 
             var sendJSONResult  = await SendBinaryData(
-                                      EventTrackingId,
-                                      NetworkingNodeId,
-                                      NetworkPath,
-                                      RequestId,
-                                      OCPPAction,
-                                      BinaryPayload,
-                                      endTime,
-                                      CancellationToken
-                                  );
+                                            EventTrackingId,
+                                            NetworkingNodeId,
+                                            NetworkPath,
+                                            RequestId,
+                                            OCPPAction,
+                                            BinaryPayload,
+                                            endTime,
+                                            CancellationToken
+                                        );
 
             if (sendJSONResult == SendOCPPMessageResults.Success) {
 

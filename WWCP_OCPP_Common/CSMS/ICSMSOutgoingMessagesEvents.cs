@@ -25,7 +25,8 @@ namespace cloud.charging.open.protocols.OCPP
 {
 
     /// <summary>
-    /// The common OCPP central system client interface.
+    /// The common interface of all events for outgoing OCPP messages
+    /// from a charging station management system.
     /// </summary>
     public interface ICSMSOutgoingMessagesEvents
     {

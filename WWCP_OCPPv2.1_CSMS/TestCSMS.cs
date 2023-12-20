@@ -33,6 +33,7 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using Org.BouncyCastle.Asn1.Ocsp;
 
 #endregion
 
@@ -48,25 +49,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Data
 
-        private          readonly  HashSet<SignaturePolicy>                                                               signaturePolicies           = [];
+        private          readonly  HashSet<SignaturePolicy>                                                      signaturePolicies            = [];
 
-        private          readonly  HashSet<OCPPv2_1.CSMS.ICSMSChannel>                                                    centralSystemServers        = [];
+        private          readonly  HashSet<CSMS.ICSMSChannel>                                                    centralSystemServers         = [];
 
-        private          readonly  ConcurrentDictionary<NetworkingNode_Id, Tuple<OCPPv2_1.CSMS.ICSMSChannel, DateTime>>   reachableChargingStations   = [];
+        private          readonly  ConcurrentDictionary<NetworkingNode_Id, Tuple<CSMS.ICSMSChannel, DateTime>>   reachableChargingStations    = [];
+        private          readonly  ConcurrentDictionary<NetworkingNode_Id, NetworkingNode_Id>                    reachableViaNetworkingHubs   = [];
 
-        private          readonly  HTTPExtAPI                                                                             TestAPI;
+        private          readonly  HTTPExtAPI                                                                    TestAPI;
 
-        private          readonly  CSMSWebAPI                                                                             WebAPI;
+        private          readonly  CSMSWebAPI                                                                    WebAPI;
 
-        protected static readonly  SemaphoreSlim                                                                          ChargingStationSemaphore    = new (1, 1);
+        protected static readonly  SemaphoreSlim                                                                 ChargingStationSemaphore     = new (1, 1);
 
-        protected static readonly  TimeSpan                                                                               SemaphoreSlimTimeout        = TimeSpan.FromSeconds(5);
+        protected static readonly  TimeSpan                                                                      SemaphoreSlimTimeout         = TimeSpan.FromSeconds(5);
 
-        public    static readonly  IPPort                                                                                 DefaultHTTPUploadPort       = IPPort.Parse(9901);
+        public    static readonly  IPPort                                                                        DefaultHTTPUploadPort        = IPPort.Parse(9901);
 
-        private                    Int64                                                                                  internalRequestId           = 900000;
+        private                    Int64                                                                         internalRequestId            = 900000;
 
-        private                    TimeSpan                                                                               defaultRequestTimeout       = TimeSpan.FromSeconds(30);
+        private                    TimeSpan                                                                      defaultRequestTimeout        = TimeSpan.FromSeconds(30);
 
         #endregion
 
@@ -1627,20 +1629,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         // Binary Data Streams Extensions
 
-        public CustomBinarySerializerDelegate <OCPP.CSMS.BinaryDataTransferRequest>?                 CustomBinaryDataTransferRequestSerializer                    { get; set; }
-        public CustomJObjectSerializerDelegate<OCPP.CSMS.GetFileRequest>?                            CustomGetFileRequestSerializer                               { get; set; }
-        public CustomBinarySerializerDelegate <OCPP.CSMS.SendFileRequest>?                           CustomSendFileRequestSerializer                              { get; set; }
-        public CustomJObjectSerializerDelegate<OCPP.CSMS.DeleteFileRequest>?                         CustomDeleteFileRequestSerializer                            { get; set; }
+        public CustomBinarySerializerDelegate <BinaryDataTransferRequest>?                           CustomBinaryDataTransferRequestSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<GetFileRequest>?                                      CustomGetFileRequestSerializer                               { get; set; }
+        public CustomBinarySerializerDelegate <SendFileRequest>?                                     CustomSendFileRequestSerializer                              { get; set; }
+        public CustomJObjectSerializerDelegate<DeleteFileRequest>?                                   CustomDeleteFileRequestSerializer                            { get; set; }
+        public CustomJObjectSerializerDelegate<ListDirectoryRequest>?                                CustomListDirectoryRequestSerializer                         { get; set; }
 
 
         // E2E Security Extensions
 
-        public CustomJObjectSerializerDelegate<OCPP.CSMS.AddSignaturePolicyRequest>?                 CustomAddSignaturePolicyRequestSerializer                    { get; set; }
-        public CustomJObjectSerializerDelegate<OCPP.CSMS.UpdateSignaturePolicyRequest>?              CustomUpdateSignaturePolicyRequestSerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<OCPP.CSMS.DeleteSignaturePolicyRequest>?              CustomDeleteSignaturePolicyRequestSerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<OCPP.CSMS.AddUserRoleRequest>?                        CustomAddUserRoleRequestSerializer                           { get; set; }
-        public CustomJObjectSerializerDelegate<OCPP.CSMS.UpdateUserRoleRequest>?                     CustomUpdateUserRoleRequestSerializer                        { get; set; }
-        public CustomJObjectSerializerDelegate<OCPP.CSMS.DeleteUserRoleRequest>?                     CustomDeleteUserRoleRequestSerializer                        { get; set; }
+        public CustomJObjectSerializerDelegate<AddSignaturePolicyRequest>?                           CustomAddSignaturePolicyRequestSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<UpdateSignaturePolicyRequest>?                        CustomUpdateSignaturePolicyRequestSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<DeleteSignaturePolicyRequest>?                        CustomDeleteSignaturePolicyRequestSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<AddUserRoleRequest>?                                  CustomAddUserRoleRequestSerializer                           { get; set; }
+        public CustomJObjectSerializerDelegate<UpdateUserRoleRequest>?                               CustomUpdateUserRoleRequestSerializer                        { get; set; }
+        public CustomJObjectSerializerDelegate<DeleteUserRoleRequest>?                               CustomDeleteUserRoleRequestSerializer                        { get; set; }
 
 
         // E2E Charging Tariffs
@@ -1791,6 +1794,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public CustomBinarySerializerDelegate <OCPP.CS.GetFileResponse>?                             CustomGetFileResponseSerializer                              { get; set; }
         public CustomJObjectSerializerDelegate<OCPP.CS.SendFileResponse>?                            CustomSendFileResponseSerializer                             { get; set; }
         public CustomJObjectSerializerDelegate<OCPP.CS.DeleteFileResponse>?                          CustomDeleteFileResponseSerializer                           { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.CS.ListDirectoryResponse>?                       CustomListDirectoryResponseSerializer                        { get; set; }
 
 
         // E2E Charging Tariff Extensions
@@ -2032,6 +2036,63 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             }
 
         }
+
+
+        public Boolean LookupNetworkingNode(NetworkingNode_Id NetworkingNodeId, out CSMS.ICSMSChannel? CSMSChannel)
+        {
+
+            var lookUpNetworkingNodeId = NetworkingNodeId;
+
+            if (reachableViaNetworkingHubs.TryGetValue(lookUpNetworkingNodeId, out var networkingHubId))
+                lookUpNetworkingNodeId = networkingHubId;
+
+            if (reachableChargingStations. TryGetValue(lookUpNetworkingNodeId, out var csmsChannel) &&
+                csmsChannel?.Item1 is not null)
+            {
+                CSMSChannel = csmsChannel.Item1;
+                return true;
+            }
+
+            CSMSChannel = null;
+            return false;
+
+        }
+
+        public void AddRedirect(NetworkingNode_Id DestinationNodeId,
+                                NetworkingNode_Id NetworkingHubId)
+        {
+
+            if (reachableChargingStations.TryGetValue(NetworkingHubId, out var csmsChannel) &&
+                csmsChannel?.Item1 is not null)
+            {
+
+                csmsChannel.Item1.AddRedirect(DestinationNodeId,
+                                              NetworkingHubId);
+
+                reachableViaNetworkingHubs.TryAdd(DestinationNodeId,
+                                                  NetworkingHubId);
+
+            }
+
+        }
+
+        public void RemoveRedirect(NetworkingNode_Id DestinationNodeId,
+                                   NetworkingNode_Id NetworkingHubId)
+        {
+
+            if (reachableChargingStations.TryGetValue(NetworkingHubId, out var csmsChannel) &&
+                csmsChannel?.Item1 is not null)
+            {
+
+                csmsChannel.Item1.RemoveRedirect(DestinationNodeId,
+                                                 NetworkingHubId);
+
+                reachableViaNetworkingHubs.TryRemove(new KeyValuePair<NetworkingNode_Id, NetworkingNode_Id>(DestinationNodeId, NetworkingHubId));
+
+            }
+
+        }
+
 
 
         #region AttachWebSocketService(...)
@@ -6520,9 +6581,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Reset the given charging station.
         /// </summary>
         /// <param name="Request">A Reset request.</param>
-        public async Task<CS.ResetResponse>
-            Reset(ResetRequest Request)
-
+        public async Task<CS.ResetResponse> Reset(ResetRequest Request)
         {
 
             #region Send OnResetRequest event
@@ -6544,7 +6603,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -6557,7 +6616,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.Reset(Request)
+                                      ? await centralSystem.Reset(Request)
 
                                       : new CS.ResetResponse(
                                             Request,
@@ -6615,9 +6674,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Initiate a firmware update of the given charging station.
         /// </summary>
         /// <param name="Request">An UpdateFirmware request.</param>
-        public async Task<CS.UpdateFirmwareResponse>
-            UpdateFirmware(UpdateFirmwareRequest Request)
-
+        public async Task<CS.UpdateFirmwareResponse> UpdateFirmware(UpdateFirmwareRequest Request)
         {
 
             #region Send OnUpdateFirmwareRequest event
@@ -6639,7 +6696,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -6653,7 +6710,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.UpdateFirmware(Request)
+                                      ? await centralSystem.UpdateFirmware(Request)
 
                                       : new CS.UpdateFirmwareResponse(
                                             Request,
@@ -6711,9 +6768,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Publish a firmware onto a local controller.
         /// </summary>
         /// <param name="Request">A PublishFirmware request.</param>
-        public async Task<CS.PublishFirmwareResponse>
-            PublishFirmware(PublishFirmwareRequest Request)
-
+        public async Task<CS.PublishFirmwareResponse> PublishFirmware(PublishFirmwareRequest Request)
         {
 
             #region Send OnPublishFirmwareRequest event
@@ -6735,7 +6790,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -6748,7 +6803,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.PublishFirmware(Request)
+                                      ? await centralSystem.PublishFirmware(Request)
 
                                       : new CS.PublishFirmwareResponse(
                                             Request,
@@ -6806,9 +6861,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Unpublish a firmware from a local controller.
         /// </summary>
         /// <param name="Request">An UnpublishFirmware request.</param>
-        public async Task<CS.UnpublishFirmwareResponse>
-            UnpublishFirmware(UnpublishFirmwareRequest Request)
-
+        public async Task<CS.UnpublishFirmwareResponse> UnpublishFirmware(UnpublishFirmwareRequest Request)
         {
 
             #region Send OnUnpublishFirmwareRequest event
@@ -6830,7 +6883,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -6843,7 +6896,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.UnpublishFirmware(Request)
+                                      ? await centralSystem.UnpublishFirmware(Request)
 
                                       : new CS.UnpublishFirmwareResponse(
                                             Request,
@@ -6900,9 +6953,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Retrieve the base report from the charging station.
         /// </summary>
         /// <param name="Request">A GetBaseReport request.</param>
-        public async Task<CS.GetBaseReportResponse>
-            GetBaseReport(GetBaseReportRequest Request)
-
+        public async Task<CS.GetBaseReportResponse> GetBaseReport(GetBaseReportRequest Request)
         {
 
             #region Send OnGetBaseReportRequest event
@@ -6924,7 +6975,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -6937,7 +6988,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.GetBaseReport(Request)
+                                      ? await centralSystem.GetBaseReport(Request)
 
                                       : new CS.GetBaseReportResponse(
                                             Request,
@@ -6995,9 +7046,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Retrieve reports from the charging station.
         /// </summary>
         /// <param name="Request">A GetReport request.</param>
-        public async Task<CS.GetReportResponse>
-            GetReport(GetReportRequest Request)
-
+        public async Task<CS.GetReportResponse> GetReport(GetReportRequest Request)
         {
 
             #region Send OnGetReportRequest event
@@ -7019,7 +7068,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -7036,7 +7085,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.GetReport(Request)
+                                      ? await centralSystem.GetReport(Request)
 
                                       : new CS.GetReportResponse(
                                             Request,
@@ -7094,9 +7143,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Retrieve log files from the charging station.
         /// </summary>
         /// <param name="Request">A GetLog request.</param>
-        public async Task<CS.GetLogResponse>
-            GetLog(GetLogRequest Request)
-
+        public async Task<CS.GetLogResponse> GetLog(GetLogRequest Request)
         {
 
             #region Send OnGetLogRequest event
@@ -7118,7 +7165,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -7132,7 +7179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.GetLog(Request)
+                                      ? await centralSystem.GetLog(Request)
 
                                       : new CS.GetLogResponse(
                                             Request,
@@ -7191,9 +7238,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Set variable data on a charging station.
         /// </summary>
         /// <param name="Request">A SetVariables request.</param>
-        public async Task<CS.SetVariablesResponse>
-            SetVariables(SetVariablesRequest Request)
-
+        public async Task<CS.SetVariablesResponse> SetVariables(SetVariablesRequest Request)
         {
 
             #region Send OnSetVariablesRequest event
@@ -7215,7 +7260,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -7232,7 +7277,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.SetVariables(Request)
+                                      ? await centralSystem.SetVariables(Request)
 
                                       : new CS.SetVariablesResponse(
                                             Request,
@@ -7294,9 +7339,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Get variable data from a charging station.
         /// </summary>
         /// <param name="Request">A GetVariables request.</param>
-        public async Task<CS.GetVariablesResponse>
-            GetVariables(GetVariablesRequest Request)
-
+        public async Task<CS.GetVariablesResponse> GetVariables(GetVariablesRequest Request)
         {
 
             #region Send OnGetVariablesRequest event
@@ -7318,7 +7361,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -7335,7 +7378,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.GetVariables(Request)
+                                      ? await centralSystem.GetVariables(Request)
 
                                       : new CS.GetVariablesResponse(
                                             Request,
@@ -7397,9 +7440,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Set the monitoring base of a charging station.
         /// </summary>
         /// <param name="Request">A SetMonitoringBase request.</param>
-        public async Task<CS.SetMonitoringBaseResponse>
-            SetMonitoringBase(SetMonitoringBaseRequest Request)
-
+        public async Task<CS.SetMonitoringBaseResponse> SetMonitoringBase(SetMonitoringBaseRequest Request)
         {
 
             #region Send OnSetMonitoringBaseRequest event
@@ -7421,7 +7462,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -7434,7 +7475,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.SetMonitoringBase(Request)
+                                      ? await centralSystem.SetMonitoringBase(Request)
 
                                       : new CS.SetMonitoringBaseResponse(
                                             Request,
@@ -7492,9 +7533,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Get monitoring report from a charging station.
         /// </summary>
         /// <param name="Request">A GetMonitoringReport request.</param>
-        public async Task<CS.GetMonitoringReportResponse>
-            GetMonitoringReport(GetMonitoringReportRequest Request)
-
+        public async Task<CS.GetMonitoringReportResponse> GetMonitoringReport(GetMonitoringReportRequest Request)
         {
 
             #region Send OnGetMonitoringReportRequest event
@@ -7516,7 +7555,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -7533,7 +7572,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.GetMonitoringReport(Request)
+                                      ? await centralSystem.GetMonitoringReport(Request)
 
                                       : new CS.GetMonitoringReportResponse(
                                             Request,
@@ -7591,9 +7630,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Set the monitoring level on a charging station.
         /// </summary>
         /// <param name="Request">A SetMonitoringLevel request.</param>
-        public async Task<CS.SetMonitoringLevelResponse>
-            SetMonitoringLevel(SetMonitoringLevelRequest Request)
-
+        public async Task<CS.SetMonitoringLevelResponse> SetMonitoringLevel(SetMonitoringLevelRequest Request)
         {
 
             #region Send OnSetMonitoringLevelRequest event
@@ -7615,7 +7652,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -7628,7 +7665,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.SetMonitoringLevel(Request)
+                                      ? await centralSystem.SetMonitoringLevel(Request)
 
                                       : new CS.SetMonitoringLevelResponse(
                                             Request,
@@ -7686,9 +7723,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Set a variable monitoring on a charging station.
         /// </summary>
         /// <param name="Request">A SetVariableMonitoring request.</param>
-        public async Task<CS.SetVariableMonitoringResponse>
-            SetVariableMonitoring(SetVariableMonitoringRequest Request)
-
+        public async Task<CS.SetVariableMonitoringResponse> SetVariableMonitoring(SetVariableMonitoringRequest Request)
         {
 
             #region Send OnSetVariableMonitoringRequest event
@@ -7710,7 +7745,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -7728,7 +7763,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.SetVariableMonitoring(Request)
+                                      ? await centralSystem.SetVariableMonitoring(Request)
 
                                       : new CS.SetVariableMonitoringResponse(
                                             Request,
@@ -7790,9 +7825,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Delete a variable monitoring on a charging station.
         /// </summary>
         /// <param name="Request">A ClearVariableMonitoring request.</param>
-        public async Task<CS.ClearVariableMonitoringResponse>
-            ClearVariableMonitoring(ClearVariableMonitoringRequest Request)
-
+        public async Task<CS.ClearVariableMonitoringResponse> ClearVariableMonitoring(ClearVariableMonitoringRequest Request)
         {
 
             #region Send OnClearVariableMonitoringRequest event
@@ -7814,7 +7847,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -7827,7 +7860,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.ClearVariableMonitoring(Request)
+                                      ? await centralSystem.ClearVariableMonitoring(Request)
 
                                       : new CS.ClearVariableMonitoringResponse(
                                             Request,
@@ -7886,9 +7919,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Set the network profile of a charging station.
         /// </summary>
         /// <param name="Request">A SetNetworkProfile request.</param>
-        public async Task<CS.SetNetworkProfileResponse>
-            SetNetworkProfile(SetNetworkProfileRequest Request)
-
+        public async Task<CS.SetNetworkProfileResponse> SetNetworkProfile(SetNetworkProfileRequest Request)
         {
 
             #region Send OnSetNetworkProfileRequest event
@@ -7910,7 +7941,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -7926,7 +7957,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.SetNetworkProfile(Request)
+                                      ? await centralSystem.SetNetworkProfile(Request)
 
                                       : new CS.SetNetworkProfileResponse(
                                             Request,
@@ -7984,9 +8015,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Change the availability of the given charging station.
         /// </summary>
         /// <param name="Request">A ChangeAvailability request.</param>
-        public async Task<CS.ChangeAvailabilityResponse>
-            ChangeAvailability(ChangeAvailabilityRequest Request)
-
+        public async Task<CS.ChangeAvailabilityResponse> ChangeAvailability(ChangeAvailabilityRequest Request)
         {
 
             #region Send OnChangeAvailabilityRequest event
@@ -8008,7 +8037,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -8022,7 +8051,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.ChangeAvailability(Request)
+                                      ? await centralSystem.ChangeAvailability(Request)
 
                                       : new CS.ChangeAvailabilityResponse(
                                             Request,
@@ -8080,9 +8109,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Create a trigger for the given message at the given charging station connector.
         /// </summary>
         /// <param name="Request">A TriggerMessage request.</param>
-        public async Task<CS.TriggerMessageResponse>
-            TriggerMessage(TriggerMessageRequest Request)
-
+        public async Task<CS.TriggerMessageResponse> TriggerMessage(TriggerMessageRequest Request)
         {
 
             #region Send OnTriggerMessageRequest event
@@ -8104,7 +8131,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -8118,7 +8145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.TriggerMessage(Request)
+                                      ? await centralSystem.TriggerMessage(Request)
 
                                       : new CS.TriggerMessageResponse(
                                             Request,
@@ -8176,9 +8203,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Transfer the given data to the given charging station.
         /// </summary>
         /// <param name="Request">A DataTransfer request.</param>
-        public async Task<OCPPv2_1.CS.DataTransferResponse>
-            TransferData(DataTransferRequest Request)
-
+        public async Task<CS.DataTransferResponse> TransferData(DataTransferRequest Request)
         {
 
             #region Send OnDataTransferRequest event
@@ -8200,7 +8225,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -8213,14 +8238,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.TransferData(Request)
+                                      ? await centralSystem.TransferData(Request)
 
-                                      : new OCPPv2_1.CS.DataTransferResponse(
+                                      : new CS.DataTransferResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new OCPPv2_1.CS.DataTransferResponse(
+                                : new CS.DataTransferResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -8272,9 +8297,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Send the signed certificate to the given charging station.
         /// </summary>
         /// <param name="Request">A CertificateSigned request.</param>
-        public async Task<CS.CertificateSignedResponse>
-            SendSignedCertificate(CertificateSignedRequest Request)
-
+        public async Task<CS.CertificateSignedResponse> SendSignedCertificate(CertificateSignedRequest Request)
         {
 
             #region Send OnCertificateSignedRequest event
@@ -8296,7 +8319,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -8309,7 +8332,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.SendSignedCertificate(Request)
+                                      ? await centralSystem.SendSignedCertificate(Request)
 
                                       : new CS.CertificateSignedResponse(
                                             Request,
@@ -8367,9 +8390,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Install the given certificate within the charging station.
         /// </summary>
         /// <param name="Request">A InstallCertificate request.</param>
-        public async Task<CS.InstallCertificateResponse>
-            InstallCertificate(InstallCertificateRequest Request)
-
+        public async Task<CS.InstallCertificateResponse> InstallCertificate(InstallCertificateRequest Request)
         {
 
             #region Send OnInstallCertificateRequest event
@@ -8391,7 +8412,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -8404,7 +8425,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.InstallCertificate(Request)
+                                      ? await centralSystem.InstallCertificate(Request)
 
                                       : new CS.InstallCertificateResponse(
                                             Request,
@@ -8462,9 +8483,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Retrieve a list of all installed certificates within the charging station.
         /// </summary>
         /// <param name="Request">A GetInstalledCertificateIds request.</param>
-        public async Task<CS.GetInstalledCertificateIdsResponse>
-            GetInstalledCertificateIds(GetInstalledCertificateIdsRequest Request)
-
+        public async Task<CS.GetInstalledCertificateIdsResponse> GetInstalledCertificateIds(GetInstalledCertificateIdsRequest Request)
         {
 
             #region Send OnGetInstalledCertificateIdsRequest event
@@ -8486,7 +8505,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -8499,7 +8518,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.GetInstalledCertificateIds(Request)
+                                      ? await centralSystem.GetInstalledCertificateIds(Request)
 
                                       : new CS.GetInstalledCertificateIdsResponse(
                                             Request,
@@ -8558,9 +8577,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Delete the given certificate on the charging station.
         /// </summary>
         /// <param name="Request">A DeleteCertificate request.</param>
-        public async Task<CS.DeleteCertificateResponse>
-            DeleteCertificate(DeleteCertificateRequest Request)
-
+        public async Task<CS.DeleteCertificateResponse> DeleteCertificate(DeleteCertificateRequest Request)
         {
 
             #region Send OnDeleteCertificateRequest event
@@ -8582,7 +8599,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -8596,7 +8613,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.DeleteCertificate(Request)
+                                      ? await centralSystem.DeleteCertificate(Request)
 
                                       : new CS.DeleteCertificateResponse(
                                             Request,
@@ -8654,9 +8671,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Delete the given certificate on the charging station.
         /// </summary>
         /// <param name="Request">A NotifyCRLAvailability request.</param>
-        public async Task<CS.NotifyCRLResponse>
-            NotifyCRLAvailability(NotifyCRLRequest Request)
-
+        public async Task<CS.NotifyCRLResponse> NotifyCRLAvailability(NotifyCRLRequest Request)
         {
 
             #region Send OnNotifyCRLRequest event
@@ -8678,7 +8693,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -8691,7 +8706,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.NotifyCRLAvailability(Request)
+                                      ? await centralSystem.NotifyCRLAvailability(Request)
 
                                       : new CS.NotifyCRLResponse(
                                             Request,
@@ -8749,9 +8764,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Return the local white list of the given charging station.
         /// </summary>
         /// <param name="Request">A GetLocalListVersion request.</param>
-        public async Task<CS.GetLocalListVersionResponse>
-            GetLocalListVersion(GetLocalListVersionRequest Request)
-
+        public async Task<CS.GetLocalListVersionResponse> GetLocalListVersion(GetLocalListVersionRequest Request)
         {
 
             #region Send OnGetLocalListVersionRequest event
@@ -8773,7 +8786,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -8786,7 +8799,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.GetLocalListVersion(Request)
+                                      ? await centralSystem.GetLocalListVersion(Request)
 
                                       : new CS.GetLocalListVersionResponse(
                                             Request,
@@ -8843,9 +8856,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Set the local white liste at the given charging station.
         /// </summary>
         /// <param name="Request">A SendLocalList request.</param>
-        public async Task<CS.SendLocalListResponse>
-            SendLocalList(SendLocalListRequest Request)
-
+        public async Task<CS.SendLocalListResponse> SendLocalList(SendLocalListRequest Request)
         {
 
             #region Send OnSendLocalListRequest event
@@ -8867,7 +8878,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -8885,7 +8896,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.SendLocalList(Request)
+                                      ? await centralSystem.SendLocalList(Request)
 
                                       : new CS.SendLocalListResponse(
                                             Request,
@@ -8943,9 +8954,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Clear the local white liste cache of the given charging station.
         /// </summary>
         /// <param name="Request">A ClearCache request.</param>
-        public async Task<CS.ClearCacheResponse>
-            ClearCache(ClearCacheRequest Request)
-
+        public async Task<CS.ClearCacheResponse> ClearCache(ClearCacheRequest Request)
         {
 
             #region Send OnClearCacheRequest event
@@ -8967,7 +8976,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -8980,7 +8989,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.ClearCache(Request)
+                                      ? await centralSystem.ClearCache(Request)
 
                                       : new CS.ClearCacheResponse(
                                             Request,
@@ -9039,9 +9048,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Create a charging reservation of the given charging station connector.
         /// </summary>
         /// <param name="Request">A ReserveNow request.</param>
-        public async Task<CS.ReserveNowResponse>
-            ReserveNow(ReserveNowRequest Request)
-
+        public async Task<CS.ReserveNowResponse> ReserveNow(ReserveNowRequest Request)
         {
 
             #region Send OnReserveNowRequest event
@@ -9063,7 +9070,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -9078,7 +9085,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.ReserveNow(Request)
+                                      ? await centralSystem.ReserveNow(Request)
 
                                       : new CS.ReserveNowResponse(
                                             Request,
@@ -9136,9 +9143,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Cancel the given charging reservation at the given charging station.
         /// </summary>
         /// <param name="Request">A CancelReservation request.</param>
-        public async Task<CS.CancelReservationResponse>
-            CancelReservation(CancelReservationRequest Request)
-
+        public async Task<CS.CancelReservationResponse> CancelReservation(CancelReservationRequest Request)
         {
 
             #region Send OnCancelReservationRequest event
@@ -9160,7 +9165,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -9173,7 +9178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.CancelReservation(Request)
+                                      ? await centralSystem.CancelReservation(Request)
 
                                       : new CS.CancelReservationResponse(
                                             Request,
@@ -9231,9 +9236,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Set the charging profile of the given charging station connector.
         /// </summary>
         /// <param name="Request">A StartCharging request.</param>
-        public async Task<CS.RequestStartTransactionResponse>
-            StartCharging(RequestStartTransactionRequest Request)
-
+        public async Task<CS.RequestStartTransactionResponse> StartCharging(RequestStartTransactionRequest Request)
         {
 
             #region Send OnRequestStartTransactionRequest event
@@ -9255,7 +9258,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -9295,7 +9298,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.StartCharging(Request)
+                                      ? await centralSystem.StartCharging(Request)
 
                                       : new CS.RequestStartTransactionResponse(
                                             Request,
@@ -9353,9 +9356,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Set the charging profile of the given charging station connector.
         /// </summary>
         /// <param name="Request">A StopCharging request.</param>
-        public async Task<CS.RequestStopTransactionResponse>
-            StopCharging(RequestStopTransactionRequest Request)
-
+        public async Task<CS.RequestStopTransactionResponse> StopCharging(RequestStopTransactionRequest Request)
         {
 
             #region Send OnRequestStopTransactionRequest event
@@ -9377,7 +9378,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -9390,7 +9391,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.StopCharging(Request)
+                                      ? await centralSystem.StopCharging(Request)
 
                                       : new CS.RequestStopTransactionResponse(
                                             Request,
@@ -9448,9 +9449,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Set the charging profile of the given charging station connector.
         /// </summary>
         /// <param name="Request">A GetTransactionStatus request.</param>
-        public async Task<CS.GetTransactionStatusResponse>
-            GetTransactionStatus(GetTransactionStatusRequest Request)
-
+        public async Task<CS.GetTransactionStatusResponse> GetTransactionStatus(GetTransactionStatusRequest Request)
         {
 
             #region Send OnGetTransactionStatusRequest event
@@ -9472,7 +9471,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -9485,7 +9484,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.GetTransactionStatus(Request)
+                                      ? await centralSystem.GetTransactionStatus(Request)
 
                                       : new CS.GetTransactionStatusResponse(
                                             Request,
@@ -9542,9 +9541,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Set the charging profile of the given charging station connector.
         /// </summary>
         /// <param name="Request">A SetChargingProfile request.</param>
-        public async Task<CS.SetChargingProfileResponse>
-            SetChargingProfile(SetChargingProfileRequest Request)
-
+        public async Task<CS.SetChargingProfileResponse> SetChargingProfile(SetChargingProfileRequest Request)
         {
 
             #region Send OnSetChargingProfileRequest event
@@ -9566,7 +9563,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -9602,7 +9599,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.SetChargingProfile(Request)
+                                      ? await centralSystem.SetChargingProfile(Request)
 
                                       : new CS.SetChargingProfileResponse(
                                             Request,
@@ -9660,9 +9657,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Set the charging profile of the given charging station connector.
         /// </summary>
         /// <param name="Request">A GetChargingProfiles request.</param>
-        public async Task<CS.GetChargingProfilesResponse>
-            GetChargingProfiles(GetChargingProfilesRequest Request)
-
+        public async Task<CS.GetChargingProfilesResponse> GetChargingProfiles(GetChargingProfilesRequest Request)
         {
 
             #region Send OnGetChargingProfilesRequest event
@@ -9684,7 +9679,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -9698,7 +9693,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.GetChargingProfiles(Request)
+                                      ? await centralSystem.GetChargingProfiles(Request)
 
                                       : new CS.GetChargingProfilesResponse(
                                             Request,
@@ -9756,9 +9751,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Remove the charging profile at the given charging station connector.
         /// </summary>
         /// <param name="Request">A ClearChargingProfile request.</param>
-        public async Task<CS.ClearChargingProfileResponse>
-            ClearChargingProfile(ClearChargingProfileRequest Request)
-
+        public async Task<CS.ClearChargingProfileResponse> ClearChargingProfile(ClearChargingProfileRequest Request)
         {
 
             #region Send OnClearChargingProfileRequest event
@@ -9780,7 +9773,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -9794,7 +9787,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.ClearChargingProfile(Request)
+                                      ? await centralSystem.ClearChargingProfile(Request)
 
                                       : new CS.ClearChargingProfileResponse(
                                             Request,
@@ -9852,9 +9845,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Return the charging schedule of the given charging station connector.
         /// </summary>
         /// <param name="Request">A GetCompositeSchedule request.</param>
-        public async Task<CS.GetCompositeScheduleResponse>
-            GetCompositeSchedule(GetCompositeScheduleRequest Request)
-
+        public async Task<CS.GetCompositeScheduleResponse> GetCompositeSchedule(GetCompositeScheduleRequest Request)
         {
 
             #region Send OnGetCompositeScheduleRequest event
@@ -9876,7 +9867,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -9889,7 +9880,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.GetCompositeSchedule(Request)
+                                      ? await centralSystem.GetCompositeSchedule(Request)
 
                                       : new CS.GetCompositeScheduleResponse(
                                             Request,
@@ -9949,9 +9940,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Update the dynamic charging schedule for the given charging profile.
         /// </summary>
         /// <param name="Request">A UpdateDynamicSchedule request.</param>
-        public async Task<CS.UpdateDynamicScheduleResponse>
-            UpdateDynamicSchedule(UpdateDynamicScheduleRequest Request)
-
+        public async Task<CS.UpdateDynamicScheduleResponse> UpdateDynamicSchedule(UpdateDynamicScheduleRequest Request)
         {
 
             #region Send OnUpdateDynamicScheduleRequest event
@@ -9973,7 +9962,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -9986,7 +9975,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.UpdateDynamicSchedule(Request)
+                                      ? await centralSystem.UpdateDynamicSchedule(Request)
 
                                       : new CS.UpdateDynamicScheduleResponse(
                                             Request,
@@ -10044,9 +10033,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Unlock the given charging station connector.
         /// </summary>
         /// <param name="Request">A NotifyAllowedEnergyTransfer request.</param>
-        public async Task<CS.NotifyAllowedEnergyTransferResponse>
-            NotifyAllowedEnergyTransfer(NotifyAllowedEnergyTransferRequest Request)
-
+        public async Task<CS.NotifyAllowedEnergyTransferResponse> NotifyAllowedEnergyTransfer(NotifyAllowedEnergyTransferRequest Request)
         {
 
             #region Send OnNotifyAllowedEnergyTransferRequest event
@@ -10068,7 +10055,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -10081,7 +10068,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.NotifyAllowedEnergyTransfer(Request)
+                                      ? await centralSystem.NotifyAllowedEnergyTransfer(Request)
 
                                       : new CS.NotifyAllowedEnergyTransferResponse(
                                             Request,
@@ -10139,9 +10126,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Switch to the priority charging profile.
         /// </summary>
         /// <param name="Request">A UsePriorityCharging request.</param>
-        public async Task<CS.UsePriorityChargingResponse>
-            UsePriorityCharging(UsePriorityChargingRequest Request)
-
+        public async Task<CS.UsePriorityChargingResponse> UsePriorityCharging(UsePriorityChargingRequest Request)
         {
 
             #region Send OnUsePriorityChargingRequest event
@@ -10163,7 +10148,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -10176,7 +10161,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.UsePriorityCharging(Request)
+                                      ? await centralSystem.UsePriorityCharging(Request)
 
                                       : new CS.UsePriorityChargingResponse(
                                             Request,
@@ -10234,9 +10219,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Unlock the given charging station connector.
         /// </summary>
         /// <param name="Request">A UnlockConnector request.</param>
-        public async Task<CS.UnlockConnectorResponse>
-            UnlockConnector(UnlockConnectorRequest Request)
-
+        public async Task<CS.UnlockConnectorResponse> UnlockConnector(UnlockConnectorRequest Request)
         {
 
             #region Send OnUnlockConnectorRequest event
@@ -10258,7 +10241,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -10271,7 +10254,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.UnlockConnector(Request)
+                                      ? await centralSystem.UnlockConnector(Request)
 
                                       : new CS.UnlockConnectorResponse(
                                             Request,
@@ -10332,9 +10315,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// from the v2xSignalWattCurve in the charging schedule period.
         /// </summary>
         /// <param name="Request">A AFRRSignal request.</param>
-        public async Task<CS.AFRRSignalResponse>
-            SendAFRRSignal(AFRRSignalRequest Request)
-
+        public async Task<CS.AFRRSignalResponse> SendAFRRSignal(AFRRSignalRequest Request)
         {
 
             #region Send OnAFRRSignalRequest event
@@ -10356,7 +10337,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -10369,7 +10350,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.SendAFRRSignal(Request)
+                                      ? await centralSystem.SendAFRRSignal(Request)
 
                                       : new CS.AFRRSignalResponse(
                                             Request,
@@ -10428,9 +10409,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Set a display message.
         /// </summary>
         /// <param name="Request">A SetDisplayMessage request.</param>
-        public async Task<CS.SetDisplayMessageResponse>
-            SetDisplayMessage(SetDisplayMessageRequest Request)
-
+        public async Task<CS.SetDisplayMessageResponse> SetDisplayMessage(SetDisplayMessageRequest Request)
         {
 
             #region Send OnSetDisplayMessageRequest event
@@ -10452,7 +10431,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -10469,7 +10448,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.SetDisplayMessage(Request)
+                                      ? await centralSystem.SetDisplayMessage(Request)
 
                                       : new CS.SetDisplayMessageResponse(
                                             Request,
@@ -10527,9 +10506,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Get all display messages.
         /// </summary>
         /// <param name="Request">A GetDisplayMessages request.</param>
-        public async Task<CS.GetDisplayMessagesResponse>
-            GetDisplayMessages(GetDisplayMessagesRequest Request)
-
+        public async Task<CS.GetDisplayMessagesResponse> GetDisplayMessages(GetDisplayMessagesRequest Request)
         {
 
             #region Send OnGetDisplayMessagesRequest event
@@ -10551,7 +10528,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -10564,7 +10541,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.GetDisplayMessages(Request)
+                                      ? await centralSystem.GetDisplayMessages(Request)
 
                                       : new CS.GetDisplayMessagesResponse(
                                             Request,
@@ -10622,9 +10599,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Remove a display message.
         /// </summary>
         /// <param name="Request">A ClearDisplayMessage request.</param>
-        public async Task<CS.ClearDisplayMessageResponse>
-            ClearDisplayMessage(ClearDisplayMessageRequest Request)
-
+        public async Task<CS.ClearDisplayMessageResponse> ClearDisplayMessage(ClearDisplayMessageRequest Request)
         {
 
             #region Send OnClearDisplayMessageRequest event
@@ -10646,7 +10621,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -10659,7 +10634,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.ClearDisplayMessage(Request)
+                                      ? await centralSystem.ClearDisplayMessage(Request)
 
                                       : new CS.ClearDisplayMessageResponse(
                                             Request,
@@ -10717,9 +10692,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Send updated total costs.
         /// </summary>
         /// <param name="Request">A CostUpdated request.</param>
-        public async Task<CS.CostUpdatedResponse>
-            SendCostUpdated(CostUpdatedRequest Request)
-
+        public async Task<CS.CostUpdatedResponse> SendCostUpdated(CostUpdatedRequest Request)
         {
 
             #region Send OnCostUpdatedRequest event
@@ -10742,7 +10715,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -10755,7 +10728,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.SendCostUpdated(Request)
+                                      ? await centralSystem.SendCostUpdated(Request)
 
                                       : new CS.CostUpdatedResponse(
                                             Request,
@@ -10812,9 +10785,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Request customer information.
         /// </summary>
         /// <param name="Request">A CostUpdated request.</param>
-        public async Task<CS.CustomerInformationResponse>
-            RequestCustomerInformation(CustomerInformationRequest Request)
-
+        public async Task<CS.CustomerInformationResponse> RequestCustomerInformation(CustomerInformationRequest Request)
         {
 
             #region Send OnCustomerInformationRequest event
@@ -10837,7 +10808,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -10853,7 +10824,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.RequestCustomerInformation(Request)
+                                      ? await centralSystem.RequestCustomerInformation(Request)
 
                                       : new CS.CustomerInformationResponse(
                                             Request,
@@ -10914,9 +10885,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Transfer the given data to the given charging station.
         /// </summary>
         /// <param name="Request">A BinaryDataTransfer request.</param>
-        public async Task<OCPP.CS.BinaryDataTransferResponse>
-            BinaryDataTransfer(OCPP.CSMS.BinaryDataTransferRequest Request)
-
+        public async Task<OCPP.CS.BinaryDataTransferResponse> BinaryDataTransfer(BinaryDataTransferRequest Request)
         {
 
             #region Send OnBinaryDataTransferRequest event
@@ -10938,7 +10907,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -10951,7 +10920,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.BinaryDataTransfer(Request)
+                                      ? await centralSystem.BinaryDataTransfer(Request)
 
                                       : new OCPP.CS.BinaryDataTransferResponse(
                                             Request,
@@ -11009,8 +10978,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Request the given file from the charging station.
         /// </summary>
         /// <param name="Request">A GetFile request.</param>
-        public async Task<OCPP.CS.GetFileResponse>
-            GetFile(OCPP.CSMS.GetFileRequest Request)
+        public async Task<OCPP.CS.GetFileResponse> GetFile(GetFileRequest Request)
 
         {
 
@@ -11033,7 +11001,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -11046,7 +11014,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.GetFile(Request)
+                                      ? await centralSystem.GetFile(Request)
 
                                       : new OCPP.CS.GetFileResponse(
                                             Request,
@@ -11105,7 +11073,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="Request">A SendFile request.</param>
         public async Task<OCPP.CS.SendFileResponse>
-            SendFile(OCPP.CSMS.SendFileRequest Request)
+            SendFile(SendFileRequest Request)
 
         {
 
@@ -11128,7 +11096,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -11141,7 +11109,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.SendFile(Request)
+                                      ? await centralSystem.SendFile(Request)
 
                                       : new OCPP.CS.SendFileResponse(
                                             Request,
@@ -11198,9 +11166,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Delete the given file from the charging station.
         /// </summary>
         /// <param name="Request">A DeleteFile request.</param>
-        public async Task<OCPP.CS.DeleteFileResponse>
-            DeleteFile(OCPP.CSMS.DeleteFileRequest Request)
-
+        public async Task<OCPP.CS.DeleteFileResponse> DeleteFile(DeleteFileRequest Request)
         {
 
             #region Send OnDeleteFileRequest event
@@ -11222,7 +11188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -11235,7 +11201,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.DeleteFile(Request)
+                                      ? await centralSystem.DeleteFile(Request)
 
                                       : new OCPP.CS.DeleteFileResponse(
                                             Request,
@@ -11286,6 +11252,98 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+        #region ListDirectory               (Request)
+
+        /// <summary>
+        /// List the given directory of the charging station or networking node.
+        /// </summary>
+        /// <param name="Request">A ListDirectory request.</param>
+        public async Task<OCPP.CS.ListDirectoryResponse> ListDirectory(ListDirectoryRequest Request)
+        {
+
+            #region Send OnListDirectoryRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnListDirectoryRequest?.Invoke(startTime,
+                                               this,
+                                               Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnListDirectoryRequest));
+            }
+
+            #endregion
+
+
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
+                                centralSystem is not null
+
+                                ? SignaturePolicy.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomListDirectoryRequestSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      out var errorResponse
+                                  )
+
+                                      ? await centralSystem.ListDirectory(Request)
+
+                                      : new OCPP.CS.ListDirectoryResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new OCPP.CS.ListDirectoryResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomListDirectoryResponseSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer
+                ),
+                out errorResponse
+            );
+
+
+            #region Send OnListDirectoryResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnListDirectoryResponse?.Invoke(endTime,
+                                                this,
+                                                Request,
+                                                response,
+                                                endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnListDirectoryResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
 
         // E2E Security Extensions
 
@@ -11319,7 +11377,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -11336,7 +11394,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.AddSignaturePolicy(Request)
+                                      ? await centralSystem.AddSignaturePolicy(Request)
 
                                       : new OCPP.CS.AddSignaturePolicyResponse(
                                             Request,
@@ -11418,7 +11476,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -11435,7 +11493,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.UpdateSignaturePolicy(Request)
+                                      ? await centralSystem.UpdateSignaturePolicy(Request)
 
                                       : new OCPP.CS.UpdateSignaturePolicyResponse(
                                             Request,
@@ -11517,7 +11575,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -11534,7 +11592,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.DeleteSignaturePolicy(Request)
+                                      ? await centralSystem.DeleteSignaturePolicy(Request)
 
                                       : new OCPP.CS.DeleteSignaturePolicyResponse(
                                             Request,
@@ -11616,7 +11674,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -11633,7 +11691,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.AddUserRole(Request)
+                                      ? await centralSystem.AddUserRole(Request)
 
                                       : new OCPP.CS.AddUserRoleResponse(
                                             Request,
@@ -11715,7 +11773,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -11732,7 +11790,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.UpdateUserRole(Request)
+                                      ? await centralSystem.UpdateUserRole(Request)
 
                                       : new OCPP.CS.UpdateUserRoleResponse(
                                             Request,
@@ -11814,7 +11872,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -11831,7 +11889,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.DeleteUserRole(Request)
+                                      ? await centralSystem.DeleteUserRole(Request)
 
                                       : new OCPP.CS.DeleteUserRoleResponse(
                                             Request,
@@ -11917,7 +11975,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -11941,7 +11999,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.SetDefaultChargingTariff(Request)
+                                      ? await centralSystem.SetDefaultChargingTariff(Request)
 
                                       : new CS.SetDefaultChargingTariffResponse(
                                             Request,
@@ -12024,7 +12082,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -12037,7 +12095,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.GetDefaultChargingTariff(Request)
+                                      ? await centralSystem.GetDefaultChargingTariff(Request)
 
                                       : new CS.GetDefaultChargingTariffResponse(
                                             Request,
@@ -12131,7 +12189,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                 centralSystem is not null
 
                                 ? SignaturePolicy.SignRequestMessage(
@@ -12144,7 +12202,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.RemoveDefaultChargingTariff(Request)
+                                      ? await centralSystem.RemoveDefaultChargingTariff(Request)
 
                                       : new CS.RemoveDefaultChargingTariffResponse(
                                             Request,
@@ -14259,6 +14317,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region HandleErrors(Module, Caller, ExceptionOccured)
+
         private Task HandleErrors(String     Module,
                                   String     Caller,
                                   Exception  ExceptionOccured)
@@ -14269,6 +14330,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             return Task.CompletedTask;
 
         }
+
+        #endregion
 
 
     }

@@ -76,12 +76,16 @@ namespace cloud.charging.open.protocols.OCPP
 
         public DirectoryListing AddDirectory(String DirectoryName)
         {
+
             var directoryListing = new DirectoryListing();
+
             lookup.Add(DirectoryName, new Tuple<DirectoryListing?, FileInformation?>(
                                           directoryListing,
                                           null
                                       ));
+
             return directoryListing;
+
         }
 
         private static void AddDirectory(DirectoryListing DirectoryListing, JObject JSONDirectory)

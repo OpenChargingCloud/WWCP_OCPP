@@ -18,7 +18,6 @@
 #region Usings
 
 using System.Reflection;
-using System.Collections.Concurrent;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 
@@ -55,15 +54,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// The default HTTP user agent string.
         /// </summary>
-        public new const        String                                              DefaultHTTPUserAgent              = $"GraphDefined OCPP {Version.String} CP WebSocket Client";
+        public new const String  DefaultHTTPUserAgent   = $"GraphDefined OCPP {Version.String} CP WebSocket Client";
 
-        private const           String                                              LogfileName                       = "ChargePointWSClient.log";
-
-        public static readonly  TimeSpan                                            DefaultRequestTimeout             = TimeSpan.FromSeconds(30);
-
-        public readonly         ConcurrentDictionary<Request_Id, SendRequestState>  requests                          = [];
-
-        private readonly        Dictionary<String, MethodInfo>                      incomingMessageProcessorsLookup   = [];
+        private const    String  LogfileName            = "ChargePointWSClient.log";
 
         #endregion
 

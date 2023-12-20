@@ -15,6 +15,12 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using cloud.charging.open.protocols.OCPP;
+
+#endregion
+
 namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
@@ -27,6 +33,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                     ICSMSIncomingMessages,
                                     ICSMSIncomingMessagesEvents
     {
+
+        void AddRedirect   (NetworkingNode_Id DestinationNodeId,
+                            NetworkingNode_Id NetworkingHubId);
+
+        void RemoveRedirect(NetworkingNode_Id DestinationNodeId,
+                            NetworkingNode_Id NetworkingHubId);
+
 
         /// <summary>
         /// Start the HTTP web socket listener thread.

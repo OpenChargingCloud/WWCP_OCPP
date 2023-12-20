@@ -18,6 +18,9 @@
 namespace cloud.charging.open.protocols.OCPP.CSMS
 {
 
+    /// <summary>
+    /// The common interface of all incoming OCPP messages at a charging station management system.
+    /// </summary>
     public interface ICSMSIncomingMessages
     {
 

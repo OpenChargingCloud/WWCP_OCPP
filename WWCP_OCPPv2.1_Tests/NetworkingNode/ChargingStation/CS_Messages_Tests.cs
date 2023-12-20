@@ -234,17 +234,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CS
 
 
                 var response   = await chargingStation1.TransferBinaryData(
-                                     VendorId:     vendorId,
-                                     MessageId:    messageId,
-                                     Data:         data,
-                                     Format:       BinaryFormats.TextIds
+                                     VendorId:    vendorId,
+                                     MessageId:   messageId,
+                                     Data:        data,
+                                     Format:      BinaryFormats.TextIds
                                  );
 
 
                 Assert.Multiple(() => {
 
                     Assert.That(response.Result.ResultCode,                                          Is.EqualTo(ResultCode.OK));
-                    Assert.That(response.Status,                                                     Is.EqualTo(RegistrationStatus.Accepted));
+                    Assert.That(response.Status,                                                     Is.EqualTo(BinaryDataTransferStatus.Accepted));
                     Assert.That(response.Data?.ToUTF8String(),                                       Is.EqualTo(data.Reverse().ToUTF8String()));
 
                     Assert.That(nnIncomingBinaryDataTransferRequests.  Count,                        Is.EqualTo(1), "The BinaryDataTransfer did not reach the networking node!");
