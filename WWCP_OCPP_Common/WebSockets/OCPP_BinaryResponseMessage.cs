@@ -29,42 +29,54 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
     /// <summary>
     /// An OCPP HTTP Web Socket binary response message.
     /// </summary>
+    /// <param name="NetworkingMode">The networking mode.</param>
     /// <param name="DestinationNodeId">The networking node identification of the message destination.</param>
+    /// <param name="NetworkPath">The (recorded) path of the request through the overlay network.</param>
     /// <param name="RequestId">An unique request identification.</param>
     /// <param name="Payload">The binary response message payload.</param>
-    /// <param name="NetworkPath">The optional (recorded) path of the response through the overlay network.</param>
-    public class OCPP_BinaryResponseMessage(NetworkingNode_Id  DestinationNodeId,
+    public class OCPP_BinaryResponseMessage(DateTime           ResponseTimestamp,
+                                            EventTracking_Id   EventTrackingId,
+                                            NetworkingMode     NetworkingMode,
+                                            NetworkingNode_Id  DestinationNodeId,
+                                            NetworkPath        NetworkPath,
                                             Request_Id         RequestId,
-                                            Byte[]             Payload,
-                                            NetworkPath?       NetworkPath   = null)
+                                            Byte[]             Payload)
     {
 
         #region Properties
 
+        public DateTime           ResponseTimestamp    { get; } = ResponseTimestamp;
+        public EventTracking_Id   EventTrackingId      { get; } = EventTrackingId;
+
+        /// <summary>
+        /// The OCPP networking mode to use.
+        /// </summary>
+        public NetworkingMode     NetworkingMode       { get; } = NetworkingMode;
+
         /// <summary>
         /// The networking node identification of the message destination.
         /// </summary>
-        public NetworkingNode_Id?  DestinationNodeId    { get; } = DestinationNodeId;
-
-        /// <summary>
-        /// The unique request identification.
-        /// </summary>
-        public Request_Id          RequestId            { get; } = RequestId;
-
-        /// <summary>
-        /// The binary response message payload.
-        /// </summary>
-        public Byte[]              Payload              { get; } = Payload;
+        public NetworkingNode_Id  DestinationNodeId    { get; } = DestinationNodeId;
 
         /// <summary>
         /// The (recorded) path of the response through the overlay network.
         /// </summary>
-        public NetworkPath         NetworkPath          { get; } = NetworkPath ?? NetworkPath.Empty;
+        public NetworkPath        NetworkPath          { get; } = NetworkPath;
+
+        /// <summary>
+        /// The unique request identification.
+        /// </summary>
+        public Request_Id         RequestId            { get; } = RequestId;
+
+        /// <summary>
+        /// The binary response message payload.
+        /// </summary>
+        public Byte[]             Payload              { get; } = Payload;
 
         #endregion
 
 
-        #region TryParse(Binary, out BinaryResponseMessage, out ErrorResponse)
+        #region TryParse(Binary, out BinaryResponseMessage, out ErrorResponse, ImplicitSourceNodeId = null)
 
         /// <summary>
         /// Try to parse the given binary representation of a response message.
@@ -72,9 +84,11 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         /// <param name="Binary">The binary to be parsed.</param>
         /// <param name="BinaryResponseMessage">The parsed OCPP WebSocket response message.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ImplicitSourceNodeId">An optional source networking node identification, e.g. from the HTTP Web Sockets connection.</param>
         public static Boolean TryParse(Byte[]                           Binary,
                                        out OCPP_BinaryResponseMessage?  BinaryResponseMessage,
-                                       out String?                      ErrorResponse)
+                                       out String?                      ErrorResponse,
+                                       NetworkingNode_Id?               ImplicitSourceNodeId   = null)
         {
 
             BinaryResponseMessage  = null;
@@ -86,7 +100,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
             try
             {
 
-                var stream             = new MemoryStream(Binary);
+                var stream                   = new MemoryStream(Binary);
 
                 // MessageType: CALLRESULT (Server-to-Client)
                 var messageType       = stream.ReadByte();
@@ -96,8 +110,62 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                     return false;
                 }
 
-                var requestIdLength    = stream.ReadUInt16();
-                var requestIdText      = stream.ReadUTF8String(requestIdLength);
+
+                // DestinationNodeId
+                var destinationNodeId        = NetworkingNode_Id.Zero;
+                var destinationNodeIdLength  = stream.ReadUInt16();
+                if (destinationNodeIdLength > 0)
+                {
+
+                    var destinationNodeIdText    = stream.ReadUTF8String(destinationNodeIdLength);
+
+                    if (!NetworkingNode_Id.TryParse(destinationNodeIdText, out destinationNodeId))
+                    {
+                        ErrorResponse = $"The received destination node identification '{destinationNodeId}' is invalid!";
+                        return false;
+                    }
+
+                }
+
+
+                // NetworkPath
+                var networkPathLength        = stream.ReadByte();
+                var networkPath              = new List<NetworkingNode_Id>();
+
+                for (var i=0; i<networkPathLength; i++)
+                {
+
+                    var sourceNodeIdLength   = stream.ReadUInt16();
+                    var sourceNodeIdText     = stream.ReadUTF8String(sourceNodeIdLength);
+
+                    if (!NetworkingNode_Id.TryParse(sourceNodeIdText, out var sourceNodeId))
+                    {
+                        ErrorResponse = $"The received source node identification '{sourceNodeIdText}' is invalid!";
+                        return false;
+                    }
+
+                    networkPath.Add(sourceNodeId);
+
+                }
+
+                if (ImplicitSourceNodeId.HasValue &&
+                    ImplicitSourceNodeId.Value != NetworkingNode_Id.Zero)
+                {
+
+                    if (networkPath.Count > 0 &&
+                        networkPath.Last() != ImplicitSourceNodeId)
+                    {
+                        networkPath.Add(ImplicitSourceNodeId.Value);
+                    }
+
+                    if (networkPath.Count == 0)
+                        networkPath.Add(ImplicitSourceNodeId.Value);
+
+                }
+
+
+                var requestIdLength          = stream.ReadUInt16();
+                var requestIdText            = stream.ReadUTF8String(requestIdLength);
 
                 if (!Request_Id.TryParse(requestIdText, out var requestId))
                 {
@@ -105,15 +173,20 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                     return false;
                 }
 
-                var payloadLength      = stream.ReadUInt64();
-                var payload            = stream.ReadBytes(payloadLength);
+                var payloadLength            = stream.ReadUInt64();
+                var payload                  = stream.ReadBytes(payloadLength);
 
-                BinaryResponseMessage  = new OCPP_BinaryResponseMessage(
-                                             NetworkingNode_Id.Zero,
-                                             requestId,
-                                             payload,
-                                             NetworkPath.Empty
-                                         );
+                BinaryResponseMessage        = new OCPP_BinaryResponseMessage(
+                                                   Timestamp.Now,
+                                                   EventTracking_Id.New,
+                                                   destinationNodeIdLength == 0 && networkPathLength == 0
+                                                       ? NetworkingMode.Standard
+                                                       : NetworkingMode.NetworkingExtensions,
+                                                   destinationNodeId,
+                                                   new NetworkPath(networkPath),
+                                                   requestId,
+                                                   payload
+                                               );
 
                 return true;
 
@@ -140,20 +213,76 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
             var binaryStream = new MemoryStream();
 
             // MessageType: CALLRESULT (Server-to-Client)
-            binaryStream.WriteByte(3);
+            binaryStream.WriteByte  (3);
+
+            if (NetworkingMode == NetworkingMode.Standard)
+            {
+                // DestinationNodeId length == 0x0000
+                // NetworkPath       length == 0x00
+                binaryStream.Write(new Byte[3]);
+            }
+            else if (NetworkingMode == NetworkingMode.NetworkingExtensions)
+            {
+
+                var destinationNodeIdBytes = DestinationNodeId.ToString().ToUTF8Bytes();
+                binaryStream.WriteUInt16((UInt16) destinationNodeIdBytes.Length);
+                binaryStream.Write      (destinationNodeIdBytes);
+
+                binaryStream.WriteByte  ((Byte) (NetworkPath?.Length ?? 0));
+
+                if (NetworkPath is not null)
+                {
+                    foreach (var sourceNodeId in NetworkPath)
+                    {
+                        var sourceNodeIdBytes = sourceNodeId.ToString().ToUTF8Bytes();
+                        binaryStream.WriteUInt16((UInt16) sourceNodeIdBytes.Length);
+                        binaryStream.Write      (sourceNodeIdBytes);
+                    }
+                }
+
+            }
 
             var requestIdBytes = RequestId.ToString().ToUTF8Bytes();
             binaryStream.WriteUInt16((UInt16) requestIdBytes.Length);
-            binaryStream.Write(requestIdBytes,  0, requestIdBytes.Length);
+            binaryStream.Write      (requestIdBytes);
 
-            binaryStream.WriteUInt64((UInt64) Payload.LongLength);
-            binaryStream.Write(Payload,         0, Payload.       Length); //ToDo: Fix me for >2 GB!
+            binaryStream.WriteUInt64((UInt64) Payload.       LongLength);
+            binaryStream.Write      (Payload); //ToDo: Fix me for >2 GB!
 
             return binaryStream.ToArray();
 
         }
 
         #endregion
+
+
+        public static OCPP_BinaryResponseMessage From(NetworkingNode_Id  DestinationNodeId,
+                                                      NetworkPath        NetworkPath,
+                                                      Request_Id         RequestId,
+                                                      Byte[]             Payload)
+
+            => new (Timestamp.Now,
+                    EventTracking_Id.New,
+                    NetworkingMode.Standard,
+                    DestinationNodeId,
+                    NetworkPath,
+                    RequestId,
+                    Payload);
+
+
+        public static OCPP_BinaryResponseMessage From(NetworkingMode     NetworkingMode,
+                                                      NetworkingNode_Id  DestinationNodeId,
+                                                      NetworkPath        NetworkPath,
+                                                      Request_Id         RequestId,
+                                                      Byte[]             Payload)
+
+            => new (Timestamp.Now,
+                    EventTracking_Id.New,
+                    NetworkingMode,
+                    DestinationNodeId,
+                    NetworkPath,
+                    RequestId,
+                    Payload);
 
 
         #region (override) ToString()

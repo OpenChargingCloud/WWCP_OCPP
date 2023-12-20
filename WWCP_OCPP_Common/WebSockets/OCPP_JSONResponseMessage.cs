@@ -19,6 +19,8 @@
 
 using Newtonsoft.Json.Linq;
 
+using org.GraphDefined.Vanaheimr.Illias;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPP.WebSockets
@@ -31,18 +33,29 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
     /// <param name="RequestId">An unique request identification.</param>
     /// <param name="Payload">A JSON response message payload.</param>
     /// <param name="NetworkPath">The optional (recorded) path of the request through the overlay network.</param>
-    public class OCPP_JSONResponseMessage(NetworkingNode_Id  DestinationNodeId,
+    public class OCPP_JSONResponseMessage(DateTime           ResponseTimestamp,
+                                          EventTracking_Id   EventTrackingId,
+                                          NetworkingMode     NetworkingMode,
+                                          NetworkingNode_Id  DestinationNodeId,
+                                          NetworkPath        NetworkPath,
                                           Request_Id         RequestId,
-                                          JObject            Payload,
-                                          NetworkPath?       NetworkPath   = null)
+                                          JObject            Payload)
     {
 
         #region Properties
+
+        public DateTime            ResponseTimestamp    { get; } = ResponseTimestamp;
+        public EventTracking_Id    EventTrackingId      { get; } = EventTrackingId;
 
         /// <summary>
         /// The networking node identification of the message destination.
         /// </summary>
         public NetworkingNode_Id?  DestinationNodeId    { get; } = DestinationNodeId;
+
+        /// <summary>
+        /// The (recorded) path of the request through the overlay network.
+        /// </summary>
+        public NetworkPath         NetworkPath          { get; } = NetworkPath;
 
         /// <summary>
         /// The unique request identification copied from the request.
@@ -54,15 +67,10 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         /// </summary>
         public JObject             Payload              { get; } = Payload;
 
-        /// <summary>
-        /// The (recorded) path of the request through the overlay network.
-        /// </summary>
-        public NetworkPath         NetworkPath          { get; } = NetworkPath ?? NetworkPath.Empty;
-
         #endregion
 
 
-        #region TryParse(JSONArray, out ResponseMessage, out ErrorResponse)
+        #region TryParse(JSONArray, out ResponseMessage, out ErrorResponse, ImplicitSourceNodeId = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a response message.
@@ -70,56 +78,133 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         /// <param name="JSONArray">The JSON array to be parsed.</param>
         /// <param name="ResponseMessage">The parsed OCPP WebSocket response message.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ImplicitSourceNodeId">An optional source networking node identification, e.g. from the HTTP Web Sockets connection.</param>
         public static Boolean TryParse(JArray                         JSONArray,
                                        out OCPP_JSONResponseMessage?  ResponseMessage,
-                                       out String?                    ErrorResponse)
+                                       out String?                    ErrorResponse,
+                                       NetworkingNode_Id?             ImplicitSourceNodeId   = null)
         {
 
             ResponseMessage  = null;
             ErrorResponse    = null;
 
-            // [
-            //     3,                         // MessageType: CALLRESULT (Server-to-Client)
-            //    "19223201",                 // RequestId copied from request
-            //    {
-            //        "status":            "Accepted",
-            //        "currentTime":       "2013-02-01T20:53:32.486Z",
-            //        "heartbeatInterval":  300
-            //    }
-            // ]
-
             try
             {
 
-                if (JSONArray.Count            != 3                   ||
-                    JSONArray[0].Type          != JTokenType.Integer  ||
-                    JSONArray[0].Value<Byte>() != 3                   ||
-                    JSONArray[1].Type          != JTokenType.String   ||
-                    JSONArray[2].Type          != JTokenType.Object)
+                // [
+                //     3,                         // MessageType: CALLRESULT (Server-to-Client)
+                //    "19223201",                 // RequestId copied from request
+                //    {
+                //        "status":            "Accepted",
+                //        "currentTime":       "2013-02-01T20:53:32.486Z",
+                //        "heartbeatInterval":  300
+                //    }
+                // ]
+
+                if (JSONArray.Count            == 3                   &&
+                    JSONArray[0].Type          == JTokenType.Integer  &&
+                    JSONArray[0].Value<Byte>() == 3                   &&
+                    JSONArray[1].Type          == JTokenType.String   &&
+                    JSONArray[2].Type          == JTokenType.Object)
                 {
-                    return false;
+
+                    var networkPath = NetworkPath.Empty;
+
+                    if (ImplicitSourceNodeId.HasValue &&
+                        ImplicitSourceNodeId.Value != NetworkingNode_Id.Zero)
+                    {
+                        networkPath = networkPath.Append(ImplicitSourceNodeId.Value);
+                    }
+
+                    if (!Request_Id.TryParse(JSONArray[1]?.Value<String>() ?? "", out var requestId))
+                        return false;
+
+                    if (JSONArray[2] is not JObject payload)
+                        return false;
+
+                    ResponseMessage = new OCPP_JSONResponseMessage(
+                                          Timestamp.Now,
+                                          EventTracking_Id.New,
+                                          NetworkingMode.Standard,
+                                          NetworkingNode_Id.Zero,
+                                          networkPath,
+                                          requestId,
+                                          payload
+                                      );
+
+                    return true;
+
                 }
 
-                if (!Request_Id.TryParse(JSONArray[1]?.Value<String>() ?? "", out var responseId))
-                    return false;
 
-                if (JSONArray[2] is not JObject payload)
-                    return false;
+                // [
+                //    3,                          // MessageType: CALLRESULT (Server-to-Client)
+                //    DestinationNodeId,
+                //    [ NetworkPath ],
+                //    "19223201",                 // RequestId copied from request
+                //    {
+                //        "status":            "Accepted",
+                //        "currentTime":       "2013-02-01T20:53:32.486Z",
+                //        "heartbeatInterval":  300
+                //    }
+                // ]
 
-                ResponseMessage = new OCPP_JSONResponseMessage(
-                                      NetworkingNode_Id.Zero,
-                                      responseId,
-                                      payload,
-                                      NetworkPath.Empty
-                                  );
+                if (JSONArray.Count            == 5                   &&
+                    JSONArray[0].Type          == JTokenType.Integer  &&
+                    JSONArray[0].Value<Byte>() == 3                   &&
+                    JSONArray[1].Type          == JTokenType.String   &&
+                    JSONArray[2].Type          == JTokenType.Array    &&
+                    JSONArray[3].Type          == JTokenType.String   &&
+                    JSONArray[4].Type          == JTokenType.Object)
+                {
 
-                return true;
+                    if (!NetworkingNode_Id.TryParse(JSONArray[1]?.Value<String>() ?? "", out var destinationNodeId))
+                        return false;
+
+                    if (JSONArray[2] is not JArray networkPathJSONArray ||
+                        !NetworkPath.TryParse(networkPathJSONArray, out var networkPath, out _) || networkPath is null)
+                        return false;
+
+                    if (ImplicitSourceNodeId.HasValue &&
+                        ImplicitSourceNodeId.Value != NetworkingNode_Id.Zero)
+                    {
+
+                        if (networkPath.Length > 0 &&
+                            networkPath.Last() != ImplicitSourceNodeId)
+                        {
+                            networkPath = networkPath.Append(ImplicitSourceNodeId.Value);
+                        }
+
+                        if (networkPath.Length == 0)
+                            networkPath = networkPath.Append(ImplicitSourceNodeId.Value);
+
+                    }
+
+                    if (!Request_Id.TryParse(JSONArray[3]?.Value<String>() ?? "", out var requestId))
+                        return false;
+
+                    if (JSONArray[4] is not JObject payload)
+                        return false;
+
+                    ResponseMessage = new OCPP_JSONResponseMessage(
+                                          Timestamp.Now,
+                                          EventTracking_Id.New,
+                                          NetworkingMode.NetworkingExtensions,
+                                          destinationNodeId,
+                                          networkPath,
+                                          requestId,
+                                          payload
+                                      );
+
+                    return true;
+
+                }
 
             }
             catch
-            {
-                return false;
-            }
+            { }
+
+            return false;
 
         }
 
@@ -173,6 +258,34 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                           Payload);
 
         #endregion
+
+
+        public static OCPP_JSONResponseMessage From(NetworkingNode_Id  DestinationNodeId,
+                                                    NetworkPath        NetworkPath,
+                                                    Request_Id         RequestId,
+                                                    JObject            Payload)
+
+            => new (Timestamp.Now,
+                    EventTracking_Id.New,
+                    NetworkingMode.Standard,
+                    DestinationNodeId,
+                    NetworkPath,
+                    RequestId,
+                    Payload);
+
+        public static OCPP_JSONResponseMessage From(NetworkingMode     NetworkingMode,
+                                                    NetworkingNode_Id  DestinationNodeId,
+                                                    NetworkPath        NetworkPath,
+                                                    Request_Id         RequestId,
+                                                    JObject            Payload)
+
+            => new (Timestamp.Now,
+                    EventTracking_Id.New,
+                    NetworkingMode,
+                    DestinationNodeId,
+                    NetworkPath,
+                    RequestId,
+                    Payload);
 
 
         #region (override) ToString()

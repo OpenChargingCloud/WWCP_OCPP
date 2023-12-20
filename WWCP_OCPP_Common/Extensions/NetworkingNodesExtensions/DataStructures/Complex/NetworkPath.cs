@@ -17,10 +17,11 @@
 
 #region Usings
 
+using System.Collections;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using System.Collections;
 
 #endregion
 
@@ -69,8 +70,8 @@ namespace cloud.charging.open.protocols.OCPP
         [Optional]
         public NetworkingNode_Id               Source
 
-            => NetworkingNodeIds.Any()
-                   ? NetworkingNodeIds.First()
+            => networkingNodeIds.Count != 0
+                   ? networkingNodeIds.First()
                    : NetworkingNode_Id.Zero;
 
 
@@ -80,8 +81,8 @@ namespace cloud.charging.open.protocols.OCPP
         [Optional]
         public NetworkingNode_Id               Last
 
-            => NetworkingNodeIds.Any()
-                   ? NetworkingNodeIds.Last()
+            => networkingNodeIds.Count != 0
+                   ? networkingNodeIds.Last()
                    : NetworkingNode_Id.Zero;
 
 

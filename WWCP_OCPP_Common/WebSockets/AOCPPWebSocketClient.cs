@@ -254,8 +254,9 @@ namespace cloud.charging.open.protocols.OCPP.CS
             {
 
                 var jsonArray = JArray.Parse(TextMessage);
+              //  var sourceNodeId = Connection.TryGetCustomDataAs<NetworkingNode_Id>(networkingNodeId_WebSocketKey) ?? NetworkingNode_Id.Zero;
 
-                if      (OCPP_JSONRequestMessage. TryParse(jsonArray, out var jsonRequest,  out var requestParsingError)  && jsonRequest       is not null)
+                if      (OCPP_JSONRequestMessage. TryParse(jsonArray, out var jsonRequest,  out var requestParsingError, RequestTimestamp, EventTrackingId)  && jsonRequest       is not null)
                 {
 
                     OCPP_JSONResponseMessage?    OCPPJSONResponse     = null;
@@ -269,11 +270,11 @@ namespace cloud.charging.open.protocols.OCPP.CS
                         #region Call 'incoming message' processor
 
                         var result = methodInfo.Invoke(this,
-                                                       [ RequestTimestamp,
+                                                       [ jsonRequest.RequestTimestamp,
                                                          Connection,
-                                                         Id,
-                                                         NetworkPath.Empty,
-                                                         EventTrackingId,
+                                                         jsonRequest.DestinationNodeId,
+                                                         jsonRequest.NetworkPath,
+                                                         jsonRequest.EventTrackingId,
                                                          jsonRequest.RequestId,
                                                          jsonRequest.Payload,
                                                          CancellationToken ]);
@@ -479,12 +480,14 @@ namespace cloud.charging.open.protocols.OCPP.CS
             try
             {
 
-                     if (OCPP_BinaryRequestMessage. TryParse(BinaryMessage, out var binaryRequest,  out var requestParsingError)  && binaryRequest  is not null)
+              //  var sourceNodeId = Connection.TryGetCustomDataAs<NetworkingNode_Id>(networkingNodeId_WebSocketKey) ?? NetworkingNode_Id.Zero;
+
+                     if (OCPP_BinaryRequestMessage. TryParse(BinaryMessage, out var binaryRequest,  out var requestParsingError, RequestTimestamp, EventTrackingId)  && binaryRequest  is not null)
                 {
 
-                    OCPP_JSONResponseMessage?     OCPPJSONResponse     = null;
-                    OCPP_BinaryResponseMessage?   OCPPBinaryResponse   = null;
-                    OCPP_JSONErrorMessage?  OCPPErrorResponse    = null;
+                    OCPP_JSONResponseMessage?    OCPPJSONResponse     = null;
+                    OCPP_BinaryResponseMessage?  OCPPBinaryResponse   = null;
+                    OCPP_JSONErrorMessage?       OCPPErrorResponse    = null;
 
                     // Try to call the matching 'incoming message processor'
                     if (incomingMessageProcessorsLookup.TryGetValue(binaryRequest.Action, out var methodInfo) && methodInfo is not null)
@@ -493,11 +496,11 @@ namespace cloud.charging.open.protocols.OCPP.CS
                         #region Call 'incoming message' processor
 
                         var result = methodInfo.Invoke(this,
-                                                       [ RequestTimestamp,
+                                                       [ binaryRequest.RequestTimestamp,
                                                          Connection,
-                                                         Id,
-                                                         NetworkPath.Empty,
-                                                         EventTrackingId,
+                                                         binaryRequest.DestinationNodeId,
+                                                         binaryRequest.NetworkPath,
+                                                         binaryRequest.EventTrackingId,
                                                          binaryRequest.RequestId,
                                                          binaryRequest.Payload,
                                                          CancellationToken ]);
@@ -513,7 +516,8 @@ namespace cloud.charging.open.protocols.OCPP.CS
 
                             if (OCPPJSONResponse is not null)
                                 await SendText(
-                                          OCPPJSONResponse.ToJSON().ToString(JSONFormatting)
+                                          OCPPJSONResponse.ToJSON().ToString(JSONFormatting),
+                                          CancellationToken
                                       );
 
                             #endregion
@@ -561,7 +565,8 @@ namespace cloud.charging.open.protocols.OCPP.CS
 
                             if (OCPPBinaryResponse is not null)
                                 await SendBinary(
-                                          OCPPBinaryResponse.ToByteArray()
+                                          OCPPBinaryResponse.ToByteArray(),
+                                          CancellationToken
                                       );
 
                             #endregion
@@ -711,6 +716,8 @@ namespace cloud.charging.open.protocols.OCPP.CS
                     {
 
                         jsonRequestMessage = new OCPP_JSONRequestMessage(
+                                                 Timestamp.Now,
+                                                 EventTracking_Id.New,
                                                  NetworkingMode,
                                                  DestinationNodeId,
                                                  NetworkPath.Append(Id),
@@ -736,6 +743,8 @@ namespace cloud.charging.open.protocols.OCPP.CS
                     {
 
                         jsonRequestMessage = new OCPP_JSONRequestMessage(
+                                                 Timestamp.Now,
+                                                 EventTracking_Id.New,
                                                  NetworkingMode,
                                                  DestinationNodeId,
                                                  NetworkPath ?? NetworkPath.Empty,
@@ -755,6 +764,8 @@ namespace cloud.charging.open.protocols.OCPP.CS
                         e = e.InnerException;
 
                     jsonRequestMessage = new OCPP_JSONRequestMessage(
+                                             Timestamp.Now,
+                                             EventTracking_Id.New,
                                              NetworkingMode,
                                              DestinationNodeId,
                                              NetworkPath ?? NetworkPath.Empty,
@@ -775,6 +786,8 @@ namespace cloud.charging.open.protocols.OCPP.CS
 
             else
                 jsonRequestMessage = new OCPP_JSONRequestMessage(
+                                         Timestamp.Now,
+                                         EventTracking_Id.New,
                                          NetworkingMode,
                                          DestinationNodeId,
                                          NetworkPath ?? NetworkPath.Empty,
@@ -822,6 +835,8 @@ namespace cloud.charging.open.protocols.OCPP.CS
                     {
 
                         binaryRequestMessage = new OCPP_BinaryRequestMessage(
+                                                   Timestamp.Now,
+                                                   EventTracking_Id.New,
                                                    NetworkingMode,
                                                    DestinationNodeId,
                                                    NetworkPath.Append(Id),
@@ -845,6 +860,8 @@ namespace cloud.charging.open.protocols.OCPP.CS
                     {
 
                         binaryRequestMessage = new OCPP_BinaryRequestMessage(
+                                                   Timestamp.Now,
+                                                   EventTracking_Id.New,
                                                    NetworkingMode,
                                                    DestinationNodeId,
                                                    NetworkPath ?? NetworkPath.Empty,
@@ -864,6 +881,8 @@ namespace cloud.charging.open.protocols.OCPP.CS
                         e = e.InnerException;
 
                     binaryRequestMessage = new OCPP_BinaryRequestMessage(
+                                               Timestamp.Now,
+                                               EventTracking_Id.New,
                                                NetworkingMode,
                                                DestinationNodeId,
                                                NetworkPath ?? NetworkPath.Empty,
@@ -884,6 +903,8 @@ namespace cloud.charging.open.protocols.OCPP.CS
 
             else
                 binaryRequestMessage = new OCPP_BinaryRequestMessage(
+                                           Timestamp.Now,
+                                           EventTracking_Id.New,
                                            NetworkingMode,
                                            DestinationNodeId,
                                            NetworkPath ?? NetworkPath.Empty,

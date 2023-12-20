@@ -190,8 +190,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                     #endregion
 
-                    OCPPResponse  = new OCPP_BinaryResponseMessage(
+                    OCPPResponse  = OCPP_BinaryResponseMessage.From(
+                                        NetworkingMode.Standard,
                                         NetworkPath.Source,
+                                        NetworkPath.Empty,
                                         RequestId,
                                         response.ToBinary(
                                             CustomBinaryDataTransferResponseSerializer,

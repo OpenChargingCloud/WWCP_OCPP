@@ -65,31 +65,31 @@ namespace cloud.charging.open.protocols.OCPP.CS
         /// Optional file content.
         /// </summary>
         [Optional]
-        public Byte[]                  FileContent        { get; }
+        public Byte[]                  FileContent        { get; } = [];
 
         /// <summary>
         /// The content/MIME type of the file.
         /// </summary>
         [Optional]
-        public ContentType             FileContentType    { get; }
+        public ContentType             FileContentType    { get; } = ContentType.Application.OctetStream;
 
         /// <summary>
         /// The optional SHA256 hash value of the file content.
         /// </summary>
         [Optional]
-        public Byte[]                  FileSHA256         { get; }
+        public Byte[]                  FileSHA256         { get; } = [];
 
         /// <summary>
         /// The optional SHA512 hash value of the file content.
         /// </summary>
         [Optional]
-        public Byte[]                  FileSHA512         { get; }
+        public Byte[]                  FileSHA512         { get; } = [];
 
         /// <summary>
         /// The optional enumeration of cryptographic signatures for the file content.
         /// </summary>
         [Optional]
-        public IEnumerable<Signature>  FileSignatures     { get; }
+        public IEnumerable<Signature>  FileSignatures     { get; } = [];
 
         #endregion
 
@@ -167,7 +167,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
         /// <param name="Request">The get file request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public GetFileResponse(CSMS.GetFileRequest  Request,
-                                          Result                          Result)
+                               Result               Result)
 
             : base(Request,
                    Result)

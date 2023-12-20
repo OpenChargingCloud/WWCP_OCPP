@@ -421,19 +421,23 @@ namespace cloud.charging.open.protocols.OCPP.CS
 
                 case BinaryFormats.TextIds: {
 
-                    var vendorIdBytes  = VendorId.  InternalId.ToUTF8Bytes();
+                    // VendorId
+                    var vendorIdBytes  = VendorId.  TextId.ToUTF8Bytes();
                     binaryStream.WriteUInt16((UInt16) vendorIdBytes.Length);
-                    binaryStream.Write(vendorIdBytes,       0, vendorIdBytes. Length);
+                    binaryStream.Write      (vendorIdBytes);
 
-                    var messageIdBytes = MessageId?.InternalId.ToUTF8Bytes() ?? [];
+                    // MessageId
+                    var messageIdBytes = MessageId?.TextId.ToUTF8Bytes() ?? [];
                     binaryStream.WriteUInt16((UInt16) messageIdBytes.Length);
                     if (messageIdBytes.Length > 0)
-                        binaryStream.Write(messageIdBytes,  0, messageIdBytes.Length);
+                        binaryStream.Write  (messageIdBytes);
 
-                    var data = Data                                          ?? [];
+                    // Data
+                    var data = Data                                      ?? [];
                     binaryStream.WriteUInt64((UInt64) data.          LongLength);
-                    binaryStream.Write(data,                0, data.          Length); //ToDo: Fix me for >2 GB!
+                    binaryStream.Write      (data); //ToDo: Fix me for >2 GB!
 
+                    // Signatures
                     var signaturesCount = IncludeSignatures ? Signatures.Count() : 0;
                     binaryStream.WriteUInt16((UInt16) signaturesCount);
 

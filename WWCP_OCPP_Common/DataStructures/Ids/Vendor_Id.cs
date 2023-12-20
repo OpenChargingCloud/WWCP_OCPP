@@ -63,28 +63,28 @@ namespace cloud.charging.open.protocols.OCPP
 
         #region Properties
 
-        public String  InternalId    { get; }
+        public String  TextId       { get; }
 
-        public UInt32  NumericId     { get; }
+        public UInt32  NumericId    { get; }
 
 
         /// <summary>
         /// Indicates whether this identification is null or empty.
         /// </summary>
         public readonly Boolean IsNullOrEmpty
-            => InternalId.IsNullOrEmpty();
+            => TextId.IsNullOrEmpty();
 
         /// <summary>
         /// Indicates whether this identification is NOT null or empty.
         /// </summary>
         public readonly Boolean IsNotNullOrEmpty
-            => InternalId.IsNotNullOrEmpty();
+            => TextId.IsNotNullOrEmpty();
 
         /// <summary>
         /// The length of the vendor identification.
         /// </summary>
         public readonly UInt64 Length
-            => (UInt64) (InternalId?.Length ?? 0);
+            => (UInt64) (TextId?.Length ?? 0);
 
         #endregion
 
@@ -99,7 +99,7 @@ namespace cloud.charging.open.protocols.OCPP
                           UInt32  NumericId   = 0)
         {
 
-            this.InternalId  = Text;
+            this.TextId  = Text;
             this.NumericId   = NumericId;
 
         }
@@ -294,7 +294,7 @@ namespace cloud.charging.open.protocols.OCPP
         public Vendor_Id Clone
 
             => new (
-                   new String(InternalId?.ToCharArray()),
+                   new String(TextId?.ToCharArray()),
                    NumericId
                );
 
@@ -443,8 +443,8 @@ namespace cloud.charging.open.protocols.OCPP
         /// <param name="VendorId">A vendor identification to compare with.</param>
         public Int32 CompareTo(Vendor_Id VendorId)
 
-            => String.Compare(InternalId,
-                              VendorId.InternalId,
+            => String.Compare(TextId,
+                              VendorId.TextId,
                               StringComparison.OrdinalIgnoreCase);
 
         #endregion
@@ -474,8 +474,8 @@ namespace cloud.charging.open.protocols.OCPP
         /// <param name="VendorId">A vendor identification to compare with.</param>
         public Boolean Equals(Vendor_Id VendorId)
 
-            => String.Equals(InternalId,
-                             VendorId.InternalId,
+            => String.Equals(TextId,
+                             VendorId.TextId,
                              StringComparison.OrdinalIgnoreCase);
 
         #endregion
@@ -490,7 +490,7 @@ namespace cloud.charging.open.protocols.OCPP
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
 
-            => InternalId?.GetHashCode() ?? 0;
+            => TextId?.GetHashCode() ?? 0;
 
         #endregion
 
@@ -501,7 +501,7 @@ namespace cloud.charging.open.protocols.OCPP
         /// </summary>
         public override String ToString()
 
-            => $"{InternalId ?? ""} ({NumericId})";
+            => $"{TextId ?? ""} ({NumericId})";
 
         #endregion
 

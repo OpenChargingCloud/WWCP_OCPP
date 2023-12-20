@@ -324,6 +324,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                     case BinaryFormats.TextIds:
                         {
 
+                            // BinaryDataTransferStatus
                             var binaryDataTransferStatusLength  = stream.ReadUInt16();
                             var binaryDataTransferStatusText    = stream.ReadUTF8String(binaryDataTransferStatusLength);
 
@@ -333,14 +334,18 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                                 return false;
                             }
 
+                            // AdditionalStatusInfo
                             String? additionalStatusInfo = null;
                             var additionalStatusInfoLength      = stream.ReadUInt16();
                             if (additionalStatusInfoLength > 0)
                                 additionalStatusInfo = stream.ReadUTF8String(additionalStatusInfoLength);
 
+                            // Data
                             var dataLength                      = stream.ReadUInt64();
                             var data                            = stream.ReadBytes(dataLength);
 
+                            // Signatures
+                            var numberOfSignatures              = stream.ReadUInt16();
 
                             BinaryDataTransferResponse = new BinaryDataTransferResponse(
 
@@ -433,21 +438,25 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
 
                 case BinaryFormats.TextIds: {
 
+                    // BinaryDataTransferStatus
                     var statusBytes                = Status.    ToString().ToUTF8Bytes();
                     binaryStream.WriteUInt16((UInt16) statusBytes.              Length);
-                    binaryStream.Write(statusBytes,                    0, statusBytes.              Length);
+                    binaryStream.Write      (statusBytes);
 
+                    // AdditionalStatusInfo
                     var AdditionalStatusInfoBytes  = AdditionalStatusInfo?.ToUTF8Bytes() ?? [];
                     binaryStream.WriteUInt16((UInt16) AdditionalStatusInfoBytes.Length);
                     if (AdditionalStatusInfoBytes.Length > 0)
-                        binaryStream.Write(AdditionalStatusInfoBytes,  0, AdditionalStatusInfoBytes.Length);
+                        binaryStream.Write  (AdditionalStatusInfoBytes);
 
+                    // Data
                     var data = Data                                                      ?? [];
                     binaryStream.WriteUInt64((UInt64) data.LongLength);
-                    binaryStream.Write(data,                           0, data.                     Length);
+                    binaryStream.Write      (data);
 
+                    // Signatures
                     var signaturesCount = (UInt16) (IncludeSignatures ? Signatures.Count() : 0);
-                    binaryStream.Write(BitConverter.GetBytes(signaturesCount),            0, 2);
+                    binaryStream.Write(BitConverter.GetBytes(signaturesCount));
 
                     if (IncludeSignatures) {
                         foreach (var signature in Signatures)

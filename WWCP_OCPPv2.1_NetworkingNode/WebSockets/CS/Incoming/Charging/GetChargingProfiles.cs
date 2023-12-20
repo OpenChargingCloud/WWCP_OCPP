@@ -197,8 +197,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                     #endregion
 
-                    OCPPResponse = new OCPP_JSONResponseMessage(
+                    OCPPResponse = OCPP_JSONResponseMessage.From(
                                        NetworkPath.Source,
+                                       NetworkPath,
                                        RequestId,
                                        response.ToJSON(
                                            CustomGetChargingProfilesResponseSerializer,

@@ -420,11 +420,11 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
 
                 case BinaryFormats.TextIds: {
 
-                    var vendorIdBytes  = VendorId.  InternalId.ToUTF8Bytes();
+                    var vendorIdBytes  = VendorId.  TextId.ToUTF8Bytes();
                     binaryStream.WriteUInt16((UInt16) vendorIdBytes. Length);
                     binaryStream.Write(vendorIdBytes,       0, vendorIdBytes. Length);
 
-                    var messageIdBytes = MessageId?.InternalId.ToUTF8Bytes() ?? [];
+                    var messageIdBytes = MessageId?.TextId.ToUTF8Bytes() ?? [];
                     binaryStream.WriteUInt16((UInt16) messageIdBytes.Length);
                     if (messageIdBytes.Length > 0)
                         binaryStream.Write(messageIdBytes,  0, messageIdBytes.Length);

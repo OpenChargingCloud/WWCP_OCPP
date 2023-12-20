@@ -20,7 +20,6 @@
 using System.Security.Cryptography;
 
 using NUnit.Framework;
-using NUnit.Framework.Legacy;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
@@ -52,11 +51,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
         public async Task GetFile_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            Assert.Multiple(() => {
+                Assert.That(testCSMS01,               Is.Not.Null);
+                Assert.That(testBackendWebSockets01,  Is.Not.Null);
+                Assert.That(chargingStation1,         Is.Not.Null);
+                Assert.That(chargingStation2,         Is.Not.Null);
+                Assert.That(chargingStation3,         Is.Not.Null);
+            });
 
             if (testCSMS01              is not null &&
                 testBackendWebSockets01 is not null &&
@@ -80,18 +81,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                                  );
 
 
-                ClassicAssert.AreEqual(ResultCode.OK,                                                 response.Result.ResultCode);
-                ClassicAssert.AreEqual(GetFileStatus.Success,                                         response.Status);
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual(filename,                                                      response.FileName);
-                ClassicAssert.AreEqual("Hello world!",                                                response.FileContent.ToUTF8String());
-                ClassicAssert.AreEqual(ContentType.Text.Plain,                                        response.FileContentType);
-                ClassicAssert.AreEqual(SHA256.HashData("Hello world!".ToUTF8Bytes()).ToHexString(),   response.FileSHA256.ToHexString());
-                ClassicAssert.AreEqual(SHA512.HashData("Hello world!".ToUTF8Bytes()).ToHexString(),   response.FileSHA512.ToHexString());
+                    Assert.That(response.Result.ResultCode,                   Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                              Is.EqualTo(GetFileStatus.Success));
 
-                ClassicAssert.AreEqual(1,                                                             getFileRequests.Count);
-                ClassicAssert.AreEqual(chargingStation1.Id,                                           getFileRequests.First().DestinationNodeId);
-                ClassicAssert.AreEqual(filename,                                                      getFileRequests.First().FileName);
+                    Assert.That(response.FileName,                            Is.EqualTo(filename));
+                    Assert.That(response.FileContent.ToUTF8String(),          Is.EqualTo("Hello world!"));
+                    Assert.That(response.FileContentType,                     Is.EqualTo(ContentType.Text.Plain));
+                    Assert.That(response.FileSHA256.ToHexString(),            Is.EqualTo(SHA256.HashData("Hello world!".ToUTF8Bytes()).ToHexString()));
+                    Assert.That(response.FileSHA512.ToHexString(),            Is.EqualTo(SHA512.HashData("Hello world!".ToUTF8Bytes()).ToHexString()));
+
+                    Assert.That(getFileRequests.Count,                        Is.EqualTo(1), "The GetFileRequest did not reach the charging station!");
+                    Assert.That(getFileRequests.First().DestinationNodeId,    Is.EqualTo(NetworkingNode_Id.Zero));
+                    Assert.That(getFileRequests.First().NetworkPath.Length,   Is.EqualTo(0));
+                    Assert.That(getFileRequests.First().FileName,             Is.EqualTo(filename));
+
+                });
 
             }
 
@@ -108,11 +114,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
         public async Task SendFile_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            Assert.Multiple(() => {
+                Assert.That(testCSMS01,               Is.Not.Null);
+                Assert.That(testBackendWebSockets01,  Is.Not.Null);
+                Assert.That(chargingStation1,         Is.Not.Null);
+                Assert.That(chargingStation2,         Is.Not.Null);
+                Assert.That(chargingStation3,         Is.Not.Null);
+            });
 
             if (testCSMS01              is not null &&
                 testBackendWebSockets01 is not null &&
@@ -142,17 +150,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                                  );
 
 
-                ClassicAssert.AreEqual(ResultCode.OK,                                                 response.Result.ResultCode);
-                ClassicAssert.AreEqual(SendFileStatus.Success,                                        response.Status);
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual(filename,                                                      response.FileName);
+                    Assert.That(response.Result.ResultCode,                            Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                                       Is.EqualTo(SendFileStatus.Success));
+                    Assert.That(response.FileName,                                     Is.EqualTo(filename));
 
-                ClassicAssert.AreEqual(1,                                                             sendFileRequests.Count);
-                ClassicAssert.AreEqual(chargingStation1.Id,                                           sendFileRequests.First().DestinationNodeId);
-                ClassicAssert.AreEqual("Hello world!",                                                sendFileRequests.First().FileContent.ToUTF8String());
-                ClassicAssert.AreEqual(ContentType.Text.Plain,                                        sendFileRequests.First().FileContentType);
-                ClassicAssert.AreEqual(SHA256.HashData("Hello world!".ToUTF8Bytes()).ToHexString(),   sendFileRequests.First().FileSHA256.ToHexString());
-                ClassicAssert.AreEqual(SHA512.HashData("Hello world!".ToUTF8Bytes()).ToHexString(),   sendFileRequests.First().FileSHA512.ToHexString());
+                    Assert.That(sendFileRequests.Count,                                Is.EqualTo(1), "The SendFileRequest did not reach the charging station!");
+                    Assert.That(sendFileRequests.First().DestinationNodeId,            Is.EqualTo(NetworkingNode_Id.Zero));
+                    Assert.That(sendFileRequests.First().NetworkPath.Length,           Is.EqualTo(0));
+                    Assert.That(sendFileRequests.First().FileName,                     Is.EqualTo(filename));
+                    Assert.That(sendFileRequests.First().FileContent.ToUTF8String(),   Is.EqualTo("Hello world!"));
+                    Assert.That(sendFileRequests.First().FileContentType,              Is.EqualTo(ContentType.Text.Plain));
+                    Assert.That(sendFileRequests.First().FileSHA256.ToHexString(),     Is.EqualTo(SHA256.HashData("Hello world!".ToUTF8Bytes()).ToHexString()));
+                    Assert.That(sendFileRequests.First().FileSHA512.ToHexString(),     Is.EqualTo(SHA512.HashData("Hello world!".ToUTF8Bytes()).ToHexString()));
+
+                });
 
             }
 
@@ -169,11 +182,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
         public async Task DeleteFile_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            Assert.Multiple(() => {
+                Assert.That(testCSMS01,               Is.Not.Null);
+                Assert.That(testBackendWebSockets01,  Is.Not.Null);
+                Assert.That(chargingStation1,         Is.Not.Null);
+                Assert.That(chargingStation2,         Is.Not.Null);
+                Assert.That(chargingStation3,         Is.Not.Null);
+            });
 
             if (testCSMS01              is not null &&
                 testBackendWebSockets01 is not null &&
@@ -199,13 +214,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                                  );
 
 
-                ClassicAssert.AreEqual(ResultCode.OK,              response.Result.ResultCode);
-                ClassicAssert.AreEqual(DeleteFileStatus.Success,   response.Status);
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual(filename,                   response.FileName);
+                    Assert.That(response.Result.ResultCode,                              Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                                         Is.EqualTo(DeleteFileStatus.Success));
+                    Assert.That(response.FileName,                                       Is.EqualTo(filename));
 
-                ClassicAssert.AreEqual(1,                          deleteFileRequests.Count);
-                ClassicAssert.AreEqual(chargingStation1.Id,        deleteFileRequests.First().DestinationNodeId);
+                    Assert.That(deleteFileRequests.Count,                                Is.EqualTo(1), "The SendFileRequest did not reach the charging station!");
+                    Assert.That(deleteFileRequests.First().DestinationNodeId,            Is.EqualTo(NetworkingNode_Id.Zero));
+                    Assert.That(deleteFileRequests.First().NetworkPath.Length,           Is.EqualTo(0));
+                    Assert.That(deleteFileRequests.First().FileName,                     Is.EqualTo(filename));
+
+                });
 
             }
 

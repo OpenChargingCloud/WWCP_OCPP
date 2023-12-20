@@ -675,52 +675,11 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
             try
             {
 
-                var jsonArray = JArray.Parse(TextMessage);
+                var jsonArray     = JArray.Parse(TextMessage);
+                var sourceNodeId  = Connection.TryGetCustomDataAs<NetworkingNode_Id>(networkingNodeId_WebSocketKey);
 
-                if      (OCPP_JSONRequestMessage. TryParse(jsonArray, out var jsonRequest,  out var requestParsingError)  && jsonRequest       is not null)
+                if      (OCPP_JSONRequestMessage. TryParse(jsonArray, out var jsonRequest,  out var requestParsingError,  RequestTimestamp, EventTrackingId, sourceNodeId) && jsonRequest       is not null)
                 {
-
-                    #region Get SourceNodeId
-
-                    var sourceNodeId = Connection.TryGetCustomDataAs<NetworkingNode_Id>(networkingNodeId_WebSocketKey) ?? NetworkingNode_Id.Zero;
-
-                    if (jsonRequest.NetworkingMode == NetworkingMode.NetworkingExtensions &&
-                        jsonRequest.NetworkPath is not null &&
-                        jsonRequest.NetworkPath.Source != NetworkingNode_Id.Zero)
-                    {
-                        sourceNodeId = jsonRequest.NetworkPath.Source;
-                    }
-
-                    #endregion
-
-                    #region Get LastHop
-
-                    var lastHop = Connection.TryGetCustomDataAs<NetworkingNode_Id>(networkingNodeId_WebSocketKey) ?? NetworkingNode_Id.Zero;
-
-                    if (jsonRequest.NetworkingMode == NetworkingMode.NetworkingExtensions &&
-                        jsonRequest.NetworkPath is not null &&
-                        jsonRequest.NetworkPath.Last != NetworkingNode_Id.Zero)
-                    {
-                        lastHop = jsonRequest.NetworkPath.Last;
-                    }
-
-                    #endregion
-
-                    #region Append network path
-
-                    var networkPath = jsonRequest.NetworkPath ?? NetworkPath.Empty;
-
-                    if (networkPath.Last != lastHop)
-                        networkPath = networkPath.Append(lastHop);
-
-                    #endregion
-
-                    #region Set destinationNodeId
-
-                    var destinationNodeId = jsonRequest.DestinationNodeId ?? NetworkingNode_Id.CSMS;
-
-                    #endregion
-
 
                     #region OnTextMessageRequestReceived
 
@@ -736,8 +695,8 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                                                                                   Timestamp.Now,
                                                                                   this,
                                                                                   Connection,
-                                                                                  destinationNodeId,
-                                                                                  networkPath,
+                                                                                  jsonRequest.DestinationNodeId,
+                                                                                  jsonRequest.NetworkPath,
                                                                                   EventTrackingId,
                                                                                   Timestamp.Now,
                                                                                   jsonArray,
@@ -754,7 +713,6 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
 
                     #endregion
 
-
                     #region Try to call the matching 'incoming message processor'...
 
                     if (incomingMessageProcessorsLookup.TryGetValue(jsonRequest.Action, out var methodInfo) &&
@@ -763,11 +721,11 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
 
                         //ToDo: Maybe this could be done via code generation!
                         var result = methodInfo.Invoke(this,
-                                                       [ RequestTimestamp,
+                                                       [ jsonRequest.RequestTimestamp,
                                                          Connection,
-                                                         destinationNodeId,
-                                                         networkPath,
-                                                         EventTrackingId,
+                                                         jsonRequest.DestinationNodeId,
+                                                         jsonRequest.NetworkPath,
+                                                         jsonRequest.EventTrackingId,
                                                          jsonRequest.RequestId,
                                                          jsonRequest.Payload,
                                                          CancellationToken ]);
@@ -791,13 +749,15 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                         DebugX.Log($"Received unknown '{jsonRequest.Action}' JSON request message handler within {nameof(AOCPPWebSocketServer)}!");
 
                         OCPPErrorResponse = new OCPP_JSONErrorMessage(
-                                                 jsonRequest.RequestId,
-                                                 ResultCode.ProtocolError,
-                                                 $"The OCPP message '{jsonRequest.Action}' is unkown!",
-                                                 new JObject(
-                                                     new JProperty("request", TextMessage)
-                                                 )
-                                             );
+                                                Timestamp.Now,
+                                                EventTracking_Id.New,
+                                                jsonRequest.RequestId,
+                                                ResultCode.ProtocolError,
+                                                $"The OCPP message '{jsonRequest.Action}' is unkown!",
+                                                new JObject(
+                                                    new JProperty("request", TextMessage)
+                                                )
+                                            );
 
                     }
 
@@ -823,7 +783,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                                                                                       now,
                                                                                       this,
                                                                                       Connection,
-                                                                                      sourceNodeId,
+                                                                                      jsonRequest.DestinationNodeId,
                                                                                       EventTrackingId,
                                                                                       RequestTimestamp,
                                                                                       jsonArray,
@@ -848,7 +808,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
 
                 }
 
-                else if (OCPP_JSONResponseMessage.TryParse(jsonArray, out var jsonResponse, out var responseParsingError) && jsonResponse      is not null)
+                else if (OCPP_JSONResponseMessage.TryParse(jsonArray, out var jsonResponse, out var responseParsingError, sourceNodeId) && jsonResponse      is not null)
                 {
 
                     if (requests.TryGetValue(jsonResponse.RequestId, out var sendRequestState) &&
@@ -898,7 +858,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
 
                 }
 
-                else if (OCPP_JSONErrorMessage.   TryParse(jsonArray, out var jsonErrorResponse)                          && jsonErrorResponse is not null)
+                else if (OCPP_JSONErrorMessage.   TryParse(jsonArray, out var jsonErrorResponse,                          sourceNodeId) && jsonErrorResponse is not null)
                 {
 
                     if (requests.TryGetValue(jsonErrorResponse.RequestId, out var sendRequestState) &&
@@ -1054,52 +1014,10 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
             try
             {
 
-                var networkingNodeId = Connection.TryGetCustomDataAs<NetworkingNode_Id>(networkingNodeId_WebSocketKey) ?? NetworkingNode_Id.Zero;
+                var sourceNodeId = Connection.TryGetCustomDataAs<NetworkingNode_Id>(networkingNodeId_WebSocketKey);
 
-                     if (OCPP_BinaryRequestMessage. TryParse(BinaryMessage, out var binaryRequest,  out var requestParsingError)  && binaryRequest  is not null)
+                     if (OCPP_BinaryRequestMessage. TryParse(BinaryMessage, out var binaryRequest,  out var requestParsingError,  RequestTimestamp, EventTrackingId, sourceNodeId) && binaryRequest  is not null)
                 {
-
-                    #region Get SourceNodeId
-
-                    var sourceNodeId = Connection.TryGetCustomDataAs<NetworkingNode_Id>(networkingNodeId_WebSocketKey) ?? NetworkingNode_Id.Zero;
-
-                    if (binaryRequest.NetworkingMode == NetworkingMode.NetworkingExtensions &&
-                        binaryRequest.NetworkPath is not null &&
-                        binaryRequest.NetworkPath.Source != NetworkingNode_Id.Zero)
-                    {
-                        sourceNodeId = binaryRequest.NetworkPath.Source;
-                    }
-
-                    #endregion
-
-                    #region Get LastHop
-
-                    var lastHop = Connection.TryGetCustomDataAs<NetworkingNode_Id>(networkingNodeId_WebSocketKey) ?? NetworkingNode_Id.Zero;
-
-                    if (binaryRequest.NetworkingMode == NetworkingMode.NetworkingExtensions &&
-                        binaryRequest.NetworkPath is not null &&
-                        binaryRequest.NetworkPath.Last != NetworkingNode_Id.Zero)
-                    {
-                        lastHop = binaryRequest.NetworkPath.Last;
-                    }
-
-                    #endregion
-
-                    #region Append network path
-
-                    var networkPath = binaryRequest.NetworkPath ?? NetworkPath.Empty;
-
-                    if (networkPath.Last != lastHop)
-                        networkPath = networkPath.Append(lastHop);
-
-                    #endregion
-
-                    #region Set destinationNodeId
-
-                    var destinationNodeId = binaryRequest.DestinationNodeId ?? NetworkingNode_Id.CSMS;
-
-                    #endregion
-
 
                     #region OnBinaryMessageRequestReceived
 
@@ -1115,8 +1033,8 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                                                                                   Timestamp.Now,
                                                                                   this,
                                                                                   Connection,
-                                                                                  destinationNodeId,
-                                                                                  networkPath,
+                                                                                  binaryRequest.DestinationNodeId,
+                                                                                  binaryRequest.NetworkPath,
                                                                                   EventTrackingId,
                                                                                   Timestamp.Now,
                                                                                   BinaryMessage,
@@ -1133,7 +1051,6 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
 
                     #endregion
 
-
                     #region Try to call the matching 'incoming message processor'
 
                     if (incomingMessageProcessorsLookup.TryGetValue(binaryRequest.Action, out var methodInfo) &&
@@ -1141,11 +1058,11 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                     {
 
                         var result = methodInfo.Invoke(this,
-                                                       [ RequestTimestamp,
+                                                       [ binaryRequest.RequestTimestamp,
                                                          Connection,
-                                                         destinationNodeId,
-                                                         networkPath,
-                                                         EventTrackingId,
+                                                         binaryRequest.DestinationNodeId,
+                                                         binaryRequest.NetworkPath,
+                                                         binaryRequest.EventTrackingId,
                                                          binaryRequest.RequestId,
                                                          binaryRequest.Payload,
                                                          CancellationToken ]);
@@ -1168,24 +1085,50 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                         DebugX.Log($"Received unknown '{binaryRequest.Action}' binary request message handler within {nameof(AOCPPWebSocketServer)}!");
 
                         OCPPErrorResponse = new OCPP_JSONErrorMessage(
-                                                 binaryRequest.RequestId,
-                                                 ResultCode.ProtocolError,
-                                                 $"The OCPP message '{binaryRequest.Action}' is unkown!",
-                                                 new JObject(
-                                                     new JProperty("request", BinaryMessage.ToBase64())
-                                                 )
-                                             );
+                                                Timestamp.Now,
+                                                EventTracking_Id.New,
+                                                binaryRequest.RequestId,
+                                                ResultCode.ProtocolError,
+                                                $"The OCPP message '{binaryRequest.Action}' is unkown!",
+                                                new JObject(
+                                                    new JProperty("request", BinaryMessage.ToBase64())
+                                                )
+                                            );
 
                     }
 
                 }
 
-                else if (OCPP_BinaryResponseMessage.TryParse(BinaryMessage, out var binaryResponse, out var responseParsingError) && binaryResponse is not null)
+                else if (OCPP_BinaryResponseMessage.TryParse(BinaryMessage, out var binaryResponse, out var responseParsingError, sourceNodeId) && binaryResponse is not null)
                 {
 
                     if (requests.TryGetValue(binaryResponse.RequestId, out var sendRequestState) &&
                         sendRequestState is not null)
                     {
+
+                        #region Get LastHop
+
+                        var lastHop            = Connection.TryGetCustomDataAs<NetworkingNode_Id>(networkingNodeId_WebSocketKey) ?? NetworkingNode_Id.Zero;
+
+                        if (binaryResponse.NetworkingMode == NetworkingMode.NetworkingExtensions &&
+                            binaryResponse.NetworkPath is not null &&
+                            binaryResponse.NetworkPath.Last != NetworkingNode_Id.Zero)
+                        {
+                            lastHop            = binaryResponse.NetworkPath.Last;
+                        }
+
+                        #endregion
+
+                        #region Append network path
+
+                        // Note: Keep "var networkPath2", as "var networkPath" let to runtime errors!
+                        var networkPath2        = binaryResponse.NetworkPath ?? NetworkPath.Empty;
+
+                        if (networkPath2.Last != lastHop)
+                            networkPath2        = networkPath2.Append(lastHop);
+
+                        #endregion
+
 
                         sendRequestState.ResponseTimestamp  = Timestamp.Now;
                         sendRequestState.BinaryResponse     = binaryResponse;
@@ -1204,7 +1147,8 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                                                                                       Timestamp.Now,
                                                                                       this,
                                                                                       Connection,
-                                                                                      networkingNodeId,
+                                                                                      binaryResponse.DestinationNodeId,
+                                                                                      networkPath2,
                                                                                       EventTrackingId,
                                                                                       sendRequestState.RequestTimestamp,
                                                                                       sendRequestState.JSONRequest?.  ToJSON()      ?? [],
@@ -1303,6 +1247,8 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                     var networkingMode      = webSocketConnections.First().TryGetCustomDataAs<NetworkingMode>(networkingMode_WebSocketKey);
 
                     var jsonRequestMessage  = new OCPP_JSONRequestMessage(
+                                                  Timestamp.Now,
+                                                  EventTracking_Id.New,
                                                   networkingMode ?? NetworkingMode.Standard,
                                                   DestinationNodeId,
                                                   NetworkPath,
@@ -1420,6 +1366,8 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                     var networkingMode        = webSocketConnections.First().TryGetCustomDataAs<NetworkingMode>(networkingMode_WebSocketKey);
 
                     var binaryRequestMessage  = new OCPP_BinaryRequestMessage(
+                                                    Timestamp.Now,
+                                                    EventTracking_Id.New,
                                                     networkingMode ?? NetworkingMode.Standard,
                                                     DestinationNodeId,
                                                     NetworkPath,
@@ -1602,6 +1550,8 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                        NetworkingNodeId,
                        now,
                        new OCPP_JSONRequestMessage(
+                           Timestamp.Now,
+                           EventTracking_Id.New,
                            NetworkingMode.Standard,
                            NetworkingNodeId,
                            NetworkPath,
@@ -1718,6 +1668,8 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                        NetworkingNodeId,
                        now,
                        new OCPP_BinaryRequestMessage(
+                           Timestamp.Now,
+                           EventTracking_Id.New,
                            NetworkingMode.Standard,
                            NetworkingNodeId,
                            NetworkPath,

@@ -424,10 +424,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("vendorId",     VendorId.       InternalId),
+                                 new JProperty("vendorId",     VendorId.       TextId),
 
                            MessageId.HasValue
-                               ? new JProperty("messageId",    MessageId.Value.InternalId)
+                               ? new JProperty("messageId",    MessageId.Value.TextId)
                                : null,
 
                            Data is not null
