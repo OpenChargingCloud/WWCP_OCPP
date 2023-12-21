@@ -17,18 +17,34 @@
 
 #region Usings
 
-using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using cloud.charging.open.protocols.OCPP.CSMS;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
+namespace cloud.charging.open.protocols.OCPP.NetworkingNode
 {
 
     /// <summary>
-    /// The common interface of all CSMS HTTP Web Sockets channels.
+    /// The common interface of all incoming OCPP messages at a charging station management system.
     /// </summary>
-    public interface ICSMSWebsocketsChannel : ICSMSChannel,
-                                              IWebSocketServer
-    { }
+    public interface INetworkingNodeIncomingMessages
+    {
+
+        
+
+
+        //// Binary Data Streams Extensions
+
+        //#region OnIncomingBinaryDataTransfer
+
+        ///// <summary>
+        ///// An event sent whenever an incoming BinaryDataTransfer request was received.
+        ///// </summary>
+        //event OnIncomingBinaryDataTransferDelegate    OnIncomingBinaryDataTransfer;
+
+        //#endregion
+
+
+    }
 
 }

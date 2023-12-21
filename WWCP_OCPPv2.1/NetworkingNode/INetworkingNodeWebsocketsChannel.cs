@@ -21,14 +21,14 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
+namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 {
 
     /// <summary>
-    /// The common interface of all CSMS HTTP Web Sockets channels.
+    /// The common interface of all NetworkingNode HTTP Web Sockets channels.
     /// </summary>
-    public interface ICSMSWebsocketsChannel : ICSMSChannel,
-                                              IWebSocketServer
+    public interface INetworkingNodeWebsocketsChannel : INetworkingNodeChannel,
+                                                        IWebSocketServer
     { }
 
 }

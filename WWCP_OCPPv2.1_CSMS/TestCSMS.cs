@@ -2232,7 +2232,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             // Failed (Charging Station) Authentication
 
-            #region OnNewWebSocketConnection
+            #region OnCSMSNewWebSocketConnection
 
             CSMSChannel.OnCSMSNewWebSocketConnection += async (timestamp,
                                                                csmsChannel,
@@ -2243,8 +2243,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                cancellationToken) => {
 
                 // A new connection from the same networking node/charging station will replace the older one!
-                if (!reachableChargingStations.TryAdd(networkingNodeId, new Tuple<OCPPv2_1.CSMS.ICSMSChannel, DateTime>(csmsChannel as OCPPv2_1.CSMS.ICSMSChannel, timestamp)))
-                    reachableChargingStations[networkingNodeId]       = new Tuple<OCPPv2_1.CSMS.ICSMSChannel, DateTime>(csmsChannel as OCPPv2_1.CSMS.ICSMSChannel, timestamp);
+                if (!reachableChargingStations.TryAdd(networkingNodeId, new Tuple<CSMS.ICSMSChannel, DateTime>(csmsChannel as CSMS.ICSMSChannel, timestamp)))
+                    reachableChargingStations[networkingNodeId]       = new Tuple<CSMS.ICSMSChannel, DateTime>(csmsChannel as CSMS.ICSMSChannel, timestamp);
 
 
                 var onNewWebSocketConnection = OnNewWebSocketConnection;
@@ -2281,7 +2281,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #endregion
 
-            #region OnCloseMessageReceived
+            #region OnCSMSCloseMessageReceived
 
             CSMSChannel.OnCSMSCloseMessageReceived += async (timestamp,
                                                              server,
@@ -2327,7 +2327,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #endregion
 
-            #region OnTCPConnectionClosed
+            #region OnCSMSTCPConnectionClosed
 
             CSMSChannel.OnCSMSTCPConnectionClosed += async (timestamp,
                                                             server,
@@ -2470,6 +2470,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                             webSocketServer,
                                                             webSocketConnection,
                                                             networkingNodeId,
+                                                            networkPath,
                                                             eventTrackingId,
                                                             requestTimestamp,
                                                             jsonRequestMessage,
@@ -2491,6 +2492,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                               webSocketServer,
                                                                               webSocketConnection,
                                                                               networkingNodeId,
+                                                                              networkPath,
                                                                               eventTrackingId,
                                                                               requestTimestamp,
                                                                               jsonRequestMessage,
@@ -2621,6 +2623,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                 webSocketServer,
                                                                 webSocketConnection,
                                                                 networkingNodeId,
+                                                                networkPath,
                                                                 eventTrackingId,
                                                                 requestTimestamp,
                                                                 jsonRequestMessage,
@@ -2642,6 +2645,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                               webSocketServer,
                                                                               webSocketConnection,
                                                                               networkingNodeId,
+                                                                              networkPath,
                                                                               eventTrackingId,
                                                                               requestTimestamp,
                                                                               jsonRequestMessage,
@@ -2730,15 +2734,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Send OnBootNotificationRequest event
 
-                var startTime      = Timestamp.Now;
+                var startTime = Timestamp.Now;
 
-                var requestLogger  = OnBootNotificationRequest;
-                if (requestLogger is not null)
+                var onBootNotificationRequest = OnBootNotificationRequest;
+                if (onBootNotificationRequest is not null)
                 {
                     try
                     {
 
-                        await Task.WhenAll(requestLogger.GetInvocationList().
+                        await Task.WhenAll(onBootNotificationRequest.GetInvocationList().
                                                OfType <OnBootNotificationRequestDelegate>().
                                                Select (loggingDelegate => loggingDelegate.Invoke(
                                                                               startTime,
@@ -2839,23 +2843,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Send OnBootNotificationResponse event
 
-                var responseLogger = OnBootNotificationResponse;
-                if (responseLogger is not null)
+                var endTime = Timestamp.Now;
+
+                var onBootNotificationResponse = OnBootNotificationResponse;
+                if (onBootNotificationResponse is not null)
                 {
                     try
                     {
 
-                        var responseTime = Timestamp.Now;
-
-                        await Task.WhenAll(responseLogger.GetInvocationList().
+                        await Task.WhenAll(onBootNotificationResponse.GetInvocationList().
                                                OfType <OnBootNotificationResponseDelegate>().
                                                Select (loggingDelegate => loggingDelegate.Invoke(
-                                                                              responseTime,
+                                                                              endTime,
                                                                               this,
                                                                               connection,
                                                                               request,
                                                                               response,
-                                                                              responseTime - startTime
+                                                                              endTime - startTime
                                                                           )).
                                                ToArray());
 
@@ -13733,47 +13737,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ChargingStation">The chargeBox to be deleted.</param>
         /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
-        public delegate Task OnChargingStationDeletedDelegate(DateTime           Timestamp,
-                                                        CSMS.ChargingStation          ChargingStation,
-                                                        EventTracking_Id?  EventTrackingId   = null,
-                                                        User_Id?           CurrentUserId     = null);
+        public delegate Task OnChargingStationDeletedDelegate(DateTime              Timestamp,
+                                                              CSMS.ChargingStation  ChargingStation,
+                                                              EventTracking_Id?     EventTrackingId   = null,
+                                                              User_Id?              CurrentUserId     = null);
 
         /// <summary>
         /// An event fired whenever a charging station was deleted.
         /// </summary>
         public event OnChargingStationDeletedDelegate? OnChargingStationDeleted;
-        public event OnBootNotificationDelegate OnBootNotification;
-        public event OnFirmwareStatusNotificationDelegate OnFirmwareStatusNotification;
-        public event OnPublishFirmwareStatusNotificationDelegate OnPublishFirmwareStatusNotification;
-        public event OnHeartbeatDelegate OnHeartbeat;
-        public event OnNotifyEventDelegate OnNotifyEvent;
-        public event OnSecurityEventNotificationDelegate OnSecurityEventNotification;
-        public event OnNotifyReportDelegate OnNotifyReport;
-        public event OnNotifyMonitoringReportDelegate OnNotifyMonitoringReport;
-        public event OnLogStatusNotificationDelegate OnLogStatusNotification;
-        public event OnIncomingDataTransferDelegate OnIncomingDataTransfer;
-        public event OnSignCertificateDelegate OnSignCertificate;
-        public event OnGet15118EVCertificateDelegate OnGet15118EVCertificate;
-        public event OnGetCertificateStatusDelegate OnGetCertificateStatus;
-        public event OnGetCRLDelegate OnGetCRL;
-        public event OnReservationStatusUpdateDelegate OnReservationStatusUpdate;
-        public event OnAuthorizeDelegate OnAuthorize;
-        public event OnNotifyEVChargingNeedsDelegate OnNotifyEVChargingNeeds;
-        public event OnTransactionEventDelegate OnTransactionEvent;
-        public event OnStatusNotificationDelegate OnStatusNotification;
-        public event OnMeterValuesDelegate OnMeterValues;
-        public event OnNotifyChargingLimitDelegate OnNotifyChargingLimit;
-        public event OnClearedChargingLimitDelegate OnClearedChargingLimit;
-        public event OnReportChargingProfilesDelegate OnReportChargingProfiles;
-        public event OnNotifyEVChargingScheduleDelegate OnNotifyEVChargingSchedule;
-        public event OnNotifyPriorityChargingDelegate OnNotifyPriorityCharging;
-        public event OnPullDynamicScheduleUpdateDelegate OnPullDynamicScheduleUpdate;
-        public event OnNotifyDisplayMessagesDelegate OnNotifyDisplayMessages;
-        public event OnNotifyCustomerInformationDelegate OnNotifyCustomerInformation;
-        public event OnCSMSNewWebSocketConnectionDelegate? OnCSMSNewWebSocketConnection;
-        public event OnCSMSCloseMessageReceivedDelegate? OnCSMSCloseMessageReceived;
-        public event OnCSMSTCPConnectionClosedDelegate? OnCSMSTCPConnectionClosed;
-        public event OnIncomingBinaryDataTransferDelegate OnIncomingBinaryDataTransfer;
 
 
         #region (protected internal virtual) _CanDeleteChargingStation(ChargingStation)

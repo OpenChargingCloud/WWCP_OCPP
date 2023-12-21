@@ -41,7 +41,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
     /// The NetworkingNode HTTP/WebSocket/JSON server.
     /// </summary>
     public partial class NetworkingNodeWSServer : AOCPPWebSocketServer,
-                                                  INetworkingNodeChannel
+                                                  INetworkingNodeWebsocketsChannel
     {
 
         #region Data
@@ -88,76 +88,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #region Events
 
-        public event CSMS.OnNewNetworkingNodeWSConnectionDelegate?  OnNewNetworkingNodeWSConnection;
-
-
-        #region Generic JSON Messages
+        #region Common Connection Management
 
         /// <summary>
-        /// An event sent whenever a text message request was received.
+        /// An event sent whenever the HTTP connection switched successfully to web socket.
         /// </summary>
-        public event CSMS.OnWebSocketJSONMessageRequestDelegate?     OnJSONMessageRequestReceived;
+        public event OnNetworkingNodeNewWebSocketConnectionDelegate?    OnNetworkingNodeNewWebSocketConnection;
 
         /// <summary>
-        /// An event sent whenever the response to a text message was sent.
+        /// An event sent whenever a web socket close frame was received.
         /// </summary>
-        public event CSMS.OnWebSocketJSONMessageResponseDelegate?    OnJSONMessageResponseSent;
+        public event OnNetworkingNodeCloseMessageReceivedDelegate?      OnNetworkingNodeCloseMessageReceived;
 
         /// <summary>
-        /// An event sent whenever the error response to a text message was sent.
+        /// An event sent whenever a TCP connection was closed.
         /// </summary>
-        public event CSMS.OnWebSocketTextErrorResponseDelegate?      OnJSONErrorResponseSent;
-
-
-        /// <summary>
-        /// An event sent whenever a text message request was sent.
-        /// </summary>
-        public event CSMS.OnWebSocketJSONMessageRequestDelegate?     OnJSONMessageRequestSent;
-
-        /// <summary>
-        /// An event sent whenever the response to a text message request was received.
-        /// </summary>
-        public event CSMS.OnWebSocketJSONMessageResponseDelegate?    OnJSONMessageResponseReceived;
-
-        /// <summary>
-        /// An event sent whenever an error response to a text message request was received.
-        /// </summary>
-        public event CSMS.OnWebSocketTextErrorResponseDelegate?      OnJSONErrorResponseReceived;
-
-        #endregion
-
-        #region Generic Binary Messages
-
-        /// <summary>
-        /// An event sent whenever a binary message request was received.
-        /// </summary>
-        public event CSMS.OnWebSocketBinaryMessageRequestDelegate?     OnBinaryMessageRequestReceived;
-
-        /// <summary>
-        /// An event sent whenever the response to a binary message was sent.
-        /// </summary>
-        public event CSMS.OnWebSocketBinaryMessageResponseDelegate?    OnBinaryMessageResponseSent;
-
-        /// <summary>
-        /// An event sent whenever the error response to a binary message was sent.
-        /// </summary>
-        //public event CSMS.OnWebSocketBinaryErrorResponseDelegate?      OnBinaryErrorResponseSent;
-
-
-        /// <summary>
-        /// An event sent whenever a binary message request was sent.
-        /// </summary>
-        public event CSMS.OnWebSocketBinaryMessageRequestDelegate?     OnBinaryMessageRequestSent;
-
-        /// <summary>
-        /// An event sent whenever the response to a binary message request was received.
-        /// </summary>
-        public event CSMS.OnWebSocketBinaryMessageResponseDelegate?    OnBinaryMessageResponseReceived;
-
-        /// <summary>
-        /// An event sent whenever the error response to a binary message request was sent.
-        /// </summary>
-        //public event CSMS.OnWebSocketBinaryErrorResponseDelegate?      OnBinaryErrorResponseReceived;
+        public event OnNetworkingNodeTCPConnectionClosedDelegate?       OnNetworkingNodeTCPConnectionClosed;
 
         #endregion
 
@@ -324,6 +270,145 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
             }
 
             #endregion
+
+
+            #region Link OnCSMSNewWebSocketConnection  => OnNetworkingNodeNewWebSocketConnection
+
+            base.OnCSMSNewWebSocketConnection += async (timestamp,
+                                                        csmsChannel,
+                                                        newConnection,
+                                                        networkingNodeId,
+                                                        eventTrackingId,
+                                                        sharedSubprotocols,
+                                                        cancellationToken) => {
+
+                var onNetworkingNodeNewWebSocketConnection = OnNetworkingNodeNewWebSocketConnection;
+                if (onNetworkingNodeNewWebSocketConnection is not null)
+                {
+                    try
+                    {
+
+                        await Task.WhenAll(onNetworkingNodeNewWebSocketConnection.GetInvocationList().
+                                               OfType <OnNetworkingNodeNewWebSocketConnectionDelegate>().
+                                               Select (loggingDelegate => loggingDelegate.Invoke(
+                                                                              timestamp,
+                                                                              this,
+                                                                              newConnection,
+                                                                              networkingNodeId,
+                                                                              eventTrackingId,
+                                                                              sharedSubprotocols,
+                                                                              cancellationToken
+                                                                          )).
+                                               ToArray());
+
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestNetworkingNode),
+                                  nameof(OnNetworkingNodeNewWebSocketConnection),
+                                  e
+                              );
+                    }
+
+                }
+
+            };
+
+            #endregion
+
+            #region Link OnCSMSCloseMessageReceived    => OnNetworkingNodeCloseMessageReceived
+
+            base.OnCSMSCloseMessageReceived += async (timestamp,
+                                                      csmsChannel,
+                                                      connection,
+                                                      networkingNodeId,
+                                                      eventTrackingId,
+                                                      statusCode,
+                                                      reason,
+                                                      cancellationToken) => {
+
+                var onNetworkingNodeCloseMessageReceived = OnNetworkingNodeCloseMessageReceived;
+                if (onNetworkingNodeCloseMessageReceived is not null)
+                {
+                    try
+                    {
+
+                        await Task.WhenAll(onNetworkingNodeCloseMessageReceived.GetInvocationList().
+                                               OfType <OnNetworkingNodeCloseMessageReceivedDelegate>().
+                                               Select (loggingDelegate => loggingDelegate.Invoke(
+                                                                              timestamp,
+                                                                              this,
+                                                                              connection,
+                                                                              networkingNodeId,
+                                                                              eventTrackingId,
+                                                                              statusCode,
+                                                                              reason,
+                                                                              cancellationToken
+                                                                          )).
+                                               ToArray());
+
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestNetworkingNode),
+                                  nameof(OnNetworkingNodeCloseMessageReceived),
+                                  e
+                              );
+                    }
+
+                }
+
+            };
+
+            #endregion
+
+            #region Link OnCSMSTCPConnectionClosed     => OnNetworkingNodeTCPConnectionClosed
+
+            base.OnCSMSTCPConnectionClosed += async (timestamp,
+                                                     csmsChannel,
+                                                     connection,
+                                                     networkingNodeId,
+                                                     eventTrackingId,
+                                                     reason,
+                                                     cancellationToken) => {
+
+                var onNetworkingNodeTCPConnectionClosed = OnNetworkingNodeTCPConnectionClosed;
+                if (onNetworkingNodeTCPConnectionClosed is not null)
+                {
+                    try
+                    {
+
+                        await Task.WhenAll(onNetworkingNodeTCPConnectionClosed.GetInvocationList().
+                                               OfType <OnNetworkingNodeTCPConnectionClosedDelegate>().
+                                               Select (loggingDelegate => loggingDelegate.Invoke(
+                                                                              timestamp,
+                                                                              this,
+                                                                              connection,
+                                                                              networkingNodeId,
+                                                                              eventTrackingId,
+                                                                              reason,
+                                                                              cancellationToken
+                                                                          )).
+                                               ToArray());
+
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestNetworkingNode),
+                                  nameof(OnNetworkingNodeTCPConnectionClosed),
+                                  e
+                              );
+                    }
+
+                }
+
+            };
+
+            #endregion
+
 
             if (AutoStart)
                 Start();

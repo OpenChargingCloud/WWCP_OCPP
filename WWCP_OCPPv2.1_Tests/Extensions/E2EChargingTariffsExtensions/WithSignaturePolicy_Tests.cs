@@ -182,7 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response        = await testCSMS01.SetDefaultChargingTariff(
-                                          NetworkingNodeId:   chargingStation1.Id,
+                                          DestinationNodeId:  chargingStation1.Id,
                                           ChargingTariff:     chargingTariff,
                                           CustomData:         null
                                       );
@@ -286,7 +286,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response        = await testCSMS01.GetDefaultChargingTariff(
-                                          NetworkingNodeId:   chargingStation2.Id,
+                                          DestinationNodeId:  chargingStation2.Id,
                                           CustomData:         null
                                       );
 
@@ -504,7 +504,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response1        = await testCSMS01.SetDefaultChargingTariff(
-                                           NetworkingNodeId:   chargingStation1.Id,
+                                           DestinationNodeId:  chargingStation1.Id,
                                            ChargingTariff:     chargingTariff,
                                            CustomData:         null
                                        );
@@ -546,7 +546,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response2        = await testCSMS01.GetDefaultChargingTariff(
-                                           NetworkingNodeId:   chargingStation1.Id,
+                                           DestinationNodeId:  chargingStation1.Id,
                                            CustomData:         null
                                        );
 
@@ -581,7 +581,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response3        = await testCSMS01.RemoveDefaultChargingTariff(
-                                           NetworkingNodeId:   chargingStation1.Id,
+                                           DestinationNodeId:  chargingStation1.Id,
                                            CustomData:         null
                                        );
 
@@ -613,7 +613,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response4        = await testCSMS01.GetDefaultChargingTariff(
-                                           NetworkingNodeId:   chargingStation1.Id,
+                                           DestinationNodeId:  chargingStation1.Id,
                                            CustomData:         null
                                        );
 
@@ -836,7 +836,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response1        = await testCSMS01.SetDefaultChargingTariff(
-                                           NetworkingNodeId:   chargingStation2.Id,
+                                           DestinationNodeId:  chargingStation2.Id,
                                            ChargingTariff:     chargingTariff,
                                            CustomData:         null
                                        );
@@ -878,7 +878,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response2        = await testCSMS01.GetDefaultChargingTariff(
-                                           NetworkingNodeId:   chargingStation2.Id,
+                                           DestinationNodeId:  chargingStation2.Id,
                                            CustomData:         null
                                        );
 
@@ -913,7 +913,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response3        = await testCSMS01.RemoveDefaultChargingTariff(
-                                           NetworkingNodeId:   chargingStation2.Id,
+                                           DestinationNodeId:  chargingStation2.Id,
                                            CustomData:         null
                                        );
 
@@ -945,7 +945,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response4        = await testCSMS01.GetDefaultChargingTariff(
-                                           NetworkingNodeId:   chargingStation2.Id,
+                                           DestinationNodeId:  chargingStation2.Id,
                                            CustomData:         null
                                        );
 
@@ -1168,7 +1168,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response1        = await testCSMS01.SetDefaultChargingTariff(
-                                           NetworkingNodeId:   chargingStation2.Id,
+                                           DestinationNodeId:  chargingStation2.Id,
                                            ChargingTariff:     chargingTariff,
                                            EVSEIds:            new[] {
                                                                    EVSE_Id.Parse(1)
@@ -1213,7 +1213,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response2        = await testCSMS01.GetDefaultChargingTariff(
-                                           NetworkingNodeId:   chargingStation2.Id,
+                                           DestinationNodeId:  chargingStation2.Id,
                                            CustomData:         null
                                        );
 
@@ -1248,7 +1248,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response3        = await testCSMS01.RemoveDefaultChargingTariff(
-                                           NetworkingNodeId:   chargingStation2.Id,
+                                           DestinationNodeId:  chargingStation2.Id,
                                            CustomData:         null
                                        );
 
@@ -1280,7 +1280,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response4        = await testCSMS01.GetDefaultChargingTariff(
-                                           NetworkingNodeId:   chargingStation2.Id,
+                                           DestinationNodeId:  chargingStation2.Id,
                                            CustomData:         null
                                        );
 
@@ -1579,7 +1579,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response1a       = await testCSMS01.SetDefaultChargingTariff(
-                                           NetworkingNodeId:   chargingStation2.Id,
+                                           DestinationNodeId:  chargingStation2.Id,
                                            ChargingTariff:     chargingTariff1,
                                            EVSEIds:            new[] {
                                                                    EVSE_Id.Parse(1)
@@ -1624,7 +1624,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response1b       = await testCSMS01.SetDefaultChargingTariff(
-                                           NetworkingNodeId:   chargingStation2.Id,
+                                           DestinationNodeId:  chargingStation2.Id,
                                            ChargingTariff:     chargingTariff2,
                                            EVSEIds:            new[] {
                                                                    EVSE_Id.Parse(2)
@@ -1669,7 +1669,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response2        = await testCSMS01.GetDefaultChargingTariff(
-                                           NetworkingNodeId:   chargingStation2.Id,
+                                           DestinationNodeId:  chargingStation2.Id,
                                            CustomData:         null
                                        );
 
@@ -1705,7 +1705,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response3        = await testCSMS01.RemoveDefaultChargingTariff(
-                                           NetworkingNodeId:   chargingStation2.Id,
+                                           DestinationNodeId:  chargingStation2.Id,
                                            CustomData:         null
                                        );
 
@@ -1737,7 +1737,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response4        = await testCSMS01.GetDefaultChargingTariff(
-                                           NetworkingNodeId:   chargingStation2.Id,
+                                           DestinationNodeId:  chargingStation2.Id,
                                            CustomData:         null
                                        );
 

@@ -29,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// </summary>
     public interface ICSMS : ICSMSOutgoingMessages,
                              ICSMSOutgoingMessagesEvents,
-                             ICSMSIncomingMessages,
+                             //ICSMSIncomingMessages,
                              ICSMSIncomingMessagesEvents
     {
 

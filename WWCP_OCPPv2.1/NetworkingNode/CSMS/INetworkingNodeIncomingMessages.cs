@@ -26,10 +26,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 {
 
     /// <summary>
-    /// The common interface of all CSMS servers.
+    /// The common interface of all NetworkingNode CSMS servers.
     /// </summary>
-    public interface INetworkingNodeServer : INetworkingNodeServerLogger
+    public interface INetworkingNodeIncomingMessages : OCPP.NetworkingNode.INetworkingNodeIncomingMessages
     {
+
+        #region HTTP Web Socket connection management
+
+        /// <summary>
+        /// An event sent whenever the HTTP connection switched successfully to web socket.
+        /// </summary>
+        event OnNetworkingNodeNewWebSocketConnectionDelegate?    OnNetworkingNodeNewWebSocketConnection;
+
+        /// <summary>
+        /// An event sent whenever a web socket close frame was received.
+        /// </summary>
+        event OnNetworkingNodeCloseMessageReceivedDelegate?      OnNetworkingNodeCloseMessageReceived;
+
+        /// <summary>
+        /// An event sent whenever a TCP connection was closed.
+        /// </summary>
+        event OnNetworkingNodeTCPConnectionClosedDelegate?       OnNetworkingNodeTCPConnectionClosed;
+
+        #endregion
+
 
         #region OnBootNotification
 

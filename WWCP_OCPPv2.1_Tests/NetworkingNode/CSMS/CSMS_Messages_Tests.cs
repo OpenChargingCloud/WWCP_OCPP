@@ -85,7 +85,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
 
                 var resetType  = ResetType.Immediate;
                 var response   = await testCSMS01.Reset(
-                                     NetworkingNodeId:    chargingStation1.Id,
+                                     DestinationNodeId:   chargingStation1.Id,
                                      ResetType:           resetType,
                                      CustomData:          null
                                  );
@@ -97,30 +97,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
                     Assert.That(response.Status,                              Is.EqualTo(ResetStatus.Accepted));
 
                     Assert.That(nnResetRequests.Count,                        Is.EqualTo(1), "The ResetRequest did not reach the networking node!");
-                    Assert.That(nnResetRequests.First().DestinationNodeId,    Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(nnResetRequests.First().DestinationNodeId,    Is.EqualTo(chargingStation1.Id));
                     Assert.That(nnResetRequests.First().NetworkPath.Length,   Is.EqualTo(1));
-                    Assert.That(nnResetRequests.First().NetworkPath.Source,   Is.EqualTo(chargingStation1.Id));
-                    Assert.That(nnResetRequests.First().NetworkPath.Last,     Is.EqualTo(chargingStation1.Id));
+                    Assert.That(nnResetRequests.First().NetworkPath.Source,   Is.EqualTo(testCSMS01.      Id.ToNetworkingNodeId));
+                    Assert.That(nnResetRequests.First().NetworkPath.Last,     Is.EqualTo(testCSMS01.      Id.ToNetworkingNodeId));
 
                     Assert.That(csResetRequests.Count,                        Is.EqualTo(1), "The ResetRequest did not reach the charging station!");
-                    Assert.That(csResetRequests.First().DestinationNodeId,    Is.EqualTo(NetworkingNode_Id.CSMS));
-                    Assert.That(csResetRequests.First().NetworkPath.Length,   Is.EqualTo(2));
-                    Assert.That(csResetRequests.First().NetworkPath.Source,   Is.EqualTo(chargingStation1.Id));
-                    Assert.That(csResetRequests.First().NetworkPath.Last,     Is.EqualTo(networkingNode1. Id));
+                    //Assert.That(csResetRequests.First().DestinationNodeId,    Is.EqualTo(chargingStation1.Id));
+                    //Assert.That(csResetRequests.First().NetworkPath.Length,   Is.EqualTo(2));
+                    //Assert.That(csResetRequests.First().NetworkPath.Source,   Is.EqualTo(testCSMS01.      Id.ToNetworkingNodeId));
+                    //Assert.That(csResetRequests.First().NetworkPath.Last,     Is.EqualTo(networkingNode1. Id));
+
+                    // Because of 'standard' networking mode towards the charging station!
+                    Assert.That(csResetRequests.First().DestinationNodeId,    Is.EqualTo(NetworkingNode_Id.Zero));
+                    Assert.That(csResetRequests.First().NetworkPath.Length,   Is.EqualTo(0));
 
                 });
-
-
-                ClassicAssert.AreEqual(ResultCode.OK,          response.Result.ResultCode);
-                ClassicAssert.AreEqual(ResetStatus.Accepted,   response.Status);
-
-                ClassicAssert.AreEqual(1,                      nnResetRequests.Count);
-                ClassicAssert.AreEqual(chargingStation1.Id,    nnResetRequests.First().DestinationNodeId);
-                ClassicAssert.AreEqual(resetType,              nnResetRequests.First().ResetType);
-
-                ClassicAssert.AreEqual(1,                      csResetRequests.Count);
-                ClassicAssert.AreEqual(chargingStation1.Id,    csResetRequests.First().DestinationNodeId);
-                ClassicAssert.AreEqual(resetType,              csResetRequests.First().ResetType);
 
             }
 

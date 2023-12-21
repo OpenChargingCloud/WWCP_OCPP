@@ -17,6 +17,7 @@
 
 #region Usings
 
+using cloud.charging.open.protocols.OCPP;
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -186,6 +187,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                );
 
         #endregion
+
+
+        public NetworkingNode_Id ToNetworkingNodeId
+            => NetworkingNode_Id.Parse(InternalId);
 
 
         #region Operator overloading

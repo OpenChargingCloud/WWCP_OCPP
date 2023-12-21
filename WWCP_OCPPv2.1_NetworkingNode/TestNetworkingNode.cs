@@ -20,7 +20,6 @@
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Collections.Concurrent;
-using System.Collections.ObjectModel;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 
@@ -39,6 +38,8 @@ using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPP.CSMS;
+using cloud.charging.open.protocols.OCPP.CS;
 
 #endregion
 
@@ -2144,6 +2145,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #endregion
 
 
+            #region HandleErrors(Module, Caller, ExceptionOccured)
+
             private Task HandleErrors(String     Module,
                                       String     Caller,
                                       Exception  ExceptionOccured)
@@ -2154,6 +2157,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 return Task.CompletedTask;
 
             }
+
+            #endregion
 
 
             #region ConnectWebSocket(...)
@@ -15449,11 +15454,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             private          readonly  TestNetworkingNode                                                                      parentNetworkingNode;
 
-            private          readonly  HashSet<SignaturePolicy>                                                                signaturePolicies           = new();
+            private          readonly  HashSet<SignaturePolicy>                                                                signaturePolicies           = [];
 
-            private          readonly  HashSet<CSMS.INetworkingNodeChannel>                                                    centralSystemServers        = new();
+            private          readonly  HashSet<CSMS.INetworkingNodeChannel>                                                    centralSystemServers        = [];
 
-            private          readonly  ConcurrentDictionary<NetworkingNode_Id, Tuple<CSMS.INetworkingNodeChannel, DateTime>>   reachableChargingStations   = new();
+            private          readonly  ConcurrentDictionary<NetworkingNode_Id, Tuple<CSMS.INetworkingNodeChannel, DateTime>>   reachableChargingStations   = [];
 
             private          readonly  HTTPExtAPI                                                                              TestAPI;
 
@@ -15505,7 +15510,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An enumeration of central system servers.
             /// </summary>
-            public IEnumerable<CSMS.INetworkingNodeServer> CSMSServers
+            public IEnumerable<CSMS.INetworkingNodeIncomingMessages> CSMSServers
                 => centralSystemServers;
 
 
@@ -15542,48 +15547,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event sent whenever the HTTP web socket server started.
             /// </summary>
-            public event OnServerStartedDelegate?                 OnServerStarted;
+            public event OnServerStartedDelegate?                           OnServerStarted;
 
             /// <summary>
             /// An event sent whenever a new TCP connection was accepted.
             /// </summary>
-            public event OnValidateTCPConnectionDelegate?         OnValidateTCPConnection;
+            public event OnValidateTCPConnectionDelegate?                   OnValidateTCPConnection;
 
             /// <summary>
             /// An event sent whenever a new TCP connection was accepted.
             /// </summary>
-            public event OnNewTCPConnectionDelegate?              OnNewTCPConnection;
+            public event OnNewTCPConnectionDelegate?                        OnNewTCPConnection;
 
             /// <summary>
             /// An event sent whenever a HTTP request was received.
             /// </summary>
-            public event HTTPRequestLogDelegate?                  OnHTTPRequest;
+            public event HTTPRequestLogDelegate?                            OnHTTPRequest;
 
             /// <summary>
             /// An event sent whenever the HTTP headers of a new web socket connection
             /// need to be validated or filtered by an upper layer application logic.
             /// </summary>
-            public event OnValidateWebSocketConnectionDelegate?   OnValidateWebSocketConnection;
+            public event OnValidateWebSocketConnectionDelegate?             OnValidateWebSocketConnection;
 
             /// <summary>
             /// An event sent whenever the HTTP connection switched successfully to web socket.
             /// </summary>
-            public event OnNewWebSocketConnectionDelegate?        OnNewWebSocketConnection;
+            public event CSMS.OnNetworkingNodeNewWebSocketConnectionDelegate?    OnNewWebSocketConnection;
 
             /// <summary>
             /// An event sent whenever a reponse to a HTTP request was sent.
             /// </summary>
-            public event HTTPResponseLogDelegate?                 OnHTTPResponse;
+            public event HTTPResponseLogDelegate?                           OnHTTPResponse;
 
             /// <summary>
             /// An event sent whenever a web socket close frame was received.
             /// </summary>
-            public event OnCloseMessageDelegate?                  OnCloseMessageReceived;
+            public event CSMS.OnNetworkingNodeCloseMessageReceivedDelegate?      OnCloseMessageReceived;
 
             /// <summary>
             /// An event sent whenever a TCP connection was closed.
             /// </summary>
-            public event OnTCPConnectionClosedDelegate?           OnTCPConnectionClosed;
+            public event CSMS.OnNetworkingNodeTCPConnectionClosedDelegate?       OnTCPConnectionClosed;
 
             #endregion
 
@@ -16906,6 +16911,140 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
+
+
+            event OnWebSocketJSONMessageRequestDelegate?    ICSMSIncomingMessagesEvents.OnJSONMessageRequestReceived
+            {
+                add
+                {
+                    throw new NotImplementedException();
+                }
+
+                remove
+                {
+                    throw new NotImplementedException();
+                }
+            }
+
+            event OnWebSocketJSONMessageResponseDelegate?   ICSMSIncomingMessagesEvents.OnJSONMessageResponseSent
+            {
+                add
+                {
+                    throw new NotImplementedException();
+                }
+
+                remove
+                {
+                    throw new NotImplementedException();
+                }
+            }
+
+            event OnWebSocketJSONMessageRequestDelegate?    ICSMSIncomingMessagesEvents.OnJSONMessageRequestSent
+            {
+                add
+                {
+                    throw new NotImplementedException();
+                }
+
+                remove
+                {
+                    throw new NotImplementedException();
+                }
+            }
+
+            event OnWebSocketJSONMessageResponseDelegate?   ICSMSIncomingMessagesEvents.OnJSONMessageResponseReceived
+            {
+                add
+                {
+                    throw new NotImplementedException();
+                }
+
+                remove
+                {
+                    throw new NotImplementedException();
+                }
+            }
+
+
+            event OnWebSocketTextErrorResponseDelegate?     ICSMSIncomingMessagesEvents.OnJSONErrorResponseReceived
+            {
+                add
+                {
+                    throw new NotImplementedException();
+                }
+
+                remove
+                {
+                    throw new NotImplementedException();
+                }
+            }
+
+            event OnWebSocketTextErrorResponseDelegate?     ICSMSIncomingMessagesEvents.OnJSONErrorResponseSent
+            {
+                add
+                {
+                    throw new NotImplementedException();
+                }
+
+                remove
+                {
+                    throw new NotImplementedException();
+                }
+            }
+
+
+            event OnWebSocketBinaryMessageRequestDelegate?  ICSMSIncomingMessagesEvents.OnBinaryMessageRequestReceived
+            {
+                add
+                {
+                    throw new NotImplementedException();
+                }
+
+                remove
+                {
+                    throw new NotImplementedException();
+                }
+            }
+
+            event OnWebSocketBinaryMessageResponseDelegate? ICSMSIncomingMessagesEvents.OnBinaryMessageResponseSent
+            {
+                add
+                {
+                    throw new NotImplementedException();
+                }
+
+                remove
+                {
+                    throw new NotImplementedException();
+                }
+            }
+
+            event OnWebSocketBinaryMessageRequestDelegate?  ICSMSIncomingMessagesEvents.OnBinaryMessageRequestSent
+            {
+                add
+                {
+                    throw new NotImplementedException();
+                }
+
+                remove
+                {
+                    throw new NotImplementedException();
+                }
+            }
+
+            event OnWebSocketBinaryMessageResponseDelegate? ICSMSIncomingMessagesEvents.OnBinaryMessageResponseReceived
+            {
+                add
+                {
+                    throw new NotImplementedException();
+                }
+
+                remove
+                {
+                    throw new NotImplementedException();
+                }
+            }
+
             #endregion
 
             #region Custom JSON serializer delegates
@@ -17268,7 +17407,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 this.Id                      = NetworkingNode.Id;
-                this.parentNetworkingNode       = NetworkingNode;
+                this.parentNetworkingNode    = NetworkingNode;
                 this.RequireAuthentication   = RequireAuthentication;
                 this.DefaultRequestTimeout   = DefaultRequestTimeout ?? defaultRequestTimeout;
                 this.HTTPUploadPort          = HTTPUploadPort        ?? DefaultHTTPUploadPort;
@@ -17396,70 +17535,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                       Boolean      AutoStart                    = false)
             {
 
-                var centralSystemServer = new CSMS.NetworkingNodeWSServer(
-                                              HTTPServerName,
-                                              IPAddress,
-                                              TCPPort,
+                var networkingNodeWSServer = new CSMS.NetworkingNodeWSServer(
+                                                 HTTPServerName,
+                                                 IPAddress,
+                                                 TCPPort,
 
-                                              RequireAuthentication,
-                                              DisableWebSocketPings,
-                                              WebSocketPingEvery,
-                                              SlowNetworkSimulationDelay,
+                                                 RequireAuthentication,
+                                                 DisableWebSocketPings,
+                                                 WebSocketPingEvery,
+                                                 SlowNetworkSimulationDelay,
 
-                                              DNSClient: DNSClient ?? this.DNSClient,
-                                              AutoStart: false
-                                          );
+                                                 DNSClient: DNSClient ?? this.DNSClient,
+                                                 AutoStart: false
+                                             );
 
-                AttachCSMSChannel(centralSystemServer);
+                AttachCSMSChannel(networkingNodeWSServer);
 
                 if (AutoStart)
-                    centralSystemServer.Start();
+                    networkingNodeWSServer.Start();
 
-                return centralSystemServer;
+                return networkingNodeWSServer;
 
             }
 
             #endregion
 
-            #region (private) AttachCSMSChannel(CSMSChannel)
+            #region (private) AttachCSMSChannel(NetworkingNodeChannel)
 
-            private void AttachCSMSChannel(CSMS.INetworkingNodeChannel CSMSChannel)
+            private void AttachCSMSChannel(CSMS.INetworkingNodeWebsocketsChannel NetworkingNodeChannel)
             {
 
 
-                centralSystemServers.Add(CSMSChannel);
-
-
-                if (CSMSChannel is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                {
-                    centralSystemWSServer.OnNewNetworkingNodeWSConnection += async (LogTimestamp,
-                                                                                    CSMS,
-                                                                                    Connection,
-                                                                                    EventTrackingId,
-                                                                                    CancellationToken) =>
-                    {
-
-                        // A new connection from the same networking node/charging station will replace the older one!
-                        if (Connection.TryGetCustomDataAs(NetworkingNode.CSMS.NetworkingNodeWSServer.networkingNodeId_WebSocketKey, out NetworkingNode_Id? networkingNodeId) &&
-                            networkingNodeId.HasValue &&
-                            networkingNodeId.IsNotNullOrEmpty())
-                        {
-                            if (!reachableChargingStations.TryAdd(networkingNodeId.Value, new Tuple<CSMS.INetworkingNodeChannel, DateTime>(CSMS, Timestamp.Now)))
-                                reachableChargingStations[networkingNodeId.Value]       = new Tuple<CSMS.INetworkingNodeChannel, DateTime>(CSMS, Timestamp.Now);
-                        }
-
-                    };
-                }
+                centralSystemServers.Add(NetworkingNodeChannel);
 
 
                 #region WebSocket related
 
                 #region OnServerStarted
 
-                CSMSChannel.OnServerStarted += (Timestamp,
-                                                server,
-                                                eventTrackingId,
-                                                cancellationToken) => {
+                NetworkingNodeChannel.OnServerStarted += (timestamp,
+                                                          server,
+                                                          eventTrackingId,
+                                                          cancellationToken) => {
 
                     DebugX.Log($"OCPP {Version.String} web socket server has started on {server.IPSocket}!");
                     return Task.CompletedTask;
@@ -17470,17 +17587,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 #region OnNewTCPConnection
 
-                CSMSChannel.OnNewTCPConnection += async (timestamp,
-                                                         webSocketServer,
-                                                         newWebSocketConnection,
-                                                         eventTrackingId,
-                                                         cancellationToken) => {
+                NetworkingNodeChannel.OnNewTCPConnection += async (timestamp,
+                                                                   webSocketServer,
+                                                                   newWebSocketConnection,
+                                                                   eventTrackingId,
+                                                                   cancellationToken) => {
 
-                    var logger = OnNewTCPConnection;
-                    if (logger is not null)
+                    var onNewTCPConnection = OnNewTCPConnection;
+                    if (onNewTCPConnection is not null)
                     {
 
-                        var loggerTasks = logger.GetInvocationList().
+                        var loggerTasks = onNewTCPConnection.GetInvocationList().
                                                  OfType <OnNewTCPConnectionDelegate>().
                                                  Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
                                                                                                    webSocketServer,
@@ -17508,32 +17625,42 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 #endregion
 
-                #region OnNewWebSocketConnection
+                // Failed (Charging Station) Authentication
 
-                CSMSChannel.OnNewWebSocketConnection += async (timestamp,
-                                                               webSocketServer,
-                                                               newWebSocketConnection,
-                                                               eventTrackingId,
-                                                               sharedSubprotocols,
-                                                               cancellationToken) => {
+                #region OnNetworkingNodeNewWebSocketConnection
 
-                    var logger = OnNewWebSocketConnection;
-                    if (logger is not null)
+                NetworkingNodeChannel.OnNetworkingNodeNewWebSocketConnection += async (timestamp,
+                                                                                       networkingNodeChannel,
+                                                                                       newConnection,
+                                                                                       networkingNodeId,
+                                                                                       eventTrackingId,
+                                                                                       sharedSubprotocols,
+                                                                                       cancellationToken) => {
+
+                    // A new connection from the same networking node/charging station will replace the older one!
+                    if (!reachableChargingStations.TryAdd(networkingNodeId, new Tuple<CSMS.INetworkingNodeChannel, DateTime>(networkingNodeChannel as CSMS.INetworkingNodeChannel, timestamp)))
+                        reachableChargingStations[networkingNodeId]       = new Tuple<CSMS.INetworkingNodeChannel, DateTime>(networkingNodeChannel as CSMS.INetworkingNodeChannel, timestamp);
+
+
+                    var onNewWebSocketConnection = OnNewWebSocketConnection;
+                    if (onNewWebSocketConnection is not null)
                     {
-
-                        var loggerTasks = logger.GetInvocationList().
-                                                 OfType <OnNewWebSocketConnectionDelegate>().
-                                                 Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
-                                                                                                   webSocketServer,
-                                                                                                   newWebSocketConnection,
-                                                                                                   eventTrackingId,
-                                                                                                   sharedSubprotocols,
-                                                                                                   cancellationToken)).
-                                                 ToArray();
-
                         try
                         {
-                            await Task.WhenAll(loggerTasks);
+
+                            await Task.WhenAll(onNewWebSocketConnection.GetInvocationList().
+                                                   OfType <CSMS.OnNetworkingNodeNewWebSocketConnectionDelegate>().
+                                                   Select (loggingDelegate => loggingDelegate.Invoke(
+                                                                                  timestamp,
+                                                                                  networkingNodeChannel,
+                                                                                  newConnection,
+                                                                                  networkingNodeId,
+                                                                                  eventTrackingId,
+                                                                                  sharedSubprotocols,
+                                                                                  cancellationToken
+                                                                              )).
+                                                   ToArray());
+
                         }
                         catch (Exception e)
                         {
@@ -17552,32 +17679,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 #region OnCloseMessageReceived
 
-                CSMSChannel.OnCloseMessageReceived += async (timestamp,
-                                                             server,
-                                                             connection,
-                                                             eventTrackingId,
-                                                             statusCode,
-                                                             reason,
-                                                             cancellationToken) => {
+                NetworkingNodeChannel.OnNetworkingNodeCloseMessageReceived += async (timestamp,
+                                                                                     networkingNodeChannel,
+                                                                                     connection,
+                                                                                     networkingNodeId,
+                                                                                     eventTrackingId,
+                                                                                     statusCode,
+                                                                                     reason,
+                                                                                     cancellationToken) => {
 
-                    var logger = OnCloseMessageReceived;
-                    if (logger is not null)
+                    var onCloseMessageReceived = OnCloseMessageReceived;
+                    if (onCloseMessageReceived is not null)
                     {
-
-                        var loggerTasks = logger.GetInvocationList().
-                                                 OfType <OnCloseMessageDelegate>().
-                                                 Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
-                                                                                                   server,
-                                                                                                   connection,
-                                                                                                   eventTrackingId,
-                                                                                                   statusCode,
-                                                                                                   reason,
-                                                                                                   cancellationToken)).
-                                                 ToArray();
-
                         try
                         {
-                            await Task.WhenAll(loggerTasks);
+
+                            await Task.WhenAll(onCloseMessageReceived.GetInvocationList().
+                                                   OfType <CSMS.OnNetworkingNodeCloseMessageReceivedDelegate>().
+                                                   Select (loggingDelegate => loggingDelegate.Invoke(
+                                                                                  timestamp,
+                                                                                  networkingNodeChannel,
+                                                                                  connection,
+                                                                                  networkingNodeId,
+                                                                                  eventTrackingId,
+                                                                                  statusCode,
+                                                                                  reason,
+                                                                                  cancellationToken
+                                                                              )).
+                                                   ToArray());
+
                         }
                         catch (Exception e)
                         {
@@ -17596,30 +17726,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 #region OnTCPConnectionClosed
 
-                CSMSChannel.OnTCPConnectionClosed += async (timestamp,
-                                                            server,
-                                                            connection,
-                                                            reason,
-                                                            eventTrackingId,
-                                                            cancellationToken) => {
+                NetworkingNodeChannel.OnNetworkingNodeTCPConnectionClosed += async (timestamp,
+                                                                                    server,
+                                                                                    connection,
+                                                                                    networkingNodeId,
+                                                                                    eventTrackingId,
+                                                                                    reason,
+                                                                                    cancellationToken) => {
 
-                    var logger = OnTCPConnectionClosed;
-                    if (logger is not null)
+                    var onTCPConnectionClosed = OnTCPConnectionClosed;
+                    if (onTCPConnectionClosed is not null)
                     {
-
-                        var loggerTasks = logger.GetInvocationList().
-                                                 OfType <OnTCPConnectionClosedDelegate>().
-                                                 Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
-                                                                                                   server,
-                                                                                                   connection,
-                                                                                                   reason,
-                                                                                                   eventTrackingId,
-                                                                                                   cancellationToken)).
-                                                 ToArray();
-
                         try
                         {
-                            await Task.WhenAll(loggerTasks);
+
+                            await Task.WhenAll(onTCPConnectionClosed.GetInvocationList().
+                                                   OfType <CSMS.OnNetworkingNodeTCPConnectionClosedDelegate>().
+                                                   Select (loggingDelegate => loggingDelegate.Invoke(
+                                                                                  timestamp,
+                                                                                  server,
+                                                                                  connection,
+                                                                                  networkingNodeId,
+                                                                                  eventTrackingId,
+                                                                                  reason,
+                                                                                  cancellationToken
+                                                                              )).
+                                                   ToArray());
+
                         }
                         catch (Exception e)
                         {
@@ -17645,32 +17778,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 #region OnJSONMessageRequestReceived
 
-                CSMSChannel.OnJSONMessageRequestReceived += async (timestamp,
-                                                                   webSocketServer,
-                                                                   webSocketConnection,
-                                                                   eventTrackingId,
-                                                                   requestTimestamp,
-                                                                   requestMessage,
-                                                                   cancellationToken) => {
+                NetworkingNodeChannel.OnJSONMessageRequestReceived += async (timestamp,
+                                                                             webSocketServer,
+                                                                             webSocketConnection,
+                                                                             destinationNodeId,
+                                                                             networkPath,
+                                                                             eventTrackingId,
+                                                                             requestTimestamp,
+                                                                             requestMessage,
+                                                                             cancellationToken) => {
 
-                    var logger = OnJSONMessageRequestReceived;
-                    if (logger is not null)
+                    var onJSONMessageRequestReceived = OnJSONMessageRequestReceived;
+                    if (onJSONMessageRequestReceived is not null)
                     {
-
-                        var loggerTasks = logger.GetInvocationList().
-                                                 OfType <CSMS.OnWebSocketJSONMessageRequestDelegate>().
-                                                 Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
-                                                                                                   webSocketServer,
-                                                                                                   webSocketConnection,
-                                                                                                   eventTrackingId,
-                                                                                                   requestTimestamp,
-                                                                                                   requestMessage,
-                                                                                                   cancellationToken)).
-                                                 ToArray();
-
                         try
                         {
-                            await Task.WhenAll(loggerTasks);
+
+                            await Task.WhenAll(onJSONMessageRequestReceived.GetInvocationList().
+                                                   OfType <CSMS.OnWebSocketJSONMessageRequestDelegate>().
+                                                   Select (loggingDelegate => loggingDelegate.Invoke(
+                                                                                  timestamp,
+                                                                                  NetworkingNodeChannel,
+                                                                                  webSocketConnection,
+                                                                                  destinationNodeId,
+                                                                                  networkPath,
+                                                                                  eventTrackingId,
+                                                                                  requestTimestamp,
+                                                                                  requestMessage,
+                                                                                  cancellationToken
+                                                                              )).
+                                                   ToArray());
+
                         }
                         catch (Exception e)
                         {
@@ -17689,37 +17827,44 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 #region OnJSONMessageResponseSent
 
-                CSMSChannel.OnJSONMessageResponseSent += async (timestamp,
-                                                                webSocketServer,
-                                                                webSocketConnection,
-                                                                eventTrackingId,
-                                                                requestTimestamp,
-                                                                jsonRequestMessage,
-                                                                binaryRequestMessage,
-                                                                responseTimestamp,
-                                                                responseMessage) => {
+                NetworkingNodeChannel.OnJSONMessageResponseSent += async (timestamp,
+                                                                          webSocketServer,
+                                                                          webSocketConnection,
+                                                                          networkingNodeId,
+                                                                          networkPath,
+                                                                          eventTrackingId,
+                                                                          requestTimestamp,
+                                                                          jsonRequestMessage,
+                                                                          binaryRequestMessage,
+                                                                          responseTimestamp,
+                                                                          responseMessage,
+                                                                          cancellationToken) => {
 
 
-                    var logger = OnJSONMessageResponseSent;
-                    if (logger is not null)
+                    var onJSONMessageResponseSent = OnJSONMessageResponseSent;
+                    if (onJSONMessageResponseSent is not null)
                     {
-
-                        var loggerTasks = logger.GetInvocationList().
-                                                 OfType <CSMS.OnWebSocketJSONMessageResponseDelegate>().
-                                                 Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
-                                                                                                   webSocketServer,
-                                                                                                   webSocketConnection,
-                                                                                                   eventTrackingId,
-                                                                                                   requestTimestamp,
-                                                                                                   jsonRequestMessage,
-                                                                                                   binaryRequestMessage,
-                                                                                                   responseTimestamp,
-                                                                                                   responseMessage)).
-                                                 ToArray();
-
                         try
                         {
-                            await Task.WhenAll(loggerTasks);
+
+                            await Task.WhenAll(onJSONMessageResponseSent.GetInvocationList().
+                                                   OfType <CSMS.OnWebSocketJSONMessageResponseDelegate>().
+                                                   Select (loggingDelegate => loggingDelegate.Invoke(
+                                                                                  timestamp,
+                                                                                  NetworkingNodeChannel,
+                                                                                  webSocketConnection,
+                                                                                  networkingNodeId,
+                                                                                  networkPath,
+                                                                                  eventTrackingId,
+                                                                                  requestTimestamp,
+                                                                                  jsonRequestMessage,
+                                                                                  binaryRequestMessage,
+                                                                                  responseTimestamp,
+                                                                                  responseMessage,
+                                                                                  cancellationToken
+                                                                              )).
+                                                   ToArray());
+
                         }
                         catch (Exception e)
                         {
@@ -17738,36 +17883,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 #region OnJSONErrorResponseSent
 
-                CSMSChannel.OnJSONErrorResponseSent += async (timestamp,
-                                                              webSocketServer,
-                                                              webSocketConnection,
-                                                              eventTrackingId,
-                                                              requestTimestamp,
-                                                              jsonRequestMessage,
-                                                              binaryRequestMessage,
-                                                              responseTimestamp,
-                                                              responseMessage) => {
+                NetworkingNodeChannel.OnJSONErrorResponseSent += async (timestamp,
+                                                                        webSocketServer,
+                                                                        webSocketConnection,
+                                                                        eventTrackingId,
+                                                                        requestTimestamp,
+                                                                        jsonRequestMessage,
+                                                                        binaryRequestMessage,
+                                                                        responseTimestamp,
+                                                                        responseMessage,
+                                                                        cancellationToken) => {
 
-                    var logger = OnJSONErrorResponseSent;
-                    if (logger is not null)
+                    var onJSONErrorResponseSent = OnJSONErrorResponseSent;
+                    if (onJSONErrorResponseSent is not null)
                     {
-
-                        var loggerTasks = logger.GetInvocationList().
-                                                 OfType <CSMS.OnWebSocketTextErrorResponseDelegate>().
-                                                 Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
-                                                                                                   webSocketServer,
-                                                                                                   webSocketConnection,
-                                                                                                   eventTrackingId,
-                                                                                                   requestTimestamp,
-                                                                                                   jsonRequestMessage,
-                                                                                                   binaryRequestMessage,
-                                                                                                   responseTimestamp,
-                                                                                                   responseMessage)).
-                                                 ToArray();
-
                         try
                         {
-                            await Task.WhenAll(loggerTasks);
+
+                            await Task.WhenAll(onJSONErrorResponseSent.GetInvocationList().
+                                                   OfType <CSMS.OnWebSocketTextErrorResponseDelegate>().
+                                                   Select (loggingDelegate => loggingDelegate.Invoke(
+                                                                                  timestamp,
+                                                                                  NetworkingNodeChannel,
+                                                                                  webSocketConnection,
+                                                                                  eventTrackingId,
+                                                                                  requestTimestamp,
+                                                                                  jsonRequestMessage,
+                                                                                  binaryRequestMessage,
+                                                                                  responseTimestamp,
+                                                                                  responseMessage
+                                                                              )).
+                                                   ToArray());
+
                         }
                         catch (Exception e)
                         {
@@ -17787,32 +17934,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 #region OnJSONMessageRequestSent
 
-                CSMSChannel.OnJSONMessageRequestSent += async (timestamp,
-                                                               webSocketServer,
-                                                               webSocketConnection,
-                                                               eventTrackingId,
-                                                               requestTimestamp,
-                                                               requestMessage,
-                                                               cancellationToken) => {
+                NetworkingNodeChannel.OnJSONMessageRequestSent += async (timestamp,
+                                                                         webSocketServer,
+                                                                         webSocketConnection,
+                                                                         networkingNodeId,
+                                                                         networkPath,
+                                                                         eventTrackingId,
+                                                                         requestTimestamp,
+                                                                         requestMessage,
+                                                                         cancellationToken) => {
 
 
-                    var logger = OnJSONMessageRequestSent;
-                    if (logger is not null)
+                    var onJSONMessageRequestSent = OnJSONMessageRequestSent;
+                    if (onJSONMessageRequestSent is not null)
                     {
-
-                        var loggerTasks = logger.GetInvocationList().
-                                                 OfType <OnWebSocketTextMessageDelegate>().
-                                                 Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
-                                                                                                   webSocketServer,
-                                                                                                   webSocketConnection,
-                                                                                                   eventTrackingId,
-                                                                                                   requestMessage.ToString(),
-                                                                                                   cancellationToken)).
-                                                 ToArray();
-
                         try
                         {
-                            await Task.WhenAll(loggerTasks);
+
+                            await Task.WhenAll(onJSONMessageRequestSent.GetInvocationList().
+                                                   OfType <OnWebSocketJSONMessageRequestDelegate>().
+                                                   Select (loggingDelegate => loggingDelegate.Invoke(
+                                                                                  timestamp,
+                                                                                  webSocketServer,
+                                                                                  webSocketConnection,
+                                                                                  networkingNodeId,
+                                                                                  networkPath,
+                                                                                  eventTrackingId,
+                                                                                  requestTimestamp,
+                                                                                  requestMessage,
+                                                                                  cancellationToken
+                                                                              )).
+                                                   ToArray());
+
                         }
                         catch (Exception e)
                         {
@@ -17831,37 +17984,42 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 #region OnJSONMessageResponseReceived
 
-                CSMSChannel.OnJSONMessageResponseReceived += async (timestamp,
-                                                                    webSocketServer,
-                                                                    webSocketConnection,
-                                                                    eventTrackingId,
-                                                                    requestTimestamp,
-                                                                    jsonRequestMessage,
-                                                                    binaryRequestMessage,
-                                                                    responseTimestamp,
-                                                                    responseMessage) => {
+                NetworkingNodeChannel.OnJSONMessageResponseReceived += async (timestamp,
+                                                                              webSocketServer,
+                                                                              webSocketConnection,
+                                                                              networkingNodeId,
+                                                                              networkPath,
+                                                                              eventTrackingId,
+                                                                              requestTimestamp,
+                                                                              jsonRequestMessage,
+                                                                              binaryRequestMessage,
+                                                                              responseTimestamp,
+                                                                              responseMessage,
+                                                                              cancellationToken) => {
 
 
-                    var logger = OnJSONMessageResponseReceived;
-                    if (logger is not null)
+                    var onJSONMessageResponseReceived = OnJSONMessageResponseReceived;
+                    if (onJSONMessageResponseReceived is not null)
                     {
-
-                        var loggerTasks = logger.GetInvocationList().
-                                                 OfType <CSMS.OnWebSocketJSONMessageResponseDelegate>().
-                                                 Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
-                                                                                                   webSocketServer,
-                                                                                                   webSocketConnection,
-                                                                                                   eventTrackingId,
-                                                                                                   requestTimestamp,
-                                                                                                   jsonRequestMessage,
-                                                                                                   binaryRequestMessage,
-                                                                                                   responseTimestamp,
-                                                                                                   responseMessage)).
-                                                 ToArray();
-
                         try
                         {
-                            await Task.WhenAll(loggerTasks);
+
+                            await Task.WhenAll(onJSONMessageResponseReceived.GetInvocationList().
+                                                   OfType <CSMS.OnWebSocketJSONMessageResponseDelegate>().
+                                                   Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
+                                                                                                     NetworkingNodeChannel,
+                                                                                                     webSocketConnection,
+                                                                                                     networkingNodeId,
+                                                                                                     networkPath,
+                                                                                                     eventTrackingId,
+                                                                                                     requestTimestamp,
+                                                                                                     jsonRequestMessage,
+                                                                                                     binaryRequestMessage,
+                                                                                                     responseTimestamp,
+                                                                                                     responseMessage,
+                                                                                                     cancellationToken)).
+                                                   ToArray());
+
                         }
                         catch (Exception e)
                         {
@@ -17880,36 +18038,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 #region OnJSONErrorResponseReceived
 
-                CSMSChannel.OnJSONErrorResponseReceived += async (timestamp,
-                                                                  webSocketServer,
-                                                                  webSocketConnection,
-                                                                  eventTrackingId,
-                                                                  requestTimestamp,
-                                                                  jsonRequestMessage,
-                                                                  binaryRequestMessage,
-                                                                  responseTimestamp,
-                                                                  responseMessage) => {
+                NetworkingNodeChannel.OnJSONErrorResponseReceived += async (timestamp,
+                                                                            webSocketServer,
+                                                                            webSocketConnection,
+                                                                            eventTrackingId,
+                                                                            requestTimestamp,
+                                                                            jsonRequestMessage,
+                                                                            binaryRequestMessage,
+                                                                            responseTimestamp,
+                                                                            responseMessage,
+                                                                            cancellationToken) => {
 
-                    var logger = OnJSONErrorResponseReceived;
-                    if (logger is not null)
+                    var onJSONErrorResponseReceived = OnJSONErrorResponseReceived;
+                    if (onJSONErrorResponseReceived is not null)
                     {
-
-                        var loggerTasks = logger.GetInvocationList().
-                                                 OfType <CSMS.OnWebSocketTextErrorResponseDelegate>().
-                                                 Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
-                                                                                                   webSocketServer,
-                                                                                                   webSocketConnection,
-                                                                                                   eventTrackingId,
-                                                                                                   requestTimestamp,
-                                                                                                   jsonRequestMessage,
-                                                                                                   binaryRequestMessage,
-                                                                                                   responseTimestamp,
-                                                                                                   responseMessage)).
-                                                 ToArray();
-
                         try
                         {
-                            await Task.WhenAll(loggerTasks);
+
+                            await Task.WhenAll(onJSONErrorResponseReceived.GetInvocationList().
+                                                   OfType <CSMS.OnWebSocketTextErrorResponseDelegate>().
+                                                   Select (loggingDelegate => loggingDelegate.Invoke(
+                                                                                  timestamp,
+                                                                                  NetworkingNodeChannel,
+                                                                                  webSocketConnection,
+                                                                                  eventTrackingId,
+                                                                                  requestTimestamp,
+                                                                                  jsonRequestMessage,
+                                                                                  binaryRequestMessage,
+                                                                                  responseTimestamp,
+                                                                                  responseMessage
+                                                                              )).
+                                                   ToArray());
+
                         }
                         catch (Exception e)
                         {
@@ -17931,31 +18091,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 #region OnBootNotification
 
-                CSMSChannel.OnBootNotification += async (timestamp,
-                                                         sender,
-                                                         connection,
-                                                         request,
-                                                         cancellationToken) => {
+                NetworkingNodeChannel.OnBootNotification += async (timestamp,
+                                                                   sender,
+                                                                   connection,
+                                                                   request,
+                                                                   cancellationToken) => {
 
                     #region Send OnBootNotificationRequest event
 
-                    var startTime      = Timestamp.Now;
+                    var startTime = Timestamp.Now;
 
-                    var requestLogger  = OnBootNotificationRequest;
-                    if (requestLogger is not null)
+                    var onBootNotificationRequest = OnBootNotificationRequest;
+                    if (onBootNotificationRequest is not null)
                     {
-
-                        var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <OCPPv2_1.CSMS.OnBootNotificationRequestDelegate>().
-                                                               Select (loggingDelegate => loggingDelegate.Invoke(startTime,
-                                                                                                                 this,
-                                                                                                                 connection,
-                                                                                                                 request)).
-                                                               ToArray();
-
                         try
                         {
-                            await Task.WhenAll(requestLoggerTasks);
+
+                            await Task.WhenAll(onBootNotificationRequest.GetInvocationList().
+                                                   OfType <OCPPv2_1.CSMS.OnBootNotificationRequestDelegate>().
+                                                   Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                     this,
+                                                                                                     connection,
+                                                                                                     request)).
+                                                   ToArray());
+
                         }
                         catch (Exception e)
                         {
@@ -17998,16 +18157,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                   )
                                    );
 
-                        SignaturePolicy.SignResponseMessage(
-                            response,
-                            response.ToJSON(
-                                CustomBootNotificationResponseSerializer,
-                                CustomStatusInfoSerializer,
-                                CustomSignatureSerializer,
-                                CustomCustomDataSerializer
-                            ),
-                            out var signatureErrorResponse);
-
                     }
 
                     #endregion
@@ -18038,38 +18187,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     // ToDo: Add aditional signature!
 
-                    //SignaturePolicy.SignResponseMessage(
-                    //    response,
-                    //    response.ToJSON(
-                    //        CustomBootNotificationResponseSerializer,
-                    //        CustomStatusInfoSerializer,
-                    //        CustomSignatureSerializer,
-                    //        CustomCustomDataSerializer
-                    //    ),
-                    //    out var errorResponse2);
+                    SignaturePolicy.SignResponseMessage(
+                            response,
+                            response.ToJSON(
+                                CustomBootNotificationResponseSerializer,
+                                CustomStatusInfoSerializer,
+                                CustomSignatureSerializer,
+                                CustomCustomDataSerializer
+                            ),
+                            out var signatureErrorResponse);
 
 
                     #region Send OnBootNotificationResponse event
 
-                    var responseLogger = OnBootNotificationResponse;
-                    if (responseLogger is not null)
+                    var endTime = Timestamp.Now;
+
+                    var onBootNotificationResponse = OnBootNotificationResponse;
+                    if (onBootNotificationResponse is not null)
                     {
-
-                        var responseTime         = Timestamp.Now;
-
-                        var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <OCPPv2_1.CSMS.OnBootNotificationResponseDelegate>().
-                                                                  Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
-                                                                                                                    this,
-                                                                                                                    connection,
-                                                                                                                    request,
-                                                                                                                    response,
-                                                                                                                    responseTime - startTime)).
-                                                                  ToArray();
-
                         try
                         {
-                            await Task.WhenAll(responseLoggerTasks);
+                            await Task.WhenAll(onBootNotificationResponse.GetInvocationList().
+                                                   OfType <OCPPv2_1.CSMS.OnBootNotificationResponseDelegate>().
+                                                   Select (loggingDelegate => loggingDelegate.Invoke(endTime,
+                                                                                                     this,
+                                                                                                     connection,
+                                                                                                     request,
+                                                                                                     response,
+                                                                                                     endTime - startTime)).
+                                                   ToArray());
                         }
                         catch (Exception e)
                         {
@@ -18092,7 +18238,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 #region OnFirmwareStatusNotification
 
-                CSMSChannel.OnFirmwareStatusNotification += async (timestamp,
+                NetworkingNodeChannel.OnFirmwareStatusNotification += async (timestamp,
                                                                    sender,
                                                                    connection,
                                                                    request,
@@ -18212,7 +18358,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 #region OnPublishFirmwareStatusNotification
 
-                CSMSChannel.OnPublishFirmwareStatusNotification += async (timestamp,
+                NetworkingNodeChannel.OnPublishFirmwareStatusNotification += async (timestamp,
                                                                           sender,
                                                                           connection,
                                                                           request,
@@ -18333,7 +18479,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 #region OnHeartbeat
 
-                CSMSChannel.OnHeartbeat += async (timestamp,
+                NetworkingNodeChannel.OnHeartbeat += async (timestamp,
                                                   sender,
                                                   connection,
                                                   request,
@@ -18452,7 +18598,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 #region OnNotifyEvent
 
-                CSMSChannel.OnNotifyEvent += async (timestamp,
+                NetworkingNodeChannel.OnNotifyEvent += async (timestamp,
                                                     sender,
                                                     connection,
                                                     request,
@@ -18578,7 +18724,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 #region OnSecurityEventNotification
 
-                CSMSChannel.OnSecurityEventNotification += async (timestamp,
+                NetworkingNodeChannel.OnSecurityEventNotification += async (timestamp,
                                                                   sender,
                                                                   connection,
                                                                   request,
@@ -18699,7 +18845,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 #region OnNotifyReport
 
-                CSMSChannel.OnNotifyReport += async (timestamp,
+                NetworkingNodeChannel.OnNotifyReport += async (timestamp,
                                                      sender,
                                                      connection,
                                                      request,
@@ -18827,7 +18973,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 #region OnNotifyMonitoringReport
 
-                CSMSChannel.OnNotifyMonitoringReport += async (timestamp,
+                NetworkingNodeChannel.OnNotifyMonitoringReport += async (timestamp,
                                                                sender,
                                                                connection,
                                                                request,
@@ -18955,7 +19101,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 #region OnLogStatusNotification
 
-                CSMSChannel.OnLogStatusNotification += async (timestamp,
+                NetworkingNodeChannel.OnLogStatusNotification += async (timestamp,
                                                               sender,
                                                               connection,
                                                               request,
@@ -19075,7 +19221,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 #region OnIncomingDataTransfer
 
-                CSMSChannel.OnIncomingDataTransfer += async (timestamp,
+                NetworkingNodeChannel.OnIncomingDataTransfer += async (timestamp,
                                                              sender,
                                                              connection,
                                                              request,
@@ -19253,7 +19399,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 #region OnSignCertificate
 
-                CSMSChannel.OnSignCertificate += async (timestamp,
+                NetworkingNodeChannel.OnSignCertificate += async (timestamp,
                                                         sender,
                                                         connection,
                                                         request,
@@ -19376,7 +19522,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 #region OnGet15118EVCertificate
 
-                CSMSChannel.OnGet15118EVCertificate += async (timestamp,
+                NetworkingNodeChannel.OnGet15118EVCertificate += async (timestamp,
                                                               sender,
                                                               connection,
                                                               request,
@@ -19504,7 +19650,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 #region OnGetCertificateStatus
 
-                CSMSChannel.OnGetCertificateStatus += async (timestamp,
+                NetworkingNodeChannel.OnGetCertificateStatus += async (timestamp,
                                                              sender,
                                                              connection,
                                                              request,
@@ -19628,7 +19774,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 #region OnGetCRL
 
-                CSMSChannel.OnGetCRL += async (timestamp,
+                NetworkingNodeChannel.OnGetCRL += async (timestamp,
                                                sender,
                                                connection,
                                                request,
@@ -19754,7 +19900,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 #region OnReservationStatusUpdate
 
-                CSMSChannel.OnReservationStatusUpdate += async (timestamp,
+                NetworkingNodeChannel.OnReservationStatusUpdate += async (timestamp,
                                                                 sender,
                                                                 connection,
                                                                 request,
@@ -19874,7 +20020,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 #region OnAuthorize
 
-                CSMSChannel.OnAuthorize += async (timestamp,
+                NetworkingNodeChannel.OnAuthorize += async (timestamp,
                                                   sender,
                                                   connection,
                                                   request,
@@ -20009,7 +20155,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 #region OnNotifyEVChargingNeeds
 
-                CSMSChannel.OnNotifyEVChargingNeeds += async (timestamp,
+                NetworkingNodeChannel.OnNotifyEVChargingNeeds += async (timestamp,
                                                               sender,
                                                               connection,
                                                               request,
@@ -20143,7 +20289,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 #region OnTransactionEvent
 
-                CSMSChannel.OnTransactionEvent += async (timestamp,
+                NetworkingNodeChannel.OnTransactionEvent += async (timestamp,
                                                          sender,
                                                          connection,
                                                          request,
@@ -20293,7 +20439,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 #region OnStatusNotification
 
-                CSMSChannel.OnStatusNotification += async (timestamp,
+                NetworkingNodeChannel.OnStatusNotification += async (timestamp,
                                                            sender,
                                                            connection,
                                                            request,
@@ -20415,7 +20561,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 #region OnMeterValues
 
-                CSMSChannel.OnMeterValues += async (timestamp,
+                NetworkingNodeChannel.OnMeterValues += async (timestamp,
                                                     sender,
                                                     connection,
                                                     request,
@@ -20540,7 +20686,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 #region OnNotifyChargingLimit
 
-                CSMSChannel.OnNotifyChargingLimit += async (timestamp,
+                NetworkingNodeChannel.OnNotifyChargingLimit += async (timestamp,
                                                             sender,
                                                             connection,
                                                             request,
@@ -20685,7 +20831,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 #region OnClearedChargingLimit
 
-                CSMSChannel.OnClearedChargingLimit += async (timestamp,
+                NetworkingNodeChannel.OnClearedChargingLimit += async (timestamp,
                                                              sender,
                                                              connection,
                                                              request,
@@ -20805,7 +20951,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 #region OnReportChargingProfiles
 
-                CSMSChannel.OnReportChargingProfiles += async (timestamp,
+                NetworkingNodeChannel.OnReportChargingProfiles += async (timestamp,
                                                                sender,
                                                                connection,
                                                                request,
@@ -20953,7 +21099,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 #region OnNotifyEVChargingSchedule
 
-                CSMSChannel.OnNotifyEVChargingSchedule += async (timestamp,
+                NetworkingNodeChannel.OnNotifyEVChargingSchedule += async (timestamp,
                                                                  sender,
                                                                  connection,
                                                                  request,
@@ -21103,7 +21249,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 #region OnNotifyPriorityCharging
 
-                CSMSChannel.OnNotifyPriorityCharging += async (timestamp,
+                NetworkingNodeChannel.OnNotifyPriorityCharging += async (timestamp,
                                                                sender,
                                                                connection,
                                                                request,
@@ -21223,7 +21369,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 #region OnPullDynamicScheduleUpdate
 
-                CSMSChannel.OnPullDynamicScheduleUpdate += async (timestamp,
+                NetworkingNodeChannel.OnPullDynamicScheduleUpdate += async (timestamp,
                                                                   sender,
                                                                   connection,
                                                                   request,
@@ -21362,7 +21508,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 #region OnNotifyDisplayMessages
 
-                CSMSChannel.OnNotifyDisplayMessages += async (timestamp,
+                NetworkingNodeChannel.OnNotifyDisplayMessages += async (timestamp,
                                                               sender,
                                                               connection,
                                                               request,
@@ -21490,7 +21636,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 #region OnNotifyCustomerInformation
 
-                CSMSChannel.OnNotifyCustomerInformation += async (timestamp,
+                NetworkingNodeChannel.OnNotifyCustomerInformation += async (timestamp,
                                                                   sender,
                                                                   connection,
                                                                   request,
@@ -21616,7 +21762,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 #region OnIncomingBinaryDataTransfer
 
-                CSMSChannel.OnIncomingBinaryDataTransfer += async (timestamp,
+                NetworkingNodeChannel.OnIncomingBinaryDataTransfer += async (timestamp,
                                                                    sender,
                                                                    connection,
                                                                    request,
@@ -21733,6 +21879,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #endregion
 
 
+            public Boolean LookupNetworkingNode(NetworkingNode_Id NetworkingNodeId, out CSMS.INetworkingNodeChannel? NetworkingNodeChannel)
+            {
+
+                var lookUpNetworkingNodeId = NetworkingNodeId;
+
+                //if (reachableViaNetworkingHubs.TryGetValue(lookUpNetworkingNodeId, out var networkingHubId))
+                //    lookUpNetworkingNodeId = networkingHubId;
+
+                if (reachableChargingStations.TryGetValue(lookUpNetworkingNodeId, out var networkingNodeChannel) &&
+                    networkingNodeChannel?.Item1 is not null)
+                {
+                    NetworkingNodeChannel = networkingNodeChannel.Item1;
+                    return true;
+                }
+
+                NetworkingNodeChannel = null;
+                return false;
+
+            }
+
+
             #region NetworkingNode -> Charging Station Messages
 
             #region NextRequestId
@@ -21782,7 +21949,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -21795,7 +21962,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.Reset(Request)
+                                          ? await centralSystem.Reset(Request)
 
                                           : new OCPPv2_1.CS.ResetResponse(
                                                 Request,
@@ -21877,7 +22044,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -21891,7 +22058,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.UpdateFirmware(Request)
+                                          ? await centralSystem.UpdateFirmware(Request)
 
                                           : new OCPPv2_1.CS.UpdateFirmwareResponse(
                                                 Request,
@@ -21973,7 +22140,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -21986,7 +22153,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.PublishFirmware(Request)
+                                          ? await centralSystem.PublishFirmware(Request)
 
                                           : new OCPPv2_1.CS.PublishFirmwareResponse(
                                                 Request,
@@ -22068,7 +22235,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -22081,7 +22248,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.UnpublishFirmware(Request)
+                                          ? await centralSystem.UnpublishFirmware(Request)
 
                                           : new OCPPv2_1.CS.UnpublishFirmwareResponse(
                                                 Request,
@@ -22162,7 +22329,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -22175,7 +22342,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.GetBaseReport(Request)
+                                          ? await centralSystem.GetBaseReport(Request)
 
                                           : new OCPPv2_1.CS.GetBaseReportResponse(
                                                 Request,
@@ -22257,7 +22424,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -22274,7 +22441,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.GetReport(Request)
+                                          ? await centralSystem.GetReport(Request)
 
                                           : new OCPPv2_1.CS.GetReportResponse(
                                                 Request,
@@ -22356,7 +22523,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -22370,7 +22537,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.GetLog(Request)
+                                          ? await centralSystem.GetLog(Request)
 
                                           : new OCPPv2_1.CS.GetLogResponse(
                                                 Request,
@@ -22453,7 +22620,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -22470,7 +22637,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.SetVariables(Request)
+                                          ? await centralSystem.SetVariables(Request)
 
                                           : new OCPPv2_1.CS.SetVariablesResponse(
                                                 Request,
@@ -22556,7 +22723,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -22573,7 +22740,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.GetVariables(Request)
+                                          ? await centralSystem.GetVariables(Request)
 
                                           : new OCPPv2_1.CS.GetVariablesResponse(
                                                 Request,
@@ -22659,7 +22826,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -22672,7 +22839,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.SetMonitoringBase(Request)
+                                          ? await centralSystem.SetMonitoringBase(Request)
 
                                           : new OCPPv2_1.CS.SetMonitoringBaseResponse(
                                                 Request,
@@ -22754,7 +22921,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -22771,7 +22938,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.GetMonitoringReport(Request)
+                                          ? await centralSystem.GetMonitoringReport(Request)
 
                                           : new OCPPv2_1.CS.GetMonitoringReportResponse(
                                                 Request,
@@ -22853,7 +23020,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -22866,7 +23033,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.SetMonitoringLevel(Request)
+                                          ? await centralSystem.SetMonitoringLevel(Request)
 
                                           : new OCPPv2_1.CS.SetMonitoringLevelResponse(
                                                 Request,
@@ -22948,7 +23115,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -22966,7 +23133,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.SetVariableMonitoring(Request)
+                                          ? await centralSystem.SetVariableMonitoring(Request)
 
                                           : new OCPPv2_1.CS.SetVariableMonitoringResponse(
                                                 Request,
@@ -23052,7 +23219,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -23065,7 +23232,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.ClearVariableMonitoring(Request)
+                                          ? await centralSystem.ClearVariableMonitoring(Request)
 
                                           : new OCPPv2_1.CS.ClearVariableMonitoringResponse(
                                                 Request,
@@ -23148,7 +23315,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -23164,7 +23331,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.SetNetworkProfile(Request)
+                                          ? await centralSystem.SetNetworkProfile(Request)
 
                                           : new OCPPv2_1.CS.SetNetworkProfileResponse(
                                                 Request,
@@ -23246,7 +23413,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -23260,7 +23427,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.ChangeAvailability(Request)
+                                          ? await centralSystem.ChangeAvailability(Request)
 
                                           : new OCPPv2_1.CS.ChangeAvailabilityResponse(
                                                 Request,
@@ -23342,7 +23509,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -23356,7 +23523,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.TriggerMessage(Request)
+                                          ? await centralSystem.TriggerMessage(Request)
 
                                           : new OCPPv2_1.CS.TriggerMessageResponse(
                                                 Request,
@@ -23438,7 +23605,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -23451,7 +23618,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.TransferData(Request)
+                                          ? await centralSystem.TransferData(Request)
 
                                           : new OCPPv2_1.CS.DataTransferResponse(
                                                 Request,
@@ -23534,7 +23701,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -23547,7 +23714,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.SendSignedCertificate(Request)
+                                          ? await centralSystem.SendSignedCertificate(Request)
 
                                           : new OCPPv2_1.CS.CertificateSignedResponse(
                                                 Request,
@@ -23629,7 +23796,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -23642,7 +23809,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.InstallCertificate(Request)
+                                          ? await centralSystem.InstallCertificate(Request)
 
                                           : new OCPPv2_1.CS.InstallCertificateResponse(
                                                 Request,
@@ -23724,7 +23891,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -23737,7 +23904,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.GetInstalledCertificateIds(Request)
+                                          ? await centralSystem.GetInstalledCertificateIds(Request)
 
                                           : new OCPPv2_1.CS.GetInstalledCertificateIdsResponse(
                                                 Request,
@@ -23820,7 +23987,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -23834,7 +24001,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.DeleteCertificate(Request)
+                                          ? await centralSystem.DeleteCertificate(Request)
 
                                           : new OCPPv2_1.CS.DeleteCertificateResponse(
                                                 Request,
@@ -23916,7 +24083,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -23929,7 +24096,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.NotifyCRLAvailability(Request)
+                                          ? await centralSystem.NotifyCRLAvailability(Request)
 
                                           : new OCPPv2_1.CS.NotifyCRLResponse(
                                                 Request,
@@ -24011,7 +24178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -24024,7 +24191,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.GetLocalListVersion(Request)
+                                          ? await centralSystem.GetLocalListVersion(Request)
 
                                           : new OCPPv2_1.CS.GetLocalListVersionResponse(
                                                 Request,
@@ -24105,7 +24272,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -24123,7 +24290,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.SendLocalList(Request)
+                                          ? await centralSystem.SendLocalList(Request)
 
                                           : new OCPPv2_1.CS.SendLocalListResponse(
                                                 Request,
@@ -24205,7 +24372,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -24218,7 +24385,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.ClearCache(Request)
+                                          ? await centralSystem.ClearCache(Request)
 
                                           : new OCPPv2_1.CS.ClearCacheResponse(
                                                 Request,
@@ -24301,7 +24468,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -24316,7 +24483,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.ReserveNow(Request)
+                                          ? await centralSystem.ReserveNow(Request)
 
                                           : new OCPPv2_1.CS.ReserveNowResponse(
                                                 Request,
@@ -24398,7 +24565,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -24411,7 +24578,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.CancelReservation(Request)
+                                          ? await centralSystem.CancelReservation(Request)
 
                                           : new OCPPv2_1.CS.CancelReservationResponse(
                                                 Request,
@@ -24493,7 +24660,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -24533,7 +24700,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.StartCharging(Request)
+                                          ? await centralSystem.StartCharging(Request)
 
                                           : new OCPPv2_1.CS.RequestStartTransactionResponse(
                                                 Request,
@@ -24615,7 +24782,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -24628,7 +24795,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.StopCharging(Request)
+                                          ? await centralSystem.StopCharging(Request)
 
                                           : new OCPPv2_1.CS.RequestStopTransactionResponse(
                                                 Request,
@@ -24710,7 +24877,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -24723,7 +24890,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.GetTransactionStatus(Request)
+                                          ? await centralSystem.GetTransactionStatus(Request)
 
                                           : new OCPPv2_1.CS.GetTransactionStatusResponse(
                                                 Request,
@@ -24804,7 +24971,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -24840,7 +25007,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.SetChargingProfile(Request)
+                                          ? await centralSystem.SetChargingProfile(Request)
 
                                           : new OCPPv2_1.CS.SetChargingProfileResponse(
                                                 Request,
@@ -24922,7 +25089,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -24936,7 +25103,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.GetChargingProfiles(Request)
+                                          ? await centralSystem.GetChargingProfiles(Request)
 
                                           : new OCPPv2_1.CS.GetChargingProfilesResponse(
                                                 Request,
@@ -25018,7 +25185,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -25032,7 +25199,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.ClearChargingProfile(Request)
+                                          ? await centralSystem.ClearChargingProfile(Request)
 
                                           : new OCPPv2_1.CS.ClearChargingProfileResponse(
                                                 Request,
@@ -25114,7 +25281,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -25127,7 +25294,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.GetCompositeSchedule(Request)
+                                          ? await centralSystem.GetCompositeSchedule(Request)
 
                                           : new OCPPv2_1.CS.GetCompositeScheduleResponse(
                                                 Request,
@@ -25211,7 +25378,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -25224,7 +25391,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.UpdateDynamicSchedule(Request)
+                                          ? await centralSystem.UpdateDynamicSchedule(Request)
 
                                           : new OCPPv2_1.CS.UpdateDynamicScheduleResponse(
                                                 Request,
@@ -25306,7 +25473,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -25319,7 +25486,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.NotifyAllowedEnergyTransfer(Request)
+                                          ? await centralSystem.NotifyAllowedEnergyTransfer(Request)
 
                                           : new OCPPv2_1.CS.NotifyAllowedEnergyTransferResponse(
                                                 Request,
@@ -25401,7 +25568,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -25414,7 +25581,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.UsePriorityCharging(Request)
+                                          ? await centralSystem.UsePriorityCharging(Request)
 
                                           : new OCPPv2_1.CS.UsePriorityChargingResponse(
                                                 Request,
@@ -25496,7 +25663,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -25509,7 +25676,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.UnlockConnector(Request)
+                                          ? await centralSystem.UnlockConnector(Request)
 
                                           : new OCPPv2_1.CS.UnlockConnectorResponse(
                                                 Request,
@@ -25594,7 +25761,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -25607,7 +25774,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.SendAFRRSignal(Request)
+                                          ? await centralSystem.SendAFRRSignal(Request)
 
                                           : new OCPPv2_1.CS.AFRRSignalResponse(
                                                 Request,
@@ -25690,7 +25857,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -25707,7 +25874,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.SetDisplayMessage(Request)
+                                          ? await centralSystem.SetDisplayMessage(Request)
 
                                           : new OCPPv2_1.CS.SetDisplayMessageResponse(
                                                 Request,
@@ -25789,7 +25956,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -25802,7 +25969,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.GetDisplayMessages(Request)
+                                          ? await centralSystem.GetDisplayMessages(Request)
 
                                           : new OCPPv2_1.CS.GetDisplayMessagesResponse(
                                                 Request,
@@ -25884,7 +26051,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -25897,7 +26064,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.ClearDisplayMessage(Request)
+                                          ? await centralSystem.ClearDisplayMessage(Request)
 
                                           : new OCPPv2_1.CS.ClearDisplayMessageResponse(
                                                 Request,
@@ -25980,7 +26147,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -25993,7 +26160,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.SendCostUpdated(Request)
+                                          ? await centralSystem.SendCostUpdated(Request)
 
                                           : new OCPPv2_1.CS.CostUpdatedResponse(
                                                 Request,
@@ -26075,7 +26242,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -26091,7 +26258,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.RequestCustomerInformation(Request)
+                                          ? await centralSystem.RequestCustomerInformation(Request)
 
                                           : new OCPPv2_1.CS.CustomerInformationResponse(
                                                 Request,
@@ -26176,7 +26343,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -26189,7 +26356,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.BinaryDataTransfer(Request)
+                                          ? await centralSystem.BinaryDataTransfer(Request)
 
                                           : new OCPP.CS.BinaryDataTransferResponse(
                                                 Request,
@@ -26271,7 +26438,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -26284,7 +26451,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.GetFile(Request)
+                                          ? await centralSystem.GetFile(Request)
 
                                           : new OCPP.CS.GetFileResponse(
                                                 Request,
@@ -26366,7 +26533,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -26379,7 +26546,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.SendFile(Request)
+                                          ? await centralSystem.SendFile(Request)
 
                                           : new OCPP.CS.SendFileResponse(
                                                 Request,
@@ -26460,7 +26627,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -26473,7 +26640,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.DeleteFile(Request)
+                                          ? await centralSystem.DeleteFile(Request)
 
                                           : new OCPP.CS.DeleteFileResponse(
                                                 Request,
@@ -26557,7 +26724,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -26574,7 +26741,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.AddSignaturePolicy(Request)
+                                          ? await centralSystem.AddSignaturePolicy(Request)
 
                                           : new OCPP.CS.AddSignaturePolicyResponse(
                                                 Request,
@@ -26656,7 +26823,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -26673,7 +26840,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.UpdateSignaturePolicy(Request)
+                                          ? await centralSystem.UpdateSignaturePolicy(Request)
 
                                           : new OCPP.CS.UpdateSignaturePolicyResponse(
                                                 Request,
@@ -26755,7 +26922,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -26772,7 +26939,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.DeleteSignaturePolicy(Request)
+                                          ? await centralSystem.DeleteSignaturePolicy(Request)
 
                                           : new OCPP.CS.DeleteSignaturePolicyResponse(
                                                 Request,
@@ -26854,7 +27021,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -26871,7 +27038,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.AddUserRole(Request)
+                                          ? await centralSystem.AddUserRole(Request)
 
                                           : new OCPP.CS.AddUserRoleResponse(
                                                 Request,
@@ -26953,7 +27120,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -26970,7 +27137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.UpdateUserRole(Request)
+                                          ? await centralSystem.UpdateUserRole(Request)
 
                                           : new OCPP.CS.UpdateUserRoleResponse(
                                                 Request,
@@ -27052,7 +27219,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -27069,7 +27236,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.DeleteUserRole(Request)
+                                          ? await centralSystem.DeleteUserRole(Request)
 
                                           : new OCPP.CS.DeleteUserRoleResponse(
                                                 Request,
@@ -27155,7 +27322,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -27179,7 +27346,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.SetDefaultChargingTariff(Request)
+                                          ? await centralSystem.SetDefaultChargingTariff(Request)
 
                                           : new OCPPv2_1.CS.SetDefaultChargingTariffResponse(
                                                 Request,
@@ -27262,7 +27429,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -27275,7 +27442,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.GetDefaultChargingTariff(Request)
+                                          ? await centralSystem.GetDefaultChargingTariff(Request)
 
                                           : new OCPPv2_1.CS.GetDefaultChargingTariffResponse(
                                                 Request,
@@ -27369,7 +27536,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -27382,7 +27549,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           out var errorResponse
                                       )
 
-                                          ? await centralSystem.Item1.RemoveDefaultChargingTariff(Request)
+                                          ? await centralSystem.RemoveDefaultChargingTariff(Request)
 
                                           : new OCPPv2_1.CS.RemoveDefaultChargingTariffResponse(
                                                 Request,
@@ -29426,6 +29593,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #endregion
 
 
+            #region HandleErrors(Module, Caller, ExceptionOccured)
+
             private Task HandleErrors(String     Module,
                                       String     Caller,
                                       Exception  ExceptionOccured)
@@ -29436,6 +29605,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 return Task.CompletedTask;
 
             }
+
+            public Task<ListDirectoryResponse> ListDirectory(ListDirectoryRequest Request)
+            {
+                throw new NotImplementedException();
+            }
+
+            #endregion
 
 
         }
@@ -29767,6 +29943,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
+        #region HandleErrors(Module, Caller, ExceptionOccured)
 
         private Task HandleErrors(String     Module,
                                   String     Caller,
@@ -29778,6 +29955,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             return Task.CompletedTask;
 
         }
+
+        #endregion
 
 
     }

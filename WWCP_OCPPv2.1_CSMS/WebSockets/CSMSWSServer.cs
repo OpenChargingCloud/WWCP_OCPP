@@ -48,19 +48,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// The default HTTP server name.
         /// </summary>
-        public new const            String                 DefaultHTTPServiceName  = $"GraphDefined OCPP {Version.String} HTTP/WebSocket/JSON CSMS API";
+        public new const            String    DefaultHTTPServiceName  = $"GraphDefined OCPP {Version.String} HTTP/WebSocket/JSON CSMS API";
 
         /// <summary>
         /// The default HTTP server TCP port.
         /// </summary>
-        public new static readonly  IPPort                 DefaultHTTPServerPort   = IPPort.Parse(2010);
+        public new static readonly  IPPort    DefaultHTTPServerPort   = IPPort.Parse(2010);
 
         /// <summary>
         /// The default HTTP server URI prefix.
         /// </summary>
-        public new static readonly  HTTPPath               DefaultURLPrefix        = HTTPPath.Parse("/" + Version.String);
-
-        //private readonly        Dictionary<String, MethodInfo>  incomingMessageProcessorsLookup   = [];
+        public new static readonly  HTTPPath  DefaultURLPrefix        = HTTPPath.Parse("/" + Version.String);
 
         #endregion
 
@@ -71,12 +69,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         String IEventSender.Id
             => HTTPServiceName;
-
-        #endregion
-
-        #region Events
-
-
 
         #endregion
 
@@ -191,35 +183,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                             DNSClient?                           DNSClient                    = null,
                             Boolean                              AutoStart                    = false)
 
-           // : base(IPAddress,
-           //        TCPPort ?? IPPort.Parse(8000),
-           //        HTTPServiceName,
-           //
-           //        new[] {
-           //           "ocpp2.0.1",
-           //            Version.WebSocketSubProtocolId
-           //        },
-           //        DisableWebSocketPings,
-           //        WebSocketPingEvery,
-           //        SlowNetworkSimulationDelay,
-           //
-           //        ServerCertificateSelector,
-           //        ClientCertificateValidator,
-           //        ClientCertificateSelector,
-           //        AllowedTLSProtocols,
-           //        ClientCertificateRequired,
-           //        CheckCertificateRevocation,
-           //
-           //        ServerThreadNameCreator,
-           //        ServerThreadPrioritySetter,
-           //        ServerThreadIsBackground,
-           //        ConnectionIdBuilder,
-           //        ConnectionTimeout,
-           //        MaxClientConnections,
-           //
-           //        DNSClient,
-           //        false)
-
             : base(new[] {
                       "ocpp2.0.1",
                        Version.WebSocketSubProtocolId
@@ -251,11 +214,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    AutoStart)
 
         {
-
-            //base.OnValidateTCPConnection        += ValidateTCPConnection;
-            //base.OnValidateWebSocketConnection  += ValidateWebSocketConnection;
-            //base.OnNewWebSocketConnection       += ProcessNewWebSocketConnection;
-            //base.OnCloseMessageReceived         += ProcessCloseMessage;
 
             #region Reflect "Receive_XXX" messages and wire them...
 

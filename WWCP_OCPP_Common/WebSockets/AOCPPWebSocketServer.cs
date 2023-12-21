@@ -785,6 +785,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                                                                                       this,
                                                                                       Connection,
                                                                                       jsonRequest.DestinationNodeId,
+                                                                                      jsonRequest.NetworkPath,
                                                                                       EventTrackingId,
                                                                                       RequestTimestamp,
                                                                                       jsonArray,
@@ -833,7 +834,8 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                                                                                       Timestamp.Now,
                                                                                       this,
                                                                                       Connection,
-                                                                                      NetworkingNode_Id.Zero,
+                                                                                      jsonResponse.DestinationNodeId,
+                                                                                      jsonResponse.NetworkPath,
                                                                                       EventTrackingId,
                                                                                       sendRequestState.RequestTimestamp,
                                                                                       sendRequestState.JSONRequest?.  ToJSON()      ?? [],
@@ -1213,18 +1215,23 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
 
 
 
-        private IEnumerable<WebSocketServerConnection> LookupNetworkingNode(NetworkingNode_Id NetworkingNodeId)
+        private IEnumerable<Tuple<WebSocketServerConnection, NetworkingMode>> LookupNetworkingNode(NetworkingNode_Id NetworkingNodeId)
         {
 
             if (NetworkingNodeId == NetworkingNode_Id.Zero)
-                return Array.Empty<WebSocketServerConnection>();
+                return Array.Empty<Tuple<WebSocketServerConnection, NetworkingMode>>();
 
             var lookUpNetworkingNodeId = NetworkingNodeId;
 
             if (reachableViaNetworkingHubs.TryGetValue(lookUpNetworkingNodeId, out var networkingHubId))
+            {
                 lookUpNetworkingNodeId = networkingHubId;
+                return WebSocketConnections.Where(connection => connection.TryGetCustomDataAs<NetworkingNode_Id>(networkingNodeId_WebSocketKey) == lookUpNetworkingNodeId).
+                    Select(x => new Tuple<WebSocketServerConnection, NetworkingMode>(x, NetworkingMode.NetworkingExtensions));
+            }
 
-            return WebSocketConnections.Where(connection => connection.TryGetCustomDataAs<NetworkingNode_Id>(networkingNodeId_WebSocketKey) == lookUpNetworkingNodeId);
+            return WebSocketConnections.Where (connection => connection.TryGetCustomDataAs<NetworkingNode_Id>(networkingNodeId_WebSocketKey) == lookUpNetworkingNodeId).
+                                        Select(x => new Tuple<WebSocketServerConnection, NetworkingMode>(x, NetworkingMode.Standard));
 
         }
 
@@ -1279,12 +1286,12 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                 if (webSocketConnections.Length != 0)
                 {
 
-                    var networkingMode      = webSocketConnections.First().TryGetCustomDataAs<NetworkingMode>(networkingMode_WebSocketKey);
+                    var networkingMode      = webSocketConnections.First().Item1.TryGetCustomDataAs<NetworkingMode>(networkingMode_WebSocketKey);
 
                     var jsonRequestMessage  = new OCPP_JSONRequestMessage(
                                                   Timestamp.Now,
                                                   EventTracking_Id.New,
-                                                  networkingMode ?? NetworkingMode.Standard,
+                                                  webSocketConnections.First().Item2,
                                                   DestinationNodeId,
                                                   NetworkPath,
                                                   RequestId,
@@ -1299,7 +1306,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                     {
 
                         if (SendStatus.Success == await SendTextMessage(
-                                                            webSocketConnection,
+                                                            webSocketConnection.Item1,
                                                             ocppTextMessage,
                                                             EventTrackingId,
                                                             CancellationToken
@@ -1327,7 +1334,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                                                            Select(loggingDelegate => loggingDelegate.Invoke(
                                                                                           Timestamp.Now,
                                                                                           this,
-                                                                                          webSocketConnection,
+                                                                                          webSocketConnection.Item1,
                                                                                           EventTrackingId,
                                                                                           ocppTextMessage,
                                                                                           CancellationToken
@@ -1347,7 +1354,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
 
                         }
 
-                        RemoveConnection(webSocketConnection);
+                        RemoveConnection(webSocketConnection.Item1);
 
                     }
 
@@ -1397,12 +1404,12 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                 if (webSocketConnections.Length != 0)
                 {
 
-                    var networkingMode        = webSocketConnections.First().TryGetCustomDataAs<NetworkingMode>(networkingMode_WebSocketKey);
+                    var networkingMode        = webSocketConnections.First().Item1.TryGetCustomDataAs<NetworkingMode>(networkingMode_WebSocketKey);
 
                     var binaryRequestMessage  = new OCPP_BinaryRequestMessage(
                                                     Timestamp.Now,
                                                     EventTracking_Id.New,
-                                                    networkingMode ?? NetworkingMode.Standard,
+                                                    webSocketConnections.First().Item2,
                                                     DestinationNodeId,
                                                     NetworkPath,
                                                     RequestId,
@@ -1424,7 +1431,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                     {
 
                         if (SendStatus.Success == await SendBinaryMessage(
-                                                            webSocketConnection,
+                                                            webSocketConnection.Item1,
                                                             ocppBinaryMessage,
                                                             EventTrackingId,
                                                             CancellationToken
@@ -1441,7 +1448,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                                                                 OfType <OnWebSocketBinaryMessageDelegate>().
                                                                 Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
                                                                                                                   this,
-                                                                                                                  webSocketConnection,
+                                                                                                                  webSocketConnection.Item1,
                                                                                                                   EventTrackingId,
                                                                                                                   ocppBinaryMessage,
                                                                                                                   CancellationToken)).
@@ -1464,7 +1471,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
 
                         }
 
-                        RemoveConnection(webSocketConnection);
+                        RemoveConnection(webSocketConnection.Item1);
 
                     }
 

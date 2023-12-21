@@ -116,17 +116,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
 
 
-    public delegate Task OnNewNetworkingNodeWSConnectionDelegate (DateTime                    Timestamp,
-                                                                  INetworkingNodeChannel      NetworkingNode,
-                                                                  WebSocketServerConnection   NewWebSocketConnection,
-                                                                  EventTracking_Id            EventTrackingId,
-                                                                  CancellationToken           CancellationToken);
+    //public delegate Task OnNewNetworkingNodeWSConnectionDelegate (DateTime                    Timestamp,
+    //                                                              INetworkingNodeChannel      NetworkingNode,
+    //                                                              WebSocketServerConnection   NewWebSocketConnection,
+    //                                                              EventTracking_Id            EventTrackingId,
+    //                                                              CancellationToken           CancellationToken);
 
 
 
     public delegate Task OnWebSocketJSONMessageRequestDelegate   (DateTime                    Timestamp,
                                                                   INetworkingNodeChannel      Server,
                                                                   WebSocketServerConnection   Connection,
+                                                                  NetworkingNode_Id           DestinationNodeId,
+                                                                  NetworkPath                 NetworkPath,
                                                                   EventTracking_Id            EventTrackingId,
                                                                   DateTime                    RequestTimestamp,
                                                                   JArray                      RequestMessage,
@@ -135,12 +137,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
     public delegate Task OnWebSocketJSONMessageResponseDelegate  (DateTime                    Timestamp,
                                                                   INetworkingNodeChannel      Server,
                                                                   WebSocketServerConnection   Connection,
+                                                                  NetworkingNode_Id           DestinationNodeId,
+                                                                  NetworkPath                 NetworkPath,
                                                                   EventTracking_Id            EventTrackingId,
                                                                   DateTime                    RequestTimestamp,
                                                                   JArray                      JSONRequestMessage,
                                                                   Byte[]                      BinaryRequestMessage,
                                                                   DateTime                    ResponseTimestamp,
-                                                                  JArray?                     ResponseMessage);
+                                                                  JArray                      ResponseMessage,
+                                                                  CancellationToken           CancellationToken);
 
     public delegate Task OnWebSocketTextErrorResponseDelegate    (DateTime                    Timestamp,
                                                                   INetworkingNodeChannel      Server,

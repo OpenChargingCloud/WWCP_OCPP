@@ -74,7 +74,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                 var data       = "Hello world!".ToUTF8Bytes();
 
                 var response   = await testCSMS01.TransferBinaryData(
-                                     NetworkingNodeId:  chargingStation1.Id,
+                                     DestinationNodeId: chargingStation1.Id,
                                      VendorId:          vendorId,
                                      MessageId:         messageId,
                                      Data:              data

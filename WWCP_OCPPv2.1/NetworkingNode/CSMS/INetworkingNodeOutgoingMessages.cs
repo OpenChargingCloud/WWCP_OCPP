@@ -33,7 +33,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
     /// <summary>
     /// The common interface of all CSMS clients.
     /// </summary>
-    public interface INetworkingNodeClient : INetworkingNodeClientEvents
+    public interface INetworkingNodeOutgoingMessages : OCPP.ICSMSOutgoingMessages
     {
 
         #region Custom JSON serializer delegates

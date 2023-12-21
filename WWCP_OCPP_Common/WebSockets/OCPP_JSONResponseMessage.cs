@@ -44,28 +44,33 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
         #region Properties
 
-        public DateTime            ResponseTimestamp    { get; } = ResponseTimestamp;
-        public EventTracking_Id    EventTrackingId      { get; } = EventTrackingId;
+        public DateTime           ResponseTimestamp    { get; } = ResponseTimestamp;
+        public EventTracking_Id   EventTrackingId      { get; } = EventTrackingId;
+
+        /// <summary>
+        /// The OCPP networking mode to use.
+        /// </summary>
+        public NetworkingMode     NetworkingMode       { get; } = NetworkingMode;
 
         /// <summary>
         /// The networking node identification of the message destination.
         /// </summary>
-        public NetworkingNode_Id?  DestinationNodeId    { get; } = DestinationNodeId;
+        public NetworkingNode_Id  DestinationNodeId    { get; } = DestinationNodeId;
 
         /// <summary>
         /// The (recorded) path of the request through the overlay network.
         /// </summary>
-        public NetworkPath         NetworkPath          { get; } = NetworkPath;
+        public NetworkPath        NetworkPath          { get; } = NetworkPath;
 
         /// <summary>
         /// The unique request identification copied from the request.
         /// </summary>
-        public Request_Id          RequestId            { get; } = RequestId;
+        public Request_Id         RequestId            { get; } = RequestId;
 
         /// <summary>
         /// The JSON response message payload.
         /// </summary>
-        public JObject             Payload              { get; } = Payload;
+        public JObject            Payload              { get; } = Payload;
 
         #endregion
 
@@ -252,9 +257,9 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                    // ]
 
                    : new (3,
-                          DestinationNodeId?.ToString() ?? "",
-                          NetworkPath?.      ToJSON()   ?? [],
-                          RequestId.         ToString(),
+                          DestinationNodeId.ToString(),
+                          NetworkPath.      ToJSON(),
+                          RequestId.        ToString(),
                           Payload);
 
         #endregion

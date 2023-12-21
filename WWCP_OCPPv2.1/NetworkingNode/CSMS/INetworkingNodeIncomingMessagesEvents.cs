@@ -17,8 +17,6 @@
 
 #region Usings
 
-using org.GraphDefined.Vanaheimr.Hermod;
-
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
@@ -30,93 +28,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
     /// <summary>
     /// The common interface of all CSMS servers.
     /// </summary>
-    public interface INetworkingNodeServerLogger : IEventSender
+    public interface INetworkingNodeIncomingMessagesEvents : OCPP.CSMS.ICSMSIncomingMessagesEvents
     {
-
-        #region Properties
-
-        /// <summary>
-        /// The unique identifications of all connected networking nodes.
-        /// </summary>
-        IEnumerable<NetworkingNode_Id>  NetworkingNodeIds    { get; }
-
-        #endregion
-
-
-        #region WebSocket connection
-
-        ///// <summary>
-        ///// An event sent whenever the HTTP web socket server started.
-        ///// </summary>
-        //event OnServerStartedDelegate?                 OnServerStarted;
-
-        ///// <summary>
-        ///// An event sent whenever a new TCP connection was accepted.
-        ///// </summary>
-        //event OnNewTCPConnectionDelegate?              OnNewTCPConnection;
-
-        ///// <summary>
-        ///// An event sent whenever a HTTP request was received.
-        ///// </summary>
-        //event HTTPRequestLogDelegate?                  OnHTTPRequest;
-
-        ///// <summary>
-        ///// An event sent whenever the HTTP connection switched successfully to web socket.
-        ///// </summary>
-        //event OnNewWebSocketConnectionDelegate?        OnNewWebSocketConnection;
-
-        ///// <summary>
-        ///// An event sent whenever a reponse to a HTTP request was sent.
-        ///// </summary>
-        //event HTTPResponseLogDelegate?                 OnHTTPResponse;
-
-        ///// <summary>
-        ///// An event sent whenever a web socket close frame was received.
-        ///// </summary>
-        //event OnCloseMessageDelegate?                  OnCloseMessageReceived;
-
-        ///// <summary>
-        ///// An event sent whenever a TCP connection was closed.
-        ///// </summary>
-        //event OnTCPConnectionClosedDelegate?           OnTCPConnectionClosed;
-
-        #endregion
-
-
-        #region OnJSONMessage   (-Received/-ResponseSent/-ErrorResponseSent)
-
-        event OnWebSocketJSONMessageRequestDelegate?      OnJSONMessageRequestReceived;
-
-        event OnWebSocketJSONMessageResponseDelegate?     OnJSONMessageResponseSent;
-
-        event OnWebSocketTextErrorResponseDelegate?       OnJSONErrorResponseSent;
-
-
-        event OnWebSocketJSONMessageRequestDelegate?      OnJSONMessageRequestSent;
-
-        event OnWebSocketJSONMessageResponseDelegate?     OnJSONMessageResponseReceived;
-
-        event OnWebSocketTextErrorResponseDelegate?       OnJSONErrorResponseReceived;
-
-        #endregion
-
-        #region OnBinaryMessage (-Received/-ResponseSent/-ErrorResponseSent)
-
-        event OnWebSocketBinaryMessageRequestDelegate?    OnBinaryMessageRequestReceived;
-
-        event OnWebSocketBinaryMessageResponseDelegate?   OnBinaryMessageResponseSent;
-
-        //event OnWebSocketBinaryErrorResponseDelegate?     OnBinaryErrorResponseSent;
-
-
-        event OnWebSocketBinaryMessageRequestDelegate?    OnBinaryMessageRequestSent;
-
-        event OnWebSocketBinaryMessageResponseDelegate?   OnBinaryMessageResponseReceived;
-
-        //event OnWebSocketBinaryErrorResponseDelegate?     OnBinaryErrorResponseReceived;
-
-        #endregion
-
 
         #region OnBootNotification                     (Request/-Response)
 
