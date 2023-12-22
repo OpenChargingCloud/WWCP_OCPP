@@ -56,6 +56,18 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         #endregion
 
 
+        // Overlay Networking Extensions
+
+        #region OnIncomingNotifyNetworkTopology
+
+        /// <summary>
+        /// An event sent whenever an incoming NotifyNetworkTopology request was received.
+        /// </summary>
+        event OnIncomingNotifyNetworkTopologyDelegate    OnIncomingNotifyNetworkTopology;
+
+        #endregion
+
+
     }
 
 }

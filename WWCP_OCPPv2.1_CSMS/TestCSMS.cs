@@ -679,6 +679,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        // Overlay Networking Extensions
+
+        #region OnIncomingBinaryDataTransfer (Request/-Response)
+
+        /// <summary>
+        /// An event sent whenever a NotifyNetworkTopology request was received.
+        /// </summary>
+        public event OnIncomingNotifyNetworkTopologyRequestDelegate?   OnIncomingNotifyNetworkTopologyRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a NotifyNetworkTopology request was sent.
+        /// </summary>
+        public event OnIncomingNotifyNetworkTopologyResponseDelegate?  OnIncomingNotifyNetworkTopologyResponse;
+
+        #endregion
+
         #endregion
 
         #region CSMS -> Charging Station Messages
@@ -1689,7 +1706,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
         // Binary Data Streams Extensions
-        public CustomBinarySerializerDelegate<OCPP.CSMS.BinaryDataTransferResponse>?                 CustomIncomingBinaryDataTransferResponseSerializer           { get; set; }
+        public CustomBinarySerializerDelegate<BinaryDataTransferResponse>?                           CustomIncomingBinaryDataTransferResponseSerializer           { get; set; }
+
+
+        // Overlay Networking Extensions
+        public CustomJObjectSerializerDelegate<OCPP.NN.NotifyNetworkTopologyResponse>?               CustomIncomingNotifyNetworkTopologyResponseSerializer        { get; set; }
 
         #endregion
 
@@ -1731,6 +1752,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         // Binary Data Streams Extensions
         public CustomBinarySerializerDelegate <OCPP.CS.BinaryDataTransferRequest>?                   CustomIncomingBinaryDataTransferRequestSerializer            { get; set; }
+
+
+        // Overlay Networking Extensions
+        public CustomJObjectSerializerDelegate<OCPP.NN.NotifyNetworkTopologyRequest>?               CustomIncomingNotifyNetworkTopologyRequestSerializer          { get; set; }
 
         #endregion
 
@@ -1907,6 +1932,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public CustomJObjectSerializerDelegate<EnergyMix>?                                           CustomEnergyMixSerializer                              { get; set; }
         public CustomJObjectSerializerDelegate<EnergySource>?                                        CustomEnergySourceSerializer                           { get; set; }
         public CustomJObjectSerializerDelegate<EnvironmentalImpact>?                                 CustomEnvironmentalImpactSerializer                    { get; set; }
+
+
+        // Overlay Networking Extensions
+        public CustomJObjectSerializerDelegate<NetworkTopologyInformation>?                          CustomNetworkTopologyInformationSerializer             { get; set; }
 
         #endregion
 
@@ -2118,6 +2147,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         {
 
             var centralSystemServer = new CSMSWSServer(
+                                          this,
                                           HTTPServerName,
                                           IPAddress,
                                           TCPPort,
@@ -6473,7 +6503,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                    out var errorResponse
                                )
 
-                                   ? new OCPP.CSMS.BinaryDataTransferResponse(
+                                   ? new BinaryDataTransferResponse(
                                          Request:      request,
                                          Result:       Result.SignatureError(
                                                            $"Invalid signature(s): {errorResponse}"
@@ -6489,7 +6519,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                Data:                   responseBinaryData
                                            )
 
-                                         : new OCPP.CSMS.BinaryDataTransferResponse(
+                                         : new BinaryDataTransferResponse(
                                                Request:                request,
                                                Status:                 BinaryDataTransferStatus.Rejected,
                                                AdditionalStatusInfo:   null,
@@ -6534,6 +6564,128 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         await HandleErrors(
                                   nameof(TestCSMS),
                                   nameof(OnIncomingBinaryDataTransferResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+
+            // Overlay Networking Extensions
+
+            #region OnIncomingNotifyNetworkTopology
+
+            CSMSChannel.OnIncomingNotifyNetworkTopology += async (timestamp,
+                                                                  sender,
+                                                                  connection,
+                                                                  request,
+                                                                  cancellationToken) => {
+
+                #region Send OnIncomingNotifyNetworkTopologyRequest event
+
+                var startTime = Timestamp.Now;
+
+                var onIncomingNotifyNetworkTopologyRequest = OnIncomingNotifyNetworkTopologyRequest;
+                if (onIncomingNotifyNetworkTopologyRequest is not null)
+                {
+                    try
+                    {
+
+                        await Task.WhenAll(onIncomingNotifyNetworkTopologyRequest.GetInvocationList().
+                                               OfType <OnIncomingNotifyNetworkTopologyRequestDelegate>().
+                                               Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                 this,
+                                                                                                 connection,
+                                                                                                 request)).
+                                               ToArray());
+
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestCSMS),
+                                  nameof(OnSetDisplayMessageRequest),
+                                  e
+                              );
+                    }
+                }
+
+                #endregion
+
+                // NetworkTopologyInformation
+
+                DebugX.Log("OnIncomingNotifyNetworkTopology: " + request.NetworkTopologyInformation);
+
+
+                var response = !SignaturePolicy.VerifyRequestMessage(
+                                   request,
+                                   request.ToJSON(
+                                       CustomIncomingNotifyNetworkTopologyRequestSerializer,
+                                       CustomNetworkTopologyInformationSerializer,
+                                       CustomSignatureSerializer,
+                                       CustomCustomDataSerializer
+                                   ),
+                                   out var errorResponse
+                               )
+
+                                   ? new OCPP.NN.NotifyNetworkTopologyResponse(
+                                         Request:      request,
+                                         Result:       Result.SignatureError(
+                                                           $"Invalid signature(s): {errorResponse}"
+                                                       )
+                                     )
+
+                                   : new (
+                                         Request:      request,
+                                         Status:       NetworkTopologyStatus.Accepted,
+                                         CustomData:   null
+                                     );
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomIncomingNotifyNetworkTopologyResponseSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
+
+
+                #region Send OnIncomingNotifyNetworkTopologyResponse event
+
+                var responseLogger = OnIncomingNotifyNetworkTopologyResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnIncomingNotifyNetworkTopologyResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                connection,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestCSMS),
+                                  nameof(OnIncomingNotifyNetworkTopologyResponse),
                                   e
                               );
                     }

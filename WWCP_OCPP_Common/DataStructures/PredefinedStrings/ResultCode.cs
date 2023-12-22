@@ -273,93 +273,93 @@ namespace cloud.charging.open.protocols.OCPP
 
         #region Operator overloading
 
-        #region Operator == (ErrorCode1, ErrorCode2)
+        #region Operator == (ResultCode1, ResultCode2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ErrorCode1">An OCPP result code.</param>
-        /// <param name="ErrorCode2">Another OCPP result code.</param>
+        /// <param name="ResultCode1">An OCPP result code.</param>
+        /// <param name="ResultCode2">Another OCPP result code.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (ResultCode ErrorCode1,
-                                           ResultCode ErrorCode2)
+        public static Boolean operator == (ResultCode ResultCode1,
+                                           ResultCode ResultCode2)
 
-            => ErrorCode1.Equals(ErrorCode2);
+            => ResultCode1.Equals(ResultCode2);
 
         #endregion
 
-        #region Operator != (ErrorCode1, ErrorCode2)
+        #region Operator != (ResultCode1, ResultCode2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ErrorCode1">An OCPP result code.</param>
-        /// <param name="ErrorCode2">Another OCPP result code.</param>
+        /// <param name="ResultCode1">An OCPP result code.</param>
+        /// <param name="ResultCode2">Another OCPP result code.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (ResultCode ErrorCode1,
-                                           ResultCode ErrorCode2)
+        public static Boolean operator != (ResultCode ResultCode1,
+                                           ResultCode ResultCode2)
 
-            => !ErrorCode1.Equals(ErrorCode2);
+            => !ResultCode1.Equals(ResultCode2);
 
         #endregion
 
-        #region Operator <  (ErrorCode1, ErrorCode2)
+        #region Operator <  (ResultCode1, ResultCode2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ErrorCode1">An OCPP result code.</param>
-        /// <param name="ErrorCode2">Another OCPP result code.</param>
+        /// <param name="ResultCode1">An OCPP result code.</param>
+        /// <param name="ResultCode2">Another OCPP result code.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (ResultCode ErrorCode1,
-                                          ResultCode ErrorCode2)
+        public static Boolean operator < (ResultCode ResultCode1,
+                                          ResultCode ResultCode2)
 
-            => ErrorCode1.CompareTo(ErrorCode2) < 0;
+            => ResultCode1.CompareTo(ResultCode2) < 0;
 
         #endregion
 
-        #region Operator <= (ErrorCode1, ErrorCode2)
+        #region Operator <= (ResultCode1, ResultCode2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ErrorCode1">An OCPP result code.</param>
-        /// <param name="ErrorCode2">Another OCPP result code.</param>
+        /// <param name="ResultCode1">An OCPP result code.</param>
+        /// <param name="ResultCode2">Another OCPP result code.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (ResultCode ErrorCode1,
-                                           ResultCode ErrorCode2)
+        public static Boolean operator <= (ResultCode ResultCode1,
+                                           ResultCode ResultCode2)
 
-            => ErrorCode1.CompareTo(ErrorCode2) <= 0;
+            => ResultCode1.CompareTo(ResultCode2) <= 0;
 
         #endregion
 
-        #region Operator >  (ErrorCode1, ErrorCode2)
+        #region Operator >  (ResultCode1, ResultCode2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ErrorCode1">An OCPP result code.</param>
-        /// <param name="ErrorCode2">Another OCPP result code.</param>
+        /// <param name="ResultCode1">An OCPP result code.</param>
+        /// <param name="ResultCode2">Another OCPP result code.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (ResultCode ErrorCode1,
-                                          ResultCode ErrorCode2)
+        public static Boolean operator > (ResultCode ResultCode1,
+                                          ResultCode ResultCode2)
 
-            => ErrorCode1.CompareTo(ErrorCode2) > 0;
+            => ResultCode1.CompareTo(ResultCode2) > 0;
 
         #endregion
 
-        #region Operator >= (ErrorCode1, ErrorCode2)
+        #region Operator >= (ResultCode1, ResultCode2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ErrorCode1">An OCPP result code.</param>
-        /// <param name="ErrorCode2">Another OCPP result code.</param>
+        /// <param name="ResultCode1">An OCPP result code.</param>
+        /// <param name="ResultCode2">Another OCPP result code.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (ResultCode ErrorCode1,
-                                           ResultCode ErrorCode2)
+        public static Boolean operator >= (ResultCode ResultCode1,
+                                           ResultCode ResultCode2)
 
-            => ErrorCode1.CompareTo(ErrorCode2) >= 0;
+            => ResultCode1.CompareTo(ResultCode2) >= 0;
 
         #endregion
 

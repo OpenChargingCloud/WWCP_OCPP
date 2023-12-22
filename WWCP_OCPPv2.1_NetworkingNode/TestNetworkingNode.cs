@@ -40,6 +40,7 @@ using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
 using cloud.charging.open.protocols.OCPP.CSMS;
 using cloud.charging.open.protocols.OCPP.CS;
+using cloud.charging.open.protocols.OCPP.NN;
 
 #endregion
 
@@ -185,8 +186,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <summary>
     /// A networking node for testing.
     /// </summary>
-    public class TestNetworkingNode : IEventSender
-                                   //  INetworkingNode
+    public class TestNetworkingNode : IEventSender,
+                                      INetworkingNode2
     {
 
         public class ActingAsCS : CS.INetworkingNode,
@@ -223,8 +224,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             public                      IHTTPAuthentication?        HTTPAuthentication          { get; }
             public                      DNSClient?                  DNSClient                   { get; }
 
-            private                     Int64                       internalRequestId           = 100000;
-
             #endregion
 
             #region Properties
@@ -232,7 +231,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// The client connected to a CSMS.
             /// </summary>
-            public CS.INetworkingNodeClient?   CSClient                    { get; private set; }
+            public INetworkingNodeOutgoingMessages?   CSClient                    { get; private set; }
 
 
             public String? ClientCloseMessage
@@ -610,6 +609,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
+            public CustomJObjectSerializerDelegate<OCPP.NN.NotifyNetworkTopologyRequest>?                CustomNotifyNetworkTopologyRequestSerializer           { get; set; }
+            public CustomJObjectSerializerDelegate<OCPP.NN.NotifyNetworkTopologyResponse>?               CustomNotifyNetworkTopologyResponseSerializer          { get; set; }
+
 
             #region Data Structures
 
@@ -722,6 +724,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             public CustomJObjectSerializerDelegate<EnvironmentalImpact>?                                 CustomEnvironmentalImpactSerializer                          { get; set; }
 
             #endregion
+
+            public CustomJObjectSerializerDelegate<NetworkTopologyInformation>?                          CustomNetworkTopologyInformationSerializer             { get; set; }
 
             #endregion
 
@@ -1138,6 +1142,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// An event fired whenever a response to a BinaryDataTransfer request was received.
             /// </summary>
             public event OCPP.CS.OnBinaryDataTransferResponseDelegate?  OnBinaryDataTransferResponse;
+
+            #endregion
+
+
+            // Overlay Networking Extensions
+
+            #region OnNotifyNetworkTopology (Request/-Response)
+
+            /// <summary>
+            /// An event fired whenever a NotifyNetworkTopology request will be sent to another node.
+            /// </summary>
+            public event OCPP.CS.OnNotifyNetworkTopologyRequestDelegate?   OnNotifyNetworkTopologyRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a NotifyNetworkTopology request was received.
+            /// </summary>
+            public event OCPP.CS.OnNotifyNetworkTopologyResponseDelegate?  OnNotifyNetworkTopologyResponse;
 
             #endregion
 
@@ -1853,12 +1874,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnIncomingBinaryDataTransferRequest/-Response
 
             /// <summary>
-            /// An event sent whenever a binary data transfer request was sent.
+            /// An event sent whenever a BinaryDataTransfer request was sent.
             /// </summary>
             public event OCPP.CS.OnIncomingBinaryDataTransferRequestDelegate?   OnIncomingBinaryDataTransferRequest;
 
             /// <summary>
-            /// An event sent whenever a response to a binary data transfer request was sent.
+            /// An event sent whenever a response to a BinaryDataTransfer request was sent.
             /// </summary>
             public event OCPP.CS.OnIncomingBinaryDataTransferResponseDelegate?  OnIncomingBinaryDataTransferResponse;
 
@@ -2256,7 +2277,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             private readonly ConcurrentDictionary<Transaction_Id,        Decimal>         totalCosts        = new ();
             private readonly ConcurrentDictionary<InstallCertificateUse, Certificate>     certificates      = new ();
 
-            public void WireEvents(CS.INetworkingNodeServer ChargingStationServer)
+            public void WireEvents(INetworkingNodeIncomingMessages ChargingStationServer)
             {
 
                 #region OnReset
@@ -10006,7 +10027,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         else
                         {
 
-                            DebugX.Log($"Charging Station '{Id}': Incoming binary data transfer request: {request.VendorId}.{request.MessageId?.ToString() ?? "-"}: {request.Data?.ToHexString() ?? "-"}!");
+                            DebugX.Log($"Charging Station '{Id}': Incoming BinaryDataTransfer request: {request.VendorId}.{request.MessageId?.ToString() ?? "-"}: {request.Data?.ToHexString() ?? "-"}!");
 
                             // VendorId
                             // MessageId
@@ -12244,16 +12265,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region (private) NextRequestId
 
             public Request_Id NextRequestId
-            {
-                get
-                {
-
-                    Interlocked.Increment(ref internalRequestId);
-
-                    return Request_Id.Parse(internalRequestId.ToString());
-
-                }
-            }
+                => parentNetworkingNode.NextRequestId;
 
             #endregion
 
@@ -15331,6 +15343,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #endregion
 
 
+            // Binary Data Streams Extensions
+
             #region TransferBinaryData                    (Request)
 
             /// <summary>
@@ -15434,6 +15448,103 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
+
+            // Overlay Networking Extensions
+
+            #region NotifyNetworkTopology                 (Request)
+
+            /// <summary>
+            /// Notify about the current network topology or a current change within the topology.
+            /// </summary>
+            /// <param name="Request">A reset request.</param>
+            public async Task<NotifyNetworkTopologyResponse>
+                NotifyNetworkTopology(NotifyNetworkTopologyRequest Request)
+
+            {
+
+                #region Send OnNotifyNetworkTopologyRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnNotifyNetworkTopologyRequest?.Invoke(startTime,
+                                                           this,
+                                                           Request);
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyNetworkTopologyRequest));
+                }
+
+                #endregion
+
+
+                var response = CSClient is not null
+
+                                   ? SignaturePolicy.SignRequestMessage(
+                                         Request,
+                                         Request.ToJSON(
+                                             CustomNotifyNetworkTopologyRequestSerializer,
+                                             CustomNetworkTopologyInformationSerializer,
+                                             CustomSignatureSerializer,
+                                             CustomCustomDataSerializer
+                                         ),
+                                         out var errorResponse
+                                     )
+
+                                         ? await CSClient.NotifyNetworkTopology(Request)
+
+                                         : new NotifyNetworkTopologyResponse(
+                                               Request,
+                                               Result.SignatureError(errorResponse)
+                                           )
+
+                                   : new NotifyNetworkTopologyResponse(
+                                         Request,
+                                         Result.Server("Unknown or unreachable charging station!")
+                                     );
+
+                SignaturePolicy.VerifyResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomNotifyNetworkTopologyResponseSerializer,
+                        //CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out errorResponse
+                );
+
+
+                #region Send OnNotifyNetworkTopologyResponse event
+
+                var endTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnNotifyNetworkTopologyResponse?.Invoke(endTime,
+                                                            this,
+                                                            Request,
+                                                            response,
+                                                            endTime - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyNetworkTopologyResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            }
+
+            #endregion
+
             #endregion
 
 
@@ -15469,8 +15580,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             protected static readonly  TimeSpan                                                                                SemaphoreSlimTimeout        = TimeSpan.FromSeconds(5);
 
             public    static readonly  IPPort                                                                                  DefaultHTTPUploadPort       = IPPort.Parse(9903);
-
-            private                    Int64                                                                                   internalRequestId           = 800000;
 
             private                    TimeSpan                                                                                defaultRequestTimeout       = TimeSpan.FromSeconds(30);
 
@@ -21867,6 +21976,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 #endregion
 
+
+                // Overlay Networking Extensions
+
+                #region OnNotifyNetworkTopology
+
+                #endregion
+
                 #endregion
 
 
@@ -21902,19 +22018,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region NetworkingNode -> Charging Station Messages
 
-            #region NextRequestId
+            #region (private) NextRequestId
 
             public Request_Id NextRequestId
-            {
-                get
-                {
-
-                    Interlocked.Increment(ref internalRequestId);
-
-                    return Request_Id.Parse(internalRequestId.ToString());
-
-                }
-            }
+                => parentNetworkingNode.NextRequestId;
 
             #endregion
 
@@ -29619,7 +29726,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Data
 
-        private          readonly  HashSet<SignaturePolicy>                                                                 signaturePolicies           = new();
+        private          readonly  HashSet<SignaturePolicy>                                                                 signaturePolicies           = [];
+
+        private                    Int64                                                                                    internalRequestId           = 800000;
 
         #endregion
 
@@ -29752,7 +29861,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public  ActingAsCSMS             AsCSMS                      { get; }
 
 
-        public CS.INetworkingNodeClient? CSClient
+        public CS.INetworkingNodeOutgoingMessages? CSClient
             => AsCS.CSClient;
 
 
@@ -29768,11 +29877,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Events
 
+        #region OnNotifyNetworkTopology (Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a NotifyNetworkTopology request will be sent to another node.
+        /// </summary>
+        public event OCPP.CS.OnNotifyNetworkTopologyRequestDelegate?   OnNotifyNetworkTopologyRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a NotifyNetworkTopology request was received.
+        /// </summary>
+        public event OCPP.CS.OnNotifyNetworkTopologyResponseDelegate?  OnNotifyNetworkTopologyResponse;
+
+        #endregion
 
         #endregion
 
         #region Custom JSON serializer delegates
 
+        public CustomJObjectSerializerDelegate<OCPP.NN.NotifyNetworkTopologyRequest>?                CustomNotifyNetworkTopologyRequestSerializer           { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.NN.NotifyNetworkTopologyResponse>?               CustomNotifyNetworkTopologyResponseSerializer          { get; set; }
+
+
+        // Data Structures
+        public CustomJObjectSerializerDelegate<OCPP.Signature>?                                      CustomSignatureSerializer                              { get; set; }
+        public CustomJObjectSerializerDelegate<CustomData>?                                          CustomCustomDataSerializer                             { get; set; }
+        public CustomJObjectSerializerDelegate<StatusInfo>?                                          CustomStatusInfoSerializer                             { get; set; }
+
+
+        public CustomJObjectSerializerDelegate<NetworkTopologyInformation>?                          CustomNetworkTopologyInformationSerializer             { get; set; }
 
         #endregion
 
@@ -29953,6 +30086,143 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             DebugX.LogException(ExceptionOccured, $"{Module}.{Caller}");
 
             return Task.CompletedTask;
+
+        }
+
+        #endregion
+
+
+
+        public Boolean LookupNetworkingNode(NetworkingNode_Id NetworkingNodeId, out ICommunicationChannel? CommunicationChannel)
+        {
+
+            //var lookUpNetworkingNodeId = NetworkingNodeId;
+
+            ////if (reachableViaNetworkingHubs.TryGetValue(lookUpNetworkingNodeId, out var networkingHubId))
+            ////    lookUpNetworkingNodeId = networkingHubId;
+
+            //if (reachableChargingStations.TryGetValue(lookUpNetworkingNodeId, out var networkingNodeChannel) &&
+            //    networkingNodeChannel?.Item1 is not null)
+            //{
+            //    NetworkingNodeChannel = networkingNodeChannel.Item1;
+            //    return true;
+            //}
+
+            CommunicationChannel = null;
+            return false;
+
+        }
+
+
+
+
+        #region NextRequestId
+
+        public Request_Id NextRequestId
+        {
+            get
+            {
+
+                Interlocked.Increment(ref internalRequestId);
+
+                return Request_Id.Parse(internalRequestId.ToString());
+
+            }
+        }
+
+        #endregion
+
+        #region NotifyNetworkTopology        (Request)
+
+        /// <summary>
+        /// Notify about the current network topology or a current change within the topology.
+        /// </summary>
+        /// <param name="Request">A reset request.</param>
+        public async Task<NotifyNetworkTopologyResponse> NotifyNetworkTopology(NotifyNetworkTopologyRequest Request)
+        {
+
+            #region Send OnNotifyNetworkTopologyRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnNotifyNetworkTopologyRequest?.Invoke(startTime,
+                                                       this,
+                                                       Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyNetworkTopologyRequest));
+            }
+
+            #endregion
+
+
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var communicationChannel) &&
+                                communicationChannel is not null
+
+            // FUTURE!!!
+
+                                ? SignaturePolicy.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomNotifyNetworkTopologyRequestSerializer,
+                                          CustomNetworkTopologyInformationSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      out var errorResponse
+                                  )
+
+                                      ? await communicationChannel.NotifyNetworkTopology(Request)
+
+                                      : new NotifyNetworkTopologyResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new NotifyNetworkTopologyResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomNotifyNetworkTopologyResponseSerializer,
+                    //CustomStatusInfoSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
+
+
+            #region Send OnNotifyNetworkTopologyResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnNotifyNetworkTopologyResponse?.Invoke(endTime,
+                                                        this,
+                                                        Request,
+                                                        response,
+                                                        endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyNetworkTopologyResponse));
+            }
+
+            #endregion
+
+            return response;
 
         }
 

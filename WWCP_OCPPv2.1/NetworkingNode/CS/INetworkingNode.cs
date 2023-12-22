@@ -27,8 +27,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     /// <summary>
     /// The common interface of all charging station.
     /// </summary>
-    public interface INetworkingNode : INetworkingNodeClient,
-                                       INetworkingNodeServer
+    public interface INetworkingNode : INetworkingNodeOutgoingMessages,
+                                       INetworkingNodeOutgoingMessagesEvents,
+                                       INetworkingNodeIncomingMessages,
+                                       INetworkingNodeIncomingMessagesEvents
     {
 
         NetworkingNode_Id  Id                       { get; }

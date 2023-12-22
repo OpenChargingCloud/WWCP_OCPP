@@ -115,24 +115,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.UpdateFirmwareResponse>
 
-            UpdateFirmware(this ICSMS               CSMS,
-                           NetworkingNode_Id        DestinationNodeId,
-                           Firmware                 Firmware,
-                           Int32                    UpdateFirmwareRequestId,
-                           Byte?                    Retries             = null,
-                           TimeSpan?                RetryInterval       = null,
+            UpdateFirmware(this ICSMS                    CSMS,
+                           NetworkingNode_Id             DestinationNodeId,
+                           Firmware                      Firmware,
+                           Int32                         UpdateFirmwareRequestId,
+                           Byte?                         Retries             = null,
+                           TimeSpan?                     RetryInterval       = null,
 
-                           IEnumerable<KeyPair>?    SignKeys            = null,
-                           IEnumerable<SignInfo>?   SignInfos           = null,
+                           IEnumerable<KeyPair>?         SignKeys            = null,
+                           IEnumerable<SignInfo>?        SignInfos           = null,
                            IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                           CustomData?              CustomData          = null,
+                           CustomData?                   CustomData          = null,
 
-                           Request_Id?              RequestId           = null,
-                           DateTime?                RequestTimestamp    = null,
-                           TimeSpan?                RequestTimeout      = null,
-                           EventTracking_Id?        EventTrackingId     = null,
-                           CancellationToken        CancellationToken   = default)
+                           Request_Id?                   RequestId           = null,
+                           DateTime?                     RequestTimestamp    = null,
+                           TimeSpan?                     RequestTimeout      = null,
+                           EventTracking_Id?             EventTrackingId     = null,
+                           CancellationToken             CancellationToken   = default)
 
 
                 => CSMS.UpdateFirmware(
@@ -182,25 +182,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.PublishFirmwareResponse>
 
-            PublishFirmware(this ICSMS               CSMS,
-                            NetworkingNode_Id        DestinationNodeId,
-                            Int32                    PublishFirmwareRequestId,
-                            URL                      DownloadLocation,
-                            String                   MD5Checksum,
-                            Byte?                    Retries             = null,
-                            TimeSpan?                RetryInterval       = null,
+            PublishFirmware(this ICSMS                    CSMS,
+                            NetworkingNode_Id             DestinationNodeId,
+                            Int32                         PublishFirmwareRequestId,
+                            URL                           DownloadLocation,
+                            String                        MD5Checksum,
+                            Byte?                         Retries             = null,
+                            TimeSpan?                     RetryInterval       = null,
 
-                            IEnumerable<KeyPair>?    SignKeys            = null,
-                            IEnumerable<SignInfo>?   SignInfos           = null,
+                            IEnumerable<KeyPair>?         SignKeys            = null,
+                            IEnumerable<SignInfo>?        SignInfos           = null,
                             IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                            CustomData?              CustomData          = null,
+                            CustomData?                   CustomData          = null,
 
-                            Request_Id?              RequestId           = null,
-                            DateTime?                RequestTimestamp    = null,
-                            TimeSpan?                RequestTimeout      = null,
-                            EventTracking_Id?        EventTrackingId     = null,
-                            CancellationToken        CancellationToken   = default)
+                            Request_Id?                   RequestId           = null,
+                            DateTime?                     RequestTimestamp    = null,
+                            TimeSpan?                     RequestTimeout      = null,
+                            EventTracking_Id?             EventTrackingId     = null,
+                            CancellationToken             CancellationToken   = default)
 
 
                 => CSMS.PublishFirmware(
@@ -247,21 +247,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.UnpublishFirmwareResponse>
 
-            UnpublishFirmware(this ICSMS               CSMS,
-                              NetworkingNode_Id        DestinationNodeId,
-                              String                   MD5Checksum,
+            UnpublishFirmware(this ICSMS                    CSMS,
+                              NetworkingNode_Id             DestinationNodeId,
+                              String                        MD5Checksum,
 
-                              IEnumerable<KeyPair>?    SignKeys            = null,
-                              IEnumerable<SignInfo>?   SignInfos           = null,
+                              IEnumerable<KeyPair>?         SignKeys            = null,
+                              IEnumerable<SignInfo>?        SignInfos           = null,
                               IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                              CustomData?              CustomData          = null,
+                              CustomData?                   CustomData          = null,
 
-                              Request_Id?              RequestId           = null,
-                              DateTime?                RequestTimestamp    = null,
-                              TimeSpan?                RequestTimeout      = null,
-                              EventTracking_Id?        EventTrackingId     = null,
-                              CancellationToken        CancellationToken   = default)
+                              Request_Id?                   RequestId           = null,
+                              DateTime?                     RequestTimestamp    = null,
+                              TimeSpan?                     RequestTimeout      = null,
+                              EventTracking_Id?             EventTrackingId     = null,
+                              CancellationToken             CancellationToken   = default)
 
 
                 => CSMS.UnpublishFirmware(
@@ -305,22 +305,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.GetBaseReportResponse>
 
-            GetBaseReport(this ICSMS               CSMS,
-                          NetworkingNode_Id        DestinationNodeId,
-                          Int64                    GetBaseReportRequestId,
-                          ReportBase               ReportBase,
+            GetBaseReport(this ICSMS                    CSMS,
+                          NetworkingNode_Id             DestinationNodeId,
+                          Int64                         GetBaseReportRequestId,
+                          ReportBase                    ReportBase,
 
-                          IEnumerable<KeyPair>?    SignKeys            = null,
-                          IEnumerable<SignInfo>?   SignInfos           = null,
+                          IEnumerable<KeyPair>?         SignKeys            = null,
+                          IEnumerable<SignInfo>?        SignInfos           = null,
                           IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                          CustomData?              CustomData          = null,
+                          CustomData?                   CustomData          = null,
 
-                          Request_Id?              RequestId           = null,
-                          DateTime?                RequestTimestamp    = null,
-                          TimeSpan?                RequestTimeout      = null,
-                          EventTracking_Id?        EventTrackingId     = null,
-                          CancellationToken        CancellationToken   = default)
+                          Request_Id?                   RequestId           = null,
+                          DateTime?                     RequestTimestamp    = null,
+                          TimeSpan?                     RequestTimeout      = null,
+                          EventTracking_Id?             EventTrackingId     = null,
+                          CancellationToken             CancellationToken   = default)
 
 
                 => CSMS.GetBaseReport(
@@ -431,25 +431,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.GetLogResponse>
 
-            GetLog(this ICSMS               CSMS,
-                   NetworkingNode_Id        DestinationNodeId,
-                   LogType                  LogType,
-                   Int32                    LogRequestId,
-                   LogParameters            Log,
-                   Byte?                    Retries             = null,
-                   TimeSpan?                RetryInterval       = null,
+            GetLog(this ICSMS                    CSMS,
+                   NetworkingNode_Id             DestinationNodeId,
+                   LogType                       LogType,
+                   Int32                         LogRequestId,
+                   LogParameters                 Log,
+                   Byte?                         Retries             = null,
+                   TimeSpan?                     RetryInterval       = null,
 
-                   IEnumerable<KeyPair>?    SignKeys            = null,
-                   IEnumerable<SignInfo>?   SignInfos           = null,
+                   IEnumerable<KeyPair>?         SignKeys            = null,
+                   IEnumerable<SignInfo>?        SignInfos           = null,
                    IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                   CustomData?              CustomData          = null,
+                   CustomData?                   CustomData          = null,
 
-                   Request_Id?              RequestId           = null,
-                   DateTime?                RequestTimestamp    = null,
-                   TimeSpan?                RequestTimeout      = null,
-                   EventTracking_Id?        EventTrackingId     = null,
-                   CancellationToken        CancellationToken   = default)
+                   Request_Id?                   RequestId           = null,
+                   DateTime?                     RequestTimestamp    = null,
+                   TimeSpan?                     RequestTimeout      = null,
+                   EventTracking_Id?             EventTrackingId     = null,
+                   CancellationToken             CancellationToken   = default)
 
 
                 => CSMS.GetLog(
@@ -611,21 +611,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.SetMonitoringBaseResponse>
 
-            SetMonitoringBase(this ICSMS               CSMS,
-                              NetworkingNode_Id        DestinationNodeId,
-                              MonitoringBase           MonitoringBase,
+            SetMonitoringBase(this ICSMS                    CSMS,
+                              NetworkingNode_Id             DestinationNodeId,
+                              MonitoringBase                MonitoringBase,
 
-                              IEnumerable<KeyPair>?    SignKeys            = null,
-                              IEnumerable<SignInfo>?   SignInfos           = null,
+                              IEnumerable<KeyPair>?         SignKeys            = null,
+                              IEnumerable<SignInfo>?        SignInfos           = null,
                               IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                              CustomData?              CustomData          = null,
+                              CustomData?                   CustomData          = null,
 
-                              Request_Id?              RequestId           = null,
-                              DateTime?                RequestTimestamp    = null,
-                              TimeSpan?                RequestTimeout      = null,
-                              EventTracking_Id?        EventTrackingId     = null,
-                              CancellationToken        CancellationToken   = default)
+                              Request_Id?                   RequestId           = null,
+                              DateTime?                     RequestTimestamp    = null,
+                              TimeSpan?                     RequestTimeout      = null,
+                              EventTracking_Id?             EventTrackingId     = null,
+                              CancellationToken             CancellationToken   = default)
 
 
                 => CSMS.SetMonitoringBase(
@@ -731,21 +731,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.SetMonitoringLevelResponse>
 
-            SetMonitoringLevel(this ICSMS               CSMS,
-                               NetworkingNode_Id        DestinationNodeId,
-                               Severities               Severity,
+            SetMonitoringLevel(this ICSMS                    CSMS,
+                               NetworkingNode_Id             DestinationNodeId,
+                               Severities                    Severity,
 
-                               IEnumerable<KeyPair>?    SignKeys            = null,
-                               IEnumerable<SignInfo>?   SignInfos           = null,
+                               IEnumerable<KeyPair>?         SignKeys            = null,
+                               IEnumerable<SignInfo>?        SignInfos           = null,
                                IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                               CustomData?              CustomData          = null,
+                               CustomData?                   CustomData          = null,
 
-                               Request_Id?              RequestId           = null,
-                               DateTime?                RequestTimestamp    = null,
-                               TimeSpan?                RequestTimeout      = null,
-                               EventTracking_Id?        EventTrackingId     = null,
-                               CancellationToken        CancellationToken   = default)
+                               Request_Id?                   RequestId           = null,
+                               DateTime?                     RequestTimestamp    = null,
+                               TimeSpan?                     RequestTimeout      = null,
+                               EventTracking_Id?             EventTrackingId     = null,
+                               CancellationToken             CancellationToken   = default)
 
 
                 => CSMS.SetMonitoringLevel(
@@ -903,22 +903,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.SetNetworkProfileResponse>
 
-            SetNetworkProfile(this ICSMS                CSMS,
-                              NetworkingNode_Id         DestinationNodeId,
-                              Int32                     ConfigurationSlot,
-                              NetworkConnectionProfile  NetworkConnectionProfile,
+            SetNetworkProfile(this ICSMS                    CSMS,
+                              NetworkingNode_Id             DestinationNodeId,
+                              Int32                         ConfigurationSlot,
+                              NetworkConnectionProfile      NetworkConnectionProfile,
 
-                              IEnumerable<KeyPair>?     SignKeys            = null,
-                              IEnumerable<SignInfo>?    SignInfos           = null,
-                              IEnumerable<OCPP.Signature>?   Signatures          = null,
+                              IEnumerable<KeyPair>?         SignKeys            = null,
+                              IEnumerable<SignInfo>?        SignInfos           = null,
+                              IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                              CustomData?               CustomData          = null,
+                              CustomData?                   CustomData          = null,
 
-                              Request_Id?               RequestId           = null,
-                              DateTime?                 RequestTimestamp    = null,
-                              TimeSpan?                 RequestTimeout      = null,
-                              EventTracking_Id?         EventTrackingId     = null,
-                              CancellationToken         CancellationToken   = default)
+                              Request_Id?                   RequestId           = null,
+                              DateTime?                     RequestTimestamp    = null,
+                              TimeSpan?                     RequestTimeout      = null,
+                              EventTracking_Id?             EventTrackingId     = null,
+                              CancellationToken             CancellationToken   = default)
 
 
                 => CSMS.SetNetworkProfile(
@@ -964,23 +964,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.ChangeAvailabilityResponse>
 
-            ChangeAvailability(this ICSMS               CSMS,
-                               NetworkingNode_Id        DestinationNodeId,
-                               OperationalStatus        OperationalStatus,
+            ChangeAvailability(this ICSMS                    CSMS,
+                               NetworkingNode_Id             DestinationNodeId,
+                               OperationalStatus             OperationalStatus,
 
-                               EVSE?                    EVSE                = null,
+                               EVSE?                         EVSE                = null,
 
-                               IEnumerable<KeyPair>?    SignKeys            = null,
-                               IEnumerable<SignInfo>?   SignInfos           = null,
+                               IEnumerable<KeyPair>?         SignKeys            = null,
+                               IEnumerable<SignInfo>?        SignInfos           = null,
                                IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                               CustomData?              CustomData          = null,
+                               CustomData?                   CustomData          = null,
 
-                               Request_Id?              RequestId           = null,
-                               DateTime?                RequestTimestamp    = null,
-                               TimeSpan?                RequestTimeout      = null,
-                               EventTracking_Id?        EventTrackingId     = null,
-                               CancellationToken        CancellationToken   = default)
+                               Request_Id?                   RequestId           = null,
+                               DateTime?                     RequestTimestamp    = null,
+                               TimeSpan?                     RequestTimeout      = null,
+                               EventTracking_Id?             EventTrackingId     = null,
+                               CancellationToken             CancellationToken   = default)
 
 
                 => CSMS.ChangeAvailability(
@@ -1026,23 +1026,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.TriggerMessageResponse>
 
-            TriggerMessage(this ICSMS               CSMS,
-                           NetworkingNode_Id        DestinationNodeId,
-                           MessageTrigger           RequestedMessage,
-                           EVSE?                    EVSE                = null,
-                           String?                  CustomTrigger       = null,
+            TriggerMessage(this ICSMS                    CSMS,
+                           NetworkingNode_Id             DestinationNodeId,
+                           MessageTrigger                RequestedMessage,
+                           EVSE?                         EVSE                = null,
+                           String?                       CustomTrigger       = null,
 
-                           IEnumerable<KeyPair>?    SignKeys            = null,
-                           IEnumerable<SignInfo>?   SignInfos           = null,
+                           IEnumerable<KeyPair>?         SignKeys            = null,
+                           IEnumerable<SignInfo>?        SignInfos           = null,
                            IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                           CustomData?              CustomData          = null,
+                           CustomData?                   CustomData          = null,
 
-                           Request_Id?              RequestId           = null,
-                           DateTime?                RequestTimestamp    = null,
-                           TimeSpan?                RequestTimeout      = null,
-                           EventTracking_Id?        EventTrackingId     = null,
-                           CancellationToken        CancellationToken   = default)
+                           Request_Id?                   RequestId           = null,
+                           DateTime?                     RequestTimestamp    = null,
+                           TimeSpan?                     RequestTimeout      = null,
+                           EventTracking_Id?             EventTrackingId     = null,
+                           CancellationToken             CancellationToken   = default)
 
 
                 => CSMS.TriggerMessage(
@@ -1151,22 +1151,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.CertificateSignedResponse>
 
-            SendSignedCertificate(this ICSMS               CSMS,
-                                  NetworkingNode_Id        DestinationNodeId,
-                                  CertificateChain         CertificateChain,
-                                  CertificateSigningUse?   CertificateType     = null,
+            SendSignedCertificate(this ICSMS                    CSMS,
+                                  NetworkingNode_Id             DestinationNodeId,
+                                  CertificateChain              CertificateChain,
+                                  CertificateSigningUse?        CertificateType     = null,
 
-                                  IEnumerable<KeyPair>?    SignKeys            = null,
-                                  IEnumerable<SignInfo>?   SignInfos           = null,
+                                  IEnumerable<KeyPair>?         SignKeys            = null,
+                                  IEnumerable<SignInfo>?        SignInfos           = null,
                                   IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                                  CustomData?              CustomData          = null,
+                                  CustomData?                   CustomData          = null,
 
-                                  Request_Id?              RequestId           = null,
-                                  DateTime?                RequestTimestamp    = null,
-                                  TimeSpan?                RequestTimeout      = null,
-                                  EventTracking_Id?        EventTrackingId     = null,
-                                  CancellationToken        CancellationToken   = default)
+                                  Request_Id?                   RequestId           = null,
+                                  DateTime?                     RequestTimestamp    = null,
+                                  TimeSpan?                     RequestTimeout      = null,
+                                  EventTracking_Id?             EventTrackingId     = null,
+                                  CancellationToken             CancellationToken   = default)
 
 
                 => CSMS.SendSignedCertificate(
@@ -1211,22 +1211,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.InstallCertificateResponse>
 
-            InstallCertificate(this ICSMS               CSMS,
-                               NetworkingNode_Id        DestinationNodeId,
-                               InstallCertificateUse    CertificateType,
-                               Certificate              Certificate,
+            InstallCertificate(this ICSMS                    CSMS,
+                               NetworkingNode_Id             DestinationNodeId,
+                               InstallCertificateUse         CertificateType,
+                               Certificate                   Certificate,
 
-                               IEnumerable<KeyPair>?    SignKeys            = null,
-                               IEnumerable<SignInfo>?   SignInfos           = null,
+                               IEnumerable<KeyPair>?         SignKeys            = null,
+                               IEnumerable<SignInfo>?        SignInfos           = null,
                                IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                               CustomData?              CustomData          = null,
+                               CustomData?                   CustomData          = null,
 
-                               Request_Id?              RequestId           = null,
-                               DateTime?                RequestTimestamp    = null,
-                               TimeSpan?                RequestTimeout      = null,
-                               EventTracking_Id?        EventTrackingId     = null,
-                               CancellationToken        CancellationToken   = default)
+                               Request_Id?                   RequestId           = null,
+                               DateTime?                     RequestTimestamp    = null,
+                               TimeSpan?                     RequestTimeout      = null,
+                               EventTracking_Id?             EventTrackingId     = null,
+                               CancellationToken             CancellationToken   = default)
 
 
                 => CSMS.InstallCertificate(
@@ -1327,21 +1327,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.DeleteCertificateResponse>
 
-            DeleteCertificate(this ICSMS               CSMS,
-                              NetworkingNode_Id        DestinationNodeId,
-                              CertificateHashData      CertificateHashData,
+            DeleteCertificate(this ICSMS                    CSMS,
+                              NetworkingNode_Id             DestinationNodeId,
+                              CertificateHashData           CertificateHashData,
 
-                              IEnumerable<KeyPair>?    SignKeys            = null,
-                              IEnumerable<SignInfo>?   SignInfos           = null,
+                              IEnumerable<KeyPair>?         SignKeys            = null,
+                              IEnumerable<SignInfo>?        SignInfos           = null,
                               IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                              CustomData?              CustomData          = null,
+                              CustomData?                   CustomData          = null,
 
-                              Request_Id?              RequestId           = null,
-                              DateTime?                RequestTimestamp    = null,
-                              TimeSpan?                RequestTimeout      = null,
-                              EventTracking_Id?        EventTrackingId     = null,
-                              CancellationToken        CancellationToken   = default)
+                              Request_Id?                   RequestId           = null,
+                              DateTime?                     RequestTimestamp    = null,
+                              TimeSpan?                     RequestTimeout      = null,
+                              EventTracking_Id?             EventTrackingId     = null,
+                              CancellationToken             CancellationToken   = default)
 
 
                 => CSMS.DeleteCertificate(
@@ -1386,23 +1386,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.NotifyCRLResponse>
 
-            NotifyCRLAvailability(this ICSMS               CSMS,
-                                  NetworkingNode_Id        DestinationNodeId,
-                                  Int32                    NotifyCRLRequestId,
-                                  NotifyCRLStatus          Availability,
-                                  URL?                     Location,
+            NotifyCRLAvailability(this ICSMS                    CSMS,
+                                  NetworkingNode_Id             DestinationNodeId,
+                                  Int32                         NotifyCRLRequestId,
+                                  NotifyCRLStatus               Availability,
+                                  URL?                          Location,
 
-                                  IEnumerable<KeyPair>?    SignKeys            = null,
-                                  IEnumerable<SignInfo>?   SignInfos           = null,
+                                  IEnumerable<KeyPair>?         SignKeys            = null,
+                                  IEnumerable<SignInfo>?        SignInfos           = null,
                                   IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                                  CustomData?              CustomData          = null,
+                                  CustomData?                   CustomData          = null,
 
-                                  Request_Id?              RequestId           = null,
-                                  DateTime?                RequestTimestamp    = null,
-                                  TimeSpan?                RequestTimeout      = null,
-                                  EventTracking_Id?        EventTrackingId     = null,
-                                  CancellationToken        CancellationToken   = default)
+                                  Request_Id?                   RequestId           = null,
+                                  DateTime?                     RequestTimestamp    = null,
+                                  TimeSpan?                     RequestTimeout      = null,
+                                  EventTracking_Id?             EventTrackingId     = null,
+                                  CancellationToken             CancellationToken   = default)
 
 
                 => CSMS.NotifyCRLAvailability(
@@ -1447,20 +1447,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.GetLocalListVersionResponse>
 
-            GetLocalListVersion(this ICSMS               CSMS,
-                                NetworkingNode_Id        DestinationNodeId,
+            GetLocalListVersion(this ICSMS                    CSMS,
+                                NetworkingNode_Id             DestinationNodeId,
 
-                                IEnumerable<KeyPair>?    SignKeys            = null,
-                                IEnumerable<SignInfo>?   SignInfos           = null,
+                                IEnumerable<KeyPair>?         SignKeys            = null,
+                                IEnumerable<SignInfo>?        SignInfos           = null,
                                 IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                                CustomData?              CustomData          = null,
+                                CustomData?                   CustomData          = null,
 
-                                Request_Id?              RequestId           = null,
-                                DateTime?                RequestTimestamp    = null,
-                                TimeSpan?                RequestTimeout      = null,
-                                EventTracking_Id?        EventTrackingId     = null,
-                                CancellationToken        CancellationToken   = default)
+                                Request_Id?                   RequestId           = null,
+                                DateTime?                     RequestTimestamp    = null,
+                                TimeSpan?                     RequestTimeout      = null,
+                                EventTracking_Id?             EventTrackingId     = null,
+                                CancellationToken             CancellationToken   = default)
 
 
                 => CSMS.GetLocalListVersion(
@@ -1564,20 +1564,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.ClearCacheResponse>
 
-            ClearCache(this ICSMS               CSMS,
-                       NetworkingNode_Id        DestinationNodeId,
+            ClearCache(this ICSMS                    CSMS,
+                       NetworkingNode_Id             DestinationNodeId,
 
-                       IEnumerable<KeyPair>?    SignKeys            = null,
-                       IEnumerable<SignInfo>?   SignInfos           = null,
+                       IEnumerable<KeyPair>?         SignKeys            = null,
+                       IEnumerable<SignInfo>?        SignInfos           = null,
                        IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                       CustomData?              CustomData          = null,
+                       CustomData?                   CustomData          = null,
 
-                       Request_Id?              RequestId           = null,
-                       DateTime?                RequestTimestamp    = null,
-                       TimeSpan?                RequestTimeout      = null,
-                       EventTracking_Id?        EventTrackingId     = null,
-                       CancellationToken        CancellationToken   = default)
+                       Request_Id?                   RequestId           = null,
+                       DateTime?                     RequestTimestamp    = null,
+                       TimeSpan?                     RequestTimeout      = null,
+                       EventTracking_Id?             EventTrackingId     = null,
+                       CancellationToken             CancellationToken   = default)
 
 
                 => CSMS.ClearCache(
@@ -1625,26 +1625,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.ReserveNowResponse>
 
-            ReserveNow(this ICSMS               CSMS,
-                       NetworkingNode_Id        DestinationNodeId,
-                       Reservation_Id           ReservationId,
-                       DateTime                 ExpiryDate,
-                       IdToken                  IdToken,
-                       ConnectorType?          ConnectorType       = null,
-                       EVSE_Id?                 EVSEId              = null,
-                       IdToken?                 GroupIdToken        = null,
+            ReserveNow(this ICSMS                    CSMS,
+                       NetworkingNode_Id             DestinationNodeId,
+                       Reservation_Id                ReservationId,
+                       DateTime                      ExpiryDate,
+                       IdToken                       IdToken,
+                       ConnectorType?                ConnectorType       = null,
+                       EVSE_Id?                      EVSEId              = null,
+                       IdToken?                      GroupIdToken        = null,
 
-                       IEnumerable<KeyPair>?    SignKeys            = null,
-                       IEnumerable<SignInfo>?   SignInfos           = null,
+                       IEnumerable<KeyPair>?         SignKeys            = null,
+                       IEnumerable<SignInfo>?        SignInfos           = null,
                        IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                       CustomData?              CustomData          = null,
+                       CustomData?                   CustomData          = null,
 
-                       Request_Id?              RequestId           = null,
-                       DateTime?                RequestTimestamp    = null,
-                       TimeSpan?                RequestTimeout      = null,
-                       EventTracking_Id?        EventTrackingId     = null,
-                       CancellationToken        CancellationToken   = default)
+                       Request_Id?                   RequestId           = null,
+                       DateTime?                     RequestTimestamp    = null,
+                       TimeSpan?                     RequestTimeout      = null,
+                       EventTracking_Id?             EventTrackingId     = null,
+                       CancellationToken             CancellationToken   = default)
 
 
                 => CSMS.ReserveNow(
@@ -1692,21 +1692,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.CancelReservationResponse>
 
-            CancelReservation(this ICSMS               CSMS,
-                              NetworkingNode_Id        DestinationNodeId,
-                              Reservation_Id           ReservationId,
+            CancelReservation(this ICSMS                    CSMS,
+                              NetworkingNode_Id             DestinationNodeId,
+                              Reservation_Id                ReservationId,
 
-                              IEnumerable<KeyPair>?    SignKeys            = null,
-                              IEnumerable<SignInfo>?   SignInfos           = null,
+                              IEnumerable<KeyPair>?         SignKeys            = null,
+                              IEnumerable<SignInfo>?        SignInfos           = null,
                               IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                              CustomData?              CustomData          = null,
+                              CustomData?                   CustomData          = null,
 
-                              Request_Id?              RequestId           = null,
-                              DateTime?                RequestTimestamp    = null,
-                              TimeSpan?                RequestTimeout      = null,
-                              EventTracking_Id?        EventTrackingId     = null,
-                              CancellationToken        CancellationToken   = default)
+                              Request_Id?                   RequestId           = null,
+                              DateTime?                     RequestTimestamp    = null,
+                              TimeSpan?                     RequestTimeout      = null,
+                              EventTracking_Id?             EventTrackingId     = null,
+                              CancellationToken             CancellationToken   = default)
 
 
                 => CSMS.CancelReservation(
@@ -1754,26 +1754,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.RequestStartTransactionResponse>
 
-            StartCharging(this ICSMS               CSMS,
-                          NetworkingNode_Id        DestinationNodeId,
-                          RemoteStart_Id           RequestStartTransactionRequestId,
-                          IdToken                  IdToken,
-                          EVSE_Id?                 EVSEId              = null,
-                          ChargingProfile?         ChargingProfile     = null,
-                          IdToken?                 GroupIdToken        = null,
-                          TransactionLimits?       TransactionLimits   = null,
+            StartCharging(this ICSMS                    CSMS,
+                          NetworkingNode_Id             DestinationNodeId,
+                          RemoteStart_Id                RequestStartTransactionRequestId,
+                          IdToken                       IdToken,
+                          EVSE_Id?                      EVSEId              = null,
+                          ChargingProfile?              ChargingProfile     = null,
+                          IdToken?                      GroupIdToken        = null,
+                          TransactionLimits?            TransactionLimits   = null,
 
-                          IEnumerable<KeyPair>?    SignKeys            = null,
-                          IEnumerable<SignInfo>?   SignInfos           = null,
+                          IEnumerable<KeyPair>?         SignKeys            = null,
+                          IEnumerable<SignInfo>?        SignInfos           = null,
                           IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                          CustomData?              CustomData          = null,
+                          CustomData?                   CustomData          = null,
 
-                          Request_Id?              RequestId           = null,
-                          DateTime?                RequestTimestamp    = null,
-                          TimeSpan?                RequestTimeout      = null,
-                          EventTracking_Id?        EventTrackingId     = null,
-                          CancellationToken        CancellationToken   = default)
+                          Request_Id?                   RequestId           = null,
+                          DateTime?                     RequestTimestamp    = null,
+                          TimeSpan?                     RequestTimeout      = null,
+                          EventTracking_Id?             EventTrackingId     = null,
+                          CancellationToken             CancellationToken   = default)
 
 
                 => CSMS.StartCharging(
@@ -1821,21 +1821,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.RequestStopTransactionResponse>
 
-            StopCharging(this ICSMS               CSMS,
-                         NetworkingNode_Id        DestinationNodeId,
-                         Transaction_Id           TransactionId,
+            StopCharging(this ICSMS                    CSMS,
+                         NetworkingNode_Id             DestinationNodeId,
+                         Transaction_Id                TransactionId,
 
-                         IEnumerable<KeyPair>?    SignKeys            = null,
-                         IEnumerable<SignInfo>?   SignInfos           = null,
+                         IEnumerable<KeyPair>?         SignKeys            = null,
+                         IEnumerable<SignInfo>?        SignInfos           = null,
                          IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                         CustomData?              CustomData          = null,
+                         CustomData?                   CustomData          = null,
 
-                         Request_Id?              RequestId           = null,
-                         DateTime?                RequestTimestamp    = null,
-                         TimeSpan?                RequestTimeout      = null,
-                         EventTracking_Id?        EventTrackingId     = null,
-                         CancellationToken        CancellationToken   = default)
+                         Request_Id?                   RequestId           = null,
+                         DateTime?                     RequestTimestamp    = null,
+                         TimeSpan?                     RequestTimeout      = null,
+                         EventTracking_Id?             EventTrackingId     = null,
+                         CancellationToken             CancellationToken   = default)
 
 
                 => CSMS.StopCharging(
@@ -1878,21 +1878,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.GetTransactionStatusResponse>
 
-            GetTransactionStatus(this ICSMS               CSMS,
-                                 NetworkingNode_Id        DestinationNodeId,
-                                 Transaction_Id?          TransactionId       = null,
+            GetTransactionStatus(this ICSMS                    CSMS,
+                                 NetworkingNode_Id             DestinationNodeId,
+                                 Transaction_Id?               TransactionId       = null,
 
-                                 IEnumerable<KeyPair>?    SignKeys            = null,
-                                 IEnumerable<SignInfo>?   SignInfos           = null,
+                                 IEnumerable<KeyPair>?         SignKeys            = null,
+                                 IEnumerable<SignInfo>?        SignInfos           = null,
                                  IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                                 CustomData?              CustomData          = null,
+                                 CustomData?                   CustomData          = null,
 
-                                 Request_Id?              RequestId           = null,
-                                 DateTime?                RequestTimestamp    = null,
-                                 TimeSpan?                RequestTimeout      = null,
-                                 EventTracking_Id?        EventTrackingId     = null,
-                                 CancellationToken        CancellationToken   = default)
+                                 Request_Id?                   RequestId           = null,
+                                 DateTime?                     RequestTimestamp    = null,
+                                 TimeSpan?                     RequestTimeout      = null,
+                                 EventTracking_Id?             EventTrackingId     = null,
+                                 CancellationToken             CancellationToken   = default)
 
 
                 => CSMS.GetTransactionStatus(
@@ -1936,22 +1936,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.SetChargingProfileResponse>
 
-            SetChargingProfile(this ICSMS               CSMS,
-                               NetworkingNode_Id        DestinationNodeId,
-                               EVSE_Id                  EVSEId,
-                               ChargingProfile          ChargingProfile,
+            SetChargingProfile(this ICSMS                    CSMS,
+                               NetworkingNode_Id             DestinationNodeId,
+                               EVSE_Id                       EVSEId,
+                               ChargingProfile               ChargingProfile,
 
-                               IEnumerable<KeyPair>?    SignKeys            = null,
-                               IEnumerable<SignInfo>?   SignInfos           = null,
+                               IEnumerable<KeyPair>?         SignKeys            = null,
+                               IEnumerable<SignInfo>?        SignInfos           = null,
                                IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                               CustomData?              CustomData          = null,
+                               CustomData?                   CustomData          = null,
 
-                               Request_Id?              RequestId           = null,
-                               DateTime?                RequestTimestamp    = null,
-                               TimeSpan?                RequestTimeout      = null,
-                               EventTracking_Id?        EventTrackingId     = null,
-                               CancellationToken        CancellationToken   = default)
+                               Request_Id?                   RequestId           = null,
+                               DateTime?                     RequestTimestamp    = null,
+                               TimeSpan?                     RequestTimeout      = null,
+                               EventTracking_Id?             EventTrackingId     = null,
+                               CancellationToken             CancellationToken   = default)
 
 
                 => CSMS.SetChargingProfile(
@@ -1996,23 +1996,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.GetChargingProfilesResponse>
 
-            GetChargingProfiles(this ICSMS                CSMS,
-                                NetworkingNode_Id         DestinationNodeId,
-                                Int64                     GetChargingProfilesRequestId,
-                                ChargingProfileCriterion  ChargingProfile,
-                                EVSE_Id?                  EVSEId              = null,
+            GetChargingProfiles(this ICSMS                    CSMS,
+                                NetworkingNode_Id             DestinationNodeId,
+                                Int64                         GetChargingProfilesRequestId,
+                                ChargingProfileCriterion      ChargingProfile,
+                                EVSE_Id?                      EVSEId              = null,
 
-                                IEnumerable<KeyPair>?     SignKeys            = null,
-                                IEnumerable<SignInfo>?    SignInfos           = null,
-                                IEnumerable<OCPP.Signature>?   Signatures          = null,
+                                IEnumerable<KeyPair>?         SignKeys            = null,
+                                IEnumerable<SignInfo>?        SignInfos           = null,
+                                IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                                CustomData?               CustomData          = null,
+                                CustomData?                   CustomData          = null,
 
-                                Request_Id?               RequestId           = null,
-                                DateTime?                 RequestTimestamp    = null,
-                                TimeSpan?                 RequestTimeout      = null,
-                                EventTracking_Id?         EventTrackingId     = null,
-                                CancellationToken         CancellationToken   = default)
+                                Request_Id?                   RequestId           = null,
+                                DateTime?                     RequestTimestamp    = null,
+                                TimeSpan?                     RequestTimeout      = null,
+                                EventTracking_Id?             EventTrackingId     = null,
+                                CancellationToken             CancellationToken   = default)
 
 
                 => CSMS.GetChargingProfiles(
@@ -2058,22 +2058,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.ClearChargingProfileResponse>
 
-            ClearChargingProfile(this ICSMS               CSMS,
-                                 NetworkingNode_Id        DestinationNodeId,
-                                 ChargingProfile_Id?      ChargingProfileId         = null,
-                                 ClearChargingProfile?    ChargingProfileCriteria   = null,
+            ClearChargingProfile(this ICSMS                    CSMS,
+                                 NetworkingNode_Id             DestinationNodeId,
+                                 ChargingProfile_Id?           ChargingProfileId         = null,
+                                 ClearChargingProfile?         ChargingProfileCriteria   = null,
 
-                                 IEnumerable<KeyPair>?    SignKeys                  = null,
-                                 IEnumerable<SignInfo>?   SignInfos                 = null,
+                                 IEnumerable<KeyPair>?         SignKeys                  = null,
+                                 IEnumerable<SignInfo>?        SignInfos                 = null,
                                  IEnumerable<OCPP.Signature>?  Signatures                = null,
 
-                                 CustomData?              CustomData                = null,
+                                 CustomData?                   CustomData                = null,
 
-                                 Request_Id?              RequestId                 = null,
-                                 DateTime?                RequestTimestamp          = null,
-                                 TimeSpan?                RequestTimeout            = null,
-                                 EventTracking_Id?        EventTrackingId           = null,
-                                 CancellationToken        CancellationToken         = default)
+                                 Request_Id?                   RequestId                 = null,
+                                 DateTime?                     RequestTimestamp          = null,
+                                 TimeSpan?                     RequestTimeout            = null,
+                                 EventTracking_Id?             EventTrackingId           = null,
+                                 CancellationToken             CancellationToken         = default)
 
 
                 => CSMS.ClearChargingProfile(
@@ -2119,23 +2119,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.GetCompositeScheduleResponse>
 
-            GetCompositeSchedule(this ICSMS               CSMS,
-                                 NetworkingNode_Id        DestinationNodeId,
-                                 TimeSpan                 Duration,
-                                 EVSE_Id                  EVSEId,
-                                 ChargingRateUnits?       ChargingRateUnit    = null,
+            GetCompositeSchedule(this ICSMS                    CSMS,
+                                 NetworkingNode_Id             DestinationNodeId,
+                                 TimeSpan                      Duration,
+                                 EVSE_Id                       EVSEId,
+                                 ChargingRateUnits?            ChargingRateUnit    = null,
 
-                                 IEnumerable<KeyPair>?    SignKeys            = null,
-                                 IEnumerable<SignInfo>?   SignInfos           = null,
+                                 IEnumerable<KeyPair>?         SignKeys            = null,
+                                 IEnumerable<SignInfo>?        SignInfos           = null,
                                  IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                                 CustomData?              CustomData          = null,
+                                 CustomData?                   CustomData          = null,
 
-                                 Request_Id?              RequestId           = null,
-                                 DateTime?                RequestTimestamp    = null,
-                                 TimeSpan?                RequestTimeout      = null,
-                                 EventTracking_Id?        EventTrackingId     = null,
-                                 CancellationToken        CancellationToken   = default)
+                                 Request_Id?                   RequestId           = null,
+                                 DateTime?                     RequestTimestamp    = null,
+                                 TimeSpan?                     RequestTimeout      = null,
+                                 EventTracking_Id?             EventTrackingId     = null,
+                                 CancellationToken             CancellationToken   = default)
 
 
                 => CSMS.GetCompositeSchedule(
@@ -2196,37 +2196,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.UpdateDynamicScheduleResponse>
 
-            UpdateDynamicSchedule(this ICSMS               CSMS,
-                                  NetworkingNode_Id        DestinationNodeId,
-                                  ChargingProfile_Id       ChargingProfileId,
+            UpdateDynamicSchedule(this ICSMS                    CSMS,
+                                  NetworkingNode_Id             DestinationNodeId,
+                                  ChargingProfile_Id            ChargingProfileId,
 
-                                  ChargingRateValue?       Limit                 = null,
-                                  ChargingRateValue?       Limit_L2              = null,
-                                  ChargingRateValue?       Limit_L3              = null,
+                                  ChargingRateValue?            Limit                 = null,
+                                  ChargingRateValue?            Limit_L2              = null,
+                                  ChargingRateValue?            Limit_L3              = null,
 
-                                  ChargingRateValue?       DischargeLimit        = null,
-                                  ChargingRateValue?       DischargeLimit_L2     = null,
-                                  ChargingRateValue?       DischargeLimit_L3     = null,
+                                  ChargingRateValue?            DischargeLimit        = null,
+                                  ChargingRateValue?            DischargeLimit_L2     = null,
+                                  ChargingRateValue?            DischargeLimit_L3     = null,
 
-                                  ChargingRateValue?       Setpoint              = null,
-                                  ChargingRateValue?       Setpoint_L2           = null,
-                                  ChargingRateValue?       Setpoint_L3           = null,
+                                  ChargingRateValue?            Setpoint              = null,
+                                  ChargingRateValue?            Setpoint_L2           = null,
+                                  ChargingRateValue?            Setpoint_L3           = null,
 
-                                  ChargingRateValue?       SetpointReactive      = null,
-                                  ChargingRateValue?       SetpointReactive_L2   = null,
-                                  ChargingRateValue?       SetpointReactive_L3   = null,
+                                  ChargingRateValue?            SetpointReactive      = null,
+                                  ChargingRateValue?            SetpointReactive_L2   = null,
+                                  ChargingRateValue?            SetpointReactive_L3   = null,
 
-                                  IEnumerable<KeyPair>?    SignKeys              = null,
-                                  IEnumerable<SignInfo>?   SignInfos             = null,
+                                  IEnumerable<KeyPair>?         SignKeys              = null,
+                                  IEnumerable<SignInfo>?        SignInfos             = null,
                                   IEnumerable<OCPP.Signature>?  Signatures            = null,
 
-                                  CustomData?              CustomData            = null,
+                                  CustomData?                   CustomData            = null,
 
-                                  Request_Id?              RequestId             = null,
-                                  DateTime?                RequestTimestamp      = null,
-                                  TimeSpan?                RequestTimeout        = null,
-                                  EventTracking_Id?        EventTrackingId       = null,
-                                  CancellationToken        CancellationToken     = default)
+                                  Request_Id?                   RequestId             = null,
+                                  DateTime?                     RequestTimestamp      = null,
+                                  TimeSpan?                     RequestTimeout        = null,
+                                  EventTracking_Id?             EventTrackingId       = null,
+                                  CancellationToken             CancellationToken     = default)
 
 
                 => CSMS.UpdateDynamicSchedule(
@@ -2345,22 +2345,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.UsePriorityChargingResponse>
 
-            UsePriorityCharging(this ICSMS               CSMS,
-                                NetworkingNode_Id        DestinationNodeId,
-                                Transaction_Id           TransactionId,
-                                Boolean                  Activate,
+            UsePriorityCharging(this ICSMS                    CSMS,
+                                NetworkingNode_Id             DestinationNodeId,
+                                Transaction_Id                TransactionId,
+                                Boolean                       Activate,
 
-                                IEnumerable<KeyPair>?    SignKeys            = null,
-                                IEnumerable<SignInfo>?   SignInfos           = null,
+                                IEnumerable<KeyPair>?         SignKeys            = null,
+                                IEnumerable<SignInfo>?        SignInfos           = null,
                                 IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                                CustomData?              CustomData          = null,
+                                CustomData?                   CustomData          = null,
 
-                                Request_Id?              RequestId           = null,
-                                DateTime?                RequestTimestamp    = null,
-                                TimeSpan?                RequestTimeout      = null,
-                                EventTracking_Id?        EventTrackingId     = null,
-                                CancellationToken        CancellationToken   = default)
+                                Request_Id?                   RequestId           = null,
+                                DateTime?                     RequestTimestamp    = null,
+                                TimeSpan?                     RequestTimeout      = null,
+                                EventTracking_Id?             EventTrackingId     = null,
+                                CancellationToken             CancellationToken   = default)
 
 
                 => CSMS.UsePriorityCharging(
@@ -2404,22 +2404,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.UnlockConnectorResponse>
 
-            UnlockConnector(this ICSMS               CSMS,
-                            NetworkingNode_Id        DestinationNodeId,
-                            EVSE_Id                  EVSEId,
-                            Connector_Id             ConnectorId,
+            UnlockConnector(this ICSMS                    CSMS,
+                            NetworkingNode_Id             DestinationNodeId,
+                            EVSE_Id                       EVSEId,
+                            Connector_Id                  ConnectorId,
 
-                            IEnumerable<KeyPair>?    SignKeys            = null,
-                            IEnumerable<SignInfo>?   SignInfos           = null,
+                            IEnumerable<KeyPair>?         SignKeys            = null,
+                            IEnumerable<SignInfo>?        SignInfos           = null,
                             IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                            CustomData?              CustomData          = null,
+                            CustomData?                   CustomData          = null,
 
-                            Request_Id?              RequestId           = null,
-                            DateTime?                RequestTimestamp    = null,
-                            TimeSpan?                RequestTimeout      = null,
-                            EventTracking_Id?        EventTrackingId     = null,
-                            CancellationToken        CancellationToken   = default)
+                            Request_Id?                   RequestId           = null,
+                            DateTime?                     RequestTimestamp    = null,
+                            TimeSpan?                     RequestTimeout      = null,
+                            EventTracking_Id?             EventTrackingId     = null,
+                            CancellationToken             CancellationToken   = default)
 
 
                 => CSMS.UnlockConnector(
@@ -2467,22 +2467,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.AFRRSignalResponse>
 
-            SendAFRRSignal(this ICSMS               CSMS,
-                           NetworkingNode_Id        DestinationNodeId,
-                           DateTime                 ActivationTimestamp,
-                           AFRR_Signal              Signal,
+            SendAFRRSignal(this ICSMS                    CSMS,
+                           NetworkingNode_Id             DestinationNodeId,
+                           DateTime                      ActivationTimestamp,
+                           AFRR_Signal                   Signal,
 
-                           IEnumerable<KeyPair>?    SignKeys            = null,
-                           IEnumerable<SignInfo>?   SignInfos           = null,
+                           IEnumerable<KeyPair>?         SignKeys            = null,
+                           IEnumerable<SignInfo>?        SignInfos           = null,
                            IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                           CustomData?              CustomData          = null,
+                           CustomData?                   CustomData          = null,
 
-                           Request_Id?              RequestId           = null,
-                           DateTime?                RequestTimestamp    = null,
-                           TimeSpan?                RequestTimeout      = null,
-                           EventTracking_Id?        EventTrackingId     = null,
-                           CancellationToken        CancellationToken   = default)
+                           Request_Id?                   RequestId           = null,
+                           DateTime?                     RequestTimestamp    = null,
+                           TimeSpan?                     RequestTimeout      = null,
+                           EventTracking_Id?             EventTrackingId     = null,
+                           CancellationToken             CancellationToken   = default)
 
 
                 => CSMS.SendAFRRSignal(
@@ -2526,21 +2526,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.SetDisplayMessageResponse>
 
-            SetDisplayMessage(this ICSMS               CSMS,
-                              NetworkingNode_Id        DestinationNodeId,
-                              MessageInfo              Message,
+            SetDisplayMessage(this ICSMS                    CSMS,
+                              NetworkingNode_Id             DestinationNodeId,
+                              MessageInfo                   Message,
 
-                              IEnumerable<KeyPair>?    SignKeys            = null,
-                              IEnumerable<SignInfo>?   SignInfos           = null,
+                              IEnumerable<KeyPair>?         SignKeys            = null,
+                              IEnumerable<SignInfo>?        SignInfos           = null,
                               IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                              CustomData?              CustomData          = null,
+                              CustomData?                   CustomData          = null,
 
-                              Request_Id?              RequestId           = null,
-                              DateTime?                RequestTimestamp    = null,
-                              TimeSpan?                RequestTimeout      = null,
-                              EventTracking_Id?        EventTrackingId     = null,
-                              CancellationToken        CancellationToken   = default)
+                              Request_Id?                   RequestId           = null,
+                              DateTime?                     RequestTimestamp    = null,
+                              TimeSpan?                     RequestTimeout      = null,
+                              EventTracking_Id?             EventTrackingId     = null,
+                              CancellationToken             CancellationToken   = default)
 
 
                 => CSMS.SetDisplayMessage(
@@ -2647,21 +2647,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.ClearDisplayMessageResponse>
 
-            ClearDisplayMessage(this ICSMS               CSMS,
-                                NetworkingNode_Id        DestinationNodeId,
-                                DisplayMessage_Id        DisplayMessageId,
+            ClearDisplayMessage(this ICSMS                    CSMS,
+                                NetworkingNode_Id             DestinationNodeId,
+                                DisplayMessage_Id             DisplayMessageId,
 
-                                IEnumerable<KeyPair>?    SignKeys            = null,
-                                IEnumerable<SignInfo>?   SignInfos           = null,
+                                IEnumerable<KeyPair>?         SignKeys            = null,
+                                IEnumerable<SignInfo>?        SignInfos           = null,
                                 IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                                CustomData?              CustomData          = null,
+                                CustomData?                   CustomData          = null,
 
-                                Request_Id?              RequestId           = null,
-                                DateTime?                RequestTimestamp    = null,
-                                TimeSpan?                RequestTimeout      = null,
-                                EventTracking_Id?        EventTrackingId     = null,
-                                CancellationToken        CancellationToken   = default)
+                                Request_Id?                   RequestId           = null,
+                                DateTime?                     RequestTimestamp    = null,
+                                TimeSpan?                     RequestTimeout      = null,
+                                EventTracking_Id?             EventTrackingId     = null,
+                                CancellationToken             CancellationToken   = default)
 
 
                 => CSMS.ClearDisplayMessage(
@@ -2704,22 +2704,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.CostUpdatedResponse>
 
-            SendCostUpdated(this ICSMS               CSMS,
-                            NetworkingNode_Id        DestinationNodeId,
-                            Decimal                  TotalCost,
-                            Transaction_Id           TransactionId,
+            SendCostUpdated(this ICSMS                    CSMS,
+                            NetworkingNode_Id             DestinationNodeId,
+                            Decimal                       TotalCost,
+                            Transaction_Id                TransactionId,
 
-                            IEnumerable<KeyPair>?    SignKeys            = null,
-                            IEnumerable<SignInfo>?   SignInfos           = null,
+                            IEnumerable<KeyPair>?         SignKeys            = null,
+                            IEnumerable<SignInfo>?        SignInfos           = null,
                             IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                            CustomData?              CustomData          = null,
+                            CustomData?                   CustomData          = null,
 
-                            Request_Id?              RequestId           = null,
-                            DateTime?                RequestTimestamp    = null,
-                            TimeSpan?                RequestTimeout      = null,
-                            EventTracking_Id?        EventTrackingId     = null,
-                            CancellationToken        CancellationToken   = default)
+                            Request_Id?                   RequestId           = null,
+                            DateTime?                     RequestTimestamp    = null,
+                            TimeSpan?                     RequestTimeout      = null,
+                            EventTracking_Id?             EventTrackingId     = null,
+                            CancellationToken             CancellationToken   = default)
 
 
                 => CSMS.SendCostUpdated(
@@ -2767,26 +2767,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.CustomerInformationResponse>
 
-            RequestCustomerInformation(this ICSMS               CSMS,
-                                       NetworkingNode_Id        DestinationNodeId,
-                                       Int64                    CustomerInformationRequestId,
-                                       Boolean                  Report,
-                                       Boolean                  Clear,
-                                       CustomerIdentifier?      CustomerIdentifier    = null,
-                                       IdToken?                 IdToken               = null,
-                                       CertificateHashData?     CustomerCertificate   = null,
+            RequestCustomerInformation(this ICSMS                    CSMS,
+                                       NetworkingNode_Id             DestinationNodeId,
+                                       Int64                         CustomerInformationRequestId,
+                                       Boolean                       Report,
+                                       Boolean                       Clear,
+                                       CustomerIdentifier?           CustomerIdentifier    = null,
+                                       IdToken?                      IdToken               = null,
+                                       CertificateHashData?          CustomerCertificate   = null,
 
-                                       IEnumerable<KeyPair>?    SignKeys              = null,
-                                       IEnumerable<SignInfo>?   SignInfos             = null,
+                                       IEnumerable<KeyPair>?         SignKeys              = null,
+                                       IEnumerable<SignInfo>?        SignInfos             = null,
                                        IEnumerable<OCPP.Signature>?  Signatures            = null,
 
-                                       CustomData?              CustomData            = null,
+                                       CustomData?                   CustomData            = null,
 
-                                       Request_Id?              RequestId             = null,
-                                       DateTime?                RequestTimestamp      = null,
-                                       TimeSpan?                RequestTimeout        = null,
-                                       EventTracking_Id?        EventTrackingId       = null,
-                                       CancellationToken        CancellationToken     = default)
+                                       Request_Id?                   RequestId             = null,
+                                       DateTime?                     RequestTimestamp      = null,
+                                       TimeSpan?                     RequestTimeout        = null,
+                                       EventTracking_Id?             EventTrackingId       = null,
+                                       CancellationToken             CancellationToken     = default)
 
 
                 => CSMS.RequestCustomerInformation(
@@ -3079,6 +3079,75 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+        #region ListDirectory               (DestinationNodeId, Filename, FileContent, FileContentType = null, ...)
+
+        /// <summary>
+        /// List the given directory of the charging station.
+        /// </summary>
+        /// <param name="DestinationNodeId">The networking node identification.</param>
+        /// <param name="DirectoryPath">The absolute path of the directory to list.</param>
+        /// <param name="Format">The optional response format of the directory listing.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public static Task<OCPP.CS.ListDirectoryResponse>
+
+            ListDirectory(this ICSMS                    CSMS,
+
+                          NetworkingNode_Id             DestinationNodeId,
+                          FilePath                      DirectoryPath,
+                          ListDirectoryFormat?          Format                 = null,
+                          Boolean?                      WithFileSizes          = null,
+                          Boolean?                      WithFileDates          = null,
+                          Boolean?                      WithSHA256FileHashes   = null,
+                          Boolean?                      WithSHA512FileHashes   = null,
+
+                          IEnumerable<KeyPair>?         SignKeys               = null,
+                          IEnumerable<SignInfo>?        SignInfos              = null,
+                          IEnumerable<OCPP.Signature>?  Signatures             = null,
+
+                          CustomData?                   CustomData             = null,
+
+                          Request_Id?                   RequestId              = null,
+                          DateTime?                     RequestTimestamp       = null,
+                          TimeSpan?                     RequestTimeout         = null,
+                          EventTracking_Id?             EventTrackingId        = null,
+                          CancellationToken             CancellationToken      = default)
+
+
+                => CSMS.ListDirectory(
+                       new OCPP.CSMS.ListDirectoryRequest(
+                           DestinationNodeId,
+                           DirectoryPath,
+                           Format,
+                           WithFileSizes,
+                           WithFileDates,
+                           WithSHA256FileHashes,
+                           WithSHA512FileHashes,
+
+                           SignKeys,
+                           SignInfos,
+                           Signatures,
+
+                           CustomData,
+
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty.Append(CSMS.Id.ToNetworkingNodeId),
+                           CancellationToken
+                       )
+                   );
+
+        #endregion
+
+
 
 
         // E2E Security Extensions
@@ -3108,22 +3177,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.SetDefaultChargingTariffResponse>
 
-            SetDefaultChargingTariff(this ICSMS               CSMS,
-                                     NetworkingNode_Id        DestinationNodeId,
-                                     ChargingTariff           ChargingTariff,
-                                     IEnumerable<EVSE_Id>?    EVSEIds             = null,
+            SetDefaultChargingTariff(this ICSMS                    CSMS,
+                                     NetworkingNode_Id             DestinationNodeId,
+                                     ChargingTariff                ChargingTariff,
+                                     IEnumerable<EVSE_Id>?         EVSEIds             = null,
 
-                                     IEnumerable<KeyPair>?    SignKeys            = null,
-                                     IEnumerable<SignInfo>?   SignInfos           = null,
+                                     IEnumerable<KeyPair>?         SignKeys            = null,
+                                     IEnumerable<SignInfo>?        SignInfos           = null,
                                      IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                                     CustomData?              CustomData          = null,
+                                     CustomData?                   CustomData          = null,
 
-                                     Request_Id?              RequestId           = null,
-                                     DateTime?                RequestTimestamp    = null,
-                                     TimeSpan?                RequestTimeout      = null,
-                                     EventTracking_Id?        EventTrackingId     = null,
-                                     CancellationToken        CancellationToken   = default)
+                                     Request_Id?                   RequestId           = null,
+                                     DateTime?                     RequestTimestamp    = null,
+                                     TimeSpan?                     RequestTimeout      = null,
+                                     EventTracking_Id?             EventTrackingId     = null,
+                                     CancellationToken             CancellationToken   = default)
 
 
                 => CSMS.SetDefaultChargingTariff(
@@ -3166,21 +3235,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.GetDefaultChargingTariffResponse>
 
-            GetDefaultChargingTariff(this ICSMS               CSMS,
-                                     NetworkingNode_Id        DestinationNodeId,
-                                     IEnumerable<EVSE_Id>?    EVSEIds             = null,
+            GetDefaultChargingTariff(this ICSMS                    CSMS,
+                                     NetworkingNode_Id             DestinationNodeId,
+                                     IEnumerable<EVSE_Id>?         EVSEIds             = null,
 
-                                     IEnumerable<KeyPair>?    SignKeys            = null,
-                                     IEnumerable<SignInfo>?   SignInfos           = null,
+                                     IEnumerable<KeyPair>?         SignKeys            = null,
+                                     IEnumerable<SignInfo>?        SignInfos           = null,
                                      IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                                     CustomData?              CustomData          = null,
+                                     CustomData?                   CustomData          = null,
 
-                                     Request_Id?              RequestId           = null,
-                                     DateTime?                RequestTimestamp    = null,
-                                     TimeSpan?                RequestTimeout      = null,
-                                     EventTracking_Id?        EventTrackingId     = null,
-                                     CancellationToken        CancellationToken   = default)
+                                     Request_Id?                   RequestId           = null,
+                                     DateTime?                     RequestTimestamp    = null,
+                                     TimeSpan?                     RequestTimeout      = null,
+                                     EventTracking_Id?             EventTrackingId     = null,
+                                     CancellationToken             CancellationToken   = default)
 
 
                 => CSMS.GetDefaultChargingTariff(
@@ -3224,22 +3293,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.RemoveDefaultChargingTariffResponse>
 
-            RemoveDefaultChargingTariff(this ICSMS               CSMS,
-                                        NetworkingNode_Id        DestinationNodeId,
-                                        ChargingTariff_Id?       ChargingTariffId    = null,
-                                        IEnumerable<EVSE_Id>?    EVSEIds             = null,
+            RemoveDefaultChargingTariff(this ICSMS                    CSMS,
+                                        NetworkingNode_Id             DestinationNodeId,
+                                        ChargingTariff_Id?            ChargingTariffId    = null,
+                                        IEnumerable<EVSE_Id>?         EVSEIds             = null,
 
-                                        IEnumerable<KeyPair>?    SignKeys            = null,
-                                        IEnumerable<SignInfo>?   SignInfos           = null,
+                                        IEnumerable<KeyPair>?         SignKeys            = null,
+                                        IEnumerable<SignInfo>?        SignInfos           = null,
                                         IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                                        CustomData?              CustomData          = null,
+                                        CustomData?                   CustomData          = null,
 
-                                        Request_Id?              RequestId           = null,
-                                        DateTime?                RequestTimestamp    = null,
-                                        TimeSpan?                RequestTimeout      = null,
-                                        EventTracking_Id?        EventTrackingId     = null,
-                                        CancellationToken        CancellationToken   = default)
+                                        Request_Id?                   RequestId           = null,
+                                        DateTime?                     RequestTimestamp    = null,
+                                        TimeSpan?                     RequestTimeout      = null,
+                                        EventTracking_Id?             EventTrackingId     = null,
+                                        CancellationToken             CancellationToken   = default)
 
 
                 => CSMS.RemoveDefaultChargingTariff(

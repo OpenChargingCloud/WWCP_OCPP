@@ -27,7 +27,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
 {
 
     /// <summary>
-    /// A binary data transfer request.
+    /// A BinaryDataTransfer request.
     /// </summary>
     public class BinaryDataTransferRequest : ARequest<BinaryDataTransferRequest>,
                                              IRequest
@@ -79,7 +79,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new binary data transfer request.
+        /// Create a new BinaryDataTransfer request.
         /// </summary>
         /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
         /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
@@ -159,13 +159,13 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         #region (static) Parse   (Binary, RequestId, NetworkingNodeId, NetworkPath, CustomDataTransferRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a binary data transfer request.
+        /// Parse the given JSON representation of a BinaryDataTransfer request.
         /// </summary>
         /// <param name="Binary">The binary to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomDataTransferRequestParser">A delegate to parse custom binary data transfer requests.</param>
+        /// <param name="CustomDataTransferRequestParser">A delegate to parse custom BinaryDataTransfer requests.</param>
         public static BinaryDataTransferRequest Parse(Byte[]                                                  Binary,
                                                       Request_Id                                              RequestId,
                                                       NetworkingNode_Id                                       NetworkingNodeId,
@@ -185,7 +185,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                 return binaryDataTransferRequest;
             }
 
-            throw new ArgumentException("The given binary representation of a binary data transfer request is invalid: " + errorResponse,
+            throw new ArgumentException("The given binary representation of a BinaryDataTransfer request is invalid: " + errorResponse,
                                         nameof(Binary));
 
         }
@@ -197,7 +197,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
-        /// Try to parse the given binary representation of a binary data transfer request.
+        /// Try to parse the given binary representation of a BinaryDataTransfer request.
         /// </summary>
         /// <param name="Binary">The binary data to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -222,7 +222,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
 
 
         /// <summary>
-        /// Try to parse the given binary representation of a binary data transfer request.
+        /// Try to parse the given binary representation of a BinaryDataTransfer request.
         /// </summary>
         /// <param name="Binary">The binary to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
@@ -366,7 +366,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
             catch (Exception e)
             {
                 BinaryDataTransferRequest  = null;
-                ErrorResponse              = "The given binary representation of a binary data transfer request is invalid: " + e.Message;
+                ErrorResponse              = "The given binary representation of a BinaryDataTransfer request is invalid: " + e.Message;
                 return false;
             }
 
@@ -379,7 +379,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         /// <summary>
         /// Return a binary representation of this object.
         /// </summary>
-        /// <param name="CustomBinaryDataTransferRequestSerializer">A delegate to serialize custom binary data transfer requests.</param>
+        /// <param name="CustomBinaryDataTransferRequestSerializer">A delegate to serialize custom BinaryDataTransfer requests.</param>
         /// <param name="CustomBinarySignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="IncludeSignatures">Whether to include the digital signatures (default), or not.</param>
         public Byte[] ToBinary(CustomBinarySerializerDelegate<BinaryDataTransferRequest>?  CustomBinaryDataTransferRequestSerializer   = null,
@@ -538,9 +538,9 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two binary data transfer requests for equality.
+        /// Compares two BinaryDataTransfer requests for equality.
         /// </summary>
-        /// <param name="Object">A binary data transfer request to compare with.</param>
+        /// <param name="Object">A BinaryDataTransfer request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is BinaryDataTransferRequest binaryDataTransferRequest &&
@@ -551,9 +551,9 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         #region Equals(BinaryDataTransferRequest)
 
         /// <summary>
-        /// Compares two binary data transfer requests for equality.
+        /// Compares two BinaryDataTransfer requests for equality.
         /// </summary>
-        /// <param name="BinaryDataTransferRequest">A binary data transfer request to compare with.</param>
+        /// <param name="BinaryDataTransferRequest">A BinaryDataTransfer request to compare with.</param>
         public override Boolean Equals(BinaryDataTransferRequest? BinaryDataTransferRequest)
 
             => BinaryDataTransferRequest is not null               &&

@@ -70,6 +70,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         String IEventSender.Id
             => HTTPServiceName;
 
+        /// <summary>
+        /// The parent charging station management system.
+        /// </summary>
+        public ICSMSWebSocket     CSMS                { get; }
+
+        /// <summary>
+        /// The networking node identification of the parent CSMS.
+        /// </summary>
+        public NetworkingNode_Id  NetworkingNodeId    { get; }
+
         #endregion
 
         #region Custom JSON serializer delegates
@@ -151,13 +161,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Initialize a new HTTP server for the CSMS HTTP/WebSocket/JSON API.
         /// </summary>
+        /// <param name="CSMS">The parent charging station management system.</param>
+        /// 
         /// <param name="HTTPServiceName">An optional identification string for the HTTP service.</param>
         /// <param name="IPAddress">An IP address to listen on.</param>
         /// <param name="TCPPort">An optional TCP port for the HTTP server.</param>
         /// <param name="RequireAuthentication">Require a HTTP Basic Authentication of all charging boxes.</param>
         /// <param name="DNSClient">An optional DNS client to use.</param>
         /// <param name="AutoStart">Start the server immediately.</param>
-        public CSMSWSServer(String                               HTTPServiceName              = DefaultHTTPServiceName,
+        public CSMSWSServer(ICSMSWebSocket                       CSMS,
+
+                            String                               HTTPServiceName              = DefaultHTTPServiceName,
                             IIPAddress?                          IPAddress                    = null,
                             IPPort?                              TCPPort                      = null,
 
@@ -214,6 +228,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    AutoStart)
 
         {
+
+            this.CSMS              = CSMS;
+            this.NetworkingNodeId  = CSMS.Id.ToNetworkingNodeId;
 
             #region Reflect "Receive_XXX" messages and wire them...
 

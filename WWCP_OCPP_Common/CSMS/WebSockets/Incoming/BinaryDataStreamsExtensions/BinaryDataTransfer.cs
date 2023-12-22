@@ -28,12 +28,12 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
     #region OnIncomingBinaryDataTransfer
 
     /// <summary>
-    /// An incoming binary data transfer request.
+    /// An incoming BinaryDataTransfer request.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Connection">The HTTP WebSocket server connection.</param>
-    /// <param name="Request">The binary data transfer request.</param>
+    /// <param name="Request">The BinaryDataTransfer request.</param>
     public delegate Task
 
         OnIncomingBinaryDataTransferRequestDelegate(DateTime                       Timestamp,
@@ -48,7 +48,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Connection">The HTTP WebSocket server connection.</param>
-    /// <param name="Request">The binary data transfer request.</param>
+    /// <param name="Request">The BinaryDataTransfer request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<OCPP.CSMS.BinaryDataTransferResponse>
 
@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Connection">The HTTP WebSocket server connection.</param>
-    /// <param name="Request">The binary data transfer request.</param>
+    /// <param name="Request">The BinaryDataTransfer request.</param>
     /// <param name="Response">The stop transaction response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task

@@ -27,7 +27,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     /// <summary>
     /// The common interface of all charging station servers.
     /// </summary>
-    public interface INetworkingNodeServerLogger
+    public interface INetworkingNodeIncomingMessagesEvents
     {
 
         #region OnReset                         (Request/-Response)

@@ -82,7 +82,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         /// <summary>
         /// Create a new binary data transfer response.
         /// </summary>
-        /// <param name="Request">The binary data transfer request leading to this response.</param>
+        /// <param name="Request">The BinaryDataTransfer request leading to this response.</param>
         /// <param name="Status">The success or failure status of the binary data transfer.</param>
         /// <param name="AdditionalStatusInfo">Optional detailed status information.</param>
         /// <param name="Data">A vendor-specific JSON token.</param>
@@ -126,7 +126,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         /// <summary>
         /// Create a new binary data transfer response.
         /// </summary>
-        /// <param name="Request">The binary data transfer request leading to this response.</param>
+        /// <param name="Request">The BinaryDataTransfer request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public BinaryDataTransferResponse(CS.BinaryDataTransferRequest  Request,
                                           Result                        Result)
@@ -231,7 +231,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         /// <summary>
         /// Parse the given binary representation of a binary data transfer response.
         /// </summary>
-        /// <param name="Request">The binary data transfer request leading to this response.</param>
+        /// <param name="Request">The BinaryDataTransfer request leading to this response.</param>
         /// <param name="Binary">The binary to be parsed.</param>
         /// <param name="CustomBinaryDataTransferResponseParser">A delegate to parse custom binary data transfer responses.</param>
         public static BinaryDataTransferResponse Parse(CS.BinaryDataTransferRequest                             Request,
@@ -261,7 +261,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         /// <summary>
         /// Try to parse the given JSON representation of a binary data transfer response.
         /// </summary>
-        /// <param name="Request">The binary data transfer request leading to this response.</param>
+        /// <param name="Request">The BinaryDataTransfer request leading to this response.</param>
         /// <param name="Binary">The binary to be parsed.</param>
         /// <param name="BinaryDataTransferResponse">The parsed binary data transfer response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -391,7 +391,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         /// <summary>
         /// Return a binary representation of this object.
         /// </summary>
-        /// <param name="CustomBinaryDataTransferResponseSerializer">A delegate to serialize custom binary data transfer requests.</param>
+        /// <param name="CustomBinaryDataTransferResponseSerializer">A delegate to serialize custom BinaryDataTransfer requests.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="IncludeSignatures">Whether to include the digital signatures (default), or not.</param>
@@ -507,7 +507,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         /// <summary>
         /// The binary data transfer failed.
         /// </summary>
-        /// <param name="Request">The binary data transfer request leading to this response.</param>
+        /// <param name="Request">The BinaryDataTransfer request leading to this response.</param>
         public static BinaryDataTransferResponse Failed(CS.BinaryDataTransferRequest  Request)
 
             => new (Request,

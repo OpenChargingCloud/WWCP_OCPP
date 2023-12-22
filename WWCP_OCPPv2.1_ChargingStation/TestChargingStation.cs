@@ -1823,12 +1823,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region OnIncomingBinaryDataTransferRequest/-Response
 
         /// <summary>
-        /// An event sent whenever a binary data transfer request was sent.
+        /// An event sent whenever a BinaryDataTransfer request was sent.
         /// </summary>
         public event OCPP.CS.OnIncomingBinaryDataTransferRequestDelegate?   OnIncomingBinaryDataTransferRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a binary data transfer request was sent.
+        /// An event sent whenever a response to a BinaryDataTransfer request was sent.
         /// </summary>
         public event OCPP.CS.OnIncomingBinaryDataTransferResponseDelegate?  OnIncomingBinaryDataTransferResponse;
 
@@ -9413,7 +9413,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    DebugX.Log($"Charging Station '{Id}': Incoming binary data transfer request: {request.VendorId}.{request.MessageId?.ToString() ?? "-"}: {request.Data?.ToHexString() ?? "-"}!");
+                    DebugX.Log($"Charging Station '{Id}': Incoming BinaryDataTransfer request: {request.VendorId}.{request.MessageId?.ToString() ?? "-"}: {request.Data?.ToHexString() ?? "-"}!");
 
                     // VendorId
                     // MessageId

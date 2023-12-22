@@ -1066,21 +1066,21 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
                                                                     RequestedEnergyTransferMode:   EnergyTransferModes.AC_ThreePhases,
                                                                     DepartureTime:                 Timestamp.Now + TimeSpan.FromHours(3),
                                                                     ACChargingParameters:          new ACChargingParameters(
-                                                                                                       EnergyAmount:       WattHour.     Parse( 20),
-                                                                                                       EVMinCurrent:       Ampere.       Parse(  6),
-                                                                                                       EVMaxCurrent:       Ampere.       Parse( 32),
-                                                                                                       EVMaxVoltage:       Volt.         Parse(230),
+                                                                                                       EnergyAmount:       WattHour.      Parse( 20),
+                                                                                                       EVMinCurrent:       Ampere.        Parse(  6),
+                                                                                                       EVMaxCurrent:       Ampere.        Parse( 32),
+                                                                                                       EVMaxVoltage:       Volt.          Parse(230),
                                                                                                        CustomData:         null
                                                                                                    ),
                                                                     DCChargingParameters:          new DCChargingParameters(
-                                                                                                       EVMaxCurrent:       Ampere.       Parse( 20),
-                                                                                                       EVMaxVoltage:       Volt.         Parse(900),
-                                                                                                       EnergyAmount:       WattHour.     Parse(300),
-                                                                                                       EVMaxPower:         Watt.         Parse( 60),
-                                                                                                       StateOfCharge:      PercentageInt.Parse( 23),
-                                                                                                       EVEnergyCapacity:   WattHour.     Parse(250),
-                                                                                                       FullSoC:            PercentageInt.Parse( 95),
-                                                                                                       BulkSoC:            PercentageInt.Parse( 80),
+                                                                                                       EVMaxCurrent:       Ampere.        Parse( 20),
+                                                                                                       EVMaxVoltage:       Volt.          Parse(900),
+                                                                                                       EnergyAmount:       WattHour.      Parse(300),
+                                                                                                       EVMaxPower:         Watt.          Parse( 60),
+                                                                                                       StateOfCharge:      PercentageByte.Parse( 23),
+                                                                                                       EVEnergyCapacity:   WattHour.      Parse(250),
+                                                                                                       FullSoC:            PercentageByte.Parse( 95),
+                                                                                                       BulkSoC:            PercentageByte.Parse( 80),
                                                                                                        CustomData:         null
                                                                                                    ),
                                                                     CustomData:                    null

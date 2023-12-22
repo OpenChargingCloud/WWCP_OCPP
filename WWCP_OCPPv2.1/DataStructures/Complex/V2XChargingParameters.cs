@@ -217,7 +217,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// ISO 15118-20: BPT_DC_CPDReqEnergyTransferModeType: TargetSOC
         /// </summary>
         [Optional]
-        public PercentageInt?  TargetSoC                { get; }
+        public PercentageByte?  TargetSoC                { get; }
 
         #endregion
 
@@ -281,7 +281,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                      WattHour?       EVMaxEnergyRequest      = null,
                                      WattHour?       EVMinV2XEnergyRequest   = null,
                                      WattHour?       EVMaxV2XEnergyRequest   = null,
-                                     PercentageInt?  TargetSoC               = null,
+                                     PercentageByte?  TargetSoC               = null,
 
                                      CustomData?     CustomData              = null)
 
@@ -756,8 +756,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptional("targetSoC",
                                        "target state-of-charge",
-                                       PercentageInt.TryParse,
-                                       out PercentageInt? TargetSoC,
+                                       PercentageByte.TryParse,
+                                       out PercentageByte? TargetSoC,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)

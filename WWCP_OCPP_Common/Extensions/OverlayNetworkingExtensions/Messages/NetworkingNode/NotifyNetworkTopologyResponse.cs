@@ -23,13 +23,13 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPP.CSMS
+namespace cloud.charging.open.protocols.OCPP.NN
 {
 
     /// <summary>
     /// A notify network topology response.
     /// </summary>
-    public class NotifyNetworkTopologyResponse : AResponse<NN.NotifyNetworkTopologyRequest,
+    public class NotifyNetworkTopologyResponse : AResponse<NotifyNetworkTopologyRequest,
                                                            NotifyNetworkTopologyResponse>,
                                                  IResponse
     {
@@ -39,7 +39,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         /// <summary>
         /// The JSON-LD context of this object.
         /// </summary>
-        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/csms/notifyNetworkTopologyResponse");
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/nn/notifyNetworkTopologyResponse");
 
         #endregion
 
@@ -51,16 +51,22 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         public JSONLDContext Context
             => DefaultJSONLDContext;
 
+        /// <summary>
+        /// The status of the notify network topology request.
+        /// </summary>
+        public NetworkTopologyStatus  Status    { get; }
+
         #endregion
 
         #region Constructor(s)
 
-        #region NotifyNetworkTopologyResponse(Request, ...)
+        #region NotifyNetworkTopologyResponse(Request, Status, ...)
 
         /// <summary>
         /// Create a new notify network topology response.
         /// </summary>
         /// <param name="Request">The notify network topology request leading to this response.</param>
+        /// <param name="Status">The status of the notify network topology request.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
         /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
@@ -68,14 +74,15 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
         /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public NotifyNetworkTopologyResponse(NN.NotifyNetworkTopologyRequest  Request,
-                                             DateTime?                        ResponseTimestamp   = null,
+        public NotifyNetworkTopologyResponse(NotifyNetworkTopologyRequest  Request,
+                                             NetworkTopologyStatus         Status,
+                                             DateTime?                     ResponseTimestamp   = null,
 
-                                             IEnumerable<KeyPair>?            SignKeys            = null,
-                                             IEnumerable<SignInfo>?           SignInfos           = null,
-                                             IEnumerable<Signature>?          Signatures          = null,
+                                             IEnumerable<KeyPair>?         SignKeys            = null,
+                                             IEnumerable<SignInfo>?        SignInfos           = null,
+                                             IEnumerable<Signature>?       Signatures          = null,
 
-                                             CustomData?                      CustomData          = null)
+                                             CustomData?                   CustomData          = null)
 
             : base(Request,
                    Result.OK(),
@@ -87,7 +94,11 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
 
                    CustomData)
 
-        { }
+        {
+
+            this.Status = Status;
+
+        }
 
         #endregion
 
@@ -98,8 +109,8 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         /// </summary>
         /// <param name="Request">The notify network topology request leading to this response.</param>
         /// <param name="Result">The result.</param>
-        public NotifyNetworkTopologyResponse(NN.NotifyNetworkTopologyRequest  Request,
-                                             Result                           Result)
+        public NotifyNetworkTopologyResponse(NotifyNetworkTopologyRequest  Request,
+                                             Result                        Result)
 
             : base(Request,
                    Result)
@@ -125,7 +136,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         /// <param name="Request">The notify network topology request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomNotifyNetworkTopologyResponseParser">A delegate to parse custom notify network topology responses.</param>
-        public static NotifyNetworkTopologyResponse Parse(NN.NotifyNetworkTopologyRequest                              Request,
+        public static NotifyNetworkTopologyResponse Parse(NotifyNetworkTopologyRequest                                 Request,
                                                           JObject                                                      JSON,
                                                           CustomJObjectParserDelegate<NotifyNetworkTopologyResponse>?  CustomNotifyNetworkTopologyResponseParser   = null)
         {
@@ -157,7 +168,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         /// <param name="NotifyNetworkTopologyResponse">The parsed notify network topology response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomNotifyNetworkTopologyResponseParser">A delegate to parse custom notify network topology responses.</param>
-        public static Boolean TryParse(NN.NotifyNetworkTopologyRequest                              Request,
+        public static Boolean TryParse(NotifyNetworkTopologyRequest                                 Request,
                                        JObject                                                      JSON,
                                        out NotifyNetworkTopologyResponse?                           NotifyNetworkTopologyResponse,
                                        out String?                                                  ErrorResponse,
@@ -170,6 +181,19 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
             {
 
                 NotifyNetworkTopologyResponse = null;
+
+                #region Status        [optional]
+
+                if (!JSON.ParseMandatory("status",
+                                         "status",
+                                         NetworkTopologyStatus.TryParse,
+                                         out NetworkTopologyStatus Status,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
 
                 #region Signatures    [optional, OCPP_CSE]
 
@@ -201,12 +225,17 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
 
 
                 NotifyNetworkTopologyResponse = new NotifyNetworkTopologyResponse(
+
                                                     Request,
+                                                    Status,
                                                     null,
+
                                                     null,
                                                     null,
                                                     Signatures,
+
                                                     CustomData
+
                                                 );
 
                 if (CustomNotifyNetworkTopologyResponseParser is not null)
@@ -242,6 +271,8 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
 
             var json = JSONObject.Create(
 
+                                 new JProperty("status",       Status.ToString()),
+
                            Signatures.Any()
                                ? new JProperty("signatures",   new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
                                                                                                                           CustomCustomDataSerializer))))
@@ -267,7 +298,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         /// <summary>
         /// The notify network topology request failed.
         /// </summary>
-        public static NotifyNetworkTopologyResponse Failed(NN.NotifyNetworkTopologyRequest Request)
+        public static NotifyNetworkTopologyResponse Failed(NotifyNetworkTopologyRequest Request)
 
             => new (Request,
                     Result.Server());

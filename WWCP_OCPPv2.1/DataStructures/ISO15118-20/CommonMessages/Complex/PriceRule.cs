@@ -68,7 +68,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// The optional renewable generation percentage.
         /// </summary>
         [Optional]
-        public PercentageInt?  RenewableGenerationPercentage    { get; }
+        public PercentageByte?  RenewableGenerationPercentage    { get; }
 
         #endregion
 
@@ -88,7 +88,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
                          Decimal?        ParkingFee                      = null,
                          TimeSpan?       ParkingFeePeriod                = null,
                          UInt16?         CarbonDioxideEmission           = null,
-                         PercentageInt?  RenewableGenerationPercentage   = null)
+                         PercentageByte?  RenewableGenerationPercentage   = null)
         {
 
             this.PowerRangeStart                = PowerRangeStart;
@@ -256,7 +256,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
                 if (JSON.ParseOptional("renewableGenerationPercentage",
                                        "renewable generation percentage",
-                                       out PercentageInt? RenewableGenerationPercentage,
+                                       out PercentageByte? RenewableGenerationPercentage,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)

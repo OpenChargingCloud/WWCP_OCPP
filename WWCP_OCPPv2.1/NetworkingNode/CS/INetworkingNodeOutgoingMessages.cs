@@ -33,8 +33,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     /// <summary>
     /// The common interface of all charging station clients.
     /// </summary>
-    public interface INetworkingNodeClient : INetworkingNodeClientEvents,
-                                             IHTTPClient,
+    public interface INetworkingNodeOutgoingMessages : IHTTPClient,
                                              IEventSender
     {
 
@@ -352,8 +351,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// Send the given vendor-specific binary data.
         /// </summary>
-        /// <param name="Request">A binary data transfer request.</param>
+        /// <param name="Request">A BinaryDataTransfer request.</param>
         public Task<OCPP.CSMS.BinaryDataTransferResponse> TransferBinaryData(OCPP.CS.BinaryDataTransferRequest Request);
+
+        #endregion
+
+
+        // Overlay Networking Extensions
+
+        #region NotifyNetworkTopology                 (Request)
+
+        /// <summary>
+        /// Notify about the current network topology or a current change within the topology.
+        /// </summary>
+        /// <param name="Request">A NotifyNetworkTopology request.</param>
+        public Task<OCPP.NN.NotifyNetworkTopologyResponse> NotifyNetworkTopology(OCPP.NN.NotifyNetworkTopologyRequest Request);
 
         #endregion
 

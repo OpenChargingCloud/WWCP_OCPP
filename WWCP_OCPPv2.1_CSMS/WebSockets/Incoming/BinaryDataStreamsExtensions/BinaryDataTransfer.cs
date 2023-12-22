@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
     /// <summary>
     /// The CSMS HTTP/WebSocket/JSON server.
-    /// </summary>ACSMSWSServer,
+    /// </summary>
     public partial class CSMSWSServer : AOCPPWebSocketServer,
                                         ICSMSChannel
     {

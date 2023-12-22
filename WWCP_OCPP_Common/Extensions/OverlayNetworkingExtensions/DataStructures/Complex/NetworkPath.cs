@@ -254,19 +254,13 @@ namespace cloud.charging.open.protocols.OCPP
         /// </summary>
         /// <param name="NetworkingNodeId">A networking node identification.</param>
         public NetworkPath Append(NetworkingNode_Id NetworkingNodeId)
-        {
 
-            var newPath = networkingNodeIds.ToList();
+            => networkingNodeIds.Count  == 0 ||
+               networkingNodeIds.Last() != NetworkingNodeId
 
-            if (newPath.Count  == 0 ||
-                newPath.Last() != NetworkingNodeId)
-            {
-                newPath.Add(NetworkingNodeId);
-            }
+                   ? new(networkingNodeIds.ToList().AddAndReturnList(NetworkingNodeId))
 
-            return new (newPath);
-
-        }
+                   : this;
 
         #endregion
 

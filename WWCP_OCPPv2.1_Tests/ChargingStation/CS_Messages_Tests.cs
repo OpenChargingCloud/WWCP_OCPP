@@ -1161,10 +1161,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                                                                                      EVMaxVoltage:       Volt.         Parse(900),
                                                                                                      EnergyAmount:       WattHour.     Parse(300),
                                                                                                      EVMaxPower:         Watt.         Parse( 60),
-                                                                                                     StateOfCharge:      PercentageInt.Parse( 23),
+                                                                                                     StateOfCharge:      PercentageByte.Parse( 23),
                                                                                                      EVEnergyCapacity:   WattHour.     Parse(250),
-                                                                                                     FullSoC:            PercentageInt.Parse( 95),
-                                                                                                     BulkSoC:            PercentageInt.Parse( 80),
+                                                                                                     FullSoC:            PercentageByte.Parse( 95),
+                                                                                                     BulkSoC:            PercentageByte.Parse( 80),
                                                                                                      CustomData:         null
                                                                                                  ),
                                                                   CustomData:                    null

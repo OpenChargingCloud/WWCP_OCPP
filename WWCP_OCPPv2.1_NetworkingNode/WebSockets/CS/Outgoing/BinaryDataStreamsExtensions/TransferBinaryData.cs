@@ -33,8 +33,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     /// </summary>
     public partial class NetworkingNodeWSClient : AOCPPWebSocketClient,
                                                   INetworkingNodeWebSocketClient,
-                                                  INetworkingNodeServer,
-                                                  INetworkingNodeClientEvents
+                                                  INetworkingNodeIncomingMessages,
+                                                  INetworkingNodeOutgoingMessagesEvents
     {
 
         #region Custom binary serializer delegates
@@ -48,22 +48,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         #region Events
 
         /// <summary>
-        /// An event fired whenever a binary data transfer request will be sent to the CSMS.
+        /// An event fired whenever a BinaryDataTransfer request will be sent to the CSMS.
         /// </summary>
         public event OCPP.CS.OnBinaryDataTransferRequestDelegate?     OnBinaryDataTransferRequest;
 
         /// <summary>
-        /// An event fired whenever a binary data transfer request will be sent to the CSMS.
+        /// An event fired whenever a BinaryDataTransfer request will be sent to the CSMS.
         /// </summary>
         public event ClientRequestLogHandler?                         OnBinaryDataTransferWSRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a binary data transfer request was received.
+        /// An event fired whenever a response to a BinaryDataTransfer request was received.
         /// </summary>
         public event ClientResponseLogHandler?                        OnBinaryDataTransferWSResponse;
 
         /// <summary>
-        /// An event fired whenever a response to a binary data transfer request was received.
+        /// An event fired whenever a response to a BinaryDataTransfer request was received.
         /// </summary>
         public event OCPP.CS.OnBinaryDataTransferResponseDelegate?    OnBinaryDataTransferResponse;
 

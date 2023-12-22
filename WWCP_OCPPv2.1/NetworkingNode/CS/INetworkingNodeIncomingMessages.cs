@@ -28,7 +28,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     /// <summary>
     /// The common interface of all charging station servers.
     /// </summary>
-    public interface INetworkingNodeServer : INetworkingNodeServerLogger
+    public interface INetworkingNodeIncomingMessages
     {
 
         #region OnReset
@@ -447,7 +447,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         #region OnIncomingBinaryDataTransfer
 
         /// <summary>
-        /// An event sent whenever a binary data transfer request was received.
+        /// An event sent whenever a BinaryDataTransfer request was received.
         /// </summary>
         event OnIncomingBinaryDataTransferDelegate   OnIncomingBinaryDataTransfer;
 

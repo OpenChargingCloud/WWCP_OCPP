@@ -45,8 +45,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     /// </summary>
     public partial class NetworkingNodeWSClient : AOCPPWebSocketClient,
                                                   INetworkingNodeWebSocketClient,
-                                                  INetworkingNodeServer,
-                                                  INetworkingNodeClientEvents
+                                                  INetworkingNodeIncomingMessages,
+                                                  INetworkingNodeOutgoingMessagesEvents
     {
 
         #region Data
@@ -164,7 +164,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
 
         // Binary Data Streams Extensions
-        public CustomBinarySerializerDelegate<OCPP.Signature>?                             CustomBinarySignatureSerializer                             { get; set; }
+        public CustomBinarySerializerDelegate <OCPP.Signature>?                            CustomBinarySignatureSerializer                             { get; set; }
+
+
+        // Overlay Networking Extensions
+        public CustomJObjectSerializerDelegate<NetworkTopologyInformation>?                CustomNetworkTopologyInformationSerializer                  { get; set; }
 
         #endregion
 

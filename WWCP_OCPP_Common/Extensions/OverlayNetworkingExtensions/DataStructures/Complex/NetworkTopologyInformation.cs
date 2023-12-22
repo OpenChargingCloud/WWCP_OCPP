@@ -63,26 +63,38 @@ namespace cloud.charging.open.protocols.OCPP
         /// The JSON-LD context of this object.
         /// </summary>
         [Mandatory]
-        public JSONLDContext                  Context
+        public JSONLDContext                                             Context
             => DefaultJSONLDContext;
 
         /// <summary>
         /// The sending networking node of this network topology information.
         /// </summary>
         [Mandatory]
-        public NetworkingNode_Id?             Sender                        { get; }
+        public NetworkingNode_Id                                         RoutingNode    { get; }
+
+        /// <summary>
+        /// Networking routes.
+        /// </summary>
+        [Mandatory]
+        public Dictionary<NetworkingNode_Id, NetworkRoutingInformation>  Routes         { get; } = [];
 
         /// <summary>
         /// The timestamp before which the network topology information should not be used.
         /// </summary>
         [Mandatory]
-        public DateTime                       NotBefore                     { get; }
+        public DateTime                                                  NotBefore      { get; }
 
         /// <summary>
         /// The optional timestamp after which the network topology information should not be used.
         /// </summary>
         [Optional]
-        public DateTime?                      NotAfter                      { get; }
+        public DateTime?                                                 NotAfter       { get; }
+
+        /// <summary>
+        /// The optional priority of the network topology information.
+        /// </summary>
+        [Optional]
+        public Byte?                                                     Priority       { get; }
 
         #endregion
 
@@ -91,24 +103,27 @@ namespace cloud.charging.open.protocols.OCPP
         /// <summary>
         /// Create a new OCPP CSE network topology information.
         /// </summary>
-        /// <param name="Id">An optional unique identification for this network topology information.</param>
+        /// <param name="RoutingNode">The origin networking node of this network topology information.</param>
         /// <param name="NotBefore">An optional timestamp before which the network topology information should not be used.</param>
         /// <param name="NotAfter">An optional timestamp after which the network topology information should not be used.</param>
+        /// <param name="Priority">The optional priority of the network topology information.</param>
         /// 
         /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
         /// <param name="SignInfos">An optional enumeration of information to be used for signing this message.</param>
         /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
         /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public NetworkTopologyInformation(NetworkingNode_Id?       Sender       = null,
-                                          DateTime?                NotBefore    = null,
-                                          DateTime?                NotAfter     = null,
+        public NetworkTopologyInformation(NetworkingNode_Id                       RoutingNode,
+                                          IEnumerable<NetworkRoutingInformation>  Routes,
+                                          DateTime?                               NotBefore    = null,
+                                          DateTime?                               NotAfter     = null,
+                                          Byte?                                   Priority     = null,
 
-                                          IEnumerable<KeyPair>?    SignKeys     = null,
-                                          IEnumerable<SignInfo>?   SignInfos    = null,
-                                          IEnumerable<Signature>?  Signatures   = null,
+                                          IEnumerable<KeyPair>?                   SignKeys     = null,
+                                          IEnumerable<SignInfo>?                  SignInfos    = null,
+                                          IEnumerable<Signature>?                 Signatures   = null,
 
-                                          CustomData?              CustomData   = null)
+                                          CustomData?                             CustomData   = null)
 
             : base(SignKeys,
                    SignInfos,
@@ -117,19 +132,22 @@ namespace cloud.charging.open.protocols.OCPP
 
         {
 
-            this.Sender     = Sender;
-            this.NotBefore  = NotBefore ?? Timestamp.Now;
-            this.NotAfter   = NotAfter;
+            this.RoutingNode  = RoutingNode;
+            this.Routes       = Routes.ToDictionary(networkRoutingInformation => networkRoutingInformation.NetworkingNodeId);
+            this.NotBefore    = NotBefore ?? Timestamp.Now;
+            this.NotAfter     = NotAfter;
+            this.Priority     = Priority;
 
 
             unchecked
             {
 
-                hashCode = //KeyId.          GetHashCode()       * 11 ^
-                //           Value.          GetHashCode()       *  7 ^
-                //          (SigningMethod?. GetHashCode() ?? 0) *  5 ^
-                //          (EncodingMethod?.GetHashCode() ?? 0) *  3 ^
-                           base.           GetHashCode();
+                hashCode = this.RoutingNode.GetHashCode()       * 13 ^
+                           this.Routes.     CalcHashCode()      * 11 ^
+                           this.NotBefore.  GetHashCode()       *  7 ^
+                          (this.NotAfter?.  GetHashCode() ?? 0) *  5 ^
+                          (this.Priority?.  GetHashCode() ?? 0) *  3 ^
+                           base.            GetHashCode();
 
             }
 
@@ -179,7 +197,7 @@ namespace cloud.charging.open.protocols.OCPP
         /// Try to parse the given JSON representation of a network topology information.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="NetworkTopologyInformation">The parsed connector type.</param>
+        /// <param name="NetworkTopologyInformation">Network topology information.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                          JSON,
                                        out NetworkTopologyInformation?  NetworkTopologyInformation,
@@ -195,7 +213,7 @@ namespace cloud.charging.open.protocols.OCPP
         /// Try to parse the given JSON representation of a network topology information.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="NetworkTopologyInformation">The parsed connector type.</param>
+        /// <param name="NetworkTopologyInformation">Network topology information.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomNetworkTopologyInformationParser">A delegate to parse custom network topology information.</param>
         public static Boolean TryParse(JObject                                                   JSON,
@@ -209,12 +227,12 @@ namespace cloud.charging.open.protocols.OCPP
 
                 NetworkTopologyInformation = default;
 
-                #region Sender               [mandatory]
+                #region RoutingNode    [mandatory]
 
-                if (!JSON.ParseMandatory("sender",
-                                         "network topology information sender",
+                if (!JSON.ParseMandatory("routingNode",
+                                         "routing networking node",
                                          NetworkingNode_Id.TryParse,
-                                         out NetworkingNode_Id Sender,
+                                         out NetworkingNode_Id RoutingNode,
                                          out ErrorResponse))
                 {
                     return false;
@@ -222,19 +240,20 @@ namespace cloud.charging.open.protocols.OCPP
 
                 #endregion
 
-                #region Priority             [mandatory]
+                #region Routes         [mandatory]
 
-                if (!JSON.ParseMandatory("priority",
-                                         "network topology information priority",
-                                         out Byte Priority,
-                                         out ErrorResponse))
+                if (!JSON.ParseMandatoryJSON("routes",
+                                             "start schedule",
+                                             NetworkRoutingInformation.TryParse,
+                                             out IEnumerable<NetworkRoutingInformation> Routes,
+                                             out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region NotBefore            [mandatory]
+                #region NotBefore      [mandatory]
 
                 if (!JSON.ParseMandatory("notBefore",
                                          "start schedule",
@@ -246,7 +265,7 @@ namespace cloud.charging.open.protocols.OCPP
 
                 #endregion
 
-                #region NotAfter             [optional]
+                #region NotAfter       [optional]
 
                 if (JSON.ParseOptional("notAfter",
                                        "start schedule",
@@ -259,8 +278,21 @@ namespace cloud.charging.open.protocols.OCPP
 
                 #endregion
 
+                #region Priority       [optional]
 
-                #region Signatures           [optional, OCPP_CSE]
+                if (JSON.ParseOptional("priority",
+                                       "network topology information priority",
+                                       out Byte? Priority,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+
+                #region Signatures     [optional, OCPP_CSE]
 
                 if (JSON.ParseOptionalHashSet("signatures",
                                               "cryptographic signatures",
@@ -274,7 +306,7 @@ namespace cloud.charging.open.protocols.OCPP
 
                 #endregion
 
-                #region CustomData           [optional]
+                #region CustomData     [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
@@ -291,9 +323,11 @@ namespace cloud.charging.open.protocols.OCPP
 
                 NetworkTopologyInformation = new NetworkTopologyInformation(
 
-                                                 Sender,
+                                                 RoutingNode,
+                                                 Routes,
                                                  NotBefore,
                                                  NotAfter,
+                                                 Priority,
 
                                                  null,
                                                  null,
@@ -321,37 +355,52 @@ namespace cloud.charging.open.protocols.OCPP
 
         #endregion
 
-        #region ToJSON(CustomNetworkTopologyInformationSerializer = null, CustomEventDataSerializer = null, ...)
+        #region ToJSON(CustomNetworkTopologyInformationSerializer = null, CustomNetworkRoutingInformationSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomNetworkTopologyInformationSerializer">A delegate to serialize custom network topology information.</param>
+        /// <param name="CustomNetworkRoutingInformationSerializer">A delegate to serialize custom network routing information.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<NetworkTopologyInformation>?  CustomNetworkTopologyInformationSerializer   = null,
-                              CustomJObjectSerializerDelegate<Signature>?        CustomSignatureSerializer         = null,
-                              CustomJObjectSerializerDelegate<CustomData>?       CustomCustomDataSerializer        = null)
+                              CustomJObjectSerializerDelegate<NetworkRoutingInformation>?   CustomNetworkRoutingInformationSerializer    = null,
+                              CustomJObjectSerializerDelegate<NetworkLinkInformation>?      CustomNetworkLinkInformationSerializer       = null,
+                              CustomJObjectSerializerDelegate<Signature>?                   CustomSignatureSerializer                    = null,
+                              CustomJObjectSerializerDelegate<CustomData>?                  CustomCustomDataSerializer                   = null)
         {
 
             var json = JSONObject.Create(
 
-                                 new JProperty("sender",        Sender.   ToString()),
-                                 new JProperty("notBefore",     NotBefore.ToIso8601()),
+                                 new JProperty("routingNode",   RoutingNode.   ToString()),
+
+                                 new JProperty("routes",        new JArray(Routes.Values.Select(networkRoutingInformation => networkRoutingInformation.ToJSON(
+                                                                                                                                 CustomNetworkRoutingInformationSerializer,
+                                                                                                                                 CustomNetworkLinkInformationSerializer,
+                                                                                                                                 CustomCustomDataSerializer
+                                                                                                                             )))),
+
+                                 new JProperty("notBefore",     NotBefore.     ToIso8601()),
 
                            NotAfter.HasValue
                                ? new JProperty("notAfter",      NotAfter.Value.ToIso8601())
                                : null,
 
+                           Priority.HasValue
+                               ? new JProperty("priority",      Priority.Value)
+                               : null,
 
 
                            Signatures.Any()
-                               ? new JProperty("signatures",    new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
-                                                                                                                           CustomCustomDataSerializer))))
+                               ? new JProperty("signatures",    new JArray(Signatures.Select(signature                    => signature.ToJSON(
+                                                                                                                                 CustomSignatureSerializer,
+                                                                                                                                 CustomCustomDataSerializer
+                                                                                                                             ))))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",    CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",    CustomData.    ToJSON(CustomCustomDataSerializer))
                                : null);
 
             return CustomNetworkTopologyInformationSerializer is not null
@@ -463,7 +512,7 @@ namespace cloud.charging.open.protocols.OCPP
         /// </summary>
         public override String ToString()
 
-            => $"{Sender}";
+            => $"{RoutingNode}";
 
         #endregion
 

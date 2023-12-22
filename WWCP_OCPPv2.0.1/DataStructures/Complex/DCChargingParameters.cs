@@ -66,7 +66,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// The optional energy available in the battery (in percent of the battery capacity).
         /// </summary>
         [Optional]
-        public PercentageInt?  StateOfCharge       { get; }
+        public PercentageByte?  StateOfCharge       { get; }
 
         /// <summary>
         /// The optional capacity of the electric vehicle battery (in Wh).
@@ -78,13 +78,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// The optional percentage of SoC at which the EV considers the battery fully charged.
         /// </summary>
         [Optional]
-        public PercentageInt?  FullSoC             { get; }
+        public PercentageByte?  FullSoC             { get; }
 
         /// <summary>
         /// The optional percentage of SoC at which the EV considers a fast charging process to end.
         /// </summary>
         [Optional]
-        public PercentageInt?  BulkSoC             { get; }
+        public PercentageByte?  BulkSoC             { get; }
 
         #endregion
 
@@ -106,10 +106,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                                     Volt            EVMaxVoltage,
                                     WattHour?       EnergyAmount,
                                     Watt?           EVMaxPower,
-                                    PercentageInt?  StateOfCharge,
+                                    PercentageByte?  StateOfCharge,
                                     WattHour?       EVEnergyCapacity,
-                                    PercentageInt?  FullSoC,
-                                    PercentageInt?  BulkSoC,
+                                    PercentageByte?  FullSoC,
+                                    PercentageByte?  BulkSoC,
                                     CustomData?     CustomData   = null)
 
             : base(CustomData)
@@ -327,8 +327,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 
                 if (JSON.ParseOptional("stateOfCharge",
                                        "state of charge",
-                                       PercentageInt.TryParse,
-                                       out PercentageInt? StateOfCharge,
+                                       PercentageByte.TryParse,
+                                       out PercentageByte? StateOfCharge,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -355,8 +355,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 
                 if (JSON.ParseOptional("fullSoC",
                                        "full state of charge",
-                                       PercentageInt.TryParse,
-                                       out PercentageInt? FullSoC,
+                                       PercentageByte.TryParse,
+                                       out PercentageByte? FullSoC,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -369,8 +369,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 
                 if (JSON.ParseOptional("bulkSoC",
                                        "bulk state of charge",
-                                       PercentageInt.TryParse,
-                                       out PercentageInt? BulkSoC,
+                                       PercentageByte.TryParse,
+                                       out PercentageByte? BulkSoC,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)

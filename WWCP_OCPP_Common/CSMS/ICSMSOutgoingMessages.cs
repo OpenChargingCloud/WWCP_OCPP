@@ -32,7 +32,7 @@ namespace cloud.charging.open.protocols.OCPP
         /// <summary>
         /// Send the given vendor-specific binary data.
         /// </summary>
-        /// <param name="Request">A binary data transfer request.</param>
+        /// <param name="Request">A BinaryDataTransfer request.</param>
         Task<CS.BinaryDataTransferResponse> BinaryDataTransfer(CSMS.BinaryDataTransferRequest Request);
 
         #endregion

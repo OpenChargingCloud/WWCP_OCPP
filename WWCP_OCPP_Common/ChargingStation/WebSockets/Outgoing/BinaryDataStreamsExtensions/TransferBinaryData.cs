@@ -27,7 +27,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
     #region OnBinaryDataTransfer (Request/-Response) Delegate
 
     /// <summary>
-    /// A delegate called whenever a binary data transfer request will be sent to the CSMS.
+    /// A delegate called whenever a BinaryDataTransfer request will be sent to the CSMS.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -37,7 +37,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
                                                              BinaryDataTransferRequest   Request);
 
     /// <summary>
-    /// A delegate called whenever a response to a binary data transfer request was received.
+    /// A delegate called whenever a response to a BinaryDataTransfer request was received.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>

@@ -41,7 +41,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The state-of-charge value beyond which the charging rate limit should be applied.
         /// </summary>
         [Mandatory]
-        public PercentageInt      StateOfCharge        { get; }
+        public PercentageByte      StateOfCharge        { get; }
 
         /// <summary>
         /// The charging rate limit beyond the state-of-charge value (Watt or Ampere).
@@ -59,7 +59,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="StateOfCharge">An state-of-charge value beyond which the charging rate limit should be applied.</param>
         /// <param name="ChargingRateLimit">The charging rate limit beyond the state-of-charge value (in chargingRateUnit).</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public LimitBeyondSoC(PercentageInt      StateOfCharge,
+        public LimitBeyondSoC(PercentageByte      StateOfCharge,
                               ChargingRateValue  ChargingRateLimit,
                               CustomData?        CustomData   = null)
 
@@ -149,7 +149,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatory("soc",
                                          "state-of-charge",
-                                         out PercentageInt StateOfCharge,
+                                         out PercentageByte StateOfCharge,
                                          out ErrorResponse))
                 {
                     return false;

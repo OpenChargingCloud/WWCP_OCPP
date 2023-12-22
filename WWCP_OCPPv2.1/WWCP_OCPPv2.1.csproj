@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="CSMS\IncomingMessages\Networking\" />
     <Folder Include="DataStructures\ISO15118-20\CommonTypes\Complex\" />
   </ItemGroup>
 

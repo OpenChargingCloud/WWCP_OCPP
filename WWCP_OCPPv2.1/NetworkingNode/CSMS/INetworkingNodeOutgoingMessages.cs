@@ -657,7 +657,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// Send the given vendor-specific binary data.
         /// </summary>
-        /// <param name="Request">A binary data transfer request.</param>
+        /// <param name="Request">A BinaryDataTransfer request.</param>
         Task<OCPP.CS.BinaryDataTransferResponse> BinaryDataTransfer(OCPP.CSMS.BinaryDataTransferRequest Request);
 
         #endregion

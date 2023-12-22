@@ -24,6 +24,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
+using cloud.charging.open.protocols.OCPP.NN;
+using cloud.charging.open.protocols.WWCP;
 
 #endregion
 
@@ -156,6 +158,126 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
                     {
                         Assert.That(chargingStation.Modem.ICCID,   Is.EqualTo(networkingNode1.Modem.ICCID));
                         Assert.That(chargingStation.Modem.IMSI,    Is.EqualTo(networkingNode1.Modem.IMSI));
+                    }
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+
+        #region NotifyNetworkTopology_Test()
+
+        /// <summary>
+        /// A test for sending NotifyNetworkTopology requests to the CSMS.
+        /// </summary>
+        [Test]
+        public async Task NotifyNetworkTopology_Test()
+        {
+
+            InitNetworkingNode1 = true;
+
+            Assert.Multiple(() => {
+                Assert.That(testCSMS01,                       Is.Not.Null);
+                Assert.That(testBackendWebSockets01,          Is.Not.Null);
+                Assert.That(networkingNode1,                  Is.Not.Null);
+                Assert.That(testNetworkingNodeWebSockets01,   Is.Not.Null);
+                Assert.That(chargingStation1,                 Is.Not.Null);
+                Assert.That(chargingStation2,                 Is.Not.Null);
+                Assert.That(chargingStation3,                 Is.Not.Null);
+            });
+
+            if (testCSMS01                     is not null &&
+                testBackendWebSockets01        is not null &&
+                networkingNode1                is not null &&
+                testNetworkingNodeWebSockets01 is not null &&
+                chargingStation1               is not null &&
+                chargingStation2               is not null &&
+                chargingStation3               is not null)
+            {
+
+                var csmsNotifyNetworkTopologyRequests  = new ConcurrentList<NotifyNetworkTopologyRequest>();
+
+                testCSMS01.OnIncomingNotifyNetworkTopologyRequest += (timestamp, sender, connection, notifyNetworkTopologyRequest) => {
+                    csmsNotifyNetworkTopologyRequests.TryAdd(notifyNetworkTopologyRequest);
+                    return Task.CompletedTask;
+                };
+
+
+                var reason    = BootReason.PowerUp;
+                var response  = await networkingNode1.AsCS.NotifyNetworkTopology(
+                                    new NotifyNetworkTopologyRequest(
+                                        networkingNode1.Id,
+                                        new NetworkTopologyInformation(
+                                            RoutingNode:   networkingNode1.Id,
+                                            Routes:        new[] {
+                                                               new NetworkRoutingInformation(
+                                                                   NetworkingNodeId:   networkingNode1.Id,
+                                                                   Priority:           23,
+                                                                   Uplink:             new NetworkLinkInformation(
+                                                                                           Capacity:     5000,
+                                                                                           Latency:      TimeSpan.FromMilliseconds(10),
+                                                                                           ErrorRate:    PercentageDouble.Parse(0.05)
+                                                                                       ),
+                                                                   Downlink:           new NetworkLinkInformation(
+                                                                                           Capacity:     15000,
+                                                                                           Latency:      TimeSpan.FromMilliseconds(23),
+                                                                                           ErrorRate:    PercentageDouble.Parse(0.42)
+                                                                                       )
+                                                               )
+                                                           },
+                                            NotBefore:     Timestamp.Now - TimeSpan.FromMinutes(5),
+                                            NotAfter:      Timestamp.Now + TimeSpan.FromHours  (6),
+                                            Priority:      5,
+                                            CustomData:    null
+                                        )
+                                    )
+                                );
+
+
+                Assert.Multiple(() => {
+
+                    Assert.That(response.Result.ResultCode,                                             Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                                                        Is.EqualTo(NetworkTopologyStatus.Accepted));
+
+                    Assert.That(csmsNotifyNetworkTopologyRequests.Count,                                Is.EqualTo(1), "The Network Topology Notification did not reach the CSMS!");
+                    //Assert.That(csmsBootNotificationRequests.First().DestinationNodeId,                 Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(csmsNotifyNetworkTopologyRequests.First().NetworkPath.Length,           Is.EqualTo(1));
+                    Assert.That(csmsNotifyNetworkTopologyRequests.First().NetworkPath.Source,           Is.EqualTo(networkingNode1.Id));
+                    Assert.That(csmsNotifyNetworkTopologyRequests.First().NetworkPath.Last,             Is.EqualTo(networkingNode1.Id));
+
+                    Assert.That(csmsNotifyNetworkTopologyRequests.First().NetworkTopologyInformation,   Is.Not.Null);
+
+                });
+
+                var networkTopologyInformation = csmsNotifyNetworkTopologyRequests.First().NetworkTopologyInformation;
+                if (networkTopologyInformation is not null)
+                {
+
+                    Assert.That(networkTopologyInformation.RoutingNode,                 Is.EqualTo(networkingNode1.Id));
+                    Assert.That(networkTopologyInformation.Priority,                    Is.EqualTo(5));
+                    Assert.That(networkTopologyInformation.Routes,                      Is.Not.Null);
+
+                    var routes = networkTopologyInformation.Routes;
+                    if (routes is not null)
+                    {
+
+                        Assert.That(routes.Values.First().NetworkingNodeId,             Is.EqualTo(networkingNode1.Id));
+                        Assert.That(routes.Values.First().Priority,                     Is.EqualTo(23));
+
+                        Assert.That(routes.Values.First().Uplink,                       Is.Not.Null);
+                        Assert.That(routes.Values.First().Uplink?.Capacity,             Is.EqualTo(5000));
+                        Assert.That(routes.Values.First().Uplink?.Latency,              Is.EqualTo(TimeSpan.FromMilliseconds(10)));
+                        Assert.That(routes.Values.First().Uplink?.ErrorRate?.Value,     Is.EqualTo(0.05));
+
+                        Assert.That(routes.Values.First().Downlink,                     Is.Not.Null);
+                        Assert.That(routes.Values.First().Downlink?.Capacity,           Is.EqualTo(15000));
+                        Assert.That(routes.Values.First().Downlink?.Latency,            Is.EqualTo(TimeSpan.FromMilliseconds(23)));
+                        Assert.That(routes.Values.First().Downlink?.ErrorRate?.Value,   Is.EqualTo(0.42));
+
                     }
 
                 }
