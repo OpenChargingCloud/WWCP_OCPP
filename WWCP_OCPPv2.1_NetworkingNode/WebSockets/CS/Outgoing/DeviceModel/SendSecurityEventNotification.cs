@@ -80,7 +80,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <param name="Request">A SecurityEventNotification request.</param>
         public async Task<SecurityEventNotificationResponse>
 
-            SendSecurityEventNotification(SecurityEventNotificationRequest  Request)
+            SecurityEventNotification(SecurityEventNotificationRequest  Request)
 
         {
 

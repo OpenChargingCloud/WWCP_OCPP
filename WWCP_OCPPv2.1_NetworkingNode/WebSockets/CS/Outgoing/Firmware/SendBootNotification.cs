@@ -80,7 +80,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <param name="Request">A BootNotification request.</param>
         public async Task<BootNotificationResponse>
 
-            SendBootNotification(BootNotificationRequest Request)
+            BootNotification(BootNotificationRequest Request)
 
         {
 

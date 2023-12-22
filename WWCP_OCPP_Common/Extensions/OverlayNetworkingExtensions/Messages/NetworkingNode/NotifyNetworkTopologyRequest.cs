@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPP.NN
         /// <summary>
         /// Create a new notify network topology request.
         /// </summary>
-        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="DestinationNodeId">The networking node identification of the message destination.</param>
         /// <param name="NetworkTopologyInformation">A network topology information.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -77,7 +77,7 @@ namespace cloud.charging.open.protocols.OCPP.NN
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public NotifyNetworkTopologyRequest(NetworkingNode_Id           NetworkingNodeId,
+        public NotifyNetworkTopologyRequest(NetworkingNode_Id           DestinationNodeId,
                                             NetworkTopologyInformation  NetworkTopologyInformation,
 
                                             IEnumerable<KeyPair>?       SignKeys            = null,
@@ -93,7 +93,7 @@ namespace cloud.charging.open.protocols.OCPP.NN
                                             NetworkPath?                NetworkPath         = null,
                                             CancellationToken           CancellationToken   = default)
 
-            : base(NetworkingNodeId,
+            : base(DestinationNodeId,
                    nameof(NotifyNetworkTopologyRequest)[..^7],
 
                    SignKeys,

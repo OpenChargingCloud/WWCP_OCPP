@@ -78,7 +78,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <param name="Request">A DataTransfer request.</param>
         public async Task<OCPPv2_1.CSMS.DataTransferResponse>
 
-            TransferData(OCPPv2_1.CS.DataTransferRequest  Request)
+            DataTransfer(OCPPv2_1.CS.DataTransferRequest  Request)
 
         {
 

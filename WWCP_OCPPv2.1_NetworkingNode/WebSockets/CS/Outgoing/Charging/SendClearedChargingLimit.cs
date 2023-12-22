@@ -80,7 +80,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <param name="Request">A ClearedChargingLimit request.</param>
         public async Task<ClearedChargingLimitResponse>
 
-            SendClearedChargingLimit(ClearedChargingLimitRequest  Request)
+            ClearedChargingLimit(ClearedChargingLimitRequest  Request)
 
         {
 

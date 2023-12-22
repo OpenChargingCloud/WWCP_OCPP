@@ -12328,7 +12328,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// </summary>
             /// <param name="Request">A boot notification request.</param>
             public async Task<OCPPv2_1.CSMS.BootNotificationResponse>
-                SendBootNotification(OCPPv2_1.CS.BootNotificationRequest Request)
+                BootNotification(OCPPv2_1.CS.BootNotificationRequest Request)
 
             {
 
@@ -12365,7 +12365,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                          out var errorResponse
                                      )
 
-                                         ? await CSClient.SendBootNotification(Request)
+                                         ? await CSClient.BootNotification(Request)
 
                                          : new OCPPv2_1.CSMS.BootNotificationResponse(
                                                Request,
@@ -12452,7 +12452,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
             /// <param name="CancellationToken">An optional token to cancel this request.</param>
             public async Task<OCPPv2_1.CSMS.FirmwareStatusNotificationResponse>
-                SendFirmwareStatusNotification(OCPPv2_1.CS.FirmwareStatusNotificationRequest Request)
+                FirmwareStatusNotification(OCPPv2_1.CS.FirmwareStatusNotificationRequest Request)
 
             {
 
@@ -12488,7 +12488,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                          out var errorResponse
                                      )
 
-                                         ? await CSClient.SendFirmwareStatusNotification(Request)
+                                         ? await CSClient.FirmwareStatusNotification(Request)
 
                                          : new OCPPv2_1.CSMS.FirmwareStatusNotificationResponse(
                                                Request,
@@ -12554,7 +12554,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
             /// <param name="CancellationToken">An optional token to cancel this request.</param>
             public async Task<OCPPv2_1.CSMS.PublishFirmwareStatusNotificationResponse>
-                SendPublishFirmwareStatusNotification(OCPPv2_1.CS.PublishFirmwareStatusNotificationRequest Request)
+                PublishFirmwareStatusNotification(OCPPv2_1.CS.PublishFirmwareStatusNotificationRequest Request)
 
             {
 
@@ -12590,7 +12590,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                          out var errorResponse
                                      )
 
-                                         ? await CSClient.SendPublishFirmwareStatusNotification(Request)
+                                         ? await CSClient.PublishFirmwareStatusNotification(Request)
 
                                          : new OCPPv2_1.CSMS.PublishFirmwareStatusNotificationResponse(
                                                Request,
@@ -12653,7 +12653,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
             /// <param name="CancellationToken">An optional token to cancel this request.</param>
             public async Task<OCPPv2_1.CSMS.HeartbeatResponse>
-                SendHeartbeat(OCPPv2_1.CS.HeartbeatRequest Request)
+                Heartbeat(OCPPv2_1.CS.HeartbeatRequest Request)
 
             {
 
@@ -12689,7 +12689,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                          out var errorResponse
                                      )
 
-                                         ? await CSClient.SendHeartbeat(Request)
+                                         ? await CSClient.Heartbeat(Request)
 
                                          : new OCPPv2_1.CSMS.HeartbeatResponse(
                                                Request,
@@ -12862,7 +12862,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
             /// <param name="CancellationToken">An optional token to cancel this request.</param>
             public async Task<OCPPv2_1.CSMS.SecurityEventNotificationResponse>
-                SendSecurityEventNotification(OCPPv2_1.CS.SecurityEventNotificationRequest Request)
+                SecurityEventNotification(OCPPv2_1.CS.SecurityEventNotificationRequest Request)
 
             {
 
@@ -12898,7 +12898,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                          out var errorResponse
                                      )
 
-                                         ? await CSClient.SendSecurityEventNotification(Request)
+                                         ? await CSClient.SecurityEventNotification(Request)
 
                                          : new OCPPv2_1.CSMS.SecurityEventNotificationResponse(
                                                Request,
@@ -13182,7 +13182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
             /// <param name="CancellationToken">An optional token to cancel this request.</param>
             public async Task<OCPPv2_1.CSMS.LogStatusNotificationResponse>
-                SendLogStatusNotification(OCPPv2_1.CS.LogStatusNotificationRequest Request)
+                LogStatusNotification(OCPPv2_1.CS.LogStatusNotificationRequest Request)
 
             {
 
@@ -13218,7 +13218,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                          out var errorResponse
                                      )
 
-                                         ? await CSClient.SendLogStatusNotification(Request)
+                                         ? await CSClient.LogStatusNotification(Request)
 
                                          : new OCPPv2_1.CSMS.LogStatusNotificationResponse(
                                                Request,
@@ -13284,7 +13284,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
             /// <param name="CancellationToken">An optional token to cancel this request.</param>
             public async Task<OCPPv2_1.CSMS.DataTransferResponse>
-                TransferData(OCPPv2_1.CS.DataTransferRequest Request)
+                DataTransfer(OCPPv2_1.CS.DataTransferRequest Request)
 
             {
 
@@ -13320,7 +13320,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                          out var errorResponse
                                      )
 
-                                         ? await CSClient.TransferData(Request)
+                                         ? await CSClient.DataTransfer(Request)
 
                                          : new OCPPv2_1.CSMS.DataTransferResponse(
                                                Request,
@@ -13387,7 +13387,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
             /// <param name="CancellationToken">An optional token to cancel this request.</param>
             public async Task<OCPPv2_1.CSMS.SignCertificateResponse>
-                SendCertificateSigningRequest(OCPPv2_1.CS.SignCertificateRequest Request)
+                SignCertificate(OCPPv2_1.CS.SignCertificateRequest Request)
 
             {
 
@@ -13423,7 +13423,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                          out var errorResponse
                                      )
 
-                                         ? await CSClient.SendCertificateSigningRequest(Request)
+                                         ? await CSClient.SignCertificate(Request)
 
                                          : new OCPPv2_1.CSMS.SignCertificateResponse(
                                                Request,
@@ -13801,7 +13801,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
             /// <param name="CancellationToken">An optional token to cancel this request.</param>
             public async Task<OCPPv2_1.CSMS.ReservationStatusUpdateResponse>
-                SendReservationStatusUpdate(OCPPv2_1.CS.ReservationStatusUpdateRequest Request)
+                ReservationStatusUpdate(OCPPv2_1.CS.ReservationStatusUpdateRequest Request)
 
             {
 
@@ -13837,7 +13837,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                          out var errorResponse
                                      )
 
-                                         ? await CSClient.SendReservationStatusUpdate(Request)
+                                         ? await CSClient.ReservationStatusUpdate(Request)
 
                                          : new OCPPv2_1.CSMS.ReservationStatusUpdateResponse(
                                                Request,
@@ -14138,7 +14138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
             /// <param name="CancellationToken">An optional token to cancel this request.</param>
             public async Task<OCPPv2_1.CSMS.TransactionEventResponse>
-                SendTransactionEvent(OCPPv2_1.CS.TransactionEventRequest Request)
+                TransactionEvent(OCPPv2_1.CS.TransactionEventRequest Request)
 
             {
 
@@ -14182,7 +14182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                          out var errorResponse
                                      )
 
-                                         ? await CSClient.SendTransactionEvent(Request)
+                                         ? await CSClient.TransactionEvent(Request)
 
                                          : new OCPPv2_1.CSMS.TransactionEventResponse(
                                                Request,
@@ -14253,7 +14253,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
             /// <param name="CancellationToken">An optional token to cancel this request.</param>
             public async Task<OCPPv2_1.CSMS.StatusNotificationResponse>
-                SendStatusNotification(OCPPv2_1.CS.StatusNotificationRequest Request)
+                StatusNotification(OCPPv2_1.CS.StatusNotificationRequest Request)
 
             {
 
@@ -14289,7 +14289,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                          out var errorResponse
                                      )
 
-                                         ? await CSClient.SendStatusNotification(Request)
+                                         ? await CSClient.StatusNotification(Request)
 
                                          : new OCPPv2_1.CSMS.StatusNotificationResponse(
                                                Request,
@@ -14354,7 +14354,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
             /// <param name="CancellationToken">An optional token to cancel this request.</param>
             public async Task<OCPPv2_1.CSMS.MeterValuesResponse>
-                SendMeterValues(OCPPv2_1.CS.MeterValuesRequest Request)
+                MeterValues(OCPPv2_1.CS.MeterValuesRequest Request)
 
             {
 
@@ -14392,7 +14392,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                          out var errorResponse
                                      )
 
-                                         ? await CSClient.SendMeterValues(Request)
+                                         ? await CSClient.MeterValues(Request)
 
                                          : new OCPPv2_1.CSMS.MeterValuesResponse(
                                                Request,
@@ -14583,7 +14583,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
             /// <param name="CancellationToken">An optional token to cancel this request.</param>
             public async Task<OCPPv2_1.CSMS.ClearedChargingLimitResponse>
-                SendClearedChargingLimit(OCPPv2_1.CS.ClearedChargingLimitRequest Request)
+                ClearedChargingLimit(OCPPv2_1.CS.ClearedChargingLimitRequest Request)
 
             {
 
@@ -14619,7 +14619,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                          out var errorResponse
                                      )
 
-                                         ? await CSClient.SendClearedChargingLimit(Request)
+                                         ? await CSClient.ClearedChargingLimit(Request)
 
                                          : new OCPPv2_1.CSMS.ClearedChargingLimitResponse(
                                                Request,
@@ -15361,7 +15361,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
             /// <param name="CancellationToken">An optional token to cancel this request.</param>
             public async Task<OCPP.CSMS.BinaryDataTransferResponse>
-                TransferBinaryData(OCPP.CS.BinaryDataTransferRequest Request)
+                BinaryDataTransfer(OCPP.CS.BinaryDataTransferRequest Request)
 
             {
 
@@ -15397,7 +15397,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                          out var errorResponse
                                      )
 
-                                         ? await CSClient.TransferBinaryData(Request)
+                                         ? await CSClient.BinaryDataTransfer(Request)
 
                                          : new OCPP.CSMS.BinaryDataTransferResponse(
                                                Request,
@@ -18279,7 +18279,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         // ToDo: Add aditional request signature!
 
                         // Explicit sending to upstream CSMS!
-                        response  = await parentNetworkingNode.AsCS.SendBootNotification(request);
+                        response  = await parentNetworkingNode.AsCS.BootNotification(request);
 
 
                         //response =  new OCPPv2_1.CSMS.BootNotificationResponse(
@@ -21920,7 +21920,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
                     // Explicit sending to upstream CSMS!
-                    var response  = await parentNetworkingNode.AsCS.TransferBinaryData(request);
+                    var response  = await parentNetworkingNode.AsCS.BinaryDataTransfer(request);
 
 
 
@@ -29853,7 +29853,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// The currently active signature policy.
         /// </summary>
         public SignaturePolicy               SignaturePolicy
-            => SignaturePolicies.First();
+            => signaturePolicies.First();
 
 
         public  ActingAsCS               AsCS                        { get; }
@@ -29960,6 +29960,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             this.DNSClient                = DNSClient ?? new DNSClient(SearchForIPv6DNSServers: false);
 
+            this.signaturePolicies.Add(SignaturePolicy ?? new SignaturePolicy());
+
          //   this.EnqueuedRequests         = [];
 
 
@@ -29969,9 +29971,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                 RequireAuthentication:     false,
                                                 DefaultRequestTimeout:     this.DefaultRequestTimeout,
                                                 HTTPUploadPort:            null,
-                                                DNSClient:                 this.DNSClient
+                                                DNSClient:                 this.DNSClient,
 
-                                                //SignaturePolicy:           this.SignaturePolicy
+                                                SignaturePolicy:           this.SignaturePolicy
 
                                             );
 
@@ -29994,9 +29996,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                                 DefaultRequestTimeout:     this.DefaultRequestTimeout,
                                                 HTTPAuthentication:        null,
-                                                DNSClient:                 this.DNSClient
+                                                DNSClient:                 this.DNSClient,
 
-                                                //SignaturePolicy:           this.SignaturePolicy
+                                                SignaturePolicy:           this.SignaturePolicy
 
                                             );
 
@@ -30160,33 +30162,59 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #endregion
 
 
-            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var communicationChannel) &&
-                                communicationChannel is not null
+            NotifyNetworkTopologyResponse?  response        = null;
+            String?                         errorResponse   = null;
 
-            // FUTURE!!!
+            if (!SignaturePolicy.SignRequestMessage(
+                    Request,
+                    Request.ToJSON(
+                        CustomNotifyNetworkTopologyRequestSerializer,
+                        CustomNetworkTopologyInformationSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out errorResponse
+                ))
+            {
 
-                                ? SignaturePolicy.SignRequestMessage(
-                                      Request,
-                                      Request.ToJSON(
-                                          CustomNotifyNetworkTopologyRequestSerializer,
-                                          CustomNetworkTopologyInformationSerializer,
-                                          CustomSignatureSerializer,
-                                          CustomCustomDataSerializer
-                                      ),
-                                      out var errorResponse
-                                  )
+                response  = new NotifyNetworkTopologyResponse(
+                                Request,
+                                Result.SignatureError(errorResponse)
+                            );
 
-                                      ? await communicationChannel.NotifyNetworkTopology(Request)
+            }
 
-                                      : new NotifyNetworkTopologyResponse(
-                                            Request,
-                                            Result.SignatureError(errorResponse)
-                                        )
+            // ToDo: Currently hardcoded CSMS lookup!
+            else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
+            {
+
+                response  = AsCS.CSClient is not null
+
+                                ? await AsCS.CSClient.NotifyNetworkTopology(Request)
 
                                 : new NotifyNetworkTopologyResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
+
+            }
+
+            else
+            {
+
+                response = LookupNetworkingNode(Request.DestinationNodeId, out var communicationChannel) &&
+                                communicationChannel is not null
+
+                                // FUTURE!!!
+
+                                ?  await communicationChannel.NotifyNetworkTopology(Request)
+
+                                : new NotifyNetworkTopologyResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+            }
 
 
             SignaturePolicy.VerifyResponseMessage(

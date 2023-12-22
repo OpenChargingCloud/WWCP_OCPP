@@ -34,7 +34,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     /// The common interface of all charging station clients.
     /// </summary>
     public interface INetworkingNodeOutgoingMessages : IHTTPClient,
-                                             IEventSender
+                                                       IEventSender
     {
 
         String?  ClientCloseMessage    { get; }
@@ -60,47 +60,47 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         #endregion
 
 
-        #region SendBootNotification                  (Request)
+        #region BootNotification                  (Request)
 
         /// <summary>
         /// Send a boot notification.
         /// </summary>
         /// <param name="Request">A boot notification request.</param>
-        public Task<BootNotificationResponse> SendBootNotification(BootNotificationRequest Request);
+        public Task<BootNotificationResponse> BootNotification(BootNotificationRequest Request);
 
         #endregion
 
-        #region SendFirmwareStatusNotification        (Request)
+        #region FirmwareStatusNotification        (Request)
 
         /// <summary>
         /// Send a firmware status notification.
         /// </summary>
         /// <param name="Request">A firmware status notification request.</param>
-        public Task<FirmwareStatusNotificationResponse> SendFirmwareStatusNotification(FirmwareStatusNotificationRequest Request);
+        public Task<FirmwareStatusNotificationResponse> FirmwareStatusNotification(FirmwareStatusNotificationRequest Request);
 
         #endregion
 
-        #region SendPublishFirmwareStatusNotification (Request)
+        #region PublishFirmwareStatusNotification (Request)
 
         /// <summary>
         /// Send a publish firmware status notification.
         /// </summary>
         /// <param name="Request">A publish firmware status notification request.</param>
-        public Task<PublishFirmwareStatusNotificationResponse> SendPublishFirmwareStatusNotification(PublishFirmwareStatusNotificationRequest Request);
+        public Task<PublishFirmwareStatusNotificationResponse> PublishFirmwareStatusNotification(PublishFirmwareStatusNotificationRequest Request);
 
         #endregion
 
-        #region SendHeartbeat                         (Request)
+        #region Heartbeat                         (Request)
 
         /// <summary>
         /// Send a heartbeat.
         /// </summary>
         /// <param name="Request">A heartbeat request.</param>
-        public Task<HeartbeatResponse> SendHeartbeat(HeartbeatRequest Request);
+        public Task<HeartbeatResponse> Heartbeat(HeartbeatRequest Request);
 
         #endregion
 
-        #region NotifyEvent                           (Request)
+        #region NotifyEvent                       (Request)
 
         /// <summary>
         /// Notify about an event.
@@ -110,17 +110,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
         #endregion
 
-        #region SendSecurityEventNotification         (Request)
+        #region SecurityEventNotification         (Request)
 
         /// <summary>
         /// Send a security event notification.
         /// </summary>
         /// <param name="Request">A security event notification request.</param>
-        public Task<SecurityEventNotificationResponse> SendSecurityEventNotification(SecurityEventNotificationRequest Request);
+        public Task<SecurityEventNotificationResponse> SecurityEventNotification(SecurityEventNotificationRequest Request);
 
         #endregion
 
-        #region NotifyReport                          (Request)
+        #region NotifyReport                      (Request)
 
         /// <summary>
         /// Notify about a report.
@@ -130,7 +130,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
         #endregion
 
-        #region NotifyMonitoringReport                (Request)
+        #region NotifyMonitoringReport            (Request)
 
         /// <summary>
         /// Notify about a monitoring report.
@@ -140,38 +140,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
         #endregion
 
-        #region SendLogStatusNotification             (Request)
+        #region LogStatusNotification             (Request)
 
         /// <summary>
         /// Send a log status notification.
         /// </summary>
         /// <param name="Request">A log status notification request.</param>
-        public Task<LogStatusNotificationResponse> SendLogStatusNotification(LogStatusNotificationRequest Request);
+        public Task<LogStatusNotificationResponse> LogStatusNotification(LogStatusNotificationRequest Request);
 
         #endregion
 
-        #region TransferData                          (Request)
+        #region DataTransfer                      (Request)
 
         /// <summary>
         /// Send the given vendor-specific data.
         /// </summary>
         /// <param name="Request">A data transfer request.</param>
-        public Task<OCPPv2_1.CSMS.DataTransferResponse> TransferData(OCPPv2_1.CS.DataTransferRequest Request);
+        public Task<OCPPv2_1.CSMS.DataTransferResponse> DataTransfer(OCPPv2_1.CS.DataTransferRequest Request);
 
         #endregion
 
 
-        #region SendCertificateSigningRequest         (Request)
+        #region SignCertificate                   (Request)
 
         /// <summary>
         /// Send a certificate signing request.
         /// </summary>
         /// <param name="Request">A sign certificate request.</param>
-        public Task<SignCertificateResponse> SendCertificateSigningRequest(SignCertificateRequest Request);
+        public Task<SignCertificateResponse> SignCertificate(SignCertificateRequest Request);
 
         #endregion
 
-        #region Get15118EVCertificate                 (Request)
+        #region Get15118EVCertificate             (Request)
 
         /// <summary>
         /// Send a certificate signing request.
@@ -181,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
         #endregion
 
-        #region GetCertificateStatus                  (Request)
+        #region GetCertificateStatus              (Request)
 
         /// <summary>
         /// Get the status of a certificate.
@@ -191,7 +191,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
         #endregion
 
-        #region GetCRL                                (Request)
+        #region GetCRL                            (Request)
 
         /// <summary>
         /// Get a certificate revocation list from CSMS for the specified certificate.
@@ -202,17 +202,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         #endregion
 
 
-        #region SendReservationStatusUpdate           (Request)
+        #region ReservationStatusUpdate           (Request)
 
         /// <summary>
         /// Send a reservation status update.
         /// </summary>
         /// <param name="Request">A reservation status update request.</param>
-        public Task<ReservationStatusUpdateResponse> SendReservationStatusUpdate(ReservationStatusUpdateRequest Request);
+        public Task<ReservationStatusUpdateResponse> ReservationStatusUpdate(ReservationStatusUpdateRequest Request);
 
         #endregion
 
-        #region Authorize                             (Request)
+        #region Authorize                         (Request)
 
         /// <summary>
         /// Authorize the given token.
@@ -222,7 +222,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
         #endregion
 
-        #region NotifyEVChargingNeeds                 (Request)
+        #region NotifyEVChargingNeeds             (Request)
 
         /// <summary>
         /// Notify about EV charging needs.
@@ -232,37 +232,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
         #endregion
 
-        #region SendTransactionEvent                  (Request)
+        #region TransactionEvent                  (Request)
 
         /// <summary>
         /// Send a transaction event.
         /// </summary>
         /// <param name="Request">A transaction event request.</param>
-        public Task<TransactionEventResponse> SendTransactionEvent(TransactionEventRequest Request);
+        public Task<TransactionEventResponse> TransactionEvent(TransactionEventRequest Request);
 
         #endregion
 
-        #region SendStatusNotification                (Request)
+        #region StatusNotification                (Request)
 
         /// <summary>
         /// Send a status notification for the given evse and connector.
         /// </summary>
         /// <param name="Request">A status notification request.</param>
-        public Task<StatusNotificationResponse> SendStatusNotification(StatusNotificationRequest Request);
+        public Task<StatusNotificationResponse> StatusNotification(StatusNotificationRequest Request);
 
         #endregion
 
-        #region SendMeterValues                       (Request)
+        #region MeterValues                       (Request)
 
         /// <summary>
         /// Send a meter values for the given evse.
         /// </summary>
         /// <param name="Request">A meter values request.</param>
-        public Task<MeterValuesResponse> SendMeterValues(MeterValuesRequest Request);
+        public Task<MeterValuesResponse> MeterValues(MeterValuesRequest Request);
 
         #endregion
 
-        #region NotifyChargingLimit                   (Request)
+        #region NotifyChargingLimit               (Request)
 
         /// <summary>
         /// Notify about charging limits.
@@ -272,17 +272,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
         #endregion
 
-        #region SendClearedChargingLimit              (Request)
+        #region ClearedChargingLimit              (Request)
 
         /// <summary>
         /// Notify about charging limits.
         /// </summary>
         /// <param name="Request">A notify charging limit request.</param>
-        public Task<ClearedChargingLimitResponse> SendClearedChargingLimit(ClearedChargingLimitRequest Request);
+        public Task<ClearedChargingLimitResponse> ClearedChargingLimit(ClearedChargingLimitRequest Request);
 
         #endregion
 
-        #region ReportChargingProfiles                (Request)
+        #region ReportChargingProfiles            (Request)
 
         /// <summary>
         /// Report about charging profiles.
@@ -292,7 +292,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
         #endregion
 
-        #region NotifyEVChargingSchedule              (Request)
+        #region NotifyEVChargingSchedule          (Request)
 
         /// <summary>
         /// Notify about an EV charging schedule.
@@ -302,7 +302,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
         #endregion
 
-        #region NotifyPriorityCharging                (Request)
+        #region NotifyPriorityCharging            (Request)
 
         /// <summary>
         /// Notify about priority charging.
@@ -312,7 +312,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
         #endregion
 
-        #region PullDynamicScheduleUpdate             (Request)
+        #region PullDynamicScheduleUpdate         (Request)
 
         /// <summary>
         /// Pull a dynamic schedule update.
@@ -323,7 +323,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         #endregion
 
 
-        #region NotifyDisplayMessages                 (Request)
+        #region NotifyDisplayMessages             (Request)
 
         /// <summary>
         /// Notify about display messages.
@@ -333,7 +333,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
         #endregion
 
-        #region NotifyCustomerInformation             (Request)
+        #region NotifyCustomerInformation         (Request)
 
         /// <summary>
         /// Notify about customer information.
@@ -346,20 +346,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
         // Binary Data Streams Extensions
 
-        #region TransferBinaryData                    (Request)
+        #region BinaryDataTransfer                (Request)
 
         /// <summary>
         /// Send the given vendor-specific binary data.
         /// </summary>
         /// <param name="Request">A BinaryDataTransfer request.</param>
-        public Task<OCPP.CSMS.BinaryDataTransferResponse> TransferBinaryData(OCPP.CS.BinaryDataTransferRequest Request);
+        public Task<OCPP.CSMS.BinaryDataTransferResponse> BinaryDataTransfer(OCPP.CS.BinaryDataTransferRequest Request);
 
         #endregion
 
 
         // Overlay Networking Extensions
 
-        #region NotifyNetworkTopology                 (Request)
+        #region NotifyNetworkTopology             (Request)
 
         /// <summary>
         /// Notify about the current network topology or a current change within the topology.

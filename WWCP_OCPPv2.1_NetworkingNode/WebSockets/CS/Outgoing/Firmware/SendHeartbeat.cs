@@ -80,7 +80,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <param name="Request">A Heartbeat request.</param>
         public async Task<HeartbeatResponse>
 
-            SendHeartbeat(HeartbeatRequest Request)
+            Heartbeat(HeartbeatRequest Request)
 
         {
 

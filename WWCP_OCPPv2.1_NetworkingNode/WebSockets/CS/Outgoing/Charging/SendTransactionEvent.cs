@@ -80,7 +80,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <param name="Request">A TransactionEvent request.</param>
         public async Task<TransactionEventResponse>
 
-            SendTransactionEvent(TransactionEventRequest  Request)
+            TransactionEvent(TransactionEventRequest  Request)
 
         {
 

@@ -78,7 +78,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <param name="Request">A BinaryDataTransfer request.</param>
         public async Task<OCPP.CSMS.BinaryDataTransferResponse>
 
-            TransferBinaryData(OCPP.CS.BinaryDataTransferRequest Request)
+            BinaryDataTransfer(OCPP.CS.BinaryDataTransferRequest Request)
 
         {
 

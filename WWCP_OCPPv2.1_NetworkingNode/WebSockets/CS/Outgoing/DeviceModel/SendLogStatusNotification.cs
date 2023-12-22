@@ -80,7 +80,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <param name="Request">A LogStatusNotification request.</param>
         public async Task<LogStatusNotificationResponse>
 
-            SendLogStatusNotification(LogStatusNotificationRequest  Request)
+            LogStatusNotification(LogStatusNotificationRequest  Request)
 
         {
 

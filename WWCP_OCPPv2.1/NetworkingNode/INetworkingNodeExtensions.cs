@@ -23,10 +23,12 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS;
+using cloud.charging.open.protocols.OCPPv2_1.CS;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
+namespace cloud.charging.open.protocols.OCPPv2_1.NN
 {
 
     /// <summary>
@@ -41,6 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// Send a boot notification.
         /// </summary>
         /// <param name="BootReason">The the reason for sending this boot notification to the CSMS.</param>
+        /// 
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -48,33 +51,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<OCPPv2_1.CSMS.BootNotificationResponse>
+        public static Task<CSMS.BootNotificationResponse>
 
-            SendBootNotification(this INetworkingNode                                       NetworkingNode,
+            SendBootNotification(this INetworkingNode          NetworkingNode,
 
-                                 BootReason                                                 BootReason,
+                                 BootReason                    BootReason,
 
-                                 IEnumerable<OCPP.Signature>?                               Signatures                                = null,
-                                 CustomData?                                                CustomData                                = null,
+                                 CustomData?                   CustomData           = null,
 
-                                 Request_Id?                                                RequestId                                 = null,
-                                 DateTime?                                                  RequestTimestamp                          = null,
-                                 TimeSpan?                                                  RequestTimeout                            = null,
-                                 EventTracking_Id?                                          EventTrackingId                           = null,
+                                 NetworkingNode_Id?            DestinationNodeId    = null,
 
-                                 IEnumerable<KeyPair>?                                      SignKeys                                  = null,
-                                 IEnumerable<SignInfo>?                                     SignInfos                                 = null,
-                                 CustomJObjectSerializerDelegate<OCPPv2_1.CS.BootNotificationRequest>?  CustomBootNotificationRequestSerializer   = null,
-                                 CustomJObjectSerializerDelegate<ChargingStation>?          CustomChargingStationSerializer           = null,
-                                 CustomJObjectSerializerDelegate<OCPP.Signature>?           CustomSignatureSerializer                 = null,
-                                 CustomJObjectSerializerDelegate<CustomData>?               CustomCustomDataSerializer                = null,
+                                 IEnumerable<KeyPair>?         SignKeys             = null,
+                                 IEnumerable<SignInfo>?        SignInfos            = null,
+                                 IEnumerable<OCPP.Signature>?  Signatures           = null,
 
-                                 CancellationToken                                          CancellationToken                         = default)
+                                 Request_Id?                   RequestId            = null,
+                                 DateTime?                     RequestTimestamp     = null,
+                                 TimeSpan?                     RequestTimeout       = null,
+                                 EventTracking_Id?             EventTrackingId      = null,
+                                 CancellationToken             CancellationToken    = default)
 
 
                 => NetworkingNode.BootNotification(
-                       new OCPPv2_1.CS.BootNotificationRequest(
-                           NetworkingNode.Id,
+                       new BootNotificationRequest(
+
+                           DestinationNodeId ?? NetworkingNode_Id.CSMS,
+
                            new ChargingStation(
                                NetworkingNode.Model,
                                NetworkingNode.VendorName,
@@ -88,6 +90,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            SignKeys,
                            SignInfos,
                            Signatures,
+
                            CustomData,
 
                            RequestId        ?? NetworkingNode.NextRequestId,
@@ -96,60 +99,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
                            CancellationToken
+
                        )
                    );
-
-            //var signaturePolicy = SignaturePolicy ?? NetworkingNode.SignaturePolicy;
-
-            //IEnumerable<SignaturePolicyEntry>? signaturePolicyEntries = null;
-
-            //if ((SignKeys        is not null && SignKeys.       Any()) ||
-            //    (SignInfos       is not null && SignInfos.      Any()) ||
-            //    (signaturePolicy is not null && signaturePolicy.Has(BootNotificationRequest.DefaultJSONLDContext,
-            //                                                        out signaturePolicyEntries)))
-            //{
-
-            //    var signInfos = new List<SignInfo>();
-
-            //    if (SignInfos is not null && SignInfos.Any())
-            //        signInfos.AddRange(SignInfos);
-
-            //    if (SignKeys  is not null && SignKeys. Any())
-            //        signInfos.AddRange(SignKeys.Select(signKey => signKey.ToSignInfo()));
-
-            //    if (signaturePolicyEntries is not null && signaturePolicyEntries.Any())
-            //    {
-            //        foreach (var signaturePolicyEntry in signaturePolicyEntries)
-            //        {
-            //            if (signaturePolicyEntry.KeyPair is not null)
-            //                signInfos.Add(signaturePolicyEntry.KeyPair.ToSignInfo());
-            //        }
-            //    }
-
-            //    if (!CryptoUtils.SignRequestMessage(
-            //            bootNotificationRequest,
-            //            bootNotificationRequest.ToJSON(
-            //                CustomBootNotificationRequestSerializer ?? NetworkingNode.CustomBootNotificationRequestSerializer,
-            //                CustomNetworkingNodeSerializer         ?? NetworkingNode.CustomNetworkingNodeSerializer,
-            //                CustomSignatureSerializer               ?? NetworkingNode.CustomSignatureSerializer,
-            //                CustomCustomDataSerializer              ?? NetworkingNode.CustomCustomDataSerializer
-            //            ),
-            //            BootNotificationRequest.DefaultJSONLDContext,
-            //            SignaturePolicy,
-            //            out var errorResponse,
-            //            signInfos.ToArray()))
-            //    {
-
-            //        return Task.FromResult(
-            //                   new CSMS.BootNotificationResponse(
-            //                       bootNotificationRequest,
-            //                       Result.SignatureError(errorResponse)
-            //                   )
-            //               );
-
-            //    }
-
-            //}
 
         #endregion
 
@@ -167,29 +119,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<OCPPv2_1.CSMS.FirmwareStatusNotificationResponse>
+        public static Task<CSMS.FirmwareStatusNotificationResponse>
 
-            SendFirmwareStatusNotification(this INetworkingNode     NetworkingNode,
+            SendFirmwareStatusNotification(this INetworkingNode          NetworkingNode,
 
-                                           FirmwareStatus           Status,
-                                           Int64?                   UpdateFirmwareRequestId   = null,
+                                           FirmwareStatus                Status,
+                                           Int64?                        UpdateFirmwareRequestId   = null,
 
-                                           IEnumerable<KeyPair>?    SignKeys                  = null,
-                                           IEnumerable<SignInfo>?   SignInfos                 = null,
+                                           CustomData?                   CustomData                = null,
+
+                                           NetworkingNode_Id?            DestinationNodeId         = null,
+
+                                           IEnumerable<KeyPair>?         SignKeys                  = null,
+                                           IEnumerable<SignInfo>?        SignInfos                 = null,
                                            IEnumerable<OCPP.Signature>?  Signatures                = null,
 
-                                           CustomData?              CustomData                = null,
-
-                                           Request_Id?              RequestId                 = null,
-                                           DateTime?                RequestTimestamp          = null,
-                                           TimeSpan?                RequestTimeout            = null,
-                                           EventTracking_Id?        EventTrackingId           = null,
-                                           CancellationToken        CancellationToken         = default)
+                                           Request_Id?                   RequestId                 = null,
+                                           DateTime?                     RequestTimestamp          = null,
+                                           TimeSpan?                     RequestTimeout            = null,
+                                           EventTracking_Id?             EventTrackingId           = null,
+                                           CancellationToken             CancellationToken         = default)
 
 
                 => NetworkingNode.FirmwareStatusNotification(
-                       new OCPPv2_1.CS.FirmwareStatusNotificationRequest(
-                           NetworkingNode.Id,
+                       new FirmwareStatusNotificationRequest(
+
+                           DestinationNodeId ?? NetworkingNode_Id.CSMS,
+
                            Status,
                            UpdateFirmwareRequestId,
 
@@ -205,6 +161,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
                            CancellationToken
+
                        )
                    );
 
@@ -225,30 +182,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<OCPPv2_1.CSMS.PublishFirmwareStatusNotificationResponse>
+        public static Task<CSMS.PublishFirmwareStatusNotificationResponse>
 
-            SendPublishFirmwareStatusNotification(this INetworkingNode     NetworkingNode,
+            SendPublishFirmwareStatusNotification(this INetworkingNode          NetworkingNode,
 
-                                                  PublishFirmwareStatus    Status,
-                                                  Int32?                   PublishFirmwareStatusNotificationRequestId,
-                                                  IEnumerable<URL>?        DownloadLocations,
+                                                  PublishFirmwareStatus         Status,
+                                                  Int32?                        PublishFirmwareStatusNotificationRequestId,
+                                                  IEnumerable<URL>?             DownloadLocations,
 
-                                                  IEnumerable<KeyPair>?    SignKeys            = null,
-                                                  IEnumerable<SignInfo>?   SignInfos           = null,
+                                                  CustomData?                   CustomData          = null,
+
+                                                  NetworkingNode_Id?            DestinationNodeId   = null,
+
+                                                  IEnumerable<KeyPair>?         SignKeys            = null,
+                                                  IEnumerable<SignInfo>?        SignInfos           = null,
                                                   IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                                                  CustomData?              CustomData          = null,
-
-                                                  Request_Id?              RequestId           = null,
-                                                  DateTime?                RequestTimestamp    = null,
-                                                  TimeSpan?                RequestTimeout      = null,
-                                                  EventTracking_Id?        EventTrackingId     = null,
-                                                  CancellationToken        CancellationToken   = default)
+                                                  Request_Id?                   RequestId           = null,
+                                                  DateTime?                     RequestTimestamp    = null,
+                                                  TimeSpan?                     RequestTimeout      = null,
+                                                  EventTracking_Id?             EventTrackingId     = null,
+                                                  CancellationToken             CancellationToken   = default)
 
 
                 => NetworkingNode.PublishFirmwareStatusNotification(
-                       new OCPPv2_1.CS.PublishFirmwareStatusNotificationRequest(
-                           NetworkingNode.Id,
+                       new PublishFirmwareStatusNotificationRequest(
+
+                           DestinationNodeId ?? NetworkingNode_Id.CSMS,
+
                            Status,
                            PublishFirmwareStatusNotificationRequestId,
                            DownloadLocations,
@@ -265,6 +226,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
                            CancellationToken
+
                        )
                    );
 
@@ -282,27 +244,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<OCPPv2_1.CSMS.HeartbeatResponse>
+        public static Task<CSMS.HeartbeatResponse>
 
-            SendHeartbeat(this INetworkingNode     NetworkingNode,
+            SendHeartbeat(this INetworkingNode          NetworkingNode,
 
+                          CustomData?                   CustomData          = null,
 
-                          IEnumerable<KeyPair>?    SignKeys            = null,
-                          IEnumerable<SignInfo>?   SignInfos           = null,
+                          NetworkingNode_Id?            DestinationNodeId   = null,
+
+                          IEnumerable<KeyPair>?         SignKeys            = null,
+                          IEnumerable<SignInfo>?        SignInfos           = null,
                           IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                          CustomData?              CustomData          = null,
-
-                          Request_Id?              RequestId           = null,
-                          DateTime?                RequestTimestamp    = null,
-                          TimeSpan?                RequestTimeout      = null,
-                          EventTracking_Id?        EventTrackingId     = null,
-                          CancellationToken        CancellationToken   = default)
+                          Request_Id?                   RequestId           = null,
+                          DateTime?                     RequestTimestamp    = null,
+                          TimeSpan?                     RequestTimeout      = null,
+                          EventTracking_Id?             EventTrackingId     = null,
+                          CancellationToken             CancellationToken   = default)
 
 
                 => NetworkingNode.Heartbeat(
-                       new OCPPv2_1.CS.HeartbeatRequest(
-                           NetworkingNode.Id,
+                       new HeartbeatRequest(
+
+                           DestinationNodeId ?? NetworkingNode_Id.CSMS,
 
                            SignKeys,
                            SignInfos,
@@ -316,6 +280,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
                            CancellationToken
+
                        )
                    );
 
@@ -337,31 +302,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<OCPPv2_1.CSMS.NotifyEventResponse>
+        public static Task<CSMS.NotifyEventResponse>
 
-            NotifyEvent(this INetworkingNode     NetworkingNode,
+            NotifyEvent(this INetworkingNode          NetworkingNode,
 
-                        DateTime                 GeneratedAt,
-                        UInt32                   SequenceNumber,
-                        IEnumerable<EventData>   EventData,
-                        Boolean?                 ToBeContinued       = null,
+                        DateTime                      GeneratedAt,
+                        UInt32                        SequenceNumber,
+                        IEnumerable<EventData>        EventData,
+                        Boolean?                      ToBeContinued       = null,
 
-                        IEnumerable<KeyPair>?    SignKeys            = null,
-                        IEnumerable<SignInfo>?   SignInfos           = null,
+                        CustomData?                   CustomData          = null,
+
+                        NetworkingNode_Id?            DestinationNodeId   = null,
+
+                        IEnumerable<KeyPair>?         SignKeys            = null,
+                        IEnumerable<SignInfo>?        SignInfos           = null,
                         IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                        CustomData?              CustomData          = null,
-
-                        Request_Id?              RequestId           = null,
-                        DateTime?                RequestTimestamp    = null,
-                        TimeSpan?                RequestTimeout      = null,
-                        EventTracking_Id?        EventTrackingId     = null,
-                        CancellationToken        CancellationToken   = default)
+                        Request_Id?                   RequestId           = null,
+                        DateTime?                     RequestTimestamp    = null,
+                        TimeSpan?                     RequestTimeout      = null,
+                        EventTracking_Id?             EventTrackingId     = null,
+                        CancellationToken             CancellationToken   = default)
 
 
                 => NetworkingNode.NotifyEvent(
-                       new OCPPv2_1.CS.NotifyEventRequest(
-                           NetworkingNode.Id,
+                       new NotifyEventRequest(
+
+                           DestinationNodeId ?? NetworkingNode_Id.CSMS,
+
                            GeneratedAt,
                            SequenceNumber,
                            EventData,
@@ -379,6 +348,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
                            CancellationToken
+
                        )
                    );
 
@@ -399,30 +369,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<OCPPv2_1.CSMS.SecurityEventNotificationResponse>
+        public static Task<CSMS.SecurityEventNotificationResponse>
 
-            SendSecurityEventNotification(this INetworkingNode     NetworkingNode,
+            SendSecurityEventNotification(this INetworkingNode          NetworkingNode,
 
-                                          SecurityEventType        Type,
-                                          DateTime                 Timestamp,
-                                          String?                  TechInfo            = null,
+                                          SecurityEventType             Type,
+                                          DateTime                      Timestamp,
+                                          String?                       TechInfo            = null,
 
-                                          IEnumerable<KeyPair>?    SignKeys            = null,
-                                          IEnumerable<SignInfo>?   SignInfos           = null,
+                                          CustomData?                   CustomData          = null,
+
+                                          NetworkingNode_Id?            DestinationNodeId   = null,
+
+                                          IEnumerable<KeyPair>?         SignKeys            = null,
+                                          IEnumerable<SignInfo>?        SignInfos           = null,
                                           IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                                          CustomData?              CustomData          = null,
-
-                                          Request_Id?              RequestId           = null,
-                                          DateTime?                RequestTimestamp    = null,
-                                          TimeSpan?                RequestTimeout      = null,
-                                          EventTracking_Id?        EventTrackingId     = null,
-                                          CancellationToken        CancellationToken   = default)
+                                          Request_Id?                   RequestId           = null,
+                                          DateTime?                     RequestTimestamp    = null,
+                                          TimeSpan?                     RequestTimeout      = null,
+                                          EventTracking_Id?             EventTrackingId     = null,
+                                          CancellationToken             CancellationToken   = default)
 
 
                 => NetworkingNode.SecurityEventNotification(
-                       new OCPPv2_1.CS.SecurityEventNotificationRequest(
-                           NetworkingNode.Id,
+                       new SecurityEventNotificationRequest(
+
+                           DestinationNodeId ?? NetworkingNode_Id.CSMS,
+
                            Type,
                            Timestamp,
                            TechInfo,
@@ -439,6 +413,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
                            CancellationToken
+
                        )
                    );
 
@@ -461,32 +436,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<OCPPv2_1.CSMS.NotifyReportResponse>
+        public static Task<CSMS.NotifyReportResponse>
 
-            NotifyReport(this INetworkingNode     NetworkingNode,
+            NotifyReport(this INetworkingNode          NetworkingNode,
 
-                         Int32                    NotifyReportRequestId,
-                         UInt32                   SequenceNumber,
-                         DateTime                 GeneratedAt,
-                         IEnumerable<ReportData>  ReportData,
-                         Boolean?                 ToBeContinued       = null,
+                         Int32                         NotifyReportRequestId,
+                         UInt32                        SequenceNumber,
+                         DateTime                      GeneratedAt,
+                         IEnumerable<ReportData>       ReportData,
+                         Boolean?                      ToBeContinued       = null,
 
-                         IEnumerable<KeyPair>?    SignKeys            = null,
-                         IEnumerable<SignInfo>?   SignInfos           = null,
+                         CustomData?                   CustomData          = null,
+
+                         NetworkingNode_Id?            DestinationNodeId   = null,
+
+                         IEnumerable<KeyPair>?         SignKeys            = null,
+                         IEnumerable<SignInfo>?        SignInfos           = null,
                          IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                         CustomData?              CustomData          = null,
-
-                         Request_Id?              RequestId           = null,
-                         DateTime?                RequestTimestamp    = null,
-                         TimeSpan?                RequestTimeout      = null,
-                         EventTracking_Id?        EventTrackingId     = null,
-                         CancellationToken        CancellationToken   = default)
+                         Request_Id?                   RequestId           = null,
+                         DateTime?                     RequestTimestamp    = null,
+                         TimeSpan?                     RequestTimeout      = null,
+                         EventTracking_Id?             EventTrackingId     = null,
+                         CancellationToken             CancellationToken   = default)
 
 
                 => NetworkingNode.NotifyReport(
-                       new OCPPv2_1.CS.NotifyReportRequest(
-                           NetworkingNode.Id,
+                       new NotifyReportRequest(
+
+                           DestinationNodeId ?? NetworkingNode_Id.CSMS,
+
                            NotifyReportRequestId,
                            SequenceNumber,
                            GeneratedAt,
@@ -505,6 +484,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
                            CancellationToken
+
                        )
                    );
 
@@ -527,32 +507,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<OCPPv2_1.CSMS.NotifyMonitoringReportResponse>
+        public static Task<CSMS.NotifyMonitoringReportResponse>
 
-            NotifyMonitoringReport(this INetworkingNode         NetworkingNode,
+            NotifyMonitoringReport(this INetworkingNode          NetworkingNode,
 
-                                   Int32                        NotifyMonitoringReportRequestId,
-                                   UInt32                       SequenceNumber,
-                                   DateTime                     GeneratedAt,
-                                   IEnumerable<MonitoringData>  MonitoringData,
-                                   Boolean?                     ToBeContinued       = null,
+                                   Int32                         NotifyMonitoringReportRequestId,
+                                   UInt32                        SequenceNumber,
+                                   DateTime                      GeneratedAt,
+                                   IEnumerable<MonitoringData>   MonitoringData,
+                                   Boolean?                      ToBeContinued       = null,
 
-                                   IEnumerable<KeyPair>?        SignKeys            = null,
-                                   IEnumerable<SignInfo>?       SignInfos           = null,
-                                   IEnumerable<OCPP.Signature>? Signatures          = null,
+                                   CustomData?                   CustomData          = null,
 
-                                   CustomData?                  CustomData          = null,
+                                   NetworkingNode_Id?            DestinationNodeId   = null,
 
-                                   Request_Id?                  RequestId           = null,
-                                   DateTime?                    RequestTimestamp    = null,
-                                   TimeSpan?                    RequestTimeout      = null,
-                                   EventTracking_Id?            EventTrackingId     = null,
-                                   CancellationToken            CancellationToken   = default)
+                                   IEnumerable<KeyPair>?         SignKeys            = null,
+                                   IEnumerable<SignInfo>?        SignInfos           = null,
+                                   IEnumerable<OCPP.Signature>?  Signatures          = null,
+
+                                   Request_Id?                   RequestId           = null,
+                                   DateTime?                     RequestTimestamp    = null,
+                                   TimeSpan?                     RequestTimeout      = null,
+                                   EventTracking_Id?             EventTrackingId     = null,
+                                   CancellationToken             CancellationToken   = default)
 
 
                 => NetworkingNode.NotifyMonitoringReport(
-                       new OCPPv2_1.CS.NotifyMonitoringReportRequest(
-                           NetworkingNode.Id,
+                       new NotifyMonitoringReportRequest(
+
+                           DestinationNodeId ?? NetworkingNode_Id.CSMS,
+
                            NotifyMonitoringReportRequestId,
                            SequenceNumber,
                            GeneratedAt,
@@ -571,6 +555,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
                            CancellationToken
+
                        )
                    );
 
@@ -590,29 +575,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<OCPPv2_1.CSMS.LogStatusNotificationResponse>
+        public static Task<CSMS.LogStatusNotificationResponse>
 
-            SendLogStatusNotification(this INetworkingNode     NetworkingNode,
+            SendLogStatusNotification(this INetworkingNode          NetworkingNode,
 
-                                      UploadLogStatus          Status,
-                                      Int32?                   LogRequestId        = null,
+                                      UploadLogStatus               Status,
+                                      Int32?                        LogRequestId        = null,
 
-                                      IEnumerable<KeyPair>?    SignKeys            = null,
-                                      IEnumerable<SignInfo>?   SignInfos           = null,
+                                      CustomData?                   CustomData          = null,
+
+                                      NetworkingNode_Id?            DestinationNodeId   = null,
+
+                                      IEnumerable<KeyPair>?         SignKeys            = null,
+                                      IEnumerable<SignInfo>?        SignInfos           = null,
                                       IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                                      CustomData?              CustomData          = null,
-
-                                      Request_Id?              RequestId           = null,
-                                      DateTime?                RequestTimestamp    = null,
-                                      TimeSpan?                RequestTimeout      = null,
-                                      EventTracking_Id?        EventTrackingId     = null,
-                                      CancellationToken        CancellationToken   = default)
+                                      Request_Id?                   RequestId           = null,
+                                      DateTime?                     RequestTimestamp    = null,
+                                      TimeSpan?                     RequestTimeout      = null,
+                                      EventTracking_Id?             EventTrackingId     = null,
+                                      CancellationToken             CancellationToken   = default)
 
 
                 => NetworkingNode.LogStatusNotification(
-                       new OCPPv2_1.CS.LogStatusNotificationRequest(
-                           NetworkingNode.Id,
+                       new LogStatusNotificationRequest(
+
+                           DestinationNodeId ?? NetworkingNode_Id.CSMS,
+
                            Status,
                            LogRequestId,
 
@@ -628,6 +617,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
                            CancellationToken
+
                        )
                    );
 
@@ -648,7 +638,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<OCPPv2_1.CSMS.DataTransferResponse>
+        public static Task<CSMS.DataTransferResponse>
 
             TransferData(this INetworkingNode          NetworkingNode,
 
@@ -656,11 +646,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                          Message_Id?                   MessageId           = null,
                          JToken?                       Data                = null,
 
+                         CustomData?                   CustomData          = null,
+
+                         NetworkingNode_Id?            DestinationNodeId   = null,
+
                          IEnumerable<KeyPair>?         SignKeys            = null,
                          IEnumerable<SignInfo>?        SignInfos           = null,
                          IEnumerable<OCPP.Signature>?  Signatures          = null,
-
-                         CustomData?                   CustomData          = null,
 
                          Request_Id?                   RequestId           = null,
                          DateTime?                     RequestTimestamp    = null,
@@ -670,8 +662,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
 
                 => NetworkingNode.DataTransfer(
-                       new OCPPv2_1.CS.DataTransferRequest(
-                           NetworkingNode.Id,
+                       new DataTransferRequest(
+
+                           DestinationNodeId ?? NetworkingNode_Id.CSMS,
+
                            VendorId,
                            MessageId,
                            Data,
@@ -688,6 +682,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
                            CancellationToken
+
                        )
                    );
 
@@ -709,30 +704,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<OCPPv2_1.CSMS.SignCertificateResponse>
+        public static Task<CSMS.SignCertificateResponse>
 
-            SendCertificateSigningRequest(this INetworkingNode     NetworkingNode,
+            SendCertificateSigningRequest(this INetworkingNode          NetworkingNode,
 
-                                          String                   CSR,
-                                          Int32                    SignCertificateRequestId,
-                                          CertificateSigningUse?   CertificateType     = null,
+                                          String                        CSR,
+                                          Int32                         SignCertificateRequestId,
+                                          CertificateSigningUse?        CertificateType     = null,
 
-                                          IEnumerable<KeyPair>?    SignKeys            = null,
-                                          IEnumerable<SignInfo>?   SignInfos           = null,
+                                          CustomData?                   CustomData          = null,
+
+                                          NetworkingNode_Id?            DestinationNodeId   = null,
+
+                                          IEnumerable<KeyPair>?         SignKeys            = null,
+                                          IEnumerable<SignInfo>?        SignInfos           = null,
                                           IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                                          CustomData?              CustomData          = null,
-
-                                          Request_Id?              RequestId           = null,
-                                          DateTime?                RequestTimestamp    = null,
-                                          TimeSpan?                RequestTimeout      = null,
-                                          EventTracking_Id?        EventTrackingId     = null,
-                                          CancellationToken        CancellationToken   = default)
+                                          Request_Id?                   RequestId           = null,
+                                          DateTime?                     RequestTimestamp    = null,
+                                          TimeSpan?                     RequestTimeout      = null,
+                                          EventTracking_Id?             EventTrackingId     = null,
+                                          CancellationToken             CancellationToken   = default)
 
 
                 => NetworkingNode.SignCertificate(
-                       new OCPPv2_1.CS.SignCertificateRequest(
-                           NetworkingNode.Id,
+                       new SignCertificateRequest(
+
+                           DestinationNodeId ?? NetworkingNode_Id.CSMS,
+
                            CSR,
                            SignCertificateRequestId,
                            CertificateType,
@@ -749,6 +748,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
                            CancellationToken
+
                        )
                    );
 
@@ -771,32 +771,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<OCPPv2_1.CSMS.Get15118EVCertificateResponse>
+        public static Task<CSMS.Get15118EVCertificateResponse>
 
-            Get15118EVCertificate(this INetworkingNode     NetworkingNode,
+            Get15118EVCertificate(this INetworkingNode          NetworkingNode,
 
-                                  ISO15118SchemaVersion    ISO15118SchemaVersion,
-                                  CertificateAction        CertificateAction,
-                                  EXIData                  EXIRequest,
-                                  UInt32?                  MaximumContractCertificateChains   = 1,
-                                  IEnumerable<EMA_Id>?     PrioritizedEMAIds                  = null,
+                                  ISO15118SchemaVersion         ISO15118SchemaVersion,
+                                  CertificateAction             CertificateAction,
+                                  EXIData                       EXIRequest,
+                                  UInt32?                       MaximumContractCertificateChains   = 1,
+                                  IEnumerable<EMA_Id>?          PrioritizedEMAIds                  = null,
 
-                                  IEnumerable<KeyPair>?    SignKeys                           = null,
-                                  IEnumerable<SignInfo>?   SignInfos                          = null,
+                                  CustomData?                   CustomData                         = null,
+
+                                  NetworkingNode_Id?            DestinationNodeId                  = null,
+
+                                  IEnumerable<KeyPair>?         SignKeys                           = null,
+                                  IEnumerable<SignInfo>?        SignInfos                          = null,
                                   IEnumerable<OCPP.Signature>?  Signatures                         = null,
 
-                                  CustomData?              CustomData                         = null,
-
-                                  Request_Id?              RequestId                          = null,
-                                  DateTime?                RequestTimestamp                   = null,
-                                  TimeSpan?                RequestTimeout                     = null,
-                                  EventTracking_Id?        EventTrackingId                    = null,
-                                  CancellationToken        CancellationToken                  = default)
+                                  Request_Id?                   RequestId                          = null,
+                                  DateTime?                     RequestTimestamp                   = null,
+                                  TimeSpan?                     RequestTimeout                     = null,
+                                  EventTracking_Id?             EventTrackingId                    = null,
+                                  CancellationToken             CancellationToken                  = default)
 
 
                 => NetworkingNode.Get15118EVCertificate(
-                       new OCPPv2_1.CS.Get15118EVCertificateRequest(
-                           NetworkingNode.Id,
+                       new Get15118EVCertificateRequest(
+
+                           DestinationNodeId ?? NetworkingNode_Id.CSMS,
+
                            ISO15118SchemaVersion,
                            CertificateAction,
                            EXIRequest,
@@ -815,6 +819,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
                            CancellationToken
+
                        )
                    );
 
@@ -833,28 +838,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<OCPPv2_1.CSMS.GetCertificateStatusResponse>
+        public static Task<CSMS.GetCertificateStatusResponse>
 
-            GetCertificateStatus(this INetworkingNode     NetworkingNode,
+            GetCertificateStatus(this INetworkingNode          NetworkingNode,
 
-                                 OCSPRequestData          OCSPRequestData,
+                                 OCSPRequestData               OCSPRequestData,
 
-                                 IEnumerable<KeyPair>?    SignKeys            = null,
-                                 IEnumerable<SignInfo>?   SignInfos           = null,
+                                 CustomData?                   CustomData          = null,
+
+                                 NetworkingNode_Id?            DestinationNodeId   = null,
+
+                                 IEnumerable<KeyPair>?         SignKeys            = null,
+                                 IEnumerable<SignInfo>?        SignInfos           = null,
                                  IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                                 CustomData?              CustomData          = null,
-
-                                 Request_Id?              RequestId           = null,
-                                 DateTime?                RequestTimestamp    = null,
-                                 TimeSpan?                RequestTimeout      = null,
-                                 EventTracking_Id?        EventTrackingId     = null,
-                                 CancellationToken        CancellationToken   = default)
+                                 Request_Id?                   RequestId           = null,
+                                 DateTime?                     RequestTimestamp    = null,
+                                 TimeSpan?                     RequestTimeout      = null,
+                                 EventTracking_Id?             EventTrackingId     = null,
+                                 CancellationToken             CancellationToken   = default)
 
 
                 => NetworkingNode.GetCertificateStatus(
-                       new OCPPv2_1.CS.GetCertificateStatusRequest(
-                           NetworkingNode.Id,
+                       new GetCertificateStatusRequest(
+
+                           DestinationNodeId ?? NetworkingNode_Id.CSMS,
+
                            OCSPRequestData,
 
                            SignKeys,
@@ -869,6 +878,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
                            CancellationToken
+
                        )
                    );
 
@@ -889,29 +899,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<OCPPv2_1.CSMS.GetCRLResponse>
+        public static Task<CSMS.GetCRLResponse>
 
-            GetCRLRequest(this INetworkingNode     NetworkingNode,
+            GetCRLRequest(this INetworkingNode          NetworkingNode,
 
-                          UInt32                   GetCRLRequestId,
-                          CertificateHashData      CertificateHashData,
+                          UInt32                        GetCRLRequestId,
+                          CertificateHashData           CertificateHashData,
 
-                          IEnumerable<KeyPair>?    SignKeys            = null,
-                          IEnumerable<SignInfo>?   SignInfos           = null,
+                          CustomData?                   CustomData          = null,
+
+                          NetworkingNode_Id?            DestinationNodeId   = null,
+
+                          IEnumerable<KeyPair>?         SignKeys            = null,
+                          IEnumerable<SignInfo>?        SignInfos           = null,
                           IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                          CustomData?              CustomData          = null,
-
-                          Request_Id?              RequestId           = null,
-                          DateTime?                RequestTimestamp    = null,
-                          TimeSpan?                RequestTimeout      = null,
-                          EventTracking_Id?        EventTrackingId     = null,
-                          CancellationToken        CancellationToken   = default)
+                          Request_Id?                   RequestId           = null,
+                          DateTime?                     RequestTimestamp    = null,
+                          TimeSpan?                     RequestTimeout      = null,
+                          EventTracking_Id?             EventTrackingId     = null,
+                          CancellationToken             CancellationToken   = default)
 
 
                 => NetworkingNode.GetCRL(
-                       new OCPPv2_1.CS.GetCRLRequest(
-                           NetworkingNode.Id,
+                       new GetCRLRequest(
+
+                           DestinationNodeId ?? NetworkingNode_Id.CSMS,
+
                            GetCRLRequestId,
                            CertificateHashData,
 
@@ -927,6 +941,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
                            CancellationToken
+
                        )
                    );
 
@@ -947,29 +962,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<OCPPv2_1.CSMS.ReservationStatusUpdateResponse>
+        public static Task<CSMS.ReservationStatusUpdateResponse>
 
-            SendReservationStatusUpdate(this INetworkingNode     NetworkingNode,
+            SendReservationStatusUpdate(this INetworkingNode          NetworkingNode,
 
-                                        Reservation_Id           ReservationId,
-                                        ReservationUpdateStatus  ReservationUpdateStatus,
+                                        Reservation_Id                ReservationId,
+                                        ReservationUpdateStatus       ReservationUpdateStatus,
 
-                                        IEnumerable<KeyPair>?    SignKeys            = null,
-                                        IEnumerable<SignInfo>?   SignInfos           = null,
+                                        CustomData?                   CustomData          = null,
+
+                                        NetworkingNode_Id?            DestinationNodeId   = null,
+
+                                        IEnumerable<KeyPair>?         SignKeys            = null,
+                                        IEnumerable<SignInfo>?        SignInfos           = null,
                                         IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                                        CustomData?              CustomData          = null,
-
-                                        Request_Id?              RequestId           = null,
-                                        DateTime?                RequestTimestamp    = null,
-                                        TimeSpan?                RequestTimeout      = null,
-                                        EventTracking_Id?        EventTrackingId     = null,
-                                        CancellationToken        CancellationToken   = default)
+                                        Request_Id?                   RequestId           = null,
+                                        DateTime?                     RequestTimestamp    = null,
+                                        TimeSpan?                     RequestTimeout      = null,
+                                        EventTracking_Id?             EventTrackingId     = null,
+                                        CancellationToken             CancellationToken   = default)
 
 
                 => NetworkingNode.ReservationStatusUpdate(
-                       new OCPPv2_1.CS.ReservationStatusUpdateRequest(
-                           NetworkingNode.Id,
+                       new ReservationStatusUpdateRequest(
+
+                           DestinationNodeId ?? NetworkingNode_Id.CSMS,
+
                            ReservationId,
                            ReservationUpdateStatus,
 
@@ -985,6 +1004,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
                            CancellationToken
+
                        )
                    );
 
@@ -1005,7 +1025,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<OCPPv2_1.CSMS.AuthorizeResponse>
+        public static Task<CSMS.AuthorizeResponse>
 
             Authorize(this INetworkingNode           NetworkingNode,
 
@@ -1013,11 +1033,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                       Certificate?                   Certificate                   = null,
                       IEnumerable<OCSPRequestData>?  ISO15118CertificateHashData   = null,
 
+                      CustomData?                    CustomData                    = null,
+
+                      NetworkingNode_Id?             DestinationNodeId             = null,
+
                       IEnumerable<KeyPair>?          SignKeys                      = null,
                       IEnumerable<SignInfo>?         SignInfos                     = null,
                       IEnumerable<OCPP.Signature>?   Signatures                    = null,
-
-                      CustomData?                    CustomData                    = null,
 
                       Request_Id?                    RequestId                     = null,
                       DateTime?                      RequestTimestamp              = null,
@@ -1027,8 +1049,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
 
                 => NetworkingNode.Authorize(
-                       new OCPPv2_1.CS.AuthorizeRequest(
-                           NetworkingNode.Id,
+                       new AuthorizeRequest(
+
+                           DestinationNodeId ?? NetworkingNode_Id.CSMS,
+
                            IdToken,
                            Certificate,
                            ISO15118CertificateHashData,
@@ -1045,6 +1069,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
                            CancellationToken
+
                        )
                    );
 
@@ -1066,31 +1091,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<OCPPv2_1.CSMS.NotifyEVChargingNeedsResponse>
+        public static Task<CSMS.NotifyEVChargingNeedsResponse>
 
-            NotifyEVChargingNeeds(this INetworkingNode     NetworkingNode,
+            NotifyEVChargingNeeds(this INetworkingNode          NetworkingNode,
 
-                                  EVSE_Id                  EVSEId,
-                                  ChargingNeeds            ChargingNeeds,
-                                  DateTime?                ReceivedTimestamp   = null,
-                                  UInt16?                  MaxScheduleTuples   = null,
+                                  EVSE_Id                       EVSEId,
+                                  ChargingNeeds                 ChargingNeeds,
+                                  DateTime?                     ReceivedTimestamp   = null,
+                                  UInt16?                       MaxScheduleTuples   = null,
 
-                                  IEnumerable<KeyPair>?    SignKeys            = null,
-                                  IEnumerable<SignInfo>?   SignInfos           = null,
+                                  CustomData?                   CustomData          = null,
+
+                                  NetworkingNode_Id?            DestinationNodeId   = null,
+
+                                  IEnumerable<KeyPair>?         SignKeys            = null,
+                                  IEnumerable<SignInfo>?        SignInfos           = null,
                                   IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                                  CustomData?              CustomData          = null,
-
-                                  Request_Id?              RequestId           = null,
-                                  DateTime?                RequestTimestamp    = null,
-                                  TimeSpan?                RequestTimeout      = null,
-                                  EventTracking_Id?        EventTrackingId     = null,
-                                  CancellationToken        CancellationToken   = default)
+                                  Request_Id?                   RequestId           = null,
+                                  DateTime?                     RequestTimestamp    = null,
+                                  TimeSpan?                     RequestTimeout      = null,
+                                  EventTracking_Id?             EventTrackingId     = null,
+                                  CancellationToken             CancellationToken   = default)
 
 
                 => NetworkingNode.NotifyEVChargingNeeds(
-                       new OCPPv2_1.CS.NotifyEVChargingNeedsRequest(
-                           NetworkingNode.Id,
+                       new NotifyEVChargingNeedsRequest(
+
+                           DestinationNodeId ?? NetworkingNode_Id.CSMS,
+
                            EVSEId,
                            ChargingNeeds,
                            ReceivedTimestamp,
@@ -1108,6 +1137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
                            CancellationToken
+
                        )
                    );
 
@@ -1139,41 +1169,44 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<OCPPv2_1.CSMS.TransactionEventResponse>
+        public static Task<CSMS.TransactionEventResponse>
 
-            SendTransactionEvent(this INetworkingNode      NetworkingNode,
+            SendTransactionEvent(this INetworkingNode          NetworkingNode,
 
-                                 TransactionEvents         EventType,
-                                 DateTime                  Timestamp,
-                                 TriggerReason             TriggerReason,
-                                 UInt32                    SequenceNumber,
-                                 Transaction               TransactionInfo,
+                                 TransactionEvents             EventType,
+                                 DateTime                      Timestamp,
+                                 TriggerReason                 TriggerReason,
+                                 UInt32                        SequenceNumber,
+                                 Transaction                   TransactionInfo,
 
-                                 Boolean?                  Offline                 = null,
-                                 Byte?                     NumberOfPhasesUsed      = null,
-                                 Ampere?                   CableMaxCurrent         = null,
-                                 Reservation_Id?           ReservationId           = null,
-                                 IdToken?                  IdToken                 = null,
-                                 EVSE?                     EVSE                    = null,
-                                 IEnumerable<MeterValue>?  MeterValues             = null,
-                                 PreconditioningStatus?    PreconditioningStatus   = null,
+                                 Boolean?                      Offline                 = null,
+                                 Byte?                         NumberOfPhasesUsed      = null,
+                                 Ampere?                       CableMaxCurrent         = null,
+                                 Reservation_Id?               ReservationId           = null,
+                                 IdToken?                      IdToken                 = null,
+                                 EVSE?                         EVSE                    = null,
+                                 IEnumerable<MeterValue>?      MeterValues             = null,
+                                 PreconditioningStatus?        PreconditioningStatus   = null,
 
-                                 IEnumerable<KeyPair>?     SignKeys                = null,
-                                 IEnumerable<SignInfo>?    SignInfos               = null,
-                                 IEnumerable<OCPP.Signature>?   Signatures              = null,
+                                 CustomData?                   CustomData              = null,
 
-                                 CustomData?               CustomData              = null,
+                                 NetworkingNode_Id?            DestinationNodeId       = null,
 
-                                 Request_Id?               RequestId               = null,
-                                 DateTime?                 RequestTimestamp        = null,
-                                 TimeSpan?                 RequestTimeout          = null,
-                                 EventTracking_Id?         EventTrackingId         = null,
-                                 CancellationToken         CancellationToken       = default)
+                                 IEnumerable<KeyPair>?         SignKeys                = null,
+                                 IEnumerable<SignInfo>?        SignInfos               = null,
+                                 IEnumerable<OCPP.Signature>?  Signatures              = null,
+
+                                 Request_Id?                   RequestId               = null,
+                                 DateTime?                     RequestTimestamp        = null,
+                                 TimeSpan?                     RequestTimeout          = null,
+                                 EventTracking_Id?             EventTrackingId         = null,
+                                 CancellationToken             CancellationToken       = default)
 
 
                 => NetworkingNode.TransactionEvent(
-                       new OCPPv2_1.CS.TransactionEventRequest(
-                           NetworkingNode.Id,
+                       new TransactionEventRequest(
+
+                           DestinationNodeId ?? NetworkingNode_Id.CSMS,
 
                            EventType,
                            Timestamp,
@@ -1202,6 +1235,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
                            CancellationToken
+
                        )
                    );
 
@@ -1223,31 +1257,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<OCPPv2_1.CSMS.StatusNotificationResponse>
+        public static Task<CSMS.StatusNotificationResponse>
 
-            SendStatusNotification(this INetworkingNode     NetworkingNode,
+            SendStatusNotification(this INetworkingNode          NetworkingNode,
 
-                                   EVSE_Id                  EVSEId,
-                                   Connector_Id             ConnectorId,
-                                   DateTime                 Timestamp,
-                                   ConnectorStatus          Status,
+                                   EVSE_Id                       EVSEId,
+                                   Connector_Id                  ConnectorId,
+                                   DateTime                      Timestamp,
+                                   ConnectorStatus               Status,
 
-                                   IEnumerable<KeyPair>?    SignKeys            = null,
-                                   IEnumerable<SignInfo>?   SignInfos           = null,
+                                   CustomData?                   CustomData          = null,
+
+                                   NetworkingNode_Id?            DestinationNodeId   = null,
+
+                                   IEnumerable<KeyPair>?         SignKeys            = null,
+                                   IEnumerable<SignInfo>?        SignInfos           = null,
                                    IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                                   CustomData?              CustomData          = null,
-
-                                   Request_Id?              RequestId           = null,
-                                   DateTime?                RequestTimestamp    = null,
-                                   TimeSpan?                RequestTimeout      = null,
-                                   EventTracking_Id?        EventTrackingId     = null,
-                                   CancellationToken        CancellationToken   = default)
+                                   Request_Id?                   RequestId           = null,
+                                   DateTime?                     RequestTimestamp    = null,
+                                   TimeSpan?                     RequestTimeout      = null,
+                                   EventTracking_Id?             EventTrackingId     = null,
+                                   CancellationToken             CancellationToken   = default)
 
 
                 => NetworkingNode.StatusNotification(
-                       new OCPPv2_1.CS.StatusNotificationRequest(
-                           NetworkingNode.Id,
+                       new StatusNotificationRequest(
+
+                           DestinationNodeId ?? NetworkingNode_Id.CSMS,
+
                            Timestamp,
                            Status,
                            EVSEId,
@@ -1265,6 +1303,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
                            CancellationToken
+
                        )
                    );
 
@@ -1284,29 +1323,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<OCPPv2_1.CSMS.MeterValuesResponse>
+        public static Task<CSMS.MeterValuesResponse>
 
-            SendMeterValues(this INetworkingNode     NetworkingNode,
+            SendMeterValues(this INetworkingNode          NetworkingNode,
 
-                            EVSE_Id                  EVSEId, // 0 => main power meter; 1 => first EVSE
-                            IEnumerable<MeterValue>  MeterValues,
+                            EVSE_Id                       EVSEId, // 0 => main power meter; 1 => first EVSE
+                            IEnumerable<MeterValue>       MeterValues,
 
-                            IEnumerable<KeyPair>?    SignKeys            = null,
-                            IEnumerable<SignInfo>?   SignInfos           = null,
+                            CustomData?                   CustomData          = null,
+
+                            NetworkingNode_Id?            DestinationNodeId   = null,
+
+                            IEnumerable<KeyPair>?         SignKeys            = null,
+                            IEnumerable<SignInfo>?        SignInfos           = null,
                             IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                            CustomData?              CustomData          = null,
-
-                            Request_Id?              RequestId           = null,
-                            DateTime?                RequestTimestamp    = null,
-                            TimeSpan?                RequestTimeout      = null,
-                            EventTracking_Id?        EventTrackingId     = null,
-                            CancellationToken        CancellationToken   = default)
+                            Request_Id?                   RequestId           = null,
+                            DateTime?                     RequestTimestamp    = null,
+                            TimeSpan?                     RequestTimeout      = null,
+                            EventTracking_Id?             EventTrackingId     = null,
+                            CancellationToken             CancellationToken   = default)
 
 
                 => NetworkingNode.MeterValues(
-                       new OCPPv2_1.CS.MeterValuesRequest(
-                           NetworkingNode.Id,
+                       new MeterValuesRequest(
+
+                           DestinationNodeId ?? NetworkingNode_Id.CSMS,
+
                            EVSEId,
                            MeterValues,
 
@@ -1322,6 +1365,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
                            CancellationToken
+
                        )
                    );
 
@@ -1342,7 +1386,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<OCPPv2_1.CSMS.NotifyChargingLimitResponse>
+        public static Task<CSMS.NotifyChargingLimitResponse>
 
             NotifyChargingLimit(this INetworkingNode           NetworkingNode,
 
@@ -1350,11 +1394,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                                 IEnumerable<ChargingSchedule>  ChargingSchedules,
                                 EVSE_Id?                       EVSEId              = null,
 
+                                CustomData?                    CustomData          = null,
+
+                                NetworkingNode_Id?             DestinationNodeId   = null,
+
                                 IEnumerable<KeyPair>?          SignKeys            = null,
                                 IEnumerable<SignInfo>?         SignInfos           = null,
                                 IEnumerable<OCPP.Signature>?   Signatures          = null,
-
-                                CustomData?                    CustomData          = null,
 
                                 Request_Id?                    RequestId           = null,
                                 DateTime?                      RequestTimestamp    = null,
@@ -1364,8 +1410,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
 
                 => NetworkingNode.NotifyChargingLimit(
-                       new OCPPv2_1.CS.NotifyChargingLimitRequest(
-                           NetworkingNode.Id,
+                       new NotifyChargingLimitRequest(
+
+                           DestinationNodeId ?? NetworkingNode_Id.CSMS,
+
                            ChargingLimit,
                            ChargingSchedules,
                            EVSEId,
@@ -1382,6 +1430,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
                            CancellationToken
+
                        )
                    );
 
@@ -1401,29 +1450,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<OCPPv2_1.CSMS.ClearedChargingLimitResponse>
+        public static Task<CSMS.ClearedChargingLimitResponse>
 
-            SendClearedChargingLimit(this INetworkingNode     NetworkingNode,
+            SendClearedChargingLimit(this INetworkingNode          NetworkingNode,
 
-                                     ChargingLimitSource      ChargingLimitSource,
-                                     EVSE_Id?                 EVSEId,
+                                     ChargingLimitSource           ChargingLimitSource,
+                                     EVSE_Id?                      EVSEId,
 
-                                     IEnumerable<KeyPair>?    SignKeys            = null,
-                                     IEnumerable<SignInfo>?   SignInfos           = null,
+                                     CustomData?                   CustomData          = null,
+
+                                     NetworkingNode_Id?            DestinationNodeId   = null,
+
+                                     IEnumerable<KeyPair>?         SignKeys            = null,
+                                     IEnumerable<SignInfo>?        SignInfos           = null,
                                      IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                                     CustomData?              CustomData          = null,
-
-                                     Request_Id?              RequestId           = null,
-                                     DateTime?                RequestTimestamp    = null,
-                                     TimeSpan?                RequestTimeout      = null,
-                                     EventTracking_Id?        EventTrackingId     = null,
-                                     CancellationToken        CancellationToken   = default)
+                                     Request_Id?                   RequestId           = null,
+                                     DateTime?                     RequestTimestamp    = null,
+                                     TimeSpan?                     RequestTimeout      = null,
+                                     EventTracking_Id?             EventTrackingId     = null,
+                                     CancellationToken             CancellationToken   = default)
 
 
                 => NetworkingNode.ClearedChargingLimit(
-                       new OCPPv2_1.CS.ClearedChargingLimitRequest(
-                           NetworkingNode.Id,
+                       new ClearedChargingLimitRequest(
+
+                           DestinationNodeId ?? NetworkingNode_Id.CSMS,
+
                            ChargingLimitSource,
                            EVSEId,
 
@@ -1439,6 +1492,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
                            CancellationToken
+
                        )
                    );
 
@@ -1461,7 +1515,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<OCPPv2_1.CSMS.ReportChargingProfilesResponse>
+        public static Task<CSMS.ReportChargingProfilesResponse>
 
             ReportChargingProfiles(this INetworkingNode          NetworkingNode,
 
@@ -1471,11 +1525,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                                    IEnumerable<ChargingProfile>  ChargingProfiles,
                                    Boolean?                      ToBeContinued       = null,
 
+                                   CustomData?                   CustomData          = null,
+
+                                   NetworkingNode_Id?            DestinationNodeId   = null,
+
                                    IEnumerable<KeyPair>?         SignKeys            = null,
                                    IEnumerable<SignInfo>?        SignInfos           = null,
                                    IEnumerable<OCPP.Signature>?  Signatures          = null,
-
-                                   CustomData?                   CustomData          = null,
 
                                    Request_Id?                   RequestId           = null,
                                    DateTime?                     RequestTimestamp    = null,
@@ -1485,8 +1541,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
 
                 => NetworkingNode.ReportChargingProfiles(
-                       new OCPPv2_1.CS.ReportChargingProfilesRequest(
-                           NetworkingNode.Id,
+                       new ReportChargingProfilesRequest(
+
+                           DestinationNodeId ?? NetworkingNode_Id.CSMS,
+
                            ReportChargingProfilesRequestId,
                            ChargingLimitSource,
                            EVSEId,
@@ -1505,17 +1563,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
                            CancellationToken
+
                        )
                    );
 
         #endregion
 
-        #region NotifyEVChargingSchedule              (NotifyEVChargingScheduleRequestId, TimeBase, EVSEId, ChargingSchedule, SelectedScheduleTupleId = null, PowerToleranceAcceptance = null, ...)
+        #region NotifyEVChargingSchedule              (TimeBase, EVSEId, ChargingSchedule, SelectedScheduleTupleId = null, PowerToleranceAcceptance = null, ...)
 
         /// <summary>
         /// Notify about an EV charging schedule.
         /// </summary>
-        /// <param name="NotifyEVChargingScheduleRequestId">The request identification used to match the GetChargingProfilesRequest message with the resulting NotifyEVChargingScheduleRequest messages. When the CSMS provided a requestId in the GetChargingProfilesRequest, this field SHALL contain the same value.</param>
         /// <param name="TimeBase">The charging periods contained within the charging schedule are relative to this time base.</param>
         /// <param name="EVSEId">The charging schedule applies to this EVSE.</param>
         /// <param name="ChargingSchedule">Planned energy consumption of the EV over time. Always relative to the time base.</param>
@@ -1528,33 +1586,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<OCPPv2_1.CSMS.NotifyEVChargingScheduleResponse>
+        public static Task<CSMS.NotifyEVChargingScheduleResponse>
 
-            NotifyEVChargingSchedule(this INetworkingNode     NetworkingNode,
+            NotifyEVChargingSchedule(this INetworkingNode          NetworkingNode,
 
-                                     Int32                    NotifyEVChargingScheduleRequestId,
-                                     DateTime                 TimeBase,
-                                     EVSE_Id                  EVSEId,
-                                     ChargingSchedule         ChargingSchedule,
-                                     Byte?                    SelectedScheduleTupleId    = null,
-                                     Boolean?                 PowerToleranceAcceptance   = null,
+                                     DateTime                      TimeBase,
+                                     EVSE_Id                       EVSEId,
+                                     ChargingSchedule              ChargingSchedule,
+                                     Byte?                         SelectedScheduleTupleId    = null,
+                                     Boolean?                      PowerToleranceAcceptance   = null,
 
-                                     IEnumerable<KeyPair>?    SignKeys                   = null,
-                                     IEnumerable<SignInfo>?   SignInfos                  = null,
+                                     CustomData?                   CustomData                 = null,
+
+                                     NetworkingNode_Id?            DestinationNodeId          = null,
+
+                                     IEnumerable<KeyPair>?         SignKeys                   = null,
+                                     IEnumerable<SignInfo>?        SignInfos                  = null,
                                      IEnumerable<OCPP.Signature>?  Signatures                 = null,
 
-                                     CustomData?              CustomData                 = null,
-
-                                     Request_Id?              RequestId                  = null,
-                                     DateTime?                RequestTimestamp           = null,
-                                     TimeSpan?                RequestTimeout             = null,
-                                     EventTracking_Id?        EventTrackingId            = null,
-                                     CancellationToken        CancellationToken          = default)
+                                     Request_Id?                   RequestId                  = null,
+                                     DateTime?                     RequestTimestamp           = null,
+                                     TimeSpan?                     RequestTimeout             = null,
+                                     EventTracking_Id?             EventTrackingId            = null,
+                                     CancellationToken             CancellationToken          = default)
 
 
                 => NetworkingNode.NotifyEVChargingSchedule(
-                       new OCPPv2_1.CS.NotifyEVChargingScheduleRequest(
-                           NetworkingNode.Id,
+                       new NotifyEVChargingScheduleRequest(
+
+                           DestinationNodeId ?? NetworkingNode_Id.CSMS,
+
                            TimeBase,
                            EVSEId,
                            ChargingSchedule,
@@ -1573,17 +1634,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
                            CancellationToken
+
                        )
                    );
 
         #endregion
 
-        #region NotifyPriorityCharging                (NotifyPriorityChargingRequestId, TransactionId, Activated, ...)
+        #region NotifyPriorityCharging                (TransactionId, Activated, ...)
 
         /// <summary>
         /// Notify about priority charging.
         /// </summary>
-        /// <param name="NotifyPriorityChargingRequestId">The request identification used to match the GetChargingProfilesRequest message with the resulting NotifyPriorityChargingRequest messages. When the CSMS provided a requestId in the GetChargingProfilesRequest, this field SHALL contain the same value.</param>
         /// <param name="TransactionId">The transaction for which priority charging is requested.</param>
         /// <param name="Activated">True, when priority charging was activated, or false, when it has stopped using the priority charging profile.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
@@ -1593,30 +1654,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<OCPPv2_1.CSMS.NotifyPriorityChargingResponse>
+        public static Task<CSMS.NotifyPriorityChargingResponse>
 
-            NotifyPriorityCharging(this INetworkingNode     NetworkingNode,
+            NotifyPriorityCharging(this INetworkingNode          NetworkingNode,
 
-                                   Int32                    NotifyPriorityChargingRequestId,
-                                   Transaction_Id           TransactionId,
-                                   Boolean                  Activated,
+                                   Transaction_Id                TransactionId,
+                                   Boolean                       Activated,
 
-                                   IEnumerable<KeyPair>?    SignKeys            = null,
-                                   IEnumerable<SignInfo>?   SignInfos           = null,
+                                   CustomData?                   CustomData          = null,
+
+                                   NetworkingNode_Id?            DestinationNodeId   = null,
+
+                                   IEnumerable<KeyPair>?         SignKeys            = null,
+                                   IEnumerable<SignInfo>?        SignInfos           = null,
                                    IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                                   CustomData?              CustomData          = null,
-
-                                   Request_Id?              RequestId           = null,
-                                   DateTime?                RequestTimestamp    = null,
-                                   TimeSpan?                RequestTimeout      = null,
-                                   EventTracking_Id?        EventTrackingId     = null,
-                                   CancellationToken        CancellationToken   = default)
+                                   Request_Id?                   RequestId           = null,
+                                   DateTime?                     RequestTimestamp    = null,
+                                   TimeSpan?                     RequestTimeout      = null,
+                                   EventTracking_Id?             EventTrackingId     = null,
+                                   CancellationToken             CancellationToken   = default)
 
 
                 => NetworkingNode.NotifyPriorityCharging(
-                       new OCPPv2_1.CS.NotifyPriorityChargingRequest(
-                           NetworkingNode.Id,
+                       new NotifyPriorityChargingRequest(
+
+                           DestinationNodeId ?? NetworkingNode_Id.CSMS,
+
                            TransactionId,
                            Activated,
 
@@ -1632,6 +1696,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
                            CancellationToken
+
                        )
                    );
 
@@ -1650,28 +1715,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<OCPPv2_1.CSMS.PullDynamicScheduleUpdateResponse>
+        public static Task<CSMS.PullDynamicScheduleUpdateResponse>
 
-            PullDynamicScheduleUpdate(this INetworkingNode     NetworkingNode,
+            PullDynamicScheduleUpdate(this INetworkingNode          NetworkingNode,
 
-                                      ChargingProfile_Id       ChargingProfileId,
+                                      ChargingProfile_Id            ChargingProfileId,
 
-                                      IEnumerable<KeyPair>?    SignKeys            = null,
-                                      IEnumerable<SignInfo>?   SignInfos           = null,
+                                      CustomData?                   CustomData          = null,
+
+                                      NetworkingNode_Id?            DestinationNodeId   = null,
+
+                                      IEnumerable<KeyPair>?         SignKeys            = null,
+                                      IEnumerable<SignInfo>?        SignInfos           = null,
                                       IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                                      CustomData?              CustomData          = null,
-
-                                      Request_Id?              RequestId           = null,
-                                      DateTime?                RequestTimestamp    = null,
-                                      TimeSpan?                RequestTimeout      = null,
-                                      EventTracking_Id?        EventTrackingId     = null,
-                                      CancellationToken        CancellationToken   = default)
+                                      Request_Id?                   RequestId           = null,
+                                      DateTime?                     RequestTimestamp    = null,
+                                      TimeSpan?                     RequestTimeout      = null,
+                                      EventTracking_Id?             EventTrackingId     = null,
+                                      CancellationToken             CancellationToken   = default)
 
 
                 => NetworkingNode.PullDynamicScheduleUpdate(
-                       new OCPPv2_1.CS.PullDynamicScheduleUpdateRequest(
-                           NetworkingNode.Id,
+                       new PullDynamicScheduleUpdateRequest(
+
+                           DestinationNodeId ?? NetworkingNode_Id.CSMS,
+
                            ChargingProfileId,
 
                            SignKeys,
@@ -1686,6 +1755,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
                            CancellationToken
+
                        )
                    );
 
@@ -1707,30 +1777,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<OCPPv2_1.CSMS.NotifyDisplayMessagesResponse>
+        public static Task<CSMS.NotifyDisplayMessagesResponse>
 
-            NotifyDisplayMessages(this INetworkingNode      NetworkingNode,
+            NotifyDisplayMessages(this INetworkingNode          NetworkingNode,
 
-                                  Int32                     NotifyDisplayMessagesRequestId,
-                                  IEnumerable<MessageInfo>  MessageInfos,
-                                  Boolean?                  ToBeContinued       = null,
+                                  Int32                         NotifyDisplayMessagesRequestId,
+                                  IEnumerable<MessageInfo>      MessageInfos,
+                                  Boolean?                      ToBeContinued       = null,
 
-                                  IEnumerable<KeyPair>?     SignKeys            = null,
-                                  IEnumerable<SignInfo>?    SignInfos           = null,
-                                  IEnumerable<OCPP.Signature>?   Signatures          = null,
+                                  CustomData?                   CustomData          = null,
 
-                                  CustomData?               CustomData          = null,
+                                  NetworkingNode_Id?            DestinationNodeId   = null,
 
-                                  Request_Id?               RequestId           = null,
-                                  DateTime?                 RequestTimestamp    = null,
-                                  TimeSpan?                 RequestTimeout      = null,
-                                  EventTracking_Id?         EventTrackingId     = null,
-                                  CancellationToken         CancellationToken   = default)
+                                  IEnumerable<KeyPair>?         SignKeys            = null,
+                                  IEnumerable<SignInfo>?        SignInfos           = null,
+                                  IEnumerable<OCPP.Signature>?  Signatures          = null,
+
+                                  Request_Id?                   RequestId           = null,
+                                  DateTime?                     RequestTimestamp    = null,
+                                  TimeSpan?                     RequestTimeout      = null,
+                                  EventTracking_Id?             EventTrackingId     = null,
+                                  CancellationToken             CancellationToken   = default)
 
 
                 => NetworkingNode.NotifyDisplayMessages(
-                       new OCPPv2_1.CS.NotifyDisplayMessagesRequest(
-                           NetworkingNode.Id,
+                       new NotifyDisplayMessagesRequest(
+
+                           DestinationNodeId ?? NetworkingNode_Id.CSMS,
+
                            NotifyDisplayMessagesRequestId,
                            MessageInfos,
                            ToBeContinued,
@@ -1747,6 +1821,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
                            CancellationToken
+
                        )
                    );
 
@@ -1769,32 +1844,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<OCPPv2_1.CSMS.NotifyCustomerInformationResponse>
+        public static Task<CSMS.NotifyCustomerInformationResponse>
 
-            NotifyCustomerInformation(this INetworkingNode     NetworkingNode,
+            NotifyCustomerInformation(this INetworkingNode          NetworkingNode,
 
-                                      Int64                    NotifyCustomerInformationRequestId,
-                                      String                   Data,
-                                      UInt32                   SequenceNumber,
-                                      DateTime                 GeneratedAt,
-                                      Boolean?                 ToBeContinued       = null,
+                                      Int64                         NotifyCustomerInformationRequestId,
+                                      String                        Data,
+                                      UInt32                        SequenceNumber,
+                                      DateTime                      GeneratedAt,
+                                      Boolean?                      ToBeContinued       = null,
 
-                                      IEnumerable<KeyPair>?    SignKeys            = null,
-                                      IEnumerable<SignInfo>?   SignInfos           = null,
+                                      CustomData?                   CustomData          = null,
+
+                                      NetworkingNode_Id?            DestinationNodeId   = null,
+
+                                      IEnumerable<KeyPair>?         SignKeys            = null,
+                                      IEnumerable<SignInfo>?        SignInfos           = null,
                                       IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                                      CustomData?              CustomData          = null,
-
-                                      Request_Id?              RequestId           = null,
-                                      DateTime?                RequestTimestamp    = null,
-                                      TimeSpan?                RequestTimeout      = null,
-                                      EventTracking_Id?        EventTrackingId     = null,
-                                      CancellationToken        CancellationToken   = default)
+                                      Request_Id?                   RequestId           = null,
+                                      DateTime?                     RequestTimestamp    = null,
+                                      TimeSpan?                     RequestTimeout      = null,
+                                      EventTracking_Id?             EventTrackingId     = null,
+                                      CancellationToken             CancellationToken   = default)
 
 
                 => NetworkingNode.NotifyCustomerInformation(
-                       new OCPPv2_1.CS.NotifyCustomerInformationRequest(
-                           NetworkingNode.Id,
+                       new NotifyCustomerInformationRequest(
+
+                           DestinationNodeId ?? NetworkingNode_Id.CSMS,
+
                            NotifyCustomerInformationRequestId,
                            Data,
                            SequenceNumber,
@@ -1813,6 +1892,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
                            CancellationToken
+
                        )
                    );
 
@@ -1846,6 +1926,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                                Byte[]?                       Data                = null,
                                BinaryFormats?                Format              = null,
 
+                               NetworkingNode_Id?            DestinationNodeId   = null,
+
                                IEnumerable<KeyPair>?         SignKeys            = null,
                                IEnumerable<SignInfo>?        SignInfos           = null,
                                IEnumerable<OCPP.Signature>?  Signatures          = null,
@@ -1859,7 +1941,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
                 => NetworkingNode.BinaryDataTransfer(
                        new OCPP.CS.BinaryDataTransferRequest(
-                           NetworkingNode.Id,
+
+                           DestinationNodeId ?? NetworkingNode_Id.CSMS,
+
                            VendorId,
                            MessageId,
                            Data,
@@ -1875,10 +1959,137 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
                            CancellationToken
+
                        )
                    );
 
         #endregion
+
+
+        // Overlay Networking Extensions
+
+        #region NotifyNetworkTopology                 (NetworkingNode, ...)
+
+        /// <summary>
+        /// Transfer the given binary data to the CSMS.
+        /// </summary>
+        /// <param name="NetworkTopologyInformation">A network topology information.</param>
+        /// 
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public static Task<OCPP.NN.NotifyNetworkTopologyResponse>
+
+            NotifyNetworkTopology(this INetworkingNode          NetworkingNode,
+
+                                  NetworkTopologyInformation    NetworkTopologyInformation,
+
+                                  CustomData?                   CustomData          = null,
+
+                                  NetworkingNode_Id?            DestinationNodeId   = null,
+
+                                  IEnumerable<KeyPair>?         SignKeys            = null,
+                                  IEnumerable<SignInfo>?        SignInfos           = null,
+                                  IEnumerable<OCPP.Signature>?  Signatures          = null,
+
+                                  Request_Id?                   RequestId           = null,
+                                  DateTime?                     RequestTimestamp    = null,
+                                  TimeSpan?                     RequestTimeout      = null,
+                                  EventTracking_Id?             EventTrackingId     = null,
+                                  CancellationToken             CancellationToken   = default)
+
+
+                => NetworkingNode.NotifyNetworkTopology(
+                       new OCPP.NN.NotifyNetworkTopologyRequest(
+
+                           DestinationNodeId ?? NetworkingNode_Id.CSMS,
+
+                           NetworkTopologyInformation,
+
+                           SignKeys,
+                           SignInfos,
+                           Signatures,
+
+                           CustomData,
+
+                           RequestId        ?? NetworkingNode.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? NetworkingNode.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
+                           CancellationToken
+
+                       )
+                   );
+
+        #endregion
+
+        #region NotifyNetworkTopology                 (NetworkingNode, ...)
+
+        /// <summary>
+        /// Transfer the given binary data to the CSMS.
+        /// </summary>
+        /// <param name="NetworkTopologyInformation">A network topology information.</param>
+        /// 
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public static Task<OCPP.NN.NotifyNetworkTopologyResponse>
+
+            NotifyNetworkTopology(this INetworkingNode2         NetworkingNode,
+
+                                  NetworkingNode_Id             DestinationNodeId,
+                                  NetworkTopologyInformation    NetworkTopologyInformation,
+
+                                  CustomData?                   CustomData          = null,
+
+                                  IEnumerable<KeyPair>?         SignKeys            = null,
+                                  IEnumerable<SignInfo>?        SignInfos           = null,
+                                  IEnumerable<OCPP.Signature>?  Signatures          = null,
+
+                                  Request_Id?                   RequestId           = null,
+                                  DateTime?                     RequestTimestamp    = null,
+                                  TimeSpan?                     RequestTimeout      = null,
+                                  EventTracking_Id?             EventTrackingId     = null,
+                                  CancellationToken             CancellationToken   = default)
+
+
+                => NetworkingNode.NotifyNetworkTopology(
+                       new OCPP.NN.NotifyNetworkTopologyRequest(
+
+                           DestinationNodeId,
+                           NetworkTopologyInformation,
+
+                           SignKeys,
+                           SignInfos,
+                           Signatures,
+
+                           CustomData,
+
+                           RequestId        ?? NetworkingNode.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? NetworkingNode.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
+                           CancellationToken
+
+                       )
+                   );
+
+        #endregion
+
 
 
     }

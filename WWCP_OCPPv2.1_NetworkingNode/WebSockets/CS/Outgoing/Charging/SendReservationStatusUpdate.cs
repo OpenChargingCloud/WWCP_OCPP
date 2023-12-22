@@ -80,7 +80,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <param name="Request">A ReservationStatusUpdate request.</param>
         public async Task<ReservationStatusUpdateResponse>
 
-            SendReservationStatusUpdate(ReservationStatusUpdateRequest  Request)
+            ReservationStatusUpdate(ReservationStatusUpdateRequest  Request)
 
         {
 

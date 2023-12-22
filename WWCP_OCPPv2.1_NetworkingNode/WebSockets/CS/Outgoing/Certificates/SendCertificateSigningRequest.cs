@@ -80,7 +80,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <param name="Request">A SignCertificate request.</param>
         public async Task<SignCertificateResponse>
 
-            SendCertificateSigningRequest(SignCertificateRequest Request)
+            SignCertificate(SignCertificateRequest Request)
 
         {
 

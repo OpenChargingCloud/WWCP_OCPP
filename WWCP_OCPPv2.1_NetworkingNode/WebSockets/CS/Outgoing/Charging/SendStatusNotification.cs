@@ -80,7 +80,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <param name="Request">A StatusNotification request.</param>
         public async Task<StatusNotificationResponse>
 
-            SendStatusNotification(StatusNotificationRequest  Request)
+            StatusNotification(StatusNotificationRequest  Request)
 
         {
 
