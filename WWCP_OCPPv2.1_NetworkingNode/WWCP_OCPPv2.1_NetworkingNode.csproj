@@ -22,6 +22,7 @@
     <None Remove="HTTPRoot\js\date.format.js" />
     <None Remove="HTTPRoot\template.html" />
     <None Remove="HTTPRoot\template.scss" />
+    <None Remove="TestNetworkingNode.cs~RF349fda6f.TMP" />
   </ItemGroup>
 
   <ItemGroup>

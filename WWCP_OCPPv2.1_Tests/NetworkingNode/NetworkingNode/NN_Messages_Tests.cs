@@ -110,20 +110,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
 
 
                 var reason    = BootReason.PowerUp;
-                var response  = await networkingNode1.AsCS.BootNotification(
-                                    new BootNotificationRequest(
-                                        networkingNode1.Id,
-                                        new OCPPv2_1.ChargingStation(
-                                            networkingNode1.Model,
-                                            networkingNode1.VendorName,
-                                            networkingNode1.SerialNumber,
-                                            networkingNode1.Modem,
-                                            networkingNode1.FirmwareVersion,
-                                            networkingNode1.CustomData
-                                        ),
-                                        BootReason.PowerUp
-                                    )
-                                );
+                var response  = await networkingNode1.SendBootNotification(
+                                          BootReason:         BootReason.PowerUp,
+                                          DestinationNodeId:  networkingNode1.Id
+                                      );
 
 
                 Assert.Multiple(() => {
@@ -207,7 +197,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
 
 
                 var reason    = BootReason.PowerUp;
-                var response  = await networkingNode1.AsCS.NotifyNetworkTopology(
+                var response  = await networkingNode1.NotifyNetworkTopology(
                                     new NotifyNetworkTopologyRequest(
                                         NetworkingNode_Id.CSMS,
                                         new NetworkTopologyInformation(

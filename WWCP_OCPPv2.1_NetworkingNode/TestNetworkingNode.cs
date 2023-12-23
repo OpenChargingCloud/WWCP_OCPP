@@ -35,12 +35,12 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 using org.GraphDefined.Vanaheimr.Hermod.Logging;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions;
-using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
 using cloud.charging.open.protocols.OCPP.CSMS;
 using cloud.charging.open.protocols.OCPP.CS;
 using cloud.charging.open.protocols.OCPP.NN;
+using cloud.charging.open.protocols.OCPPv2_1.NN;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS;
 
 #endregion
 
@@ -186,11 +186,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <summary>
     /// A networking node for testing.
     /// </summary>
-    public class TestNetworkingNode : IEventSender,
-                                      INetworkingNode2
+    public class TestNetworkingNode : CS.INetworkingNode,
+                                      INetworkingNode2,
+                                      IEventSender
     {
 
-        public class ActingAsCS : CS.INetworkingNode,
+        public class ActingAsCS : //CS.INetworkingNode,
                                        //  IChargingStationClientEvents,
                                        IEventSender
         {
@@ -337,7 +338,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             public HTTPHostname? VirtualHostname => throw new NotImplementedException();
 
-            string? IHTTPClient.Description { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+   //         string? IHTTPClient.Description { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
             public RemoteCertificateValidationHandler? RemoteCertificateValidator => throw new NotImplementedException();
 
@@ -5036,9 +5037,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                 if (request.RequestedMessage == MessageTrigger.BootNotification)
                                 {
-                                    await this.SendBootNotification(
-                                              BootReason: BootReason.Triggered,
-                                              CustomData: null
+                                    await parentNetworkingNode.SendBootNotification(
+                                              BootReason:  BootReason.Triggered,
+                                              CustomData:  null
                                           );
                                 }
 
@@ -5060,7 +5061,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                 else if (request.RequestedMessage == MessageTrigger.StatusNotification &&
                                          request.EVSE is not null)
                                 {
-                                    await this.SendStatusNotification(
+                                    await parentNetworkingNode.SendStatusNotification(
                                               EVSEId:        request.EVSE.Id,
                                               ConnectorId:   Connector_Id.Parse(1),
                                               Timestamp:     Timestamp.Now,
@@ -9319,7 +9320,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                   Where(displayMessage => !request.Priority.HasValue ||  displayMessage.Priority                                     == request.Priority.Value).
                                                                   ToArray();
 
-                                await this.NotifyDisplayMessages(
+                                await parentNetworkingNode.NotifyDisplayMessages(
                                           NotifyDisplayMessagesRequestId:   request.GetDisplayMessagesRequestId,
                                           MessageInfos:                     filteredDisplayMessages,
                                           ToBeContinued:                    false,
@@ -9856,9 +9857,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                             // IdToken
                             // CustomerCertificate
 
+
+
                             _ = Task.Run(async () => {
 
-                                await this.NotifyCustomerInformation(
+                                await parentNetworkingNode.NotifyCustomerInformation(
                                           NotifyCustomerInformationRequestId:   request.CustomerInformationRequestId,
                                           Data:                                 customer,
                                           SequenceNumber:                       1,
@@ -9869,6 +9872,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                             },
                             CancellationToken.None);
+
+
 
                             response = new OCPPv2_1.CS.CustomerInformationResponse(
                                            request,
@@ -12250,7 +12255,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
                     try
                     {
-                        this.SendHeartbeat().Wait();
+                        this.parentNetworkingNode.SendHeartbeat().Wait();
                     }
                     catch (Exception e)
                     {
@@ -12317,3235 +12322,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 }
 
             }
-
-
-            #region Charging Station -> CSMS Messages
-
-            #region SendBootNotification                  (Request)
-
-            /// <summary>
-            /// Send a boot notification.
-            /// </summary>
-            /// <param name="Request">A boot notification request.</param>
-            public async Task<OCPPv2_1.CSMS.BootNotificationResponse>
-                BootNotification(OCPPv2_1.CS.BootNotificationRequest Request)
-
-            {
-
-                #region Send OnBootNotificationRequest event
-
-                var startTime  = Timestamp.Now;
-
-                try
-                {
-
-                    OnBootNotificationRequest?.Invoke(startTime,
-                                                      this,
-                                                      Request);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnBootNotificationRequest));
-                }
-
-                #endregion
-
-
-                var response = CSClient is not null
-
-                                   ? SignaturePolicy.SignRequestMessage(
-                                         Request,
-                                         Request.ToJSON(
-                                             CustomBootNotificationRequestSerializer,
-                                             CustomChargingStationSerializer,
-                                             CustomSignatureSerializer,
-                                             CustomCustomDataSerializer
-                                         ),
-                                         out var errorResponse
-                                     )
-
-                                         ? await CSClient.BootNotification(Request)
-
-                                         : new OCPPv2_1.CSMS.BootNotificationResponse(
-                                               Request,
-                                               Result.SignatureError(errorResponse)
-                                           )
-
-                                   : new OCPPv2_1.CSMS.BootNotificationResponse(
-                                         Request,
-                                         Result.Server("Unknown or unreachable charging station!")
-                                     );
-
-                SignaturePolicy.VerifyResponseMessage(
-                    response,
-                    response.ToJSON(
-                        CustomBootNotificationResponseSerializer,
-                        CustomStatusInfoSerializer,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out errorResponse
-                );
-
-
-                switch (response.Status)
-                {
-
-                    case RegistrationStatus.Accepted:
-                        this.CSMSTime               = response.CurrentTime;
-                        this.SendHeartbeatEvery     = response.Interval >= TimeSpan.FromSeconds(5) ? response.Interval : TimeSpan.FromSeconds(5);
-                        this.SendHeartbeatTimer.Change(this.SendHeartbeatEvery, this.SendHeartbeatEvery);
-                        this.DisableSendHeartbeats  = false;
-                        break;
-
-                    case RegistrationStatus.Pending:
-                        // Do not reconnect before: response.HeartbeatInterval
-                        break;
-
-                    case RegistrationStatus.Rejected:
-                        // Do not reconnect before: response.HeartbeatInterval
-                        break;
-
-                }
-
-
-                #region Send OnBootNotificationResponse event
-
-                var endTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnBootNotificationResponse?.Invoke(endTime,
-                                                       this,
-                                                       Request,
-                                                       response,
-                                                       endTime - startTime);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnBootNotificationResponse));
-                }
-
-                #endregion
-
-                return response;
-
-            }
-
-            #endregion
-
-            #region SendFirmwareStatusNotification        (Request)
-
-            /// <summary>
-            /// Send a firmware status notification to the CSMS.
-            /// </summary>
-            /// <param name="Status">The status of the firmware installation.</param>
-            /// <param name="UpdateFirmwareRequestId">The (optional) request id that was provided in the UpdateFirmwareRequest that started this firmware update.</param>
-            /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-            /// 
-            /// <param name="RequestId">An optional request identification.</param>
-            /// <param name="RequestTimestamp">An optional request timestamp.</param>
-            /// <param name="RequestTimeout">An optional timeout for this request.</param>
-            /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-            /// <param name="CancellationToken">An optional token to cancel this request.</param>
-            public async Task<OCPPv2_1.CSMS.FirmwareStatusNotificationResponse>
-                FirmwareStatusNotification(OCPPv2_1.CS.FirmwareStatusNotificationRequest Request)
-
-            {
-
-                #region Send OnFirmwareStatusNotificationRequest event
-
-                var startTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnFirmwareStatusNotificationRequest?.Invoke(startTime,
-                                                                this,
-                                                                Request);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnFirmwareStatusNotificationRequest));
-                }
-
-                #endregion
-
-
-                var response = CSClient is not null
-
-                                   ? SignaturePolicy.SignRequestMessage(
-                                         Request,
-                                         Request.ToJSON(
-                                             CustomFirmwareStatusNotificationRequestSerializer,
-                                             CustomSignatureSerializer,
-                                             CustomCustomDataSerializer
-                                         ),
-                                         out var errorResponse
-                                     )
-
-                                         ? await CSClient.FirmwareStatusNotification(Request)
-
-                                         : new OCPPv2_1.CSMS.FirmwareStatusNotificationResponse(
-                                               Request,
-                                               Result.SignatureError(errorResponse)
-                                           )
-
-                                   : new OCPPv2_1.CSMS.FirmwareStatusNotificationResponse(
-                                         Request,
-                                         Result.Server("Unknown or unreachable charging station!")
-                                     );
-
-                SignaturePolicy.VerifyResponseMessage(
-                    response,
-                    response.ToJSON(
-                        CustomFirmwareStatusNotificationResponseSerializer,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out errorResponse
-                );
-
-
-                #region Send OnFirmwareStatusNotificationResponse event
-
-                var endTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnFirmwareStatusNotificationResponse?.Invoke(endTime,
-                                                                 this,
-                                                                 Request,
-                                                                 response,
-                                                                 endTime - startTime);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnFirmwareStatusNotificationResponse));
-                }
-
-                #endregion
-
-                return response;
-
-            }
-
-            #endregion
-
-            #region SendPublishFirmwareStatusNotification (Request)
-
-            /// <summary>
-            /// Send a publish firmware status notification to the CSMS.
-            /// </summary>
-            /// <param name="Status">The progress status of the publish firmware request.</param>
-            /// <param name="PublishFirmwareStatusNotificationRequestId">The optional unique identification of the publish firmware status notification request.</param>
-            /// <param name="DownloadLocations">The optional enumeration of downstream firmware download locations for all attached charging stations.</param>
-            /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-            /// 
-            /// <param name="RequestId">An optional request identification.</param>
-            /// <param name="RequestTimestamp">An optional request timestamp.</param>
-            /// <param name="RequestTimeout">An optional timeout for this request.</param>
-            /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-            /// <param name="CancellationToken">An optional token to cancel this request.</param>
-            public async Task<OCPPv2_1.CSMS.PublishFirmwareStatusNotificationResponse>
-                PublishFirmwareStatusNotification(OCPPv2_1.CS.PublishFirmwareStatusNotificationRequest Request)
-
-            {
-
-                #region Send OnPublishFirmwareStatusNotificationRequest event
-
-                var startTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnPublishFirmwareStatusNotificationRequest?.Invoke(startTime,
-                                                                       this,
-                                                                       Request);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnPublishFirmwareStatusNotificationRequest));
-                }
-
-                #endregion
-
-
-                var response = CSClient is not null
-
-                                   ? SignaturePolicy.SignRequestMessage(
-                                         Request,
-                                         Request.ToJSON(
-                                             CustomPublishFirmwareStatusNotificationRequestSerializer,
-                                             CustomSignatureSerializer,
-                                             CustomCustomDataSerializer
-                                         ),
-                                         out var errorResponse
-                                     )
-
-                                         ? await CSClient.PublishFirmwareStatusNotification(Request)
-
-                                         : new OCPPv2_1.CSMS.PublishFirmwareStatusNotificationResponse(
-                                               Request,
-                                               Result.SignatureError(errorResponse)
-                                           )
-
-                                   : new OCPPv2_1.CSMS.PublishFirmwareStatusNotificationResponse(
-                                         Request,
-                                         Result.Server("Unknown or unreachable charging station!")
-                                     );
-
-                SignaturePolicy.VerifyResponseMessage(
-                    response,
-                    response.ToJSON(
-                        CustomPublishFirmwareStatusNotificationResponseSerializer,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out errorResponse
-                );
-
-
-                #region Send OnPublishFirmwareStatusNotificationResponse event
-
-                var endTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnPublishFirmwareStatusNotificationResponse?.Invoke(endTime,
-                                                                        this,
-                                                                        Request,
-                                                                        response,
-                                                                        endTime - startTime);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnPublishFirmwareStatusNotificationResponse));
-                }
-
-                #endregion
-
-                return response;
-
-            }
-
-            #endregion
-
-            #region SendHeartbeat                         (Request)
-
-            /// <summary>
-            /// Send a heartbeat.
-            /// </summary>
-            /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-            /// 
-            /// <param name="RequestId">An optional request identification.</param>
-            /// <param name="RequestTimestamp">An optional request timestamp.</param>
-            /// <param name="RequestTimeout">An optional timeout for this request.</param>
-            /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-            /// <param name="CancellationToken">An optional token to cancel this request.</param>
-            public async Task<OCPPv2_1.CSMS.HeartbeatResponse>
-                Heartbeat(OCPPv2_1.CS.HeartbeatRequest Request)
-
-            {
-
-                #region Send OnHeartbeatRequest event
-
-                var startTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnHeartbeatRequest?.Invoke(startTime,
-                                               this,
-                                               Request);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnHeartbeatRequest));
-                }
-
-                #endregion
-
-
-                var response = CSClient is not null
-
-                                   ? SignaturePolicy.SignRequestMessage(
-                                         Request,
-                                         Request.ToJSON(
-                                             CustomHeartbeatRequestSerializer,
-                                             CustomSignatureSerializer,
-                                             CustomCustomDataSerializer
-                                         ),
-                                         out var errorResponse
-                                     )
-
-                                         ? await CSClient.Heartbeat(Request)
-
-                                         : new OCPPv2_1.CSMS.HeartbeatResponse(
-                                               Request,
-                                               Result.SignatureError(errorResponse)
-                                           )
-
-                                   : new OCPPv2_1.CSMS.HeartbeatResponse(
-                                         Request,
-                                         Result.Server("Unknown or unreachable charging station!")
-                                     );
-
-                SignaturePolicy.VerifyResponseMessage(
-                    response,
-                    response.ToJSON(
-                        CustomHeartbeatResponseSerializer,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out errorResponse
-                );
-
-
-                #region Send OnHeartbeatResponse event
-
-                var endTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnHeartbeatResponse?.Invoke(endTime,
-                                                this,
-                                                Request,
-                                                response,
-                                                endTime - startTime);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnHeartbeatResponse));
-                }
-
-                #endregion
-
-                return response;
-
-            }
-
-            #endregion
-
-            #region NotifyEvent                           (Request)
-
-            /// <summary>
-            /// Notify about an event.
-            /// </summary>
-            /// <param name="GeneratedAt">The timestamp of the moment this message was generated at the charging station.</param>
-            /// <param name="SequenceNumber">The sequence number of this message. First message starts at 0.</param>
-            /// <param name="EventData">The enumeration of event data.</param>
-            /// <param name="ToBeContinued">The optional "to be continued" indicator whether another part of the monitoring data follows in an upcoming NotifyCustomerInformationRequest message. Default value when omitted is false.</param>
-            /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-            /// 
-            /// <param name="RequestId">An optional request identification.</param>
-            /// <param name="RequestTimestamp">An optional request timestamp.</param>
-            /// <param name="RequestTimeout">An optional timeout for this request.</param>
-            /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-            /// <param name="CancellationToken">An optional token to cancel this request.</param>
-            public async Task<OCPPv2_1.CSMS.NotifyEventResponse>
-                NotifyEvent(OCPPv2_1.CS.NotifyEventRequest Request)
-
-            {
-
-                #region Send OnNotifyEventRequest event
-
-                var startTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnNotifyEventRequest?.Invoke(startTime,
-                                                 this,
-                                                 Request);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyEventRequest));
-                }
-
-                #endregion
-
-
-                var response = CSClient is not null
-
-                                   ? SignaturePolicy.SignRequestMessage(
-                                         Request,
-                                         Request.ToJSON(
-                                             CustomNotifyEventRequestSerializer,
-                                             CustomEventDataSerializer,
-                                             CustomComponentSerializer,
-                                             CustomEVSESerializer,
-                                             CustomVariableSerializer,
-                                             CustomSignatureSerializer,
-                                             CustomCustomDataSerializer
-                                         ),
-                                         out var errorResponse
-                                     )
-
-                                         ? await CSClient.NotifyEvent(Request)
-
-                                         : new OCPPv2_1.CSMS.NotifyEventResponse(
-                                               Request,
-                                               Result.SignatureError(errorResponse)
-                                           )
-
-                                   : new OCPPv2_1.CSMS.NotifyEventResponse(
-                                         Request,
-                                         Result.Server("Unknown or unreachable charging station!")
-                                     );
-
-                SignaturePolicy.VerifyResponseMessage(
-                    response,
-                    response.ToJSON(
-                        CustomNotifyEventResponseSerializer,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out errorResponse
-                );
-
-
-                #region Send OnNotifyEventResponse event
-
-                var endTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnNotifyEventResponse?.Invoke(endTime,
-                                                  this,
-                                                  Request,
-                                                  response,
-                                                  endTime - startTime);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyEventResponse));
-                }
-
-                #endregion
-
-                return response;
-
-            }
-
-            #endregion
-
-            #region SendSecurityEventNotification         (Request)
-
-            /// <summary>
-            /// Send a security event notification.
-            /// </summary>
-            /// <param name="Type">Type of the security event.</param>
-            /// <param name="Timestamp">The timestamp of the security event.</param>
-            /// <param name="TechInfo">Optional additional information about the occurred security event.</param>
-            /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-            /// 
-            /// <param name="RequestId">An optional request identification.</param>
-            /// <param name="RequestTimestamp">An optional request timestamp.</param>
-            /// <param name="RequestTimeout">An optional timeout for this request.</param>
-            /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-            /// <param name="CancellationToken">An optional token to cancel this request.</param>
-            public async Task<OCPPv2_1.CSMS.SecurityEventNotificationResponse>
-                SecurityEventNotification(OCPPv2_1.CS.SecurityEventNotificationRequest Request)
-
-            {
-
-                #region Send OnSecurityEventNotificationRequest event
-
-                var startTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnSecurityEventNotificationRequest?.Invoke(startTime,
-                                                               this,
-                                                               Request);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnSecurityEventNotificationRequest));
-                }
-
-                #endregion
-
-
-                var response = CSClient is not null
-
-                                   ? SignaturePolicy.SignRequestMessage(
-                                         Request,
-                                         Request.ToJSON(
-                                             CustomSecurityEventNotificationRequestSerializer,
-                                             CustomSignatureSerializer,
-                                             CustomCustomDataSerializer
-                                         ),
-                                         out var errorResponse
-                                     )
-
-                                         ? await CSClient.SecurityEventNotification(Request)
-
-                                         : new OCPPv2_1.CSMS.SecurityEventNotificationResponse(
-                                               Request,
-                                               Result.SignatureError(errorResponse)
-                                           )
-
-                                   : new OCPPv2_1.CSMS.SecurityEventNotificationResponse(
-                                         Request,
-                                         Result.Server("Unknown or unreachable charging station!")
-                                     );
-
-                SignaturePolicy.VerifyResponseMessage(
-                    response,
-                    response.ToJSON(
-                        CustomSecurityEventNotificationResponseSerializer,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out errorResponse
-                );
-
-
-                #region Send OnSecurityEventNotificationResponse event
-
-                var endTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-                try
-                {
-
-                    OnSecurityEventNotificationResponse?.Invoke(endTime,
-                                                                this,
-                                                                Request,
-                                                                response,
-                                                                endTime - startTime);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnSecurityEventNotificationResponse));
-                }
-
-                #endregion
-
-                return response;
-
-            }
-
-            #endregion
-
-            #region NotifyReport                          (Request)
-
-            /// <summary>
-            /// Notify about a report.
-            /// </summary>
-            /// <param name="NotifyReportRequestId">The unique identification of the notify report request.</param>
-            /// <param name="SequenceNumber">The sequence number of this message. First message starts at 0.</param>
-            /// <param name="GeneratedAt">The timestamp of the moment this message was generated at the charging station.</param>
-            /// <param name="ReportData">The enumeration of report data. A single report data element contains only the component, variable and variable report data that caused the event.</param>
-            /// <param name="ToBeContinued">The optional "to be continued" indicator whether another part of the report follows in an upcoming NotifyReportRequest message. Default value when omitted is false.</param>
-            /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-            /// 
-            /// <param name="RequestId">An optional request identification.</param>
-            /// <param name="RequestTimestamp">An optional request timestamp.</param>
-            /// <param name="RequestTimeout">An optional timeout for this request.</param>
-            /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-            /// <param name="CancellationToken">An optional token to cancel this request.</param>
-            public async Task<OCPPv2_1.CSMS.NotifyReportResponse>
-                NotifyReport(OCPPv2_1.CS.NotifyReportRequest Request)
-
-            {
-
-                #region Send OnNotifyReportRequest event
-
-                var startTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnNotifyReportRequest?.Invoke(startTime,
-                                                  this,
-                                                  Request);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyReportRequest));
-                }
-
-                #endregion
-
-
-                var response = CSClient is not null
-
-                                   ? SignaturePolicy.SignRequestMessage(
-                                         Request,
-                                         Request.ToJSON(
-                                             CustomNotifyReportRequestSerializer,
-                                             CustomReportDataSerializer,
-                                             CustomComponentSerializer,
-                                             CustomEVSESerializer,
-                                             CustomVariableSerializer,
-                                             CustomVariableAttributeSerializer,
-                                             CustomVariableCharacteristicsSerializer,
-                                             CustomSignatureSerializer,
-                                             CustomCustomDataSerializer
-                                         ),
-                                         out var errorResponse
-                                     )
-
-                                         ? await CSClient.NotifyReport(Request)
-
-                                         : new OCPPv2_1.CSMS.NotifyReportResponse(
-                                               Request,
-                                               Result.SignatureError(errorResponse)
-                                           )
-
-                                   : new OCPPv2_1.CSMS.NotifyReportResponse(
-                                         Request,
-                                         Result.Server("Unknown or unreachable charging station!")
-                                     );
-
-                SignaturePolicy.VerifyResponseMessage(
-                    response,
-                    response.ToJSON(
-                        CustomNotifyReportResponseSerializer,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out errorResponse
-                );
-
-
-                #region Send OnNotifyReportResponse event
-
-                var endTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnNotifyReportResponse?.Invoke(endTime,
-                                                   this,
-                                                   Request,
-                                                   response,
-                                                   endTime - startTime);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyReportResponse));
-                }
-
-                #endregion
-
-                return response;
-
-            }
-
-            #endregion
-
-            #region NotifyMonitoringReport                (Request)
-
-            /// <summary>
-            /// Notify about a monitoring report.
-            /// </summary>
-            /// <param name="NotifyMonitoringReportRequestId">The unique identification of the notify monitoring report request.</param>
-            /// <param name="SequenceNumber">The sequence number of this message. First message starts at 0.</param>
-            /// <param name="GeneratedAt">The timestamp of the moment this message was generated at the charging station.</param>
-            /// <param name="MonitoringData">The enumeration of event data. A single event data element contains only the component, variable and variable monitoring data that caused the event.</param>
-            /// <param name="ToBeContinued">The optional "to be continued" indicator whether another part of the monitoring data follows in an upcoming NotifyCustomerInformationRequest message. Default value when omitted is false.</param>
-            /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-            /// 
-            /// <param name="RequestId">An optional request identification.</param>
-            /// <param name="RequestTimestamp">An optional request timestamp.</param>
-            /// <param name="RequestTimeout">An optional timeout for this request.</param>
-            /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-            /// <param name="CancellationToken">An optional token to cancel this request.</param>
-            public async Task<OCPPv2_1.CSMS.NotifyMonitoringReportResponse>
-                NotifyMonitoringReport(OCPPv2_1.CS.NotifyMonitoringReportRequest Request)
-
-            {
-
-                #region Send OnNotifyMonitoringReportRequest event
-
-                var startTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnNotifyMonitoringReportRequest?.Invoke(startTime,
-                                                            this,
-                                                            Request);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyMonitoringReportRequest));
-                }
-
-                #endregion
-
-
-                var response = CSClient is not null
-
-                                   ? SignaturePolicy.SignRequestMessage(
-                                         Request,
-                                         Request.ToJSON(
-                                             CustomNotifyMonitoringReportRequestSerializer,
-                                             CustomMonitoringDataSerializer,
-                                             CustomComponentSerializer,
-                                             CustomEVSESerializer,
-                                             CustomVariableSerializer,
-                                             CustomVariableMonitoringSerializer,
-                                             CustomSignatureSerializer,
-                                             CustomCustomDataSerializer
-                                         ),
-                                         out var errorResponse
-                                     )
-
-                                         ? await CSClient.NotifyMonitoringReport(Request)
-
-                                         : new OCPPv2_1.CSMS.NotifyMonitoringReportResponse(
-                                               Request,
-                                               Result.SignatureError(errorResponse)
-                                           )
-
-                                   : new OCPPv2_1.CSMS.NotifyMonitoringReportResponse(
-                                         Request,
-                                         Result.Server("Unknown or unreachable charging station!")
-                                     );
-
-                SignaturePolicy.VerifyResponseMessage(
-                    response,
-                    response.ToJSON(
-                        CustomNotifyMonitoringReportResponseSerializer,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out errorResponse
-                );
-
-
-                #region Send OnNotifyMonitoringReportResponse event
-
-                var endTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnNotifyMonitoringReportResponse?.Invoke(endTime,
-                                                             this,
-                                                             Request,
-                                                             response,
-                                                             endTime - startTime);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyMonitoringReportResponse));
-                }
-
-                #endregion
-
-                return response;
-
-            }
-
-            #endregion
-
-            #region SendLogStatusNotification             (Request)
-
-            /// <summary>
-            /// Send a log status notification.
-            /// </summary>
-            /// <param name="Status">The status of the log upload.</param>
-            /// <param name="LogRequestId">The optional request id that was provided in the GetLog request that started this log upload.</param>
-            /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-            /// 
-            /// <param name="RequestId">An optional request identification.</param>
-            /// <param name="RequestTimestamp">An optional request timestamp.</param>
-            /// <param name="RequestTimeout">An optional timeout for this request.</param>
-            /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-            /// <param name="CancellationToken">An optional token to cancel this request.</param>
-            public async Task<OCPPv2_1.CSMS.LogStatusNotificationResponse>
-                LogStatusNotification(OCPPv2_1.CS.LogStatusNotificationRequest Request)
-
-            {
-
-                #region Send OnLogStatusNotificationRequest event
-
-                var startTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnLogStatusNotificationRequest?.Invoke(startTime,
-                                                           this,
-                                                           Request);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnLogStatusNotificationRequest));
-                }
-
-                #endregion
-
-
-                var response = CSClient is not null
-
-                                   ? SignaturePolicy.SignRequestMessage(
-                                         Request,
-                                         Request.ToJSON(
-                                             CustomLogStatusNotificationRequestSerializer,
-                                             CustomSignatureSerializer,
-                                             CustomCustomDataSerializer
-                                         ),
-                                         out var errorResponse
-                                     )
-
-                                         ? await CSClient.LogStatusNotification(Request)
-
-                                         : new OCPPv2_1.CSMS.LogStatusNotificationResponse(
-                                               Request,
-                                               Result.SignatureError(errorResponse)
-                                           )
-
-                                   : new OCPPv2_1.CSMS.LogStatusNotificationResponse(
-                                         Request,
-                                         Result.Server("Unknown or unreachable charging station!")
-                                     );
-
-                SignaturePolicy.VerifyResponseMessage(
-                    response,
-                    response.ToJSON(
-                        CustomLogStatusNotificationResponseSerializer,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out errorResponse
-                );
-
-
-                #region Send OnLogStatusNotificationResponse event
-
-                var endTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnLogStatusNotificationResponse?.Invoke(endTime,
-                                                            this,
-                                                            Request,
-                                                            response,
-                                                            endTime - startTime);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnLogStatusNotificationResponse));
-                }
-
-                #endregion
-
-                return response;
-
-            }
-
-            #endregion
-
-            #region TransferData                          (Request)
-
-            /// <summary>
-            /// Send the given vendor-specific data to the CSMS.
-            /// </summary>
-            /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
-            /// <param name="MessageId">An optional message identification.</param>
-            /// <param name="Data">A vendor-specific JSON token.</param>
-            /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-            /// 
-            /// <param name="RequestId">An optional request identification.</param>
-            /// <param name="RequestTimestamp">An optional request timestamp.</param>
-            /// <param name="RequestTimeout">An optional timeout for this request.</param>
-            /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-            /// <param name="CancellationToken">An optional token to cancel this request.</param>
-            public async Task<OCPPv2_1.CSMS.DataTransferResponse>
-                DataTransfer(OCPPv2_1.CS.DataTransferRequest Request)
-
-            {
-
-                #region Send OnDataTransferRequest event
-
-                var startTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnDataTransferRequest?.Invoke(startTime,
-                                                  this,
-                                                  Request);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnDataTransferRequest));
-                }
-
-                #endregion
-
-
-                var response = CSClient is not null
-
-                                   ? SignaturePolicy.SignRequestMessage(
-                                         Request,
-                                         Request.ToJSON(
-                                             CustomDataTransferRequestSerializer,
-                                             CustomSignatureSerializer,
-                                             CustomCustomDataSerializer
-                                         ),
-                                         out var errorResponse
-                                     )
-
-                                         ? await CSClient.DataTransfer(Request)
-
-                                         : new OCPPv2_1.CSMS.DataTransferResponse(
-                                               Request,
-                                               Result.SignatureError(errorResponse)
-                                           )
-
-                                   : new OCPPv2_1.CSMS.DataTransferResponse(
-                                         Request,
-                                         Result.Server("Unknown or unreachable charging station!")
-                                     );
-
-                SignaturePolicy.VerifyResponseMessage(
-                    response,
-                    response.ToJSON(
-                        CustomDataTransferResponseSerializer,
-                        CustomStatusInfoSerializer,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out errorResponse
-                );
-
-
-                #region Send OnDataTransferResponse event
-
-                var endTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnDataTransferResponse?.Invoke(endTime,
-                                                   this,
-                                                   Request,
-                                                   response,
-                                                   endTime - startTime);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnDataTransferResponse));
-                }
-
-                #endregion
-
-                return response;
-
-            }
-
-            #endregion
-
-
-            #region SendCertificateSigningRequest         (Request)
-
-            /// <summary>
-            /// Send a heartbeat.
-            /// </summary>
-            /// <param name="CSR">The PEM encoded RFC 2986 certificate signing request (CSR) [max 5500].</param>
-            /// <param name="CertificateType">Whether the certificate is to be used for both the 15118 connection (if implemented) and the charging station to central system (CSMS) connection.</param>
-            /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-            /// 
-            /// <param name="RequestId">An optional request identification.</param>
-            /// <param name="RequestTimestamp">An optional request timestamp.</param>
-            /// <param name="RequestTimeout">An optional timeout for this request.</param>
-            /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-            /// <param name="CancellationToken">An optional token to cancel this request.</param>
-            public async Task<OCPPv2_1.CSMS.SignCertificateResponse>
-                SignCertificate(OCPPv2_1.CS.SignCertificateRequest Request)
-
-            {
-
-                #region Send OnSignCertificateRequest event
-
-                var startTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnSignCertificateRequest?.Invoke(startTime,
-                                                     this,
-                                                     Request);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnSignCertificateRequest));
-                }
-
-                #endregion
-
-
-                var response = CSClient is not null
-
-                                   ? SignaturePolicy.SignRequestMessage(
-                                         Request,
-                                         Request.ToJSON(
-                                             CustomSignCertificateRequestSerializer,
-                                             CustomSignatureSerializer,
-                                             CustomCustomDataSerializer
-                                         ),
-                                         out var errorResponse
-                                     )
-
-                                         ? await CSClient.SignCertificate(Request)
-
-                                         : new OCPPv2_1.CSMS.SignCertificateResponse(
-                                               Request,
-                                               Result.SignatureError(errorResponse)
-                                           )
-
-                                   : new OCPPv2_1.CSMS.SignCertificateResponse(
-                                         Request,
-                                         Result.Server("Unknown or unreachable charging station!")
-                                     );
-
-                SignaturePolicy.VerifyResponseMessage(
-                    response,
-                    response.ToJSON(
-                        CustomSignCertificateResponseSerializer,
-                        CustomStatusInfoSerializer,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out errorResponse
-                );
-
-
-                #region Send OnSignCertificateResponse event
-
-                var endTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnSignCertificateResponse?.Invoke(endTime,
-                                                      this,
-                                                      Request,
-                                                      response,
-                                                      endTime - startTime);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnSignCertificateResponse));
-                }
-
-                #endregion
-
-                return response;
-
-            }
-
-            #endregion
-
-            #region Get15118EVCertificate                 (Request)
-
-            /// <summary>
-            /// Get an ISO 15118 contract certificate.
-            /// </summary>
-            /// <param name="ISO15118SchemaVersion">ISO/IEC 15118 schema version used for the session between charging station and electric vehicle. Required for parsing the EXI data stream within the central system.</param>
-            /// <param name="CertificateAction">Whether certificate needs to be installed or updated.</param>
-            /// <param name="EXIRequest">Base64 encoded certificate installation request from the electric vehicle. [max 5600]</param>
-            /// <param name="MaximumContractCertificateChains">Optional number of contracts that EV wants to install at most.</param>
-            /// <param name="PrioritizedEMAIds">An optional enumeration of eMA Ids that have priority in case more contracts than maximumContractCertificateChains are available.</param>
-            /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-            /// 
-            /// <param name="RequestId">An optional request identification.</param>
-            /// <param name="RequestTimestamp">An optional request timestamp.</param>
-            /// <param name="RequestTimeout">An optional timeout for this request.</param>
-            /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-            /// <param name="CancellationToken">An optional token to cancel this request.</param>
-            public async Task<OCPPv2_1.CSMS.Get15118EVCertificateResponse>
-                Get15118EVCertificate(OCPPv2_1.CS.Get15118EVCertificateRequest Request)
-
-            {
-
-                #region Send OnGet15118EVCertificateRequest event
-
-                var startTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnGet15118EVCertificateRequest?.Invoke(startTime,
-                                                           this,
-                                                           Request);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnGet15118EVCertificateRequest));
-                }
-
-                #endregion
-
-
-                var response = CSClient is not null
-
-                                   ? SignaturePolicy.SignRequestMessage(
-                                         Request,
-                                         Request.ToJSON(
-                                             CustomGet15118EVCertificateRequestSerializer,
-                                             CustomSignatureSerializer,
-                                             CustomCustomDataSerializer
-                                         ),
-                                         out var errorResponse
-                                     )
-
-                                         ? await CSClient.Get15118EVCertificate(Request)
-
-                                         : new OCPPv2_1.CSMS.Get15118EVCertificateResponse(
-                                               Request,
-                                               Result.SignatureError(errorResponse)
-                                           )
-
-                                   : new OCPPv2_1.CSMS.Get15118EVCertificateResponse(
-                                         Request,
-                                         Result.Server("Unknown or unreachable charging station!")
-                                     );
-
-                SignaturePolicy.VerifyResponseMessage(
-                    response,
-                    response.ToJSON(
-                        CustomGet15118EVCertificateResponseSerializer,
-                        CustomStatusInfoSerializer,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out errorResponse
-                );
-
-
-                #region Send OnGet15118EVCertificateResponse event
-
-                var endTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnGet15118EVCertificateResponse?.Invoke(endTime,
-                                                            this,
-                                                            Request,
-                                                            response,
-                                                            endTime - startTime);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnGet15118EVCertificateResponse));
-                }
-
-                #endregion
-
-                return response;
-
-            }
-
-            #endregion
-
-            #region GetCertificateStatus                  (Request)
-
-            /// <summary>
-            /// Get the status of a certificate.
-            /// </summary>
-            /// <param name="OCSPRequestData">The certificate of which the status is requested.</param>
-            /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-            /// 
-            /// <param name="RequestId">An optional request identification.</param>
-            /// <param name="RequestTimestamp">An optional request timestamp.</param>
-            /// <param name="RequestTimeout">An optional timeout for this request.</param>
-            /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-            /// <param name="CancellationToken">An optional token to cancel this request.</param>
-            public async Task<OCPPv2_1.CSMS.GetCertificateStatusResponse>
-                GetCertificateStatus(OCPPv2_1.CS.GetCertificateStatusRequest Request)
-
-            {
-
-                #region Send OnGetCertificateStatusRequest event
-
-                var startTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnGetCertificateStatusRequest?.Invoke(startTime,
-                                                          this,
-                                                          Request);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnGetCertificateStatusRequest));
-                }
-
-                #endregion
-
-
-                var response = CSClient is not null
-
-                                   ? SignaturePolicy.SignRequestMessage(
-                                         Request,
-                                         Request.ToJSON(
-                                             CustomGetCertificateStatusRequestSerializer,
-                                             CustomOCSPRequestDataSerializer,
-                                             CustomSignatureSerializer,
-                                             CustomCustomDataSerializer
-                                         ),
-                                         out var errorResponse
-                                     )
-
-                                         ? await CSClient.GetCertificateStatus(Request)
-
-                                         : new OCPPv2_1.CSMS.GetCertificateStatusResponse(
-                                               Request,
-                                               Result.SignatureError(errorResponse)
-                                           )
-
-                                   : new OCPPv2_1.CSMS.GetCertificateStatusResponse(
-                                         Request,
-                                         Result.Server("Unknown or unreachable charging station!")
-                                     );
-
-                SignaturePolicy.VerifyResponseMessage(
-                    response,
-                    response.ToJSON(
-                        CustomGetCertificateStatusResponseSerializer,
-                        CustomStatusInfoSerializer,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out errorResponse
-                );
-
-
-                #region Send OnGetCertificateStatusResponse event
-
-                var endTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnGetCertificateStatusResponse?.Invoke(endTime,
-                                                           this,
-                                                           Request,
-                                                           response,
-                                                           endTime - startTime);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnGetCertificateStatusResponse));
-                }
-
-                #endregion
-
-                return response;
-
-            }
-
-            #endregion
-
-            #region GetCRL                                (Request)
-
-            /// <summary>
-            /// Get a certificate revocation list from CSMS for the specified certificate.
-            /// </summary>
-            /// 
-            /// <param name="GetCRLRequestId">The identification of this request.</param>
-            /// <param name="CertificateHashData">Certificate hash data.</param>
-            /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-            /// 
-            /// <param name="RequestId">An optional request identification.</param>
-            /// <param name="RequestTimestamp">An optional request timestamp.</param>
-            /// <param name="RequestTimeout">An optional timeout for this request.</param>
-            /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-            /// <param name="CancellationToken">An optional token to cancel this request.</param>
-            public async Task<OCPPv2_1.CSMS.GetCRLResponse>
-                GetCRL(OCPPv2_1.CS.GetCRLRequest Request)
-
-            {
-
-                #region Send OnGetCRLRequest event
-
-                var startTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnGetCRLRequest?.Invoke(startTime,
-                                            this,
-                                            Request);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnGetCRLRequest));
-                }
-
-                #endregion
-
-
-                var response = CSClient is not null
-
-                                   ? SignaturePolicy.SignRequestMessage(
-                                         Request,
-                                         Request.ToJSON(
-                                             CustomGetCRLRequestSerializer,
-                                             CustomCertificateHashDataSerializer,
-                                             CustomSignatureSerializer,
-                                             CustomCustomDataSerializer
-                                         ),
-                                         out var errorResponse
-                                     )
-
-                                         ? await CSClient.GetCRL(Request)
-
-                                         : new OCPPv2_1.CSMS.GetCRLResponse(
-                                               Request,
-                                               Result.SignatureError(errorResponse)
-                                           )
-
-                                   : new OCPPv2_1.CSMS.GetCRLResponse(
-                                         Request,
-                                         Result.Server("Unknown or unreachable charging station!")
-                                     );
-
-                SignaturePolicy.VerifyResponseMessage(
-                    response,
-                    response.ToJSON(
-                        CustomGetCRLResponseSerializer,
-                        CustomStatusInfoSerializer,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out errorResponse
-                );
-
-
-                #region Send OnGetCRLResponse event
-
-                var endTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnGetCRLResponse?.Invoke(endTime,
-                                             this,
-                                             Request,
-                                             response,
-                                             endTime - startTime);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnGetCRLResponse));
-                }
-
-                #endregion
-
-                return response;
-
-            }
-
-            #endregion
-
-
-            #region SendReservationStatusUpdate           (Request)
-
-            /// <summary>
-            /// Send a reservation status update.
-            /// </summary>
-            /// <param name="ReservationId">The unique identification of the transaction to update.</param>
-            /// <param name="ReservationUpdateStatus">The updated reservation status.</param>
-            /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-            /// 
-            /// <param name="RequestId">An optional request identification.</param>
-            /// <param name="RequestTimestamp">An optional request timestamp.</param>
-            /// <param name="RequestTimeout">An optional timeout for this request.</param>
-            /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-            /// <param name="CancellationToken">An optional token to cancel this request.</param>
-            public async Task<OCPPv2_1.CSMS.ReservationStatusUpdateResponse>
-                ReservationStatusUpdate(OCPPv2_1.CS.ReservationStatusUpdateRequest Request)
-
-            {
-
-                #region Send OnReservationStatusUpdateRequest event
-
-                var startTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnReservationStatusUpdateRequest?.Invoke(startTime,
-                                                             this,
-                                                             Request);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnReservationStatusUpdateRequest));
-                }
-
-                #endregion
-
-
-                var response = CSClient is not null
-
-                                   ? SignaturePolicy.SignRequestMessage(
-                                         Request,
-                                         Request.ToJSON(
-                                             CustomReservationStatusUpdateRequestSerializer,
-                                             CustomSignatureSerializer,
-                                             CustomCustomDataSerializer
-                                         ),
-                                         out var errorResponse
-                                     )
-
-                                         ? await CSClient.ReservationStatusUpdate(Request)
-
-                                         : new OCPPv2_1.CSMS.ReservationStatusUpdateResponse(
-                                               Request,
-                                               Result.SignatureError(errorResponse)
-                                           )
-
-                                   : new OCPPv2_1.CSMS.ReservationStatusUpdateResponse(
-                                         Request,
-                                         Result.Server("Unknown or unreachable charging station!")
-                                     );
-
-                SignaturePolicy.VerifyResponseMessage(
-                    response,
-                    response.ToJSON(
-                        CustomReservationStatusUpdateResponseSerializer,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out errorResponse
-                );
-
-
-                #region Send OnReservationStatusUpdateResponse event
-
-                var endTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnReservationStatusUpdateResponse?.Invoke(endTime,
-                                                              this,
-                                                              Request,
-                                                              response,
-                                                              endTime - startTime);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnReservationStatusUpdateResponse));
-                }
-
-                #endregion
-
-                return response;
-
-            }
-
-            #endregion
-
-            #region Authorize                             (Request)
-
-            /// <summary>
-            /// Authorize the given token.
-            /// </summary>
-            /// <param name="IdToken">The identifier that needs to be authorized.</param>
-            /// <param name="Certificate">An optional X.509 certificated presented by the electric vehicle/user (PEM format).</param>
-            /// <param name="ISO15118CertificateHashData">Optional information to verify the electric vehicle/user contract certificate via OCSP.</param>
-            /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-            /// 
-            /// <param name="RequestId">An optional request identification.</param>
-            /// <param name="RequestTimestamp">An optional request timestamp.</param>
-            /// <param name="RequestTimeout">An optional timeout for this request.</param>
-            /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-            /// <param name="CancellationToken">An optional token to cancel this request.</param>
-            public async Task<OCPPv2_1.CSMS.AuthorizeResponse>
-                Authorize(OCPPv2_1.CS.AuthorizeRequest Request)
-
-            {
-
-                #region Send OnAuthorizeRequest event
-
-                var startTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnAuthorizeRequest?.Invoke(startTime,
-                                               this,
-                                               Request);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnAuthorizeRequest));
-                }
-
-                #endregion
-
-
-                var response = CSClient is not null
-
-                                   ? SignaturePolicy.SignRequestMessage(
-                                         Request,
-                                         Request.ToJSON(
-                                             CustomAuthorizeRequestSerializer,
-                                             CustomIdTokenSerializer,
-                                             CustomAdditionalInfoSerializer,
-                                             CustomOCSPRequestDataSerializer,
-                                             CustomSignatureSerializer,
-                                             CustomCustomDataSerializer
-                                         ),
-                                         out var errorResponse
-                                     )
-
-                                         ? await CSClient.Authorize(Request)
-
-                                         : new OCPPv2_1.CSMS.AuthorizeResponse(
-                                               Request,
-                                               Result.SignatureError(errorResponse)
-                                           )
-
-                                   : new OCPPv2_1.CSMS.AuthorizeResponse(
-                                         Request,
-                                         Result.Server("Unknown or unreachable charging station!")
-                                     );
-
-                SignaturePolicy.VerifyResponseMessage(
-                    response,
-                    response.ToJSON(
-                        CustomAuthorizeResponseSerializer,
-                        CustomIdTokenInfoSerializer,
-                        CustomIdTokenSerializer,
-                        CustomAdditionalInfoSerializer,
-                        CustomMessageContentSerializer,
-                        CustomTransactionLimitsSerializer,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out errorResponse
-                );
-
-
-                #region Send OnAuthorizeResponse event
-
-                var endTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnAuthorizeResponse?.Invoke(endTime,
-                                                this,
-                                                Request,
-                                                response,
-                                                endTime - startTime);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnAuthorizeResponse));
-                }
-
-                #endregion
-
-                return response;
-
-            }
-
-            #endregion
-
-            #region NotifyEVChargingNeeds                 (Request)
-
-            /// <summary>
-            /// Notify about EV charging needs.
-            /// </summary>
-            /// <param name="EVSEId">The EVSE and connector to which the EV is connected to.</param>
-            /// <param name="ChargingNeeds">The characteristics of the energy delivery required.</param>
-            /// <param name="ReceivedTimestamp">An optional timestamp when the EV charging needs had been received, e.g. when the charging station was offline.</param>
-            /// <param name="MaxScheduleTuples">The optional maximum number of schedule tuples per schedule the car supports.</param>
-            /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-            /// 
-            /// <param name="RequestId">An optional request identification.</param>
-            /// <param name="RequestTimestamp">An optional request timestamp.</param>
-            /// <param name="RequestTimeout">An optional timeout for this request.</param>
-            /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-            /// <param name="CancellationToken">An optional token to cancel this request.</param>
-            public async Task<OCPPv2_1.CSMS.NotifyEVChargingNeedsResponse>
-                NotifyEVChargingNeeds(OCPPv2_1.CS.NotifyEVChargingNeedsRequest Request)
-
-            {
-
-                #region Send OnNotifyEVChargingNeedsRequest event
-
-                var startTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnNotifyEVChargingNeedsRequest?.Invoke(startTime,
-                                                           this,
-                                                           Request);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyEVChargingNeedsRequest));
-                }
-
-                #endregion
-
-
-                var response = CSClient is not null
-
-                                   ? SignaturePolicy.SignRequestMessage(
-                                         Request,
-                                         Request.ToJSON(
-                                             CustomNotifyEVChargingNeedsRequestSerializer,
-                                             CustomChargingNeedsSerializer,
-                                             CustomACChargingParametersSerializer,
-                                             CustomDCChargingParametersSerializer,
-                                             CustomV2XChargingParametersSerializer,
-                                             CustomEVEnergyOfferSerializer,
-                                             CustomEVPowerScheduleSerializer,
-                                             CustomEVPowerScheduleEntrySerializer,
-                                             CustomEVAbsolutePriceScheduleSerializer,
-                                             CustomEVAbsolutePriceScheduleEntrySerializer,
-                                             CustomEVPriceRuleSerializer,
-                                             CustomSignatureSerializer,
-                                             CustomCustomDataSerializer
-                                         ),
-                                         out var errorResponse
-                                     )
-
-                                         ? await CSClient.NotifyEVChargingNeeds(Request)
-
-                                         : new OCPPv2_1.CSMS.NotifyEVChargingNeedsResponse(
-                                               Request,
-                                               Result.SignatureError(errorResponse)
-                                           )
-
-                                   : new OCPPv2_1.CSMS.NotifyEVChargingNeedsResponse(
-                                         Request,
-                                         Result.Server("Unknown or unreachable charging station!")
-                                     );
-
-                SignaturePolicy.VerifyResponseMessage(
-                    response,
-                    response.ToJSON(
-                        CustomNotifyEVChargingNeedsResponseSerializer,
-                        CustomStatusInfoSerializer,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out errorResponse
-                );
-
-
-                #region Send OnNotifyEVChargingNeedsResponse event
-
-                var endTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnNotifyEVChargingNeedsResponse?.Invoke(endTime,
-                                                            this,
-                                                            Request,
-                                                            response,
-                                                            endTime - startTime);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyEVChargingNeedsResponse));
-                }
-
-                #endregion
-
-                return response;
-
-            }
-
-            #endregion
-
-            #region SendTransactionEvent                  (Request)
-
-            /// <summary>
-            /// Send a transaction event.
-            /// </summary>
-            /// <param name="EventType">The type of this transaction event. The first event of a transaction SHALL be of type "started", the last of type "ended". All others should be of type "updated".</param>
-            /// <param name="Timestamp">The timestamp at which this transaction event occurred.</param>
-            /// <param name="TriggerReason">The reason the charging station sends this message.</param>
-            /// <param name="SequenceNumber">This incremental sequence number, helps to determine whether all messages of a transaction have been received.</param>
-            /// <param name="TransactionInfo">Transaction related information.</param>
-            /// 
-            /// <param name="Offline">An optional indication whether this transaction event happened when the charging station was offline.</param>
-            /// <param name="NumberOfPhasesUsed">An optional numer of electrical phases used, when the charging station is able to report it.</param>
-            /// <param name="CableMaxCurrent">An optional maximum current of the connected cable in amperes.</param>
-            /// <param name="ReservationId">An optional unqiue reservation identification of the reservation that terminated as a result of this transaction.</param>
-            /// <param name="IdToken">An optional identification token for which a transaction has to be/was started.</param>
-            /// <param name="EVSE">An optional indication of the EVSE (and connector) used.</param>
-            /// <param name="MeterValues">An optional enumeration of meter values.</param>
-            /// <param name="PreconditioningStatus">The optional current status of the battery management system within the EV.</param>
-            /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-            /// 
-            /// <param name="RequestId">An optional request identification.</param>
-            /// <param name="RequestTimestamp">An optional request timestamp.</param>
-            /// <param name="RequestTimeout">An optional timeout for this request.</param>
-            /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-            /// <param name="CancellationToken">An optional token to cancel this request.</param>
-            public async Task<OCPPv2_1.CSMS.TransactionEventResponse>
-                TransactionEvent(OCPPv2_1.CS.TransactionEventRequest Request)
-
-            {
-
-                #region Send OnTransactionEventRequest event
-
-                var startTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnTransactionEventRequest?.Invoke(startTime,
-                                                      this,
-                                                      Request);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnTransactionEventRequest));
-                }
-
-                #endregion
-
-
-                var response = CSClient is not null
-
-                                   ? SignaturePolicy.SignRequestMessage(
-                                         Request,
-                                         Request.ToJSON(
-                                             CustomTransactionEventRequestSerializer,
-                                             CustomTransactionSerializer,
-                                             CustomIdTokenSerializer,
-                                             CustomAdditionalInfoSerializer,
-                                             CustomEVSESerializer,
-                                             CustomMeterValueSerializer,
-                                             CustomSampledValueSerializer,
-                                             CustomSignedMeterValueSerializer,
-                                             CustomUnitsOfMeasureSerializer,
-                                             CustomSignatureSerializer,
-                                             CustomCustomDataSerializer
-                                         ),
-                                         out var errorResponse
-                                     )
-
-                                         ? await CSClient.TransactionEvent(Request)
-
-                                         : new OCPPv2_1.CSMS.TransactionEventResponse(
-                                               Request,
-                                               Result.SignatureError(errorResponse)
-                                           )
-
-                                   : new OCPPv2_1.CSMS.TransactionEventResponse(
-                                         Request,
-                                         Result.Server("Unknown or unreachable charging station!")
-                                     );
-
-                SignaturePolicy.VerifyResponseMessage(
-                    response,
-                    response.ToJSON(
-                        CustomTransactionEventResponseSerializer,
-                        CustomIdTokenInfoSerializer,
-                        CustomIdTokenSerializer,
-                        CustomAdditionalInfoSerializer,
-                        CustomMessageContentSerializer,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out errorResponse
-                );
-
-
-                #region Send OnTransactionEventResponse event
-
-                var endTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-                try
-                {
-
-                    OnTransactionEventResponse?.Invoke(endTime,
-                                                       this,
-                                                       Request,
-                                                       response,
-                                                       endTime - startTime);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnTransactionEventResponse));
-                }
-
-                #endregion
-
-                return response;
-
-            }
-
-            #endregion
-
-            #region SendStatusNotification                (Request)
-
-            /// <summary>
-            /// Send a status notification for the given connector.
-            /// </summary>
-            /// <param name="EVSEId">The identification of the EVSE to which the connector belongs for which the the status is reported.</param>
-            /// <param name="ConnectorId">The identification of the connector within the EVSE for which the status is reported.</param>
-            /// <param name="Timestamp">The time for which the status is reported.</param>
-            /// <param name="Status">The current status of the connector.</param>
-            /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-            /// 
-            /// <param name="RequestId">An optional request identification.</param>
-            /// <param name="RequestTimestamp">An optional request timestamp.</param>
-            /// <param name="RequestTimeout">An optional timeout for this request.</param>
-            /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-            /// <param name="CancellationToken">An optional token to cancel this request.</param>
-            public async Task<OCPPv2_1.CSMS.StatusNotificationResponse>
-                StatusNotification(OCPPv2_1.CS.StatusNotificationRequest Request)
-
-            {
-
-                #region Send OnStatusNotificationRequest event
-
-                var startTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnStatusNotificationRequest?.Invoke(startTime,
-                                                        this,
-                                                        Request);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnStatusNotificationRequest));
-                }
-
-                #endregion
-
-
-                var response = CSClient is not null
-
-                                   ? SignaturePolicy.SignRequestMessage(
-                                         Request,
-                                         Request.ToJSON(
-                                             CustomStatusNotificationRequestSerializer,
-                                             CustomSignatureSerializer,
-                                             CustomCustomDataSerializer
-                                         ),
-                                         out var errorResponse
-                                     )
-
-                                         ? await CSClient.StatusNotification(Request)
-
-                                         : new OCPPv2_1.CSMS.StatusNotificationResponse(
-                                               Request,
-                                               Result.SignatureError(errorResponse)
-                                           )
-
-                                   : new OCPPv2_1.CSMS.StatusNotificationResponse(
-                                         Request,
-                                         Result.Server("Unknown or unreachable charging station!")
-                                     );
-
-                SignaturePolicy.VerifyResponseMessage(
-                    response,
-                    response.ToJSON(
-                        CustomStatusNotificationResponseSerializer,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out errorResponse
-                );
-
-
-                #region Send OnStatusNotificationResponse event
-
-                var endTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-                try
-                {
-
-                    OnStatusNotificationResponse?.Invoke(endTime,
-                                                         this,
-                                                         Request,
-                                                         response,
-                                                         endTime - startTime);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnStatusNotificationResponse));
-                }
-
-                #endregion
-
-                return response;
-
-            }
-
-            #endregion
-
-            #region SendMeterValues                       (Request)
-
-            /// <summary>
-            /// Send a meter values for the given connector.
-            /// </summary>
-            /// <param name="EVSEId">The EVSE identification at the charging station.</param>
-            /// <param name="MeterValues">The sampled meter values with timestamps.</param>
-            /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-            /// 
-            /// <param name="RequestId">An optional request identification.</param>
-            /// <param name="RequestTimestamp">An optional request timestamp.</param>
-            /// <param name="RequestTimeout">An optional timeout for this request.</param>
-            /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-            /// <param name="CancellationToken">An optional token to cancel this request.</param>
-            public async Task<OCPPv2_1.CSMS.MeterValuesResponse>
-                MeterValues(OCPPv2_1.CS.MeterValuesRequest Request)
-
-            {
-
-                #region Send OnMeterValuesRequest event
-
-                var startTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnMeterValuesRequest?.Invoke(startTime,
-                                                 this,
-                                                 Request);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnMeterValuesRequest));
-                }
-
-                #endregion
-
-
-                var response = CSClient is not null
-
-                                   ? SignaturePolicy.SignRequestMessage(
-                                         Request,
-                                         Request.ToJSON(
-                                             CustomMeterValuesRequestSerializer,
-                                             CustomMeterValueSerializer,
-                                             CustomSampledValueSerializer,
-                                             CustomSignatureSerializer,
-                                             CustomCustomDataSerializer
-                                         ),
-                                         out var errorResponse
-                                     )
-
-                                         ? await CSClient.MeterValues(Request)
-
-                                         : new OCPPv2_1.CSMS.MeterValuesResponse(
-                                               Request,
-                                               Result.SignatureError(errorResponse)
-                                           )
-
-                                   : new OCPPv2_1.CSMS.MeterValuesResponse(
-                                         Request,
-                                         Result.Server("Unknown or unreachable charging station!")
-                                     );
-
-                SignaturePolicy.VerifyResponseMessage(
-                    response,
-                    response.ToJSON(
-                        CustomMeterValuesResponseSerializer,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out errorResponse
-                );
-
-
-                #region Send OnMeterValuesResponse event
-
-                var endTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnMeterValuesResponse?.Invoke(endTime,
-                                                  this,
-                                                  Request,
-                                                  response,
-                                                  endTime - startTime);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnMeterValuesResponse));
-                }
-
-                #endregion
-
-                return response;
-
-            }
-
-            #endregion
-
-            #region NotifyChargingLimit                   (Request)
-
-            /// <summary>
-            /// Notify about a charging limit.
-            /// </summary>
-            /// <param name="ChargingLimit">The charging limit, its source and whether it is grid critical.</param>
-            /// <param name="ChargingSchedules">Limits for the available power or current over time, as set by the external source.</param>
-            /// <param name="EVSEId">An optional EVSE identification, when the charging schedule contained in this notification applies to an EVSE.</param>
-            /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-            /// 
-            /// <param name="RequestId">An optional request identification.</param>
-            /// <param name="RequestTimestamp">An optional request timestamp.</param>
-            /// <param name="RequestTimeout">An optional timeout for this request.</param>
-            /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-            /// <param name="CancellationToken">An optional token to cancel this request.</param>
-            public async Task<OCPPv2_1.CSMS.NotifyChargingLimitResponse>
-                NotifyChargingLimit(OCPPv2_1.CS.NotifyChargingLimitRequest Request)
-
-            {
-
-                #region Send OnNotifyChargingLimitRequest event
-
-                var startTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnNotifyChargingLimitRequest?.Invoke(startTime,
-                                                         this,
-                                                         Request);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyChargingLimitRequest));
-                }
-
-                #endregion
-
-
-                var response = CSClient is not null
-
-                                   ? SignaturePolicy.SignRequestMessage(
-                                         Request,
-                                         Request.ToJSON(
-
-                                             CustomNotifyChargingLimitRequestSerializer,
-                                             CustomChargingScheduleSerializer,
-                                             CustomLimitBeyondSoCSerializer,
-                                             CustomChargingSchedulePeriodSerializer,
-                                             CustomV2XFreqWattEntrySerializer,
-                                             CustomV2XSignalWattEntrySerializer,
-                                             CustomSalesTariffSerializer,
-                                             CustomSalesTariffEntrySerializer,
-                                             CustomRelativeTimeIntervalSerializer,
-                                             CustomConsumptionCostSerializer,
-                                             CustomCostSerializer,
-
-                                             CustomAbsolutePriceScheduleSerializer,
-                                             CustomPriceRuleStackSerializer,
-                                             CustomPriceRuleSerializer,
-                                             CustomTaxRuleSerializer,
-                                             CustomOverstayRuleListSerializer,
-                                             CustomOverstayRuleSerializer,
-                                             CustomAdditionalServiceSerializer,
-
-                                             CustomPriceLevelScheduleSerializer,
-                                             CustomPriceLevelScheduleEntrySerializer,
-
-                                             CustomSignatureSerializer,
-                                             CustomCustomDataSerializer
-
-                                         ),
-                                         out var errorResponse
-                                     )
-
-                                         ? await CSClient.NotifyChargingLimit(Request)
-
-                                         : new OCPPv2_1.CSMS.NotifyChargingLimitResponse(
-                                               Request,
-                                               Result.SignatureError(errorResponse)
-                                           )
-
-                                   : new OCPPv2_1.CSMS.NotifyChargingLimitResponse(
-                                         Request,
-                                         Result.Server("Unknown or unreachable charging station!")
-                                     );
-
-                SignaturePolicy.VerifyResponseMessage(
-                    response,
-                    response.ToJSON(
-                        CustomNotifyChargingLimitResponseSerializer,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out errorResponse
-                );
-
-
-                #region Send OnNotifyChargingLimitResponse event
-
-                var endTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnNotifyChargingLimitResponse?.Invoke(endTime,
-                                                          this,
-                                                          Request,
-                                                          response,
-                                                          endTime - startTime);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyChargingLimitResponse));
-                }
-
-                #endregion
-
-                return response;
-
-            }
-
-            #endregion
-
-            #region SendClearedChargingLimit              (Request)
-
-            /// <summary>
-            /// Send a heartbeat.
-            /// </summary>
-            /// <param name="ChargingLimitSource">A source of the charging limit.</param>
-            /// <param name="EVSEId">An optional EVSE identification.</param>
-            /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-            /// 
-            /// <param name="RequestId">An optional request identification.</param>
-            /// <param name="RequestTimestamp">An optional request timestamp.</param>
-            /// <param name="RequestTimeout">An optional timeout for this request.</param>
-            /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-            /// <param name="CancellationToken">An optional token to cancel this request.</param>
-            public async Task<OCPPv2_1.CSMS.ClearedChargingLimitResponse>
-                ClearedChargingLimit(OCPPv2_1.CS.ClearedChargingLimitRequest Request)
-
-            {
-
-                #region Send OnClearedChargingLimitRequest event
-
-                var startTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnClearedChargingLimitRequest?.Invoke(startTime,
-                                                          this,
-                                                          Request);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnClearedChargingLimitRequest));
-                }
-
-                #endregion
-
-
-                var response = CSClient is not null
-
-                                   ? SignaturePolicy.SignRequestMessage(
-                                         Request,
-                                         Request.ToJSON(
-                                             CustomClearedChargingLimitRequestSerializer,
-                                             CustomSignatureSerializer,
-                                             CustomCustomDataSerializer
-                                         ),
-                                         out var errorResponse
-                                     )
-
-                                         ? await CSClient.ClearedChargingLimit(Request)
-
-                                         : new OCPPv2_1.CSMS.ClearedChargingLimitResponse(
-                                               Request,
-                                               Result.SignatureError(errorResponse)
-                                           )
-
-                                   : new OCPPv2_1.CSMS.ClearedChargingLimitResponse(
-                                         Request,
-                                         Result.Server("Unknown or unreachable charging station!")
-                                     );
-
-                SignaturePolicy.VerifyResponseMessage(
-                    response,
-                    response.ToJSON(
-                        CustomClearedChargingLimitResponseSerializer,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out errorResponse
-                );
-
-
-                #region Send OnClearedChargingLimitResponse event
-
-                var endTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnClearedChargingLimitResponse?.Invoke(endTime,
-                                                           this,
-                                                           Request,
-                                                           response,
-                                                           endTime - startTime);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnClearedChargingLimitResponse));
-                }
-
-                #endregion
-
-                return response;
-
-            }
-
-            #endregion
-
-            #region ReportChargingProfiles                (Request)
-
-            /// <summary>
-            /// Report about all charging profiles.
-            /// </summary>
-            /// <param name="ReportChargingProfilesRequestId">The request identification used to match the GetChargingProfilesRequest message with the resulting ReportChargingProfilesRequest messages. When the CSMS provided a requestId in the GetChargingProfilesRequest, this field SHALL contain the same value.</param>
-            /// <param name="ChargingLimitSource">The source that has installed this charging profile.</param>
-            /// <param name="EVSEId">The evse to which the charging profile applies. If evseId = 0, the message contains an overall limit for the charging station.</param>
-            /// <param name="ChargingProfiles">The enumeration of charging profiles.</param>
-            /// <param name="ToBeContinued">The optional "to be continued" indicator whether another part of the charging profiles follows. Default value when omitted is false.</param>
-            /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-            /// 
-            /// <param name="RequestId">An optional request identification.</param>
-            /// <param name="RequestTimestamp">An optional request timestamp.</param>
-            /// <param name="RequestTimeout">An optional timeout for this request.</param>
-            /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-            /// <param name="CancellationToken">An optional token to cancel this request.</param>
-            public async Task<OCPPv2_1.CSMS.ReportChargingProfilesResponse>
-                ReportChargingProfiles(OCPPv2_1.CS.ReportChargingProfilesRequest Request)
-
-            {
-
-                #region Send OnReportChargingProfilesRequest event
-
-                var startTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnReportChargingProfilesRequest?.Invoke(startTime,
-                                                            this,
-                                                            Request);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnReportChargingProfilesRequest));
-                }
-
-                #endregion
-
-
-                var response = CSClient is not null
-
-                                   ? SignaturePolicy.SignRequestMessage(
-                                         Request,
-                                         Request.ToJSON(
-
-                                             CustomReportChargingProfilesRequestSerializer,
-                                             CustomChargingProfileSerializer,
-                                             CustomLimitBeyondSoCSerializer,
-                                             CustomChargingScheduleSerializer,
-                                             CustomChargingSchedulePeriodSerializer,
-                                             CustomV2XFreqWattEntrySerializer,
-                                             CustomV2XSignalWattEntrySerializer,
-                                             CustomSalesTariffSerializer,
-                                             CustomSalesTariffEntrySerializer,
-                                             CustomRelativeTimeIntervalSerializer,
-                                             CustomConsumptionCostSerializer,
-                                             CustomCostSerializer,
-
-                                             CustomAbsolutePriceScheduleSerializer,
-                                             CustomPriceRuleStackSerializer,
-                                             CustomPriceRuleSerializer,
-                                             CustomTaxRuleSerializer,
-                                             CustomOverstayRuleListSerializer,
-                                             CustomOverstayRuleSerializer,
-                                             CustomAdditionalServiceSerializer,
-
-                                             CustomPriceLevelScheduleSerializer,
-                                             CustomPriceLevelScheduleEntrySerializer,
-
-                                             CustomSignatureSerializer,
-                                             CustomCustomDataSerializer
-
-                                         ),
-                                         out var errorResponse
-                                     )
-
-                                         ? await CSClient.ReportChargingProfiles(Request)
-
-                                         : new OCPPv2_1.CSMS.ReportChargingProfilesResponse(
-                                               Request,
-                                               Result.SignatureError(errorResponse)
-                                           )
-
-                                   : new OCPPv2_1.CSMS.ReportChargingProfilesResponse(
-                                         Request,
-                                         Result.Server("Unknown or unreachable charging station!")
-                                     );
-
-                SignaturePolicy.VerifyResponseMessage(
-                    response,
-                    response.ToJSON(
-                        CustomReportChargingProfilesResponseSerializer,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out errorResponse
-                );
-
-
-                #region Send OnReportChargingProfilesResponse event
-
-                var endTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnReportChargingProfilesResponse?.Invoke(endTime,
-                                                             this,
-                                                             Request,
-                                                             response,
-                                                             endTime - startTime);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnReportChargingProfilesResponse));
-                }
-
-                #endregion
-
-                return response;
-
-            }
-
-            #endregion
-
-            #region NotifyEVChargingSchedule              (Request)
-
-            /// <summary>
-            /// Notify about an EV charging schedule.
-            /// </summary>
-            /// <param name="NotifyEVChargingScheduleRequestId">The request identification used to match the GetChargingProfilesRequest message with the resulting NotifyEVChargingScheduleRequest messages. When the CSMS provided a requestId in the GetChargingProfilesRequest, this field SHALL contain the same value.</param>
-            /// <param name="TimeBase">The charging periods contained within the charging schedule are relative to this time base.</param>
-            /// <param name="EVSEId">The charging schedule applies to this EVSE.</param>
-            /// <param name="ChargingSchedule">Planned energy consumption of the EV over time. Always relative to the time base.</param>
-            /// <param name="SelectedScheduleTupleId">The optional identification of the selected charging schedule from the provided charging profile.</param>
-            /// <param name="PowerToleranceAcceptance">True when power tolerance is accepted.</param>
-            /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-            /// 
-            /// <param name="RequestId">An optional request identification.</param>
-            /// <param name="RequestTimestamp">An optional request timestamp.</param>
-            /// <param name="RequestTimeout">An optional timeout for this request.</param>
-            /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-            /// <param name="CancellationToken">An optional token to cancel this request.</param>
-            public async Task<OCPPv2_1.CSMS.NotifyEVChargingScheduleResponse>
-                NotifyEVChargingSchedule(OCPPv2_1.CS.NotifyEVChargingScheduleRequest Request)
-
-            {
-
-                #region Send OnNotifyEVChargingScheduleRequest event
-
-                var startTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnNotifyEVChargingScheduleRequest?.Invoke(startTime,
-                                                              this,
-                                                              Request);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyEVChargingScheduleRequest));
-                }
-
-                #endregion
-
-
-                var response = CSClient is not null
-
-                                   ? SignaturePolicy.SignRequestMessage(
-                                         Request,
-                                         Request.ToJSON(
-
-                                             CustomNotifyEVChargingScheduleRequestSerializer,
-                                             CustomChargingScheduleSerializer,
-                                             CustomLimitBeyondSoCSerializer,
-                                             CustomChargingSchedulePeriodSerializer,
-                                             CustomV2XFreqWattEntrySerializer,
-                                             CustomV2XSignalWattEntrySerializer,
-                                             CustomSalesTariffSerializer,
-                                             CustomSalesTariffEntrySerializer,
-                                             CustomRelativeTimeIntervalSerializer,
-                                             CustomConsumptionCostSerializer,
-                                             CustomCostSerializer,
-
-                                             CustomAbsolutePriceScheduleSerializer,
-                                             CustomPriceRuleStackSerializer,
-                                             CustomPriceRuleSerializer,
-                                             CustomTaxRuleSerializer,
-                                             CustomOverstayRuleListSerializer,
-                                             CustomOverstayRuleSerializer,
-                                             CustomAdditionalServiceSerializer,
-
-                                             CustomPriceLevelScheduleSerializer,
-                                             CustomPriceLevelScheduleEntrySerializer,
-
-                                             CustomSignatureSerializer,
-                                             CustomCustomDataSerializer
-
-                                         ),
-                                         out var errorResponse
-                                     )
-
-                                         ? await CSClient.NotifyEVChargingSchedule(Request)
-
-                                         : new OCPPv2_1.CSMS.NotifyEVChargingScheduleResponse(
-                                               Request,
-                                               Result.SignatureError(errorResponse)
-                                           )
-
-                                   : new OCPPv2_1.CSMS.NotifyEVChargingScheduleResponse(
-                                         Request,
-                                         Result.Server("Unknown or unreachable charging station!")
-                                     );
-
-                SignaturePolicy.VerifyResponseMessage(
-                    response,
-                    response.ToJSON(
-                        CustomNotifyEVChargingScheduleResponseSerializer,
-                        CustomStatusInfoSerializer,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out errorResponse
-                );
-
-
-                #region Send OnNotifyEVChargingScheduleResponse event
-
-                var endTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnNotifyEVChargingScheduleResponse?.Invoke(endTime,
-                                                               this,
-                                                               Request,
-                                                               response,
-                                                               endTime - startTime);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyEVChargingScheduleResponse));
-                }
-
-                #endregion
-
-                return response;
-
-            }
-
-            #endregion
-
-            #region NotifyPriorityCharging                (Request)
-
-            /// <summary>
-            /// Notify about priority charging.
-            /// </summary>
-            /// <param name="NotifyPriorityChargingRequestId">The request identification used to match the GetChargingProfilesRequest message with the resulting NotifyPriorityChargingRequest messages. When the CSMS provided a requestId in the GetChargingProfilesRequest, this field SHALL contain the same value.</param>
-            /// <param name="TransactionId">The transaction for which priority charging is requested.</param>
-            /// <param name="Activated">True, when priority charging was activated, or false, when it has stopped using the priority charging profile.</param>
-            /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-            /// 
-            /// <param name="RequestId">An optional request identification.</param>
-            /// <param name="RequestTimestamp">An optional request timestamp.</param>
-            /// <param name="RequestTimeout">An optional timeout for this request.</param>
-            /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-            /// <param name="CancellationToken">An optional token to cancel this request.</param>
-            public async Task<OCPPv2_1.CSMS.NotifyPriorityChargingResponse>
-                NotifyPriorityCharging(OCPPv2_1.CS.NotifyPriorityChargingRequest Request)
-
-            {
-
-                #region Send OnNotifyPriorityChargingRequest event
-
-                var startTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnNotifyPriorityChargingRequest?.Invoke(startTime,
-                                                            this,
-                                                            Request);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyPriorityChargingRequest));
-                }
-
-                #endregion
-
-
-                var response = CSClient is not null
-
-                                   ? SignaturePolicy.SignRequestMessage(
-                                         Request,
-                                         Request.ToJSON(
-                                             CustomNotifyPriorityChargingRequestSerializer,
-                                             CustomSignatureSerializer,
-                                             CustomCustomDataSerializer
-                                         ),
-                                         out var errorResponse
-                                     )
-
-                                         ? await CSClient.NotifyPriorityCharging(Request)
-
-                                         : new OCPPv2_1.CSMS.NotifyPriorityChargingResponse(
-                                               Request,
-                                               Result.SignatureError(errorResponse)
-                                           )
-
-                                   : new OCPPv2_1.CSMS.NotifyPriorityChargingResponse(
-                                         Request,
-                                         Result.Server("Unknown or unreachable charging station!")
-                                     );
-
-                SignaturePolicy.VerifyResponseMessage(
-                    response,
-                    response.ToJSON(
-                        CustomNotifyPriorityChargingResponseSerializer,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out errorResponse
-                );
-
-
-                #region Send OnNotifyPriorityChargingResponse event
-
-                var endTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnNotifyPriorityChargingResponse?.Invoke(endTime,
-                                                             this,
-                                                             Request,
-                                                             response,
-                                                             endTime - startTime);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyPriorityChargingResponse));
-                }
-
-                #endregion
-
-                return response;
-
-            }
-
-            #endregion
-
-            #region PullDynamicScheduleUpdate             (Request)
-
-            /// <summary>
-            /// Report about all charging profiles.
-            /// </summary>
-            /// <param name="PullDynamicScheduleUpdateRequestId">The request identification used to match the GetChargingProfilesRequest message with the resulting PullDynamicScheduleUpdateRequest messages. When the CSMS provided a requestId in the GetChargingProfilesRequest, this field SHALL contain the same value.</param>
-            /// <param name="ChargingProfileId">The identification of the charging profile for which an update is requested.</param>
-            /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-            /// 
-            /// <param name="RequestId">An optional request identification.</param>
-            /// <param name="RequestTimestamp">An optional request timestamp.</param>
-            /// <param name="RequestTimeout">An optional timeout for this request.</param>
-            /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-            /// <param name="CancellationToken">An optional token to cancel this request.</param>
-            public async Task<OCPPv2_1.CSMS.PullDynamicScheduleUpdateResponse>
-                PullDynamicScheduleUpdate(OCPPv2_1.CS.PullDynamicScheduleUpdateRequest Request)
-
-            {
-
-                #region Send OnPullDynamicScheduleUpdateRequest event
-
-                var startTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnPullDynamicScheduleUpdateRequest?.Invoke(startTime,
-                                                               this,
-                                                               Request);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnPullDynamicScheduleUpdateRequest));
-                }
-
-                #endregion
-
-
-                var response = CSClient is not null
-
-                                   ? SignaturePolicy.SignRequestMessage(
-                                         Request,
-                                         Request.ToJSON(
-                                             CustomPullDynamicScheduleUpdateRequestSerializer,
-                                             CustomSignatureSerializer,
-                                             CustomCustomDataSerializer
-                                         ),
-                                         out var errorResponse
-                                     )
-
-                                         ? await CSClient.PullDynamicScheduleUpdate(Request)
-
-                                         : new OCPPv2_1.CSMS.PullDynamicScheduleUpdateResponse(
-                                               Request,
-                                               Result.SignatureError(errorResponse)
-                                           )
-
-                                   : new OCPPv2_1.CSMS.PullDynamicScheduleUpdateResponse(
-                                         Request,
-                                         Result.Server("Unknown or unreachable charging station!")
-                                     );
-
-                SignaturePolicy.VerifyResponseMessage(
-                    response,
-                    response.ToJSON(
-                        CustomPullDynamicScheduleUpdateResponseSerializer,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out errorResponse
-                );
-
-
-                #region Send OnPullDynamicScheduleUpdateResponse event
-
-                var endTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnPullDynamicScheduleUpdateResponse?.Invoke(endTime,
-                                                                this,
-                                                                Request,
-                                                                response,
-                                                                endTime - startTime);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnPullDynamicScheduleUpdateResponse));
-                }
-
-                #endregion
-
-                return response;
-
-            }
-
-            #endregion
-
-
-            #region NotifyDisplayMessages                 (Request)
-
-            /// <summary>
-            /// NotifyDisplayMessages the given token.
-            /// </summary>
-            /// <param name="NotifyDisplayMessagesRequestId">The unique identification of the notify display messages request.</param>
-            /// <param name="MessageInfos">The requested display messages as configured in the charging station.</param>
-            /// <param name="ToBeContinued">The optional "to be continued" indicator whether another part of the monitoring data follows in an upcoming NotifyDisplayMessagesRequest message. Default value when omitted is false.</param>
-            /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-            /// 
-            /// <param name="RequestId">An optional request identification.</param>
-            /// <param name="RequestTimestamp">An optional request timestamp.</param>
-            /// <param name="RequestTimeout">An optional timeout for this request.</param>
-            /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-            /// <param name="CancellationToken">An optional token to cancel this request.</param>
-            public async Task<OCPPv2_1.CSMS.NotifyDisplayMessagesResponse>
-                NotifyDisplayMessages(OCPPv2_1.CS.NotifyDisplayMessagesRequest Request)
-
-            {
-
-                #region Send OnNotifyDisplayMessagesRequest event
-
-                var startTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnNotifyDisplayMessagesRequest?.Invoke(startTime,
-                                                           this,
-                                                           Request);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyDisplayMessagesRequest));
-                }
-
-                #endregion
-
-
-                var response = CSClient is not null
-
-                                   ? SignaturePolicy.SignRequestMessage(
-                                         Request,
-                                         Request.ToJSON(
-                                             CustomNotifyDisplayMessagesRequestSerializer,
-                                             CustomMessageInfoSerializer,
-                                             CustomMessageContentSerializer,
-                                             CustomComponentSerializer,
-                                             CustomEVSESerializer,
-                                             CustomSignatureSerializer,
-                                             CustomCustomDataSerializer
-                                         ),
-                                         out var errorResponse
-                                     )
-
-                                         ? await CSClient.NotifyDisplayMessages(Request)
-
-                                         : new OCPPv2_1.CSMS.NotifyDisplayMessagesResponse(
-                                               Request,
-                                               Result.SignatureError(errorResponse)
-                                           )
-
-                                   : new OCPPv2_1.CSMS.NotifyDisplayMessagesResponse(
-                                         Request,
-                                         Result.Server("Unknown or unreachable charging station!")
-                                     );
-
-                SignaturePolicy.VerifyResponseMessage(
-                    response,
-                    response.ToJSON(
-                        CustomNotifyDisplayMessagesResponseSerializer,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out errorResponse
-                );
-
-
-                #region Send OnNotifyDisplayMessagesResponse event
-
-                var endTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnNotifyDisplayMessagesResponse?.Invoke(endTime,
-                                                            this,
-                                                            Request,
-                                                            response,
-                                                            endTime - startTime);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyDisplayMessagesResponse));
-                }
-
-                #endregion
-
-                return response;
-
-            }
-
-            #endregion
-
-            #region NotifyCustomerInformation             (Request)
-
-            /// <summary>
-            /// NotifyCustomerInformation the given token.
-            /// </summary>
-            /// <param name="NotifyCustomerInformationRequestId">The unique identification of the notify customer information request.</param>
-            /// <param name="Data">The requested data or a part of the requested data. No format specified in which the data is returned.</param>
-            /// <param name="SequenceNumber">The sequence number of this message. First message starts at 0.</param>
-            /// <param name="GeneratedAt">The timestamp of the moment this message was generated at the charging station.</param>
-            /// <param name="ToBeContinued">The optional "to be continued" indicator whether another part of the monitoring data follows in an upcoming NotifyCustomerInformationRequest message. Default value when omitted is false.</param>
-            /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-            /// 
-            /// <param name="RequestId">An optional request identification.</param>
-            /// <param name="RequestTimestamp">An optional request timestamp.</param>
-            /// <param name="RequestTimeout">An optional timeout for this request.</param>
-            /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-            /// <param name="CancellationToken">An optional token to cancel this request.</param>
-            public async Task<OCPPv2_1.CSMS.NotifyCustomerInformationResponse>
-                NotifyCustomerInformation(OCPPv2_1.CS.NotifyCustomerInformationRequest Request)
-
-            {
-
-                #region Send OnNotifyCustomerInformationRequest event
-
-                var startTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnNotifyCustomerInformationRequest?.Invoke(startTime,
-                                                               this,
-                                                               Request);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyCustomerInformationRequest));
-                }
-
-                #endregion
-
-
-                var response = CSClient is not null
-
-                                   ? SignaturePolicy.SignRequestMessage(
-                                         Request,
-                                         Request.ToJSON(
-                                             CustomNotifyCustomerInformationRequestSerializer,
-                                             CustomSignatureSerializer,
-                                             CustomCustomDataSerializer
-                                         ),
-                                         out var errorResponse
-                                     )
-
-                                         ? await CSClient.NotifyCustomerInformation(Request)
-
-                                         : new OCPPv2_1.CSMS.NotifyCustomerInformationResponse(
-                                               Request,
-                                               Result.SignatureError(errorResponse)
-                                           )
-
-                                   : new OCPPv2_1.CSMS.NotifyCustomerInformationResponse(
-                                         Request,
-                                         Result.Server("Unknown or unreachable charging station!")
-                                     );
-
-                SignaturePolicy.VerifyResponseMessage(
-                    response,
-                    response.ToJSON(
-                        CustomNotifyCustomerInformationResponseSerializer,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out errorResponse
-                );
-
-
-                #region Send OnNotifyCustomerInformationResponse event
-
-                var endTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnNotifyCustomerInformationResponse?.Invoke(endTime,
-                                                                this,
-                                                                Request,
-                                                                response,
-                                                                endTime - startTime);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyCustomerInformationResponse));
-                }
-
-                #endregion
-
-                return response;
-
-            }
-
-            #endregion
-
-
-            // Binary Data Streams Extensions
-
-            #region TransferBinaryData                    (Request)
-
-            /// <summary>
-            /// Send the given vendor-specific binary data to the CSMS.
-            /// </summary>
-            /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
-            /// <param name="MessageId">An optional message identification.</param>
-            /// <param name="BinaryData">A vendor-specific JSON token.</param>
-            /// <param name="CustomBinaryData">The custom data object to allow to store any kind of customer specific data.</param>
-            /// 
-            /// <param name="RequestId">An optional request identification.</param>
-            /// <param name="RequestTimestamp">An optional request timestamp.</param>
-            /// <param name="RequestTimeout">An optional timeout for this request.</param>
-            /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-            /// <param name="CancellationToken">An optional token to cancel this request.</param>
-            public async Task<OCPP.CSMS.BinaryDataTransferResponse>
-                BinaryDataTransfer(OCPP.CS.BinaryDataTransferRequest Request)
-
-            {
-
-                #region Send OnBinaryDataTransferRequest event
-
-                var startTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnBinaryDataTransferRequest?.Invoke(startTime,
-                                                        this,
-                                                        Request);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnBinaryDataTransferRequest));
-                }
-
-                #endregion
-
-
-                var response = CSClient is not null
-
-                                   ? SignaturePolicy.SignRequestMessage(
-                                         Request,
-                                         Request.ToBinary(
-                                             CustomBinaryDataTransferRequestSerializer,
-                                             CustomBinarySignatureSerializer,
-                                             IncludeSignatures: false
-                                         ),
-                                         out var errorResponse
-                                     )
-
-                                         ? await CSClient.BinaryDataTransfer(Request)
-
-                                         : new OCPP.CSMS.BinaryDataTransferResponse(
-                                               Request,
-                                               Result.SignatureError(errorResponse)
-                                           )
-
-                                   : new OCPP.CSMS.BinaryDataTransferResponse(
-                                         Request,
-                                         Result.Server("Unknown or unreachable charging station!")
-                                     );
-
-                SignaturePolicy.VerifyResponseMessage(
-                    response,
-                    response.ToBinary(
-                        CustomBinaryDataTransferResponseSerializer,
-                        null, //CustomStatusInfoSerializer,
-                        CustomBinarySignatureSerializer,
-                        IncludeSignatures: false
-                    ),
-                    out errorResponse
-                );
-
-
-                #region Send OnBinaryDataTransferResponse event
-
-                var endTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnBinaryDataTransferResponse?.Invoke(endTime,
-                                                   this,
-                                                   Request,
-                                                   response,
-                                                   endTime - startTime);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnBinaryDataTransferResponse));
-                }
-
-                #endregion
-
-                return response;
-
-            }
-
-            #endregion
-
-
-            // Overlay Networking Extensions
-
-            #region NotifyNetworkTopology                 (Request)
-
-            /// <summary>
-            /// Notify about the current network topology or a current change within the topology.
-            /// </summary>
-            /// <param name="Request">A reset request.</param>
-            public async Task<NotifyNetworkTopologyResponse>
-                NotifyNetworkTopology(NotifyNetworkTopologyRequest Request)
-
-            {
-
-                #region Send OnNotifyNetworkTopologyRequest event
-
-                var startTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnNotifyNetworkTopologyRequest?.Invoke(startTime,
-                                                           this,
-                                                           Request);
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyNetworkTopologyRequest));
-                }
-
-                #endregion
-
-
-                var response = CSClient is not null
-
-                                   ? SignaturePolicy.SignRequestMessage(
-                                         Request,
-                                         Request.ToJSON(
-                                             CustomNotifyNetworkTopologyRequestSerializer,
-                                             CustomNetworkTopologyInformationSerializer,
-                                             CustomSignatureSerializer,
-                                             CustomCustomDataSerializer
-                                         ),
-                                         out var errorResponse
-                                     )
-
-                                         ? await CSClient.NotifyNetworkTopology(Request)
-
-                                         : new NotifyNetworkTopologyResponse(
-                                               Request,
-                                               Result.SignatureError(errorResponse)
-                                           )
-
-                                   : new NotifyNetworkTopologyResponse(
-                                         Request,
-                                         Result.Server("Unknown or unreachable charging station!")
-                                     );
-
-                SignaturePolicy.VerifyResponseMessage(
-                    response,
-                    response.ToJSON(
-                        CustomNotifyNetworkTopologyResponseSerializer,
-                        //CustomStatusInfoSerializer,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out errorResponse
-                );
-
-
-                #region Send OnNotifyNetworkTopologyResponse event
-
-                var endTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnNotifyNetworkTopologyResponse?.Invoke(endTime,
-                                                            this,
-                                                            Request,
-                                                            response,
-                                                            endTime - startTime);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyNetworkTopologyResponse));
-                }
-
-                #endregion
-
-                return response;
-
-            }
-
-            #endregion
-
-            #endregion
 
 
             #region Dispose()
@@ -18279,7 +15055,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         // ToDo: Add aditional request signature!
 
                         // Explicit sending to upstream CSMS!
-                        response  = await parentNetworkingNode.AsCS.BootNotification(request);
+                        response  = await parentNetworkingNode.BootNotification(request);
 
 
                         //response =  new OCPPv2_1.CSMS.BootNotificationResponse(
@@ -21920,7 +18696,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
                     // Explicit sending to upstream CSMS!
-                    var response  = await parentNetworkingNode.AsCS.BinaryDataTransfer(request);
+                    var response  = await parentNetworkingNode.BinaryDataTransfer(request);
 
 
 
@@ -29723,6 +26499,155 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         }
 
+        public event OCPPv2_1.CS.OnResetDelegate OnReset;
+        public event OCPPv2_1.CS.OnUpdateFirmwareDelegate OnUpdateFirmware;
+        public event OCPPv2_1.CS.OnPublishFirmwareDelegate OnPublishFirmware;
+        public event OCPPv2_1.CS.OnUnpublishFirmwareDelegate OnUnpublishFirmware;
+        public event OCPPv2_1.CS.OnGetBaseReportDelegate OnGetBaseReport;
+        public event OCPPv2_1.CS.OnGetReportDelegate OnGetReport;
+        public event OCPPv2_1.CS.OnGetLogDelegate OnGetLog;
+        public event OCPPv2_1.CS.OnSetVariablesDelegate OnSetVariables;
+        public event OCPPv2_1.CS.OnGetVariablesDelegate OnGetVariables;
+        public event OCPPv2_1.CS.OnSetMonitoringBaseDelegate OnSetMonitoringBase;
+        public event OCPPv2_1.CS.OnGetMonitoringReportDelegate OnGetMonitoringReport;
+        public event OCPPv2_1.CS.OnSetMonitoringLevelDelegate OnSetMonitoringLevel;
+        public event OCPPv2_1.CS.OnSetVariableMonitoringDelegate OnSetVariableMonitoring;
+        public event OCPPv2_1.CS.OnClearVariableMonitoringDelegate OnClearVariableMonitoring;
+        public event OCPPv2_1.CS.OnSetNetworkProfileDelegate OnSetNetworkProfile;
+        public event OCPPv2_1.CS.OnChangeAvailabilityDelegate OnChangeAvailability;
+        public event OCPPv2_1.CS.OnTriggerMessageDelegate OnTriggerMessage;
+        public event OCPPv2_1.CS.OnIncomingDataTransferDelegate OnIncomingDataTransfer;
+        public event OCPPv2_1.CS.OnCertificateSignedDelegate OnCertificateSigned;
+        public event OCPPv2_1.CS.OnInstallCertificateDelegate OnInstallCertificate;
+        public event OCPPv2_1.CS.OnGetInstalledCertificateIdsDelegate OnGetInstalledCertificateIds;
+        public event OCPPv2_1.CS.OnDeleteCertificateDelegate OnDeleteCertificate;
+        public event OCPPv2_1.CS.OnNotifyCRLDelegate OnNotifyCRL;
+        public event OCPPv2_1.CS.OnGetLocalListVersionDelegate OnGetLocalListVersion;
+        public event OCPPv2_1.CS.OnSendLocalListDelegate OnSendLocalList;
+        public event OCPPv2_1.CS.OnClearCacheDelegate OnClearCache;
+        public event OCPPv2_1.CS.OnReserveNowDelegate OnReserveNow;
+        public event OCPPv2_1.CS.OnCancelReservationDelegate OnCancelReservation;
+        public event OCPPv2_1.CS.OnRequestStartTransactionDelegate OnRequestStartTransaction;
+        public event OCPPv2_1.CS.OnRequestStopTransactionDelegate OnRequestStopTransaction;
+        public event OCPPv2_1.CS.OnGetTransactionStatusDelegate OnGetTransactionStatus;
+        public event OCPPv2_1.CS.OnSetChargingProfileDelegate OnSetChargingProfile;
+        public event OCPPv2_1.CS.OnGetChargingProfilesDelegate OnGetChargingProfiles;
+        public event OCPPv2_1.CS.OnClearChargingProfileDelegate OnClearChargingProfile;
+        public event OCPPv2_1.CS.OnGetCompositeScheduleDelegate OnGetCompositeSchedule;
+        public event OCPPv2_1.CS.OnUpdateDynamicScheduleDelegate OnUpdateDynamicSchedule;
+        public event OCPPv2_1.CS.OnNotifyAllowedEnergyTransferDelegate OnNotifyAllowedEnergyTransfer;
+        public event OCPPv2_1.CS.OnUsePriorityChargingDelegate OnUsePriorityCharging;
+        public event OCPPv2_1.CS.OnUnlockConnectorDelegate OnUnlockConnector;
+        public event OCPPv2_1.CS.OnAFRRSignalDelegate OnAFRRSignal;
+        public event OCPPv2_1.CS.OnSetDisplayMessageDelegate OnSetDisplayMessage;
+        public event OCPPv2_1.CS.OnGetDisplayMessagesDelegate OnGetDisplayMessages;
+        public event OCPPv2_1.CS.OnClearDisplayMessageDelegate OnClearDisplayMessage;
+        public event OCPPv2_1.CS.OnCostUpdatedDelegate OnCostUpdated;
+        public event OCPPv2_1.CS.OnCustomerInformationDelegate OnCustomerInformation;
+        public event OCPP.CS.OnIncomingBinaryDataTransferDelegate OnIncomingBinaryDataTransfer;
+        public event OnGetFileDelegate OnGetFile;
+        public event OnSendFileDelegate OnSendFile;
+        public event OnDeleteFileDelegate OnDeleteFile;
+        public event OnAddSignaturePolicyDelegate OnAddSignaturePolicy;
+        public event OnUpdateSignaturePolicyDelegate OnUpdateSignaturePolicy;
+        public event OnDeleteSignaturePolicyDelegate OnDeleteSignaturePolicy;
+        public event OnAddUserRoleDelegate OnAddUserRole;
+        public event OnUpdateUserRoleDelegate OnUpdateUserRole;
+        public event OnDeleteUserRoleDelegate OnDeleteUserRole;
+        public event OCPPv2_1.CS.OnSetDefaultChargingTariffDelegate OnSetDefaultChargingTariff;
+        public event OCPPv2_1.CS.OnGetDefaultChargingTariffDelegate OnGetDefaultChargingTariff;
+        public event OCPPv2_1.CS.OnRemoveDefaultChargingTariffDelegate OnRemoveDefaultChargingTariff;
+        public event OCPPv2_1.CS.OnResetRequestDelegate OnResetRequest;
+        public event OCPPv2_1.CS.OnResetResponseDelegate OnResetResponse;
+        public event OCPPv2_1.CS.OnUpdateFirmwareRequestDelegate OnUpdateFirmwareRequest;
+        public event OCPPv2_1.CS.OnUpdateFirmwareResponseDelegate OnUpdateFirmwareResponse;
+        public event OCPPv2_1.CS.OnPublishFirmwareRequestDelegate OnPublishFirmwareRequest;
+        public event OCPPv2_1.CS.OnPublishFirmwareResponseDelegate OnPublishFirmwareResponse;
+        public event OCPPv2_1.CS.OnUnpublishFirmwareRequestDelegate OnUnpublishFirmwareRequest;
+        public event OCPPv2_1.CS.OnUnpublishFirmwareResponseDelegate OnUnpublishFirmwareResponse;
+        public event OCPPv2_1.CS.OnGetBaseReportRequestDelegate OnGetBaseReportRequest;
+        public event OCPPv2_1.CS.OnGetBaseReportResponseDelegate OnGetBaseReportResponse;
+        public event OCPPv2_1.CS.OnGetReportRequestDelegate OnGetReportRequest;
+        public event OCPPv2_1.CS.OnGetReportResponseDelegate OnGetReportResponse;
+        public event OCPPv2_1.CS.OnGetLogRequestDelegate OnGetLogRequest;
+        public event OCPPv2_1.CS.OnGetLogResponseDelegate OnGetLogResponse;
+        public event OCPPv2_1.CS.OnSetVariablesRequestDelegate OnSetVariablesRequest;
+        public event OCPPv2_1.CS.OnSetVariablesResponseDelegate OnSetVariablesResponse;
+        public event OCPPv2_1.CS.OnGetVariablesRequestDelegate OnGetVariablesRequest;
+        public event OCPPv2_1.CS.OnGetVariablesResponseDelegate OnGetVariablesResponse;
+        public event OCPPv2_1.CS.OnSetMonitoringBaseRequestDelegate OnSetMonitoringBaseRequest;
+        public event OCPPv2_1.CS.OnSetMonitoringBaseResponseDelegate OnSetMonitoringBaseResponse;
+        public event OCPPv2_1.CS.OnGetMonitoringReportRequestDelegate OnGetMonitoringReportRequest;
+        public event OCPPv2_1.CS.OnGetMonitoringReportResponseDelegate OnGetMonitoringReportResponse;
+        public event OCPPv2_1.CS.OnSetMonitoringLevelRequestDelegate OnSetMonitoringLevelRequest;
+        public event OCPPv2_1.CS.OnSetMonitoringLevelResponseDelegate OnSetMonitoringLevelResponse;
+        public event OCPPv2_1.CS.OnSetVariableMonitoringRequestDelegate OnSetVariableMonitoringRequest;
+        public event OCPPv2_1.CS.OnSetVariableMonitoringResponseDelegate OnSetVariableMonitoringResponse;
+        public event OCPPv2_1.CS.OnClearVariableMonitoringRequestDelegate OnClearVariableMonitoringRequest;
+        public event OCPPv2_1.CS.OnClearVariableMonitoringResponseDelegate OnClearVariableMonitoringResponse;
+        public event OCPPv2_1.CS.OnSetNetworkProfileRequestDelegate OnSetNetworkProfileRequest;
+        public event OCPPv2_1.CS.OnSetNetworkProfileResponseDelegate OnSetNetworkProfileResponse;
+        public event OCPPv2_1.CS.OnChangeAvailabilityRequestDelegate OnChangeAvailabilityRequest;
+        public event OCPPv2_1.CS.OnChangeAvailabilityResponseDelegate OnChangeAvailabilityResponse;
+        public event OCPPv2_1.CS.OnTriggerMessageRequestDelegate OnTriggerMessageRequest;
+        public event OCPPv2_1.CS.OnTriggerMessageResponseDelegate OnTriggerMessageResponse;
+        public event OCPPv2_1.CS.OnIncomingDataTransferRequestDelegate OnIncomingDataTransferRequest;
+        public event OCPPv2_1.CS.OnIncomingDataTransferResponseDelegate OnIncomingDataTransferResponse;
+        public event OCPPv2_1.CS.OnCertificateSignedRequestDelegate OnCertificateSignedRequest;
+        public event OCPPv2_1.CS.OnCertificateSignedResponseDelegate OnCertificateSignedResponse;
+        public event OCPPv2_1.CS.OnInstallCertificateRequestDelegate OnInstallCertificateRequest;
+        public event OCPPv2_1.CS.OnInstallCertificateResponseDelegate OnInstallCertificateResponse;
+        public event OCPPv2_1.CS.OnGetInstalledCertificateIdsRequestDelegate OnGetInstalledCertificateIdsRequest;
+        public event OCPPv2_1.CS.OnGetInstalledCertificateIdsResponseDelegate OnGetInstalledCertificateIdsResponse;
+        public event OCPPv2_1.CS.OnDeleteCertificateRequestDelegate OnDeleteCertificateRequest;
+        public event OCPPv2_1.CS.OnDeleteCertificateResponseDelegate OnDeleteCertificateResponse;
+        public event OCPPv2_1.CS.OnNotifyCRLRequestDelegate OnNotifyCRLRequest;
+        public event OCPPv2_1.CS.OnNotifyCRLResponseDelegate OnNotifyCRLResponse;
+        public event OCPPv2_1.CS.OnGetLocalListVersionRequestDelegate OnGetLocalListVersionRequest;
+        public event OCPPv2_1.CS.OnGetLocalListVersionResponseDelegate OnGetLocalListVersionResponse;
+        public event OCPPv2_1.CS.OnSendLocalListRequestDelegate OnSendLocalListRequest;
+        public event OCPPv2_1.CS.OnSendLocalListResponseDelegate OnSendLocalListResponse;
+        public event OCPPv2_1.CS.OnClearCacheRequestDelegate OnClearCacheRequest;
+        public event OCPPv2_1.CS.OnClearCacheResponseDelegate OnClearCacheResponse;
+        public event OCPPv2_1.CS.OnReserveNowRequestDelegate OnReserveNowRequest;
+        public event OCPPv2_1.CS.OnReserveNowResponseDelegate OnReserveNowResponse;
+        public event OCPPv2_1.CS.OnCancelReservationRequestDelegate OnCancelReservationRequest;
+        public event OCPPv2_1.CS.OnCancelReservationResponseDelegate OnCancelReservationResponse;
+        public event OCPPv2_1.CS.OnRequestStartTransactionRequestDelegate OnRequestStartTransactionRequest;
+        public event OCPPv2_1.CS.OnRequestStartTransactionResponseDelegate OnRequestStartTransactionResponse;
+        public event OCPPv2_1.CS.OnRequestStopTransactionRequestDelegate OnRequestStopTransactionRequest;
+        public event OCPPv2_1.CS.OnRequestStopTransactionResponseDelegate OnRequestStopTransactionResponse;
+        public event OCPPv2_1.CS.OnGetTransactionStatusRequestDelegate OnGetTransactionStatusRequest;
+        public event OCPPv2_1.CS.OnGetTransactionStatusResponseDelegate OnGetTransactionStatusResponse;
+        public event OCPPv2_1.CS.OnSetChargingProfileRequestDelegate OnSetChargingProfileRequest;
+        public event OCPPv2_1.CS.OnSetChargingProfileResponseDelegate OnSetChargingProfileResponse;
+        public event OCPPv2_1.CS.OnGetChargingProfilesRequestDelegate OnGetChargingProfilesRequest;
+        public event OCPPv2_1.CS.OnGetChargingProfilesResponseDelegate OnGetChargingProfilesResponse;
+        public event OCPPv2_1.CS.OnClearChargingProfileRequestDelegate OnClearChargingProfileRequest;
+        public event OCPPv2_1.CS.OnClearChargingProfileResponseDelegate OnClearChargingProfileResponse;
+        public event OCPPv2_1.CS.OnGetCompositeScheduleRequestDelegate OnGetCompositeScheduleRequest;
+        public event OCPPv2_1.CS.OnGetCompositeScheduleResponseDelegate OnGetCompositeScheduleResponse;
+        public event OCPPv2_1.CS.OnUpdateDynamicScheduleRequestDelegate OnUpdateDynamicScheduleRequest;
+        public event OCPPv2_1.CS.OnUpdateDynamicScheduleResponseDelegate OnUpdateDynamicScheduleResponse;
+        public event OCPPv2_1.CS.OnNotifyAllowedEnergyTransferRequestDelegate OnNotifyAllowedEnergyTransferRequest;
+        public event OCPPv2_1.CS.OnNotifyAllowedEnergyTransferResponseDelegate OnNotifyAllowedEnergyTransferResponse;
+        public event OCPPv2_1.CS.OnUsePriorityChargingRequestDelegate OnUsePriorityChargingRequest;
+        public event OCPPv2_1.CS.OnUsePriorityChargingResponseDelegate OnUsePriorityChargingResponse;
+        public event OCPPv2_1.CS.OnUnlockConnectorRequestDelegate OnUnlockConnectorRequest;
+        public event OCPPv2_1.CS.OnUnlockConnectorResponseDelegate OnUnlockConnectorResponse;
+        public event OCPPv2_1.CS.OnAFRRSignalRequestDelegate OnAFRRSignalRequest;
+        public event OCPPv2_1.CS.OnAFRRSignalResponseDelegate OnAFRRSignalResponse;
+        public event OCPPv2_1.CS.OnSetDisplayMessageRequestDelegate OnSetDisplayMessageRequest;
+        public event OCPPv2_1.CS.OnSetDisplayMessageResponseDelegate OnSetDisplayMessageResponse;
+        public event OCPPv2_1.CS.OnGetDisplayMessagesRequestDelegate OnGetDisplayMessagesRequest;
+        public event OCPPv2_1.CS.OnGetDisplayMessagesResponseDelegate OnGetDisplayMessagesResponse;
+        public event OCPPv2_1.CS.OnClearDisplayMessageRequestDelegate OnClearDisplayMessageRequest;
+        public event OCPPv2_1.CS.OnClearDisplayMessageResponseDelegate OnClearDisplayMessageResponse;
+        public event OCPPv2_1.CS.OnCostUpdatedRequestDelegate OnCostUpdatedRequest;
+        public event OCPPv2_1.CS.OnCostUpdatedResponseDelegate OnCostUpdatedResponse;
+        public event OCPPv2_1.CS.OnCustomerInformationRequestDelegate OnCustomerInformationRequest;
+        public event OCPPv2_1.CS.OnCustomerInformationResponseDelegate OnCustomerInformationResponse;
+
 
         #region Data
 
@@ -30734,6 +27659,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             }
         }
+
+        public string? ClientCloseMessage => throw new NotImplementedException();
+
+        string? IHTTPClient.Description { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         #endregion
 
@@ -32443,12 +29372,1925 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
+        #region SendReservationStatusUpdate           (Request)
+
+        /// <summary>
+        /// Send a reservation status update.
+        /// </summary>
+        /// <param name="ReservationId">The unique identification of the transaction to update.</param>
+        /// <param name="ReservationUpdateStatus">The updated reservation status.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<OCPPv2_1.CSMS.ReservationStatusUpdateResponse>
+            ReservationStatusUpdate(OCPPv2_1.CS.ReservationStatusUpdateRequest Request)
+
+        {
+
+            #region Send OnReservationStatusUpdateRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnReservationStatusUpdateRequest?.Invoke(startTime,
+                                                         this,
+                                                         Request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnReservationStatusUpdateRequest));
+            }
+
+            #endregion
 
 
+            OCPPv2_1.CSMS.ReservationStatusUpdateResponse? response = null;
+
+            if (!SignaturePolicy.SignRequestMessage(
+                    Request,
+                    Request.ToJSON(
+                        CustomReservationStatusUpdateRequestSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse
+                ))
+            {
+
+                response  = new OCPPv2_1.CSMS.ReservationStatusUpdateResponse(
+                                Request,
+                                Result.SignatureError(errorResponse)
+                            );
+
+            }
+
+            // ToDo: Currently hardcoded CSMS lookup!
+            else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
+            {
+
+                response  = AsCS.CSClient is not null
+
+                                ? await AsCS.CSClient.ReservationStatusUpdate(Request)
+
+                                : new OCPPv2_1.CSMS.ReservationStatusUpdateResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+            }
+
+            else
+            {
+                // ...
+            }
 
 
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomReservationStatusUpdateResponseSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
+
+
+            #region Send OnReservationStatusUpdateResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnReservationStatusUpdateResponse?.Invoke(endTime,
+                                                          this,
+                                                          Request,
+                                                          response,
+                                                          endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnReservationStatusUpdateResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
 
         #endregion
+
+        #region Authorize                             (Request)
+
+        /// <summary>
+        /// Authorize the given token.
+        /// </summary>
+        /// <param name="IdToken">The identifier that needs to be authorized.</param>
+        /// <param name="Certificate">An optional X.509 certificated presented by the electric vehicle/user (PEM format).</param>
+        /// <param name="ISO15118CertificateHashData">Optional information to verify the electric vehicle/user contract certificate via OCSP.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<OCPPv2_1.CSMS.AuthorizeResponse>
+            Authorize(OCPPv2_1.CS.AuthorizeRequest Request)
+
+        {
+
+            #region Send OnAuthorizeRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnAuthorizeRequest?.Invoke(startTime,
+                                           this,
+                                           Request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnAuthorizeRequest));
+            }
+
+            #endregion
+
+
+            OCPPv2_1.CSMS.AuthorizeResponse? response = null;
+
+            if (!SignaturePolicy.SignRequestMessage(
+                    Request,
+                    Request.ToJSON(
+                        CustomAuthorizeRequestSerializer,
+                        CustomIdTokenSerializer,
+                        CustomAdditionalInfoSerializer,
+                        CustomOCSPRequestDataSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse
+                ))
+            {
+
+                response  = new OCPPv2_1.CSMS.AuthorizeResponse(
+                                Request,
+                                Result.SignatureError(errorResponse)
+                            );
+
+            }
+
+            // ToDo: Currently hardcoded CSMS lookup!
+            else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
+            {
+
+                response  = AsCS.CSClient is not null
+
+                                ? await AsCS.CSClient.Authorize(Request)
+
+                                : new OCPPv2_1.CSMS.AuthorizeResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+            }
+
+            else
+            {
+                // ...
+            }
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomAuthorizeResponseSerializer,
+                    CustomIdTokenInfoSerializer,
+                    CustomIdTokenSerializer,
+                    CustomAdditionalInfoSerializer,
+                    CustomMessageContentSerializer,
+                    CustomTransactionLimitsSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
+
+
+            #region Send OnAuthorizeResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnAuthorizeResponse?.Invoke(endTime,
+                                            this,
+                                            Request,
+                                            response,
+                                            endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnAuthorizeResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region NotifyEVChargingNeeds                 (Request)
+
+        /// <summary>
+        /// Notify about EV charging needs.
+        /// </summary>
+        /// <param name="EVSEId">The EVSE and connector to which the EV is connected to.</param>
+        /// <param name="ChargingNeeds">The characteristics of the energy delivery required.</param>
+        /// <param name="ReceivedTimestamp">An optional timestamp when the EV charging needs had been received, e.g. when the charging station was offline.</param>
+        /// <param name="MaxScheduleTuples">The optional maximum number of schedule tuples per schedule the car supports.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<OCPPv2_1.CSMS.NotifyEVChargingNeedsResponse>
+            NotifyEVChargingNeeds(OCPPv2_1.CS.NotifyEVChargingNeedsRequest Request)
+
+        {
+
+            #region Send OnNotifyEVChargingNeedsRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnNotifyEVChargingNeedsRequest?.Invoke(startTime,
+                                                       this,
+                                                       Request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyEVChargingNeedsRequest));
+            }
+
+            #endregion
+
+
+            OCPPv2_1.CSMS.NotifyEVChargingNeedsResponse? response = null;
+
+            if (!SignaturePolicy.SignRequestMessage(
+                    Request,
+                    Request.ToJSON(
+                        CustomNotifyEVChargingNeedsRequestSerializer,
+                        CustomChargingNeedsSerializer,
+                        CustomACChargingParametersSerializer,
+                        CustomDCChargingParametersSerializer,
+                        CustomV2XChargingParametersSerializer,
+                        CustomEVEnergyOfferSerializer,
+                        CustomEVPowerScheduleSerializer,
+                        CustomEVPowerScheduleEntrySerializer,
+                        CustomEVAbsolutePriceScheduleSerializer,
+                        CustomEVAbsolutePriceScheduleEntrySerializer,
+                        CustomEVPriceRuleSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse
+                ))
+            {
+
+                response  = new OCPPv2_1.CSMS.NotifyEVChargingNeedsResponse(
+                                Request,
+                                Result.SignatureError(errorResponse)
+                            );
+
+            }
+
+            // ToDo: Currently hardcoded CSMS lookup!
+            else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
+            {
+
+                response  = AsCS.CSClient is not null
+
+                                ? await AsCS.CSClient.NotifyEVChargingNeeds(Request)
+
+                                : new OCPPv2_1.CSMS.NotifyEVChargingNeedsResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+            }
+
+            else
+            {
+                // ...
+            }
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomNotifyEVChargingNeedsResponseSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
+
+
+            #region Send OnNotifyEVChargingNeedsResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnNotifyEVChargingNeedsResponse?.Invoke(endTime,
+                                                        this,
+                                                        Request,
+                                                        response,
+                                                        endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyEVChargingNeedsResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region SendTransactionEvent                  (Request)
+
+        /// <summary>
+        /// Send a transaction event.
+        /// </summary>
+        /// <param name="EventType">The type of this transaction event. The first event of a transaction SHALL be of type "started", the last of type "ended". All others should be of type "updated".</param>
+        /// <param name="Timestamp">The timestamp at which this transaction event occurred.</param>
+        /// <param name="TriggerReason">The reason the charging station sends this message.</param>
+        /// <param name="SequenceNumber">This incremental sequence number, helps to determine whether all messages of a transaction have been received.</param>
+        /// <param name="TransactionInfo">Transaction related information.</param>
+        /// 
+        /// <param name="Offline">An optional indication whether this transaction event happened when the charging station was offline.</param>
+        /// <param name="NumberOfPhasesUsed">An optional numer of electrical phases used, when the charging station is able to report it.</param>
+        /// <param name="CableMaxCurrent">An optional maximum current of the connected cable in amperes.</param>
+        /// <param name="ReservationId">An optional unqiue reservation identification of the reservation that terminated as a result of this transaction.</param>
+        /// <param name="IdToken">An optional identification token for which a transaction has to be/was started.</param>
+        /// <param name="EVSE">An optional indication of the EVSE (and connector) used.</param>
+        /// <param name="MeterValues">An optional enumeration of meter values.</param>
+        /// <param name="PreconditioningStatus">The optional current status of the battery management system within the EV.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<OCPPv2_1.CSMS.TransactionEventResponse>
+            TransactionEvent(OCPPv2_1.CS.TransactionEventRequest Request)
+
+        {
+
+            #region Send OnTransactionEventRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnTransactionEventRequest?.Invoke(startTime,
+                                                  this,
+                                                  Request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnTransactionEventRequest));
+            }
+
+            #endregion
+
+
+            OCPPv2_1.CSMS.TransactionEventResponse? response = null;
+
+            if (!SignaturePolicy.SignRequestMessage(
+                    Request,
+                    Request.ToJSON(
+                        CustomTransactionEventRequestSerializer,
+                        CustomTransactionSerializer,
+                        CustomIdTokenSerializer,
+                        CustomAdditionalInfoSerializer,
+                        CustomEVSESerializer,
+                        CustomMeterValueSerializer,
+                        CustomSampledValueSerializer,
+                        CustomSignedMeterValueSerializer,
+                        CustomUnitsOfMeasureSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse
+                ))
+            {
+
+                response  = new OCPPv2_1.CSMS.TransactionEventResponse(
+                                Request,
+                                Result.SignatureError(errorResponse)
+                            );
+
+            }
+
+            // ToDo: Currently hardcoded CSMS lookup!
+            else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
+            {
+
+                response  = AsCS.CSClient is not null
+
+                                ? await AsCS.CSClient.TransactionEvent(Request)
+
+                                : new OCPPv2_1.CSMS.TransactionEventResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+            }
+
+            else
+            {
+                // ...
+            }
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomTransactionEventResponseSerializer,
+                    CustomIdTokenInfoSerializer,
+                    CustomIdTokenSerializer,
+                    CustomAdditionalInfoSerializer,
+                    CustomMessageContentSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
+
+
+            #region Send OnTransactionEventResponse event
+
+            var endTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+
+            try
+            {
+
+                OnTransactionEventResponse?.Invoke(endTime,
+                                                   this,
+                                                   Request,
+                                                   response,
+                                                   endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnTransactionEventResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region SendStatusNotification                (Request)
+
+        /// <summary>
+        /// Send a status notification for the given connector.
+        /// </summary>
+        /// <param name="EVSEId">The identification of the EVSE to which the connector belongs for which the the status is reported.</param>
+        /// <param name="ConnectorId">The identification of the connector within the EVSE for which the status is reported.</param>
+        /// <param name="Timestamp">The time for which the status is reported.</param>
+        /// <param name="Status">The current status of the connector.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<OCPPv2_1.CSMS.StatusNotificationResponse>
+            StatusNotification(OCPPv2_1.CS.StatusNotificationRequest Request)
+
+        {
+
+            #region Send OnStatusNotificationRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnStatusNotificationRequest?.Invoke(startTime,
+                                                    this,
+                                                    Request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnStatusNotificationRequest));
+            }
+
+            #endregion
+
+
+            OCPPv2_1.CSMS.StatusNotificationResponse? response = null;
+
+            if (!SignaturePolicy.SignRequestMessage(
+                    Request,
+                    Request.ToJSON(
+                        CustomStatusNotificationRequestSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse
+                ))
+            {
+
+                response  = new OCPPv2_1.CSMS.StatusNotificationResponse(
+                                Request,
+                                Result.SignatureError(errorResponse)
+                            );
+
+            }
+
+            // ToDo: Currently hardcoded CSMS lookup!
+            else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
+            {
+
+                response  = AsCS.CSClient is not null
+
+                                ? await AsCS.CSClient.StatusNotification(Request)
+
+                                : new OCPPv2_1.CSMS.StatusNotificationResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+            }
+
+            else
+            {
+                // ...
+            }
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomStatusNotificationResponseSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
+
+
+            #region Send OnStatusNotificationResponse event
+
+            var endTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+
+            try
+            {
+
+                OnStatusNotificationResponse?.Invoke(endTime,
+                                                     this,
+                                                     Request,
+                                                     response,
+                                                     endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnStatusNotificationResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region SendMeterValues                       (Request)
+
+        /// <summary>
+        /// Send a meter values for the given connector.
+        /// </summary>
+        /// <param name="EVSEId">The EVSE identification at the charging station.</param>
+        /// <param name="MeterValues">The sampled meter values with timestamps.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<OCPPv2_1.CSMS.MeterValuesResponse>
+            MeterValues(OCPPv2_1.CS.MeterValuesRequest Request)
+
+        {
+
+            #region Send OnMeterValuesRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnMeterValuesRequest?.Invoke(startTime,
+                                             this,
+                                             Request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnMeterValuesRequest));
+            }
+
+            #endregion
+
+
+            OCPPv2_1.CSMS.MeterValuesResponse? response = null;
+
+            if (!SignaturePolicy.SignRequestMessage(
+                    Request,
+                    Request.ToJSON(
+                        CustomMeterValuesRequestSerializer,
+                        CustomMeterValueSerializer,
+                        CustomSampledValueSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse
+                ))
+            {
+
+                response  = new OCPPv2_1.CSMS.MeterValuesResponse(
+                                Request,
+                                Result.SignatureError(errorResponse)
+                            );
+
+            }
+
+            // ToDo: Currently hardcoded CSMS lookup!
+            else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
+            {
+
+                response  = AsCS.CSClient is not null
+
+                                ? await AsCS.CSClient.MeterValues(Request)
+
+                                : new OCPPv2_1.CSMS.MeterValuesResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+            }
+
+            else
+            {
+                // ...
+            }
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomMeterValuesResponseSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
+
+
+            #region Send OnMeterValuesResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnMeterValuesResponse?.Invoke(endTime,
+                                              this,
+                                              Request,
+                                              response,
+                                              endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnMeterValuesResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region NotifyChargingLimit                   (Request)
+
+        /// <summary>
+        /// Notify about a charging limit.
+        /// </summary>
+        /// <param name="ChargingLimit">The charging limit, its source and whether it is grid critical.</param>
+        /// <param name="ChargingSchedules">Limits for the available power or current over time, as set by the external source.</param>
+        /// <param name="EVSEId">An optional EVSE identification, when the charging schedule contained in this notification applies to an EVSE.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<OCPPv2_1.CSMS.NotifyChargingLimitResponse>
+            NotifyChargingLimit(OCPPv2_1.CS.NotifyChargingLimitRequest Request)
+
+        {
+
+            #region Send OnNotifyChargingLimitRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnNotifyChargingLimitRequest?.Invoke(startTime,
+                                                     this,
+                                                     Request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyChargingLimitRequest));
+            }
+
+            #endregion
+
+
+            OCPPv2_1.CSMS.NotifyChargingLimitResponse? response = null;
+
+            if (!SignaturePolicy.SignRequestMessage(
+                    Request,
+                    Request.ToJSON(
+
+                        CustomNotifyChargingLimitRequestSerializer,
+                        CustomChargingScheduleSerializer,
+                        CustomLimitBeyondSoCSerializer,
+                        CustomChargingSchedulePeriodSerializer,
+                        CustomV2XFreqWattEntrySerializer,
+                        CustomV2XSignalWattEntrySerializer,
+                        CustomSalesTariffSerializer,
+                        CustomSalesTariffEntrySerializer,
+                        CustomRelativeTimeIntervalSerializer,
+                        CustomConsumptionCostSerializer,
+                        CustomCostSerializer,
+
+                        CustomAbsolutePriceScheduleSerializer,
+                        CustomPriceRuleStackSerializer,
+                        CustomPriceRuleSerializer,
+                        CustomTaxRuleSerializer,
+                        CustomOverstayRuleListSerializer,
+                        CustomOverstayRuleSerializer,
+                        CustomAdditionalServiceSerializer,
+
+                        CustomPriceLevelScheduleSerializer,
+                        CustomPriceLevelScheduleEntrySerializer,
+
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+
+                    ),
+                    out var errorResponse
+                ))
+            {
+
+                response  = new OCPPv2_1.CSMS.NotifyChargingLimitResponse(
+                                Request,
+                                Result.SignatureError(errorResponse)
+                            );
+
+            }
+
+            // ToDo: Currently hardcoded CSMS lookup!
+            else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
+            {
+
+                response  = AsCS.CSClient is not null
+
+                                ? await AsCS.CSClient.NotifyChargingLimit(Request)
+
+                                : new OCPPv2_1.CSMS.NotifyChargingLimitResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+            }
+
+            else
+            {
+                // ...
+            }
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomNotifyChargingLimitResponseSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
+
+
+            #region Send OnNotifyChargingLimitResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnNotifyChargingLimitResponse?.Invoke(endTime,
+                                                      this,
+                                                      Request,
+                                                      response,
+                                                      endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyChargingLimitResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region SendClearedChargingLimit              (Request)
+
+        /// <summary>
+        /// Send a heartbeat.
+        /// </summary>
+        /// <param name="ChargingLimitSource">A source of the charging limit.</param>
+        /// <param name="EVSEId">An optional EVSE identification.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<OCPPv2_1.CSMS.ClearedChargingLimitResponse>
+            ClearedChargingLimit(OCPPv2_1.CS.ClearedChargingLimitRequest Request)
+
+        {
+
+            #region Send OnClearedChargingLimitRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnClearedChargingLimitRequest?.Invoke(startTime,
+                                                      this,
+                                                      Request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnClearedChargingLimitRequest));
+            }
+
+            #endregion
+
+
+            OCPPv2_1.CSMS.ClearedChargingLimitResponse? response = null;
+
+            if (!SignaturePolicy.SignRequestMessage(
+                    Request,
+                    Request.ToJSON(
+                        CustomClearedChargingLimitRequestSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse
+                ))
+            {
+
+                response  = new OCPPv2_1.CSMS.ClearedChargingLimitResponse(
+                                Request,
+                                Result.SignatureError(errorResponse)
+                            );
+
+            }
+
+            // ToDo: Currently hardcoded CSMS lookup!
+            else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
+            {
+
+                response  = AsCS.CSClient is not null
+
+                                ? await AsCS.CSClient.ClearedChargingLimit(Request)
+
+                                : new OCPPv2_1.CSMS.ClearedChargingLimitResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+            }
+
+            else
+            {
+                // ...
+            }
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomClearedChargingLimitResponseSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
+
+
+            #region Send OnClearedChargingLimitResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnClearedChargingLimitResponse?.Invoke(endTime,
+                                                       this,
+                                                       Request,
+                                                       response,
+                                                       endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnClearedChargingLimitResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region ReportChargingProfiles                (Request)
+
+        /// <summary>
+        /// Report about all charging profiles.
+        /// </summary>
+        /// <param name="ReportChargingProfilesRequestId">The request identification used to match the GetChargingProfilesRequest message with the resulting ReportChargingProfilesRequest messages. When the CSMS provided a requestId in the GetChargingProfilesRequest, this field SHALL contain the same value.</param>
+        /// <param name="ChargingLimitSource">The source that has installed this charging profile.</param>
+        /// <param name="EVSEId">The evse to which the charging profile applies. If evseId = 0, the message contains an overall limit for the charging station.</param>
+        /// <param name="ChargingProfiles">The enumeration of charging profiles.</param>
+        /// <param name="ToBeContinued">The optional "to be continued" indicator whether another part of the charging profiles follows. Default value when omitted is false.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<OCPPv2_1.CSMS.ReportChargingProfilesResponse>
+            ReportChargingProfiles(OCPPv2_1.CS.ReportChargingProfilesRequest Request)
+
+        {
+
+            #region Send OnReportChargingProfilesRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnReportChargingProfilesRequest?.Invoke(startTime,
+                                                        this,
+                                                        Request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnReportChargingProfilesRequest));
+            }
+
+            #endregion
+
+
+            OCPPv2_1.CSMS.ReportChargingProfilesResponse? response = null;
+
+            if (!SignaturePolicy.SignRequestMessage(
+                    Request,
+                    Request.ToJSON(
+
+                        CustomReportChargingProfilesRequestSerializer,
+                        CustomChargingProfileSerializer,
+                        CustomLimitBeyondSoCSerializer,
+                        CustomChargingScheduleSerializer,
+                        CustomChargingSchedulePeriodSerializer,
+                        CustomV2XFreqWattEntrySerializer,
+                        CustomV2XSignalWattEntrySerializer,
+                        CustomSalesTariffSerializer,
+                        CustomSalesTariffEntrySerializer,
+                        CustomRelativeTimeIntervalSerializer,
+                        CustomConsumptionCostSerializer,
+                        CustomCostSerializer,
+
+                        CustomAbsolutePriceScheduleSerializer,
+                        CustomPriceRuleStackSerializer,
+                        CustomPriceRuleSerializer,
+                        CustomTaxRuleSerializer,
+                        CustomOverstayRuleListSerializer,
+                        CustomOverstayRuleSerializer,
+                        CustomAdditionalServiceSerializer,
+
+                        CustomPriceLevelScheduleSerializer,
+                        CustomPriceLevelScheduleEntrySerializer,
+
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+
+                    ),
+                    out var errorResponse
+                ))
+            {
+
+                response  = new OCPPv2_1.CSMS.ReportChargingProfilesResponse(
+                                Request,
+                                Result.SignatureError(errorResponse)
+                            );
+
+            }
+
+            // ToDo: Currently hardcoded CSMS lookup!
+            else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
+            {
+
+                response  = AsCS.CSClient is not null
+
+                                ? await AsCS.CSClient.ReportChargingProfiles(Request)
+
+                                : new OCPPv2_1.CSMS.ReportChargingProfilesResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+            }
+
+            else
+            {
+                // ...
+            }
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomReportChargingProfilesResponseSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
+
+
+            #region Send OnReportChargingProfilesResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnReportChargingProfilesResponse?.Invoke(endTime,
+                                                         this,
+                                                         Request,
+                                                         response,
+                                                         endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnReportChargingProfilesResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region NotifyEVChargingSchedule              (Request)
+
+        /// <summary>
+        /// Notify about an EV charging schedule.
+        /// </summary>
+        /// <param name="NotifyEVChargingScheduleRequestId">The request identification used to match the GetChargingProfilesRequest message with the resulting NotifyEVChargingScheduleRequest messages. When the CSMS provided a requestId in the GetChargingProfilesRequest, this field SHALL contain the same value.</param>
+        /// <param name="TimeBase">The charging periods contained within the charging schedule are relative to this time base.</param>
+        /// <param name="EVSEId">The charging schedule applies to this EVSE.</param>
+        /// <param name="ChargingSchedule">Planned energy consumption of the EV over time. Always relative to the time base.</param>
+        /// <param name="SelectedScheduleTupleId">The optional identification of the selected charging schedule from the provided charging profile.</param>
+        /// <param name="PowerToleranceAcceptance">True when power tolerance is accepted.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<OCPPv2_1.CSMS.NotifyEVChargingScheduleResponse>
+            NotifyEVChargingSchedule(OCPPv2_1.CS.NotifyEVChargingScheduleRequest Request)
+
+        {
+
+            #region Send OnNotifyEVChargingScheduleRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnNotifyEVChargingScheduleRequest?.Invoke(startTime,
+                                                          this,
+                                                          Request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyEVChargingScheduleRequest));
+            }
+
+            #endregion
+
+
+            OCPPv2_1.CSMS.NotifyEVChargingScheduleResponse? response = null;
+
+            if (!SignaturePolicy.SignRequestMessage(
+                    Request,
+                    Request.ToJSON(
+
+                        CustomNotifyEVChargingScheduleRequestSerializer,
+                        CustomChargingScheduleSerializer,
+                        CustomLimitBeyondSoCSerializer,
+                        CustomChargingSchedulePeriodSerializer,
+                        CustomV2XFreqWattEntrySerializer,
+                        CustomV2XSignalWattEntrySerializer,
+                        CustomSalesTariffSerializer,
+                        CustomSalesTariffEntrySerializer,
+                        CustomRelativeTimeIntervalSerializer,
+                        CustomConsumptionCostSerializer,
+                        CustomCostSerializer,
+
+                        CustomAbsolutePriceScheduleSerializer,
+                        CustomPriceRuleStackSerializer,
+                        CustomPriceRuleSerializer,
+                        CustomTaxRuleSerializer,
+                        CustomOverstayRuleListSerializer,
+                        CustomOverstayRuleSerializer,
+                        CustomAdditionalServiceSerializer,
+
+                        CustomPriceLevelScheduleSerializer,
+                        CustomPriceLevelScheduleEntrySerializer,
+
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+
+                    ),
+                    out var errorResponse
+                ))
+            {
+
+                response  = new OCPPv2_1.CSMS.NotifyEVChargingScheduleResponse(
+                                Request,
+                                Result.SignatureError(errorResponse)
+                            );
+
+            }
+
+            // ToDo: Currently hardcoded CSMS lookup!
+            else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
+            {
+
+                response  = AsCS.CSClient is not null
+
+                                ? await AsCS.CSClient.NotifyEVChargingSchedule(Request)
+
+                                : new OCPPv2_1.CSMS.NotifyEVChargingScheduleResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+            }
+
+            else
+            {
+                // ...
+            }
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomNotifyEVChargingScheduleResponseSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
+
+
+            #region Send OnNotifyEVChargingScheduleResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnNotifyEVChargingScheduleResponse?.Invoke(endTime,
+                                                           this,
+                                                           Request,
+                                                           response,
+                                                           endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyEVChargingScheduleResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region NotifyPriorityCharging                (Request)
+
+        /// <summary>
+        /// Notify about priority charging.
+        /// </summary>
+        /// <param name="NotifyPriorityChargingRequestId">The request identification used to match the GetChargingProfilesRequest message with the resulting NotifyPriorityChargingRequest messages. When the CSMS provided a requestId in the GetChargingProfilesRequest, this field SHALL contain the same value.</param>
+        /// <param name="TransactionId">The transaction for which priority charging is requested.</param>
+        /// <param name="Activated">True, when priority charging was activated, or false, when it has stopped using the priority charging profile.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<OCPPv2_1.CSMS.NotifyPriorityChargingResponse>
+            NotifyPriorityCharging(OCPPv2_1.CS.NotifyPriorityChargingRequest Request)
+
+        {
+
+            #region Send OnNotifyPriorityChargingRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnNotifyPriorityChargingRequest?.Invoke(startTime,
+                                                        this,
+                                                        Request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyPriorityChargingRequest));
+            }
+
+            #endregion
+
+
+            OCPPv2_1.CSMS.NotifyPriorityChargingResponse? response = null;
+
+            if (!SignaturePolicy.SignRequestMessage(
+                    Request,
+                    Request.ToJSON(
+                        CustomNotifyPriorityChargingRequestSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse
+                ))
+            {
+
+                response  = new OCPPv2_1.CSMS.NotifyPriorityChargingResponse(
+                                Request,
+                                Result.SignatureError(errorResponse)
+                            );
+
+            }
+
+            // ToDo: Currently hardcoded CSMS lookup!
+            else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
+            {
+
+                response  = AsCS.CSClient is not null
+
+                                ? await AsCS.CSClient.NotifyPriorityCharging(Request)
+
+                                : new OCPPv2_1.CSMS.NotifyPriorityChargingResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+            }
+
+            else
+            {
+                // ...
+            }
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomNotifyPriorityChargingResponseSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
+
+
+            #region Send OnNotifyPriorityChargingResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnNotifyPriorityChargingResponse?.Invoke(endTime,
+                                                         this,
+                                                         Request,
+                                                         response,
+                                                         endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyPriorityChargingResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region PullDynamicScheduleUpdate             (Request)
+
+        /// <summary>
+        /// Report about all charging profiles.
+        /// </summary>
+        /// <param name="PullDynamicScheduleUpdateRequestId">The request identification used to match the GetChargingProfilesRequest message with the resulting PullDynamicScheduleUpdateRequest messages. When the CSMS provided a requestId in the GetChargingProfilesRequest, this field SHALL contain the same value.</param>
+        /// <param name="ChargingProfileId">The identification of the charging profile for which an update is requested.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<OCPPv2_1.CSMS.PullDynamicScheduleUpdateResponse>
+            PullDynamicScheduleUpdate(OCPPv2_1.CS.PullDynamicScheduleUpdateRequest Request)
+
+        {
+
+            #region Send OnPullDynamicScheduleUpdateRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnPullDynamicScheduleUpdateRequest?.Invoke(startTime,
+                                                           this,
+                                                           Request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnPullDynamicScheduleUpdateRequest));
+            }
+
+            #endregion
+
+
+            OCPPv2_1.CSMS.PullDynamicScheduleUpdateResponse? response = null;
+
+            if (!SignaturePolicy.SignRequestMessage(
+                    Request,
+                    Request.ToJSON(
+                        CustomPullDynamicScheduleUpdateRequestSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse
+                ))
+            {
+
+                response  = new OCPPv2_1.CSMS.PullDynamicScheduleUpdateResponse(
+                                Request,
+                                Result.SignatureError(errorResponse)
+                            );
+
+            }
+
+            // ToDo: Currently hardcoded CSMS lookup!
+            else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
+            {
+
+                response  = AsCS.CSClient is not null
+
+                                ? await AsCS.CSClient.PullDynamicScheduleUpdate(Request)
+
+                                : new OCPPv2_1.CSMS.PullDynamicScheduleUpdateResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+            }
+
+            else
+            {
+                // ...
+            }
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomPullDynamicScheduleUpdateResponseSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
+
+
+            #region Send OnPullDynamicScheduleUpdateResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnPullDynamicScheduleUpdateResponse?.Invoke(endTime,
+                                                            this,
+                                                            Request,
+                                                            response,
+                                                            endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnPullDynamicScheduleUpdateResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+
+        #region NotifyDisplayMessages                 (Request)
+
+        /// <summary>
+        /// NotifyDisplayMessages the given token.
+        /// </summary>
+        /// <param name="NotifyDisplayMessagesRequestId">The unique identification of the notify display messages request.</param>
+        /// <param name="MessageInfos">The requested display messages as configured in the charging station.</param>
+        /// <param name="ToBeContinued">The optional "to be continued" indicator whether another part of the monitoring data follows in an upcoming NotifyDisplayMessagesRequest message. Default value when omitted is false.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<OCPPv2_1.CSMS.NotifyDisplayMessagesResponse>
+            NotifyDisplayMessages(OCPPv2_1.CS.NotifyDisplayMessagesRequest Request)
+
+        {
+
+            #region Send OnNotifyDisplayMessagesRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnNotifyDisplayMessagesRequest?.Invoke(startTime,
+                                                       this,
+                                                       Request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyDisplayMessagesRequest));
+            }
+
+            #endregion
+
+
+            OCPPv2_1.CSMS.NotifyDisplayMessagesResponse? response = null;
+
+            if (!SignaturePolicy.SignRequestMessage(
+                    Request,
+                    Request.ToJSON(
+                        CustomNotifyDisplayMessagesRequestSerializer,
+                        CustomMessageInfoSerializer,
+                        CustomMessageContentSerializer,
+                        CustomComponentSerializer,
+                        CustomEVSESerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse
+                ))
+            {
+
+                response  = new OCPPv2_1.CSMS.NotifyDisplayMessagesResponse(
+                                Request,
+                                Result.SignatureError(errorResponse)
+                            );
+
+            }
+
+            // ToDo: Currently hardcoded CSMS lookup!
+            else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
+            {
+
+                response  = AsCS.CSClient is not null
+
+                                ? await AsCS.CSClient.NotifyDisplayMessages(Request)
+
+                                : new OCPPv2_1.CSMS.NotifyDisplayMessagesResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+            }
+
+            else
+            {
+                // ...
+            }
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomNotifyDisplayMessagesResponseSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
+
+
+            #region Send OnNotifyDisplayMessagesResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnNotifyDisplayMessagesResponse?.Invoke(endTime,
+                                                        this,
+                                                        Request,
+                                                        response,
+                                                        endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyDisplayMessagesResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region NotifyCustomerInformation             (Request)
+
+        /// <summary>
+        /// NotifyCustomerInformation the given token.
+        /// </summary>
+        /// <param name="NotifyCustomerInformationRequestId">The unique identification of the notify customer information request.</param>
+        /// <param name="Data">The requested data or a part of the requested data. No format specified in which the data is returned.</param>
+        /// <param name="SequenceNumber">The sequence number of this message. First message starts at 0.</param>
+        /// <param name="GeneratedAt">The timestamp of the moment this message was generated at the charging station.</param>
+        /// <param name="ToBeContinued">The optional "to be continued" indicator whether another part of the monitoring data follows in an upcoming NotifyCustomerInformationRequest message. Default value when omitted is false.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<OCPPv2_1.CSMS.NotifyCustomerInformationResponse>
+            NotifyCustomerInformation(OCPPv2_1.CS.NotifyCustomerInformationRequest Request)
+
+        {
+
+            #region Send OnNotifyCustomerInformationRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnNotifyCustomerInformationRequest?.Invoke(startTime,
+                                                           this,
+                                                           Request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyCustomerInformationRequest));
+            }
+
+            #endregion
+
+
+            OCPPv2_1.CSMS.NotifyCustomerInformationResponse? response = null;
+
+            if (!SignaturePolicy.SignRequestMessage(
+                    Request,
+                    Request.ToJSON(
+                        CustomNotifyCustomerInformationRequestSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse
+                ))
+            {
+
+                response  = new OCPPv2_1.CSMS.NotifyCustomerInformationResponse(
+                                Request,
+                                Result.SignatureError(errorResponse)
+                            );
+
+            }
+
+            // ToDo: Currently hardcoded CSMS lookup!
+            else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
+            {
+
+                response  = AsCS.CSClient is not null
+
+                                ? await AsCS.CSClient.NotifyCustomerInformation(Request)
+
+                                : new OCPPv2_1.CSMS.NotifyCustomerInformationResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+            }
+
+            else
+            {
+                // ...
+            }
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomNotifyCustomerInformationResponseSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
+
+
+            #region Send OnNotifyCustomerInformationResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnNotifyCustomerInformationResponse?.Invoke(endTime,
+                                                            this,
+                                                            Request,
+                                                            response,
+                                                            endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyCustomerInformationResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #endregion
+
+
+        // Binary Data Streams Extensions
+
+        #region TransferBinaryData                    (Request)
+
+        /// <summary>
+        /// Send the given vendor-specific binary data to the CSMS.
+        /// </summary>
+        /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
+        /// <param name="MessageId">An optional message identification.</param>
+        /// <param name="BinaryData">A vendor-specific JSON token.</param>
+        /// <param name="CustomBinaryData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<OCPP.CSMS.BinaryDataTransferResponse>
+            BinaryDataTransfer(OCPP.CS.BinaryDataTransferRequest Request)
+
+        {
+
+            #region Send OnBinaryDataTransferRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnBinaryDataTransferRequest?.Invoke(startTime,
+                                                    this,
+                                                    Request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnBinaryDataTransferRequest));
+            }
+
+            #endregion
+
+
+            OCPP.CSMS.BinaryDataTransferResponse? response = null;
+
+            if (!SignaturePolicy.SignRequestMessage(
+                    Request,
+                    Request.ToBinary(
+                        CustomBinaryDataTransferRequestSerializer,
+                        CustomBinarySignatureSerializer,
+                        IncludeSignatures: false
+                    ),
+                    out var errorResponse
+                ))
+            {
+
+                response  = new OCPP.CSMS.BinaryDataTransferResponse(
+                                Request,
+                                Result.SignatureError(errorResponse)
+                            );
+
+            }
+
+            // ToDo: Currently hardcoded CSMS lookup!
+            else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
+            {
+
+                response  = AsCS.CSClient is not null
+
+                                ? await AsCS.CSClient.BinaryDataTransfer(Request)
+
+                                : new OCPP.CSMS.BinaryDataTransferResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+            }
+
+            else
+            {
+                // ...
+            }
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToBinary(
+                    CustomBinaryDataTransferResponseSerializer,
+                    null, //CustomStatusInfoSerializer,
+                    CustomBinarySignatureSerializer,
+                    IncludeSignatures: false
+                ),
+                out errorResponse
+            );
+
+
+            #region Send OnBinaryDataTransferResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnBinaryDataTransferResponse?.Invoke(endTime,
+                                                     this,
+                                                     Request,
+                                                     response,
+                                                     endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnBinaryDataTransferResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
 
         // Overlay Networking Extensions
 
@@ -32569,6 +31411,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             return response;
 
+        }
+
+        public void Dispose()
+        {
+            throw new NotImplementedException();
         }
 
         #endregion
