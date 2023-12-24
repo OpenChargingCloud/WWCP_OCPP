@@ -36,10 +36,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnResetRequestDelegate(DateTime                    Timestamp,
-                               IEventSender                Sender,
-                               WebSocketClientConnection   Connection,
-                               ResetRequest                Request);
+        OnResetRequestDelegate(DateTime               Timestamp,
+                               IEventSender           Sender,
+                               IWebSocketConnection   Connection,
+                               ResetRequest           Request);
 
 
     /// <summary>
@@ -52,11 +52,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<ResetResponse>
 
-        OnResetDelegate(DateTime                    Timestamp,
-                        IEventSender                Sender,
-                        WebSocketClientConnection   Connection,
-                        ResetRequest                Request,
-                        CancellationToken           CancellationToken);
+        OnResetDelegate(DateTime               Timestamp,
+                        IEventSender           Sender,
+                        IWebSocketConnection   Connection,
+                        ResetRequest           Request,
+                        CancellationToken      CancellationToken);
 
 
     /// <summary>
@@ -70,11 +70,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnResetResponseDelegate(DateTime                    Timestamp,
-                                IEventSender                Sender,
-                                WebSocketClientConnection   Connection,
-                                ResetRequest                Request,
-                                ResetResponse               Response,
-                                TimeSpan                    Runtime);
+        OnResetResponseDelegate(DateTime               Timestamp,
+                                IEventSender           Sender,
+                                IWebSocketConnection   Connection,
+                                ResetRequest           Request,
+                                ResetResponse          Response,
+                                TimeSpan               Runtime);
 
 }

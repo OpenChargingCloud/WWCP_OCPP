@@ -418,32 +418,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnResetRequest/-Response
 
-            this.NetworkingNode.AsCSMS.OnResetRequest += async (logTimestamp,
+            this.NetworkingNode.OUT.OnResetRequest += async (logTimestamp,
                                                         sender,
                                                         request) =>
 
-                await this.EventLog.SubmitEvent("OnResetRequest",
+                await this.EventLog.SubmitEvent(nameof(NetworkingNode.OUT.OnResetRequest),
                                                 new JObject(
-                                                    new JProperty("timestamp",          logTimestamp.           ToIso8601()),
+                                                    new JProperty("timestamp",          logTimestamp.             ToIso8601()),
                                                     new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
-                                                    new JProperty("request",            request.                ToJSON()),
-                                                    new JProperty("eventTrackingId",    request.EventTrackingId.ToString())
+                                                    new JProperty("request",            request.                  ToJSON()),
+                                                    new JProperty("eventTrackingId",    request.EventTrackingId.  ToString())
                                                 ));
 
 
-            this.NetworkingNode.AsCSMS.OnResetResponse += async (logTimestamp,
+            this.NetworkingNode.OUT.OnResetResponse += async (logTimestamp,
                                                          sender,
                                                          request,
                                                          response,
                                                          runtime) =>
 
-                await this.EventLog.SubmitEvent("OnResetResponse",
+                await this.EventLog.SubmitEvent(nameof(NetworkingNode.OUT.OnResetResponse),
                                                 new JObject(
-                                                    new JProperty("timestamp",          logTimestamp.           ToIso8601()),
+                                                    new JProperty("timestamp",          logTimestamp.             ToIso8601()),
                                                     new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
-                                                    new JProperty("eventTrackingId",    request.EventTrackingId.ToString()),
-                                                    new JProperty("request",            request.                ToJSON()),
-                                                    new JProperty("response",           response.               ToJSON()),
+                                                    new JProperty("eventTrackingId",    request.EventTrackingId.  ToString()),
+                                                    new JProperty("request",            request.                  ToJSON()),
+                                                    new JProperty("response",           response.                 ToJSON()),
                                                     new JProperty("runtime",            runtime.TotalMilliseconds)
                                                 ));
 

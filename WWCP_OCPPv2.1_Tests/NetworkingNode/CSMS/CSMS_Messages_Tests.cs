@@ -64,15 +64,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
                 chargingStation3        is not null)
             {
 
-                var nnResetRequests = new ConcurrentList<ResetRequest>();
-                var csResetRequests = new ConcurrentList<ResetRequest>();
+                var nnResetRequestsIN   = new ConcurrentList<ResetRequest>();
+                var nnResetRequestsOUT  = new ConcurrentList<ResetRequest>();
+                var csResetRequests     = new ConcurrentList<ResetRequest>();
 
-                networkingNode1.AsCS.OnResetRequest += (timestamp, sender, connection, resetRequest) => {
-                    nnResetRequests.TryAdd(resetRequest);
+                networkingNode1.IN. OnResetRequest += (timestamp, sender, connection, resetRequest) => {
+                    nnResetRequestsIN.TryAdd(resetRequest);
                     return Task.CompletedTask;
                 };
 
-                chargingStation1.OnResetRequest += (timestamp, sender, connection, resetRequest) => {
+                networkingNode1.OUT.OnResetRequest += (timestamp, sender,             resetRequest) => {
+                    nnResetRequestsOUT.TryAdd(resetRequest);
+                    return Task.CompletedTask;
+                };
+
+                chargingStation1.   OnResetRequest += (timestamp, sender, connection, resetRequest) => {
                     csResetRequests.TryAdd(resetRequest);
                     return Task.CompletedTask;
                 };
@@ -93,24 +99,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
 
                 Assert.Multiple(() => {
 
-                    Assert.That(response.Result.ResultCode,                   Is.EqualTo(ResultCode.OK));
-                    Assert.That(response.Status,                              Is.EqualTo(ResetStatus.Accepted));
+                    Assert.That(response.Result.ResultCode,                      Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                                 Is.EqualTo(ResetStatus.Accepted));
 
-                    Assert.That(nnResetRequests.Count,                        Is.EqualTo(1), "The ResetRequest did not reach the networking node!");
-                    Assert.That(nnResetRequests.First().DestinationNodeId,    Is.EqualTo(chargingStation1.Id));
-                    Assert.That(nnResetRequests.First().NetworkPath.Length,   Is.EqualTo(1));
-                    Assert.That(nnResetRequests.First().NetworkPath.Source,   Is.EqualTo(testCSMS01.      Id.ToNetworkingNodeId));
-                    Assert.That(nnResetRequests.First().NetworkPath.Last,     Is.EqualTo(testCSMS01.      Id.ToNetworkingNodeId));
+                    Assert.That(nnResetRequestsIN. Count,                        Is.EqualTo(1), "The ResetRequest did not reach the networking node!");
+                    Assert.That(nnResetRequestsIN. First().DestinationNodeId,    Is.EqualTo(chargingStation1.Id));
+                    Assert.That(nnResetRequestsIN. First().NetworkPath.Length,   Is.EqualTo(1));
+                    Assert.That(nnResetRequestsIN. First().NetworkPath.Source,   Is.EqualTo(testCSMS01.      Id.ToNetworkingNodeId));
+                    Assert.That(nnResetRequestsIN. First().NetworkPath.Last,     Is.EqualTo(testCSMS01.      Id.ToNetworkingNodeId));
 
-                    Assert.That(csResetRequests.Count,                        Is.EqualTo(1), "The ResetRequest did not reach the charging station!");
-                    //Assert.That(csResetRequests.First().DestinationNodeId,    Is.EqualTo(chargingStation1.Id));
-                    //Assert.That(csResetRequests.First().NetworkPath.Length,   Is.EqualTo(2));
-                    //Assert.That(csResetRequests.First().NetworkPath.Source,   Is.EqualTo(testCSMS01.      Id.ToNetworkingNodeId));
-                    //Assert.That(csResetRequests.First().NetworkPath.Last,     Is.EqualTo(networkingNode1. Id));
+                    Assert.That(nnResetRequestsOUT.Count,                        Is.EqualTo(1), "The ResetRequest did not reach the networking node!");
+                    Assert.That(nnResetRequestsOUT.First().DestinationNodeId,    Is.EqualTo(chargingStation1.Id));
+                    Assert.That(nnResetRequestsOUT.First().NetworkPath.Length,   Is.EqualTo(1));
+                    Assert.That(nnResetRequestsOUT.First().NetworkPath.Source,   Is.EqualTo(testCSMS01.      Id.ToNetworkingNodeId));
+                    Assert.That(nnResetRequestsOUT.First().NetworkPath.Last,     Is.EqualTo(testCSMS01.      Id.ToNetworkingNodeId));
 
+                    Assert.That(csResetRequests.   Count,                        Is.EqualTo(1), "The ResetRequest did not reach the charging station!");
                     // Because of 'standard' networking mode towards the charging station!
-                    Assert.That(csResetRequests.First().DestinationNodeId,    Is.EqualTo(NetworkingNode_Id.Zero));
-                    Assert.That(csResetRequests.First().NetworkPath.Length,   Is.EqualTo(0));
+                    Assert.That(csResetRequests.   First().DestinationNodeId,    Is.EqualTo(NetworkingNode_Id.Zero));
+                    Assert.That(csResetRequests.   First().NetworkPath.Length,   Is.EqualTo(0));
 
                 });
 

@@ -18,11 +18,13 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS;
-using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
@@ -33,7 +35,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
                                          INetworkingNodeIncomingMessagesEvents
     {
 
+        #region Reset
 
+        Task RaiseOnResetRequest (DateTime               Timestamp,
+                                  IEventSender           Sender,
+                                  IWebSocketConnection   Connection,
+                                  ResetRequest           Request);
+
+        Task RaiseOnResetResponse(DateTime               Timestamp,
+                                  IEventSender           Sender,
+                                  IWebSocketConnection   Connection,
+                                  ResetRequest           Request,
+                                  ResetResponse          Response,
+                                  TimeSpan               Runtime);
+
+        #endregion
 
     }
 
@@ -49,7 +65,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
 
     {
 
+        #region Reset
 
+        Task RaiseOnResetRequest (DateTime               Timestamp,
+                                  IEventSender           Sender,
+                                  ResetRequest           Request);
+
+        Task RaiseOnResetResponse(DateTime               Timestamp,
+                                  IEventSender           Sender,
+                                  ResetRequest           Request,
+                                  ResetResponse          Response,
+                                  TimeSpan               Runtime);
+
+        #endregion
 
     }
 
