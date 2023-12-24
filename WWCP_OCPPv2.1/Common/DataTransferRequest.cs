@@ -17,18 +17,15 @@
 
 #region Usings
 
-using System.Xml.Linq;
-
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.OCPP;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
+namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
@@ -43,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// The JSON-LD context of this object.
         /// </summary>
-        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/v2.1/csms/dataTransferRequest");
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/v2.1/cs/dataTransferRequest");
 
         #endregion
 
@@ -62,13 +59,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public Vendor_Id      VendorId     { get; }
 
         /// <summary>
-        /// An optional message identification field.
+        /// The optional message identification.
         /// </summary>
         [Optional]
         public Message_Id?    MessageId    { get; }
 
         /// <summary>
-        /// Optional message data without specified length or format.
+        /// Optional vendor-specific message data (a JSON token).
         /// </summary>
         [Optional]
         public JToken?        Data         { get; }
@@ -80,10 +77,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new data transfer request.
         /// </summary>
-        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
         /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
         /// <param name="MessageId">An optional message identification.</param>
-        /// <param name="Data">Optional vendor-specific data (a JSON token).</param>
+        /// <param name="Data">Optional vendor-specific message data (a JSON token).</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
@@ -153,7 +150,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         // <soap:Envelope xmlns:soap = "http://www.w3.org/2003/05/soap-envelope"
         //                xmlns:wsa  = "http://www.w3.org/2005/08/addressing"
-        //                xmlns:ns   = "urn://Ocpp/Cp/2015/10/">
+        //                xmlns:ns   = "urn://Ocpp/Cs/2015/10/">
         //
         //    <soap:Header>
         //       ...
@@ -222,43 +219,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (XML,  RequestId, NetworkingNodeId, NetworkPath, OnException = null)
-
-        /// <summary>
-        /// Parse the given XML representation of a data transfer request.
-        /// </summary>
-        /// <param name="XML">The XML to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static DataTransferRequest Parse(XElement              XML,
-                                                XNamespace            XMLNamespace,
-                                                Request_Id            RequestId,
-                                                NetworkPath           NetworkPath,
-                                                NetworkingNode_Id     NetworkingNodeId,
-                                                OnExceptionDelegate?  OnException   = null)
-        {
-
-            if (TryParse(XML,
-                         XMLNamespace,
-                         RequestId,
-                         NetworkingNodeId,
-                         NetworkPath,
-                         out var dataTransferRequest,
-                         OnException) &&
-                dataTransferRequest is not null)
-            {
-                return dataTransferRequest;
-            }
-
-            throw new ArgumentException("The given XML representation of a data transfer request is invalid: ", // + errorResponse,
-                                        nameof(XML));
-
-        }
-
-        #endregion
-
         #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomDataTransferRequestParser = null)
 
         /// <summary>
@@ -266,7 +226,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomDataTransferRequestParser">A delegate to parse custom data transfer requests.</param>
         public static DataTransferRequest Parse(JObject                                            JSON,
@@ -295,56 +255,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(XML,  RequestId, NetworkingNodeId, NetworkPath, out DataTransferRequest, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given XML representation of a data transfer request.
-        /// </summary>
-        /// <param name="XML">The XML to be parsed.</param>
-        /// <param name="XMLNamespace">The XML namespace to use.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="DataTransferRequest">The parsed DataTransfer request.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement                  XML,
-                                       XNamespace                XMLNamespace,
-                                       Request_Id                RequestId,
-                                       NetworkingNode_Id         NetworkingNodeId,
-                                       NetworkPath               NetworkPath,
-                                       out DataTransferRequest?  DataTransferRequest,
-                                       OnExceptionDelegate?      OnException   = null)
-        {
-
-            try
-            {
-
-                DataTransferRequest = new DataTransferRequest(
-                                          NetworkingNodeId,
-                                          Vendor_Id. Parse(XML.ElementValueOrFail   (XMLNamespace + "vendorId")),
-                                          Message_Id.Parse(XML.ElementValueOrDefault(XMLNamespace + "messageId")),
-                                          XML.ElementValueOrDefault(XMLNamespace + "data"),
-                                          RequestId:    RequestId,
-                                          NetworkPath:  NetworkPath
-                                      );
-
-                return true;
-
-            }
-            catch (Exception e)
-            {
-
-                OnException?.Invoke(Timestamp.Now, XML, e);
-
-                DataTransferRequest = null;
-                return false;
-
-            }
-
-        }
-
-        #endregion
-
         #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out DataTransferRequest, OnException = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
@@ -354,7 +264,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="DataTransferRequest">The parsed DataTransfer request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -379,7 +289,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="DataTransferRequest">The parsed DataTransfer request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -496,30 +406,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             }
 
         }
-
-        #endregion
-
-        #region ToXML (XMLNamespace)
-
-        /// <summary>
-        /// Return a XML representation of this object.
-        /// </summary>
-        /// <param name="XMLNamespace">The XML namespace to use.</param>
-        public XElement ToXML(XNamespace XMLNamespace) // OCPPNS.OCPPv1_6_CS
-
-            => new (XMLNamespace + "dataTransferRequest",
-
-                         new XElement(XMLNamespace + "vendorId",    VendorId),
-
-                   MessageId.IsNotNullOrEmpty()
-                       ? new XElement(XMLNamespace + "messageId",   MessageId)
-                       : null,
-
-                   Data is not null && Data.Type == JTokenType.String
-                       ? new XElement(XMLNamespace + "data",        Data.Value<String>())
-                       : null
-
-               );
 
         #endregion
 

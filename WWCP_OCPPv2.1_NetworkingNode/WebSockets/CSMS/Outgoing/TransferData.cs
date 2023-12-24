@@ -36,9 +36,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #region Custom JSON serializer delegates
 
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.DataTransferRequest>?  CustomDataTransferRequestSerializer    { get; set; }
+        public CustomJObjectSerializerDelegate<DataTransferRequest>?  CustomDataTransferRequestSerializer    { get; set; }
 
-        public CustomJObjectParserDelegate<OCPPv2_1.CS.DataTransferResponse>?       CustomDataTransferResponseParser       { get; set; }
+        public CustomJObjectParserDelegate<DataTransferResponse>?     CustomDataTransferResponseParser       { get; set; }
 
         #endregion
 
@@ -47,19 +47,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a DataTransfer request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnDataTransferRequestDelegate?     OnDataTransferRequest;
+        public event OnDataTransferRequestDelegate?     OnDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a response to a DataTransfer request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnDataTransferResponseDelegate?    OnDataTransferResponse;
+        public event OnDataTransferResponseDelegate?    OnDataTransferResponse;
 
         #endregion
 
 
         #region TransferData(Request)
 
-        public async Task<OCPPv2_1.CS.DataTransferResponse> TransferData(OCPPv2_1.CSMS.DataTransferRequest Request)
+        public async Task<DataTransferResponse> TransferData(DataTransferRequest Request)
         {
 
             #region Send OnDataTransferRequest event
@@ -81,7 +81,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
             #endregion
 
 
-            OCPPv2_1.CS.DataTransferResponse? response = null;
+            DataTransferResponse? response = null;
 
             try
             {
@@ -104,24 +104,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                     sendRequestState.JSONResponse is not null)
                 {
 
-                    if (OCPPv2_1.CS.DataTransferResponse.TryParse(Request,
-                                                              sendRequestState.JSONResponse.Payload,
-                                                              out var dataTransferResponse,
-                                                              out var errorResponse,
-                                                              CustomDataTransferResponseParser) &&
+                    if (DataTransferResponse.TryParse(Request,
+                                                      sendRequestState.JSONResponse.Payload,
+                                                      out var dataTransferResponse,
+                                                      out var errorResponse,
+                                                      CustomDataTransferResponseParser) &&
                         dataTransferResponse is not null)
                     {
                         response = dataTransferResponse;
                     }
 
-                    response ??= new OCPPv2_1.CS.DataTransferResponse(
+                    response ??= new DataTransferResponse(
                                          Request,
                                          Result.Format(errorResponse)
                                      );
 
                 }
 
-                response ??= new OCPPv2_1.CS.DataTransferResponse(
+                response ??= new DataTransferResponse(
                                      Request,
                                      Result.FromSendRequestState(sendRequestState)
                                  );
@@ -130,7 +130,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
             catch (Exception e)
             {
 
-                response = new OCPPv2_1.CS.DataTransferResponse(
+                response = new DataTransferResponse(
                                Request,
                                Result.FromException(e)
                            );

@@ -54,46 +54,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// The default HTTP user agent string.
         /// </summary>
-        public new const String  DefaultHTTPUserAgent   = $"GraphDefined OCPP {Version.String} CP WebSocket Client";
+        public new const String  DefaultHTTPUserAgent   = $"GraphDefined OCPP {Version.String} NN WebSocket Client";
 
-        private const    String  LogfileName            = "ChargePointWSClient.log";
+        private const    String  LogfileName            = "NetworkingNodeWSClient.log";
 
         #endregion
 
         #region Properties
-
-        /// <summary>
-        /// The unique identification of this networking node.
-        /// </summary>
-        public NetworkingNode_Id                     Id                              { get; }
-
-        /// <summary>
-        /// The sender identification.
-        /// </summary>
-        String IEventSender.Id
-            => Id.ToString();
-
-        /// <summary>
-        /// The source URI of the websocket message.
-        /// </summary>
-        public String                                From                            { get; }
-
-        /// <summary>
-        /// The destination URI of the websocket message.
-        /// </summary>
-        public String                                To                              { get; }
-
-        /// <summary>
-        /// The JSON formatting to use.
-        /// </summary>
-        public Formatting                            JSONFormatting                  { get; set; } = Formatting.None;
-
-        public NetworkingMode                        NetworkingMode                  { get; set; } = NetworkingMode.Standard;
-
-        /// <summary>
-        /// The attached OCPP CP client (HTTP/websocket client) logger.
-        /// </summary>
-        //public ChargePointWSClient.CPClientLogger    Logger                          { get; }
 
         #endregion
 
@@ -173,12 +140,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         #endregion
 
         #region Events
-
-        public event OnWebSocketClientJSONMessageResponseDelegate?    OnJSONMessageResponseReceived;
-        public event OnWebSocketClientJSONMessageResponseDelegate?    OnJSONMessageResponseSent;
-
-        public event OnWebSocketClientBinaryMessageResponseDelegate?  OnBinaryMessageResponseReceived;
-        public event OnWebSocketClientBinaryMessageResponseDelegate?  OnBinaryMessageResponseSent;
 
         #endregion
 
@@ -293,10 +254,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
                 throw new ArgumentNullException(nameof(To),                       "The given websocket message destination must not be null or empty!");
 
             #endregion
-
-            this.Id                       = NetworkingNodeIdentity;
-            this.From                     = From;
-            this.To                       = To;
 
             this.NetworkingMode           = NetworkingMode ?? OCPP.WebSockets.NetworkingMode.Standard;
 

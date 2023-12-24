@@ -1111,7 +1111,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<OCPP.CS.BinaryDataTransferResponse>
+        public static Task<BinaryDataTransferResponse>
 
             TransferBinaryData(this ICentralSystem           CentralSystem,
 
@@ -1133,7 +1133,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
 
                 => CentralSystem.BinaryDataTransfer(
-                       new OCPP.CSMS.BinaryDataTransferRequest(
+                       new BinaryDataTransferRequest(
                            NetworkingNodeId,
                            VendorId,
                            MessageId,

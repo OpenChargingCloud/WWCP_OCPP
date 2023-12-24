@@ -40,9 +40,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #region Custom JSON parser delegates
 
-        public CustomJObjectParserDelegate<OCPPv2_1.CS.DataTransferRequest>?         CustomDataTransferRequestParser         { get; set; }
+        public CustomJObjectParserDelegate<DataTransferRequest>?       CustomDataTransferRequestParser         { get; set; }
 
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.DataTransferResponse>?  CustomDataTransferResponseSerializer    { get; set; }
+        public CustomJObjectSerializerDelegate<DataTransferResponse>?  CustomDataTransferResponseSerializer    { get; set; }
 
         #endregion
 
@@ -51,27 +51,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a DataTransfer WebSocket request was received.
         /// </summary>
-        public event WebSocketJSONRequestLogHandler?                          OnIncomingDataTransferWSRequest;
+        public event WebSocketJSONRequestLogHandler?                OnIncomingDataTransferWSRequest;
 
         /// <summary>
         /// An event sent whenever a DataTransfer request was received.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnIncomingDataTransferRequestDelegate?     OnIncomingDataTransferRequest;
+        public event OnIncomingDataTransferRequestDelegate?         OnIncomingDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a DataTransfer request was received.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnIncomingDataTransferDelegate?            OnIncomingDataTransfer;
+        public event OnIncomingDataTransferDelegate?                OnIncomingDataTransfer;
 
         /// <summary>
         /// An event sent whenever a response to a DataTransfer request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnIncomingDataTransferResponseDelegate?    OnIncomingDataTransferResponse;
+        public event OnIncomingDataTransferResponseDelegate?        OnIncomingDataTransferResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a DataTransfer request was sent.
         /// </summary>
-        public event WebSocketJSONRequestJSONResponseLogHandler?              OnIncomingDataTransferWSResponse;
+        public event WebSocketJSONRequestJSONResponseLogHandler?    OnIncomingDataTransferWSResponse;
 
         #endregion
 
@@ -122,13 +122,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
             try
             {
 
-                if (OCPPv2_1.CS.DataTransferRequest.TryParse(JSONRequest,
-                                                             RequestId,
-                                                             DestinationNodeId,
-                                                             NetworkPath,
-                                                             out var request,
-                                                             out var errorResponse,
-                                                             CustomDataTransferRequestParser) && request is not null) {
+                if (DataTransferRequest.TryParse(JSONRequest,
+                                                 RequestId,
+                                                 DestinationNodeId,
+                                                 NetworkPath,
+                                                 out var request,
+                                                 out var errorResponse,
+                                                 CustomDataTransferRequestParser) && request is not null) {
 
                     #region Send OnIncomingDataTransferRequest event
 
@@ -150,15 +150,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
                     #region Call async subscribers
 
-                    OCPPv2_1.CSMS.DataTransferResponse? response = null;
+                    DataTransferResponse? response = null;
 
                     var responseTasks = OnIncomingDataTransfer?.
                                             GetInvocationList()?.
-                                            SafeSelect(subscriber => (subscriber as OCPPv2_1.CSMS.OnIncomingDataTransferDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                                          this,
-                                                                                                                                          Connection,
-                                                                                                                                          request,
-                                                                                                                                          CancellationToken)).
+                                            SafeSelect(subscriber => (subscriber as OnIncomingDataTransferDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                            this,
+                                                                                                                            Connection,
+                                                                                                                            request,
+                                                                                                                            CancellationToken)).
                                             ToArray();
 
                     if (responseTasks?.Length > 0)
@@ -167,7 +167,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                         response = responseTasks.FirstOrDefault()?.Result;
                     }
 
-                    response ??= OCPPv2_1.CSMS.DataTransferResponse.Failed(request);
+                    response ??= DataTransferResponse.Failed(request);
 
                     #endregion
 

@@ -38,9 +38,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region Custom JSON parser delegates
 
-        public CustomBinaryParserDelegate<OCPP.CS.BinaryDataTransferRequest>?  CustomBinaryDataTransferRequestParser         { get; set; }
+        public CustomBinaryParserDelegate<BinaryDataTransferRequest>?       CustomBinaryDataTransferRequestParser         { get; set; }
 
-        public CustomBinarySerializerDelegate<BinaryDataTransferResponse>?     CustomBinaryDataTransferResponseSerializer    { get; set; }
+        public CustomBinarySerializerDelegate<BinaryDataTransferResponse>?  CustomBinaryDataTransferResponseSerializer    { get; set; }
 
         #endregion
 
@@ -121,13 +121,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                if (OCPP.CS.BinaryDataTransferRequest.TryParse(BinaryRequest,
-                                                               RequestId,
-                                                               DestinationNodeId,
-                                                               NetworkPath,
-                                                               out var request,
-                                                               out var errorResponse,
-                                                               CustomBinaryDataTransferRequestParser) && request is not null) {
+                if (BinaryDataTransferRequest.TryParse(BinaryRequest,
+                                                       RequestId,
+                                                       DestinationNodeId,
+                                                       NetworkPath,
+                                                       out var request,
+                                                       out var errorResponse,
+                                                       CustomBinaryDataTransferRequestParser) && request is not null) {
 
                     #region Send OnIncomingBinaryDataTransferRequest event
 

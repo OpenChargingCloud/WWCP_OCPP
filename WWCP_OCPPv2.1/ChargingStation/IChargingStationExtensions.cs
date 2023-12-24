@@ -636,7 +636,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CSMS.DataTransferResponse>
+        public static Task<DataTransferResponse>
 
             TransferData(this IChargingStation         ChargingStation,
 
@@ -1915,7 +1915,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<OCPP.CSMS.BinaryDataTransferResponse>
+        public static Task<BinaryDataTransferResponse>
 
             TransferBinaryData(this IChargingStation         ChargingStation,
 
@@ -1938,7 +1938,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
                 => ChargingStation.BinaryDataTransfer(
-                       new OCPP.CS.BinaryDataTransferRequest(
+                       new BinaryDataTransferRequest(
 
                            DestinationNodeId ?? NetworkingNode_Id.CSMS,
 

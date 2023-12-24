@@ -21,8 +21,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPP.WebSockets;
 using cloud.charging.open.protocols.OCPP.CS;
+using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
 
@@ -41,9 +41,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Custom JSON parser delegates
 
-        public CustomBinaryParserDelegate<OCPP.CSMS.BinaryDataTransferRequest>?  CustomBinaryDataTransferRequestParser         { get; set; }
+        public CustomBinaryParserDelegate<BinaryDataTransferRequest>?       CustomBinaryDataTransferRequestParser         { get; set; }
 
-        public CustomBinarySerializerDelegate<BinaryDataTransferResponse>?       CustomBinaryDataTransferResponseSerializer    { get; set; }
+        public CustomBinarySerializerDelegate<BinaryDataTransferResponse>?  CustomBinaryDataTransferResponseSerializer    { get; set; }
 
         #endregion
 
@@ -121,14 +121,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             try
             {
 
-                if (OCPP.CSMS.BinaryDataTransferRequest.TryParse(RequestBinary,
-                                                                 RequestId,
-                                                                 DestinationNodeId,
-                                                                 NetworkPath,
-                                                                 out var request,
-                                                                 out var errorResponse,
-                                                                 CustomBinaryDataTransferRequestParser) &&
-                    request is not null) {
+                if (BinaryDataTransferRequest.TryParse(RequestBinary,
+                                                       RequestId,
+                                                       DestinationNodeId,
+                                                       NetworkPath,
+                                                       out var request,
+                                                       out var errorResponse,
+                                                       CustomBinaryDataTransferRequestParser) && request is not null) {
 
                     #region Send OnIncomingBinaryDataTransferRequest event
 

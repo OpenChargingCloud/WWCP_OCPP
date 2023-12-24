@@ -43,9 +43,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
         #region Custom JSON parser delegates
 
-        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.DataTransferRequest>?     CustomIncomingDataTransferRequestParser    { get; set; }
+        public CustomJObjectParserDelegate<DataTransferRequest>?       CustomIncomingDataTransferRequestParser    { get; set; }
 
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.DataTransferResponse>?  CustomDataTransferResponseSerializer       { get; set; }
+        public CustomJObjectSerializerDelegate<DataTransferResponse>?  CustomDataTransferResponseSerializer       { get; set; }
 
         #endregion
 
@@ -54,27 +54,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a data transfer websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?                         OnIncomingDataTransferWSRequest;
+        public event WSClientJSONRequestLogHandler?                OnIncomingDataTransferWSRequest;
 
         /// <summary>
         /// An event sent whenever a data transfer request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnIncomingDataTransferRequestDelegate?     OnIncomingDataTransferRequest;
+        public event OnIncomingDataTransferRequestDelegate?        OnIncomingDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a data transfer request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnIncomingDataTransferDelegate?            OnIncomingDataTransfer;
+        public event OnIncomingDataTransferDelegate?               OnIncomingDataTransfer;
 
         /// <summary>
         /// An event sent whenever a response to a data transfer request was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnIncomingDataTransferResponseDelegate?    OnIncomingDataTransferResponse;
+        public event OnIncomingDataTransferResponseDelegate?       OnIncomingDataTransferResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a data transfer request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?             OnIncomingDataTransferWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?    OnIncomingDataTransferWSResponse;
 
         #endregion
 
@@ -123,13 +123,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
             try
             {
 
-                if (OCPPv2_1.CSMS.DataTransferRequest.TryParse(RequestJSON,
-                                                               RequestId,
-                                                               DestinationNodeId,
-                                                               NetworkPath,
-                                                               out var request,
-                                                               out var errorResponse,
-                                                               CustomIncomingDataTransferRequestParser) && request is not null) {
+                if (DataTransferRequest.TryParse(RequestJSON,
+                                                 RequestId,
+                                                 DestinationNodeId,
+                                                 NetworkPath,
+                                                 out var request,
+                                                 out var errorResponse,
+                                                 CustomIncomingDataTransferRequestParser) && request is not null) {
 
                     #region Send OnIncomingDataTransferRequest event
 
@@ -151,15 +151,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                     #region Call async subscribers
 
-                    OCPPv2_1.CS.DataTransferResponse? response = null;
+                    DataTransferResponse? response = null;
 
                     var results = OnIncomingDataTransfer?.
                                       GetInvocationList()?.
-                                      SafeSelect(subscriber => (subscriber as OCPPv2_1.CS.OnIncomingDataTransferDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                                  this,
-                                                                                                                                  WebSocketConnection,
-                                                                                                                                  request,
-                                                                                                                                  CancellationToken)).
+                                      SafeSelect(subscriber => (subscriber as OnIncomingDataTransferDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                     this,
+                                                                                                                     WebSocketConnection,
+                                                                                                                     request,
+                                                                                                                     CancellationToken)).
                                       ToArray();
 
                     if (results?.Length > 0)
@@ -171,7 +171,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                     }
 
-                    response ??= OCPPv2_1.CS.DataTransferResponse.Failed(request);
+                    response ??= DataTransferResponse.Failed(request);
 
                     #endregion
 

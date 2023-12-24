@@ -21,34 +21,38 @@ using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPP.CSMS
+namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
-    #region OnBinaryDataTransfer (Request/-Response) Delegate
+    #region OnDataTransfer (Request/-Response) Delegate
 
     /// <summary>
-    /// A delegate called whenever a BinaryDataTransfer request will be sent to a charging station.
+    /// A delegate called whenever a data transfer request will be sent to the CSMS.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket server connection.</param>
     /// <param name="Request">The request.</param>
-    public delegate Task OnBinaryDataTransferRequestDelegate(DateTime                    Timestamp,
-                                                             IEventSender                Sender,
-                                                             BinaryDataTransferRequest   Request);
+    public delegate Task OnDataTransferRequestDelegate(DateTime               Timestamp,
+                                                       IEventSender           Sender,
+                                                       //IWebSocketConnection   Connection,
+                                                       DataTransferRequest    Request);
 
     /// <summary>
-    /// A delegate called whenever a response to a BinaryDataTransfer request was received.
+    /// A delegate called whenever a response to a data transfer request was received.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket server connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate Task OnBinaryDataTransferResponseDelegate(DateTime                        Timestamp,
-                                                              IEventSender                    Sender,
-                                                              BinaryDataTransferRequest       Request,
-                                                              CS.BinaryDataTransferResponse   Response,
-                                                              TimeSpan                        Runtime);
+    public delegate Task OnDataTransferResponseDelegate(DateTime               Timestamp,
+                                                        IEventSender           Sender,
+                                                        //IWebSocketConnection   Connection,
+                                                        DataTransferRequest    Request,
+                                                        DataTransferResponse   Response,
+                                                        TimeSpan               Runtime);
 
     #endregion
 

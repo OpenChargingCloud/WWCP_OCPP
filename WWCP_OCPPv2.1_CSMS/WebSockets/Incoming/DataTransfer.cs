@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region Custom JSON parser delegates
 
-        public CustomJObjectParserDelegate<CS.DataTransferRequest>?    CustomDataTransferRequestParser         { get; set; }
+        public CustomJObjectParserDelegate<DataTransferRequest>?       CustomDataTransferRequestParser         { get; set; }
 
         public CustomJObjectSerializerDelegate<DataTransferResponse>?  CustomDataTransferResponseSerializer    { get; set; }
 
@@ -123,13 +123,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                if (CS.DataTransferRequest.TryParse(JSONRequest,
-                                                    RequestId,
-                                                    DestinationNodeId,
-                                                    NetworkPath,
-                                                    out var request,
-                                                    out var errorResponse,
-                                                    CustomDataTransferRequestParser) && request is not null) {
+                if (DataTransferRequest.TryParse(JSONRequest,
+                                                 RequestId,
+                                                 DestinationNodeId,
+                                                 NetworkPath,
+                                                 out var request,
+                                                 out var errorResponse,
+                                                 CustomDataTransferRequestParser) && request is not null) {
 
                     #region Send OnIncomingDataTransferRequest event
 

@@ -1127,7 +1127,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
 
         // Binary Data Streams Extensions
-        public CustomBinarySerializerDelegate <OCPP.CS.BinaryDataTransferResponse>?     CustomBinaryDataTransferResponseSerializer              { get; set; }
+        public CustomBinarySerializerDelegate <BinaryDataTransferResponse>?             CustomBinaryDataTransferResponseSerializer              { get; set; }
         public CustomBinarySerializerDelegate <OCPP.CS.GetFileResponse>?                CustomGetFileResponseSerializer                         { get; set; }
         public CustomJObjectSerializerDelegate<OCPP.CS.SendFileResponse>?               CustomSendFileResponseSerializer                        { get; set; }
         public CustomJObjectSerializerDelegate<OCPP.CS.DeleteFileResponse>?             CustomDeleteFileResponseSerializer                      { get; set; }
@@ -1159,7 +1159,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
 
         // Binary Data Streams Extensions
-        public CustomBinarySerializerDelegate <OCPP.CS.BinaryDataTransferRequest>?                   CustomIncomingBinaryDataTransferRequestSerializer            { get; set; }
+        public CustomBinarySerializerDelegate <BinaryDataTransferRequest>?                           CustomIncomingBinaryDataTransferRequestSerializer            { get; set; }
 
         #endregion
 
@@ -3058,7 +3058,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                    out var errorResponse
                                )
 
-                                   ? new OCPP.CSMS.BinaryDataTransferResponse(
+                                   ? new BinaryDataTransferResponse(
                                          Request:      request,
                                          Result:       Result.SignatureError(
                                                            $"Invalid signature(s): {errorResponse}"
@@ -3074,7 +3074,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                Data:                   responseBinaryData
                                            )
 
-                                         : new OCPP.CSMS.BinaryDataTransferResponse(
+                                         : new BinaryDataTransferResponse(
                                                Request:                request,
                                                Status:                 BinaryDataTransferStatus.Rejected,
                                                AdditionalStatusInfo:   null,
@@ -7573,7 +7573,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Transfer the given data to the given charging station.
         /// </summary>
         /// <param name="Request">A BinaryDataTransfer request.</param>
-        public async Task<OCPP.CS.BinaryDataTransferResponse> BinaryDataTransfer(BinaryDataTransferRequest Request)
+        public async Task<BinaryDataTransferResponse> BinaryDataTransfer(BinaryDataTransferRequest Request)
         {
 
             #region Send OnBinaryDataTransferRequest event
@@ -7610,14 +7610,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                                       ? await centralSystem.Item1.BinaryDataTransfer(Request)
 
-                                      : new OCPP.CS.BinaryDataTransferResponse(
+                                      : new BinaryDataTransferResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new OCPP.CS.BinaryDataTransferResponse(
+                                : new BinaryDataTransferResponse(
                                       Request,
-                                      Result.Server("Unknown or unreachable charging station!")
+                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                   );
 
 
@@ -7710,7 +7710,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                                 : new OCPP.CS.GetFileResponse(
                                       Request,
-                                      Result.Server("Unknown or unreachable charging station!")
+                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                   );
 
 
@@ -7803,7 +7803,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                                 : new OCPP.CS.SendFileResponse(
                                       Request,
-                                      Result.Server("Unknown or unreachable charging station!")
+                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                   );
 
 
@@ -7895,7 +7895,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                                 : new OCPP.CS.DeleteFileResponse(
                                       Request,
-                                      Result.Server("Unknown or unreachable charging station!")
+                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                   );
 
 
@@ -7987,7 +7987,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                                 : new OCPP.CS.ListDirectoryResponse(
                                       Request,
-                                      Result.Server("Unknown or unreachable charging station!")
+                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                   );
 
 
@@ -8087,7 +8087,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                                 : new OCPP.CS.AddSignaturePolicyResponse(
                                       Request,
-                                      Result.Server("Unknown or unreachable charging station!")
+                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                   );
 
 
@@ -8184,7 +8184,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                                 : new OCPP.CS.UpdateSignaturePolicyResponse(
                                       Request,
-                                      Result.Server("Unknown or unreachable charging station!")
+                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                   );
 
 
@@ -8281,7 +8281,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                                 : new OCPP.CS.DeleteSignaturePolicyResponse(
                                       Request,
-                                      Result.Server("Unknown or unreachable charging station!")
+                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                   );
 
 
@@ -8378,7 +8378,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                                 : new OCPP.CS.AddUserRoleResponse(
                                       Request,
-                                      Result.Server("Unknown or unreachable charging station!")
+                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                   );
 
 
@@ -8475,7 +8475,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                                 : new OCPP.CS.UpdateUserRoleResponse(
                                       Request,
-                                      Result.Server("Unknown or unreachable charging station!")
+                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                   );
 
 
@@ -8572,7 +8572,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                                 : new OCPP.CS.DeleteUserRoleResponse(
                                       Request,
-                                      Result.Server("Unknown or unreachable charging station!")
+                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                   );
 
 

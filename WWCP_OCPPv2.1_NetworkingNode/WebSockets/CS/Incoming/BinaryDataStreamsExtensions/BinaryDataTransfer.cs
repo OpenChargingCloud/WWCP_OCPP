@@ -41,9 +41,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
         #region Custom JSON parser delegates
 
-        public CustomBinaryParserDelegate<OCPP.CSMS.BinaryDataTransferRequest>?     CustomBinaryDataTransferRequestParser         { get; set; }
+        public CustomBinaryParserDelegate<BinaryDataTransferRequest>?       CustomBinaryDataTransferRequestParser         { get; set; }
 
-        public CustomBinarySerializerDelegate<OCPP.CS.BinaryDataTransferResponse>?  CustomBinaryDataTransferResponseSerializer    { get; set; }
+        public CustomBinarySerializerDelegate<BinaryDataTransferResponse>?  CustomBinaryDataTransferResponseSerializer    { get; set; }
 
         #endregion
 
@@ -52,27 +52,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a BinaryDataTransfer websocket request was received.
         /// </summary>
-        public event WSClientBinaryRequestLogHandler?                         OnIncomingBinaryDataTransferWSRequest;
+        public event WSClientBinaryRequestLogHandler?                  OnIncomingBinaryDataTransferWSRequest;
 
         /// <summary>
         /// An event sent whenever a BinaryDataTransfer request was received.
         /// </summary>
-        public event OCPP.CS.OnIncomingBinaryDataTransferRequestDelegate?     OnIncomingBinaryDataTransferRequest;
+        public event OnIncomingBinaryDataTransferRequestDelegate?      OnIncomingBinaryDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a BinaryDataTransfer request was received.
         /// </summary>
-        public event OCPP.CS.OnIncomingBinaryDataTransferDelegate?            OnIncomingBinaryDataTransfer;
+        public event OnIncomingBinaryDataTransferDelegate?             OnIncomingBinaryDataTransfer;
 
         /// <summary>
         /// An event sent whenever a response to a BinaryDataTransfer request was sent.
         /// </summary>
-        public event OCPP.CS.OnIncomingBinaryDataTransferResponseDelegate?    OnIncomingBinaryDataTransferResponse;
+        public event OnIncomingBinaryDataTransferResponseDelegate?     OnIncomingBinaryDataTransferResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a BinaryDataTransfer request was sent.
         /// </summary>
-        public event WSClientBinaryRequestBinaryResponseLogHandler?           OnIncomingBinaryDataTransferWSResponse;
+        public event WSClientBinaryRequestBinaryResponseLogHandler?    OnIncomingBinaryDataTransferWSResponse;
 
         #endregion
 
@@ -121,13 +121,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
             try
             {
 
-                if (OCPP.CSMS.BinaryDataTransferRequest.TryParse(RequestBinary,
-                                                                 RequestId,
-                                                                 DestinationNodeId,
-                                                                 NetworkPath,
-                                                                 out var request,
-                                                                 out var errorResponse,
-                                                                 CustomBinaryDataTransferRequestParser) &&
+                if (BinaryDataTransferRequest.TryParse(RequestBinary,
+                                                       RequestId,
+                                                       DestinationNodeId,
+                                                       NetworkPath,
+                                                       out var request,
+                                                       out var errorResponse,
+                                                       CustomBinaryDataTransferRequestParser) &&
                     request is not null) {
 
                     #region Send OnBinaryDataTransferRequest event
@@ -150,15 +150,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                     #region Call async subscribers
 
-                    OCPP.CS.BinaryDataTransferResponse? response = null;
+                    BinaryDataTransferResponse? response = null;
 
                     var results = OnIncomingBinaryDataTransfer?.
                                       GetInvocationList()?.
-                                      SafeSelect(subscriber => (subscriber as OCPP.CS.OnIncomingBinaryDataTransferDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                                    this,
-                                                                                                                                    WebSocketConnection,
-                                                                                                                                    request,
-                                                                                                                                    CancellationToken)).
+                                      SafeSelect(subscriber => (subscriber as OnIncomingBinaryDataTransferDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                            this,
+                                                                                                                            WebSocketConnection,
+                                                                                                                            request,
+                                                                                                                            CancellationToken)).
                                       ToArray();
 
                     if (results?.Length > 0)
@@ -170,7 +170,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                     }
 
-                    response ??= OCPP.CS.BinaryDataTransferResponse.Failed(request);
+                    response ??= BinaryDataTransferResponse.Failed(request);
 
                     #endregion
 

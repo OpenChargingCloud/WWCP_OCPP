@@ -579,12 +579,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event fired whenever a BinaryDataTransfer request will be sent to the central system.
         /// </summary>
-        public event OCPP.CS.OnBinaryDataTransferRequestDelegate?           OnBinaryDataTransferRequest;
+        public event OnBinaryDataTransferRequestDelegate?                   OnBinaryDataTransferRequest;
 
         /// <summary>
         /// An event fired whenever a response to a BinaryDataTransfer request was received.
         /// </summary>
-        public event OCPP.CS.OnBinaryDataTransferResponseDelegate?          OnBinaryDataTransferResponse;
+        public event OnBinaryDataTransferResponseDelegate?                  OnBinaryDataTransferResponse;
 
         #endregion
 
@@ -861,8 +861,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #endregion
 
 
-        public event OCPP.CS.OnIncomingBinaryDataTransferRequestDelegate?     OnIncomingBinaryDataTransferRequest;
-        public event OCPP.CS.OnIncomingBinaryDataTransferResponseDelegate?    OnIncomingBinaryDataTransferResponse;
+        public event OnIncomingBinaryDataTransferRequestDelegate?             OnIncomingBinaryDataTransferRequest;
+        public event OnIncomingBinaryDataTransferResponseDelegate?            OnIncomingBinaryDataTransferResponse;
 
         public event OCPP.CS.OnGetFileRequestDelegate?                        OnGetFileRequest;
         public event OCPP.CS.OnGetFileResponseDelegate?                       OnGetFileResponse;
@@ -903,8 +903,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
 
         // Binary Data Streams Extensions
-        public CustomBinarySerializerDelegate <OCPP.CS.BinaryDataTransferRequest>?                   CustomBinaryDataTransferRequestSerializer                    { get; set; }
-        public CustomBinarySerializerDelegate <OCPP.CSMS.BinaryDataTransferResponse>?                CustomBinaryDataTransferResponseSerializer                   { get; set; }
+        public CustomBinarySerializerDelegate <BinaryDataTransferRequest>?                           CustomBinaryDataTransferRequestSerializer                    { get; set; }
+        public CustomBinarySerializerDelegate <BinaryDataTransferResponse>?                          CustomBinaryDataTransferResponseSerializer                   { get; set; }
 
         #endregion
 
@@ -4012,8 +4012,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Send the given vendor-specific binary data to the central system.
         /// </summary>
         /// <param name="Request">A BinaryDataTransfer request.</param>
-        public async Task<OCPP.CSMS.BinaryDataTransferResponse>
-            BinaryDataTransfer(OCPP.CS.BinaryDataTransferRequest Request)
+        public async Task<BinaryDataTransferResponse>
+            BinaryDataTransfer(BinaryDataTransferRequest Request)
 
         {
 
@@ -4051,14 +4051,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                                      ? await CPClient.BinaryDataTransfer(Request)
 
-                                     : new OCPP.CSMS.BinaryDataTransferResponse(
+                                     : new BinaryDataTransferResponse(
                                            Request,
                                            Result.SignatureError(errorResponse)
                                        )
 
-                               : new OCPP.CSMS.BinaryDataTransferResponse(
+                               : new BinaryDataTransferResponse(
                                      Request,
-                                     Result.Server("Unknown or unreachable charging station!")
+                                     Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                  );
 
             SignaturePolicy.VerifyResponseMessage(

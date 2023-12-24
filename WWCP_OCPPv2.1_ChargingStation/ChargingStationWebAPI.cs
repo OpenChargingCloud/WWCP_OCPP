@@ -472,32 +472,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             this.ChargingStation.OnDataTransferRequest += async (logTimestamp,
                                                                  sender,
-                                                                 //connection,
                                                                  request) =>
 
-                await this.EventLog.SubmitEvent("OnDataTransferRequest",
+                await this.EventLog.SubmitEvent(nameof(ChargingStation.OnDataTransferRequest),
                                                 new JObject(
-                                                    new JProperty("timestamp",          logTimestamp.           ToIso8601()),
+                                                    new JProperty("timestamp",          logTimestamp.             ToIso8601()),
                                                     new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
-                                                    new JProperty("request",            request.                ToJSON()),
-                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
+                                                    new JProperty("request",            request.                  ToJSON()),
+                                                    new JProperty("eventTrackingId",    request.EventTrackingId.  ToString())
                                                 ));
 
 
             this.ChargingStation.OnDataTransferResponse += async (logTimestamp,
                                                                   sender,
-                                                                  //connection,
                                                                   request,
                                                                   response,
                                                                   runtime) =>
 
-                await this.EventLog.SubmitEvent("OnDataTransferResponse",
+                await this.EventLog.SubmitEvent(nameof(ChargingStation.OnDataTransferResponse),
                                                 new JObject(
-                                                    new JProperty("timestamp",          logTimestamp.           ToIso8601()),
+                                                    new JProperty("timestamp",          logTimestamp.             ToIso8601()),
                                                     new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
-                                                    new JProperty("eventTrackingId",    request.EventTrackingId.ToString()),
-                                                    new JProperty("request",            request.                ToJSON()),
-                                                    new JProperty("response",           response.               ToJSON()),
+                                                    new JProperty("eventTrackingId",    request.EventTrackingId.  ToString()),
+                                                    new JProperty("request",            request.                  ToJSON()),
+                                                    new JProperty("response",           response.                 ToJSON()),
                                                     new JProperty("runtime",            runtime.TotalMilliseconds)
                                                 ));
 

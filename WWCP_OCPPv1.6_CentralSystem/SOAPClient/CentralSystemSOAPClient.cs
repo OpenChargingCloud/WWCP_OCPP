@@ -561,8 +561,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public event OnSignedUpdateFirmwareRequestDelegate?                   OnSignedUpdateFirmwareRequest;
         public event OnSignedUpdateFirmwareResponseDelegate?                  OnSignedUpdateFirmwareResponse;
 
-        public event OCPP.CSMS.OnBinaryDataTransferRequestDelegate?           OnBinaryDataTransferRequest;
-        public event OCPP.CSMS.OnBinaryDataTransferResponseDelegate?          OnBinaryDataTransferResponse;
+        public event OCPP.OnBinaryDataTransferRequestDelegate?                OnBinaryDataTransferRequest;
+        public event OCPP.OnBinaryDataTransferResponseDelegate?               OnBinaryDataTransferResponse;
         public event OCPP.CSMS.OnGetFileRequestDelegate?                      OnGetFileRequest;
         public event OCPP.CSMS.OnGetFileResponseDelegate?                     OnGetFileResponse;
         public event OCPP.CSMS.OnSendFileRequestDelegate?                     OnSendFileRequest;
@@ -4207,7 +4207,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #endregion
 
 
-        public Task<OCPP.CS.BinaryDataTransferResponse> BinaryDataTransfer(OCPP.CSMS.BinaryDataTransferRequest Request)
+        public Task<OCPP.BinaryDataTransferResponse> BinaryDataTransfer(OCPP.BinaryDataTransferRequest Request)
         {
             throw new NotImplementedException();
         }

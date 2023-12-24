@@ -432,7 +432,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public CustomJObjectSerializerDelegate<CSMS.SetNetworkProfileRequest>?                       CustomSetNetworkProfileRequestSerializer                     { get; set; }
         public CustomJObjectSerializerDelegate<CSMS.ChangeAvailabilityRequest>?                      CustomChangeAvailabilityRequestSerializer                    { get; set; }
         public CustomJObjectSerializerDelegate<CSMS.TriggerMessageRequest>?                          CustomTriggerMessageRequestSerializer                        { get; set; }
-        public CustomJObjectSerializerDelegate<CSMS.DataTransferRequest>?                            CustomIncomingDataTransferRequestSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<     DataTransferRequest>?                            CustomIncomingDataTransferRequestSerializer                  { get; set; }
 
         public CustomJObjectSerializerDelegate<CSMS.CertificateSignedRequest>?                       CustomCertificateSignedRequestSerializer                     { get; set; }
         public CustomJObjectSerializerDelegate<CSMS.InstallCertificateRequest>?                      CustomInstallCertificateRequestSerializer                    { get; set; }
@@ -468,7 +468,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
         // Binary Data Streams Extensions
-        public CustomBinarySerializerDelegate <OCPP.CSMS.BinaryDataTransferRequest>?                 CustomIncomingBinaryDataTransferRequestSerializer            { get; set; }
+        public CustomBinarySerializerDelegate <BinaryDataTransferRequest>?                           CustomIncomingBinaryDataTransferRequestSerializer            { get; set; }
         public CustomJObjectSerializerDelegate<OCPP.CSMS.GetFileRequest>?                            CustomGetFileRequestSerializer                               { get; set; }
         public CustomBinarySerializerDelegate <OCPP.CSMS.SendFileRequest>?                           CustomSendFileRequestSerializer                              { get; set; }
         public CustomJObjectSerializerDelegate<OCPP.CSMS.DeleteFileRequest>?                         CustomDeleteFileRequestSerializer                            { get; set; }
@@ -501,7 +501,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public CustomJObjectSerializerDelegate<CSMS.NotifyReportResponse>?                           CustomNotifyReportResponseSerializer                         { get; set; }
         public CustomJObjectSerializerDelegate<CSMS.NotifyMonitoringReportResponse>?                 CustomNotifyMonitoringReportResponseSerializer               { get; set; }
         public CustomJObjectSerializerDelegate<CSMS.LogStatusNotificationResponse>?                  CustomLogStatusNotificationResponseSerializer                { get; set; }
-        public CustomJObjectSerializerDelegate<CSMS.DataTransferResponse>?                           CustomDataTransferResponseSerializer                         { get; set; }
+        public CustomJObjectSerializerDelegate<     DataTransferResponse>?                           CustomDataTransferResponseSerializer                         { get; set; }
 
         public CustomJObjectSerializerDelegate<CSMS.SignCertificateResponse>?                        CustomSignCertificateResponseSerializer                      { get; set; }
         public CustomJObjectSerializerDelegate<CSMS.Get15118EVCertificateResponse>?                  CustomGet15118EVCertificateResponseSerializer                { get; set; }
@@ -526,7 +526,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
         // Binary Data Streams Extensions
-        public CustomBinarySerializerDelegate <OCPP.CSMS.BinaryDataTransferResponse>?                CustomBinaryDataTransferResponseSerializer                   { get; set; }
+        public CustomBinarySerializerDelegate <BinaryDataTransferResponse>?                          CustomBinaryDataTransferResponseSerializer                   { get; set; }
 
         #endregion
 
@@ -566,7 +566,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
         // Binary Data Streams Extensions
-        public CustomBinarySerializerDelegate <OCPP.CS.BinaryDataTransferRequest>?                   CustomBinaryDataTransferRequestSerializer                    { get; set; }
+        public CustomBinarySerializerDelegate <BinaryDataTransferRequest>?                           CustomBinaryDataTransferRequestSerializer                    { get; set; }
 
         #endregion
 
@@ -624,7 +624,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
         // Binary Data Streams Extensions
-        public CustomBinarySerializerDelegate <OCPP.CS.BinaryDataTransferResponse>?                  CustomIncomingBinaryDataTransferResponseSerializer           { get; set; }
+        public CustomBinarySerializerDelegate <BinaryDataTransferResponse>?                          CustomIncomingBinaryDataTransferResponseSerializer           { get; set; }
         public CustomBinarySerializerDelegate <OCPP.CS.GetFileResponse>?                             CustomGetFileResponseSerializer                              { get; set; }
         public CustomJObjectSerializerDelegate<OCPP.CS.SendFileResponse>?                            CustomSendFileResponseSerializer                             { get; set; }
         public CustomJObjectSerializerDelegate<OCPP.CS.DeleteFileResponse>?                          CustomDeleteFileResponseSerializer                           { get; set; }
@@ -1169,12 +1169,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// An event fired whenever a BinaryDataTransfer request will be sent to the CSMS.
         /// </summary>
-        public event OCPP.CS.OnBinaryDataTransferRequestDelegate?            OnBinaryDataTransferRequest;
+        public event OnBinaryDataTransferRequestDelegate?            OnBinaryDataTransferRequest;
 
         /// <summary>
         /// An event fired whenever a response to a BinaryDataTransfer request was received.
         /// </summary>
-        public event OCPP.CS.OnBinaryDataTransferResponseDelegate?           OnBinaryDataTransferResponse;
+        public event OnBinaryDataTransferResponseDelegate?           OnBinaryDataTransferResponse;
 
         #endregion
 
@@ -1825,12 +1825,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// An event sent whenever a BinaryDataTransfer request was sent.
         /// </summary>
-        public event OCPP.CS.OnIncomingBinaryDataTransferRequestDelegate?   OnIncomingBinaryDataTransferRequest;
+        public event OnIncomingBinaryDataTransferRequestDelegate?   OnIncomingBinaryDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a response to a BinaryDataTransfer request was sent.
         /// </summary>
-        public event OCPP.CS.OnIncomingBinaryDataTransferResponseDelegate?  OnIncomingBinaryDataTransferResponse;
+        public event OnIncomingBinaryDataTransferResponseDelegate?  OnIncomingBinaryDataTransferResponse;
 
         #endregion
 
@@ -9359,7 +9359,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 {
 
                     var requestLoggerTasks = onIncomingBinaryDataTransferRequest.GetInvocationList().
-                                                 OfType <OCPP.CS.OnIncomingBinaryDataTransferRequestDelegate>().
+                                                 OfType <OnIncomingBinaryDataTransferRequestDelegate>().
                                                  Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                    this,
                                                                                                    connection,
@@ -9386,7 +9386,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Check request signature(s)
 
-                OCPP.CS.BinaryDataTransferResponse? response = null;
+                BinaryDataTransferResponse? response = null;
 
                 if (!SignaturePolicy.VerifyRequestMessage(
                          request,
@@ -9399,7 +9399,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                      ))
                 {
 
-                    response = new OCPP.CS.BinaryDataTransferResponse(
+                    response = new BinaryDataTransferResponse(
                                    Request:  request,
                                    Result:   Result.SignatureError(
                                                  $"Invalid signature: {errorResponse}"
@@ -9426,14 +9426,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     response = request.VendorId == Vendor_Id.GraphDefined
 
-                                   ? new OCPP.CS.BinaryDataTransferResponse(
+                                   ? new BinaryDataTransferResponse(
                                          Request:                request,
                                          Status:                 BinaryDataTransferStatus.Accepted,
                                          AdditionalStatusInfo:   null,
                                          Data:                   responseBinaryData
                                      )
 
-                                   : new OCPP.CS.BinaryDataTransferResponse(
+                                   : new BinaryDataTransferResponse(
                                          Request:                request,
                                          Status:                 BinaryDataTransferStatus.Rejected,
                                          AdditionalStatusInfo:   null,
@@ -9466,7 +9466,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     var responseTime         = Timestamp.Now;
 
                     var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                              OfType <OCPP.CS.OnIncomingBinaryDataTransferResponseDelegate>().
+                                                              OfType <OnIncomingBinaryDataTransferResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
                                                                                                                 connection,
@@ -11766,7 +11766,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                : new CSMS.BootNotificationResponse(
                                      Request,
-                                     Result.Server("Unknown or unreachable charging station!")
+                                     Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                  );
 
             SignaturePolicy.VerifyResponseMessage(
@@ -11889,7 +11889,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                : new CSMS.FirmwareStatusNotificationResponse(
                                      Request,
-                                     Result.Server("Unknown or unreachable charging station!")
+                                     Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                  );
 
             SignaturePolicy.VerifyResponseMessage(
@@ -11991,7 +11991,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                : new CSMS.PublishFirmwareStatusNotificationResponse(
                                      Request,
-                                     Result.Server("Unknown or unreachable charging station!")
+                                     Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                  );
 
             SignaturePolicy.VerifyResponseMessage(
@@ -12090,7 +12090,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                : new CSMS.HeartbeatResponse(
                                      Request,
-                                     Result.Server("Unknown or unreachable charging station!")
+                                     Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                  );
 
             SignaturePolicy.VerifyResponseMessage(
@@ -12197,7 +12197,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                : new CSMS.NotifyEventResponse(
                                      Request,
-                                     Result.Server("Unknown or unreachable charging station!")
+                                     Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                  );
 
             SignaturePolicy.VerifyResponseMessage(
@@ -12299,7 +12299,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                : new CSMS.SecurityEventNotificationResponse(
                                      Request,
-                                     Result.Server("Unknown or unreachable charging station!")
+                                     Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                  );
 
             SignaturePolicy.VerifyResponseMessage(
@@ -12409,7 +12409,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                : new CSMS.NotifyReportResponse(
                                      Request,
-                                     Result.Server("Unknown or unreachable charging station!")
+                                     Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                  );
 
             SignaturePolicy.VerifyResponseMessage(
@@ -12518,7 +12518,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                : new CSMS.NotifyMonitoringReportResponse(
                                      Request,
-                                     Result.Server("Unknown or unreachable charging station!")
+                                     Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                  );
 
             SignaturePolicy.VerifyResponseMessage(
@@ -12619,7 +12619,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                : new CSMS.LogStatusNotificationResponse(
                                      Request,
-                                     Result.Server("Unknown or unreachable charging station!")
+                                     Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                  );
 
             SignaturePolicy.VerifyResponseMessage(
@@ -12675,7 +12675,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public async Task<CSMS.DataTransferResponse>
+        public async Task<DataTransferResponse>
             DataTransfer(DataTransferRequest Request)
 
         {
@@ -12714,14 +12714,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                      ? await CSClient.DataTransfer(Request)
 
-                                     : new CSMS.DataTransferResponse(
+                                     : new DataTransferResponse(
                                            Request,
                                            Result.SignatureError(errorResponse)
                                        )
 
-                               : new CSMS.DataTransferResponse(
+                               : new DataTransferResponse(
                                      Request,
-                                     Result.Server("Unknown or unreachable charging station!")
+                                     Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                  );
 
             SignaturePolicy.VerifyResponseMessage(
@@ -12824,7 +12824,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                : new CSMS.SignCertificateResponse(
                                      Request,
-                                     Result.Server("Unknown or unreachable charging station!")
+                                     Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                  );
 
             SignaturePolicy.VerifyResponseMessage(
@@ -12929,7 +12929,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                : new CSMS.Get15118EVCertificateResponse(
                                      Request,
-                                     Result.Server("Unknown or unreachable charging station!")
+                                     Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                  );
 
             SignaturePolicy.VerifyResponseMessage(
@@ -13031,7 +13031,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                : new CSMS.GetCertificateStatusResponse(
                                      Request,
-                                     Result.Server("Unknown or unreachable charging station!")
+                                     Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                  );
 
             SignaturePolicy.VerifyResponseMessage(
@@ -13135,7 +13135,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                : new CSMS.GetCRLResponse(
                                      Request,
-                                     Result.Server("Unknown or unreachable charging station!")
+                                     Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                  );
 
             SignaturePolicy.VerifyResponseMessage(
@@ -13238,7 +13238,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                : new CSMS.ReservationStatusUpdateResponse(
                                      Request,
-                                     Result.Server("Unknown or unreachable charging station!")
+                                     Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                  );
 
             SignaturePolicy.VerifyResponseMessage(
@@ -13343,7 +13343,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                : new CSMS.AuthorizeResponse(
                                      Request,
-                                     Result.Server("Unknown or unreachable charging station!")
+                                     Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                  );
 
             SignaturePolicy.VerifyResponseMessage(
@@ -13461,7 +13461,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                : new CSMS.NotifyEVChargingNeedsResponse(
                                      Request,
-                                     Result.Server("Unknown or unreachable charging station!")
+                                     Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                  );
 
             SignaturePolicy.VerifyResponseMessage(
@@ -13583,7 +13583,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                : new CSMS.TransactionEventResponse(
                                      Request,
-                                     Result.Server("Unknown or unreachable charging station!")
+                                     Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                  );
 
             SignaturePolicy.VerifyResponseMessage(
@@ -13690,7 +13690,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                : new CSMS.StatusNotificationResponse(
                                      Request,
-                                     Result.Server("Unknown or unreachable charging station!")
+                                     Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                  );
 
             SignaturePolicy.VerifyResponseMessage(
@@ -13793,7 +13793,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                : new CSMS.MeterValuesResponse(
                                      Request,
-                                     Result.Server("Unknown or unreachable charging station!")
+                                     Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                  );
 
             SignaturePolicy.VerifyResponseMessage(
@@ -13919,7 +13919,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                : new CSMS.NotifyChargingLimitResponse(
                                      Request,
-                                     Result.Server("Unknown or unreachable charging station!")
+                                     Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                  );
 
             SignaturePolicy.VerifyResponseMessage(
@@ -14020,7 +14020,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                : new CSMS.ClearedChargingLimitResponse(
                                      Request,
-                                     Result.Server("Unknown or unreachable charging station!")
+                                     Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                  );
 
             SignaturePolicy.VerifyResponseMessage(
@@ -14149,7 +14149,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                : new CSMS.ReportChargingProfilesResponse(
                                      Request,
-                                     Result.Server("Unknown or unreachable charging station!")
+                                     Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                  );
 
             SignaturePolicy.VerifyResponseMessage(
@@ -14278,7 +14278,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                : new CSMS.NotifyEVChargingScheduleResponse(
                                      Request,
-                                     Result.Server("Unknown or unreachable charging station!")
+                                     Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                  );
 
             SignaturePolicy.VerifyResponseMessage(
@@ -14381,7 +14381,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                : new CSMS.NotifyPriorityChargingResponse(
                                      Request,
-                                     Result.Server("Unknown or unreachable charging station!")
+                                     Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                  );
 
             SignaturePolicy.VerifyResponseMessage(
@@ -14482,7 +14482,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                : new CSMS.PullDynamicScheduleUpdateResponse(
                                      Request,
-                                     Result.Server("Unknown or unreachable charging station!")
+                                     Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                  );
 
             SignaturePolicy.VerifyResponseMessage(
@@ -14589,7 +14589,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                : new CSMS.NotifyDisplayMessagesResponse(
                                      Request,
-                                     Result.Server("Unknown or unreachable charging station!")
+                                     Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                  );
 
             SignaturePolicy.VerifyResponseMessage(
@@ -14693,7 +14693,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                : new CSMS.NotifyCustomerInformationResponse(
                                      Request,
-                                     Result.Server("Unknown or unreachable charging station!")
+                                     Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                  );
 
             SignaturePolicy.VerifyResponseMessage(
@@ -14743,8 +14743,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Send the given vendor-specific binary data to the CSMS.
         /// </summary>
         /// <param name="Request">A BinaryDataTransfer request.</param>
-        public async Task<OCPP.CSMS.BinaryDataTransferResponse>
-            BinaryDataTransfer(OCPP.CS.BinaryDataTransferRequest Request)
+        public async Task<BinaryDataTransferResponse>
+            BinaryDataTransfer(BinaryDataTransferRequest Request)
 
         {
 
@@ -14782,14 +14782,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                      ? await CSClient.BinaryDataTransfer(Request)
 
-                                     : new OCPP.CSMS.BinaryDataTransferResponse(
+                                     : new BinaryDataTransferResponse(
                                            Request,
                                            Result.SignatureError(errorResponse)
                                        )
 
-                               : new OCPP.CSMS.BinaryDataTransferResponse(
+                               : new BinaryDataTransferResponse(
                                      Request,
-                                     Result.Server("Unknown or unreachable charging station!")
+                                     Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                  );
 
             SignaturePolicy.VerifyResponseMessage(

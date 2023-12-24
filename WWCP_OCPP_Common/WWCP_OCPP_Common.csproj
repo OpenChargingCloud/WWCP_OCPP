@@ -7,6 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Extensions\BinaryStreamsExtensions\Messages\ChargingStation\.gitkeep" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Extensions\BinaryStreamsExtensions\Messages\ChargingStation\.gitkeep" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\Hermod\Hermod\Hermod.csproj" />
     <ProjectReference Include="..\..\Styx\Styx\Styx.csproj" />
   </ItemGroup>

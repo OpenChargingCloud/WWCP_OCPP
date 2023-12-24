@@ -25,13 +25,13 @@ using cloud.charging.open.protocols.OCPP;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
+namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
     /// A data transfer response.
     /// </summary>
-    public class DataTransferResponse : AResponse<CS.DataTransferRequest,
+    public class DataTransferResponse : AResponse<DataTransferRequest,
                                                   DataTransferResponse>,
                                         IResponse
     {
@@ -91,7 +91,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
         /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public DataTransferResponse(CS.DataTransferRequest        Request,
+        public DataTransferResponse(DataTransferRequest           Request,
                                     DataTransferStatus            Status,
                                     JToken?                       Data                = null,
                                     StatusInfo?                   StatusInfo          = null,
@@ -130,8 +130,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The data transfer request leading to this response.</param>
         /// <param name="Result">The result.</param>
-        public DataTransferResponse(CS.DataTransferRequest  Request,
-                                    Result                  Result)
+        public DataTransferResponse(DataTransferRequest  Request,
+                                    Result               Result)
 
             : base(Request,
                    Result)
@@ -251,7 +251,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="Request">The data transfer request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomDataTransferResponseParser">A delegate to parse custom data transfer responses.</param>
-        public static DataTransferResponse Parse(CS.DataTransferRequest                              Request,
+        public static DataTransferResponse Parse(DataTransferRequest                                 Request,
                                                  JObject                                             JSON,
                                                  CustomJObjectParserDelegate<DataTransferResponse>?  CustomDataTransferResponseParser  = null)
         {
@@ -283,7 +283,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="DataTransferResponse">The parsed data transfer response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomDataTransferResponseParser">A delegate to parse custom data transfer responses.</param>
-        public static Boolean TryParse(CS.DataTransferRequest                              Request,
+        public static Boolean TryParse(DataTransferRequest                                 Request,
                                        JObject                                             JSON,
                                        out DataTransferResponse?                           DataTransferResponse,
                                        out String?                                         ErrorResponse,
@@ -441,7 +441,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The data transfer failed.
         /// </summary>
         /// <param name="Request">The data transfer request leading to this response.</param>
-        public static DataTransferResponse Failed(CS.DataTransferRequest  Request)
+        public static DataTransferResponse Failed(DataTransferRequest  Request)
 
             => new (Request,
                     Result.Server());

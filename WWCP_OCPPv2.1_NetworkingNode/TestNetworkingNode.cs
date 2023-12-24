@@ -186,1053 +186,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <summary>
     /// A networking node for testing.
     /// </summary>
-    public class TestNetworkingNode : CS.INetworkingNode,
-                                      INetworkingNode2,
+    public class TestNetworkingNode : INetworkingNode,
+                                    //  INetworkingNode2,
                                       IEventSender
     {
 
-        public class ActingAsCS : //CS.INetworkingNode,
-                                       //  IChargingStationClientEvents,
-                                       IEventSender
+        public class INN : INetworkingNodeIN
         {
 
             #region Data
 
-            private readonly            TestNetworkingNode          parentNetworkingNode;
-
-            private readonly            HashSet<SignaturePolicy>    signaturePolicies           = new();
-
-
-            /// <summary>
-            /// The default time span between heartbeat requests.
-            /// </summary>
-            public readonly             TimeSpan                    DefaultSendHeartbeatEvery   = TimeSpan.FromSeconds(30);
-
-            protected static readonly   TimeSpan                    SemaphoreSlimTimeout        = TimeSpan.FromSeconds(5);
-
-            /// <summary>
-            /// The default maintenance interval.
-            /// </summary>
-            public readonly             TimeSpan                    DefaultMaintenanceEvery     = TimeSpan.FromSeconds(1);
-            private static readonly     SemaphoreSlim               MaintenanceSemaphore        = new (1, 1);
-            private readonly            Timer                       MaintenanceTimer;
-
-            private readonly            Timer                       SendHeartbeatTimer;
-
-
-            private readonly            List<EnqueuedRequest>       EnqueuedRequests;
-
-            public                      IHTTPAuthentication?        HTTPAuthentication          { get; }
-            public                      DNSClient?                  DNSClient                   { get; }
-
-            #endregion
-
-            #region Properties
-
-            /// <summary>
-            /// The client connected to a CSMS.
-            /// </summary>
-            public INetworkingNodeOutgoingMessages?   CSClient                    { get; private set; }
-
-
-            public String? ClientCloseMessage
-                => CSClient?.ClientCloseMessage;
-
-
-            /// <summary>
-            /// The sender identification.
-            /// </summary>
-            String IEventSender.Id
-                => Id.ToString();
-
-
-
-            /// <summary>
-            /// The charging station identification.
-            /// </summary>
-            public NetworkingNode_Id        Id                          { get; }
-
-            /// <summary>
-            /// The charging station vendor identification.
-            /// </summary>
-            [Mandatory]
-            public String                   VendorName                  { get; }
-
-            /// <summary>
-            ///  The charging station model identification.
-            /// </summary>
-            [Mandatory]
-            public String                   Model                       { get; }
-
-
-            /// <summary>
-            /// The optional multi-language charging station description.
-            /// </summary>
-            [Optional]
-            public I18NString?              Description                 { get; }
-
-            /// <summary>
-            /// The optional serial number of the charging station.
-            /// </summary>
-            [Optional]
-            public String?                  SerialNumber                { get; }
-
-            /// <summary>
-            /// The optional firmware version of the charging station.
-            /// </summary>
-            [Optional]
-            public String?                  FirmwareVersion             { get; }
-
-            /// <summary>
-            /// The modem of the charging station.
-            /// </summary>
-            [Optional]
-            public Modem?                   Modem                       { get; }
-
-            /// <summary>
-            /// The optional meter type of the main power meter of the charging station.
-            /// </summary>
-            [Optional]
-
-
-            public CustomData?              CustomData                  { get; set; }
-
-
-            /// <summary>
-            /// The time span between heartbeat requests.
-            /// </summary>
-            public TimeSpan                 SendHeartbeatEvery          { get; set; }
-
-            /// <summary>
-            /// The time at the CSMS.
-            /// </summary>
-            public DateTime?                CSMSTime                    { get; private set; }
-
-            /// <summary>
-            /// The default request timeout for all requests.
-            /// </summary>
-            public TimeSpan                 DefaultRequestTimeout       { get; }
-
-
-
-
-            /// <summary>
-            /// The maintenance interval.
-            /// </summary>
-            public TimeSpan                 MaintenanceEvery            { get; }
-
-            /// <summary>
-            /// Disable all maintenance tasks.
-            /// </summary>
-            public Boolean                  DisableMaintenanceTasks     { get; set; }
-
-            /// <summary>
-            /// Disable all heartbeats.
-            /// </summary>
-            public Boolean                  DisableSendHeartbeats       { get; set; }
-
-
-            #region ToDo's
-
-            public URL RemoteURL => throw new NotImplementedException();
-
-            public HTTPHostname? VirtualHostname => throw new NotImplementedException();
-
-   //         string? IHTTPClient.Description { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-            public RemoteCertificateValidationHandler? RemoteCertificateValidator => throw new NotImplementedException();
-
-            public X509Certificate? ClientCert => throw new NotImplementedException();
-
-            public SslProtocols TLSProtocol => throw new NotImplementedException();
-
-            public bool PreferIPv4 => throw new NotImplementedException();
-
-            public string HTTPUserAgent => throw new NotImplementedException();
-
-            public TimeSpan RequestTimeout { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-            public TransmissionRetryDelayDelegate TransmissionRetryDelay => throw new NotImplementedException();
-
-            public ushort MaxNumberOfRetries => throw new NotImplementedException();
-
-            public bool UseHTTPPipelining => throw new NotImplementedException();
-
-            public HTTPClientLogger? HTTPLogger => throw new NotImplementedException();
-
-            #endregion
-
-
-            /// <summary>
-            /// The enumeration of all signature policies.
-            /// </summary>
-            public IEnumerable<SignaturePolicy>  SignaturePolicies
-                => signaturePolicies;
-
-            /// <summary>
-            /// The currently active signature policy.
-            /// </summary>
-            public SignaturePolicy               SignaturePolicy
-                => SignaturePolicies.First();
-
-            #endregion
-
-            #region Custom JSON serializer delegates
-
-            #region CSMS Request  Messages
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.ResetRequest>?                                   CustomResetRequestSerializer                                 { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.UpdateFirmwareRequest>?                          CustomUpdateFirmwareRequestSerializer                        { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.PublishFirmwareRequest>?                         CustomPublishFirmwareRequestSerializer                       { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.UnpublishFirmwareRequest>?                       CustomUnpublishFirmwareRequestSerializer                     { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.GetBaseReportRequest>?                           CustomGetBaseReportRequestSerializer                         { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.GetReportRequest>?                               CustomGetReportRequestSerializer                             { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.GetLogRequest>?                                  CustomGetLogRequestSerializer                                { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.SetVariablesRequest>?                            CustomSetVariablesRequestSerializer                          { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.GetVariablesRequest>?                            CustomGetVariablesRequestSerializer                          { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.SetMonitoringBaseRequest>?                       CustomSetMonitoringBaseRequestSerializer                     { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.GetMonitoringReportRequest>?                     CustomGetMonitoringReportRequestSerializer                   { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.SetMonitoringLevelRequest>?                      CustomSetMonitoringLevelRequestSerializer                    { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.SetVariableMonitoringRequest>?                   CustomSetVariableMonitoringRequestSerializer                 { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.ClearVariableMonitoringRequest>?                 CustomClearVariableMonitoringRequestSerializer               { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.SetNetworkProfileRequest>?                       CustomSetNetworkProfileRequestSerializer                     { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.ChangeAvailabilityRequest>?                      CustomChangeAvailabilityRequestSerializer                    { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.TriggerMessageRequest>?                          CustomTriggerMessageRequestSerializer                        { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.DataTransferRequest>?                            CustomIncomingDataTransferRequestSerializer                  { get; set; }
-
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.CertificateSignedRequest>?                       CustomCertificateSignedRequestSerializer                     { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.InstallCertificateRequest>?                      CustomInstallCertificateRequestSerializer                    { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.GetInstalledCertificateIdsRequest>?              CustomGetInstalledCertificateIdsRequestSerializer            { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.DeleteCertificateRequest>?                       CustomDeleteCertificateRequestSerializer                     { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.NotifyCRLRequest>?                               CustomNotifyCRLRequestSerializer                             { get; set; }
-
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.GetLocalListVersionRequest>?                     CustomGetLocalListVersionRequestSerializer                   { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.SendLocalListRequest>?                           CustomSendLocalListRequestSerializer                         { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.ClearCacheRequest>?                              CustomClearCacheRequestSerializer                            { get; set; }
-
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.ReserveNowRequest>?                              CustomReserveNowRequestSerializer                            { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.CancelReservationRequest>?                       CustomCancelReservationRequestSerializer                     { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.RequestStartTransactionRequest>?                 CustomRequestStartTransactionRequestSerializer               { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.RequestStopTransactionRequest>?                  CustomRequestStopTransactionRequestSerializer                { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.GetTransactionStatusRequest>?                    CustomGetTransactionStatusRequestSerializer                  { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.SetChargingProfileRequest>?                      CustomSetChargingProfileRequestSerializer                    { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.GetChargingProfilesRequest>?                     CustomGetChargingProfilesRequestSerializer                   { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.ClearChargingProfileRequest>?                    CustomClearChargingProfileRequestSerializer                  { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.GetCompositeScheduleRequest>?                    CustomGetCompositeScheduleRequestSerializer                  { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.UpdateDynamicScheduleRequest>?                   CustomUpdateDynamicScheduleRequestSerializer                 { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.NotifyAllowedEnergyTransferRequest>?             CustomNotifyAllowedEnergyTransferRequestSerializer           { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.UsePriorityChargingRequest>?                     CustomUsePriorityChargingRequestSerializer                   { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.UnlockConnectorRequest>?                         CustomUnlockConnectorRequestSerializer                       { get; set; }
-
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.AFRRSignalRequest>?                              CustomAFRRSignalRequestSerializer                            { get; set; }
-
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.SetDisplayMessageRequest>?                       CustomSetDisplayMessageRequestSerializer                     { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.GetDisplayMessagesRequest>?                      CustomGetDisplayMessagesRequestSerializer                    { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.ClearDisplayMessageRequest>?                     CustomClearDisplayMessageRequestSerializer                   { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.CostUpdatedRequest>?                             CustomCostUpdatedRequestSerializer                           { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.CustomerInformationRequest>?                     CustomCustomerInformationRequestSerializer                   { get; set; }
-
-
-            // Binary Data Streams Extensions
-            public CustomBinarySerializerDelegate <OCPP.    CSMS.BinaryDataTransferRequest>?                      CustomIncomingBinaryDataTransferRequestSerializer            { get; set; }
-            public CustomJObjectSerializerDelegate<OCPP.    CSMS.GetFileRequest>?                                 CustomGetFileRequestSerializer                               { get; set; }
-            public CustomBinarySerializerDelegate <OCPP.    CSMS.SendFileRequest>?                                CustomSendFileRequestSerializer                              { get; set; }
-            public CustomJObjectSerializerDelegate<OCPP.    CSMS.DeleteFileRequest>?                              CustomDeleteFileRequestSerializer                            { get; set; }
-
-
-            // E2E Security Extensions
-            public CustomJObjectSerializerDelegate<OCPP.    CSMS.AddSignaturePolicyRequest>?                      CustomAddSignaturePolicyRequestSerializer                    { get; set; }
-            public CustomJObjectSerializerDelegate<OCPP.    CSMS.UpdateSignaturePolicyRequest>?                   CustomUpdateSignaturePolicyRequestSerializer                 { get; set; }
-            public CustomJObjectSerializerDelegate<OCPP.    CSMS.DeleteSignaturePolicyRequest>?                   CustomDeleteSignaturePolicyRequestSerializer                 { get; set; }
-            public CustomJObjectSerializerDelegate<OCPP.    CSMS.AddUserRoleRequest>?                             CustomAddUserRoleRequestSerializer                           { get; set; }
-            public CustomJObjectSerializerDelegate<OCPP.    CSMS.UpdateUserRoleRequest>?                          CustomUpdateUserRoleRequestSerializer                        { get; set; }
-            public CustomJObjectSerializerDelegate<OCPP.    CSMS.DeleteUserRoleRequest>?                          CustomDeleteUserRoleRequestSerializer                        { get; set; }
-
-
-            // E2E Charging Tariffs Extensions
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.SetDefaultChargingTariffRequest>?                CustomSetDefaultChargingTariffRequestSerializer              { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.GetDefaultChargingTariffRequest>?                CustomGetDefaultChargingTariffRequestSerializer              { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.RemoveDefaultChargingTariffRequest>?             CustomRemoveDefaultChargingTariffRequestSerializer           { get; set; }
-
-            #endregion
-
-            #region CSMS Response Messages
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.BootNotificationResponse>?                       CustomBootNotificationResponseSerializer                     { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.FirmwareStatusNotificationResponse>?             CustomFirmwareStatusNotificationResponseSerializer           { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.PublishFirmwareStatusNotificationResponse>?      CustomPublishFirmwareStatusNotificationResponseSerializer    { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.HeartbeatResponse>?                              CustomHeartbeatResponseSerializer                            { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.NotifyEventResponse>?                            CustomNotifyEventResponseSerializer                          { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.SecurityEventNotificationResponse>?              CustomSecurityEventNotificationResponseSerializer            { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.NotifyReportResponse>?                           CustomNotifyReportResponseSerializer                         { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.NotifyMonitoringReportResponse>?                 CustomNotifyMonitoringReportResponseSerializer               { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.LogStatusNotificationResponse>?                  CustomLogStatusNotificationResponseSerializer                { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.DataTransferResponse>?                           CustomDataTransferResponseSerializer                         { get; set; }
-
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.SignCertificateResponse>?                        CustomSignCertificateResponseSerializer                      { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.Get15118EVCertificateResponse>?                  CustomGet15118EVCertificateResponseSerializer                { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.GetCertificateStatusResponse>?                   CustomGetCertificateStatusResponseSerializer                 { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.GetCRLResponse>?                                 CustomGetCRLResponseSerializer                               { get; set; }
-
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.ReservationStatusUpdateResponse>?                CustomReservationStatusUpdateResponseSerializer              { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.AuthorizeResponse>?                              CustomAuthorizeResponseSerializer                            { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.NotifyEVChargingNeedsResponse>?                  CustomNotifyEVChargingNeedsResponseSerializer                { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.TransactionEventResponse>?                       CustomTransactionEventResponseSerializer                     { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.StatusNotificationResponse>?                     CustomStatusNotificationResponseSerializer                   { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.MeterValuesResponse>?                            CustomMeterValuesResponseSerializer                          { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.NotifyChargingLimitResponse>?                    CustomNotifyChargingLimitResponseSerializer                  { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.ClearedChargingLimitResponse>?                   CustomClearedChargingLimitResponseSerializer                 { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.ReportChargingProfilesResponse>?                 CustomReportChargingProfilesResponseSerializer               { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.NotifyEVChargingScheduleResponse>?               CustomNotifyEVChargingScheduleResponseSerializer             { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.NotifyPriorityChargingResponse>?                 CustomNotifyPriorityChargingResponseSerializer               { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.PullDynamicScheduleUpdateResponse>?              CustomPullDynamicScheduleUpdateResponseSerializer            { get; set; }
-
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.NotifyDisplayMessagesResponse>?                  CustomNotifyDisplayMessagesResponseSerializer                { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.NotifyCustomerInformationResponse>?              CustomNotifyCustomerInformationResponseSerializer            { get; set; }
-
-
-            // Binary Data Streams Extensions
-            public CustomBinarySerializerDelegate <OCPP.    CSMS.BinaryDataTransferResponse>?                     CustomBinaryDataTransferResponseSerializer                   { get; set; }
-
-            #endregion
-
-
-            #region Charging Station Request  Messages
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.BootNotificationRequest>?                             CustomBootNotificationRequestSerializer                      { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.FirmwareStatusNotificationRequest>?                   CustomFirmwareStatusNotificationRequestSerializer            { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.PublishFirmwareStatusNotificationRequest>?            CustomPublishFirmwareStatusNotificationRequestSerializer     { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.HeartbeatRequest>?                                    CustomHeartbeatRequestSerializer                             { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyEventRequest>?                                  CustomNotifyEventRequestSerializer                           { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SecurityEventNotificationRequest>?                    CustomSecurityEventNotificationRequestSerializer             { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyReportRequest>?                                 CustomNotifyReportRequestSerializer                          { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyMonitoringReportRequest>?                       CustomNotifyMonitoringReportRequestSerializer                { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.LogStatusNotificationRequest>?                        CustomLogStatusNotificationRequestSerializer                 { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.DataTransferRequest>?                                 CustomDataTransferRequestSerializer                          { get; set; }
-
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SignCertificateRequest>?                              CustomSignCertificateRequestSerializer                       { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.Get15118EVCertificateRequest>?                        CustomGet15118EVCertificateRequestSerializer                 { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetCertificateStatusRequest>?                         CustomGetCertificateStatusRequestSerializer                  { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetCRLRequest>?                                       CustomGetCRLRequestSerializer                                { get; set; }
-
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.ReservationStatusUpdateRequest>?                      CustomReservationStatusUpdateRequestSerializer               { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.AuthorizeRequest>?                                    CustomAuthorizeRequestSerializer                             { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyEVChargingNeedsRequest>?                        CustomNotifyEVChargingNeedsRequestSerializer                 { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.TransactionEventRequest>?                             CustomTransactionEventRequestSerializer                      { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.StatusNotificationRequest>?                           CustomStatusNotificationRequestSerializer                    { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.MeterValuesRequest>?                                  CustomMeterValuesRequestSerializer                           { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyChargingLimitRequest>?                          CustomNotifyChargingLimitRequestSerializer                   { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.ClearedChargingLimitRequest>?                         CustomClearedChargingLimitRequestSerializer                  { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.ReportChargingProfilesRequest>?                       CustomReportChargingProfilesRequestSerializer                { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyEVChargingScheduleRequest>?                     CustomNotifyEVChargingScheduleRequestSerializer              { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyPriorityChargingRequest>?                       CustomNotifyPriorityChargingRequestSerializer                { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.PullDynamicScheduleUpdateRequest>?                    CustomPullDynamicScheduleUpdateRequestSerializer             { get; set; }
-
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyDisplayMessagesRequest>?                        CustomNotifyDisplayMessagesRequestSerializer                 { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyCustomerInformationRequest>?                    CustomNotifyCustomerInformationRequestSerializer             { get; set; }
-
-
-            // Binary Data Streams Extensions
-            public CustomBinarySerializerDelegate <OCPP.    CS.BinaryDataTransferRequest>?                           CustomBinaryDataTransferRequestSerializer                    { get; set; }
-
-            #endregion
-
-            #region Charging Station Response Messages
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.ResetResponse>?                                       CustomResetResponseSerializer                                { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.UpdateFirmwareResponse>?                              CustomUpdateFirmwareResponseSerializer                       { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.PublishFirmwareResponse>?                             CustomPublishFirmwareResponseSerializer                      { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.UnpublishFirmwareResponse>?                           CustomUnpublishFirmwareResponseSerializer                    { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetBaseReportResponse>?                               CustomGetBaseReportResponseSerializer                        { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetReportResponse>?                                   CustomGetReportResponseSerializer                            { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetLogResponse>?                                      CustomGetLogResponseSerializer                               { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SetVariablesResponse>?                                CustomSetVariablesResponseSerializer                         { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetVariablesResponse>?                                CustomGetVariablesResponseSerializer                         { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SetMonitoringBaseResponse>?                           CustomSetMonitoringBaseResponseSerializer                    { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetMonitoringReportResponse>?                         CustomGetMonitoringReportResponseSerializer                  { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SetMonitoringLevelResponse>?                          CustomSetMonitoringLevelResponseSerializer                   { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SetVariableMonitoringResponse>?                       CustomSetVariableMonitoringResponseSerializer                { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.ClearVariableMonitoringResponse>?                     CustomClearVariableMonitoringResponseSerializer              { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SetNetworkProfileResponse>?                           CustomSetNetworkProfileResponseSerializer                    { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.ChangeAvailabilityResponse>?                          CustomChangeAvailabilityResponseSerializer                   { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.TriggerMessageResponse>?                              CustomTriggerMessageResponseSerializer                       { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.DataTransferResponse>?                                CustomIncomingDataTransferResponseSerializer                 { get; set; }
-
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.CertificateSignedResponse>?                           CustomCertificateSignedResponseSerializer                    { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.InstallCertificateResponse>?                          CustomInstallCertificateResponseSerializer                   { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetInstalledCertificateIdsResponse>?                  CustomGetInstalledCertificateIdsResponseSerializer           { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.DeleteCertificateResponse>?                           CustomDeleteCertificateResponseSerializer                    { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyCRLResponse>?                                   CustomNotifyCRLResponseSerializer                            { get; set; }
-
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetLocalListVersionResponse>?                         CustomGetLocalListVersionResponseSerializer                  { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SendLocalListResponse>?                               CustomSendLocalListResponseSerializer                        { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.ClearCacheResponse>?                                  CustomClearCacheResponseSerializer                           { get; set; }
-
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.ReserveNowResponse>?                                  CustomReserveNowResponseSerializer                           { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.CancelReservationResponse>?                           CustomCancelReservationResponseSerializer                    { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.RequestStartTransactionResponse>?                     CustomRequestStartTransactionResponseSerializer              { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.RequestStopTransactionResponse>?                      CustomRequestStopTransactionResponseSerializer               { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetTransactionStatusResponse>?                        CustomGetTransactionStatusResponseSerializer                 { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SetChargingProfileResponse>?                          CustomSetChargingProfileResponseSerializer                   { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetChargingProfilesResponse>?                         CustomGetChargingProfilesResponseSerializer                  { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.ClearChargingProfileResponse>?                        CustomClearChargingProfileResponseSerializer                 { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetCompositeScheduleResponse>?                        CustomGetCompositeScheduleResponseSerializer                 { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.UpdateDynamicScheduleResponse>?                       CustomUpdateDynamicScheduleResponseSerializer                { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyAllowedEnergyTransferResponse>?                 CustomNotifyAllowedEnergyTransferResponseSerializer          { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.UsePriorityChargingResponse>?                         CustomUsePriorityChargingResponseSerializer                  { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.UnlockConnectorResponse>?                             CustomUnlockConnectorResponseSerializer                      { get; set; }
-
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.AFRRSignalResponse>?                                  CustomAFRRSignalResponseSerializer                           { get; set; }
-
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SetDisplayMessageResponse>?                           CustomSetDisplayMessageResponseSerializer                    { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetDisplayMessagesResponse>?                          CustomGetDisplayMessagesResponseSerializer                   { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.ClearDisplayMessageResponse>?                         CustomClearDisplayMessageResponseSerializer                  { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.CostUpdatedResponse>?                                 CustomCostUpdatedResponseSerializer                          { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.CustomerInformationResponse>?                         CustomCustomerInformationResponseSerializer                  { get; set; }
-
-
-            // Binary Data Streams Extensions
-            public CustomBinarySerializerDelegate <OCPP.    CS.BinaryDataTransferResponse>?                          CustomIncomingBinaryDataTransferResponseSerializer           { get; set; }
-            public CustomBinarySerializerDelegate <OCPP.    CS.GetFileResponse>?                                     CustomGetFileResponseSerializer                              { get; set; }
-            public CustomJObjectSerializerDelegate<OCPP.    CS.SendFileResponse>?                                    CustomSendFileResponseSerializer                             { get; set; }
-            public CustomJObjectSerializerDelegate<OCPP.    CS.DeleteFileResponse>?                                  CustomDeleteFileResponseSerializer                           { get; set; }
-
-
-            // E2E Security Extensions
-            public CustomJObjectSerializerDelegate<OCPP.    CS.AddSignaturePolicyResponse>?                          CustomAddSignaturePolicyResponseSerializer                   { get; set; }
-            public CustomJObjectSerializerDelegate<OCPP.    CS.UpdateSignaturePolicyResponse>?                       CustomUpdateSignaturePolicyResponseSerializer                { get; set; }
-            public CustomJObjectSerializerDelegate<OCPP.    CS.DeleteSignaturePolicyResponse>?                       CustomDeleteSignaturePolicyResponseSerializer                { get; set; }
-            public CustomJObjectSerializerDelegate<OCPP.    CS.AddUserRoleResponse>?                                 CustomAddUserRoleResponseSerializer                          { get; set; }
-            public CustomJObjectSerializerDelegate<OCPP.    CS.UpdateUserRoleResponse>?                              CustomUpdateUserRoleResponseSerializer                       { get; set; }
-            public CustomJObjectSerializerDelegate<OCPP.    CS.DeleteUserRoleResponse>?                              CustomDeleteUserRoleResponseSerializer                       { get; set; }
-
-
-            // E2E Charging Tariff Extensions
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SetDefaultChargingTariffResponse>?                    CustomSetDefaultChargingTariffResponseSerializer             { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetDefaultChargingTariffResponse>?                    CustomGetDefaultChargingTariffResponseSerializer             { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.RemoveDefaultChargingTariffResponse>?                 CustomRemoveDefaultChargingTariffResponseSerializer          { get; set; }
-
-            #endregion
-
-            public CustomJObjectSerializerDelegate<OCPP.NN.NotifyNetworkTopologyRequest>?                CustomNotifyNetworkTopologyRequestSerializer           { get; set; }
-            public CustomJObjectSerializerDelegate<OCPP.NN.NotifyNetworkTopologyResponse>?               CustomNotifyNetworkTopologyResponseSerializer          { get; set; }
-
-
-            #region Data Structures
-
-            public CustomJObjectSerializerDelegate<StatusInfo>?                                          CustomStatusInfoSerializer                                   { get; set; }
-            public CustomJObjectSerializerDelegate<EVSEStatusInfo<SetDefaultChargingTariffStatus>>?      CustomEVSEStatusInfoSerializer                               { get; set; }
-            public CustomJObjectSerializerDelegate<EVSEStatusInfo<RemoveDefaultChargingTariffStatus>>?   CustomEVSEStatusInfoSerializer2                              { get; set; }
-            public CustomJObjectSerializerDelegate<OCPP.Signature>?                                      CustomSignatureSerializer                                    { get; set; }
-            public CustomJObjectSerializerDelegate<CustomData>?                                          CustomCustomDataSerializer                                   { get; set; }
-            public CustomJObjectSerializerDelegate<Firmware>?                                            CustomFirmwareSerializer                                     { get; set; }
-            public CustomJObjectSerializerDelegate<ComponentVariable>?                                   CustomComponentVariableSerializer                            { get; set; }
-            public CustomJObjectSerializerDelegate<Component>?                                           CustomComponentSerializer                                    { get; set; }
-            public CustomJObjectSerializerDelegate<EVSE>?                                                CustomEVSESerializer                                         { get; set; }
-            public CustomJObjectSerializerDelegate<Variable>?                                            CustomVariableSerializer                                     { get; set; }
-            public CustomJObjectSerializerDelegate<PeriodicEventStreamParameters>?                       CustomPeriodicEventStreamParametersSerializer                { get; set; }
-            public CustomJObjectSerializerDelegate<LogParameters>?                                       CustomLogParametersSerializer                                { get; set; }
-            public CustomJObjectSerializerDelegate<SetVariableData>?                                     CustomSetVariableDataSerializer                              { get; set; }
-            public CustomJObjectSerializerDelegate<GetVariableData>?                                     CustomGetVariableDataSerializer                              { get; set; }
-            public CustomJObjectSerializerDelegate<SetMonitoringData>?                                   CustomSetMonitoringDataSerializer                            { get; set; }
-            public CustomJObjectSerializerDelegate<NetworkConnectionProfile>?                            CustomNetworkConnectionProfileSerializer                     { get; set; }
-            public CustomJObjectSerializerDelegate<VPNConfiguration>?                                    CustomVPNConfigurationSerializer                             { get; set; }
-            public CustomJObjectSerializerDelegate<APNConfiguration>?                                    CustomAPNConfigurationSerializer                             { get; set; }
-            public CustomJObjectSerializerDelegate<CertificateHashData>?                                 CustomCertificateHashDataSerializer                          { get; set; }
-            public CustomJObjectSerializerDelegate<AuthorizationData>?                                   CustomAuthorizationDataSerializer                            { get; set; }
-            public CustomJObjectSerializerDelegate<IdToken>?                                             CustomIdTokenSerializer                                      { get; set; }
-            public CustomJObjectSerializerDelegate<AdditionalInfo>?                                      CustomAdditionalInfoSerializer                               { get; set; }
-            public CustomJObjectSerializerDelegate<IdTokenInfo>?                                         CustomIdTokenInfoSerializer                                  { get; set; }
-            public CustomJObjectSerializerDelegate<MessageContent>?                                      CustomMessageContentSerializer                               { get; set; }
-            public CustomJObjectSerializerDelegate<ChargingProfile>?                                     CustomChargingProfileSerializer                              { get; set; }
-            public CustomJObjectSerializerDelegate<LimitBeyondSoC>?                                      CustomLimitBeyondSoCSerializer                               { get; set; }
-            public CustomJObjectSerializerDelegate<ChargingSchedule>?                                    CustomChargingScheduleSerializer                             { get; set; }
-            public CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?                              CustomChargingSchedulePeriodSerializer                       { get; set; }
-            public CustomJObjectSerializerDelegate<V2XFreqWattEntry>?                                    CustomV2XFreqWattEntrySerializer                             { get; set; }
-            public CustomJObjectSerializerDelegate<V2XSignalWattEntry>?                                  CustomV2XSignalWattEntrySerializer                           { get; set; }
-            public CustomJObjectSerializerDelegate<SalesTariff>?                                         CustomSalesTariffSerializer                                  { get; set; }
-            public CustomJObjectSerializerDelegate<SalesTariffEntry>?                                    CustomSalesTariffEntrySerializer                             { get; set; }
-            public CustomJObjectSerializerDelegate<RelativeTimeInterval>?                                CustomRelativeTimeIntervalSerializer                         { get; set; }
-            public CustomJObjectSerializerDelegate<ConsumptionCost>?                                     CustomConsumptionCostSerializer                              { get; set; }
-            public CustomJObjectSerializerDelegate<Cost>?                                                CustomCostSerializer                                         { get; set; }
-
-            public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.AbsolutePriceSchedule>?    CustomAbsolutePriceScheduleSerializer                        { get; set; }
-            public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceRuleStack>?           CustomPriceRuleStackSerializer                               { get; set; }
-            public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceRule>?                CustomPriceRuleSerializer                                    { get; set; }
-            public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.TaxRule>?                  CustomTaxRuleSerializer                                      { get; set; }
-            public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.OverstayRuleList>?         CustomOverstayRuleListSerializer                             { get; set; }
-            public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.OverstayRule>?             CustomOverstayRuleSerializer                                 { get; set; }
-            public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.AdditionalService>?        CustomAdditionalServiceSerializer                            { get; set; }
-
-            public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceLevelSchedule>?       CustomPriceLevelScheduleSerializer                           { get; set; }
-            public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceLevelScheduleEntry>?  CustomPriceLevelScheduleEntrySerializer                      { get; set; }
-
-            public CustomJObjectSerializerDelegate<TransactionLimits>?                                   CustomTransactionLimitsSerializer                            { get; set; }
-
-            public CustomJObjectSerializerDelegate<ChargingProfileCriterion>?                            CustomChargingProfileCriterionSerializer                     { get; set; }
-            public CustomJObjectSerializerDelegate<ClearChargingProfile>?                                CustomClearChargingProfileSerializer                         { get; set; }
-            public CustomJObjectSerializerDelegate<MessageInfo>?                                         CustomMessageInfoSerializer                                  { get; set; }
-
-
-
-            public CustomJObjectSerializerDelegate<ChargingStation>?                                     CustomChargingStationSerializer                              { get; set; }
-            public CustomJObjectSerializerDelegate<EventData>?                                           CustomEventDataSerializer                                    { get; set; }
-            public CustomJObjectSerializerDelegate<ReportData>?                                          CustomReportDataSerializer                                   { get; set; }
-            public CustomJObjectSerializerDelegate<VariableAttribute>?                                   CustomVariableAttributeSerializer                            { get; set; }
-            public CustomJObjectSerializerDelegate<VariableCharacteristics>?                             CustomVariableCharacteristicsSerializer                      { get; set; }
-            public CustomJObjectSerializerDelegate<MonitoringData>?                                      CustomMonitoringDataSerializer                               { get; set; }
-            public CustomJObjectSerializerDelegate<VariableMonitoring>?                                  CustomVariableMonitoringSerializer                           { get; set; }
-            public CustomJObjectSerializerDelegate<OCSPRequestData>?                                     CustomOCSPRequestDataSerializer                              { get; set; }
-
-            public CustomJObjectSerializerDelegate<ChargingNeeds>?                                       CustomChargingNeedsSerializer                                { get; set; }
-            public CustomJObjectSerializerDelegate<ACChargingParameters>?                                CustomACChargingParametersSerializer                         { get; set; }
-            public CustomJObjectSerializerDelegate<DCChargingParameters>?                                CustomDCChargingParametersSerializer                         { get; set; }
-            public CustomJObjectSerializerDelegate<V2XChargingParameters>?                               CustomV2XChargingParametersSerializer                        { get; set; }
-            public CustomJObjectSerializerDelegate<EVEnergyOffer>?                                       CustomEVEnergyOfferSerializer                                { get; set; }
-            public CustomJObjectSerializerDelegate<EVPowerSchedule>?                                     CustomEVPowerScheduleSerializer                              { get; set; }
-            public CustomJObjectSerializerDelegate<EVPowerScheduleEntry>?                                CustomEVPowerScheduleEntrySerializer                         { get; set; }
-            public CustomJObjectSerializerDelegate<EVAbsolutePriceSchedule>?                             CustomEVAbsolutePriceScheduleSerializer                      { get; set; }
-            public CustomJObjectSerializerDelegate<EVAbsolutePriceScheduleEntry>?                        CustomEVAbsolutePriceScheduleEntrySerializer                 { get; set; }
-            public CustomJObjectSerializerDelegate<EVPriceRule>?                                         CustomEVPriceRuleSerializer                                  { get; set; }
-
-            public CustomJObjectSerializerDelegate<Transaction>?                                         CustomTransactionSerializer                                  { get; set; }
-            public CustomJObjectSerializerDelegate<MeterValue>?                                          CustomMeterValueSerializer                                   { get; set; }
-            public CustomJObjectSerializerDelegate<SampledValue>?                                        CustomSampledValueSerializer                                 { get; set; }
-            public CustomJObjectSerializerDelegate<SignedMeterValue>?                                    CustomSignedMeterValueSerializer                             { get; set; }
-            public CustomJObjectSerializerDelegate<UnitsOfMeasure>?                                      CustomUnitsOfMeasureSerializer                               { get; set; }
-
-            public CustomJObjectSerializerDelegate<SetVariableResult>?                                   CustomSetVariableResultSerializer                            { get; set; }
-            public CustomJObjectSerializerDelegate<GetVariableResult>?                                   CustomGetVariableResultSerializer                            { get; set; }
-            public CustomJObjectSerializerDelegate<SetMonitoringResult>?                                 CustomSetMonitoringResultSerializer                          { get; set; }
-            public CustomJObjectSerializerDelegate<ClearMonitoringResult>?                               CustomClearMonitoringResultSerializer                        { get; set; }
-            public CustomJObjectSerializerDelegate<CompositeSchedule>?                                   CustomCompositeScheduleSerializer                            { get; set; }
-
-
-            // Binary Data Streams Extensions
-            public CustomBinarySerializerDelegate<OCPP.Signature>?                                       CustomBinarySignatureSerializer                              { get; set; }
-
-
-            // E2E Security Extensions
-
-
-
-            // E2E Charging Tariff Extensions
-
-            public CustomJObjectSerializerDelegate<ChargingTariff>?                                      CustomChargingTariffSerializer                               { get; set; }
-            public CustomJObjectSerializerDelegate<Price>?                                               CustomPriceSerializer                                        { get; set; }
-            public CustomJObjectSerializerDelegate<TariffElement>?                                       CustomTariffElementSerializer                                { get; set; }
-            public CustomJObjectSerializerDelegate<PriceComponent>?                                      CustomPriceComponentSerializer                               { get; set; }
-            public CustomJObjectSerializerDelegate<TaxRate>?                                             CustomTaxRateSerializer                                      { get; set; }
-            public CustomJObjectSerializerDelegate<TariffRestrictions>?                                  CustomTariffRestrictionsSerializer                           { get; set; }
-            public CustomJObjectSerializerDelegate<EnergyMix>?                                           CustomEnergyMixSerializer                                    { get; set; }
-            public CustomJObjectSerializerDelegate<EnergySource>?                                        CustomEnergySourceSerializer                                 { get; set; }
-            public CustomJObjectSerializerDelegate<EnvironmentalImpact>?                                 CustomEnvironmentalImpactSerializer                          { get; set; }
-
-            #endregion
-
-            public CustomJObjectSerializerDelegate<NetworkTopologyInformation>?                          CustomNetworkTopologyInformationSerializer             { get; set; }
+            private readonly TestNetworkingNode parentNetworkingNode;
 
             #endregion
 
             #region Events
 
-            #region Charging Station -> CSMS
-
-            #region SendBootNotification
-
-            /// <summary>
-            /// An event fired whenever a BootNotification request will be sent to the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnBootNotificationRequestDelegate?   OnBootNotificationRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a BootNotification request was received.
-            /// </summary>
-            public event OCPPv2_1.CS.OnBootNotificationResponseDelegate?  OnBootNotificationResponse;
-
-            #endregion
-
-            #region SendFirmwareStatusNotification
-
-            /// <summary>
-            /// An event fired whenever a FirmwareStatusNotification request will be sent to the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnFirmwareStatusNotificationRequestDelegate?   OnFirmwareStatusNotificationRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a FirmwareStatusNotification request was received.
-            /// </summary>
-            public event OCPPv2_1.CS.OnFirmwareStatusNotificationResponseDelegate?  OnFirmwareStatusNotificationResponse;
-
-            #endregion
-
-            #region SendPublishFirmwareStatusNotification
-
-            /// <summary>
-            /// An event fired whenever a PublishFirmwareStatusNotification request will be sent to the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnPublishFirmwareStatusNotificationRequestDelegate?   OnPublishFirmwareStatusNotificationRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a PublishFirmwareStatusNotification request was received.
-            /// </summary>
-            public event OCPPv2_1.CS.OnPublishFirmwareStatusNotificationResponseDelegate?  OnPublishFirmwareStatusNotificationResponse;
-
-            #endregion
-
-            #region SendHeartbeat
-
-            /// <summary>
-            /// An event fired whenever a Heartbeat request will be sent to the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnHeartbeatRequestDelegate?   OnHeartbeatRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a Heartbeat request was received.
-            /// </summary>
-            public event OCPPv2_1.CS.OnHeartbeatResponseDelegate?  OnHeartbeatResponse;
-
-            #endregion
-
-            #region NotifyEvent
-
-            /// <summary>
-            /// An event fired whenever a NotifyEvent request will be sent to the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnNotifyEventRequestDelegate?   OnNotifyEventRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a NotifyEvent request was received.
-            /// </summary>
-            public event OCPPv2_1.CS.OnNotifyEventResponseDelegate?  OnNotifyEventResponse;
-
-            #endregion
-
-            #region SendSecurityEventNotification
-
-            /// <summary>
-            /// An event fired whenever a SecurityEventNotification request will be sent to the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnSecurityEventNotificationRequestDelegate?   OnSecurityEventNotificationRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a SecurityEventNotification request was received.
-            /// </summary>
-            public event OCPPv2_1.CS.OnSecurityEventNotificationResponseDelegate?  OnSecurityEventNotificationResponse;
-
-            #endregion
-
-            #region NotifyReport
-
-            /// <summary>
-            /// An event fired whenever a NotifyReport request will be sent to the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnNotifyReportRequestDelegate?   OnNotifyReportRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a NotifyReport request was received.
-            /// </summary>
-            public event OCPPv2_1.CS.OnNotifyReportResponseDelegate?  OnNotifyReportResponse;
-
-            #endregion
-
-            #region NotifyMonitoringReport
-
-            /// <summary>
-            /// An event fired whenever a NotifyMonitoringReport request will be sent to the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnNotifyMonitoringReportRequestDelegate?   OnNotifyMonitoringReportRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a NotifyMonitoringReport request was received.
-            /// </summary>
-            public event OCPPv2_1.CS.OnNotifyMonitoringReportResponseDelegate?  OnNotifyMonitoringReportResponse;
-
-            #endregion
-
-            #region SendLogStatusNotification
-
-            /// <summary>
-            /// An event fired whenever a LogStatusNotification request will be sent to the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnLogStatusNotificationRequestDelegate?   OnLogStatusNotificationRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a LogStatusNotification request was received.
-            /// </summary>
-            public event OCPPv2_1.CS.OnLogStatusNotificationResponseDelegate?  OnLogStatusNotificationResponse;
-
-            #endregion
-
-            #region TransferData
-
-            /// <summary>
-            /// An event fired whenever a DataTransfer request will be sent to the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnDataTransferRequestDelegate?   OnDataTransferRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a DataTransfer request was received.
-            /// </summary>
-            public event OCPPv2_1.CS.OnDataTransferResponseDelegate?  OnDataTransferResponse;
-
-            #endregion
-
-
-            #region SignCertificate
-
-            /// <summary>
-            /// An event fired whenever a SignCertificate request will be sent to the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnSignCertificateRequestDelegate?   OnSignCertificateRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a SignCertificate request was received.
-            /// </summary>
-            public event OCPPv2_1.CS.OnSignCertificateResponseDelegate?  OnSignCertificateResponse;
-
-            #endregion
-
-            #region Get15118EVCertificate
-
-            /// <summary>
-            /// An event fired whenever a Get15118EVCertificate request will be sent to the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnGet15118EVCertificateRequestDelegate?   OnGet15118EVCertificateRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a Get15118EVCertificate request was received.
-            /// </summary>
-            public event OCPPv2_1.CS.OnGet15118EVCertificateResponseDelegate?  OnGet15118EVCertificateResponse;
-
-            #endregion
-
-            #region GetCertificateStatus
-
-            /// <summary>
-            /// An event fired whenever a GetCertificateStatus request will be sent to the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnGetCertificateStatusRequestDelegate?   OnGetCertificateStatusRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a GetCertificateStatus request was received.
-            /// </summary>
-            public event OCPPv2_1.CS.OnGetCertificateStatusResponseDelegate?  OnGetCertificateStatusResponse;
-
-            #endregion
-
-            #region GetCRL
-
-            /// <summary>
-            /// An event fired whenever a GetCRL request will be sent to the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnGetCRLRequestDelegate?   OnGetCRLRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a GetCRL request was received.
-            /// </summary>
-            public event OCPPv2_1.CS.OnGetCRLResponseDelegate?  OnGetCRLResponse;
-
-            #endregion
-
-
-            #region SendReservationStatusUpdate
-
-            /// <summary>
-            /// An event fired whenever a ReservationStatusUpdate request will be sent to the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnReservationStatusUpdateRequestDelegate?   OnReservationStatusUpdateRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a ReservationStatusUpdate request was received.
-            /// </summary>
-            public event OCPPv2_1.CS.OnReservationStatusUpdateResponseDelegate?  OnReservationStatusUpdateResponse;
-
-            #endregion
-
-            #region Authorize
-
-            /// <summary>
-            /// An event fired whenever an Authorize request will be sent to the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnAuthorizeRequestDelegate?   OnAuthorizeRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to an Authorize request was received.
-            /// </summary>
-            public event OCPPv2_1.CS.OnAuthorizeResponseDelegate?  OnAuthorizeResponse;
-
-            #endregion
-
-            #region NotifyEVChargingNeeds
-
-            /// <summary>
-            /// An event fired whenever a NotifyEVChargingNeeds request will be sent to the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnNotifyEVChargingNeedsRequestDelegate?   OnNotifyEVChargingNeedsRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a NotifyEVChargingNeeds request was received.
-            /// </summary>
-            public event OCPPv2_1.CS.OnNotifyEVChargingNeedsResponseDelegate?  OnNotifyEVChargingNeedsResponse;
-
-            #endregion
-
-            #region SendTransactionEvent
-
-            /// <summary>
-            /// An event fired whenever a TransactionEvent will be sent to the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnTransactionEventRequestDelegate?   OnTransactionEventRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a TransactionEvent request was received.
-            /// </summary>
-            public event OCPPv2_1.CS.OnTransactionEventResponseDelegate?  OnTransactionEventResponse;
-
-            #endregion
-
-            #region SendStatusNotification
-
-            /// <summary>
-            /// An event fired whenever a StatusNotification request will be sent to the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnStatusNotificationRequestDelegate?   OnStatusNotificationRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a StatusNotification request was received.
-            /// </summary>
-            public event OCPPv2_1.CS.OnStatusNotificationResponseDelegate?  OnStatusNotificationResponse;
-
-            #endregion
-
-            #region SendMeterValues
-
-            /// <summary>
-            /// An event fired whenever a MeterValues request will be sent to the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnMeterValuesRequestDelegate?   OnMeterValuesRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a MeterValues request was received.
-            /// </summary>
-            public event OCPPv2_1.CS.OnMeterValuesResponseDelegate?  OnMeterValuesResponse;
-
-            #endregion
-
-            #region NotifyChargingLimit
-
-            /// <summary>
-            /// An event fired whenever a NotifyChargingLimit request will be sent to the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnNotifyChargingLimitRequestDelegate?   OnNotifyChargingLimitRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a NotifyChargingLimit request was received.
-            /// </summary>
-            public event OCPPv2_1.CS.OnNotifyChargingLimitResponseDelegate?  OnNotifyChargingLimitResponse;
-
-            #endregion
-
-            #region SendClearedChargingLimit
-
-            /// <summary>
-            /// An event fired whenever a ClearedChargingLimit request will be sent to the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnClearedChargingLimitRequestDelegate?   OnClearedChargingLimitRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a ClearedChargingLimit request was received.
-            /// </summary>
-            public event OCPPv2_1.CS.OnClearedChargingLimitResponseDelegate?  OnClearedChargingLimitResponse;
-
-            #endregion
-
-            #region ReportChargingProfiles
-
-            /// <summary>
-            /// An event fired whenever a ReportChargingProfiles request will be sent to the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnReportChargingProfilesRequestDelegate?   OnReportChargingProfilesRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a ReportChargingProfiles request was received.
-            /// </summary>
-            public event OCPPv2_1.CS.OnReportChargingProfilesResponseDelegate?  OnReportChargingProfilesResponse;
-
-            #endregion
-
-            #region NotifyEVChargingSchedule
-
-            /// <summary>
-            /// An event fired whenever a NotifyEVChargingSchedule request will be sent to the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnNotifyEVChargingScheduleRequestDelegate?   OnNotifyEVChargingScheduleRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a NotifyEVChargingSchedule request was received.
-            /// </summary>
-            public event OCPPv2_1.CS.OnNotifyEVChargingScheduleResponseDelegate?  OnNotifyEVChargingScheduleResponse;
-
-            #endregion
-
-            #region NotifyPriorityCharging
-
-            /// <summary>
-            /// An event fired whenever a NotifyPriorityCharging request will be sent to the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnNotifyPriorityChargingRequestDelegate?   OnNotifyPriorityChargingRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a NotifyPriorityCharging request was received.
-            /// </summary>
-            public event OCPPv2_1.CS.OnNotifyPriorityChargingResponseDelegate?  OnNotifyPriorityChargingResponse;
-
-            #endregion
-
-            #region PullDynamicScheduleUpdate
-
-            /// <summary>
-            /// An event fired whenever a PullDynamicScheduleUpdate request will be sent to the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnPullDynamicScheduleUpdateRequestDelegate?   OnPullDynamicScheduleUpdateRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a PullDynamicScheduleUpdate request was received.
-            /// </summary>
-            public event OCPPv2_1.CS.OnPullDynamicScheduleUpdateResponseDelegate?  OnPullDynamicScheduleUpdateResponse;
-
-            #endregion
-
-
-            #region NotifyDisplayMessages
-
-            /// <summary>
-            /// An event fired whenever a NotifyDisplayMessages request will be sent to the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnNotifyDisplayMessagesRequestDelegate?   OnNotifyDisplayMessagesRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a NotifyDisplayMessages request was received.
-            /// </summary>
-            public event OCPPv2_1.CS.OnNotifyDisplayMessagesResponseDelegate?  OnNotifyDisplayMessagesResponse;
-
-            #endregion
-
-            #region NotifyCustomerInformation
-
-            /// <summary>
-            /// An event fired whenever a NotifyCustomerInformation request will be sent to the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnNotifyCustomerInformationRequestDelegate?   OnNotifyCustomerInformationRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a NotifyCustomerInformation request was received.
-            /// </summary>
-            public event OCPPv2_1.CS.OnNotifyCustomerInformationResponseDelegate?  OnNotifyCustomerInformationResponse;
-
-            #endregion
-
-
-            // Binary Data Streams Extensions
-
-            #region TransferBinaryData
-
-            /// <summary>
-            /// An event fired whenever a BinaryDataTransfer request will be sent to the CSMS.
-            /// </summary>
-            public event OCPP.CS.OnBinaryDataTransferRequestDelegate?   OnBinaryDataTransferRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a BinaryDataTransfer request was received.
-            /// </summary>
-            public event OCPP.CS.OnBinaryDataTransferResponseDelegate?  OnBinaryDataTransferResponse;
-
-            #endregion
-
-
-            // Overlay Networking Extensions
-
-            #region OnNotifyNetworkTopology (Request/-Response)
-
-            /// <summary>
-            /// An event fired whenever a NotifyNetworkTopology request will be sent to another node.
-            /// </summary>
-            public event OCPP.CS.OnNotifyNetworkTopologyRequestDelegate?   OnNotifyNetworkTopologyRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a NotifyNetworkTopology request was received.
-            /// </summary>
-            public event OCPP.CS.OnNotifyNetworkTopologyResponseDelegate?  OnNotifyNetworkTopologyResponse;
-
-            #endregion
-
-            #endregion
-
-            #region Charging Station <- CSMS
-
-            //ToDo: Are those events really required here?
-            public event OCPPv2_1.CS.OnResetDelegate?                         OnReset;
-            public event OCPPv2_1.CS.OnUpdateFirmwareDelegate?                OnUpdateFirmware;
-            public event OCPPv2_1.CS.OnPublishFirmwareDelegate?               OnPublishFirmware;
-            public event OCPPv2_1.CS.OnUnpublishFirmwareDelegate?             OnUnpublishFirmware;
-            public event OCPPv2_1.CS.OnGetBaseReportDelegate?                 OnGetBaseReport;
-            public event OCPPv2_1.CS.OnGetReportDelegate?                     OnGetReport;
-            public event OCPPv2_1.CS.OnGetLogDelegate?                        OnGetLog;
-            public event OCPPv2_1.CS.OnSetVariablesDelegate?                  OnSetVariables;
-            public event OCPPv2_1.CS.OnGetVariablesDelegate?                  OnGetVariables;
-            public event OCPPv2_1.CS.OnSetMonitoringBaseDelegate?             OnSetMonitoringBase;
-            public event OCPPv2_1.CS.OnGetMonitoringReportDelegate?           OnGetMonitoringReport;
-            public event OCPPv2_1.CS.OnSetMonitoringLevelDelegate?            OnSetMonitoringLevel;
-            public event OCPPv2_1.CS.OnSetVariableMonitoringDelegate?         OnSetVariableMonitoring;
-            public event OCPPv2_1.CS.OnClearVariableMonitoringDelegate?       OnClearVariableMonitoring;
-            public event OCPPv2_1.CS.OnSetNetworkProfileDelegate?             OnSetNetworkProfile;
-            public event OCPPv2_1.CS.OnChangeAvailabilityDelegate?            OnChangeAvailability;
-            public event OCPPv2_1.CS.OnTriggerMessageDelegate?                OnTriggerMessage;
-            public event OCPPv2_1.CS.OnIncomingDataTransferDelegate?          OnIncomingDataTransfer;
-
-            public event OCPPv2_1.CS.OnCertificateSignedDelegate?             OnCertificateSigned;
-            public event OCPPv2_1.CS.OnInstallCertificateDelegate?            OnInstallCertificate;
-            public event OCPPv2_1.CS.OnGetInstalledCertificateIdsDelegate?    OnGetInstalledCertificateIds;
-            public event OCPPv2_1.CS.OnDeleteCertificateDelegate?             OnDeleteCertificate;
-            public event OCPPv2_1.CS.OnNotifyCRLDelegate?                     OnNotifyCRL;
-
-            public event OCPPv2_1.CS.OnGetLocalListVersionDelegate?           OnGetLocalListVersion;
-            public event OCPPv2_1.CS.OnSendLocalListDelegate?                 OnSendLocalList;
-            public event OCPPv2_1.CS.OnClearCacheDelegate?                    OnClearCache;
-
-            public event OCPPv2_1.CS.OnReserveNowDelegate?                    OnReserveNow;
-            public event OCPPv2_1.CS.OnCancelReservationDelegate?             OnCancelReservation;
-            public event OCPPv2_1.CS.OnRequestStartTransactionDelegate?       OnRequestStartTransaction;
-            public event OCPPv2_1.CS.OnRequestStopTransactionDelegate?        OnRequestStopTransaction;
-            public event OCPPv2_1.CS.OnGetTransactionStatusDelegate?          OnGetTransactionStatus;
-            public event OCPPv2_1.CS.OnSetChargingProfileDelegate?            OnSetChargingProfile;
-            public event OCPPv2_1.CS.OnGetChargingProfilesDelegate?           OnGetChargingProfiles;
-            public event OCPPv2_1.CS.OnClearChargingProfileDelegate?          OnClearChargingProfile;
-            public event OCPPv2_1.CS.OnGetCompositeScheduleDelegate?          OnGetCompositeSchedule;
-            public event OCPPv2_1.CS.OnUpdateDynamicScheduleDelegate?         OnUpdateDynamicSchedule;
-            public event OCPPv2_1.CS.OnNotifyAllowedEnergyTransferDelegate?   OnNotifyAllowedEnergyTransfer;
-            public event OCPPv2_1.CS.OnUsePriorityChargingDelegate?           OnUsePriorityCharging;
-            public event OCPPv2_1.CS.OnUnlockConnectorDelegate?               OnUnlockConnector;
-
-            public event OCPPv2_1.CS.OnAFRRSignalDelegate?                    OnAFRRSignal;
-
-            public event OCPPv2_1.CS.OnSetDisplayMessageDelegate?             OnSetDisplayMessage;
-            public event OCPPv2_1.CS.OnGetDisplayMessagesDelegate?            OnGetDisplayMessages;
-            public event OCPPv2_1.CS.OnClearDisplayMessageDelegate?           OnClearDisplayMessage;
-            public event OCPPv2_1.CS.OnCostUpdatedDelegate?                   OnCostUpdated;
-            public event OCPPv2_1.CS.OnCustomerInformationDelegate?           OnCustomerInformation;
-
-            // Binary Data Streams Extensions
-            public event OCPP.CS.OnIncomingBinaryDataTransferDelegate?        OnIncomingBinaryDataTransfer;
-            public event OCPP.CS.OnGetFileDelegate?                           OnGetFile;
-            public event OCPP.CS.OnSendFileDelegate?                          OnSendFile;
-            public event OCPP.CS.OnDeleteFileDelegate?                        OnDeleteFile;
-
-            // E2E Security Extensions
-            public event OCPP.CS.OnAddSignaturePolicyDelegate?                OnAddSignaturePolicy;
-            public event OCPP.CS.OnUpdateSignaturePolicyDelegate?             OnUpdateSignaturePolicy;
-            public event OCPP.CS.OnDeleteSignaturePolicyDelegate?             OnDeleteSignaturePolicy;
-            public event OCPP.CS.OnAddUserRoleDelegate?                       OnAddUserRole;
-            public event OCPP.CS.OnUpdateUserRoleDelegate?                    OnUpdateUserRole;
-            public event OCPP.CS.OnDeleteUserRoleDelegate?                    OnDeleteUserRole;
-
+            #region Incoming Messages: Networking Node <- CSMS
 
             #region Reset
 
@@ -1477,12 +447,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event sent whenever a data transfer request was sent.
             /// </summary>
-            public event OCPPv2_1.CS.OnIncomingDataTransferRequestDelegate?   OnIncomingDataTransferRequest;
+            public event OnIncomingDataTransferRequestDelegate?   OnIncomingDataTransferRequest;
 
             /// <summary>
             /// An event sent whenever a response to a data transfer request was sent.
             /// </summary>
-            public event OCPPv2_1.CS.OnIncomingDataTransferResponseDelegate?  OnIncomingDataTransferResponse;
+            public event OnIncomingDataTransferResponseDelegate?  OnIncomingDataTransferResponse;
 
             #endregion
 
@@ -1877,12 +847,7001 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event sent whenever a BinaryDataTransfer request was sent.
             /// </summary>
-            public event OCPP.CS.OnIncomingBinaryDataTransferRequestDelegate?   OnIncomingBinaryDataTransferRequest;
+            public event OnIncomingBinaryDataTransferRequestDelegate?   OnIncomingBinaryDataTransferRequest;
 
             /// <summary>
             /// An event sent whenever a response to a BinaryDataTransfer request was sent.
             /// </summary>
-            public event OCPP.CS.OnIncomingBinaryDataTransferResponseDelegate?  OnIncomingBinaryDataTransferResponse;
+            public event OnIncomingBinaryDataTransferResponseDelegate?  OnIncomingBinaryDataTransferResponse;
+
+            #endregion
+
+            #region OnGetFileRequest/-Response
+
+            /// <summary>
+            /// An event sent whenever a GetFile request was sent.
+            /// </summary>
+            public event OCPP.CS.OnGetFileRequestDelegate?   OnGetFileRequest;
+
+            /// <summary>
+            /// An event sent whenever a response to a GetFile request was sent.
+            /// </summary>
+            public event OCPP.CS.OnGetFileResponseDelegate?  OnGetFileResponse;
+
+            #endregion
+
+            #region OnSendFileRequest/-Response
+
+            /// <summary>
+            /// An event sent whenever a SendFile request was sent.
+            /// </summary>
+            public event OCPP.CS.OnSendFileRequestDelegate?   OnSendFileRequest;
+
+            /// <summary>
+            /// An event sent whenever a response to a SendFile request was sent.
+            /// </summary>
+            public event OCPP.CS.OnSendFileResponseDelegate?  OnSendFileResponse;
+
+            #endregion
+
+            #region OnDeleteFileRequest/-Response
+
+            /// <summary>
+            /// An event sent whenever a DeleteFile request was sent.
+            /// </summary>
+            public event OCPP.CS.OnDeleteFileRequestDelegate?   OnDeleteFileRequest;
+
+            /// <summary>
+            /// An event sent whenever a response to a DeleteFile request was sent.
+            /// </summary>
+            public event OCPP.CS.OnDeleteFileResponseDelegate?  OnDeleteFileResponse;
+
+            #endregion
+
+
+            // E2E Security Extensions
+
+            #region AddSignaturePolicy
+
+            /// <summary>
+            /// An event fired whenever a AddSignaturePolicy request was received from the CSMS.
+            /// </summary>
+            public event OCPP.CS.OnAddSignaturePolicyRequestDelegate?   OnAddSignaturePolicyRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a AddSignaturePolicy request was sent.
+            /// </summary>
+            public event OCPP.CS.OnAddSignaturePolicyResponseDelegate?  OnAddSignaturePolicyResponse;
+
+            #endregion
+
+            #region UpdateSignaturePolicy
+
+            /// <summary>
+            /// An event fired whenever a UpdateSignaturePolicy request was received from the CSMS.
+            /// </summary>
+            public event OCPP.CS.OnUpdateSignaturePolicyRequestDelegate?   OnUpdateSignaturePolicyRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a UpdateSignaturePolicy request was sent.
+            /// </summary>
+            public event OCPP.CS.OnUpdateSignaturePolicyResponseDelegate?  OnUpdateSignaturePolicyResponse;
+
+            #endregion
+
+            #region DeleteSignaturePolicy
+
+            /// <summary>
+            /// An event fired whenever a DeleteSignaturePolicy request was received from the CSMS.
+            /// </summary>
+            public event OCPP.CS.OnDeleteSignaturePolicyRequestDelegate?   OnDeleteSignaturePolicyRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a DeleteSignaturePolicy request was sent.
+            /// </summary>
+            public event OCPP.CS.OnDeleteSignaturePolicyResponseDelegate?  OnDeleteSignaturePolicyResponse;
+
+            #endregion
+
+            #region AddUserRole
+
+            /// <summary>
+            /// An event fired whenever a AddUserRole request was received from the CSMS.
+            /// </summary>
+            public event OCPP.CS.OnAddUserRoleRequestDelegate?   OnAddUserRoleRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a AddUserRole request was sent.
+            /// </summary>
+            public event OCPP.CS.OnAddUserRoleResponseDelegate?  OnAddUserRoleResponse;
+
+            #endregion
+
+            #region UpdateUserRole
+
+            /// <summary>
+            /// An event fired whenever a UpdateUserRole request was received from the CSMS.
+            /// </summary>
+            public event OCPP.CS.OnUpdateUserRoleRequestDelegate?   OnUpdateUserRoleRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a UpdateUserRole request was sent.
+            /// </summary>
+            public event OCPP.CS.OnUpdateUserRoleResponseDelegate?  OnUpdateUserRoleResponse;
+
+            #endregion
+
+            #region DeleteUserRole
+
+            /// <summary>
+            /// An event fired whenever a DeleteUserRole request was received from the CSMS.
+            /// </summary>
+            public event OCPP.CS.OnDeleteUserRoleRequestDelegate?   OnDeleteUserRoleRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a DeleteUserRole request was sent.
+            /// </summary>
+            public event OCPP.CS.OnDeleteUserRoleResponseDelegate?  OnDeleteUserRoleResponse;
+
+            #endregion
+
+
+            // E2E Charging Tariffs Extensions
+
+            #region SetDefaultChargingTariff
+
+            /// <summary>
+            /// An event fired whenever a SetDefaultChargingTariff request was received from the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnSetDefaultChargingTariffRequestDelegate?   OnSetDefaultChargingTariffRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a SetDefaultChargingTariff request was sent.
+            /// </summary>
+            public event OCPPv2_1.CS.OnSetDefaultChargingTariffResponseDelegate?  OnSetDefaultChargingTariffResponse;
+
+            #endregion
+
+            #region GetDefaultChargingTariff
+
+            /// <summary>
+            /// An event fired whenever a GetDefaultChargingTariff request was received from the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnGetDefaultChargingTariffRequestDelegate?   OnGetDefaultChargingTariffRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a GetDefaultChargingTariff request was sent.
+            /// </summary>
+            public event OCPPv2_1.CS.OnGetDefaultChargingTariffResponseDelegate?  OnGetDefaultChargingTariffResponse;
+
+            #endregion
+
+            #region RemoveDefaultChargingTariff
+
+            /// <summary>
+            /// An event fired whenever a RemoveDefaultChargingTariff request was received from the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnRemoveDefaultChargingTariffRequestDelegate?   OnRemoveDefaultChargingTariffRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a RemoveDefaultChargingTariff request was sent.
+            /// </summary>
+            public event OCPPv2_1.CS.OnRemoveDefaultChargingTariffResponseDelegate?  OnRemoveDefaultChargingTariffResponse;
+
+            #endregion
+
+
+            public event OCPPv2_1.CS.OnResetDelegate? OnReset;
+            public event OCPPv2_1.CS.OnUpdateFirmwareDelegate? OnUpdateFirmware;
+            public event OCPPv2_1.CS.OnPublishFirmwareDelegate? OnPublishFirmware;
+            public event OCPPv2_1.CS.OnUnpublishFirmwareDelegate? OnUnpublishFirmware;
+            public event OCPPv2_1.CS.OnGetBaseReportDelegate? OnGetBaseReport;
+            public event OCPPv2_1.CS.OnGetReportDelegate? OnGetReport;
+            public event OCPPv2_1.CS.OnGetLogDelegate? OnGetLog;
+            public event OCPPv2_1.CS.OnSetVariablesDelegate? OnSetVariables;
+            public event OCPPv2_1.CS.OnGetVariablesDelegate? OnGetVariables;
+            public event OCPPv2_1.CS.OnSetMonitoringBaseDelegate? OnSetMonitoringBase;
+            public event OCPPv2_1.CS.OnGetMonitoringReportDelegate? OnGetMonitoringReport;
+            public event OCPPv2_1.CS.OnSetMonitoringLevelDelegate? OnSetMonitoringLevel;
+            public event OCPPv2_1.CS.OnSetVariableMonitoringDelegate? OnSetVariableMonitoring;
+            public event OCPPv2_1.CS.OnClearVariableMonitoringDelegate? OnClearVariableMonitoring;
+            public event OCPPv2_1.CS.OnSetNetworkProfileDelegate? OnSetNetworkProfile;
+            public event OCPPv2_1.CS.OnChangeAvailabilityDelegate? OnChangeAvailability;
+            public event OCPPv2_1.CS.OnTriggerMessageDelegate? OnTriggerMessage;
+            public event             OnIncomingDataTransferDelegate? OnIncomingDataTransfer;
+            public event OCPPv2_1.CS.OnCertificateSignedDelegate? OnCertificateSigned;
+            public event OCPPv2_1.CS.OnInstallCertificateDelegate? OnInstallCertificate;
+            public event OCPPv2_1.CS.OnGetInstalledCertificateIdsDelegate? OnGetInstalledCertificateIds;
+            public event OCPPv2_1.CS.OnDeleteCertificateDelegate? OnDeleteCertificate;
+            public event OCPPv2_1.CS.OnNotifyCRLDelegate? OnNotifyCRL;
+            public event OCPPv2_1.CS.OnGetLocalListVersionDelegate? OnGetLocalListVersion;
+            public event OCPPv2_1.CS.OnSendLocalListDelegate? OnSendLocalList;
+            public event OCPPv2_1.CS.OnClearCacheDelegate? OnClearCache;
+            public event OCPPv2_1.CS.OnReserveNowDelegate? OnReserveNow;
+            public event OCPPv2_1.CS.OnCancelReservationDelegate? OnCancelReservation;
+            public event OCPPv2_1.CS.OnRequestStartTransactionDelegate? OnRequestStartTransaction;
+            public event OCPPv2_1.CS.OnRequestStopTransactionDelegate? OnRequestStopTransaction;
+            public event OCPPv2_1.CS.OnGetTransactionStatusDelegate? OnGetTransactionStatus;
+            public event OCPPv2_1.CS.OnSetChargingProfileDelegate? OnSetChargingProfile;
+            public event OCPPv2_1.CS.OnGetChargingProfilesDelegate? OnGetChargingProfiles;
+            public event OCPPv2_1.CS.OnClearChargingProfileDelegate? OnClearChargingProfile;
+            public event OCPPv2_1.CS.OnGetCompositeScheduleDelegate? OnGetCompositeSchedule;
+            public event OCPPv2_1.CS.OnUpdateDynamicScheduleDelegate? OnUpdateDynamicSchedule;
+            public event OCPPv2_1.CS.OnNotifyAllowedEnergyTransferDelegate? OnNotifyAllowedEnergyTransfer;
+            public event OCPPv2_1.CS.OnUsePriorityChargingDelegate? OnUsePriorityCharging;
+            public event OCPPv2_1.CS.OnUnlockConnectorDelegate? OnUnlockConnector;
+            public event OCPPv2_1.CS.OnAFRRSignalDelegate? OnAFRRSignal;
+            public event OCPPv2_1.CS.OnSetDisplayMessageDelegate? OnSetDisplayMessage;
+            public event OCPPv2_1.CS.OnGetDisplayMessagesDelegate? OnGetDisplayMessages;
+            public event OCPPv2_1.CS.OnClearDisplayMessageDelegate? OnClearDisplayMessage;
+            public event OCPPv2_1.CS.OnCostUpdatedDelegate? OnCostUpdated;
+            public event OCPPv2_1.CS.OnCustomerInformationDelegate? OnCustomerInformation;
+            public event             OnIncomingBinaryDataTransferDelegate? OnIncomingBinaryDataTransfer;
+            public event OnGetFileDelegate? OnGetFile;
+            public event OnSendFileDelegate? OnSendFile;
+            public event OnDeleteFileDelegate? OnDeleteFile;
+            public event OnAddSignaturePolicyDelegate? OnAddSignaturePolicy;
+            public event OnUpdateSignaturePolicyDelegate? OnUpdateSignaturePolicy;
+            public event OnDeleteSignaturePolicyDelegate? OnDeleteSignaturePolicy;
+            public event OnAddUserRoleDelegate? OnAddUserRole;
+            public event OnUpdateUserRoleDelegate? OnUpdateUserRole;
+            public event OnDeleteUserRoleDelegate? OnDeleteUserRole;
+            public event OCPPv2_1.CS.OnSetDefaultChargingTariffDelegate? OnSetDefaultChargingTariff;
+            public event OCPPv2_1.CS.OnGetDefaultChargingTariffDelegate? OnGetDefaultChargingTariff;
+            public event OCPPv2_1.CS.OnRemoveDefaultChargingTariffDelegate? OnRemoveDefaultChargingTariff;
+
+            #endregion
+
+            #endregion
+
+            #region Constructor(s)
+
+            public INN(TestNetworkingNode NetworkingNode)
+            {
+
+                this.parentNetworkingNode = NetworkingNode;
+
+            }
+
+            #endregion
+
+        }
+
+        public class OUTT : INetworkingNodeOUT
+        {
+
+            /// <summary>
+            /// The sender identification.
+            /// </summary>
+            String IEventSender.Id
+                => parentNetworkingNode.Id.ToString();
+
+
+            #region Data
+
+            private readonly            TestNetworkingNode          parentNetworkingNode;
+
+            #endregion
+
+            #region Events
+
+            #region Outgoing Message Events
+
+            #region DataTransfer
+
+            /// <summary>
+            /// An event fired whenever a DataTransfer request will be sent to the CSMS.
+            /// </summary>
+            public event OnDataTransferRequestDelegate?   OnDataTransferRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a DataTransfer request was received.
+            /// </summary>
+            public event OnDataTransferResponseDelegate?  OnDataTransferResponse;
+
+            #endregion
+
+
+            // Binary Data Streams Extensions
+
+            #region BinaryDataTransfer
+
+            /// <summary>
+            /// An event fired whenever a BinaryDataTransfer request will be sent to the CSMS.
+            /// </summary>
+            public event OnBinaryDataTransferRequestDelegate?   OnBinaryDataTransferRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a BinaryDataTransfer request was received.
+            /// </summary>
+            public event OnBinaryDataTransferResponseDelegate?  OnBinaryDataTransferResponse;
+
+            #endregion
+
+
+            // Overlay Networking Extensions
+
+            #region OnNotifyNetworkTopology (Request/-Response)
+
+            /// <summary>
+            /// An event fired whenever a NotifyNetworkTopology request will be sent to another node.
+            /// </summary>
+            public event OCPP.CS.OnNotifyNetworkTopologyRequestDelegate?   OnNotifyNetworkTopologyRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a NotifyNetworkTopology request was received.
+            /// </summary>
+            public event OCPP.CS.OnNotifyNetworkTopologyResponseDelegate?  OnNotifyNetworkTopologyResponse;
+
+            #endregion
+
+            #endregion
+
+            #region Outgoing Message Events: Networking Node -> CSMS
+
+            #region SendBootNotification
+
+            /// <summary>
+            /// An event fired whenever a BootNotification request will be sent to the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnBootNotificationRequestDelegate?   OnBootNotificationRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a BootNotification request was received.
+            /// </summary>
+            public event OCPPv2_1.CS.OnBootNotificationResponseDelegate?  OnBootNotificationResponse;
+
+            #endregion
+
+            #region SendFirmwareStatusNotification
+
+            /// <summary>
+            /// An event fired whenever a FirmwareStatusNotification request will be sent to the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnFirmwareStatusNotificationRequestDelegate?   OnFirmwareStatusNotificationRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a FirmwareStatusNotification request was received.
+            /// </summary>
+            public event OCPPv2_1.CS.OnFirmwareStatusNotificationResponseDelegate?  OnFirmwareStatusNotificationResponse;
+
+            #endregion
+
+            #region SendPublishFirmwareStatusNotification
+
+            /// <summary>
+            /// An event fired whenever a PublishFirmwareStatusNotification request will be sent to the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnPublishFirmwareStatusNotificationRequestDelegate?   OnPublishFirmwareStatusNotificationRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a PublishFirmwareStatusNotification request was received.
+            /// </summary>
+            public event OCPPv2_1.CS.OnPublishFirmwareStatusNotificationResponseDelegate?  OnPublishFirmwareStatusNotificationResponse;
+
+            #endregion
+
+            #region SendHeartbeat
+
+            /// <summary>
+            /// An event fired whenever a Heartbeat request will be sent to the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnHeartbeatRequestDelegate?   OnHeartbeatRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a Heartbeat request was received.
+            /// </summary>
+            public event OCPPv2_1.CS.OnHeartbeatResponseDelegate?  OnHeartbeatResponse;
+
+            #endregion
+
+            #region NotifyEvent
+
+            /// <summary>
+            /// An event fired whenever a NotifyEvent request will be sent to the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnNotifyEventRequestDelegate?   OnNotifyEventRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a NotifyEvent request was received.
+            /// </summary>
+            public event OCPPv2_1.CS.OnNotifyEventResponseDelegate?  OnNotifyEventResponse;
+
+            #endregion
+
+            #region SendSecurityEventNotification
+
+            /// <summary>
+            /// An event fired whenever a SecurityEventNotification request will be sent to the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnSecurityEventNotificationRequestDelegate?   OnSecurityEventNotificationRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a SecurityEventNotification request was received.
+            /// </summary>
+            public event OCPPv2_1.CS.OnSecurityEventNotificationResponseDelegate?  OnSecurityEventNotificationResponse;
+
+            #endregion
+
+            #region NotifyReport
+
+            /// <summary>
+            /// An event fired whenever a NotifyReport request will be sent to the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnNotifyReportRequestDelegate?   OnNotifyReportRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a NotifyReport request was received.
+            /// </summary>
+            public event OCPPv2_1.CS.OnNotifyReportResponseDelegate?  OnNotifyReportResponse;
+
+            #endregion
+
+            #region NotifyMonitoringReport
+
+            /// <summary>
+            /// An event fired whenever a NotifyMonitoringReport request will be sent to the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnNotifyMonitoringReportRequestDelegate?   OnNotifyMonitoringReportRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a NotifyMonitoringReport request was received.
+            /// </summary>
+            public event OCPPv2_1.CS.OnNotifyMonitoringReportResponseDelegate?  OnNotifyMonitoringReportResponse;
+
+            #endregion
+
+            #region SendLogStatusNotification
+
+            /// <summary>
+            /// An event fired whenever a LogStatusNotification request will be sent to the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnLogStatusNotificationRequestDelegate?   OnLogStatusNotificationRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a LogStatusNotification request was received.
+            /// </summary>
+            public event OCPPv2_1.CS.OnLogStatusNotificationResponseDelegate?  OnLogStatusNotificationResponse;
+
+            #endregion
+
+
+            #region SignCertificate
+
+            /// <summary>
+            /// An event fired whenever a SignCertificate request will be sent to the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnSignCertificateRequestDelegate?   OnSignCertificateRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a SignCertificate request was received.
+            /// </summary>
+            public event OCPPv2_1.CS.OnSignCertificateResponseDelegate?  OnSignCertificateResponse;
+
+            #endregion
+
+            #region Get15118EVCertificate
+
+            /// <summary>
+            /// An event fired whenever a Get15118EVCertificate request will be sent to the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnGet15118EVCertificateRequestDelegate?   OnGet15118EVCertificateRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a Get15118EVCertificate request was received.
+            /// </summary>
+            public event OCPPv2_1.CS.OnGet15118EVCertificateResponseDelegate?  OnGet15118EVCertificateResponse;
+
+            #endregion
+
+            #region GetCertificateStatus
+
+            /// <summary>
+            /// An event fired whenever a GetCertificateStatus request will be sent to the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnGetCertificateStatusRequestDelegate?   OnGetCertificateStatusRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a GetCertificateStatus request was received.
+            /// </summary>
+            public event OCPPv2_1.CS.OnGetCertificateStatusResponseDelegate?  OnGetCertificateStatusResponse;
+
+            #endregion
+
+            #region GetCRL
+
+            /// <summary>
+            /// An event fired whenever a GetCRL request will be sent to the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnGetCRLRequestDelegate?   OnGetCRLRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a GetCRL request was received.
+            /// </summary>
+            public event OCPPv2_1.CS.OnGetCRLResponseDelegate?  OnGetCRLResponse;
+
+            #endregion
+
+
+            #region SendReservationStatusUpdate
+
+            /// <summary>
+            /// An event fired whenever a ReservationStatusUpdate request will be sent to the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnReservationStatusUpdateRequestDelegate?   OnReservationStatusUpdateRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a ReservationStatusUpdate request was received.
+            /// </summary>
+            public event OCPPv2_1.CS.OnReservationStatusUpdateResponseDelegate?  OnReservationStatusUpdateResponse;
+
+            #endregion
+
+            #region Authorize
+
+            /// <summary>
+            /// An event fired whenever an Authorize request will be sent to the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnAuthorizeRequestDelegate?   OnAuthorizeRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to an Authorize request was received.
+            /// </summary>
+            public event OCPPv2_1.CS.OnAuthorizeResponseDelegate?  OnAuthorizeResponse;
+
+            #endregion
+
+            #region NotifyEVChargingNeeds
+
+            /// <summary>
+            /// An event fired whenever a NotifyEVChargingNeeds request will be sent to the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnNotifyEVChargingNeedsRequestDelegate?   OnNotifyEVChargingNeedsRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a NotifyEVChargingNeeds request was received.
+            /// </summary>
+            public event OCPPv2_1.CS.OnNotifyEVChargingNeedsResponseDelegate?  OnNotifyEVChargingNeedsResponse;
+
+            #endregion
+
+            #region SendTransactionEvent
+
+            /// <summary>
+            /// An event fired whenever a TransactionEvent will be sent to the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnTransactionEventRequestDelegate?   OnTransactionEventRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a TransactionEvent request was received.
+            /// </summary>
+            public event OCPPv2_1.CS.OnTransactionEventResponseDelegate?  OnTransactionEventResponse;
+
+            #endregion
+
+            #region SendStatusNotification
+
+            /// <summary>
+            /// An event fired whenever a StatusNotification request will be sent to the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnStatusNotificationRequestDelegate?   OnStatusNotificationRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a StatusNotification request was received.
+            /// </summary>
+            public event OCPPv2_1.CS.OnStatusNotificationResponseDelegate?  OnStatusNotificationResponse;
+
+            #endregion
+
+            #region SendMeterValues
+
+            /// <summary>
+            /// An event fired whenever a MeterValues request will be sent to the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnMeterValuesRequestDelegate?   OnMeterValuesRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a MeterValues request was received.
+            /// </summary>
+            public event OCPPv2_1.CS.OnMeterValuesResponseDelegate?  OnMeterValuesResponse;
+
+            #endregion
+
+            #region NotifyChargingLimit
+
+            /// <summary>
+            /// An event fired whenever a NotifyChargingLimit request will be sent to the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnNotifyChargingLimitRequestDelegate?   OnNotifyChargingLimitRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a NotifyChargingLimit request was received.
+            /// </summary>
+            public event OCPPv2_1.CS.OnNotifyChargingLimitResponseDelegate?  OnNotifyChargingLimitResponse;
+
+            #endregion
+
+            #region SendClearedChargingLimit
+
+            /// <summary>
+            /// An event fired whenever a ClearedChargingLimit request will be sent to the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnClearedChargingLimitRequestDelegate?   OnClearedChargingLimitRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a ClearedChargingLimit request was received.
+            /// </summary>
+            public event OCPPv2_1.CS.OnClearedChargingLimitResponseDelegate?  OnClearedChargingLimitResponse;
+
+            #endregion
+
+            #region ReportChargingProfiles
+
+            /// <summary>
+            /// An event fired whenever a ReportChargingProfiles request will be sent to the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnReportChargingProfilesRequestDelegate?   OnReportChargingProfilesRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a ReportChargingProfiles request was received.
+            /// </summary>
+            public event OCPPv2_1.CS.OnReportChargingProfilesResponseDelegate?  OnReportChargingProfilesResponse;
+
+            #endregion
+
+            #region NotifyEVChargingSchedule
+
+            /// <summary>
+            /// An event fired whenever a NotifyEVChargingSchedule request will be sent to the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnNotifyEVChargingScheduleRequestDelegate?   OnNotifyEVChargingScheduleRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a NotifyEVChargingSchedule request was received.
+            /// </summary>
+            public event OCPPv2_1.CS.OnNotifyEVChargingScheduleResponseDelegate?  OnNotifyEVChargingScheduleResponse;
+
+            #endregion
+
+            #region NotifyPriorityCharging
+
+            /// <summary>
+            /// An event fired whenever a NotifyPriorityCharging request will be sent to the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnNotifyPriorityChargingRequestDelegate?   OnNotifyPriorityChargingRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a NotifyPriorityCharging request was received.
+            /// </summary>
+            public event OCPPv2_1.CS.OnNotifyPriorityChargingResponseDelegate?  OnNotifyPriorityChargingResponse;
+
+            #endregion
+
+            #region PullDynamicScheduleUpdate
+
+            /// <summary>
+            /// An event fired whenever a PullDynamicScheduleUpdate request will be sent to the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnPullDynamicScheduleUpdateRequestDelegate?   OnPullDynamicScheduleUpdateRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a PullDynamicScheduleUpdate request was received.
+            /// </summary>
+            public event OCPPv2_1.CS.OnPullDynamicScheduleUpdateResponseDelegate?  OnPullDynamicScheduleUpdateResponse;
+
+            #endregion
+
+
+            #region NotifyDisplayMessages
+
+            /// <summary>
+            /// An event fired whenever a NotifyDisplayMessages request will be sent to the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnNotifyDisplayMessagesRequestDelegate?   OnNotifyDisplayMessagesRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a NotifyDisplayMessages request was received.
+            /// </summary>
+            public event OCPPv2_1.CS.OnNotifyDisplayMessagesResponseDelegate?  OnNotifyDisplayMessagesResponse;
+
+            #endregion
+
+            #region NotifyCustomerInformation
+
+            /// <summary>
+            /// An event fired whenever a NotifyCustomerInformation request will be sent to the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnNotifyCustomerInformationRequestDelegate?   OnNotifyCustomerInformationRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a NotifyCustomerInformation request was received.
+            /// </summary>
+            public event OCPPv2_1.CS.OnNotifyCustomerInformationResponseDelegate?  OnNotifyCustomerInformationResponse;
+
+            #endregion
+
+            #endregion
+
+            #region Outgoing Message Events: Networking Node -> Charging Station
+
+            #region OnReset                       (Request/-Response)
+
+            /// <summary>
+            /// An event fired whenever a Reset request will be sent to the charging station.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnResetRequestDelegate?   OnResetRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a Reset request was received.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnResetResponseDelegate?  OnResetResponse;
+
+            #endregion
+
+            #region OnUpdateFirmware              (Request/-Response)
+
+            /// <summary>
+            /// An event fired whenever an UpdateFirmware request will be sent to the charging station.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnUpdateFirmwareRequestDelegate?   OnUpdateFirmwareRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to an UpdateFirmware request was received.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnUpdateFirmwareResponseDelegate?  OnUpdateFirmwareResponse;
+
+            #endregion
+
+            #region OnPublishFirmware             (Request/-Response)
+
+            /// <summary>
+            /// An event fired whenever a PublishFirmware request will be sent to the charging station.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnPublishFirmwareRequestDelegate?   OnPublishFirmwareRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a PublishFirmware request was received.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnPublishFirmwareResponseDelegate?  OnPublishFirmwareResponse;
+
+            #endregion
+
+            #region OnUnpublishFirmware           (Request/-Response)
+
+            /// <summary>
+            /// An event fired whenever an UnpublishFirmware request will be sent to the charging station.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnUnpublishFirmwareRequestDelegate?   OnUnpublishFirmwareRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to an UnpublishFirmware request was received.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnUnpublishFirmwareResponseDelegate?  OnUnpublishFirmwareResponse;
+
+            #endregion
+
+            #region OnGetBaseReport               (Request/-Response)
+
+            /// <summary>
+            /// An event fired whenever a GetBaseReport request will be sent to the charging station.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnGetBaseReportRequestDelegate?   OnGetBaseReportRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a GetBaseReport request was received.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnGetBaseReportResponseDelegate?  OnGetBaseReportResponse;
+
+            #endregion
+
+            #region OnGetReport                   (Request/-Response)
+
+            /// <summary>
+            /// An event fired whenever a GetReport request will be sent to the charging station.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnGetReportRequestDelegate?   OnGetReportRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a GetReport request was received.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnGetReportResponseDelegate?  OnGetReportResponse;
+
+            #endregion
+
+            #region OnGetLog                      (Request/-Response)
+
+            /// <summary>
+            /// An event fired whenever a GetLog request will be sent to the charging station.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnGetLogRequestDelegate?   OnGetLogRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a GetLog request was received.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnGetLogResponseDelegate?  OnGetLogResponse;
+
+            #endregion
+
+            #region OnSetVariables                (Request/-Response)
+
+            /// <summary>
+            /// An event fired whenever a SetVariables request will be sent to the charging station.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnSetVariablesRequestDelegate?   OnSetVariablesRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a SetVariables request was received.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnSetVariablesResponseDelegate?  OnSetVariablesResponse;
+
+            #endregion
+
+            #region OnGetVariables                (Request/-Response)
+
+            /// <summary>
+            /// An event fired whenever a GetVariables request will be sent to the charging station.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnGetVariablesRequestDelegate?   OnGetVariablesRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a GetVariables request was received.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnGetVariablesResponseDelegate?  OnGetVariablesResponse;
+
+            #endregion
+
+            #region OnSetMonitoringBase           (Request/-Response)
+
+            /// <summary>
+            /// An event fired whenever a SetMonitoringBase request will be sent to the charging station.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnSetMonitoringBaseRequestDelegate?   OnSetMonitoringBaseRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a SetMonitoringBase request was received.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnSetMonitoringBaseResponseDelegate?  OnSetMonitoringBaseResponse;
+
+            #endregion
+
+            #region OnGetMonitoringReport         (Request/-Response)
+
+            /// <summary>
+            /// An event fired whenever a GetMonitoringReport request will be sent to the charging station.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnGetMonitoringReportRequestDelegate?   OnGetMonitoringReportRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a GetMonitoringReport request was received.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnGetMonitoringReportResponseDelegate?  OnGetMonitoringReportResponse;
+
+            #endregion
+
+            #region OnSetMonitoringLevel          (Request/-Response)
+
+            /// <summary>
+            /// An event fired whenever a SetMonitoringLevel request will be sent to the charging station.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnSetMonitoringLevelRequestDelegate?   OnSetMonitoringLevelRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a SetMonitoringLevel request was received.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnSetMonitoringLevelResponseDelegate?  OnSetMonitoringLevelResponse;
+
+            #endregion
+
+            #region SetVariableMonitoring         (Request/-Response)
+
+            /// <summary>
+            /// An event fired whenever a SetVariableMonitoring request will be sent to the charging station.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnSetVariableMonitoringRequestDelegate?   OnSetVariableMonitoringRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a SetVariableMonitoring request was received.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnSetVariableMonitoringResponseDelegate?  OnSetVariableMonitoringResponse;
+
+            #endregion
+
+            #region OnClearVariableMonitoring     (Request/-Response)
+
+            /// <summary>
+            /// An event fired whenever a ClearVariableMonitoring request will be sent to the charging station.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnClearVariableMonitoringRequestDelegate?   OnClearVariableMonitoringRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a ClearVariableMonitoring request was received.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnClearVariableMonitoringResponseDelegate?  OnClearVariableMonitoringResponse;
+
+            #endregion
+
+            #region OnSetNetworkProfile           (Request/-Response)
+
+            /// <summary>
+            /// An event fired whenever a SetNetworkProfile request will be sent to the charging station.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnSetNetworkProfileRequestDelegate?   OnSetNetworkProfileRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a SetNetworkProfile request was received.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnSetNetworkProfileResponseDelegate?  OnSetNetworkProfileResponse;
+
+            #endregion
+
+            #region OnChangeAvailability          (Request/-Response)
+
+            /// <summary>
+            /// An event fired whenever a ChangeAvailability request will be sent to the charging station.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnChangeAvailabilityRequestDelegate?   OnChangeAvailabilityRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a ChangeAvailability request was received.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnChangeAvailabilityResponseDelegate?  OnChangeAvailabilityResponse;
+
+            #endregion
+
+            #region OnTriggerMessage              (Request/-Response)
+
+            /// <summary>
+            /// An event fired whenever a TriggerMessage request will be sent to the charging station.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnTriggerMessageRequestDelegate?   OnTriggerMessageRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a TriggerMessage request was received.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnTriggerMessageResponseDelegate?  OnTriggerMessageResponse;
+
+            #endregion
+
+
+            #region OnCertificateSigned           (Request/-Response)
+
+            /// <summary>
+            /// An event fired whenever a SignedCertificate request will be sent to the charging station.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnCertificateSignedRequestDelegate?   OnCertificateSignedRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a SignedCertificate request was received.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnCertificateSignedResponseDelegate?  OnCertificateSignedResponse;
+
+            #endregion
+
+            #region OnInstallCertificate          (Request/-Response)
+
+            /// <summary>
+            /// An event fired whenever an InstallCertificate request will be sent to the charging station.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnInstallCertificateRequestDelegate?   OnInstallCertificateRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to an InstallCertificate request was received.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnInstallCertificateResponseDelegate?  OnInstallCertificateResponse;
+
+            #endregion
+
+            #region OnGetInstalledCertificateIds  (Request/-Response)
+
+            /// <summary>
+            /// An event fired whenever a GetInstalledCertificateIds request will be sent to the charging station.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnGetInstalledCertificateIdsRequestDelegate?   OnGetInstalledCertificateIdsRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a GetInstalledCertificateIds request was received.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnGetInstalledCertificateIdsResponseDelegate?  OnGetInstalledCertificateIdsResponse;
+
+            #endregion
+
+            #region OnDeleteCertificate           (Request/-Response)
+
+            /// <summary>
+            /// An event fired whenever a DeleteCertificate request will be sent to the charging station.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnDeleteCertificateRequestDelegate?   OnDeleteCertificateRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a DeleteCertificate request was received.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnDeleteCertificateResponseDelegate?  OnDeleteCertificateResponse;
+
+            #endregion
+
+            #region OnNotifyCRL                   (Request/-Response)
+
+            /// <summary>
+            /// An event fired whenever a NotifyCRL request will be sent to the charging station.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnNotifyCRLRequestDelegate?   OnNotifyCRLRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a NotifyCRL request was received.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnNotifyCRLResponseDelegate?  OnNotifyCRLResponse;
+
+            #endregion
+
+
+            #region OnGetLocalListVersion         (Request/-Response)
+
+            /// <summary>
+            /// An event fired whenever a GetLocalListVersion request will be sent to the charging station.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnGetLocalListVersionRequestDelegate?   OnGetLocalListVersionRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a GetLocalListVersion request was received.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnGetLocalListVersionResponseDelegate?  OnGetLocalListVersionResponse;
+
+            #endregion
+
+            #region OnSendLocalList               (Request/-Response)
+
+            /// <summary>
+            /// An event fired whenever a SendLocalList request will be sent to the charging station.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnSendLocalListRequestDelegate?   OnSendLocalListRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a SendLocalList request was received.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnSendLocalListResponseDelegate?  OnSendLocalListResponse;
+
+            #endregion
+
+            #region OnClearCache                  (Request/-Response)
+
+            /// <summary>
+            /// An event fired whenever a ClearCache request will be sent to the charging station.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnClearCacheRequestDelegate?   OnClearCacheRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a ClearCache request was received.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnClearCacheResponseDelegate?  OnClearCacheResponse;
+
+            #endregion
+
+
+            #region OnReserveNow                  (Request/-Response)
+
+            /// <summary>
+            /// An event fired whenever a ReserveNow request will be sent to the charging station.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnReserveNowRequestDelegate?   OnReserveNowRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a ReserveNow request was received.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnReserveNowResponseDelegate?  OnReserveNowResponse;
+
+            #endregion
+
+            #region OnCancelReservation           (Request/-Response)
+
+            /// <summary>
+            /// An event fired whenever a CancelReservation request will be sent to the charging station.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnCancelReservationRequestDelegate?   OnCancelReservationRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a CancelReservation request was received.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnCancelReservationResponseDelegate?  OnCancelReservationResponse;
+
+            #endregion
+
+            #region OnRequestStartTransaction     (Request/-Response)
+
+            /// <summary>
+            /// An event fired whenever a RequestStartTransaction request will be sent to the charging station.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnRequestStartTransactionRequestDelegate?   OnRequestStartTransactionRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a RequestStartTransaction request was received.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnRequestStartTransactionResponseDelegate?  OnRequestStartTransactionResponse;
+
+            #endregion
+
+            #region OnRequestStopTransaction      (Request/-Response)
+
+            /// <summary>
+            /// An event fired whenever a RequestStopTransaction request will be sent to the charging station.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnRequestStopTransactionRequestDelegate?   OnRequestStopTransactionRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a RequestStopTransaction request was received.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnRequestStopTransactionResponseDelegate?  OnRequestStopTransactionResponse;
+
+            #endregion
+
+            #region OnGetTransactionStatus        (Request/-Response)
+
+            /// <summary>
+            /// An event fired whenever a GetTransactionStatus request will be sent to the charging station.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnGetTransactionStatusRequestDelegate?   OnGetTransactionStatusRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a GetTransactionStatus request was received.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnGetTransactionStatusResponseDelegate?  OnGetTransactionStatusResponse;
+
+            #endregion
+
+            #region OnSetChargingProfile          (Request/-Response)
+
+            /// <summary>
+            /// An event fired whenever a SetChargingProfile request will be sent to the charging station.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnSetChargingProfileRequestDelegate?   OnSetChargingProfileRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a SetChargingProfile request was received.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnSetChargingProfileResponseDelegate?  OnSetChargingProfileResponse;
+
+            #endregion
+
+            #region OnGetChargingProfiles         (Request/-Response)
+
+            /// <summary>
+            /// An event fired whenever a GetChargingProfiles request will be sent to the charging station.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnGetChargingProfilesRequestDelegate?   OnGetChargingProfilesRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a GetChargingProfiles request was received.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnGetChargingProfilesResponseDelegate?  OnGetChargingProfilesResponse;
+
+            #endregion
+
+            #region OnClearChargingProfile        (Request/-Response)
+
+            /// <summary>
+            /// An event fired whenever a ClearChargingProfile request will be sent to the charging station.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnClearChargingProfileRequestDelegate?   OnClearChargingProfileRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a ClearChargingProfile request was received.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnClearChargingProfileResponseDelegate?  OnClearChargingProfileResponse;
+
+            #endregion
+
+            #region OnGetCompositeSchedule        (Request/-Response)
+
+            /// <summary>
+            /// An event fired whenever a GetCompositeSchedule request will be sent to the charging station.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnGetCompositeScheduleRequestDelegate?   OnGetCompositeScheduleRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a GetCompositeSchedule request was received.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnGetCompositeScheduleResponseDelegate?  OnGetCompositeScheduleResponse;
+
+            #endregion
+
+            #region OnUpdateDynamicSchedule       (Request/-Response)
+
+            /// <summary>
+            /// An event fired whenever a UpdateDynamicSchedule request will be sent to the charging station.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnUpdateDynamicScheduleRequestDelegate?   OnUpdateDynamicScheduleRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a UpdateDynamicSchedule request was received.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnUpdateDynamicScheduleResponseDelegate?  OnUpdateDynamicScheduleResponse;
+
+            #endregion
+
+            #region OnNotifyAllowedEnergyTransfer (Request/-Response)
+
+            /// <summary>
+            /// An event fired whenever a NotifyAllowedEnergyTransfer request will be sent to the charging station.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnNotifyAllowedEnergyTransferRequestDelegate?   OnNotifyAllowedEnergyTransferRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a NotifyAllowedEnergyTransfer request was received.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnNotifyAllowedEnergyTransferResponseDelegate?  OnNotifyAllowedEnergyTransferResponse;
+
+            #endregion
+
+            #region OnUsePriorityCharging         (Request/-Response)
+
+            /// <summary>
+            /// An event fired whenever a UsePriorityCharging request will be sent to the charging station.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnUsePriorityChargingRequestDelegate?   OnUsePriorityChargingRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a UsePriorityCharging request was received.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnUsePriorityChargingResponseDelegate?  OnUsePriorityChargingResponse;
+
+            #endregion
+
+            #region OnUnlockConnector             (Request/-Response)
+
+            /// <summary>
+            /// An event fired whenever an UnlockConnector request will be sent to the charging station.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnUnlockConnectorRequestDelegate?   OnUnlockConnectorRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to an UnlockConnector request was received.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnUnlockConnectorResponseDelegate?  OnUnlockConnectorResponse;
+
+            #endregion
+
+
+            #region OnAFRRSignal                  (Request/-Response)
+
+            /// <summary>
+            /// An event fired whenever an AFRRSignal request will be sent to the charging station.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnAFRRSignalRequestDelegate?   OnAFRRSignalRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to an AFRRSignal request was received.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnAFRRSignalResponseDelegate?  OnAFRRSignalResponse;
+
+            #endregion
+
+
+            #region SetDisplayMessage/-Response   (Request/-Response)
+
+            /// <summary>
+            /// An event fired whenever a SetDisplayMessage request will be sent to the charging station.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnSetDisplayMessageRequestDelegate?   OnSetDisplayMessageRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a SetDisplayMessage request was received.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnSetDisplayMessageResponseDelegate?  OnSetDisplayMessageResponse;
+
+            #endregion
+
+            #region OnGetDisplayMessages          (Request/-Response)
+
+            /// <summary>
+            /// An event fired whenever a GetDisplayMessages request will be sent to the charging station.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnGetDisplayMessagesRequestDelegate?   OnGetDisplayMessagesRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a GetDisplayMessages request was received.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnGetDisplayMessagesResponseDelegate?  OnGetDisplayMessagesResponse;
+
+            #endregion
+
+            #region OnClearDisplayMessage         (Request/-Response)
+
+            /// <summary>
+            /// An event fired whenever a ClearDisplayMessage request will be sent to the charging station.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnClearDisplayMessageRequestDelegate?   OnClearDisplayMessageRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a ClearDisplayMessage request was received.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnClearDisplayMessageResponseDelegate?  OnClearDisplayMessageResponse;
+
+            #endregion
+
+            #region OnCostUpdated                 (Request/-Response)
+
+            /// <summary>
+            /// An event fired whenever a CostUpdated request will be sent to the charging station.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnCostUpdatedRequestDelegate?   OnCostUpdatedRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a CostUpdated request was received.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnCostUpdatedResponseDelegate?  OnCostUpdatedResponse;
+
+            #endregion
+
+            #region OnCustomerInformation         (Request/-Response)
+
+            /// <summary>
+            /// An event fired whenever a CustomerInformation request will be sent to the charging station.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnCustomerInformationRequestDelegate?   OnCustomerInformationRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a CustomerInformation request was received.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnCustomerInformationResponseDelegate?  OnCustomerInformationResponse;
+
+            #endregion
+
+
+            // Binary Data Streams Extensions
+
+            #region OnGetFile                     (Request/-Response)
+
+            /// <summary>
+            /// An event sent whenever a GetFile request will be sent to the charging station.
+            /// </summary>
+            public event OCPP.CSMS.OnGetFileRequestDelegate?   OnGetFileRequest;
+
+            /// <summary>
+            /// An event sent whenever a response to a GetFile request was received.
+            /// </summary>
+            public event OCPP.CSMS.OnGetFileResponseDelegate?  OnGetFileResponse;
+
+            #endregion
+
+            #region OnSendFile                    (Request/-Response)
+
+            /// <summary>
+            /// An event sent whenever a SendFile request will be sent to the charging station.
+            /// </summary>
+            public event OCPP.CSMS.OnSendFileRequestDelegate?   OnSendFileRequest;
+
+            /// <summary>
+            /// An event sent whenever a response to a SendFile request was received.
+            /// </summary>
+            public event OCPP.CSMS.OnSendFileResponseDelegate?  OnSendFileResponse;
+
+            #endregion
+
+            #region OnDeleteFile                  (Request/-Response)
+
+            /// <summary>
+            /// An event sent whenever a DeleteFile request will be sent to the charging station.
+            /// </summary>
+            public event OCPP.CSMS.OnDeleteFileRequestDelegate?   OnDeleteFileRequest;
+
+            /// <summary>
+            /// An event sent whenever a response to a DeleteFile request was received.
+            /// </summary>
+            public event OCPP.CSMS.OnDeleteFileResponseDelegate?  OnDeleteFileResponse;
+
+            #endregion
+
+            #region OnListDirectory               (Request/-Response)
+
+            /// <summary>
+            /// An event sent whenever a ListDirectory request will be sent to the charging station.
+            /// </summary>
+            public event OCPP.CSMS.OnListDirectoryRequestDelegate?   OnListDirectoryRequest;
+
+            /// <summary>
+            /// An event sent whenever a response to a ListDirectory request was received.
+            /// </summary>
+            public event OCPP.CSMS.OnListDirectoryResponseDelegate?  OnListDirectoryResponse;
+
+            #endregion
+
+
+            // E2E Security Extensions
+
+            #region AddSignaturePolicy            (Request/-Response)
+
+            /// <summary>
+            /// An event fired whenever a AddSignaturePolicy request will be sent to the charging station.
+            /// </summary>
+            public event OCPP.CSMS.OnAddSignaturePolicyRequestDelegate?   OnAddSignaturePolicyRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a AddSignaturePolicy request was received.
+            /// </summary>
+            public event OCPP.CSMS.OnAddSignaturePolicyResponseDelegate?  OnAddSignaturePolicyResponse;
+
+            #endregion
+
+            #region UpdateSignaturePolicy         (Request/-Response)
+
+            /// <summary>
+            /// An event fired whenever a UpdateSignaturePolicy request will be sent to the charging station.
+            /// </summary>
+            public event OCPP.CSMS.OnUpdateSignaturePolicyRequestDelegate?   OnUpdateSignaturePolicyRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a UpdateSignaturePolicy request was received.
+            /// </summary>
+            public event OCPP.CSMS.OnUpdateSignaturePolicyResponseDelegate?  OnUpdateSignaturePolicyResponse;
+
+            #endregion
+
+            #region DeleteSignaturePolicy         (Request/-Response)
+
+            /// <summary>
+            /// An event fired whenever a DeleteSignaturePolicy request will be sent to the charging station.
+            /// </summary>
+            public event OCPP.CSMS.OnDeleteSignaturePolicyRequestDelegate?   OnDeleteSignaturePolicyRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a DeleteSignaturePolicy request was received.
+            /// </summary>
+            public event OCPP.CSMS.OnDeleteSignaturePolicyResponseDelegate?  OnDeleteSignaturePolicyResponse;
+
+            #endregion
+
+            #region AddUserRole                   (Request/-Response)
+
+            /// <summary>
+            /// An event fired whenever a AddUserRole request will be sent to the charging station.
+            /// </summary>
+            public event OCPP.CSMS.OnAddUserRoleRequestDelegate?   OnAddUserRoleRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a AddUserRole request was received.
+            /// </summary>
+            public event OCPP.CSMS.OnAddUserRoleResponseDelegate?  OnAddUserRoleResponse;
+
+            #endregion
+
+            #region UpdateUserRole                (Request/-Response)
+
+            /// <summary>
+            /// An event fired whenever a UpdateUserRole request will be sent to the charging station.
+            /// </summary>
+            public event OCPP.CSMS.OnUpdateUserRoleRequestDelegate?   OnUpdateUserRoleRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a UpdateUserRole request was received.
+            /// </summary>
+            public event OCPP.CSMS.OnUpdateUserRoleResponseDelegate?  OnUpdateUserRoleResponse;
+
+            #endregion
+
+            #region DeleteUserRole                (Request/-Response)
+
+            /// <summary>
+            /// An event fired whenever a DeleteUserRole request will be sent to the charging station.
+            /// </summary>
+            public event OCPP.CSMS.OnDeleteUserRoleRequestDelegate?   OnDeleteUserRoleRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a DeleteUserRole request was received.
+            /// </summary>
+            public event OCPP.CSMS.OnDeleteUserRoleResponseDelegate?  OnDeleteUserRoleResponse;
+
+            #endregion
+
+
+            // E2E Charging Tariff Extensions
+
+            #region SetDefaultChargingTariff      (Request/-Response)
+
+            /// <summary>
+            /// An event fired whenever a SetDefaultChargingTariff request will be sent to the charging station.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnSetDefaultChargingTariffRequestDelegate?   OnSetDefaultChargingTariffRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a SetDefaultChargingTariff request was received.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnSetDefaultChargingTariffResponseDelegate?  OnSetDefaultChargingTariffResponse;
+
+            #endregion
+
+            #region GetDefaultChargingTariff      (Request/-Response)
+
+            /// <summary>
+            /// An event fired whenever a GetDefaultChargingTariff request will be sent to the charging station.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnGetDefaultChargingTariffRequestDelegate?   OnGetDefaultChargingTariffRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a GetDefaultChargingTariff request was received.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnGetDefaultChargingTariffResponseDelegate?  OnGetDefaultChargingTariffResponse;
+
+            #endregion
+
+            #region RemoveDefaultChargingTariff   (Request/-Response)
+
+            /// <summary>
+            /// An event fired whenever a RemoveDefaultChargingTariff request will be sent to the charging station.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnRemoveDefaultChargingTariffRequestDelegate?   OnRemoveDefaultChargingTariffRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a RemoveDefaultChargingTariff request was received.
+            /// </summary>
+            public event OCPPv2_1.CSMS.OnRemoveDefaultChargingTariffResponseDelegate?  OnRemoveDefaultChargingTariffResponse;
+
+            #endregion
+
+            #endregion
+
+            #endregion
+
+            #region Constructor(s)
+
+            public OUTT(TestNetworkingNode NetworkingNode)
+            {
+
+                this.parentNetworkingNode = NetworkingNode;
+
+            }
+
+            #endregion
+
+
+            #region Outgoing Messages (Common)
+
+            #region DataTransfer                      (Request)
+
+            /// <summary>
+            /// Send the given vendor-specific data to the CSMS.
+            /// </summary>
+            /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
+            /// <param name="MessageId">An optional message identification.</param>
+            /// <param name="Data">A vendor-specific JSON token.</param>
+            /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+            /// 
+            /// <param name="RequestId">An optional request identification.</param>
+            /// <param name="RequestTimestamp">An optional request timestamp.</param>
+            /// <param name="RequestTimeout">An optional timeout for this request.</param>
+            /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+            /// <param name="CancellationToken">An optional token to cancel this request.</param>
+            public async Task<DataTransferResponse>
+                DataTransfer(DataTransferRequest Request)
+
+            {
+
+                #region Send OnDataTransferRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnDataTransferRequest?.Invoke(startTime,
+                                                  this,
+                                                  Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnDataTransferRequest));
+                }
+
+                #endregion
+
+
+                DataTransferResponse? response = null;
+
+                if (!parentNetworkingNode.SignaturePolicy.SignRequestMessage(
+                        Request,
+                        Request.ToJSON(
+                            parentNetworkingNode.CustomDataTransferRequestSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse
+                    ))
+                {
+
+                    response  = new DataTransferResponse(
+                                    Request,
+                                    Result.SignatureError(errorResponse)
+                                );
+
+                }
+
+                // ToDo: Currently hardcoded CSMS lookup!
+                else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
+                {
+
+                    response  = parentNetworkingNode.AsCS.CSClient is not null
+
+                                    ? await parentNetworkingNode.AsCS.CSClient.DataTransfer(Request)
+
+                                    : new DataTransferResponse(
+                                          Request,
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      );
+
+                }
+
+                else
+                {
+                    // ...
+                }
+
+
+                parentNetworkingNode.SignaturePolicy.VerifyResponseMessage(
+                    response,
+                    response.ToJSON(
+                        parentNetworkingNode.CustomDataTransferResponseSerializer,
+                        parentNetworkingNode.CustomStatusInfoSerializer,
+                        parentNetworkingNode.CustomSignatureSerializer,
+                        parentNetworkingNode.CustomCustomDataSerializer
+                    ),
+                    out errorResponse
+                );
+
+
+                #region Send OnDataTransferResponse event
+
+                var endTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnDataTransferResponse?.Invoke(endTime,
+                                                   this,
+                                                   Request,
+                                                   response,
+                                                   endTime - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnDataTransferResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            }
+
+            #endregion
+
+            // Binary Data Streams Extensions
+
+            #region BinaryDataTransfer                    (Request)
+
+            /// <summary>
+            /// Send the given vendor-specific binary data to the CSMS.
+            /// </summary>
+            /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
+            /// <param name="MessageId">An optional message identification.</param>
+            /// <param name="BinaryData">A vendor-specific JSON token.</param>
+            /// <param name="CustomBinaryData">The custom data object to allow to store any kind of customer specific data.</param>
+            /// 
+            /// <param name="RequestId">An optional request identification.</param>
+            /// <param name="RequestTimestamp">An optional request timestamp.</param>
+            /// <param name="RequestTimeout">An optional timeout for this request.</param>
+            /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+            /// <param name="CancellationToken">An optional token to cancel this request.</param>
+            public async Task<BinaryDataTransferResponse>
+                BinaryDataTransfer(BinaryDataTransferRequest Request)
+
+            {
+
+                #region Send OnBinaryDataTransferRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnBinaryDataTransferRequest?.Invoke(startTime,
+                                                        this,
+                                                        Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnBinaryDataTransferRequest));
+                }
+
+                #endregion
+
+
+                BinaryDataTransferResponse? response = null;
+
+                if (!parentNetworkingNode.SignaturePolicy.SignRequestMessage(
+                        Request,
+                        Request.ToBinary(
+                            parentNetworkingNode.CustomBinaryDataTransferRequestSerializer,
+                            parentNetworkingNode.CustomBinarySignatureSerializer,
+                            IncludeSignatures: false
+                        ),
+                        out var errorResponse
+                    ))
+                {
+
+                    response  = new BinaryDataTransferResponse(
+                                    Request,
+                                    Result.SignatureError(errorResponse)
+                                );
+
+                }
+
+                // ToDo: Currently hardcoded CSMS lookup!
+                else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
+                {
+
+                    response  = parentNetworkingNode.AsCS.CSClient is not null
+
+                                    ? await parentNetworkingNode.AsCS.CSClient.BinaryDataTransfer(Request)
+
+                                    : new BinaryDataTransferResponse(
+                                          Request,
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      );
+
+                }
+
+                else
+                {
+                    // ...
+                }
+
+
+                parentNetworkingNode.SignaturePolicy.VerifyResponseMessage(
+                    response,
+                    response.ToBinary(
+                        parentNetworkingNode.CustomBinaryDataTransferResponseSerializer,
+                        null, //parentNetworkingNode.CustomStatusInfoSerializer,
+                        parentNetworkingNode.CustomBinarySignatureSerializer,
+                        IncludeSignatures: false
+                    ),
+                    out errorResponse
+                );
+
+
+                #region Send OnBinaryDataTransferResponse event
+
+                var endTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnBinaryDataTransferResponse?.Invoke(endTime,
+                                                         this,
+                                                         Request,
+                                                         response,
+                                                         endTime - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnBinaryDataTransferResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            }
+
+            #endregion
+
+
+            // Overlay Networking Extensions
+
+            #region NotifyNetworkTopology                 (Request)
+
+            /// <summary>
+            /// Notify about the current network topology or a current change within the topology.
+            /// </summary>
+            /// <param name="Request">A reset request.</param>
+            public async Task<NotifyNetworkTopologyResponse> NotifyNetworkTopology(NotifyNetworkTopologyRequest Request)
+            {
+
+                #region Send OnNotifyNetworkTopologyRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnNotifyNetworkTopologyRequest?.Invoke(startTime,
+                                                           this,
+                                                           Request);
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyNetworkTopologyRequest));
+                }
+
+                #endregion
+
+
+                NotifyNetworkTopologyResponse? response = null;
+
+                if (!parentNetworkingNode.SignaturePolicy.SignRequestMessage(
+                        Request,
+                        Request.ToJSON(
+                            parentNetworkingNode.CustomNotifyNetworkTopologyRequestSerializer,
+                            parentNetworkingNode.CustomNetworkTopologyInformationSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse
+                    ))
+                {
+
+                    response  = new NotifyNetworkTopologyResponse(
+                                    Request,
+                                    Result.SignatureError(errorResponse)
+                                );
+
+                }
+
+                // ToDo: Currently hardcoded CSMS lookup!
+                else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
+                {
+
+                    response  = parentNetworkingNode.AsCS.CSClient is not null
+
+                                    ? await parentNetworkingNode.AsCS.CSClient.NotifyNetworkTopology(Request)
+
+                                    : new NotifyNetworkTopologyResponse(
+                                          Request,
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      );
+
+                }
+
+                else
+                {
+
+                    response = parentNetworkingNode.LookupNetworkingNode(Request.DestinationNodeId, out var communicationChannel) &&
+                                    communicationChannel is not null
+
+                                    // FUTURE!!!
+
+                                    ? await communicationChannel.NotifyNetworkTopology(Request)
+
+                                    : new NotifyNetworkTopologyResponse(
+                                          Request,
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      );
+
+                }
+
+
+                parentNetworkingNode.SignaturePolicy.VerifyResponseMessage(
+                    response,
+                    response.ToJSON(
+                        parentNetworkingNode.CustomNotifyNetworkTopologyResponseSerializer,
+                        //parentNetworkingNode.CustomStatusInfoSerializer,
+                        parentNetworkingNode.CustomSignatureSerializer,
+                        parentNetworkingNode.CustomCustomDataSerializer
+                    ),
+                    out errorResponse
+                );
+
+
+                #region Send OnNotifyNetworkTopologyResponse event
+
+                var endTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnNotifyNetworkTopologyResponse?.Invoke(endTime,
+                                                            this,
+                                                            Request,
+                                                            response,
+                                                            endTime - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyNetworkTopologyResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            }
+
+            public void Dispose()
+            {
+                throw new NotImplementedException();
+            }
+
+            #endregion
+
+            #endregion
+
+            #region Outgoing Messages: Networking Node -> CSMS
+
+            #region BootNotification                  (Request)
+
+            /// <summary>
+            /// Send a boot notification.
+            /// </summary>
+            /// <param name="Request">A boot notification request.</param>
+            public async Task<OCPPv2_1.CSMS.BootNotificationResponse>
+                BootNotification(OCPPv2_1.CS.BootNotificationRequest Request)
+
+            {
+
+                #region Send OnBootNotificationRequest event
+
+                var startTime  = Timestamp.Now;
+
+                try
+                {
+
+                    OnBootNotificationRequest?.Invoke(startTime,
+                                                      this,
+                                                      Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnBootNotificationRequest));
+                }
+
+                #endregion
+
+
+                OCPPv2_1.CSMS.BootNotificationResponse? response = null;
+
+                if (!parentNetworkingNode.SignaturePolicy.SignRequestMessage(
+                        Request,
+                        Request.ToJSON(
+                            parentNetworkingNode.CustomBootNotificationRequestSerializer,
+                            parentNetworkingNode.CustomChargingStationSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse
+                    ))
+                {
+
+                    response  = new OCPPv2_1.CSMS.BootNotificationResponse(
+                                    Request,
+                                    Result.SignatureError(errorResponse)
+                                );
+
+                }
+
+                // ToDo: Currently hardcoded CSMS lookup!
+                else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
+                {
+
+                    response  = parentNetworkingNode.AsCS.CSClient is not null
+
+                                    ? await parentNetworkingNode.AsCS.CSClient.BootNotification(Request)
+
+                                    : new OCPPv2_1.CSMS.BootNotificationResponse(
+                                          Request,
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      );
+
+                }
+
+                else
+                {
+                    // ...
+                }
+
+
+                parentNetworkingNode.SignaturePolicy.VerifyResponseMessage(
+                    response,
+                    response.ToJSON(
+                        parentNetworkingNode.CustomBootNotificationResponseSerializer,
+                        parentNetworkingNode.CustomStatusInfoSerializer,
+                        parentNetworkingNode.CustomSignatureSerializer,
+                        parentNetworkingNode.CustomCustomDataSerializer
+                    ),
+                    out errorResponse
+                );
+
+
+                switch (response.Status)
+                {
+
+                    case RegistrationStatus.Accepted:
+                        this.parentNetworkingNode.CSMSTime               = response.CurrentTime;
+                        this.parentNetworkingNode.SendHeartbeatEvery     = response.Interval >= TimeSpan.FromSeconds(5) ? response.Interval : TimeSpan.FromSeconds(5);
+                 //       this.SendHeartbeatTimer.Change(this.SendHeartbeatEvery, this.SendHeartbeatEvery);
+                        this.parentNetworkingNode.DisableSendHeartbeats  = false;
+                        break;
+
+                    case RegistrationStatus.Pending:
+                        // Do not reconnect before: response.HeartbeatInterval
+                        break;
+
+                    case RegistrationStatus.Rejected:
+                        // Do not reconnect before: response.HeartbeatInterval
+                        break;
+
+                }
+
+
+                #region Send OnBootNotificationResponse event
+
+                var endTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnBootNotificationResponse?.Invoke(endTime,
+                                                       this,
+                                                       Request,
+                                                       response,
+                                                       endTime - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnBootNotificationResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            }
+
+            #endregion
+
+            #region FirmwareStatusNotification        (Request)
+
+            /// <summary>
+            /// Send a firmware status notification to the CSMS.
+            /// </summary>
+            /// <param name="Status">The status of the firmware installation.</param>
+            /// <param name="UpdateFirmwareRequestId">The (optional) request id that was provided in the UpdateFirmwareRequest that started this firmware update.</param>
+            /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+            /// 
+            /// <param name="RequestId">An optional request identification.</param>
+            /// <param name="RequestTimestamp">An optional request timestamp.</param>
+            /// <param name="RequestTimeout">An optional timeout for this request.</param>
+            /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+            /// <param name="CancellationToken">An optional token to cancel this request.</param>
+            public async Task<OCPPv2_1.CSMS.FirmwareStatusNotificationResponse>
+                FirmwareStatusNotification(OCPPv2_1.CS.FirmwareStatusNotificationRequest Request)
+
+            {
+
+                #region Send OnFirmwareStatusNotificationRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnFirmwareStatusNotificationRequest?.Invoke(startTime,
+                                                                this,
+                                                                Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnFirmwareStatusNotificationRequest));
+                }
+
+                #endregion
+
+
+                OCPPv2_1.CSMS.FirmwareStatusNotificationResponse? response = null;
+
+                if (!parentNetworkingNode.SignaturePolicy.SignRequestMessage(
+                        Request,
+                        Request.ToJSON(
+                            parentNetworkingNode.CustomFirmwareStatusNotificationRequestSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse
+                    ))
+                {
+
+                    response  = new OCPPv2_1.CSMS.FirmwareStatusNotificationResponse(
+                                    Request,
+                                    Result.SignatureError(errorResponse)
+                                );
+
+                }
+
+                // ToDo: Currently hardcoded CSMS lookup!
+                else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
+                {
+
+                    response  = parentNetworkingNode.AsCS.CSClient is not null
+
+                                    ? await parentNetworkingNode.AsCS.CSClient.FirmwareStatusNotification(Request)
+
+                                    : new OCPPv2_1.CSMS.FirmwareStatusNotificationResponse(
+                                          Request,
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      );
+
+                }
+
+                else
+                {
+                    // ...
+                }
+
+
+                parentNetworkingNode.SignaturePolicy.VerifyResponseMessage(
+                    response,
+                    response.ToJSON(
+                        parentNetworkingNode.CustomFirmwareStatusNotificationResponseSerializer,
+                        parentNetworkingNode.CustomSignatureSerializer,
+                        parentNetworkingNode.CustomCustomDataSerializer
+                    ),
+                    out errorResponse
+                );
+
+
+                #region Send OnFirmwareStatusNotificationResponse event
+
+                var endTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnFirmwareStatusNotificationResponse?.Invoke(endTime,
+                                                                 this,
+                                                                 Request,
+                                                                 response,
+                                                                 endTime - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnFirmwareStatusNotificationResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            }
+
+            #endregion
+
+            #region PublishFirmwareStatusNotification (Request)
+
+            /// <summary>
+            /// Send a publish firmware status notification to the CSMS.
+            /// </summary>
+            /// <param name="Status">The progress status of the publish firmware request.</param>
+            /// <param name="PublishFirmwareStatusNotificationRequestId">The optional unique identification of the publish firmware status notification request.</param>
+            /// <param name="DownloadLocations">The optional enumeration of downstream firmware download locations for all attached charging stations.</param>
+            /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+            /// 
+            /// <param name="RequestId">An optional request identification.</param>
+            /// <param name="RequestTimestamp">An optional request timestamp.</param>
+            /// <param name="RequestTimeout">An optional timeout for this request.</param>
+            /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+            /// <param name="CancellationToken">An optional token to cancel this request.</param>
+            public async Task<OCPPv2_1.CSMS.PublishFirmwareStatusNotificationResponse>
+                PublishFirmwareStatusNotification(OCPPv2_1.CS.PublishFirmwareStatusNotificationRequest Request)
+
+            {
+
+                #region Send OnPublishFirmwareStatusNotificationRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnPublishFirmwareStatusNotificationRequest?.Invoke(startTime,
+                                                                       this,
+                                                                       Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnPublishFirmwareStatusNotificationRequest));
+                }
+
+                #endregion
+
+
+                OCPPv2_1.CSMS.PublishFirmwareStatusNotificationResponse? response = null;
+
+                if (!parentNetworkingNode.SignaturePolicy.SignRequestMessage(
+                        Request,
+                        Request.ToJSON(
+                            parentNetworkingNode.CustomPublishFirmwareStatusNotificationRequestSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse
+                    ))
+                {
+
+                    response  = new OCPPv2_1.CSMS.PublishFirmwareStatusNotificationResponse(
+                                    Request,
+                                    Result.SignatureError(errorResponse)
+                                );
+
+                }
+
+                // ToDo: Currently hardcoded CSMS lookup!
+                else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
+                {
+
+                    response  = parentNetworkingNode.AsCS.CSClient is not null
+
+                                    ? await parentNetworkingNode.AsCS.CSClient.PublishFirmwareStatusNotification(Request)
+
+                                    : new OCPPv2_1.CSMS.PublishFirmwareStatusNotificationResponse(
+                                          Request,
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      );
+
+                }
+
+                else
+                {
+                    // ...
+                }
+
+
+                parentNetworkingNode.SignaturePolicy.VerifyResponseMessage(
+                    response,
+                    response.ToJSON(
+                        parentNetworkingNode.CustomPublishFirmwareStatusNotificationResponseSerializer,
+                        parentNetworkingNode.CustomSignatureSerializer,
+                        parentNetworkingNode.CustomCustomDataSerializer
+                    ),
+                    out errorResponse
+                );
+
+
+                #region Send OnPublishFirmwareStatusNotificationResponse event
+
+                var endTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnPublishFirmwareStatusNotificationResponse?.Invoke(endTime,
+                                                                        this,
+                                                                        Request,
+                                                                        response,
+                                                                        endTime - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnPublishFirmwareStatusNotificationResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            }
+
+            #endregion
+
+            #region Heartbeat                         (Request)
+
+            /// <summary>
+            /// Send a heartbeat.
+            /// </summary>
+            /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+            /// 
+            /// <param name="RequestId">An optional request identification.</param>
+            /// <param name="RequestTimestamp">An optional request timestamp.</param>
+            /// <param name="RequestTimeout">An optional timeout for this request.</param>
+            /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+            /// <param name="CancellationToken">An optional token to cancel this request.</param>
+            public async Task<OCPPv2_1.CSMS.HeartbeatResponse>
+                Heartbeat(OCPPv2_1.CS.HeartbeatRequest Request)
+
+            {
+
+                #region Send OnHeartbeatRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnHeartbeatRequest?.Invoke(startTime,
+                                               this,
+                                               Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnHeartbeatRequest));
+                }
+
+                #endregion
+
+
+                OCPPv2_1.CSMS.HeartbeatResponse? response = null;
+
+                if (!parentNetworkingNode.SignaturePolicy.SignRequestMessage(
+                        Request,
+                        Request.ToJSON(
+                            parentNetworkingNode.CustomHeartbeatRequestSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse
+                    ))
+                {
+
+                    response  = new OCPPv2_1.CSMS.HeartbeatResponse(
+                                    Request,
+                                    Result.SignatureError(errorResponse)
+                                );
+
+                }
+
+                // ToDo: Currently hardcoded CSMS lookup!
+                else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
+                {
+
+                    response  = parentNetworkingNode.AsCS.CSClient is not null
+
+                                    ? await parentNetworkingNode.AsCS.CSClient.Heartbeat(Request)
+
+                                    : new OCPPv2_1.CSMS.HeartbeatResponse(
+                                          Request,
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      );
+
+                }
+
+                else
+                {
+                    // ...
+                }
+
+
+                parentNetworkingNode.SignaturePolicy.VerifyResponseMessage(
+                    response,
+                    response.ToJSON(
+                        parentNetworkingNode.CustomHeartbeatResponseSerializer,
+                        parentNetworkingNode.CustomSignatureSerializer,
+                        parentNetworkingNode.CustomCustomDataSerializer
+                    ),
+                    out errorResponse
+                );
+
+
+                #region Send OnHeartbeatResponse event
+
+                var endTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnHeartbeatResponse?.Invoke(endTime,
+                                                this,
+                                                Request,
+                                                response,
+                                                endTime - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnHeartbeatResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            }
+
+            #endregion
+
+            #region NotifyEvent                       (Request)
+
+            /// <summary>
+            /// Notify about an event.
+            /// </summary>
+            /// <param name="GeneratedAt">The timestamp of the moment this message was generated at the charging station.</param>
+            /// <param name="SequenceNumber">The sequence number of this message. First message starts at 0.</param>
+            /// <param name="EventData">The enumeration of event data.</param>
+            /// <param name="ToBeContinued">The optional "to be continued" indicator whether another part of the monitoring data follows in an upcoming NotifyCustomerInformationRequest message. Default value when omitted is false.</param>
+            /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+            /// 
+            /// <param name="RequestId">An optional request identification.</param>
+            /// <param name="RequestTimestamp">An optional request timestamp.</param>
+            /// <param name="RequestTimeout">An optional timeout for this request.</param>
+            /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+            /// <param name="CancellationToken">An optional token to cancel this request.</param>
+            public async Task<OCPPv2_1.CSMS.NotifyEventResponse>
+                NotifyEvent(OCPPv2_1.CS.NotifyEventRequest Request)
+
+            {
+
+                #region Send OnNotifyEventRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnNotifyEventRequest?.Invoke(startTime,
+                                                 this,
+                                                 Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyEventRequest));
+                }
+
+                #endregion
+
+
+                OCPPv2_1.CSMS.NotifyEventResponse? response = null;
+
+                if (!parentNetworkingNode.SignaturePolicy.SignRequestMessage(
+                        Request,
+                        Request.ToJSON(
+                            parentNetworkingNode.CustomNotifyEventRequestSerializer,
+                            parentNetworkingNode.CustomEventDataSerializer,
+                            parentNetworkingNode.CustomComponentSerializer,
+                            parentNetworkingNode.CustomEVSESerializer,
+                            parentNetworkingNode.CustomVariableSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse
+                    ))
+                {
+
+                    response  = new OCPPv2_1.CSMS.NotifyEventResponse(
+                                    Request,
+                                    Result.SignatureError(errorResponse)
+                                );
+
+                }
+
+                // ToDo: Currently hardcoded CSMS lookup!
+                else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
+                {
+
+                    response  = parentNetworkingNode.AsCS.CSClient is not null
+
+                                    ? await parentNetworkingNode.AsCS.CSClient.NotifyEvent(Request)
+
+                                    : new OCPPv2_1.CSMS.NotifyEventResponse(
+                                          Request,
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      );
+
+                }
+
+                else
+                {
+                    // ...
+                }
+
+
+                parentNetworkingNode.SignaturePolicy.VerifyResponseMessage(
+                    response,
+                    response.ToJSON(
+                        parentNetworkingNode.CustomNotifyEventResponseSerializer,
+                        parentNetworkingNode.CustomSignatureSerializer,
+                        parentNetworkingNode.CustomCustomDataSerializer
+                    ),
+                    out errorResponse
+                );
+
+
+                #region Send OnNotifyEventResponse event
+
+                var endTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnNotifyEventResponse?.Invoke(endTime,
+                                                  this,
+                                                  Request,
+                                                  response,
+                                                  endTime - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyEventResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            }
+
+            #endregion
+
+            #region SecurityEventNotification         (Request)
+
+            /// <summary>
+            /// Send a security event notification.
+            /// </summary>
+            /// <param name="Type">Type of the security event.</param>
+            /// <param name="Timestamp">The timestamp of the security event.</param>
+            /// <param name="TechInfo">Optional additional information about the occurred security event.</param>
+            /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+            /// 
+            /// <param name="RequestId">An optional request identification.</param>
+            /// <param name="RequestTimestamp">An optional request timestamp.</param>
+            /// <param name="RequestTimeout">An optional timeout for this request.</param>
+            /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+            /// <param name="CancellationToken">An optional token to cancel this request.</param>
+            public async Task<OCPPv2_1.CSMS.SecurityEventNotificationResponse>
+                SecurityEventNotification(OCPPv2_1.CS.SecurityEventNotificationRequest Request)
+
+            {
+
+                #region Send OnSecurityEventNotificationRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnSecurityEventNotificationRequest?.Invoke(startTime,
+                                                               this,
+                                                               Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnSecurityEventNotificationRequest));
+                }
+
+                #endregion
+
+
+                OCPPv2_1.CSMS.SecurityEventNotificationResponse? response = null;
+
+                if (!parentNetworkingNode.SignaturePolicy.SignRequestMessage(
+                        Request,
+                        Request.ToJSON(
+                            parentNetworkingNode.CustomSecurityEventNotificationRequestSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse
+                    ))
+                {
+
+                    response  = new OCPPv2_1.CSMS.SecurityEventNotificationResponse(
+                                    Request,
+                                    Result.SignatureError(errorResponse)
+                                );
+
+                }
+
+                // ToDo: Currently hardcoded CSMS lookup!
+                else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
+                {
+
+                    response  = parentNetworkingNode.AsCS.CSClient is not null
+
+                                    ? await parentNetworkingNode.AsCS.CSClient.SecurityEventNotification(Request)
+
+                                    : new OCPPv2_1.CSMS.SecurityEventNotificationResponse(
+                                          Request,
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      );
+
+                }
+
+                else
+                {
+                    // ...
+                }
+
+
+                parentNetworkingNode.SignaturePolicy.VerifyResponseMessage(
+                    response,
+                    response.ToJSON(
+                        parentNetworkingNode.CustomSecurityEventNotificationResponseSerializer,
+                        parentNetworkingNode.CustomSignatureSerializer,
+                        parentNetworkingNode.CustomCustomDataSerializer
+                    ),
+                    out errorResponse
+                );
+
+
+                #region Send OnSecurityEventNotificationResponse event
+
+                var endTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+
+                try
+                {
+
+                    OnSecurityEventNotificationResponse?.Invoke(endTime,
+                                                                this,
+                                                                Request,
+                                                                response,
+                                                                endTime - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnSecurityEventNotificationResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            }
+
+            #endregion
+
+            #region NotifyReport                      (Request)
+
+            /// <summary>
+            /// Notify about a report.
+            /// </summary>
+            /// <param name="NotifyReportRequestId">The unique identification of the notify report request.</param>
+            /// <param name="SequenceNumber">The sequence number of this message. First message starts at 0.</param>
+            /// <param name="GeneratedAt">The timestamp of the moment this message was generated at the charging station.</param>
+            /// <param name="ReportData">The enumeration of report data. A single report data element contains only the component, variable and variable report data that caused the event.</param>
+            /// <param name="ToBeContinued">The optional "to be continued" indicator whether another part of the report follows in an upcoming NotifyReportRequest message. Default value when omitted is false.</param>
+            /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+            /// 
+            /// <param name="RequestId">An optional request identification.</param>
+            /// <param name="RequestTimestamp">An optional request timestamp.</param>
+            /// <param name="RequestTimeout">An optional timeout for this request.</param>
+            /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+            /// <param name="CancellationToken">An optional token to cancel this request.</param>
+            public async Task<OCPPv2_1.CSMS.NotifyReportResponse>
+                NotifyReport(OCPPv2_1.CS.NotifyReportRequest Request)
+
+            {
+
+                #region Send OnNotifyReportRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnNotifyReportRequest?.Invoke(startTime,
+                                                  this,
+                                                  Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyReportRequest));
+                }
+
+                #endregion
+
+
+                OCPPv2_1.CSMS.NotifyReportResponse? response = null;
+
+                if (!parentNetworkingNode.SignaturePolicy.SignRequestMessage(
+                        Request,
+                        Request.ToJSON(
+                            parentNetworkingNode.CustomNotifyReportRequestSerializer,
+                            parentNetworkingNode.CustomReportDataSerializer,
+                            parentNetworkingNode.CustomComponentSerializer,
+                            parentNetworkingNode.CustomEVSESerializer,
+                            parentNetworkingNode.CustomVariableSerializer,
+                            parentNetworkingNode.CustomVariableAttributeSerializer,
+                            parentNetworkingNode.CustomVariableCharacteristicsSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse
+                    ))
+                {
+
+                    response  = new OCPPv2_1.CSMS.NotifyReportResponse(
+                                    Request,
+                                    Result.SignatureError(errorResponse)
+                                );
+
+                }
+
+                // ToDo: Currently hardcoded CSMS lookup!
+                else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
+                {
+
+                    response  = parentNetworkingNode.AsCS.CSClient is not null
+
+                                    ? await parentNetworkingNode.AsCS.CSClient.NotifyReport(Request)
+
+                                    : new OCPPv2_1.CSMS.NotifyReportResponse(
+                                          Request,
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      );
+
+                }
+
+                else
+                {
+                    // ...
+                }
+
+
+                parentNetworkingNode.SignaturePolicy.VerifyResponseMessage(
+                    response,
+                    response.ToJSON(
+                        parentNetworkingNode.CustomNotifyReportResponseSerializer,
+                        parentNetworkingNode.CustomSignatureSerializer,
+                        parentNetworkingNode.CustomCustomDataSerializer
+                    ),
+                    out errorResponse
+                );
+
+
+                #region Send OnNotifyReportResponse event
+
+                var endTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnNotifyReportResponse?.Invoke(endTime,
+                                                   this,
+                                                   Request,
+                                                   response,
+                                                   endTime - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyReportResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            }
+
+            #endregion
+
+            #region NotifyMonitoringReport            (Request)
+
+            /// <summary>
+            /// Notify about a monitoring report.
+            /// </summary>
+            /// <param name="NotifyMonitoringReportRequestId">The unique identification of the notify monitoring report request.</param>
+            /// <param name="SequenceNumber">The sequence number of this message. First message starts at 0.</param>
+            /// <param name="GeneratedAt">The timestamp of the moment this message was generated at the charging station.</param>
+            /// <param name="MonitoringData">The enumeration of event data. A single event data element contains only the component, variable and variable monitoring data that caused the event.</param>
+            /// <param name="ToBeContinued">The optional "to be continued" indicator whether another part of the monitoring data follows in an upcoming NotifyCustomerInformationRequest message. Default value when omitted is false.</param>
+            /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+            /// 
+            /// <param name="RequestId">An optional request identification.</param>
+            /// <param name="RequestTimestamp">An optional request timestamp.</param>
+            /// <param name="RequestTimeout">An optional timeout for this request.</param>
+            /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+            /// <param name="CancellationToken">An optional token to cancel this request.</param>
+            public async Task<OCPPv2_1.CSMS.NotifyMonitoringReportResponse>
+                NotifyMonitoringReport(OCPPv2_1.CS.NotifyMonitoringReportRequest Request)
+
+            {
+
+                #region Send OnNotifyMonitoringReportRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnNotifyMonitoringReportRequest?.Invoke(startTime,
+                                                            this,
+                                                            Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyMonitoringReportRequest));
+                }
+
+                #endregion
+
+
+                OCPPv2_1.CSMS.NotifyMonitoringReportResponse? response = null;
+
+                if (!parentNetworkingNode.SignaturePolicy.SignRequestMessage(
+                        Request,
+                        Request.ToJSON(
+                            parentNetworkingNode.CustomNotifyMonitoringReportRequestSerializer,
+                            parentNetworkingNode.CustomMonitoringDataSerializer,
+                            parentNetworkingNode.CustomComponentSerializer,
+                            parentNetworkingNode.CustomEVSESerializer,
+                            parentNetworkingNode.CustomVariableSerializer,
+                            parentNetworkingNode.CustomVariableMonitoringSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse
+                    ))
+                {
+
+                    response  = new OCPPv2_1.CSMS.NotifyMonitoringReportResponse(
+                                    Request,
+                                    Result.SignatureError(errorResponse)
+                                );
+
+                }
+
+                // ToDo: Currently hardcoded CSMS lookup!
+                else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
+                {
+
+                    response  = parentNetworkingNode.AsCS.CSClient is not null
+
+                                    ? await parentNetworkingNode.AsCS.CSClient.NotifyMonitoringReport(Request)
+
+                                    : new OCPPv2_1.CSMS.NotifyMonitoringReportResponse(
+                                          Request,
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      );
+
+                }
+
+                else
+                {
+                    // ...
+                }
+
+
+                parentNetworkingNode.SignaturePolicy.VerifyResponseMessage(
+                    response,
+                    response.ToJSON(
+                        parentNetworkingNode.CustomNotifyMonitoringReportResponseSerializer,
+                        parentNetworkingNode.CustomSignatureSerializer,
+                        parentNetworkingNode.CustomCustomDataSerializer
+                    ),
+                    out errorResponse
+                );
+
+
+                #region Send OnNotifyMonitoringReportResponse event
+
+                var endTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnNotifyMonitoringReportResponse?.Invoke(endTime,
+                                                             this,
+                                                             Request,
+                                                             response,
+                                                             endTime - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyMonitoringReportResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            }
+
+            #endregion
+
+            #region LogStatusNotification             (Request)
+
+            /// <summary>
+            /// Send a log status notification.
+            /// </summary>
+            /// <param name="Status">The status of the log upload.</param>
+            /// <param name="LogRequestId">The optional request id that was provided in the GetLog request that started this log upload.</param>
+            /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+            /// 
+            /// <param name="RequestId">An optional request identification.</param>
+            /// <param name="RequestTimestamp">An optional request timestamp.</param>
+            /// <param name="RequestTimeout">An optional timeout for this request.</param>
+            /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+            /// <param name="CancellationToken">An optional token to cancel this request.</param>
+            public async Task<OCPPv2_1.CSMS.LogStatusNotificationResponse>
+                LogStatusNotification(OCPPv2_1.CS.LogStatusNotificationRequest Request)
+
+            {
+
+                #region Send OnLogStatusNotificationRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnLogStatusNotificationRequest?.Invoke(startTime,
+                                                           this,
+                                                           Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnLogStatusNotificationRequest));
+                }
+
+                #endregion
+
+
+                OCPPv2_1.CSMS.LogStatusNotificationResponse? response = null;
+
+                if (!parentNetworkingNode.SignaturePolicy.SignRequestMessage(
+                        Request,
+                        Request.ToJSON(
+                            parentNetworkingNode.CustomLogStatusNotificationRequestSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse
+                    ))
+                {
+
+                    response  = new OCPPv2_1.CSMS.LogStatusNotificationResponse(
+                                    Request,
+                                    Result.SignatureError(errorResponse)
+                                );
+
+                }
+
+                // ToDo: Currently hardcoded CSMS lookup!
+                else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
+                {
+
+                    response  = parentNetworkingNode.AsCS.CSClient is not null
+
+                                    ? await parentNetworkingNode.AsCS.CSClient.LogStatusNotification(Request)
+
+                                    : new OCPPv2_1.CSMS.LogStatusNotificationResponse(
+                                          Request,
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      );
+
+                }
+
+                else
+                {
+                    // ...
+                }
+
+
+                parentNetworkingNode.SignaturePolicy.VerifyResponseMessage(
+                    response,
+                    response.ToJSON(
+                        parentNetworkingNode.CustomLogStatusNotificationResponseSerializer,
+                        parentNetworkingNode.CustomSignatureSerializer,
+                        parentNetworkingNode.CustomCustomDataSerializer
+                    ),
+                    out errorResponse
+                );
+
+
+                #region Send OnLogStatusNotificationResponse event
+
+                var endTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnLogStatusNotificationResponse?.Invoke(endTime,
+                                                            this,
+                                                            Request,
+                                                            response,
+                                                            endTime - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnLogStatusNotificationResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            }
+
+            #endregion
+
+
+            #region SignCertificate                   (Request)
+
+            /// <summary>
+            /// Send a heartbeat.
+            /// </summary>
+            /// <param name="CSR">The PEM encoded RFC 2986 certificate signing request (CSR) [max 5500].</param>
+            /// <param name="CertificateType">Whether the certificate is to be used for both the 15118 connection (if implemented) and the charging station to central system (CSMS) connection.</param>
+            /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+            /// 
+            /// <param name="RequestId">An optional request identification.</param>
+            /// <param name="RequestTimestamp">An optional request timestamp.</param>
+            /// <param name="RequestTimeout">An optional timeout for this request.</param>
+            /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+            /// <param name="CancellationToken">An optional token to cancel this request.</param>
+            public async Task<OCPPv2_1.CSMS.SignCertificateResponse>
+                SignCertificate(OCPPv2_1.CS.SignCertificateRequest Request)
+
+            {
+
+                #region Send OnSignCertificateRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnSignCertificateRequest?.Invoke(startTime,
+                                                     this,
+                                                     Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnSignCertificateRequest));
+                }
+
+                #endregion
+
+
+                OCPPv2_1.CSMS.SignCertificateResponse? response = null;
+
+                if (!parentNetworkingNode.SignaturePolicy.SignRequestMessage(
+                        Request,
+                        Request.ToJSON(
+                            parentNetworkingNode.CustomSignCertificateRequestSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse
+                    ))
+                {
+
+                    response  = new OCPPv2_1.CSMS.SignCertificateResponse(
+                                    Request,
+                                    Result.SignatureError(errorResponse)
+                                );
+
+                }
+
+                // ToDo: Currently hardcoded CSMS lookup!
+                else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
+                {
+
+                    response  = parentNetworkingNode.AsCS.CSClient is not null
+
+                                    ? await parentNetworkingNode.AsCS.CSClient.SignCertificate(Request)
+
+                                    : new OCPPv2_1.CSMS.SignCertificateResponse(
+                                          Request,
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      );
+
+                }
+
+                else
+                {
+                    // ...
+                }
+
+
+                parentNetworkingNode.SignaturePolicy.VerifyResponseMessage(
+                    response,
+                    response.ToJSON(
+                        parentNetworkingNode.CustomSignCertificateResponseSerializer,
+                        parentNetworkingNode.CustomStatusInfoSerializer,
+                        parentNetworkingNode.CustomSignatureSerializer,
+                        parentNetworkingNode.CustomCustomDataSerializer
+                    ),
+                    out errorResponse
+                );
+
+
+                #region Send OnSignCertificateResponse event
+
+                var endTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnSignCertificateResponse?.Invoke(endTime,
+                                                      this,
+                                                      Request,
+                                                      response,
+                                                      endTime - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnSignCertificateResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            }
+
+            #endregion
+
+            #region Get15118EVCertificate             (Request)
+
+            /// <summary>
+            /// Get an ISO 15118 contract certificate.
+            /// </summary>
+            /// <param name="ISO15118SchemaVersion">ISO/IEC 15118 schema version used for the session between charging station and electric vehicle. Required for parsing the EXI data stream within the central system.</param>
+            /// <param name="CertificateAction">Whether certificate needs to be installed or updated.</param>
+            /// <param name="EXIRequest">Base64 encoded certificate installation request from the electric vehicle. [max 5600]</param>
+            /// <param name="MaximumContractCertificateChains">Optional number of contracts that EV wants to install at most.</param>
+            /// <param name="PrioritizedEMAIds">An optional enumeration of eMA Ids that have priority in case more contracts than maximumContractCertificateChains are available.</param>
+            /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+            /// 
+            /// <param name="RequestId">An optional request identification.</param>
+            /// <param name="RequestTimestamp">An optional request timestamp.</param>
+            /// <param name="RequestTimeout">An optional timeout for this request.</param>
+            /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+            /// <param name="CancellationToken">An optional token to cancel this request.</param>
+            public async Task<OCPPv2_1.CSMS.Get15118EVCertificateResponse>
+                Get15118EVCertificate(OCPPv2_1.CS.Get15118EVCertificateRequest Request)
+
+            {
+
+                #region Send OnGet15118EVCertificateRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnGet15118EVCertificateRequest?.Invoke(startTime,
+                                                           this,
+                                                           Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnGet15118EVCertificateRequest));
+                }
+
+                #endregion
+
+
+                OCPPv2_1.CSMS.Get15118EVCertificateResponse? response = null;
+
+                if (!parentNetworkingNode.SignaturePolicy.SignRequestMessage(
+                        Request,
+                        Request.ToJSON(
+                            parentNetworkingNode.CustomGet15118EVCertificateRequestSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse
+                    ))
+                {
+
+                    response  = new OCPPv2_1.CSMS.Get15118EVCertificateResponse(
+                                    Request,
+                                    Result.SignatureError(errorResponse)
+                                );
+
+                }
+
+                // ToDo: Currently hardcoded CSMS lookup!
+                else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
+                {
+
+                    response  = parentNetworkingNode.AsCS.CSClient is not null
+
+                                    ? await parentNetworkingNode.AsCS.CSClient.Get15118EVCertificate(Request)
+
+                                    : new OCPPv2_1.CSMS.Get15118EVCertificateResponse(
+                                          Request,
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      );
+
+                }
+
+                else
+                {
+                    // ...
+                }
+
+
+                parentNetworkingNode.SignaturePolicy.VerifyResponseMessage(
+                    response,
+                    response.ToJSON(
+                        parentNetworkingNode.CustomGet15118EVCertificateResponseSerializer,
+                        parentNetworkingNode.CustomStatusInfoSerializer,
+                        parentNetworkingNode.CustomSignatureSerializer,
+                        parentNetworkingNode.CustomCustomDataSerializer
+                    ),
+                    out errorResponse
+                );
+
+
+                #region Send OnGet15118EVCertificateResponse event
+
+                var endTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnGet15118EVCertificateResponse?.Invoke(endTime,
+                                                            this,
+                                                            Request,
+                                                            response,
+                                                            endTime - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnGet15118EVCertificateResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            }
+
+            #endregion
+
+            #region GetCertificateStatus              (Request)
+
+            /// <summary>
+            /// Get the status of a certificate.
+            /// </summary>
+            /// <param name="OCSPRequestData">The certificate of which the status is requested.</param>
+            /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+            /// 
+            /// <param name="RequestId">An optional request identification.</param>
+            /// <param name="RequestTimestamp">An optional request timestamp.</param>
+            /// <param name="RequestTimeout">An optional timeout for this request.</param>
+            /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+            /// <param name="CancellationToken">An optional token to cancel this request.</param>
+            public async Task<OCPPv2_1.CSMS.GetCertificateStatusResponse>
+                GetCertificateStatus(OCPPv2_1.CS.GetCertificateStatusRequest Request)
+
+            {
+
+                #region Send OnGetCertificateStatusRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnGetCertificateStatusRequest?.Invoke(startTime,
+                                                          this,
+                                                          Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnGetCertificateStatusRequest));
+                }
+
+                #endregion
+
+
+                OCPPv2_1.CSMS.GetCertificateStatusResponse? response = null;
+
+                if (!parentNetworkingNode.SignaturePolicy.SignRequestMessage(
+                        Request,
+                        Request.ToJSON(
+                            parentNetworkingNode.CustomGetCertificateStatusRequestSerializer,
+                            parentNetworkingNode.CustomOCSPRequestDataSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse
+                    ))
+                {
+
+                    response  = new OCPPv2_1.CSMS.GetCertificateStatusResponse(
+                                    Request,
+                                    Result.SignatureError(errorResponse)
+                                );
+
+                }
+
+                // ToDo: Currently hardcoded CSMS lookup!
+                else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
+                {
+
+                    response  = parentNetworkingNode.AsCS.CSClient is not null
+
+                                    ? await parentNetworkingNode.AsCS.CSClient.GetCertificateStatus(Request)
+
+                                    : new OCPPv2_1.CSMS.GetCertificateStatusResponse(
+                                          Request,
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      );
+
+                }
+
+                else
+                {
+                    // ...
+                }
+
+
+                parentNetworkingNode.SignaturePolicy.VerifyResponseMessage(
+                    response,
+                    response.ToJSON(
+                        parentNetworkingNode.CustomGetCertificateStatusResponseSerializer,
+                        parentNetworkingNode.CustomStatusInfoSerializer,
+                        parentNetworkingNode.CustomSignatureSerializer,
+                        parentNetworkingNode.CustomCustomDataSerializer
+                    ),
+                    out errorResponse
+                );
+
+
+                #region Send OnGetCertificateStatusResponse event
+
+                var endTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnGetCertificateStatusResponse?.Invoke(endTime,
+                                                           this,
+                                                           Request,
+                                                           response,
+                                                           endTime - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnGetCertificateStatusResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            }
+
+            #endregion
+
+            #region GetCRL                            (Request)
+
+            /// <summary>
+            /// Get a certificate revocation list from CSMS for the specified certificate.
+            /// </summary>
+            /// 
+            /// <param name="GetCRLRequestId">The identification of this request.</param>
+            /// <param name="CertificateHashData">Certificate hash data.</param>
+            /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+            /// 
+            /// <param name="RequestId">An optional request identification.</param>
+            /// <param name="RequestTimestamp">An optional request timestamp.</param>
+            /// <param name="RequestTimeout">An optional timeout for this request.</param>
+            /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+            /// <param name="CancellationToken">An optional token to cancel this request.</param>
+            public async Task<OCPPv2_1.CSMS.GetCRLResponse>
+                GetCRL(OCPPv2_1.CS.GetCRLRequest Request)
+
+            {
+
+                #region Send OnGetCRLRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnGetCRLRequest?.Invoke(startTime,
+                                            this,
+                                            Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnGetCRLRequest));
+                }
+
+                #endregion
+
+
+                OCPPv2_1.CSMS.GetCRLResponse? response = null;
+
+                if (!parentNetworkingNode.SignaturePolicy.SignRequestMessage(
+                        Request,
+                        Request.ToJSON(
+                            parentNetworkingNode.CustomGetCRLRequestSerializer,
+                            parentNetworkingNode.CustomCertificateHashDataSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse
+                    ))
+                {
+
+                    response  = new OCPPv2_1.CSMS.GetCRLResponse(
+                                    Request,
+                                    Result.SignatureError(errorResponse)
+                                );
+
+                }
+
+                // ToDo: Currently hardcoded CSMS lookup!
+                else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
+                {
+
+                    response  = parentNetworkingNode.AsCS.CSClient is not null
+
+                                    ? await parentNetworkingNode.AsCS.CSClient.GetCRL(Request)
+
+                                    : new OCPPv2_1.CSMS.GetCRLResponse(
+                                          Request,
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      );
+
+                }
+
+                else
+                {
+                    // ...
+                }
+
+
+                parentNetworkingNode.SignaturePolicy.VerifyResponseMessage(
+                    response,
+                    response.ToJSON(
+                        parentNetworkingNode.CustomGetCRLResponseSerializer,
+                        parentNetworkingNode.CustomStatusInfoSerializer,
+                        parentNetworkingNode.CustomSignatureSerializer,
+                        parentNetworkingNode.CustomCustomDataSerializer
+                    ),
+                    out errorResponse
+                );
+
+
+                #region Send OnGetCRLResponse event
+
+                var endTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnGetCRLResponse?.Invoke(endTime,
+                                             this,
+                                             Request,
+                                             response,
+                                             endTime - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnGetCRLResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            }
+
+            #endregion
+
+
+            #region ReservationStatusUpdate           (Request)
+
+            /// <summary>
+            /// Send a reservation status update.
+            /// </summary>
+            /// <param name="ReservationId">The unique identification of the transaction to update.</param>
+            /// <param name="ReservationUpdateStatus">The updated reservation status.</param>
+            /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+            /// 
+            /// <param name="RequestId">An optional request identification.</param>
+            /// <param name="RequestTimestamp">An optional request timestamp.</param>
+            /// <param name="RequestTimeout">An optional timeout for this request.</param>
+            /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+            /// <param name="CancellationToken">An optional token to cancel this request.</param>
+            public async Task<OCPPv2_1.CSMS.ReservationStatusUpdateResponse>
+                ReservationStatusUpdate(OCPPv2_1.CS.ReservationStatusUpdateRequest Request)
+
+            {
+
+                #region Send OnReservationStatusUpdateRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnReservationStatusUpdateRequest?.Invoke(startTime,
+                                                             this,
+                                                             Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnReservationStatusUpdateRequest));
+                }
+
+                #endregion
+
+
+                OCPPv2_1.CSMS.ReservationStatusUpdateResponse? response = null;
+
+                if (!parentNetworkingNode.SignaturePolicy.SignRequestMessage(
+                        Request,
+                        Request.ToJSON(
+                            parentNetworkingNode.CustomReservationStatusUpdateRequestSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse
+                    ))
+                {
+
+                    response  = new OCPPv2_1.CSMS.ReservationStatusUpdateResponse(
+                                    Request,
+                                    Result.SignatureError(errorResponse)
+                                );
+
+                }
+
+                // ToDo: Currently hardcoded CSMS lookup!
+                else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
+                {
+
+                    response  = parentNetworkingNode.AsCS.CSClient is not null
+
+                                    ? await parentNetworkingNode.AsCS.CSClient.ReservationStatusUpdate(Request)
+
+                                    : new OCPPv2_1.CSMS.ReservationStatusUpdateResponse(
+                                          Request,
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      );
+
+                }
+
+                else
+                {
+                    // ...
+                }
+
+
+                parentNetworkingNode.SignaturePolicy.VerifyResponseMessage(
+                    response,
+                    response.ToJSON(
+                        parentNetworkingNode.CustomReservationStatusUpdateResponseSerializer,
+                        parentNetworkingNode.CustomSignatureSerializer,
+                        parentNetworkingNode.CustomCustomDataSerializer
+                    ),
+                    out errorResponse
+                );
+
+
+                #region Send OnReservationStatusUpdateResponse event
+
+                var endTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnReservationStatusUpdateResponse?.Invoke(endTime,
+                                                              this,
+                                                              Request,
+                                                              response,
+                                                              endTime - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnReservationStatusUpdateResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            }
+
+            #endregion
+
+            #region Authorize                         (Request)
+
+            /// <summary>
+            /// Authorize the given token.
+            /// </summary>
+            /// <param name="IdToken">The identifier that needs to be authorized.</param>
+            /// <param name="Certificate">An optional X.509 certificated presented by the electric vehicle/user (PEM format).</param>
+            /// <param name="ISO15118CertificateHashData">Optional information to verify the electric vehicle/user contract certificate via OCSP.</param>
+            /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+            /// 
+            /// <param name="RequestId">An optional request identification.</param>
+            /// <param name="RequestTimestamp">An optional request timestamp.</param>
+            /// <param name="RequestTimeout">An optional timeout for this request.</param>
+            /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+            /// <param name="CancellationToken">An optional token to cancel this request.</param>
+            public async Task<OCPPv2_1.CSMS.AuthorizeResponse>
+                Authorize(OCPPv2_1.CS.AuthorizeRequest Request)
+
+            {
+
+                #region Send OnAuthorizeRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnAuthorizeRequest?.Invoke(startTime,
+                                               this,
+                                               Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnAuthorizeRequest));
+                }
+
+                #endregion
+
+
+                OCPPv2_1.CSMS.AuthorizeResponse? response = null;
+
+                if (!parentNetworkingNode.SignaturePolicy.SignRequestMessage(
+                        Request,
+                        Request.ToJSON(
+                            parentNetworkingNode.CustomAuthorizeRequestSerializer,
+                            parentNetworkingNode.CustomIdTokenSerializer,
+                            parentNetworkingNode.CustomAdditionalInfoSerializer,
+                            parentNetworkingNode.CustomOCSPRequestDataSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse
+                    ))
+                {
+
+                    response  = new OCPPv2_1.CSMS.AuthorizeResponse(
+                                    Request,
+                                    Result.SignatureError(errorResponse)
+                                );
+
+                }
+
+                // ToDo: Currently hardcoded CSMS lookup!
+                else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
+                {
+
+                    response  = parentNetworkingNode.AsCS.CSClient is not null
+
+                                    ? await parentNetworkingNode.AsCS.CSClient.Authorize(Request)
+
+                                    : new OCPPv2_1.CSMS.AuthorizeResponse(
+                                          Request,
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      );
+
+                }
+
+                else
+                {
+                    // ...
+                }
+
+
+                parentNetworkingNode.SignaturePolicy.VerifyResponseMessage(
+                    response,
+                    response.ToJSON(
+                        parentNetworkingNode.CustomAuthorizeResponseSerializer,
+                        parentNetworkingNode.CustomIdTokenInfoSerializer,
+                        parentNetworkingNode.CustomIdTokenSerializer,
+                        parentNetworkingNode.CustomAdditionalInfoSerializer,
+                        parentNetworkingNode.CustomMessageContentSerializer,
+                        parentNetworkingNode.CustomTransactionLimitsSerializer,
+                        parentNetworkingNode.CustomSignatureSerializer,
+                        parentNetworkingNode.CustomCustomDataSerializer
+                    ),
+                    out errorResponse
+                );
+
+
+                #region Send OnAuthorizeResponse event
+
+                var endTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnAuthorizeResponse?.Invoke(endTime,
+                                                this,
+                                                Request,
+                                                response,
+                                                endTime - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnAuthorizeResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            }
+
+            #endregion
+
+            #region NotifyEVChargingNeeds             (Request)
+
+            /// <summary>
+            /// Notify about EV charging needs.
+            /// </summary>
+            /// <param name="EVSEId">The EVSE and connector to which the EV is connected to.</param>
+            /// <param name="ChargingNeeds">The characteristics of the energy delivery required.</param>
+            /// <param name="ReceivedTimestamp">An optional timestamp when the EV charging needs had been received, e.g. when the charging station was offline.</param>
+            /// <param name="MaxScheduleTuples">The optional maximum number of schedule tuples per schedule the car supports.</param>
+            /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+            /// 
+            /// <param name="RequestId">An optional request identification.</param>
+            /// <param name="RequestTimestamp">An optional request timestamp.</param>
+            /// <param name="RequestTimeout">An optional timeout for this request.</param>
+            /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+            /// <param name="CancellationToken">An optional token to cancel this request.</param>
+            public async Task<OCPPv2_1.CSMS.NotifyEVChargingNeedsResponse>
+                NotifyEVChargingNeeds(OCPPv2_1.CS.NotifyEVChargingNeedsRequest Request)
+
+            {
+
+                #region Send OnNotifyEVChargingNeedsRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnNotifyEVChargingNeedsRequest?.Invoke(startTime,
+                                                           this,
+                                                           Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyEVChargingNeedsRequest));
+                }
+
+                #endregion
+
+
+                OCPPv2_1.CSMS.NotifyEVChargingNeedsResponse? response = null;
+
+                if (!parentNetworkingNode.SignaturePolicy.SignRequestMessage(
+                        Request,
+                        Request.ToJSON(
+                            parentNetworkingNode.CustomNotifyEVChargingNeedsRequestSerializer,
+                            parentNetworkingNode.CustomChargingNeedsSerializer,
+                            parentNetworkingNode.CustomACChargingParametersSerializer,
+                            parentNetworkingNode.CustomDCChargingParametersSerializer,
+                            parentNetworkingNode.CustomV2XChargingParametersSerializer,
+                            parentNetworkingNode.CustomEVEnergyOfferSerializer,
+                            parentNetworkingNode.CustomEVPowerScheduleSerializer,
+                            parentNetworkingNode.CustomEVPowerScheduleEntrySerializer,
+                            parentNetworkingNode.CustomEVAbsolutePriceScheduleSerializer,
+                            parentNetworkingNode.CustomEVAbsolutePriceScheduleEntrySerializer,
+                            parentNetworkingNode.CustomEVPriceRuleSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse
+                    ))
+                {
+
+                    response  = new OCPPv2_1.CSMS.NotifyEVChargingNeedsResponse(
+                                    Request,
+                                    Result.SignatureError(errorResponse)
+                                );
+
+                }
+
+                // ToDo: Currently hardcoded CSMS lookup!
+                else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
+                {
+
+                    response  = parentNetworkingNode.AsCS.CSClient is not null
+
+                                    ? await parentNetworkingNode.AsCS.CSClient.NotifyEVChargingNeeds(Request)
+
+                                    : new OCPPv2_1.CSMS.NotifyEVChargingNeedsResponse(
+                                          Request,
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      );
+
+                }
+
+                else
+                {
+                    // ...
+                }
+
+
+                parentNetworkingNode.SignaturePolicy.VerifyResponseMessage(
+                    response,
+                    response.ToJSON(
+                        parentNetworkingNode.CustomNotifyEVChargingNeedsResponseSerializer,
+                        parentNetworkingNode.CustomStatusInfoSerializer,
+                        parentNetworkingNode.CustomSignatureSerializer,
+                        parentNetworkingNode.CustomCustomDataSerializer
+                    ),
+                    out errorResponse
+                );
+
+
+                #region Send OnNotifyEVChargingNeedsResponse event
+
+                var endTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnNotifyEVChargingNeedsResponse?.Invoke(endTime,
+                                                            this,
+                                                            Request,
+                                                            response,
+                                                            endTime - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyEVChargingNeedsResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            }
+
+            #endregion
+
+            #region TransactionEvent                  (Request)
+
+            /// <summary>
+            /// Send a transaction event.
+            /// </summary>
+            /// <param name="EventType">The type of this transaction event. The first event of a transaction SHALL be of type "started", the last of type "ended". All others should be of type "updated".</param>
+            /// <param name="Timestamp">The timestamp at which this transaction event occurred.</param>
+            /// <param name="TriggerReason">The reason the charging station sends this message.</param>
+            /// <param name="SequenceNumber">This incremental sequence number, helps to determine whether all messages of a transaction have been received.</param>
+            /// <param name="TransactionInfo">Transaction related information.</param>
+            /// 
+            /// <param name="Offline">An optional indication whether this transaction event happened when the charging station was offline.</param>
+            /// <param name="NumberOfPhasesUsed">An optional numer of electrical phases used, when the charging station is able to report it.</param>
+            /// <param name="CableMaxCurrent">An optional maximum current of the connected cable in amperes.</param>
+            /// <param name="ReservationId">An optional unqiue reservation identification of the reservation that terminated as a result of this transaction.</param>
+            /// <param name="IdToken">An optional identification token for which a transaction has to be/was started.</param>
+            /// <param name="EVSE">An optional indication of the EVSE (and connector) used.</param>
+            /// <param name="MeterValues">An optional enumeration of meter values.</param>
+            /// <param name="PreconditioningStatus">The optional current status of the battery management system within the EV.</param>
+            /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+            /// 
+            /// <param name="RequestId">An optional request identification.</param>
+            /// <param name="RequestTimestamp">An optional request timestamp.</param>
+            /// <param name="RequestTimeout">An optional timeout for this request.</param>
+            /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+            /// <param name="CancellationToken">An optional token to cancel this request.</param>
+            public async Task<OCPPv2_1.CSMS.TransactionEventResponse>
+                TransactionEvent(OCPPv2_1.CS.TransactionEventRequest Request)
+
+            {
+
+                #region Send OnTransactionEventRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnTransactionEventRequest?.Invoke(startTime,
+                                                      this,
+                                                      Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnTransactionEventRequest));
+                }
+
+                #endregion
+
+
+                OCPPv2_1.CSMS.TransactionEventResponse? response = null;
+
+                if (!parentNetworkingNode.SignaturePolicy.SignRequestMessage(
+                        Request,
+                        Request.ToJSON(
+                            parentNetworkingNode.CustomTransactionEventRequestSerializer,
+                            parentNetworkingNode.CustomTransactionSerializer,
+                            parentNetworkingNode.CustomIdTokenSerializer,
+                            parentNetworkingNode.CustomAdditionalInfoSerializer,
+                            parentNetworkingNode.CustomEVSESerializer,
+                            parentNetworkingNode.CustomMeterValueSerializer,
+                            parentNetworkingNode.CustomSampledValueSerializer,
+                            parentNetworkingNode.CustomSignedMeterValueSerializer,
+                            parentNetworkingNode.CustomUnitsOfMeasureSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse
+                    ))
+                {
+
+                    response  = new OCPPv2_1.CSMS.TransactionEventResponse(
+                                    Request,
+                                    Result.SignatureError(errorResponse)
+                                );
+
+                }
+
+                // ToDo: Currently hardcoded CSMS lookup!
+                else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
+                {
+
+                    response  = parentNetworkingNode.AsCS.CSClient is not null
+
+                                    ? await parentNetworkingNode.AsCS.CSClient.TransactionEvent(Request)
+
+                                    : new OCPPv2_1.CSMS.TransactionEventResponse(
+                                          Request,
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      );
+
+                }
+
+                else
+                {
+                    // ...
+                }
+
+
+                parentNetworkingNode.SignaturePolicy.VerifyResponseMessage(
+                    response,
+                    response.ToJSON(
+                        parentNetworkingNode.CustomTransactionEventResponseSerializer,
+                        parentNetworkingNode.CustomIdTokenInfoSerializer,
+                        parentNetworkingNode.CustomIdTokenSerializer,
+                        parentNetworkingNode.CustomAdditionalInfoSerializer,
+                        parentNetworkingNode.CustomMessageContentSerializer,
+                        parentNetworkingNode.CustomSignatureSerializer,
+                        parentNetworkingNode.CustomCustomDataSerializer
+                    ),
+                    out errorResponse
+                );
+
+
+                #region Send OnTransactionEventResponse event
+
+                var endTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+
+                try
+                {
+
+                    OnTransactionEventResponse?.Invoke(endTime,
+                                                       this,
+                                                       Request,
+                                                       response,
+                                                       endTime - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnTransactionEventResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            }
+
+            #endregion
+
+            #region StatusNotification                (Request)
+
+            /// <summary>
+            /// Send a status notification for the given connector.
+            /// </summary>
+            /// <param name="EVSEId">The identification of the EVSE to which the connector belongs for which the the status is reported.</param>
+            /// <param name="ConnectorId">The identification of the connector within the EVSE for which the status is reported.</param>
+            /// <param name="Timestamp">The time for which the status is reported.</param>
+            /// <param name="Status">The current status of the connector.</param>
+            /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+            /// 
+            /// <param name="RequestId">An optional request identification.</param>
+            /// <param name="RequestTimestamp">An optional request timestamp.</param>
+            /// <param name="RequestTimeout">An optional timeout for this request.</param>
+            /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+            /// <param name="CancellationToken">An optional token to cancel this request.</param>
+            public async Task<OCPPv2_1.CSMS.StatusNotificationResponse>
+                StatusNotification(OCPPv2_1.CS.StatusNotificationRequest Request)
+
+            {
+
+                #region Send OnStatusNotificationRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnStatusNotificationRequest?.Invoke(startTime,
+                                                        this,
+                                                        Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnStatusNotificationRequest));
+                }
+
+                #endregion
+
+
+                OCPPv2_1.CSMS.StatusNotificationResponse? response = null;
+
+                if (!parentNetworkingNode.SignaturePolicy.SignRequestMessage(
+                        Request,
+                        Request.ToJSON(
+                            parentNetworkingNode.CustomStatusNotificationRequestSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse
+                    ))
+                {
+
+                    response  = new OCPPv2_1.CSMS.StatusNotificationResponse(
+                                    Request,
+                                    Result.SignatureError(errorResponse)
+                                );
+
+                }
+
+                // ToDo: Currently hardcoded CSMS lookup!
+                else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
+                {
+
+                    response  = parentNetworkingNode.AsCS.CSClient is not null
+
+                                    ? await parentNetworkingNode.AsCS.CSClient.StatusNotification(Request)
+
+                                    : new OCPPv2_1.CSMS.StatusNotificationResponse(
+                                          Request,
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      );
+
+                }
+
+                else
+                {
+                    // ...
+                }
+
+
+                parentNetworkingNode.SignaturePolicy.VerifyResponseMessage(
+                    response,
+                    response.ToJSON(
+                        parentNetworkingNode.CustomStatusNotificationResponseSerializer,
+                        parentNetworkingNode.CustomSignatureSerializer,
+                        parentNetworkingNode.CustomCustomDataSerializer
+                    ),
+                    out errorResponse
+                );
+
+
+                #region Send OnStatusNotificationResponse event
+
+                var endTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+
+                try
+                {
+
+                    OnStatusNotificationResponse?.Invoke(endTime,
+                                                         this,
+                                                         Request,
+                                                         response,
+                                                         endTime - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnStatusNotificationResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            }
+
+            #endregion
+
+            #region MeterValues                       (Request)
+
+            /// <summary>
+            /// Send a meter values for the given connector.
+            /// </summary>
+            /// <param name="EVSEId">The EVSE identification at the charging station.</param>
+            /// <param name="MeterValues">The sampled meter values with timestamps.</param>
+            /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+            /// 
+            /// <param name="RequestId">An optional request identification.</param>
+            /// <param name="RequestTimestamp">An optional request timestamp.</param>
+            /// <param name="RequestTimeout">An optional timeout for this request.</param>
+            /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+            /// <param name="CancellationToken">An optional token to cancel this request.</param>
+            public async Task<OCPPv2_1.CSMS.MeterValuesResponse>
+                MeterValues(OCPPv2_1.CS.MeterValuesRequest Request)
+
+            {
+
+                #region Send OnMeterValuesRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnMeterValuesRequest?.Invoke(startTime,
+                                                 this,
+                                                 Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnMeterValuesRequest));
+                }
+
+                #endregion
+
+
+                OCPPv2_1.CSMS.MeterValuesResponse? response = null;
+
+                if (!parentNetworkingNode.SignaturePolicy.SignRequestMessage(
+                        Request,
+                        Request.ToJSON(
+                            parentNetworkingNode.CustomMeterValuesRequestSerializer,
+                            parentNetworkingNode.CustomMeterValueSerializer,
+                            parentNetworkingNode.CustomSampledValueSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse
+                    ))
+                {
+
+                    response  = new OCPPv2_1.CSMS.MeterValuesResponse(
+                                    Request,
+                                    Result.SignatureError(errorResponse)
+                                );
+
+                }
+
+                // ToDo: Currently hardcoded CSMS lookup!
+                else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
+                {
+
+                    response  = parentNetworkingNode.AsCS.CSClient is not null
+
+                                    ? await parentNetworkingNode.AsCS.CSClient.MeterValues(Request)
+
+                                    : new OCPPv2_1.CSMS.MeterValuesResponse(
+                                          Request,
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      );
+
+                }
+
+                else
+                {
+                    // ...
+                }
+
+
+                parentNetworkingNode.SignaturePolicy.VerifyResponseMessage(
+                    response,
+                    response.ToJSON(
+                        parentNetworkingNode.CustomMeterValuesResponseSerializer,
+                        parentNetworkingNode.CustomSignatureSerializer,
+                        parentNetworkingNode.CustomCustomDataSerializer
+                    ),
+                    out errorResponse
+                );
+
+
+                #region Send OnMeterValuesResponse event
+
+                var endTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnMeterValuesResponse?.Invoke(endTime,
+                                                  this,
+                                                  Request,
+                                                  response,
+                                                  endTime - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnMeterValuesResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            }
+
+            #endregion
+
+            #region NotifyChargingLimit               (Request)
+
+            /// <summary>
+            /// Notify about a charging limit.
+            /// </summary>
+            /// <param name="ChargingLimit">The charging limit, its source and whether it is grid critical.</param>
+            /// <param name="ChargingSchedules">Limits for the available power or current over time, as set by the external source.</param>
+            /// <param name="EVSEId">An optional EVSE identification, when the charging schedule contained in this notification applies to an EVSE.</param>
+            /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+            /// 
+            /// <param name="RequestId">An optional request identification.</param>
+            /// <param name="RequestTimestamp">An optional request timestamp.</param>
+            /// <param name="RequestTimeout">An optional timeout for this request.</param>
+            /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+            /// <param name="CancellationToken">An optional token to cancel this request.</param>
+            public async Task<OCPPv2_1.CSMS.NotifyChargingLimitResponse>
+                NotifyChargingLimit(OCPPv2_1.CS.NotifyChargingLimitRequest Request)
+
+            {
+
+                #region Send OnNotifyChargingLimitRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnNotifyChargingLimitRequest?.Invoke(startTime,
+                                                         this,
+                                                         Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyChargingLimitRequest));
+                }
+
+                #endregion
+
+
+                OCPPv2_1.CSMS.NotifyChargingLimitResponse? response = null;
+
+                if (!parentNetworkingNode.SignaturePolicy.SignRequestMessage(
+                        Request,
+                        Request.ToJSON(
+
+                            parentNetworkingNode.CustomNotifyChargingLimitRequestSerializer,
+                            parentNetworkingNode.CustomChargingScheduleSerializer,
+                            parentNetworkingNode.CustomLimitBeyondSoCSerializer,
+                            parentNetworkingNode.CustomChargingSchedulePeriodSerializer,
+                            parentNetworkingNode.CustomV2XFreqWattEntrySerializer,
+                            parentNetworkingNode.CustomV2XSignalWattEntrySerializer,
+                            parentNetworkingNode.CustomSalesTariffSerializer,
+                            parentNetworkingNode.CustomSalesTariffEntrySerializer,
+                            parentNetworkingNode.CustomRelativeTimeIntervalSerializer,
+                            parentNetworkingNode.CustomConsumptionCostSerializer,
+                            parentNetworkingNode.CustomCostSerializer,
+
+                            parentNetworkingNode.CustomAbsolutePriceScheduleSerializer,
+                            parentNetworkingNode.CustomPriceRuleStackSerializer,
+                            parentNetworkingNode.CustomPriceRuleSerializer,
+                            parentNetworkingNode.CustomTaxRuleSerializer,
+                            parentNetworkingNode.CustomOverstayRuleListSerializer,
+                            parentNetworkingNode.CustomOverstayRuleSerializer,
+                            parentNetworkingNode.CustomAdditionalServiceSerializer,
+
+                            parentNetworkingNode.CustomPriceLevelScheduleSerializer,
+                            parentNetworkingNode.CustomPriceLevelScheduleEntrySerializer,
+
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
+
+                        ),
+                        out var errorResponse
+                    ))
+                {
+
+                    response  = new OCPPv2_1.CSMS.NotifyChargingLimitResponse(
+                                    Request,
+                                    Result.SignatureError(errorResponse)
+                                );
+
+                }
+
+                // ToDo: Currently hardcoded CSMS lookup!
+                else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
+                {
+
+                    response  = parentNetworkingNode.AsCS.CSClient is not null
+
+                                    ? await parentNetworkingNode.AsCS.CSClient.NotifyChargingLimit(Request)
+
+                                    : new OCPPv2_1.CSMS.NotifyChargingLimitResponse(
+                                          Request,
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      );
+
+                }
+
+                else
+                {
+                    // ...
+                }
+
+
+                parentNetworkingNode.SignaturePolicy.VerifyResponseMessage(
+                    response,
+                    response.ToJSON(
+                        parentNetworkingNode.CustomNotifyChargingLimitResponseSerializer,
+                        parentNetworkingNode.CustomSignatureSerializer,
+                        parentNetworkingNode.CustomCustomDataSerializer
+                    ),
+                    out errorResponse
+                );
+
+
+                #region Send OnNotifyChargingLimitResponse event
+
+                var endTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnNotifyChargingLimitResponse?.Invoke(endTime,
+                                                          this,
+                                                          Request,
+                                                          response,
+                                                          endTime - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyChargingLimitResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            }
+
+            #endregion
+
+            #region ClearedChargingLimit              (Request)
+
+            /// <summary>
+            /// Send a heartbeat.
+            /// </summary>
+            /// <param name="ChargingLimitSource">A source of the charging limit.</param>
+            /// <param name="EVSEId">An optional EVSE identification.</param>
+            /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+            /// 
+            /// <param name="RequestId">An optional request identification.</param>
+            /// <param name="RequestTimestamp">An optional request timestamp.</param>
+            /// <param name="RequestTimeout">An optional timeout for this request.</param>
+            /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+            /// <param name="CancellationToken">An optional token to cancel this request.</param>
+            public async Task<OCPPv2_1.CSMS.ClearedChargingLimitResponse>
+                ClearedChargingLimit(OCPPv2_1.CS.ClearedChargingLimitRequest Request)
+
+            {
+
+                #region Send OnClearedChargingLimitRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnClearedChargingLimitRequest?.Invoke(startTime,
+                                                          this,
+                                                          Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnClearedChargingLimitRequest));
+                }
+
+                #endregion
+
+
+                OCPPv2_1.CSMS.ClearedChargingLimitResponse? response = null;
+
+                if (!parentNetworkingNode.SignaturePolicy.SignRequestMessage(
+                        Request,
+                        Request.ToJSON(
+                            parentNetworkingNode.CustomClearedChargingLimitRequestSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse
+                    ))
+                {
+
+                    response  = new OCPPv2_1.CSMS.ClearedChargingLimitResponse(
+                                    Request,
+                                    Result.SignatureError(errorResponse)
+                                );
+
+                }
+
+                // ToDo: Currently hardcoded CSMS lookup!
+                else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
+                {
+
+                    response  = parentNetworkingNode.AsCS.CSClient is not null
+
+                                    ? await parentNetworkingNode.AsCS.CSClient.ClearedChargingLimit(Request)
+
+                                    : new OCPPv2_1.CSMS.ClearedChargingLimitResponse(
+                                          Request,
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      );
+
+                }
+
+                else
+                {
+                    // ...
+                }
+
+
+                parentNetworkingNode.SignaturePolicy.VerifyResponseMessage(
+                    response,
+                    response.ToJSON(
+                        parentNetworkingNode.CustomClearedChargingLimitResponseSerializer,
+                        parentNetworkingNode.CustomSignatureSerializer,
+                        parentNetworkingNode.CustomCustomDataSerializer
+                    ),
+                    out errorResponse
+                );
+
+
+                #region Send OnClearedChargingLimitResponse event
+
+                var endTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnClearedChargingLimitResponse?.Invoke(endTime,
+                                                           this,
+                                                           Request,
+                                                           response,
+                                                           endTime - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnClearedChargingLimitResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            }
+
+            #endregion
+
+            #region ReportChargingProfiles            (Request)
+
+            /// <summary>
+            /// Report about all charging profiles.
+            /// </summary>
+            /// <param name="ReportChargingProfilesRequestId">The request identification used to match the GetChargingProfilesRequest message with the resulting ReportChargingProfilesRequest messages. When the CSMS provided a requestId in the GetChargingProfilesRequest, this field SHALL contain the same value.</param>
+            /// <param name="ChargingLimitSource">The source that has installed this charging profile.</param>
+            /// <param name="EVSEId">The evse to which the charging profile applies. If evseId = 0, the message contains an overall limit for the charging station.</param>
+            /// <param name="ChargingProfiles">The enumeration of charging profiles.</param>
+            /// <param name="ToBeContinued">The optional "to be continued" indicator whether another part of the charging profiles follows. Default value when omitted is false.</param>
+            /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+            /// 
+            /// <param name="RequestId">An optional request identification.</param>
+            /// <param name="RequestTimestamp">An optional request timestamp.</param>
+            /// <param name="RequestTimeout">An optional timeout for this request.</param>
+            /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+            /// <param name="CancellationToken">An optional token to cancel this request.</param>
+            public async Task<OCPPv2_1.CSMS.ReportChargingProfilesResponse>
+                ReportChargingProfiles(OCPPv2_1.CS.ReportChargingProfilesRequest Request)
+
+            {
+
+                #region Send OnReportChargingProfilesRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnReportChargingProfilesRequest?.Invoke(startTime,
+                                                            this,
+                                                            Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnReportChargingProfilesRequest));
+                }
+
+                #endregion
+
+
+                OCPPv2_1.CSMS.ReportChargingProfilesResponse? response = null;
+
+                if (!parentNetworkingNode.SignaturePolicy.SignRequestMessage(
+                        Request,
+                        Request.ToJSON(
+
+                            parentNetworkingNode.CustomReportChargingProfilesRequestSerializer,
+                            parentNetworkingNode.CustomChargingProfileSerializer,
+                            parentNetworkingNode.CustomLimitBeyondSoCSerializer,
+                            parentNetworkingNode.CustomChargingScheduleSerializer,
+                            parentNetworkingNode.CustomChargingSchedulePeriodSerializer,
+                            parentNetworkingNode.CustomV2XFreqWattEntrySerializer,
+                            parentNetworkingNode.CustomV2XSignalWattEntrySerializer,
+                            parentNetworkingNode.CustomSalesTariffSerializer,
+                            parentNetworkingNode.CustomSalesTariffEntrySerializer,
+                            parentNetworkingNode.CustomRelativeTimeIntervalSerializer,
+                            parentNetworkingNode.CustomConsumptionCostSerializer,
+                            parentNetworkingNode.CustomCostSerializer,
+
+                            parentNetworkingNode.CustomAbsolutePriceScheduleSerializer,
+                            parentNetworkingNode.CustomPriceRuleStackSerializer,
+                            parentNetworkingNode.CustomPriceRuleSerializer,
+                            parentNetworkingNode.CustomTaxRuleSerializer,
+                            parentNetworkingNode.CustomOverstayRuleListSerializer,
+                            parentNetworkingNode.CustomOverstayRuleSerializer,
+                            parentNetworkingNode.CustomAdditionalServiceSerializer,
+
+                            parentNetworkingNode.CustomPriceLevelScheduleSerializer,
+                            parentNetworkingNode.CustomPriceLevelScheduleEntrySerializer,
+
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
+
+                        ),
+                        out var errorResponse
+                    ))
+                {
+
+                    response  = new OCPPv2_1.CSMS.ReportChargingProfilesResponse(
+                                    Request,
+                                    Result.SignatureError(errorResponse)
+                                );
+
+                }
+
+                // ToDo: Currently hardcoded CSMS lookup!
+                else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
+                {
+
+                    response  = parentNetworkingNode.AsCS.CSClient is not null
+
+                                    ? await parentNetworkingNode.AsCS.CSClient.ReportChargingProfiles(Request)
+
+                                    : new OCPPv2_1.CSMS.ReportChargingProfilesResponse(
+                                          Request,
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      );
+
+                }
+
+                else
+                {
+                    // ...
+                }
+
+
+                parentNetworkingNode.SignaturePolicy.VerifyResponseMessage(
+                    response,
+                    response.ToJSON(
+                        parentNetworkingNode.CustomReportChargingProfilesResponseSerializer,
+                        parentNetworkingNode.CustomSignatureSerializer,
+                        parentNetworkingNode.CustomCustomDataSerializer
+                    ),
+                    out errorResponse
+                );
+
+
+                #region Send OnReportChargingProfilesResponse event
+
+                var endTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnReportChargingProfilesResponse?.Invoke(endTime,
+                                                             this,
+                                                             Request,
+                                                             response,
+                                                             endTime - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnReportChargingProfilesResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            }
+
+            #endregion
+
+            #region NotifyEVChargingSchedule          (Request)
+
+            /// <summary>
+            /// Notify about an EV charging schedule.
+            /// </summary>
+            /// <param name="NotifyEVChargingScheduleRequestId">The request identification used to match the GetChargingProfilesRequest message with the resulting NotifyEVChargingScheduleRequest messages. When the CSMS provided a requestId in the GetChargingProfilesRequest, this field SHALL contain the same value.</param>
+            /// <param name="TimeBase">The charging periods contained within the charging schedule are relative to this time base.</param>
+            /// <param name="EVSEId">The charging schedule applies to this EVSE.</param>
+            /// <param name="ChargingSchedule">Planned energy consumption of the EV over time. Always relative to the time base.</param>
+            /// <param name="SelectedScheduleTupleId">The optional identification of the selected charging schedule from the provided charging profile.</param>
+            /// <param name="PowerToleranceAcceptance">True when power tolerance is accepted.</param>
+            /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+            /// 
+            /// <param name="RequestId">An optional request identification.</param>
+            /// <param name="RequestTimestamp">An optional request timestamp.</param>
+            /// <param name="RequestTimeout">An optional timeout for this request.</param>
+            /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+            /// <param name="CancellationToken">An optional token to cancel this request.</param>
+            public async Task<OCPPv2_1.CSMS.NotifyEVChargingScheduleResponse>
+                NotifyEVChargingSchedule(OCPPv2_1.CS.NotifyEVChargingScheduleRequest Request)
+
+            {
+
+                #region Send OnNotifyEVChargingScheduleRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnNotifyEVChargingScheduleRequest?.Invoke(startTime,
+                                                              this,
+                                                              Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyEVChargingScheduleRequest));
+                }
+
+                #endregion
+
+
+                OCPPv2_1.CSMS.NotifyEVChargingScheduleResponse? response = null;
+
+                if (!parentNetworkingNode.SignaturePolicy.SignRequestMessage(
+                        Request,
+                        Request.ToJSON(
+
+                            parentNetworkingNode.CustomNotifyEVChargingScheduleRequestSerializer,
+                            parentNetworkingNode.CustomChargingScheduleSerializer,
+                            parentNetworkingNode.CustomLimitBeyondSoCSerializer,
+                            parentNetworkingNode.CustomChargingSchedulePeriodSerializer,
+                            parentNetworkingNode.CustomV2XFreqWattEntrySerializer,
+                            parentNetworkingNode.CustomV2XSignalWattEntrySerializer,
+                            parentNetworkingNode.CustomSalesTariffSerializer,
+                            parentNetworkingNode.CustomSalesTariffEntrySerializer,
+                            parentNetworkingNode.CustomRelativeTimeIntervalSerializer,
+                            parentNetworkingNode.CustomConsumptionCostSerializer,
+                            parentNetworkingNode.CustomCostSerializer,
+
+                            parentNetworkingNode.CustomAbsolutePriceScheduleSerializer,
+                            parentNetworkingNode.CustomPriceRuleStackSerializer,
+                            parentNetworkingNode.CustomPriceRuleSerializer,
+                            parentNetworkingNode.CustomTaxRuleSerializer,
+                            parentNetworkingNode.CustomOverstayRuleListSerializer,
+                            parentNetworkingNode.CustomOverstayRuleSerializer,
+                            parentNetworkingNode.CustomAdditionalServiceSerializer,
+
+                            parentNetworkingNode.CustomPriceLevelScheduleSerializer,
+                            parentNetworkingNode.CustomPriceLevelScheduleEntrySerializer,
+
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
+
+                        ),
+                        out var errorResponse
+                    ))
+                {
+
+                    response  = new OCPPv2_1.CSMS.NotifyEVChargingScheduleResponse(
+                                    Request,
+                                    Result.SignatureError(errorResponse)
+                                );
+
+                }
+
+                // ToDo: Currently hardcoded CSMS lookup!
+                else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
+                {
+
+                    response  = parentNetworkingNode.AsCS.CSClient is not null
+
+                                    ? await parentNetworkingNode.AsCS.CSClient.NotifyEVChargingSchedule(Request)
+
+                                    : new OCPPv2_1.CSMS.NotifyEVChargingScheduleResponse(
+                                          Request,
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      );
+
+                }
+
+                else
+                {
+                    // ...
+                }
+
+
+                parentNetworkingNode.SignaturePolicy.VerifyResponseMessage(
+                    response,
+                    response.ToJSON(
+                        parentNetworkingNode.CustomNotifyEVChargingScheduleResponseSerializer,
+                        parentNetworkingNode.CustomStatusInfoSerializer,
+                        parentNetworkingNode.CustomSignatureSerializer,
+                        parentNetworkingNode.CustomCustomDataSerializer
+                    ),
+                    out errorResponse
+                );
+
+
+                #region Send OnNotifyEVChargingScheduleResponse event
+
+                var endTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnNotifyEVChargingScheduleResponse?.Invoke(endTime,
+                                                               this,
+                                                               Request,
+                                                               response,
+                                                               endTime - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyEVChargingScheduleResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            }
+
+            #endregion
+
+            #region NotifyPriorityCharging            (Request)
+
+            /// <summary>
+            /// Notify about priority charging.
+            /// </summary>
+            /// <param name="NotifyPriorityChargingRequestId">The request identification used to match the GetChargingProfilesRequest message with the resulting NotifyPriorityChargingRequest messages. When the CSMS provided a requestId in the GetChargingProfilesRequest, this field SHALL contain the same value.</param>
+            /// <param name="TransactionId">The transaction for which priority charging is requested.</param>
+            /// <param name="Activated">True, when priority charging was activated, or false, when it has stopped using the priority charging profile.</param>
+            /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+            /// 
+            /// <param name="RequestId">An optional request identification.</param>
+            /// <param name="RequestTimestamp">An optional request timestamp.</param>
+            /// <param name="RequestTimeout">An optional timeout for this request.</param>
+            /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+            /// <param name="CancellationToken">An optional token to cancel this request.</param>
+            public async Task<OCPPv2_1.CSMS.NotifyPriorityChargingResponse>
+                NotifyPriorityCharging(OCPPv2_1.CS.NotifyPriorityChargingRequest Request)
+
+            {
+
+                #region Send OnNotifyPriorityChargingRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnNotifyPriorityChargingRequest?.Invoke(startTime,
+                                                            this,
+                                                            Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyPriorityChargingRequest));
+                }
+
+                #endregion
+
+
+                OCPPv2_1.CSMS.NotifyPriorityChargingResponse? response = null;
+
+                if (!parentNetworkingNode.SignaturePolicy.SignRequestMessage(
+                        Request,
+                        Request.ToJSON(
+                            parentNetworkingNode.CustomNotifyPriorityChargingRequestSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse
+                    ))
+                {
+
+                    response  = new OCPPv2_1.CSMS.NotifyPriorityChargingResponse(
+                                    Request,
+                                    Result.SignatureError(errorResponse)
+                                );
+
+                }
+
+                // ToDo: Currently hardcoded CSMS lookup!
+                else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
+                {
+
+                    response  = parentNetworkingNode.AsCS.CSClient is not null
+
+                                    ? await parentNetworkingNode.AsCS.CSClient.NotifyPriorityCharging(Request)
+
+                                    : new OCPPv2_1.CSMS.NotifyPriorityChargingResponse(
+                                          Request,
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      );
+
+                }
+
+                else
+                {
+                    // ...
+                }
+
+
+                parentNetworkingNode.SignaturePolicy.VerifyResponseMessage(
+                    response,
+                    response.ToJSON(
+                        parentNetworkingNode.CustomNotifyPriorityChargingResponseSerializer,
+                        parentNetworkingNode.CustomSignatureSerializer,
+                        parentNetworkingNode.CustomCustomDataSerializer
+                    ),
+                    out errorResponse
+                );
+
+
+                #region Send OnNotifyPriorityChargingResponse event
+
+                var endTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnNotifyPriorityChargingResponse?.Invoke(endTime,
+                                                             this,
+                                                             Request,
+                                                             response,
+                                                             endTime - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyPriorityChargingResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            }
+
+            #endregion
+
+            #region PullDynamicScheduleUpdate         (Request)
+
+            /// <summary>
+            /// Report about all charging profiles.
+            /// </summary>
+            /// <param name="PullDynamicScheduleUpdateRequestId">The request identification used to match the GetChargingProfilesRequest message with the resulting PullDynamicScheduleUpdateRequest messages. When the CSMS provided a requestId in the GetChargingProfilesRequest, this field SHALL contain the same value.</param>
+            /// <param name="ChargingProfileId">The identification of the charging profile for which an update is requested.</param>
+            /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+            /// 
+            /// <param name="RequestId">An optional request identification.</param>
+            /// <param name="RequestTimestamp">An optional request timestamp.</param>
+            /// <param name="RequestTimeout">An optional timeout for this request.</param>
+            /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+            /// <param name="CancellationToken">An optional token to cancel this request.</param>
+            public async Task<OCPPv2_1.CSMS.PullDynamicScheduleUpdateResponse>
+                PullDynamicScheduleUpdate(OCPPv2_1.CS.PullDynamicScheduleUpdateRequest Request)
+
+            {
+
+                #region Send OnPullDynamicScheduleUpdateRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnPullDynamicScheduleUpdateRequest?.Invoke(startTime,
+                                                               this,
+                                                               Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnPullDynamicScheduleUpdateRequest));
+                }
+
+                #endregion
+
+
+                OCPPv2_1.CSMS.PullDynamicScheduleUpdateResponse? response = null;
+
+                if (!parentNetworkingNode.SignaturePolicy.SignRequestMessage(
+                        Request,
+                        Request.ToJSON(
+                            parentNetworkingNode.CustomPullDynamicScheduleUpdateRequestSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse
+                    ))
+                {
+
+                    response  = new OCPPv2_1.CSMS.PullDynamicScheduleUpdateResponse(
+                                    Request,
+                                    Result.SignatureError(errorResponse)
+                                );
+
+                }
+
+                // ToDo: Currently hardcoded CSMS lookup!
+                else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
+                {
+
+                    response  = parentNetworkingNode.AsCS.CSClient is not null
+
+                                    ? await parentNetworkingNode.AsCS.CSClient.PullDynamicScheduleUpdate(Request)
+
+                                    : new OCPPv2_1.CSMS.PullDynamicScheduleUpdateResponse(
+                                          Request,
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      );
+
+                }
+
+                else
+                {
+                    // ...
+                }
+
+
+                parentNetworkingNode.SignaturePolicy.VerifyResponseMessage(
+                    response,
+                    response.ToJSON(
+                        parentNetworkingNode.CustomPullDynamicScheduleUpdateResponseSerializer,
+                        parentNetworkingNode.CustomSignatureSerializer,
+                        parentNetworkingNode.CustomCustomDataSerializer
+                    ),
+                    out errorResponse
+                );
+
+
+                #region Send OnPullDynamicScheduleUpdateResponse event
+
+                var endTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnPullDynamicScheduleUpdateResponse?.Invoke(endTime,
+                                                                this,
+                                                                Request,
+                                                                response,
+                                                                endTime - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnPullDynamicScheduleUpdateResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            }
+
+            #endregion
+
+
+            #region NotifyDisplayMessages             (Request)
+
+            /// <summary>
+            /// NotifyDisplayMessages the given token.
+            /// </summary>
+            /// <param name="NotifyDisplayMessagesRequestId">The unique identification of the notify display messages request.</param>
+            /// <param name="MessageInfos">The requested display messages as configured in the charging station.</param>
+            /// <param name="ToBeContinued">The optional "to be continued" indicator whether another part of the monitoring data follows in an upcoming NotifyDisplayMessagesRequest message. Default value when omitted is false.</param>
+            /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+            /// 
+            /// <param name="RequestId">An optional request identification.</param>
+            /// <param name="RequestTimestamp">An optional request timestamp.</param>
+            /// <param name="RequestTimeout">An optional timeout for this request.</param>
+            /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+            /// <param name="CancellationToken">An optional token to cancel this request.</param>
+            public async Task<OCPPv2_1.CSMS.NotifyDisplayMessagesResponse>
+                NotifyDisplayMessages(OCPPv2_1.CS.NotifyDisplayMessagesRequest Request)
+
+            {
+
+                #region Send OnNotifyDisplayMessagesRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnNotifyDisplayMessagesRequest?.Invoke(startTime,
+                                                           this,
+                                                           Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyDisplayMessagesRequest));
+                }
+
+                #endregion
+
+
+                OCPPv2_1.CSMS.NotifyDisplayMessagesResponse? response = null;
+
+                if (!parentNetworkingNode.SignaturePolicy.SignRequestMessage(
+                        Request,
+                        Request.ToJSON(
+                            parentNetworkingNode.CustomNotifyDisplayMessagesRequestSerializer,
+                            parentNetworkingNode.CustomMessageInfoSerializer,
+                            parentNetworkingNode.CustomMessageContentSerializer,
+                            parentNetworkingNode.CustomComponentSerializer,
+                            parentNetworkingNode.CustomEVSESerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse
+                    ))
+                {
+
+                    response  = new OCPPv2_1.CSMS.NotifyDisplayMessagesResponse(
+                                    Request,
+                                    Result.SignatureError(errorResponse)
+                                );
+
+                }
+
+                // ToDo: Currently hardcoded CSMS lookup!
+                else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
+                {
+
+                    response  = parentNetworkingNode.AsCS.CSClient is not null
+
+                                    ? await parentNetworkingNode.AsCS.CSClient.NotifyDisplayMessages(Request)
+
+                                    : new OCPPv2_1.CSMS.NotifyDisplayMessagesResponse(
+                                          Request,
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      );
+
+                }
+
+                else
+                {
+                    // ...
+                }
+
+
+                parentNetworkingNode.SignaturePolicy.VerifyResponseMessage(
+                    response,
+                    response.ToJSON(
+                        parentNetworkingNode.CustomNotifyDisplayMessagesResponseSerializer,
+                        parentNetworkingNode.CustomSignatureSerializer,
+                        parentNetworkingNode.CustomCustomDataSerializer
+                    ),
+                    out errorResponse
+                );
+
+
+                #region Send OnNotifyDisplayMessagesResponse event
+
+                var endTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnNotifyDisplayMessagesResponse?.Invoke(endTime,
+                                                            this,
+                                                            Request,
+                                                            response,
+                                                            endTime - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyDisplayMessagesResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            }
+
+            #endregion
+
+            #region NotifyCustomerInformation         (Request)
+
+            /// <summary>
+            /// NotifyCustomerInformation the given token.
+            /// </summary>
+            /// <param name="NotifyCustomerInformationRequestId">The unique identification of the notify customer information request.</param>
+            /// <param name="Data">The requested data or a part of the requested data. No format specified in which the data is returned.</param>
+            /// <param name="SequenceNumber">The sequence number of this message. First message starts at 0.</param>
+            /// <param name="GeneratedAt">The timestamp of the moment this message was generated at the charging station.</param>
+            /// <param name="ToBeContinued">The optional "to be continued" indicator whether another part of the monitoring data follows in an upcoming NotifyCustomerInformationRequest message. Default value when omitted is false.</param>
+            /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+            /// 
+            /// <param name="RequestId">An optional request identification.</param>
+            /// <param name="RequestTimestamp">An optional request timestamp.</param>
+            /// <param name="RequestTimeout">An optional timeout for this request.</param>
+            /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+            /// <param name="CancellationToken">An optional token to cancel this request.</param>
+            public async Task<OCPPv2_1.CSMS.NotifyCustomerInformationResponse>
+                NotifyCustomerInformation(OCPPv2_1.CS.NotifyCustomerInformationRequest Request)
+
+            {
+
+                #region Send OnNotifyCustomerInformationRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnNotifyCustomerInformationRequest?.Invoke(startTime,
+                                                               this,
+                                                               Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyCustomerInformationRequest));
+                }
+
+                #endregion
+
+
+                OCPPv2_1.CSMS.NotifyCustomerInformationResponse? response = null;
+
+                if (!parentNetworkingNode.SignaturePolicy.SignRequestMessage(
+                        Request,
+                        Request.ToJSON(
+                            parentNetworkingNode.CustomNotifyCustomerInformationRequestSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse
+                    ))
+                {
+
+                    response  = new OCPPv2_1.CSMS.NotifyCustomerInformationResponse(
+                                    Request,
+                                    Result.SignatureError(errorResponse)
+                                );
+
+                }
+
+                // ToDo: Currently hardcoded CSMS lookup!
+                else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
+                {
+
+                    response  = parentNetworkingNode.AsCS.CSClient is not null
+
+                                    ? await parentNetworkingNode.AsCS.CSClient.NotifyCustomerInformation(Request)
+
+                                    : new OCPPv2_1.CSMS.NotifyCustomerInformationResponse(
+                                          Request,
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                      );
+
+                }
+
+                else
+                {
+                    // ...
+                }
+
+
+                parentNetworkingNode.SignaturePolicy.VerifyResponseMessage(
+                    response,
+                    response.ToJSON(
+                        parentNetworkingNode.CustomNotifyCustomerInformationResponseSerializer,
+                        parentNetworkingNode.CustomSignatureSerializer,
+                        parentNetworkingNode.CustomCustomDataSerializer
+                    ),
+                    out errorResponse
+                );
+
+
+                #region Send OnNotifyCustomerInformationResponse event
+
+                var endTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnNotifyCustomerInformationResponse?.Invoke(endTime,
+                                                                this,
+                                                                Request,
+                                                                response,
+                                                                endTime - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyCustomerInformationResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            }
+
+            #endregion
+
+            #endregion
+
+            #region Outgoing Messages: Networking Node -> Charging Station
+
+            
+
+            #endregion
+
+        }
+
+
+
+        public class ActingAsCS : IEventSender
+        {
+
+            #region Data
+
+            private readonly            TestNetworkingNode          parentNetworkingNode;
+
+            private readonly            HashSet<SignaturePolicy>    signaturePolicies           = new();
+
+
+            /// <summary>
+            /// The default time span between heartbeat requests.
+            /// </summary>
+            public readonly             TimeSpan                    DefaultSendHeartbeatEvery   = TimeSpan.FromSeconds(30);
+
+            protected static readonly   TimeSpan                    SemaphoreSlimTimeout        = TimeSpan.FromSeconds(5);
+
+            /// <summary>
+            /// The default maintenance interval.
+            /// </summary>
+            public readonly             TimeSpan                    DefaultMaintenanceEvery     = TimeSpan.FromSeconds(1);
+            private static readonly     SemaphoreSlim               MaintenanceSemaphore        = new (1, 1);
+            private readonly            Timer                       MaintenanceTimer;
+
+            private readonly            Timer                       SendHeartbeatTimer;
+
+
+            private readonly            List<EnqueuedRequest>       EnqueuedRequests;
+
+            public                      IHTTPAuthentication?        HTTPAuthentication          { get; }
+            public                      DNSClient?                  DNSClient                   { get; }
+
+            #endregion
+
+            #region Properties
+
+            /// <summary>
+            /// The client connected to a CSMS.
+            /// </summary>
+            public INetworkingNodeOutgoingMessages?   CSClient                    { get; private set; }
+
+
+            public String? ClientCloseMessage
+                => "-";
+
+
+            /// <summary>
+            /// The sender identification.
+            /// </summary>
+            String IEventSender.Id
+                => parentNetworkingNode.Id.ToString();
+
+
+            /// <summary>
+            /// The charging station vendor identification.
+            /// </summary>
+            [Mandatory]
+            public String                   VendorName                  { get; }
+
+            /// <summary>
+            ///  The charging station model identification.
+            /// </summary>
+            [Mandatory]
+            public String                   Model                       { get; }
+
+
+            /// <summary>
+            /// The optional multi-language charging station description.
+            /// </summary>
+            [Optional]
+            public I18NString?              Description                 { get; }
+
+            /// <summary>
+            /// The optional serial number of the charging station.
+            /// </summary>
+            [Optional]
+            public String?                  SerialNumber                { get; }
+
+            /// <summary>
+            /// The optional firmware version of the charging station.
+            /// </summary>
+            [Optional]
+            public String?                  FirmwareVersion             { get; }
+
+            /// <summary>
+            /// The modem of the charging station.
+            /// </summary>
+            [Optional]
+            public Modem?                   Modem                       { get; }
+
+            /// <summary>
+            /// The optional meter type of the main power meter of the charging station.
+            /// </summary>
+            [Optional]
+
+
+            public CustomData?              CustomData                  { get; set; }
+
+
+            /// <summary>
+            /// The time span between heartbeat requests.
+            /// </summary>
+            public TimeSpan                 SendHeartbeatEvery          { get; set; }
+
+            /// <summary>
+            /// The time at the CSMS.
+            /// </summary>
+            public DateTime?                CSMSTime                    { get; private set; }
+
+            /// <summary>
+            /// The default request timeout for all requests.
+            /// </summary>
+            public TimeSpan                 DefaultRequestTimeout       { get; }
+
+
+
+
+            /// <summary>
+            /// The maintenance interval.
+            /// </summary>
+            public TimeSpan                 MaintenanceEvery            { get; }
+
+            /// <summary>
+            /// Disable all maintenance tasks.
+            /// </summary>
+            public Boolean                  DisableMaintenanceTasks     { get; set; }
+
+            /// <summary>
+            /// Disable all heartbeats.
+            /// </summary>
+            public Boolean                  DisableSendHeartbeats       { get; set; }
+
+
+            #region ToDo's
+
+            public URL RemoteURL => throw new NotImplementedException();
+
+            public HTTPHostname? VirtualHostname => throw new NotImplementedException();
+
+   //         string? IHTTPClient.Description { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+            public RemoteCertificateValidationHandler? RemoteCertificateValidator => throw new NotImplementedException();
+
+            public X509Certificate? ClientCert => throw new NotImplementedException();
+
+            public SslProtocols TLSProtocol => throw new NotImplementedException();
+
+            public bool PreferIPv4 => throw new NotImplementedException();
+
+            public string HTTPUserAgent => throw new NotImplementedException();
+
+            public TimeSpan RequestTimeout { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+            public TransmissionRetryDelayDelegate TransmissionRetryDelay => throw new NotImplementedException();
+
+            public ushort MaxNumberOfRetries => throw new NotImplementedException();
+
+            public bool UseHTTPPipelining => throw new NotImplementedException();
+
+            public HTTPClientLogger? HTTPLogger => throw new NotImplementedException();
+
+            #endregion
+
+
+            /// <summary>
+            /// The enumeration of all signature policies.
+            /// </summary>
+            public IEnumerable<SignaturePolicy>  SignaturePolicies
+                => signaturePolicies;
+
+            /// <summary>
+            /// The currently active signature policy.
+            /// </summary>
+            public SignaturePolicy               SignaturePolicy
+                => SignaturePolicies.First();
+
+            #endregion
+
+            #region Custom JSON serializer delegates
+
+            #region CSMS Request  Messages
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.ResetRequest>?                                   CustomResetRequestSerializer                                 { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.UpdateFirmwareRequest>?                          CustomUpdateFirmwareRequestSerializer                        { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.PublishFirmwareRequest>?                         CustomPublishFirmwareRequestSerializer                       { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.UnpublishFirmwareRequest>?                       CustomUnpublishFirmwareRequestSerializer                     { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.GetBaseReportRequest>?                           CustomGetBaseReportRequestSerializer                         { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.GetReportRequest>?                               CustomGetReportRequestSerializer                             { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.GetLogRequest>?                                  CustomGetLogRequestSerializer                                { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.SetVariablesRequest>?                            CustomSetVariablesRequestSerializer                          { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.GetVariablesRequest>?                            CustomGetVariablesRequestSerializer                          { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.SetMonitoringBaseRequest>?                       CustomSetMonitoringBaseRequestSerializer                     { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.GetMonitoringReportRequest>?                     CustomGetMonitoringReportRequestSerializer                   { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.SetMonitoringLevelRequest>?                      CustomSetMonitoringLevelRequestSerializer                    { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.SetVariableMonitoringRequest>?                   CustomSetVariableMonitoringRequestSerializer                 { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.ClearVariableMonitoringRequest>?                 CustomClearVariableMonitoringRequestSerializer               { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.SetNetworkProfileRequest>?                       CustomSetNetworkProfileRequestSerializer                     { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.ChangeAvailabilityRequest>?                      CustomChangeAvailabilityRequestSerializer                    { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.TriggerMessageRequest>?                          CustomTriggerMessageRequestSerializer                        { get; set; }
+            public CustomJObjectSerializerDelegate<              DataTransferRequest>?                            CustomIncomingDataTransferRequestSerializer                  { get; set; }
+
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.CertificateSignedRequest>?                       CustomCertificateSignedRequestSerializer                     { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.InstallCertificateRequest>?                      CustomInstallCertificateRequestSerializer                    { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.GetInstalledCertificateIdsRequest>?              CustomGetInstalledCertificateIdsRequestSerializer            { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.DeleteCertificateRequest>?                       CustomDeleteCertificateRequestSerializer                     { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.NotifyCRLRequest>?                               CustomNotifyCRLRequestSerializer                             { get; set; }
+
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.GetLocalListVersionRequest>?                     CustomGetLocalListVersionRequestSerializer                   { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.SendLocalListRequest>?                           CustomSendLocalListRequestSerializer                         { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.ClearCacheRequest>?                              CustomClearCacheRequestSerializer                            { get; set; }
+
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.ReserveNowRequest>?                              CustomReserveNowRequestSerializer                            { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.CancelReservationRequest>?                       CustomCancelReservationRequestSerializer                     { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.RequestStartTransactionRequest>?                 CustomRequestStartTransactionRequestSerializer               { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.RequestStopTransactionRequest>?                  CustomRequestStopTransactionRequestSerializer                { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.GetTransactionStatusRequest>?                    CustomGetTransactionStatusRequestSerializer                  { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.SetChargingProfileRequest>?                      CustomSetChargingProfileRequestSerializer                    { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.GetChargingProfilesRequest>?                     CustomGetChargingProfilesRequestSerializer                   { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.ClearChargingProfileRequest>?                    CustomClearChargingProfileRequestSerializer                  { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.GetCompositeScheduleRequest>?                    CustomGetCompositeScheduleRequestSerializer                  { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.UpdateDynamicScheduleRequest>?                   CustomUpdateDynamicScheduleRequestSerializer                 { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.NotifyAllowedEnergyTransferRequest>?             CustomNotifyAllowedEnergyTransferRequestSerializer           { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.UsePriorityChargingRequest>?                     CustomUsePriorityChargingRequestSerializer                   { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.UnlockConnectorRequest>?                         CustomUnlockConnectorRequestSerializer                       { get; set; }
+
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.AFRRSignalRequest>?                              CustomAFRRSignalRequestSerializer                            { get; set; }
+
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.SetDisplayMessageRequest>?                       CustomSetDisplayMessageRequestSerializer                     { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.GetDisplayMessagesRequest>?                      CustomGetDisplayMessagesRequestSerializer                    { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.ClearDisplayMessageRequest>?                     CustomClearDisplayMessageRequestSerializer                   { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.CostUpdatedRequest>?                             CustomCostUpdatedRequestSerializer                           { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.CustomerInformationRequest>?                     CustomCustomerInformationRequestSerializer                   { get; set; }
+
+
+            // Binary Data Streams Extensions
+            public CustomBinarySerializerDelegate <              BinaryDataTransferRequest>?                      CustomIncomingBinaryDataTransferRequestSerializer            { get; set; }
+            public CustomJObjectSerializerDelegate<              GetFileRequest>?                                 CustomGetFileRequestSerializer                               { get; set; }
+            public CustomBinarySerializerDelegate <              SendFileRequest>?                                CustomSendFileRequestSerializer                              { get; set; }
+            public CustomJObjectSerializerDelegate<              DeleteFileRequest>?                              CustomDeleteFileRequestSerializer                            { get; set; }
+
+
+            // E2E Security Extensions
+            public CustomJObjectSerializerDelegate<              AddSignaturePolicyRequest>?                      CustomAddSignaturePolicyRequestSerializer                    { get; set; }
+            public CustomJObjectSerializerDelegate<              UpdateSignaturePolicyRequest>?                   CustomUpdateSignaturePolicyRequestSerializer                 { get; set; }
+            public CustomJObjectSerializerDelegate<              DeleteSignaturePolicyRequest>?                   CustomDeleteSignaturePolicyRequestSerializer                 { get; set; }
+            public CustomJObjectSerializerDelegate<              AddUserRoleRequest>?                             CustomAddUserRoleRequestSerializer                           { get; set; }
+            public CustomJObjectSerializerDelegate<              UpdateUserRoleRequest>?                          CustomUpdateUserRoleRequestSerializer                        { get; set; }
+            public CustomJObjectSerializerDelegate<              DeleteUserRoleRequest>?                          CustomDeleteUserRoleRequestSerializer                        { get; set; }
+
+
+            // E2E Charging Tariffs Extensions
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.SetDefaultChargingTariffRequest>?                CustomSetDefaultChargingTariffRequestSerializer              { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.GetDefaultChargingTariffRequest>?                CustomGetDefaultChargingTariffRequestSerializer              { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.RemoveDefaultChargingTariffRequest>?             CustomRemoveDefaultChargingTariffRequestSerializer           { get; set; }
+
+            #endregion
+
+            #region CSMS Response Messages
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.BootNotificationResponse>?                       CustomBootNotificationResponseSerializer                     { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.FirmwareStatusNotificationResponse>?             CustomFirmwareStatusNotificationResponseSerializer           { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.PublishFirmwareStatusNotificationResponse>?      CustomPublishFirmwareStatusNotificationResponseSerializer    { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.HeartbeatResponse>?                              CustomHeartbeatResponseSerializer                            { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.NotifyEventResponse>?                            CustomNotifyEventResponseSerializer                          { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.SecurityEventNotificationResponse>?              CustomSecurityEventNotificationResponseSerializer            { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.NotifyReportResponse>?                           CustomNotifyReportResponseSerializer                         { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.NotifyMonitoringReportResponse>?                 CustomNotifyMonitoringReportResponseSerializer               { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.LogStatusNotificationResponse>?                  CustomLogStatusNotificationResponseSerializer                { get; set; }
+            public CustomJObjectSerializerDelegate<              DataTransferResponse>?                           CustomDataTransferResponseSerializer                         { get; set; }
+
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.SignCertificateResponse>?                        CustomSignCertificateResponseSerializer                      { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.Get15118EVCertificateResponse>?                  CustomGet15118EVCertificateResponseSerializer                { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.GetCertificateStatusResponse>?                   CustomGetCertificateStatusResponseSerializer                 { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.GetCRLResponse>?                                 CustomGetCRLResponseSerializer                               { get; set; }
+
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.ReservationStatusUpdateResponse>?                CustomReservationStatusUpdateResponseSerializer              { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.AuthorizeResponse>?                              CustomAuthorizeResponseSerializer                            { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.NotifyEVChargingNeedsResponse>?                  CustomNotifyEVChargingNeedsResponseSerializer                { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.TransactionEventResponse>?                       CustomTransactionEventResponseSerializer                     { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.StatusNotificationResponse>?                     CustomStatusNotificationResponseSerializer                   { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.MeterValuesResponse>?                            CustomMeterValuesResponseSerializer                          { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.NotifyChargingLimitResponse>?                    CustomNotifyChargingLimitResponseSerializer                  { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.ClearedChargingLimitResponse>?                   CustomClearedChargingLimitResponseSerializer                 { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.ReportChargingProfilesResponse>?                 CustomReportChargingProfilesResponseSerializer               { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.NotifyEVChargingScheduleResponse>?               CustomNotifyEVChargingScheduleResponseSerializer             { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.NotifyPriorityChargingResponse>?                 CustomNotifyPriorityChargingResponseSerializer               { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.PullDynamicScheduleUpdateResponse>?              CustomPullDynamicScheduleUpdateResponseSerializer            { get; set; }
+
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.NotifyDisplayMessagesResponse>?                  CustomNotifyDisplayMessagesResponseSerializer                { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.NotifyCustomerInformationResponse>?              CustomNotifyCustomerInformationResponseSerializer            { get; set; }
+
+
+            // Binary Data Streams Extensions
+            public CustomBinarySerializerDelegate <              BinaryDataTransferResponse>?                     CustomBinaryDataTransferResponseSerializer                   { get; set; }
+
+            #endregion
+
+
+            #region Charging Station Request  Messages
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.BootNotificationRequest>?                             CustomBootNotificationRequestSerializer                      { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.FirmwareStatusNotificationRequest>?                   CustomFirmwareStatusNotificationRequestSerializer            { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.PublishFirmwareStatusNotificationRequest>?            CustomPublishFirmwareStatusNotificationRequestSerializer     { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.HeartbeatRequest>?                                    CustomHeartbeatRequestSerializer                             { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyEventRequest>?                                  CustomNotifyEventRequestSerializer                           { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SecurityEventNotificationRequest>?                    CustomSecurityEventNotificationRequestSerializer             { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyReportRequest>?                                 CustomNotifyReportRequestSerializer                          { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyMonitoringReportRequest>?                       CustomNotifyMonitoringReportRequestSerializer                { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.LogStatusNotificationRequest>?                        CustomLogStatusNotificationRequestSerializer                 { get; set; }
+            public CustomJObjectSerializerDelegate<            DataTransferRequest>?                                 CustomDataTransferRequestSerializer                          { get; set; }
+
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SignCertificateRequest>?                              CustomSignCertificateRequestSerializer                       { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.Get15118EVCertificateRequest>?                        CustomGet15118EVCertificateRequestSerializer                 { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetCertificateStatusRequest>?                         CustomGetCertificateStatusRequestSerializer                  { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetCRLRequest>?                                       CustomGetCRLRequestSerializer                                { get; set; }
+
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.ReservationStatusUpdateRequest>?                      CustomReservationStatusUpdateRequestSerializer               { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.AuthorizeRequest>?                                    CustomAuthorizeRequestSerializer                             { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyEVChargingNeedsRequest>?                        CustomNotifyEVChargingNeedsRequestSerializer                 { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.TransactionEventRequest>?                             CustomTransactionEventRequestSerializer                      { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.StatusNotificationRequest>?                           CustomStatusNotificationRequestSerializer                    { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.MeterValuesRequest>?                                  CustomMeterValuesRequestSerializer                           { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyChargingLimitRequest>?                          CustomNotifyChargingLimitRequestSerializer                   { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.ClearedChargingLimitRequest>?                         CustomClearedChargingLimitRequestSerializer                  { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.ReportChargingProfilesRequest>?                       CustomReportChargingProfilesRequestSerializer                { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyEVChargingScheduleRequest>?                     CustomNotifyEVChargingScheduleRequestSerializer              { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyPriorityChargingRequest>?                       CustomNotifyPriorityChargingRequestSerializer                { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.PullDynamicScheduleUpdateRequest>?                    CustomPullDynamicScheduleUpdateRequestSerializer             { get; set; }
+
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyDisplayMessagesRequest>?                        CustomNotifyDisplayMessagesRequestSerializer                 { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyCustomerInformationRequest>?                    CustomNotifyCustomerInformationRequestSerializer             { get; set; }
+
+
+            // Binary Data Streams Extensions
+            public CustomBinarySerializerDelegate <            BinaryDataTransferRequest>?                           CustomBinaryDataTransferRequestSerializer                    { get; set; }
+
+            #endregion
+
+            #region Charging Station Response Messages
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.ResetResponse>?                                       CustomResetResponseSerializer                                { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.UpdateFirmwareResponse>?                              CustomUpdateFirmwareResponseSerializer                       { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.PublishFirmwareResponse>?                             CustomPublishFirmwareResponseSerializer                      { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.UnpublishFirmwareResponse>?                           CustomUnpublishFirmwareResponseSerializer                    { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetBaseReportResponse>?                               CustomGetBaseReportResponseSerializer                        { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetReportResponse>?                                   CustomGetReportResponseSerializer                            { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetLogResponse>?                                      CustomGetLogResponseSerializer                               { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SetVariablesResponse>?                                CustomSetVariablesResponseSerializer                         { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetVariablesResponse>?                                CustomGetVariablesResponseSerializer                         { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SetMonitoringBaseResponse>?                           CustomSetMonitoringBaseResponseSerializer                    { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetMonitoringReportResponse>?                         CustomGetMonitoringReportResponseSerializer                  { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SetMonitoringLevelResponse>?                          CustomSetMonitoringLevelResponseSerializer                   { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SetVariableMonitoringResponse>?                       CustomSetVariableMonitoringResponseSerializer                { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.ClearVariableMonitoringResponse>?                     CustomClearVariableMonitoringResponseSerializer              { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SetNetworkProfileResponse>?                           CustomSetNetworkProfileResponseSerializer                    { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.ChangeAvailabilityResponse>?                          CustomChangeAvailabilityResponseSerializer                   { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.TriggerMessageResponse>?                              CustomTriggerMessageResponseSerializer                       { get; set; }
+            public CustomJObjectSerializerDelegate<            DataTransferResponse>?                                CustomIncomingDataTransferResponseSerializer                 { get; set; }
+
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.CertificateSignedResponse>?                           CustomCertificateSignedResponseSerializer                    { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.InstallCertificateResponse>?                          CustomInstallCertificateResponseSerializer                   { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetInstalledCertificateIdsResponse>?                  CustomGetInstalledCertificateIdsResponseSerializer           { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.DeleteCertificateResponse>?                           CustomDeleteCertificateResponseSerializer                    { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyCRLResponse>?                                   CustomNotifyCRLResponseSerializer                            { get; set; }
+
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetLocalListVersionResponse>?                         CustomGetLocalListVersionResponseSerializer                  { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SendLocalListResponse>?                               CustomSendLocalListResponseSerializer                        { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.ClearCacheResponse>?                                  CustomClearCacheResponseSerializer                           { get; set; }
+
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.ReserveNowResponse>?                                  CustomReserveNowResponseSerializer                           { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.CancelReservationResponse>?                           CustomCancelReservationResponseSerializer                    { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.RequestStartTransactionResponse>?                     CustomRequestStartTransactionResponseSerializer              { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.RequestStopTransactionResponse>?                      CustomRequestStopTransactionResponseSerializer               { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetTransactionStatusResponse>?                        CustomGetTransactionStatusResponseSerializer                 { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SetChargingProfileResponse>?                          CustomSetChargingProfileResponseSerializer                   { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetChargingProfilesResponse>?                         CustomGetChargingProfilesResponseSerializer                  { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.ClearChargingProfileResponse>?                        CustomClearChargingProfileResponseSerializer                 { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetCompositeScheduleResponse>?                        CustomGetCompositeScheduleResponseSerializer                 { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.UpdateDynamicScheduleResponse>?                       CustomUpdateDynamicScheduleResponseSerializer                { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyAllowedEnergyTransferResponse>?                 CustomNotifyAllowedEnergyTransferResponseSerializer          { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.UsePriorityChargingResponse>?                         CustomUsePriorityChargingResponseSerializer                  { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.UnlockConnectorResponse>?                             CustomUnlockConnectorResponseSerializer                      { get; set; }
+
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.AFRRSignalResponse>?                                  CustomAFRRSignalResponseSerializer                           { get; set; }
+
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SetDisplayMessageResponse>?                           CustomSetDisplayMessageResponseSerializer                    { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetDisplayMessagesResponse>?                          CustomGetDisplayMessagesResponseSerializer                   { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.ClearDisplayMessageResponse>?                         CustomClearDisplayMessageResponseSerializer                  { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.CostUpdatedResponse>?                                 CustomCostUpdatedResponseSerializer                          { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.CustomerInformationResponse>?                         CustomCustomerInformationResponseSerializer                  { get; set; }
+
+
+            // Binary Data Streams Extensions
+            public CustomBinarySerializerDelegate <            BinaryDataTransferResponse>?                          CustomIncomingBinaryDataTransferResponseSerializer           { get; set; }
+            public CustomBinarySerializerDelegate <            GetFileResponse>?                                     CustomGetFileResponseSerializer                              { get; set; }
+            public CustomJObjectSerializerDelegate<            SendFileResponse>?                                    CustomSendFileResponseSerializer                             { get; set; }
+            public CustomJObjectSerializerDelegate<            DeleteFileResponse>?                                  CustomDeleteFileResponseSerializer                           { get; set; }
+
+
+            // E2E Security Extensions
+            public CustomJObjectSerializerDelegate<            AddSignaturePolicyResponse>?                          CustomAddSignaturePolicyResponseSerializer                   { get; set; }
+            public CustomJObjectSerializerDelegate<            UpdateSignaturePolicyResponse>?                       CustomUpdateSignaturePolicyResponseSerializer                { get; set; }
+            public CustomJObjectSerializerDelegate<            DeleteSignaturePolicyResponse>?                       CustomDeleteSignaturePolicyResponseSerializer                { get; set; }
+            public CustomJObjectSerializerDelegate<            AddUserRoleResponse>?                                 CustomAddUserRoleResponseSerializer                          { get; set; }
+            public CustomJObjectSerializerDelegate<            UpdateUserRoleResponse>?                              CustomUpdateUserRoleResponseSerializer                       { get; set; }
+            public CustomJObjectSerializerDelegate<            DeleteUserRoleResponse>?                              CustomDeleteUserRoleResponseSerializer                       { get; set; }
+
+
+            // E2E Charging Tariff Extensions
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SetDefaultChargingTariffResponse>?                    CustomSetDefaultChargingTariffResponseSerializer             { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetDefaultChargingTariffResponse>?                    CustomGetDefaultChargingTariffResponseSerializer             { get; set; }
+            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.RemoveDefaultChargingTariffResponse>?                 CustomRemoveDefaultChargingTariffResponseSerializer          { get; set; }
+
+            #endregion
+
+            public CustomJObjectSerializerDelegate<OCPP.NN.NotifyNetworkTopologyRequest>?                CustomNotifyNetworkTopologyRequestSerializer           { get; set; }
+            public CustomJObjectSerializerDelegate<OCPP.NN.NotifyNetworkTopologyResponse>?               CustomNotifyNetworkTopologyResponseSerializer          { get; set; }
+
+
+            #region Data Structures
+
+            public CustomJObjectSerializerDelegate<StatusInfo>?                                          CustomStatusInfoSerializer                                   { get; set; }
+            public CustomJObjectSerializerDelegate<EVSEStatusInfo<SetDefaultChargingTariffStatus>>?      CustomEVSEStatusInfoSerializer                               { get; set; }
+            public CustomJObjectSerializerDelegate<EVSEStatusInfo<RemoveDefaultChargingTariffStatus>>?   CustomEVSEStatusInfoSerializer2                              { get; set; }
+            public CustomJObjectSerializerDelegate<OCPP.Signature>?                                      CustomSignatureSerializer                                    { get; set; }
+            public CustomJObjectSerializerDelegate<CustomData>?                                          CustomCustomDataSerializer                                   { get; set; }
+            public CustomJObjectSerializerDelegate<Firmware>?                                            CustomFirmwareSerializer                                     { get; set; }
+            public CustomJObjectSerializerDelegate<ComponentVariable>?                                   CustomComponentVariableSerializer                            { get; set; }
+            public CustomJObjectSerializerDelegate<Component>?                                           CustomComponentSerializer                                    { get; set; }
+            public CustomJObjectSerializerDelegate<EVSE>?                                                CustomEVSESerializer                                         { get; set; }
+            public CustomJObjectSerializerDelegate<Variable>?                                            CustomVariableSerializer                                     { get; set; }
+            public CustomJObjectSerializerDelegate<PeriodicEventStreamParameters>?                       CustomPeriodicEventStreamParametersSerializer                { get; set; }
+            public CustomJObjectSerializerDelegate<LogParameters>?                                       CustomLogParametersSerializer                                { get; set; }
+            public CustomJObjectSerializerDelegate<SetVariableData>?                                     CustomSetVariableDataSerializer                              { get; set; }
+            public CustomJObjectSerializerDelegate<GetVariableData>?                                     CustomGetVariableDataSerializer                              { get; set; }
+            public CustomJObjectSerializerDelegate<SetMonitoringData>?                                   CustomSetMonitoringDataSerializer                            { get; set; }
+            public CustomJObjectSerializerDelegate<NetworkConnectionProfile>?                            CustomNetworkConnectionProfileSerializer                     { get; set; }
+            public CustomJObjectSerializerDelegate<VPNConfiguration>?                                    CustomVPNConfigurationSerializer                             { get; set; }
+            public CustomJObjectSerializerDelegate<APNConfiguration>?                                    CustomAPNConfigurationSerializer                             { get; set; }
+            public CustomJObjectSerializerDelegate<CertificateHashData>?                                 CustomCertificateHashDataSerializer                          { get; set; }
+            public CustomJObjectSerializerDelegate<AuthorizationData>?                                   CustomAuthorizationDataSerializer                            { get; set; }
+            public CustomJObjectSerializerDelegate<IdToken>?                                             CustomIdTokenSerializer                                      { get; set; }
+            public CustomJObjectSerializerDelegate<AdditionalInfo>?                                      CustomAdditionalInfoSerializer                               { get; set; }
+            public CustomJObjectSerializerDelegate<IdTokenInfo>?                                         CustomIdTokenInfoSerializer                                  { get; set; }
+            public CustomJObjectSerializerDelegate<MessageContent>?                                      CustomMessageContentSerializer                               { get; set; }
+            public CustomJObjectSerializerDelegate<ChargingProfile>?                                     CustomChargingProfileSerializer                              { get; set; }
+            public CustomJObjectSerializerDelegate<LimitBeyondSoC>?                                      CustomLimitBeyondSoCSerializer                               { get; set; }
+            public CustomJObjectSerializerDelegate<ChargingSchedule>?                                    CustomChargingScheduleSerializer                             { get; set; }
+            public CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?                              CustomChargingSchedulePeriodSerializer                       { get; set; }
+            public CustomJObjectSerializerDelegate<V2XFreqWattEntry>?                                    CustomV2XFreqWattEntrySerializer                             { get; set; }
+            public CustomJObjectSerializerDelegate<V2XSignalWattEntry>?                                  CustomV2XSignalWattEntrySerializer                           { get; set; }
+            public CustomJObjectSerializerDelegate<SalesTariff>?                                         CustomSalesTariffSerializer                                  { get; set; }
+            public CustomJObjectSerializerDelegate<SalesTariffEntry>?                                    CustomSalesTariffEntrySerializer                             { get; set; }
+            public CustomJObjectSerializerDelegate<RelativeTimeInterval>?                                CustomRelativeTimeIntervalSerializer                         { get; set; }
+            public CustomJObjectSerializerDelegate<ConsumptionCost>?                                     CustomConsumptionCostSerializer                              { get; set; }
+            public CustomJObjectSerializerDelegate<Cost>?                                                CustomCostSerializer                                         { get; set; }
+
+            public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.AbsolutePriceSchedule>?    CustomAbsolutePriceScheduleSerializer                        { get; set; }
+            public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceRuleStack>?           CustomPriceRuleStackSerializer                               { get; set; }
+            public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceRule>?                CustomPriceRuleSerializer                                    { get; set; }
+            public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.TaxRule>?                  CustomTaxRuleSerializer                                      { get; set; }
+            public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.OverstayRuleList>?         CustomOverstayRuleListSerializer                             { get; set; }
+            public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.OverstayRule>?             CustomOverstayRuleSerializer                                 { get; set; }
+            public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.AdditionalService>?        CustomAdditionalServiceSerializer                            { get; set; }
+
+            public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceLevelSchedule>?       CustomPriceLevelScheduleSerializer                           { get; set; }
+            public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceLevelScheduleEntry>?  CustomPriceLevelScheduleEntrySerializer                      { get; set; }
+
+            public CustomJObjectSerializerDelegate<TransactionLimits>?                                   CustomTransactionLimitsSerializer                            { get; set; }
+
+            public CustomJObjectSerializerDelegate<ChargingProfileCriterion>?                            CustomChargingProfileCriterionSerializer                     { get; set; }
+            public CustomJObjectSerializerDelegate<ClearChargingProfile>?                                CustomClearChargingProfileSerializer                         { get; set; }
+            public CustomJObjectSerializerDelegate<MessageInfo>?                                         CustomMessageInfoSerializer                                  { get; set; }
+
+
+
+            public CustomJObjectSerializerDelegate<ChargingStation>?                                     CustomChargingStationSerializer                              { get; set; }
+            public CustomJObjectSerializerDelegate<EventData>?                                           CustomEventDataSerializer                                    { get; set; }
+            public CustomJObjectSerializerDelegate<ReportData>?                                          CustomReportDataSerializer                                   { get; set; }
+            public CustomJObjectSerializerDelegate<VariableAttribute>?                                   CustomVariableAttributeSerializer                            { get; set; }
+            public CustomJObjectSerializerDelegate<VariableCharacteristics>?                             CustomVariableCharacteristicsSerializer                      { get; set; }
+            public CustomJObjectSerializerDelegate<MonitoringData>?                                      CustomMonitoringDataSerializer                               { get; set; }
+            public CustomJObjectSerializerDelegate<VariableMonitoring>?                                  CustomVariableMonitoringSerializer                           { get; set; }
+            public CustomJObjectSerializerDelegate<OCSPRequestData>?                                     CustomOCSPRequestDataSerializer                              { get; set; }
+
+            public CustomJObjectSerializerDelegate<ChargingNeeds>?                                       CustomChargingNeedsSerializer                                { get; set; }
+            public CustomJObjectSerializerDelegate<ACChargingParameters>?                                CustomACChargingParametersSerializer                         { get; set; }
+            public CustomJObjectSerializerDelegate<DCChargingParameters>?                                CustomDCChargingParametersSerializer                         { get; set; }
+            public CustomJObjectSerializerDelegate<V2XChargingParameters>?                               CustomV2XChargingParametersSerializer                        { get; set; }
+            public CustomJObjectSerializerDelegate<EVEnergyOffer>?                                       CustomEVEnergyOfferSerializer                                { get; set; }
+            public CustomJObjectSerializerDelegate<EVPowerSchedule>?                                     CustomEVPowerScheduleSerializer                              { get; set; }
+            public CustomJObjectSerializerDelegate<EVPowerScheduleEntry>?                                CustomEVPowerScheduleEntrySerializer                         { get; set; }
+            public CustomJObjectSerializerDelegate<EVAbsolutePriceSchedule>?                             CustomEVAbsolutePriceScheduleSerializer                      { get; set; }
+            public CustomJObjectSerializerDelegate<EVAbsolutePriceScheduleEntry>?                        CustomEVAbsolutePriceScheduleEntrySerializer                 { get; set; }
+            public CustomJObjectSerializerDelegate<EVPriceRule>?                                         CustomEVPriceRuleSerializer                                  { get; set; }
+
+            public CustomJObjectSerializerDelegate<Transaction>?                                         CustomTransactionSerializer                                  { get; set; }
+            public CustomJObjectSerializerDelegate<MeterValue>?                                          CustomMeterValueSerializer                                   { get; set; }
+            public CustomJObjectSerializerDelegate<SampledValue>?                                        CustomSampledValueSerializer                                 { get; set; }
+            public CustomJObjectSerializerDelegate<SignedMeterValue>?                                    CustomSignedMeterValueSerializer                             { get; set; }
+            public CustomJObjectSerializerDelegate<UnitsOfMeasure>?                                      CustomUnitsOfMeasureSerializer                               { get; set; }
+
+            public CustomJObjectSerializerDelegate<SetVariableResult>?                                   CustomSetVariableResultSerializer                            { get; set; }
+            public CustomJObjectSerializerDelegate<GetVariableResult>?                                   CustomGetVariableResultSerializer                            { get; set; }
+            public CustomJObjectSerializerDelegate<SetMonitoringResult>?                                 CustomSetMonitoringResultSerializer                          { get; set; }
+            public CustomJObjectSerializerDelegate<ClearMonitoringResult>?                               CustomClearMonitoringResultSerializer                        { get; set; }
+            public CustomJObjectSerializerDelegate<CompositeSchedule>?                                   CustomCompositeScheduleSerializer                            { get; set; }
+
+
+            // Binary Data Streams Extensions
+            public CustomBinarySerializerDelegate<OCPP.Signature>?                                       CustomBinarySignatureSerializer                              { get; set; }
+
+
+            // E2E Security Extensions
+
+
+
+            // E2E Charging Tariff Extensions
+
+            public CustomJObjectSerializerDelegate<ChargingTariff>?                                      CustomChargingTariffSerializer                               { get; set; }
+            public CustomJObjectSerializerDelegate<Price>?                                               CustomPriceSerializer                                        { get; set; }
+            public CustomJObjectSerializerDelegate<TariffElement>?                                       CustomTariffElementSerializer                                { get; set; }
+            public CustomJObjectSerializerDelegate<PriceComponent>?                                      CustomPriceComponentSerializer                               { get; set; }
+            public CustomJObjectSerializerDelegate<TaxRate>?                                             CustomTaxRateSerializer                                      { get; set; }
+            public CustomJObjectSerializerDelegate<TariffRestrictions>?                                  CustomTariffRestrictionsSerializer                           { get; set; }
+            public CustomJObjectSerializerDelegate<EnergyMix>?                                           CustomEnergyMixSerializer                                    { get; set; }
+            public CustomJObjectSerializerDelegate<EnergySource>?                                        CustomEnergySourceSerializer                                 { get; set; }
+            public CustomJObjectSerializerDelegate<EnvironmentalImpact>?                                 CustomEnvironmentalImpactSerializer                          { get; set; }
+
+            #endregion
+
+            public CustomJObjectSerializerDelegate<NetworkTopologyInformation>?                          CustomNetworkTopologyInformationSerializer             { get; set; }
+
+            #endregion
+
+            #region Events
+
+            #region Charging Station -> CSMS
+
+            #region SendBootNotification
+
+            /// <summary>
+            /// An event fired whenever a BootNotification request will be sent to the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnBootNotificationRequestDelegate?   OnBootNotificationRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a BootNotification request was received.
+            /// </summary>
+            public event OCPPv2_1.CS.OnBootNotificationResponseDelegate?  OnBootNotificationResponse;
+
+            #endregion
+
+            #region SendFirmwareStatusNotification
+
+            /// <summary>
+            /// An event fired whenever a FirmwareStatusNotification request will be sent to the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnFirmwareStatusNotificationRequestDelegate?   OnFirmwareStatusNotificationRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a FirmwareStatusNotification request was received.
+            /// </summary>
+            public event OCPPv2_1.CS.OnFirmwareStatusNotificationResponseDelegate?  OnFirmwareStatusNotificationResponse;
+
+            #endregion
+
+            #region SendPublishFirmwareStatusNotification
+
+            /// <summary>
+            /// An event fired whenever a PublishFirmwareStatusNotification request will be sent to the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnPublishFirmwareStatusNotificationRequestDelegate?   OnPublishFirmwareStatusNotificationRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a PublishFirmwareStatusNotification request was received.
+            /// </summary>
+            public event OCPPv2_1.CS.OnPublishFirmwareStatusNotificationResponseDelegate?  OnPublishFirmwareStatusNotificationResponse;
+
+            #endregion
+
+            #region SendHeartbeat
+
+            /// <summary>
+            /// An event fired whenever a Heartbeat request will be sent to the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnHeartbeatRequestDelegate?   OnHeartbeatRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a Heartbeat request was received.
+            /// </summary>
+            public event OCPPv2_1.CS.OnHeartbeatResponseDelegate?  OnHeartbeatResponse;
+
+            #endregion
+
+            #region NotifyEvent
+
+            /// <summary>
+            /// An event fired whenever a NotifyEvent request will be sent to the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnNotifyEventRequestDelegate?   OnNotifyEventRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a NotifyEvent request was received.
+            /// </summary>
+            public event OCPPv2_1.CS.OnNotifyEventResponseDelegate?  OnNotifyEventResponse;
+
+            #endregion
+
+            #region SendSecurityEventNotification
+
+            /// <summary>
+            /// An event fired whenever a SecurityEventNotification request will be sent to the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnSecurityEventNotificationRequestDelegate?   OnSecurityEventNotificationRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a SecurityEventNotification request was received.
+            /// </summary>
+            public event OCPPv2_1.CS.OnSecurityEventNotificationResponseDelegate?  OnSecurityEventNotificationResponse;
+
+            #endregion
+
+            #region NotifyReport
+
+            /// <summary>
+            /// An event fired whenever a NotifyReport request will be sent to the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnNotifyReportRequestDelegate?   OnNotifyReportRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a NotifyReport request was received.
+            /// </summary>
+            public event OCPPv2_1.CS.OnNotifyReportResponseDelegate?  OnNotifyReportResponse;
+
+            #endregion
+
+            #region NotifyMonitoringReport
+
+            /// <summary>
+            /// An event fired whenever a NotifyMonitoringReport request will be sent to the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnNotifyMonitoringReportRequestDelegate?   OnNotifyMonitoringReportRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a NotifyMonitoringReport request was received.
+            /// </summary>
+            public event OCPPv2_1.CS.OnNotifyMonitoringReportResponseDelegate?  OnNotifyMonitoringReportResponse;
+
+            #endregion
+
+            #region SendLogStatusNotification
+
+            /// <summary>
+            /// An event fired whenever a LogStatusNotification request will be sent to the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnLogStatusNotificationRequestDelegate?   OnLogStatusNotificationRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a LogStatusNotification request was received.
+            /// </summary>
+            public event OCPPv2_1.CS.OnLogStatusNotificationResponseDelegate?  OnLogStatusNotificationResponse;
+
+            #endregion
+
+            #region TransferData
+
+            /// <summary>
+            /// An event fired whenever a DataTransfer request will be sent to the CSMS.
+            /// </summary>
+            public event OnDataTransferRequestDelegate?   OnDataTransferRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a DataTransfer request was received.
+            /// </summary>
+            public event OnDataTransferResponseDelegate?  OnDataTransferResponse;
+
+            #endregion
+
+
+            #region SignCertificate
+
+            /// <summary>
+            /// An event fired whenever a SignCertificate request will be sent to the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnSignCertificateRequestDelegate?   OnSignCertificateRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a SignCertificate request was received.
+            /// </summary>
+            public event OCPPv2_1.CS.OnSignCertificateResponseDelegate?  OnSignCertificateResponse;
+
+            #endregion
+
+            #region Get15118EVCertificate
+
+            /// <summary>
+            /// An event fired whenever a Get15118EVCertificate request will be sent to the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnGet15118EVCertificateRequestDelegate?   OnGet15118EVCertificateRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a Get15118EVCertificate request was received.
+            /// </summary>
+            public event OCPPv2_1.CS.OnGet15118EVCertificateResponseDelegate?  OnGet15118EVCertificateResponse;
+
+            #endregion
+
+            #region GetCertificateStatus
+
+            /// <summary>
+            /// An event fired whenever a GetCertificateStatus request will be sent to the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnGetCertificateStatusRequestDelegate?   OnGetCertificateStatusRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a GetCertificateStatus request was received.
+            /// </summary>
+            public event OCPPv2_1.CS.OnGetCertificateStatusResponseDelegate?  OnGetCertificateStatusResponse;
+
+            #endregion
+
+            #region GetCRL
+
+            /// <summary>
+            /// An event fired whenever a GetCRL request will be sent to the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnGetCRLRequestDelegate?   OnGetCRLRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a GetCRL request was received.
+            /// </summary>
+            public event OCPPv2_1.CS.OnGetCRLResponseDelegate?  OnGetCRLResponse;
+
+            #endregion
+
+
+            #region SendReservationStatusUpdate
+
+            /// <summary>
+            /// An event fired whenever a ReservationStatusUpdate request will be sent to the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnReservationStatusUpdateRequestDelegate?   OnReservationStatusUpdateRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a ReservationStatusUpdate request was received.
+            /// </summary>
+            public event OCPPv2_1.CS.OnReservationStatusUpdateResponseDelegate?  OnReservationStatusUpdateResponse;
+
+            #endregion
+
+            #region Authorize
+
+            /// <summary>
+            /// An event fired whenever an Authorize request will be sent to the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnAuthorizeRequestDelegate?   OnAuthorizeRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to an Authorize request was received.
+            /// </summary>
+            public event OCPPv2_1.CS.OnAuthorizeResponseDelegate?  OnAuthorizeResponse;
+
+            #endregion
+
+            #region NotifyEVChargingNeeds
+
+            /// <summary>
+            /// An event fired whenever a NotifyEVChargingNeeds request will be sent to the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnNotifyEVChargingNeedsRequestDelegate?   OnNotifyEVChargingNeedsRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a NotifyEVChargingNeeds request was received.
+            /// </summary>
+            public event OCPPv2_1.CS.OnNotifyEVChargingNeedsResponseDelegate?  OnNotifyEVChargingNeedsResponse;
+
+            #endregion
+
+            #region SendTransactionEvent
+
+            /// <summary>
+            /// An event fired whenever a TransactionEvent will be sent to the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnTransactionEventRequestDelegate?   OnTransactionEventRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a TransactionEvent request was received.
+            /// </summary>
+            public event OCPPv2_1.CS.OnTransactionEventResponseDelegate?  OnTransactionEventResponse;
+
+            #endregion
+
+            #region SendStatusNotification
+
+            /// <summary>
+            /// An event fired whenever a StatusNotification request will be sent to the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnStatusNotificationRequestDelegate?   OnStatusNotificationRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a StatusNotification request was received.
+            /// </summary>
+            public event OCPPv2_1.CS.OnStatusNotificationResponseDelegate?  OnStatusNotificationResponse;
+
+            #endregion
+
+            #region SendMeterValues
+
+            /// <summary>
+            /// An event fired whenever a MeterValues request will be sent to the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnMeterValuesRequestDelegate?   OnMeterValuesRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a MeterValues request was received.
+            /// </summary>
+            public event OCPPv2_1.CS.OnMeterValuesResponseDelegate?  OnMeterValuesResponse;
+
+            #endregion
+
+            #region NotifyChargingLimit
+
+            /// <summary>
+            /// An event fired whenever a NotifyChargingLimit request will be sent to the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnNotifyChargingLimitRequestDelegate?   OnNotifyChargingLimitRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a NotifyChargingLimit request was received.
+            /// </summary>
+            public event OCPPv2_1.CS.OnNotifyChargingLimitResponseDelegate?  OnNotifyChargingLimitResponse;
+
+            #endregion
+
+            #region SendClearedChargingLimit
+
+            /// <summary>
+            /// An event fired whenever a ClearedChargingLimit request will be sent to the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnClearedChargingLimitRequestDelegate?   OnClearedChargingLimitRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a ClearedChargingLimit request was received.
+            /// </summary>
+            public event OCPPv2_1.CS.OnClearedChargingLimitResponseDelegate?  OnClearedChargingLimitResponse;
+
+            #endregion
+
+            #region ReportChargingProfiles
+
+            /// <summary>
+            /// An event fired whenever a ReportChargingProfiles request will be sent to the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnReportChargingProfilesRequestDelegate?   OnReportChargingProfilesRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a ReportChargingProfiles request was received.
+            /// </summary>
+            public event OCPPv2_1.CS.OnReportChargingProfilesResponseDelegate?  OnReportChargingProfilesResponse;
+
+            #endregion
+
+            #region NotifyEVChargingSchedule
+
+            /// <summary>
+            /// An event fired whenever a NotifyEVChargingSchedule request will be sent to the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnNotifyEVChargingScheduleRequestDelegate?   OnNotifyEVChargingScheduleRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a NotifyEVChargingSchedule request was received.
+            /// </summary>
+            public event OCPPv2_1.CS.OnNotifyEVChargingScheduleResponseDelegate?  OnNotifyEVChargingScheduleResponse;
+
+            #endregion
+
+            #region NotifyPriorityCharging
+
+            /// <summary>
+            /// An event fired whenever a NotifyPriorityCharging request will be sent to the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnNotifyPriorityChargingRequestDelegate?   OnNotifyPriorityChargingRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a NotifyPriorityCharging request was received.
+            /// </summary>
+            public event OCPPv2_1.CS.OnNotifyPriorityChargingResponseDelegate?  OnNotifyPriorityChargingResponse;
+
+            #endregion
+
+            #region PullDynamicScheduleUpdate
+
+            /// <summary>
+            /// An event fired whenever a PullDynamicScheduleUpdate request will be sent to the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnPullDynamicScheduleUpdateRequestDelegate?   OnPullDynamicScheduleUpdateRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a PullDynamicScheduleUpdate request was received.
+            /// </summary>
+            public event OCPPv2_1.CS.OnPullDynamicScheduleUpdateResponseDelegate?  OnPullDynamicScheduleUpdateResponse;
+
+            #endregion
+
+
+            #region NotifyDisplayMessages
+
+            /// <summary>
+            /// An event fired whenever a NotifyDisplayMessages request will be sent to the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnNotifyDisplayMessagesRequestDelegate?   OnNotifyDisplayMessagesRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a NotifyDisplayMessages request was received.
+            /// </summary>
+            public event OCPPv2_1.CS.OnNotifyDisplayMessagesResponseDelegate?  OnNotifyDisplayMessagesResponse;
+
+            #endregion
+
+            #region NotifyCustomerInformation
+
+            /// <summary>
+            /// An event fired whenever a NotifyCustomerInformation request will be sent to the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnNotifyCustomerInformationRequestDelegate?   OnNotifyCustomerInformationRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a NotifyCustomerInformation request was received.
+            /// </summary>
+            public event OCPPv2_1.CS.OnNotifyCustomerInformationResponseDelegate?  OnNotifyCustomerInformationResponse;
+
+            #endregion
+
+
+            // Binary Data Streams Extensions
+
+            #region TransferBinaryData
+
+            /// <summary>
+            /// An event fired whenever a BinaryDataTransfer request will be sent to the CSMS.
+            /// </summary>
+            public event OnBinaryDataTransferRequestDelegate?   OnBinaryDataTransferRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a BinaryDataTransfer request was received.
+            /// </summary>
+            public event OnBinaryDataTransferResponseDelegate?  OnBinaryDataTransferResponse;
+
+            #endregion
+
+
+            // Overlay Networking Extensions
+
+            #region OnNotifyNetworkTopology (Request/-Response)
+
+            /// <summary>
+            /// An event fired whenever a NotifyNetworkTopology request will be sent to another node.
+            /// </summary>
+            public event OCPP.CS.OnNotifyNetworkTopologyRequestDelegate?   OnNotifyNetworkTopologyRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a NotifyNetworkTopology request was received.
+            /// </summary>
+            public event OCPP.CS.OnNotifyNetworkTopologyResponseDelegate?  OnNotifyNetworkTopologyResponse;
+
+            #endregion
+
+            #endregion
+
+            #region Charging Station <- CSMS
+
+            //ToDo: Are those events really required here?
+            public event OCPPv2_1.CS.OnResetDelegate?                         OnReset;
+            public event OCPPv2_1.CS.OnUpdateFirmwareDelegate?                OnUpdateFirmware;
+            public event OCPPv2_1.CS.OnPublishFirmwareDelegate?               OnPublishFirmware;
+            public event OCPPv2_1.CS.OnUnpublishFirmwareDelegate?             OnUnpublishFirmware;
+            public event OCPPv2_1.CS.OnGetBaseReportDelegate?                 OnGetBaseReport;
+            public event OCPPv2_1.CS.OnGetReportDelegate?                     OnGetReport;
+            public event OCPPv2_1.CS.OnGetLogDelegate?                        OnGetLog;
+            public event OCPPv2_1.CS.OnSetVariablesDelegate?                  OnSetVariables;
+            public event OCPPv2_1.CS.OnGetVariablesDelegate?                  OnGetVariables;
+            public event OCPPv2_1.CS.OnSetMonitoringBaseDelegate?             OnSetMonitoringBase;
+            public event OCPPv2_1.CS.OnGetMonitoringReportDelegate?           OnGetMonitoringReport;
+            public event OCPPv2_1.CS.OnSetMonitoringLevelDelegate?            OnSetMonitoringLevel;
+            public event OCPPv2_1.CS.OnSetVariableMonitoringDelegate?         OnSetVariableMonitoring;
+            public event OCPPv2_1.CS.OnClearVariableMonitoringDelegate?       OnClearVariableMonitoring;
+            public event OCPPv2_1.CS.OnSetNetworkProfileDelegate?             OnSetNetworkProfile;
+            public event OCPPv2_1.CS.OnChangeAvailabilityDelegate?            OnChangeAvailability;
+            public event OCPPv2_1.CS.OnTriggerMessageDelegate?                OnTriggerMessage;
+            public event             OnIncomingDataTransferDelegate?          OnIncomingDataTransfer;
+
+            public event OCPPv2_1.CS.OnCertificateSignedDelegate?             OnCertificateSigned;
+            public event OCPPv2_1.CS.OnInstallCertificateDelegate?            OnInstallCertificate;
+            public event OCPPv2_1.CS.OnGetInstalledCertificateIdsDelegate?    OnGetInstalledCertificateIds;
+            public event OCPPv2_1.CS.OnDeleteCertificateDelegate?             OnDeleteCertificate;
+            public event OCPPv2_1.CS.OnNotifyCRLDelegate?                     OnNotifyCRL;
+
+            public event OCPPv2_1.CS.OnGetLocalListVersionDelegate?           OnGetLocalListVersion;
+            public event OCPPv2_1.CS.OnSendLocalListDelegate?                 OnSendLocalList;
+            public event OCPPv2_1.CS.OnClearCacheDelegate?                    OnClearCache;
+
+            public event OCPPv2_1.CS.OnReserveNowDelegate?                    OnReserveNow;
+            public event OCPPv2_1.CS.OnCancelReservationDelegate?             OnCancelReservation;
+            public event OCPPv2_1.CS.OnRequestStartTransactionDelegate?       OnRequestStartTransaction;
+            public event OCPPv2_1.CS.OnRequestStopTransactionDelegate?        OnRequestStopTransaction;
+            public event OCPPv2_1.CS.OnGetTransactionStatusDelegate?          OnGetTransactionStatus;
+            public event OCPPv2_1.CS.OnSetChargingProfileDelegate?            OnSetChargingProfile;
+            public event OCPPv2_1.CS.OnGetChargingProfilesDelegate?           OnGetChargingProfiles;
+            public event OCPPv2_1.CS.OnClearChargingProfileDelegate?          OnClearChargingProfile;
+            public event OCPPv2_1.CS.OnGetCompositeScheduleDelegate?          OnGetCompositeSchedule;
+            public event OCPPv2_1.CS.OnUpdateDynamicScheduleDelegate?         OnUpdateDynamicSchedule;
+            public event OCPPv2_1.CS.OnNotifyAllowedEnergyTransferDelegate?   OnNotifyAllowedEnergyTransfer;
+            public event OCPPv2_1.CS.OnUsePriorityChargingDelegate?           OnUsePriorityCharging;
+            public event OCPPv2_1.CS.OnUnlockConnectorDelegate?               OnUnlockConnector;
+
+            public event OCPPv2_1.CS.OnAFRRSignalDelegate?                    OnAFRRSignal;
+
+            public event OCPPv2_1.CS.OnSetDisplayMessageDelegate?             OnSetDisplayMessage;
+            public event OCPPv2_1.CS.OnGetDisplayMessagesDelegate?            OnGetDisplayMessages;
+            public event OCPPv2_1.CS.OnClearDisplayMessageDelegate?           OnClearDisplayMessage;
+            public event OCPPv2_1.CS.OnCostUpdatedDelegate?                   OnCostUpdated;
+            public event OCPPv2_1.CS.OnCustomerInformationDelegate?           OnCustomerInformation;
+
+            // Binary Data Streams Extensions
+            public event             OnIncomingBinaryDataTransferDelegate?    OnIncomingBinaryDataTransfer;
+            public event             OnGetFileDelegate?                       OnGetFile;
+            public event             OnSendFileDelegate?                      OnSendFile;
+            public event             OnDeleteFileDelegate?                    OnDeleteFile;
+
+            // E2E Security Extensions
+            public event             OnAddSignaturePolicyDelegate?            OnAddSignaturePolicy;
+            public event             OnUpdateSignaturePolicyDelegate?         OnUpdateSignaturePolicy;
+            public event             OnDeleteSignaturePolicyDelegate?         OnDeleteSignaturePolicy;
+            public event             OnAddUserRoleDelegate?                   OnAddUserRole;
+            public event             OnUpdateUserRoleDelegate?                OnUpdateUserRole;
+            public event             OnDeleteUserRoleDelegate?                OnDeleteUserRole;
+
+
+            #region Reset
+
+            /// <summary>
+            /// An event fired whenever a Reset request was received from the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnResetRequestDelegate?   OnResetRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a Reset request was sent.
+            /// </summary>
+            public event OCPPv2_1.CS.OnResetResponseDelegate?  OnResetResponse;
+
+            #endregion
+
+            #region UpdateFirmware
+
+            /// <summary>
+            /// An event fired whenever an UpdateFirmware request was received from the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnUpdateFirmwareRequestDelegate?   OnUpdateFirmwareRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to an UpdateFirmware request was sent.
+            /// </summary>
+            public event OCPPv2_1.CS.OnUpdateFirmwareResponseDelegate?  OnUpdateFirmwareResponse;
+
+            #endregion
+
+            #region PublishFirmware
+
+            /// <summary>
+            /// An event fired whenever a PublishFirmware request was received from the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnPublishFirmwareRequestDelegate?   OnPublishFirmwareRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a PublishFirmware request was sent.
+            /// </summary>
+            public event OCPPv2_1.CS.OnPublishFirmwareResponseDelegate?  OnPublishFirmwareResponse;
+
+            #endregion
+
+            #region UnpublishFirmware
+
+            /// <summary>
+            /// An event fired whenever an UnpublishFirmware request was received from the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnUnpublishFirmwareRequestDelegate?   OnUnpublishFirmwareRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to an UnpublishFirmware request was sent.
+            /// </summary>
+            public event OCPPv2_1.CS.OnUnpublishFirmwareResponseDelegate?  OnUnpublishFirmwareResponse;
+
+            #endregion
+
+            #region GetBaseReport
+
+            /// <summary>
+            /// An event fired whenever a GetBaseReport request was received from the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnGetBaseReportRequestDelegate?   OnGetBaseReportRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a GetBaseReport request was sent.
+            /// </summary>
+            public event OCPPv2_1.CS.OnGetBaseReportResponseDelegate?  OnGetBaseReportResponse;
+
+            #endregion
+
+            #region GetReport
+
+            /// <summary>
+            /// An event fired whenever a GetReport request was received from the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnGetReportRequestDelegate?   OnGetReportRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a GetReport request was sent.
+            /// </summary>
+            public event OCPPv2_1.CS.OnGetReportResponseDelegate?  OnGetReportResponse;
+
+            #endregion
+
+            #region GetLog
+
+            /// <summary>
+            /// An event fired whenever a GetLog request was received from the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnGetLogRequestDelegate?   OnGetLogRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a GetLog request was sent.
+            /// </summary>
+            public event OCPPv2_1.CS.OnGetLogResponseDelegate?  OnGetLogResponse;
+
+            #endregion
+
+            #region SetVariables
+
+            /// <summary>
+            /// An event fired whenever a SetVariables request was received from the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnSetVariablesRequestDelegate?   OnSetVariablesRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a SetVariables request was sent.
+            /// </summary>
+            public event OCPPv2_1.CS.OnSetVariablesResponseDelegate?  OnSetVariablesResponse;
+
+            #endregion
+
+            #region GetVariables
+
+            /// <summary>
+            /// An event fired whenever a GetVariables request was received from the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnGetVariablesRequestDelegate?   OnGetVariablesRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a GetVariables request was sent.
+            /// </summary>
+            public event OCPPv2_1.CS.OnGetVariablesResponseDelegate?  OnGetVariablesResponse;
+
+            #endregion
+
+            #region SetMonitoringBase
+
+            /// <summary>
+            /// An event fired whenever a SetMonitoringBase request was received from the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnSetMonitoringBaseRequestDelegate?   OnSetMonitoringBaseRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a SetMonitoringBase request was sent.
+            /// </summary>
+            public event OCPPv2_1.CS.OnSetMonitoringBaseResponseDelegate?  OnSetMonitoringBaseResponse;
+
+            #endregion
+
+            #region GetMonitoringReport
+
+            /// <summary>
+            /// An event fired whenever a GetMonitoringReport request was received from the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnGetMonitoringReportRequestDelegate?   OnGetMonitoringReportRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a GetMonitoringReport request was sent.
+            /// </summary>
+            public event OCPPv2_1.CS.OnGetMonitoringReportResponseDelegate?  OnGetMonitoringReportResponse;
+
+            #endregion
+
+            #region SetMonitoringLevel
+
+            /// <summary>
+            /// An event fired whenever a SetMonitoringLevel request was received from the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnSetMonitoringLevelRequestDelegate?   OnSetMonitoringLevelRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a SetMonitoringLevel request was sent.
+            /// </summary>
+            public event OCPPv2_1.CS.OnSetMonitoringLevelResponseDelegate?  OnSetMonitoringLevelResponse;
+
+            #endregion
+
+            #region SetVariableMonitoring
+
+            /// <summary>
+            /// An event fired whenever a SetVariableMonitoring request was received from the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnSetVariableMonitoringRequestDelegate?   OnSetVariableMonitoringRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a SetVariableMonitoring request was sent.
+            /// </summary>
+            public event OCPPv2_1.CS.OnSetVariableMonitoringResponseDelegate?  OnSetVariableMonitoringResponse;
+
+            #endregion
+
+            #region ClearVariableMonitoring
+
+            /// <summary>
+            /// An event fired whenever a ClearVariableMonitoring request was received from the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnClearVariableMonitoringRequestDelegate?   OnClearVariableMonitoringRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a ClearVariableMonitoring request was sent.
+            /// </summary>
+            public event OCPPv2_1.CS.OnClearVariableMonitoringResponseDelegate?  OnClearVariableMonitoringResponse;
+
+            #endregion
+
+            #region SetNetworkProfile
+
+            /// <summary>
+            /// An event fired whenever a SetNetworkProfile request was received from the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnSetNetworkProfileRequestDelegate?   OnSetNetworkProfileRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a SetNetworkProfile request was sent.
+            /// </summary>
+            public event OCPPv2_1.CS.OnSetNetworkProfileResponseDelegate?  OnSetNetworkProfileResponse;
+
+            #endregion
+
+            #region ChangeAvailability
+
+            /// <summary>
+            /// An event fired whenever a ChangeAvailability request was received from the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnChangeAvailabilityRequestDelegate?   OnChangeAvailabilityRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a ChangeAvailability request was sent.
+            /// </summary>
+            public event OCPPv2_1.CS.OnChangeAvailabilityResponseDelegate?  OnChangeAvailabilityResponse;
+
+            #endregion
+
+            #region TriggerMessage
+
+            /// <summary>
+            /// An event fired whenever a TriggerMessage request was received from the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnTriggerMessageRequestDelegate?   OnTriggerMessageRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a TriggerMessage request was sent.
+            /// </summary>
+            public event OCPPv2_1.CS.OnTriggerMessageResponseDelegate?  OnTriggerMessageResponse;
+
+            #endregion
+
+            #region OnIncomingDataTransferRequest/-Response
+
+            /// <summary>
+            /// An event sent whenever a data transfer request was sent.
+            /// </summary>
+            public event OnIncomingDataTransferRequestDelegate?   OnIncomingDataTransferRequest;
+
+            /// <summary>
+            /// An event sent whenever a response to a data transfer request was sent.
+            /// </summary>
+            public event OnIncomingDataTransferResponseDelegate?  OnIncomingDataTransferResponse;
+
+            #endregion
+
+
+            #region SendSignedCertificate
+
+            /// <summary>
+            /// An event fired whenever a SignedCertificate request was received from the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnCertificateSignedRequestDelegate?   OnCertificateSignedRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a SignedCertificate request was sent.
+            /// </summary>
+            public event OCPPv2_1.CS.OnCertificateSignedResponseDelegate?  OnCertificateSignedResponse;
+
+            #endregion
+
+            #region InstallCertificate
+
+            /// <summary>
+            /// An event fired whenever an InstallCertificate request was received from the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnInstallCertificateRequestDelegate?   OnInstallCertificateRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to an InstallCertificate request was sent.
+            /// </summary>
+            public event OCPPv2_1.CS.OnInstallCertificateResponseDelegate?  OnInstallCertificateResponse;
+
+            #endregion
+
+            #region GetInstalledCertificateIds
+
+            /// <summary>
+            /// An event fired whenever a GetInstalledCertificateIds request was received from the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnGetInstalledCertificateIdsRequestDelegate?   OnGetInstalledCertificateIdsRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a GetInstalledCertificateIds request was sent.
+            /// </summary>
+            public event OCPPv2_1.CS.OnGetInstalledCertificateIdsResponseDelegate?  OnGetInstalledCertificateIdsResponse;
+
+            #endregion
+
+            #region DeleteCertificate
+
+            /// <summary>
+            /// An event fired whenever a DeleteCertificate request was received from the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnDeleteCertificateRequestDelegate?   OnDeleteCertificateRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a DeleteCertificate request was sent.
+            /// </summary>
+            public event OCPPv2_1.CS.OnDeleteCertificateResponseDelegate?  OnDeleteCertificateResponse;
+
+            #endregion
+
+            #region NotifyCRL
+
+            /// <summary>
+            /// An event fired whenever a NotifyCRL request was received from the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnNotifyCRLRequestDelegate?   OnNotifyCRLRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a NotifyCRL request was sent.
+            /// </summary>
+            public event OCPPv2_1.CS.OnNotifyCRLResponseDelegate?  OnNotifyCRLResponse;
+
+            #endregion
+
+
+            #region GetLocalListVersion
+
+            /// <summary>
+            /// An event fired whenever a GetLocalListVersion request was received from the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnGetLocalListVersionRequestDelegate?   OnGetLocalListVersionRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a GetLocalListVersion request was sent.
+            /// </summary>
+            public event OCPPv2_1.CS.OnGetLocalListVersionResponseDelegate?  OnGetLocalListVersionResponse;
+
+            #endregion
+
+            #region SendLocalList
+
+            /// <summary>
+            /// An event fired whenever a SendLocalList request was received from the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnSendLocalListRequestDelegate?   OnSendLocalListRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a SendLocalList request was sent.
+            /// </summary>
+            public event OCPPv2_1.CS.OnSendLocalListResponseDelegate?  OnSendLocalListResponse;
+
+            #endregion
+
+            #region ClearCache
+
+            /// <summary>
+            /// An event fired whenever a ClearCache request was received from the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnClearCacheRequestDelegate?   OnClearCacheRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a ClearCache request was sent.
+            /// </summary>
+            public event OCPPv2_1.CS.OnClearCacheResponseDelegate?  OnClearCacheResponse;
+
+            #endregion
+
+
+            #region ReserveNow
+
+            /// <summary>
+            /// An event fired whenever a ReserveNow request was received from the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnReserveNowRequestDelegate?   OnReserveNowRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a ReserveNow request was sent.
+            /// </summary>
+            public event OCPPv2_1.CS.OnReserveNowResponseDelegate?  OnReserveNowResponse;
+
+            #endregion
+
+            #region CancelReservation
+
+            /// <summary>
+            /// An event fired whenever a CancelReservation request was received from the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnCancelReservationRequestDelegate?   OnCancelReservationRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a CancelReservation request was sent.
+            /// </summary>
+            public event OCPPv2_1.CS.OnCancelReservationResponseDelegate?  OnCancelReservationResponse;
+
+            #endregion
+
+            #region StartCharging
+
+            /// <summary>
+            /// An event fired whenever a RequestStartTransaction request was received from the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnRequestStartTransactionRequestDelegate?   OnRequestStartTransactionRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a RequestStartTransaction request was sent.
+            /// </summary>
+            public event OCPPv2_1.CS.OnRequestStartTransactionResponseDelegate?  OnRequestStartTransactionResponse;
+
+            #endregion
+
+            #region StopCharging
+
+            /// <summary>
+            /// An event fired whenever a RequestStopTransaction request was received from the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnRequestStopTransactionRequestDelegate?   OnRequestStopTransactionRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a RequestStopTransaction request was sent.
+            /// </summary>
+            public event OCPPv2_1.CS.OnRequestStopTransactionResponseDelegate?  OnRequestStopTransactionResponse;
+
+            #endregion
+
+            #region GetTransactionStatus
+
+            /// <summary>
+            /// An event fired whenever a GetTransactionStatus request was received from the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnGetTransactionStatusRequestDelegate?   OnGetTransactionStatusRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a GetTransactionStatus request was sent.
+            /// </summary>
+            public event OCPPv2_1.CS.OnGetTransactionStatusResponseDelegate?  OnGetTransactionStatusResponse;
+
+            #endregion
+
+            #region SetChargingProfile
+
+            /// <summary>
+            /// An event fired whenever a SetChargingProfile request was received from the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnSetChargingProfileRequestDelegate?   OnSetChargingProfileRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a SetChargingProfile request was sent.
+            /// </summary>
+            public event OCPPv2_1.CS.OnSetChargingProfileResponseDelegate?  OnSetChargingProfileResponse;
+
+            #endregion
+
+            #region GetChargingProfiles
+
+            /// <summary>
+            /// An event fired whenever a GetChargingProfiles request was received from the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnGetChargingProfilesRequestDelegate?   OnGetChargingProfilesRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a GetChargingProfiles request was sent.
+            /// </summary>
+            public event OCPPv2_1.CS.OnGetChargingProfilesResponseDelegate?  OnGetChargingProfilesResponse;
+
+            #endregion
+
+            #region ClearChargingProfile
+
+            /// <summary>
+            /// An event fired whenever a ClearChargingProfile request was received from the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnClearChargingProfileRequestDelegate?   OnClearChargingProfileRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a ClearChargingProfile request was sent.
+            /// </summary>
+            public event OCPPv2_1.CS.OnClearChargingProfileResponseDelegate?  OnClearChargingProfileResponse;
+
+            #endregion
+
+            #region GetCompositeSchedule
+
+            /// <summary>
+            /// An event fired whenever a GetCompositeSchedule request was received from the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnGetCompositeScheduleRequestDelegate?   OnGetCompositeScheduleRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a GetCompositeSchedule request was sent.
+            /// </summary>
+            public event OCPPv2_1.CS.OnGetCompositeScheduleResponseDelegate?  OnGetCompositeScheduleResponse;
+
+            #endregion
+
+            #region UpdateDynamicSchedule
+
+            /// <summary>
+            /// An event fired whenever an UpdateDynamicSchedule request was received from the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnUpdateDynamicScheduleRequestDelegate?   OnUpdateDynamicScheduleRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to an UpdateDynamicSchedule request was sent.
+            /// </summary>
+            public event OCPPv2_1.CS.OnUpdateDynamicScheduleResponseDelegate?  OnUpdateDynamicScheduleResponse;
+
+            #endregion
+
+            #region NotifyAllowedEnergyTransfer
+
+            /// <summary>
+            /// An event fired whenever a NotifyAllowedEnergyTransfer request was received from the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnNotifyAllowedEnergyTransferRequestDelegate?   OnNotifyAllowedEnergyTransferRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a NotifyAllowedEnergyTransfer request was sent.
+            /// </summary>
+            public event OCPPv2_1.CS.OnNotifyAllowedEnergyTransferResponseDelegate?  OnNotifyAllowedEnergyTransferResponse;
+
+            #endregion
+
+            #region UsePriorityCharging
+
+            /// <summary>
+            /// An event fired whenever a UsePriorityCharging request was received from the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnUsePriorityChargingRequestDelegate?   OnUsePriorityChargingRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a UsePriorityCharging request was sent.
+            /// </summary>
+            public event OCPPv2_1.CS.OnUsePriorityChargingResponseDelegate?  OnUsePriorityChargingResponse;
+
+            #endregion
+
+            #region UnlockConnector
+
+            /// <summary>
+            /// An event fired whenever an UnlockConnector request was received from the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnUnlockConnectorRequestDelegate?   OnUnlockConnectorRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to an UnlockConnector request was sent.
+            /// </summary>
+            public event OCPPv2_1.CS.OnUnlockConnectorResponseDelegate?  OnUnlockConnectorResponse;
+
+            #endregion
+
+
+            #region AFRRSignal
+
+            /// <summary>
+            /// An event fired whenever an AFRR signal request was received from the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnAFRRSignalRequestDelegate?   OnAFRRSignalRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to an AFRR signal request was sent.
+            /// </summary>
+            public event OCPPv2_1.CS.OnAFRRSignalResponseDelegate?  OnAFRRSignalResponse;
+
+            #endregion
+
+
+            #region SetDisplayMessage
+
+            /// <summary>
+            /// An event fired whenever a SetDisplayMessage request was received from the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnSetDisplayMessageRequestDelegate?   OnSetDisplayMessageRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a SetDisplayMessage request was sent.
+            /// </summary>
+            public event OCPPv2_1.CS.OnSetDisplayMessageResponseDelegate?  OnSetDisplayMessageResponse;
+
+            #endregion
+
+            #region GetDisplayMessages
+
+            /// <summary>
+            /// An event fired whenever a GetDisplayMessages request was received from the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnGetDisplayMessagesRequestDelegate?   OnGetDisplayMessagesRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a GetDisplayMessages request was sent.
+            /// </summary>
+            public event OCPPv2_1.CS.OnGetDisplayMessagesResponseDelegate?  OnGetDisplayMessagesResponse;
+
+            #endregion
+
+            #region ClearDisplayMessage
+
+            /// <summary>
+            /// An event fired whenever a ClearDisplayMessage request was received from the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnClearDisplayMessageRequestDelegate?   OnClearDisplayMessageRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a ClearDisplayMessage request was sent.
+            /// </summary>
+            public event OCPPv2_1.CS.OnClearDisplayMessageResponseDelegate?  OnClearDisplayMessageResponse;
+
+            #endregion
+
+            #region SendCostUpdated
+
+            /// <summary>
+            /// An event fired whenever a CostUpdated request was received from the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnCostUpdatedRequestDelegate?   OnCostUpdatedRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a CostUpdated request was sent.
+            /// </summary>
+            public event OCPPv2_1.CS.OnCostUpdatedResponseDelegate?  OnCostUpdatedResponse;
+
+            #endregion
+
+            #region RequestCustomerInformation
+
+            /// <summary>
+            /// An event fired whenever a CustomerInformation request was received from the CSMS.
+            /// </summary>
+            public event OCPPv2_1.CS.OnCustomerInformationRequestDelegate?   OnCustomerInformationRequest;
+
+            /// <summary>
+            /// An event fired whenever a response to a CustomerInformation request was sent.
+            /// </summary>
+            public event OCPPv2_1.CS.OnCustomerInformationResponseDelegate?  OnCustomerInformationResponse;
+
+            #endregion
+
+
+            // Binary Data Streams Extensions
+
+            #region OnIncomingBinaryDataTransferRequest/-Response
+
+            /// <summary>
+            /// An event sent whenever a BinaryDataTransfer request was sent.
+            /// </summary>
+            public event OnIncomingBinaryDataTransferRequestDelegate?   OnIncomingBinaryDataTransferRequest;
+
+            /// <summary>
+            /// An event sent whenever a response to a BinaryDataTransfer request was sent.
+            /// </summary>
+            public event OnIncomingBinaryDataTransferResponseDelegate?  OnIncomingBinaryDataTransferResponse;
 
             #endregion
 
@@ -2119,7 +8078,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     throw new ArgumentNullException(nameof(Model),       "The given charging station model must not be null or empty!");
 
 
-                this.Id                       = NetworkingNode.Id;
                 this.parentNetworkingNode     = NetworkingNode;
 
                 //this.Configuration = new Dictionary<String, ConfigurationData> {
@@ -2221,7 +8179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 var networkingNodeWSClient = new CS.NetworkingNodeWSClient(
-                                                 Id,
+                                                 parentNetworkingNode.Id,
                                                  From,
                                                  To,
 
@@ -2349,7 +8307,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #endregion
 
-                    else if (request.DestinationNodeId != Id)
+                    else if (request.DestinationNodeId != parentNetworkingNode.Id)
                     {
 
                         DebugX.Log($"Forwarding incoming '{request.ResetType}' reset request to '{request.DestinationNodeId}'!");
@@ -2363,7 +8321,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                         var me_or_not_me = request.DestinationNodeId;
 
-                        DebugX.Log($"Charging station '{Id}': Incoming '{request.ResetType}' reset request{(request.EVSEId.HasValue ? $" for EVSE '{request.EVSEId}" : "")}'!");
+                        DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming '{request.ResetType}' reset request{(request.EVSEId.HasValue ? $" for EVSE '{request.EVSEId}" : "")}'!");
 
                         // ResetType
 
@@ -2502,7 +8460,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //    response = new OCPPv2_1.CS.UpdateFirmwareResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid UpdateFirmware request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid UpdateFirmware request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -2541,7 +8499,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         else
                         {
 
-                            DebugX.Log($"Charging station '{Id}': Incoming UpdateFirmware request ({request.UpdateFirmwareRequestId}) for '" + request.Firmware.FirmwareURL + "'.");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming UpdateFirmware request ({request.UpdateFirmwareRequestId}) for '" + request.Firmware.FirmwareURL + "'.");
 
                             // Firmware,
                             // UpdateFirmwareRequestId
@@ -2666,7 +8624,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //    response = new OCPPv2_1.CS.PublishFirmwareResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid PublishFirmware request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid PublishFirmware request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -2704,7 +8662,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         else
                         {
 
-                            DebugX.Log($"Charging station '{Id}': Incoming PublishFirmware request ({request.PublishFirmwareRequestId}) for '" + request.DownloadLocation + "'.");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming PublishFirmware request ({request.PublishFirmwareRequestId}) for '" + request.DownloadLocation + "'.");
 
                             // PublishFirmwareRequestId
                             // DownloadLocation
@@ -2830,7 +8788,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //    response = new OCPPv2_1.CS.UnpublishFirmwareResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid UnpublishFirmware request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid UnpublishFirmware request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -2868,7 +8826,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         else
                         {
 
-                            DebugX.Log($"Charging station '{Id}': Incoming UnpublishFirmware request for '" + request.MD5Checksum + "'.");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming UnpublishFirmware request for '" + request.MD5Checksum + "'.");
 
                             // MD5Checksum
 
@@ -2988,7 +8946,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //    response = new OCPPv2_1.CS.GetBaseReportResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid GetBaseReport request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid GetBaseReport request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -3026,7 +8984,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         else
                         {
 
-                            DebugX.Log($"Charging station '{Id}': Incoming GetBaseReport request ({request.GetBaseReportRequestId}) accepted.");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming GetBaseReport request ({request.GetBaseReportRequestId}) accepted.");
 
                             // GetBaseReportRequestId
                             // ReportBase
@@ -3149,7 +9107,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //    response = new OCPPv2_1.CS.GetReportResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid GetReport request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid GetReport request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -3191,7 +9149,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         else
                         {
 
-                            DebugX.Log($"Charging station '{Id}': Incoming GetReport request ({request.GetReportRequestId}) accepted.");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming GetReport request ({request.GetReportRequestId}) accepted.");
 
                             // GetReportRequestId
                             // ComponentCriteria
@@ -3315,7 +9273,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //    response = new OCPPv2_1.CS.GetLogResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid GetLog request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid GetLog request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -3354,7 +9312,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         else
                         {
 
-                            DebugX.Log($"Charging station '{Id}': Incoming GetLog request ({request.LogRequestId}) accepted.");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming GetLog request ({request.LogRequestId}) accepted.");
 
                             // LogType
                             // LogRequestId
@@ -3480,7 +9438,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //    response = new OCPPv2_1.CS.SetVariablesResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid SetVariables request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid SetVariables request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -3522,7 +9480,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         else
                         {
 
-                            DebugX.Log($"Charging station '{Id}': Incoming SetVariables request accepted.");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming SetVariables request accepted.");
 
                             // VariableData
 
@@ -3654,7 +9612,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //    response = new OCPPv2_1.CS.GetVariablesResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid GetVariables request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid GetVariables request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -3696,7 +9654,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         else
                         {
 
-                            DebugX.Log($"Charging station '{Id}': Incoming GetVariables request accepted.");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming GetVariables request accepted.");
 
                             // VariableData
 
@@ -3829,7 +9787,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //    response = new OCPPv2_1.CS.SetMonitoringBaseResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid SetMonitoringBase request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid SetMonitoringBase request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -3867,7 +9825,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         else
                         {
 
-                            DebugX.Log($"Charging station '{Id}': Incoming SetMonitoringBase request accepted.");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming SetMonitoringBase request accepted.");
 
                             // MonitoringBase
 
@@ -3989,7 +9947,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //    response = new OCPPv2_1.CS.GetMonitoringReportResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid GetMonitoringReport request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid GetMonitoringReport request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -4031,7 +9989,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         else
                         {
 
-                            DebugX.Log($"Charging station '{Id}': Incoming GetMonitoringReport request ({request.GetMonitoringReportRequestId}) accepted.");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming GetMonitoringReport request ({request.GetMonitoringReportRequestId}) accepted.");
 
                             // GetMonitoringReportRequestId
                             // MonitoringCriteria
@@ -4155,7 +10113,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //    response = new OCPPv2_1.CS.SetMonitoringLevelResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid SetMonitoringLevel request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid SetMonitoringLevel request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -4193,7 +10151,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         else
                         {
 
-                            DebugX.Log($"Charging station '{Id}': Incoming SetMonitoringLevel request accepted.");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming SetMonitoringLevel request accepted.");
 
                             // Severity
 
@@ -4315,7 +10273,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //    response = new OCPPv2_1.CS.SetVariableMonitoringResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid SetVariableMonitoring request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid SetVariableMonitoring request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -4358,7 +10316,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         else
                         {
 
-                            DebugX.Log($"Charging station '{Id}': Incoming SetMonitoringLevel request accepted.");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming SetMonitoringLevel request accepted.");
 
                             // MonitoringData
 
@@ -4492,7 +10450,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //    response = new OCPPv2_1.CS.ClearVariableMonitoringResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid ClearVariableMonitoring request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid ClearVariableMonitoring request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -4530,7 +10488,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         else
                         {
 
-                            DebugX.Log($"Charging station '{Id}': Incoming ClearVariableMonitoring request (VariableMonitoringIds: {request.VariableMonitoringIds.AggregateWith(", ")})");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming ClearVariableMonitoring request (VariableMonitoringIds: {request.VariableMonitoringIds.AggregateWith(", ")})");
 
                             // VariableMonitoringIds
 
@@ -4657,7 +10615,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //    response = new OCPPv2_1.CS.SetNetworkProfileResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid SetNetworkProfile request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid SetNetworkProfile request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -4698,7 +10656,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         else
                         {
 
-                            DebugX.Log($"Charging station '{Id}': Incoming SetNetworkProfile request for configuration slot {request.ConfigurationSlot}!");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming SetNetworkProfile request for configuration slot {request.ConfigurationSlot}!");
 
                             // ConfigurationSlot
                             // NetworkConnectionProfile
@@ -4820,7 +10778,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //    response = new OCPPv2_1.CS.ChangeAvailabilityResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid ChangeAvailability request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid ChangeAvailability request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -4859,7 +10817,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         else
                         {
 
-                            DebugX.Log($"Charging station '{Id}': Incoming ChangeAvailability request {request.OperationalStatus.AsText()}{(request.EVSE is not null ? $" for EVSE '{request.EVSE.Id}'{(request.EVSE.ConnectorId.HasValue ? $"/{request.EVSE.ConnectorId}" : "")}" : "")}!");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming ChangeAvailability request {request.OperationalStatus.AsText()}{(request.EVSE is not null ? $" for EVSE '{request.EVSE.Id}'{(request.EVSE.ConnectorId.HasValue ? $"/{request.EVSE.ConnectorId}" : "")}" : "")}!");
 
                             // OperationalStatus
                             // EVSE
@@ -4989,7 +10947,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //    response = new OCPPv2_1.CS.TriggerMessageResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid TriggerMessage request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid TriggerMessage request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -5028,7 +10986,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         else
                         {
 
-                            DebugX.Log($"Charging station '{Id}': Incoming TriggerMessage request for '{request.RequestedMessage}'{(request.EVSE is not null ? $" at EVSE '{request.EVSE.Id}'" : "")}!");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming TriggerMessage request for '{request.RequestedMessage}'{(request.EVSE is not null ? $" at EVSE '{request.EVSE.Id}'" : "")}!");
 
                             // RequestedMessage
                             // EVSE
@@ -5192,7 +11150,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <OCPPv2_1.CS.OnIncomingDataTransferRequestDelegate>().
+                                                               OfType <OnIncomingDataTransferRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
                                                                                                                  connection,
@@ -5219,14 +11177,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Check charging station identification
 
-                    OCPPv2_1.CS.DataTransferResponse? response = null;
+                    DataTransferResponse? response = null;
 
                     //if (request.ChargingStationId != Id)
                     //{
                     //    response = new OCPPv2_1.CS.DataTransferResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid DataTransfer request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid DataTransfer request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -5250,7 +11208,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                              ))
                         {
 
-                            response = new OCPPv2_1.CS.DataTransferResponse(
+                            response = new DataTransferResponse(
                                            Request:  request,
                                            Result:   Result.SignatureError(
                                                          $"Invalid signature: {errorResponse}"
@@ -5264,7 +11222,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         else
                         {
 
-                            DebugX.Log($"Charging Station '{Id}': Incoming data transfer request: {request.VendorId}.{request.MessageId?.ToString() ?? "-"}: {request.Data ?? "-"}!");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming data transfer request: {request.VendorId}.{request.MessageId?.ToString() ?? "-"}: {request.Data ?? "-"}!");
 
                             // VendorId
                             // MessageId
@@ -5311,14 +11269,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                             if (request.VendorId == Vendor_Id.GraphDefined)
                             {
-                                response = new OCPPv2_1.CS.DataTransferResponse(
+                                response = new DataTransferResponse(
                                                request,
                                                DataTransferStatus.Accepted,
                                                responseData
                                            );
                             }
                             else
-                                response = new OCPPv2_1.CS.DataTransferResponse(
+                                response = new DataTransferResponse(
                                                request,
                                                DataTransferStatus.Rejected
                                            );
@@ -5351,7 +11309,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <OCPPv2_1.CS.OnIncomingDataTransferResponseDelegate>().
+                                                                  OfType <OnIncomingDataTransferResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
                                                                                                                     connection,
@@ -5435,7 +11393,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //    response = new OCPPv2_1.CS.CertificateSignedResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid CertificateSigned request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid CertificateSigned request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -5473,7 +11431,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         else
                         {
 
-                            DebugX.Log($"Charging station '{Id}': Incoming CertificateSigned request{(request.CertificateType.HasValue ? $"(certificate type: {request.CertificateType.Value})" : "")}!");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming CertificateSigned request{(request.CertificateType.HasValue ? $"(certificate type: {request.CertificateType.Value})" : "")}!");
 
                             // CertificateChain
                             // CertificateType
@@ -5598,7 +11556,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //    response = new OCPPv2_1.CS.InstallCertificateResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid InstallCertificate request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid InstallCertificate request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -5636,7 +11594,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         else
                         {
 
-                            DebugX.Log($"Charging station '{Id}': Incoming InstallCertificate request (certificate type: {request.CertificateType}!");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming InstallCertificate request (certificate type: {request.CertificateType}!");
 
                             // CertificateType
                             // Certificate
@@ -5765,7 +11723,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //    response = new OCPPv2_1.CS.GetInstalledCertificateIdsResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid GetInstalledCertificateIds request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid GetInstalledCertificateIds request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -5803,7 +11761,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         else
                         {
 
-                            DebugX.Log($"Charging station '{Id}': Incoming GetInstalledCertificateIds request for certificate types: {request.CertificateTypes.Select(certificateType => certificateType).AggregateWith(", ")}!");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming GetInstalledCertificateIds request for certificate types: {request.CertificateTypes.Select(certificateType => certificateType).AggregateWith(", ")}!");
 
                             // CertificateTypes
 
@@ -5943,7 +11901,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //    response = new OCPPv2_1.CS.DeleteCertificateResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid DeleteCertificate request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid DeleteCertificate request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -5982,7 +11940,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         else
                         {
 
-                            DebugX.Log($"Charging station '{Id}': Incoming DeleteCertificate request!");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming DeleteCertificate request!");
 
                             // CertificateHashData
 
@@ -6110,7 +12068,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //    response = new OCPPv2_1.CS.NotifyCRLResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid NotifyCRL request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid NotifyCRL request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -6148,7 +12106,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         else
                         {
 
-                            DebugX.Log($"Charging station '{Id}': Incoming NotifyCRL request!");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming NotifyCRL request!");
 
                             // NotifyCRLRequestId
                             // Availability
@@ -6270,7 +12228,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //    response = new OCPPv2_1.CS.GetLocalListVersionResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid GetLocalListVersion request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid GetLocalListVersion request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -6308,7 +12266,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         else
                         {
 
-                            DebugX.Log($"Charging station '{Id}': Incoming GetLocalListVersion request!");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming GetLocalListVersion request!");
 
                             // none
 
@@ -6428,7 +12386,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //    response = new OCPPv2_1.CS.SendLocalListResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid SendLocalList request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid SendLocalList request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -6471,7 +12429,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         else
                         {
 
-                            DebugX.Log($"Charging station '{Id}': Incoming SendLocalList request: '{request.UpdateType.AsText()}' version '{request.VersionNumber}'!");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming SendLocalList request: '{request.UpdateType.AsText()}' version '{request.VersionNumber}'!");
 
                             // VersionNumber
                             // UpdateType
@@ -6594,7 +12552,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //    response = new OCPPv2_1.CS.ClearCacheResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid ClearCache request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid ClearCache request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -6632,7 +12590,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         else
                         {
 
-                            DebugX.Log($"Charging station '{Id}': Incoming ClearCache request!");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming ClearCache request!");
 
                             // none
 
@@ -6754,7 +12712,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //    response = new OCPPv2_1.CS.ReserveNowResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid ReserveNow request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid ReserveNow request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -6794,7 +12752,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         else
                         {
 
-                            DebugX.Log($"Charging station '{Id}': Incoming ReserveNow request (reservation id: {request.Id}, idToken: '{request.IdToken.Value}'{(request.EVSEId.HasValue ? $", evseId: '{request.EVSEId.Value}'" : "")})!");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming ReserveNow request (reservation id: {request.Id}, idToken: '{request.IdToken.Value}'{(request.EVSEId.HasValue ? $", evseId: '{request.EVSEId.Value}'" : "")})!");
 
                             // ReservationId
                             // ExpiryDate
@@ -6926,7 +12884,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //    response = new OCPPv2_1.CS.CancelReservationResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid CancelReservation request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid CancelReservation request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -6968,7 +12926,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                               ? reservations.TryRemove(request.ReservationId, out _)
                                               : true;
 
-                            DebugX.Log($"Charging station '{Id}': Incoming CancelReservation request for reservation id '{request.ReservationId}': {(success ? "accepted" : "rejected")}!");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming CancelReservation request for reservation id '{request.ReservationId}': {(success ? "accepted" : "rejected")}!");
 
                             // ReservationId
 
@@ -7092,7 +13050,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //    response = new OCPPv2_1.CS.RequestStartTransactionResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid RequestStartTransaction request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid RequestStartTransaction request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -7159,7 +13117,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         else
                         {
 
-                            DebugX.Log($"Charging station '{Id}': Incoming RequestStartTransaction for '{(request.EVSEId?.ToString() ?? "-")}'!");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming RequestStartTransaction for '{(request.EVSEId?.ToString() ?? "-")}'!");
 
                             // ToDo: lock(evses)
 
@@ -7279,7 +13237,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //    response = new OCPPv2_1.CS.RequestStopTransactionResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid RequestStopTransaction request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid RequestStopTransaction request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -7317,7 +13275,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         else
                         {
 
-                            DebugX.Log($"Charging station '{Id}': Incoming RequestStopTransaction for '{request.TransactionId}'!");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming RequestStopTransaction for '{request.TransactionId}'!");
 
                             // TransactionId
 
@@ -7437,7 +13395,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //    response = new OCPPv2_1.CS.GetTransactionStatusResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid GetTransactionStatus request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid GetTransactionStatus request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -7475,7 +13433,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         else
                         {
 
-                            DebugX.Log($"Charging station '{Id}': Incoming GetTransactionStatus for '{request.TransactionId}'!");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming GetTransactionStatus for '{request.TransactionId}'!");
 
                             // TransactionId
 
@@ -7595,7 +13553,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //    response = new OCPPv2_1.CS.SetChargingProfileResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid SetChargingProfile request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid SetChargingProfile request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -7658,7 +13616,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         else
                         {
 
-                            DebugX.Log($"Charging station '{Id}': Incoming SetChargingProfile for '{request.EVSEId}'!");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming SetChargingProfile for '{request.EVSEId}'!");
 
                             // EVSEId
                             // ChargingProfile
@@ -7779,7 +13737,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //    response = new OCPPv2_1.CS.GetChargingProfilesResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid GetChargingProfiles request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid GetChargingProfiles request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -7818,7 +13776,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         else
                         {
 
-                            DebugX.Log($"Charging station '{Id}': Incoming GetChargingProfiles request ({request.GetChargingProfilesRequestId}) for '{request.EVSEId}'!");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming GetChargingProfiles request ({request.GetChargingProfilesRequestId}) for '{request.EVSEId}'!");
 
                             // GetChargingProfilesRequestId
                             // ChargingProfile
@@ -7940,7 +13898,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //    response = new OCPPv2_1.CS.ClearChargingProfileResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid ClearChargingProfile request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid ClearChargingProfile request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -7979,7 +13937,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         else
                         {
 
-                            DebugX.Log($"Charging station '{Id}': Incoming ClearChargingProfile request for charging profile identification '{request.ChargingProfileId}'!");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming ClearChargingProfile request for charging profile identification '{request.ChargingProfileId}'!");
 
                             // ChargingProfileId
                             // ChargingProfileCriteria
@@ -8102,7 +14060,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //    response = new OCPPv2_1.CS.GetCompositeScheduleResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid GetCompositeSchedule request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid GetCompositeSchedule request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -8140,7 +14098,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         else
                         {
 
-                            DebugX.Log($"Charging station '{Id}': Incoming GetCompositeSchedule request for the next {request.Duration.TotalMinutes} minutes of EVSE '{request.EVSEId}'!");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming GetCompositeSchedule request for the next {request.Duration.TotalMinutes} minutes of EVSE '{request.EVSEId}'!");
 
                             // Duration,
                             // EVSEId,
@@ -8267,7 +14225,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //    response = new OCPPv2_1.CS.UpdateDynamicScheduleResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid UpdateDynamicSchedule request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid UpdateDynamicSchedule request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -8305,7 +14263,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         else
                         {
 
-                            DebugX.Log($"Charging station '{Id}': Incoming UpdateDynamicSchedule request for charging profile '{request.ChargingProfileId}'!");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming UpdateDynamicSchedule request for charging profile '{request.ChargingProfileId}'!");
 
                             // ChargingProfileId
 
@@ -8443,7 +14401,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //    response = new OCPPv2_1.CS.NotifyAllowedEnergyTransferResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid NotifyAllowedEnergyTransfer request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid NotifyAllowedEnergyTransfer request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -8481,7 +14439,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         else
                         {
 
-                            DebugX.Log($"Charging station '{Id}': Incoming NotifyAllowedEnergyTransfer request allowing energy transfer modes: '{request.AllowedEnergyTransferModes.Select(mode => mode.ToString()).AggregateWith(", ")}'!");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming NotifyAllowedEnergyTransfer request allowing energy transfer modes: '{request.AllowedEnergyTransferModes.Select(mode => mode.ToString()).AggregateWith(", ")}'!");
 
                             // AllowedEnergyTransferModes
 
@@ -8603,7 +14561,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //    response = new OCPPv2_1.CS.UsePriorityChargingResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid UsePriorityCharging request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid UsePriorityCharging request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -8641,7 +14599,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         else
                         {
 
-                            DebugX.Log($"Charging station '{Id}': Incoming UsePriorityCharging request for transaction '{request.TransactionId}': {(request.Activate ? "active" : "disabled")}!");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming UsePriorityCharging request for transaction '{request.TransactionId}': {(request.Activate ? "active" : "disabled")}!");
 
                             // TransactionId
                             // Activate
@@ -8764,7 +14722,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //    response = new OCPPv2_1.CS.UnlockConnectorResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid UnlockConnector request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid UnlockConnector request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -8802,7 +14760,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         else
                         {
 
-                            DebugX.Log($"Charging station '{Id}': Incoming UnlockConnector request for EVSE '{request.EVSEId}' and connector '{request.ConnectorId}'!");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming UnlockConnector request for EVSE '{request.EVSEId}' and connector '{request.ConnectorId}'!");
 
                             // EVSEId
                             // ConnectorId
@@ -8926,7 +14884,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //    response = new OCPPv2_1.CS.AFRRSignalResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid AFRRSignal request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid AFRRSignal request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -8964,7 +14922,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         else
                         {
 
-                            DebugX.Log($"Charging station '{Id}': Incoming AFRRSignal '{request.Signal}' for timestamp '{request.ActivationTimestamp}'!");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming AFRRSignal '{request.Signal}' for timestamp '{request.ActivationTimestamp}'!");
 
                             // ActivationTimestamp
                             // Signal
@@ -9090,7 +15048,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //    response = new OCPPv2_1.CS.SetDisplayMessageResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid SetDisplayMessage request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid SetDisplayMessage request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -9132,7 +15090,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         else
                         {
 
-                            DebugX.Log($"Charging station '{Id}': Incoming SetDisplayMessage '{request.Message.Message.Content}'!");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming SetDisplayMessage '{request.Message.Message.Content}'!");
 
                             // Message
 
@@ -9267,7 +15225,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //    response = new OCPPv2_1.CS.GetDisplayMessagesResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid GetDisplayMessages request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid GetDisplayMessages request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -9305,7 +15263,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         else
                         {
 
-                            DebugX.Log($"Charging station '{Id}': Incoming GetDisplayMessages request ({request.GetDisplayMessagesRequestId})!");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming GetDisplayMessages request ({request.GetDisplayMessagesRequestId})!");
 
                             // GetDisplayMessagesRequestId
                             // Ids
@@ -9321,7 +15279,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                   ToArray();
 
                                 await parentNetworkingNode.NotifyDisplayMessages(
-                                          NotifyDisplayMessagesRequestId:   request.GetDisplayMessagesRequestId,
+                                          NotifyDisplayMessagesRequestId:   1,
                                           MessageInfos:                     filteredDisplayMessages,
                                           ToBeContinued:                    false,
                                           CustomData:                       null
@@ -9446,7 +15404,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //    response = new OCPPv2_1.CS.ClearDisplayMessageResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid ClearDisplayMessage request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid ClearDisplayMessage request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -9484,7 +15442,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         else
                         {
 
-                            DebugX.Log($"Charging station '{Id}': Incoming ClearDisplayMessage request ({request.DisplayMessageId})!");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming ClearDisplayMessage request ({request.DisplayMessageId})!");
 
                             // DisplayMessageId
 
@@ -9614,7 +15572,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //    response = new OCPPv2_1.CS.CostUpdatedResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid CostUpdated request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid CostUpdated request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -9652,7 +15610,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         else
                         {
 
-                            DebugX.Log($"Charging station '{Id}': Incoming CostUpdated request '{request.TotalCost}' for transaction '{request.TransactionId}'!");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming CostUpdated request '{request.TotalCost}' for transaction '{request.TransactionId}'!");
 
                             // TotalCost
                             // TransactionId
@@ -9785,7 +15743,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //    response = new OCPPv2_1.CS.CustomerInformationResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid CustomerInformation request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid CustomerInformation request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -9848,7 +15806,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                            : "-";
 
 
-                            DebugX.Log($"Charging station '{Id}': Incoming CustomerInformation request ({request.CustomerInformationRequestId}) to {command} for customer '{customer}'!");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming CustomerInformation request ({request.CustomerInformationRequestId}) to {command} for customer '{customer}'!");
 
                             // CustomerInformationRequestId
                             // Report
@@ -9862,7 +15820,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                             _ = Task.Run(async () => {
 
                                 await parentNetworkingNode.NotifyCustomerInformation(
-                                          NotifyCustomerInformationRequestId:   request.CustomerInformationRequestId,
+                                          NotifyCustomerInformationRequestId:   1,
                                           Data:                                 customer,
                                           SequenceNumber:                       1,
                                           GeneratedAt:                          Timestamp.Now,
@@ -9960,7 +15918,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <OCPP.CS.OnIncomingBinaryDataTransferRequestDelegate>().
+                                                               OfType <OnIncomingBinaryDataTransferRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
                                                                                                                  connection,
@@ -9987,14 +15945,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Check charging station identification
 
-                    OCPP.CS.BinaryDataTransferResponse? response = null;
+                    BinaryDataTransferResponse? response = null;
 
                     //if (request.ChargingStationId != Id)
                     //{
                     //    response = new OCPP.CS.BinaryDataTransferResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid BinaryDataTransfer request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid BinaryDataTransfer request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -10018,7 +15976,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                              ))
                         {
 
-                            response = new OCPP.CS.BinaryDataTransferResponse(
+                            response = new BinaryDataTransferResponse(
                                            Request:  request,
                                            Result:   Result.SignatureError(
                                                          $"Invalid signature: {errorResponse}"
@@ -10032,7 +15990,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         else
                         {
 
-                            DebugX.Log($"Charging Station '{Id}': Incoming BinaryDataTransfer request: {request.VendorId}.{request.MessageId?.ToString() ?? "-"}: {request.Data?.ToHexString() ?? "-"}!");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming BinaryDataTransfer request: {request.VendorId}.{request.MessageId?.ToString() ?? "-"}: {request.Data?.ToHexString() ?? "-"}!");
 
                             // VendorId
                             // MessageId
@@ -10045,14 +16003,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                             response = request.VendorId == Vendor_Id.GraphDefined
 
-                                           ? new OCPP.CS.BinaryDataTransferResponse(
+                                           ? new BinaryDataTransferResponse(
                                                  Request:                request,
                                                  Status:                 BinaryDataTransferStatus.Accepted,
                                                  AdditionalStatusInfo:   null,
                                                  Data:                   responseBinaryData
                                              )
 
-                                           : new OCPP.CS.BinaryDataTransferResponse(
+                                           : new BinaryDataTransferResponse(
                                                  Request:                request,
                                                  Status:                 BinaryDataTransferStatus.Rejected,
                                                  AdditionalStatusInfo:   null,
@@ -10087,7 +16045,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <OCPP.CS.OnIncomingBinaryDataTransferResponseDelegate>().
+                                                                  OfType <OnIncomingBinaryDataTransferResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
                                                                                                                     connection,
@@ -10170,7 +16128,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //    response = new OCPP.CS.GetFileResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid GetFile request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid GetFile request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -10208,7 +16166,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         else
                         {
 
-                            DebugX.Log($"Charging Station '{Id}': Incoming GetFile request: {request.FileName}!");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming GetFile request: {request.FileName}!");
 
                             response = request.FileName.ToString() == "/hello/world.txt"
 
@@ -10339,7 +16297,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //    response = new OCPP.CS.SendFileResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid SendFile request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid SendFile request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -10377,7 +16335,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         else
                         {
 
-                            DebugX.Log($"Charging Station '{Id}': Incoming SendFile request: {request.FileName}!");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming SendFile request: {request.FileName}!");
 
                             response = request.FileName.ToString() == "/hello/world.txt"
 
@@ -10504,7 +16462,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //    response = new OCPP.CS.DeleteFileResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid DeleteFile request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid DeleteFile request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -10542,7 +16500,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         else
                         {
 
-                            DebugX.Log($"Charging Station '{Id}': Incoming DeleteFile request: {request.FileName}!");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming DeleteFile request: {request.FileName}!");
 
                             response = request.FileName.ToString() == "/hello/world.txt"
 
@@ -10672,7 +16630,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //    response = new OCPP.CS.AddSignaturePolicyResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid AddSignaturePolicy request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid AddSignaturePolicy request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -10714,7 +16672,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         else
                         {
 
-                            DebugX.Log($"Charging station '{Id}': Incoming AddSignaturePolicy!");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming AddSignaturePolicy!");
 
                             // Message
 
@@ -10838,7 +16796,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //    response = new OCPP.CS.UpdateSignaturePolicyResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid UpdateSignaturePolicy request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid UpdateSignaturePolicy request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -10880,7 +16838,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         else
                         {
 
-                            DebugX.Log($"Charging station '{Id}': Incoming UpdateSignaturePolicy!");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming UpdateSignaturePolicy!");
 
                             // Message
 
@@ -11002,7 +16960,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //    response = new OCPP.CS.DeleteSignaturePolicyResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid DeleteSignaturePolicy request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid DeleteSignaturePolicy request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -11044,7 +17002,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         else
                         {
 
-                            DebugX.Log($"Charging station '{Id}': Incoming DeleteSignaturePolicy!");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming DeleteSignaturePolicy!");
 
                             // Message
 
@@ -11166,7 +17124,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //    response = new OCPP.CS.AddUserRoleResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid AddUserRole request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid AddUserRole request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -11208,7 +17166,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         else
                         {
 
-                            DebugX.Log($"Charging station '{Id}': Incoming AddUserRole!");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming AddUserRole!");
 
                             // Message
 
@@ -11330,7 +17288,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //    response = new OCPP.CS.UpdateUserRoleResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid UpdateUserRole request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid UpdateUserRole request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -11372,7 +17330,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         else
                         {
 
-                            DebugX.Log($"Charging station '{Id}': Incoming UpdateUserRole!");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming UpdateUserRole!");
 
                             // Message
 
@@ -11494,7 +17452,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //    response = new OCPP.CS.DeleteUserRoleResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid DeleteUserRole request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid DeleteUserRole request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -11536,7 +17494,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         else
                         {
 
-                            DebugX.Log($"Charging station '{Id}': Incoming DeleteUserRole!");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming DeleteUserRole!");
 
                             // Message
 
@@ -11661,7 +17619,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //    response = new OCPPv2_1.CS.SetDefaultChargingTariffResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid SetDefaultChargingTariff request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid SetDefaultChargingTariff request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -11710,7 +17668,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         else
                         {
 
-                            DebugX.Log($"Charging station '{Id}': Incoming SetDefaultChargingTariff!");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming SetDefaultChargingTariff!");
 
                             List<EVSEStatusInfo<SetDefaultChargingTariffStatus>>? evseStatusInfos = null;
 
@@ -11896,7 +17854,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //    response = new OCPPv2_1.CS.GetDefaultChargingTariffResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid GetDefaultChargingTariff request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid GetDefaultChargingTariff request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -11934,7 +17892,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         else
                         {
 
-                            DebugX.Log($"Charging station '{Id}': Incoming GetDefaultChargingTariff!");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming GetDefaultChargingTariff!");
 
                             response = new OCPPv2_1.CS.GetDefaultChargingTariffResponse(
                                            Request:             request,
@@ -12067,7 +18025,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //    response = new OCPPv2_1.CS.RemoveDefaultChargingTariffResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging station '{Id}': Invalid RemoveDefaultChargingTariff request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid RemoveDefaultChargingTariff request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -12105,7 +18063,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         else
                         {
 
-                            DebugX.Log($"Charging station '{Id}': Incoming RemoveDefaultChargingTariff!");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming RemoveDefaultChargingTariff!");
 
                             response = new OCPPv2_1.CS.RemoveDefaultChargingTariffResponse(
                                            Request:           request,
@@ -12363,16 +18321,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Properties
 
-            /// <summary>
-            /// The unique identification of this central system.
-            /// </summary>
-            public NetworkingNode_Id   Id                        { get; }
+            public NetworkingNode_Id Id
+                => parentNetworkingNode.Id;
 
             /// <summary>
             /// The sender identification.
             /// </summary>
             String IEventSender.Id
-                => this.Id.ToString();
+                => parentNetworkingNode.Id.ToString();
 
 
             public CSMS.NetworkingNodeUploadAPI HTTPUploadAPI             { get; }
@@ -12682,12 +18638,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event sent whenever an IncomingDataTransfer request was received.
             /// </summary>
-            public event OCPPv2_1.CSMS.OnIncomingDataTransferRequestDelegate?   OnIncomingDataTransferRequest;
+            public event OnIncomingDataTransferRequestDelegate?   OnIncomingDataTransferRequest;
 
             /// <summary>
             /// An event sent whenever a response to an IncomingDataTransfer request was sent.
             /// </summary>
-            public event OCPPv2_1.CSMS.OnIncomingDataTransferResponseDelegate?  OnIncomingDataTransferResponse;
+            public event OnIncomingDataTransferResponseDelegate?  OnIncomingDataTransferResponse;
 
             #endregion
 
@@ -12954,12 +18910,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event sent whenever an IncomingBinaryDataTransfer request was received.
             /// </summary>
-            public event OCPP.CSMS.OnIncomingBinaryDataTransferRequestDelegate?   OnIncomingBinaryDataTransferRequest;
+            public event OnIncomingBinaryDataTransferRequestDelegate?   OnIncomingBinaryDataTransferRequest;
 
             /// <summary>
             /// An event sent whenever a response to an IncomingBinaryDataTransfer request was sent.
             /// </summary>
-            public event OCPP.CSMS.OnIncomingBinaryDataTransferResponseDelegate?  OnIncomingBinaryDataTransferResponse;
+            public event OnIncomingBinaryDataTransferResponseDelegate?  OnIncomingBinaryDataTransferResponse;
 
             #endregion
 
@@ -13211,12 +19167,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event sent whenever a DataTransfer request will be sent to the charging station.
             /// </summary>
-            public event OCPPv2_1.CSMS.OnDataTransferRequestDelegate?   OnDataTransferRequest;
+            public event OnDataTransferRequestDelegate?   OnDataTransferRequest;
 
             /// <summary>
             /// An event sent whenever a response to a DataTransfer request was received.
             /// </summary>
-            public event OCPPv2_1.CSMS.OnDataTransferResponseDelegate?  OnDataTransferResponse;
+            public event OnDataTransferResponseDelegate?  OnDataTransferResponse;
 
             #endregion
 
@@ -13611,12 +19567,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// An event sent whenever a BinaryDataTransfer request will be sent to the charging station.
             /// </summary>
-            public event OCPP.CSMS.OnBinaryDataTransferRequestDelegate?   OnBinaryDataTransferRequest;
+            public event OnBinaryDataTransferRequestDelegate?   OnBinaryDataTransferRequest;
 
             /// <summary>
             /// An event sent whenever a response to a BinaryDataTransfer request was received.
             /// </summary>
-            public event OCPP.CSMS.OnBinaryDataTransferResponseDelegate?  OnBinaryDataTransferResponse;
+            public event OnBinaryDataTransferResponseDelegate?  OnBinaryDataTransferResponse;
 
             #endregion
 
@@ -13953,7 +19909,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.SetNetworkProfileRequest>?                            CustomSetNetworkProfileRequestSerializer                     { get; set; }
             public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.ChangeAvailabilityRequest>?                           CustomChangeAvailabilityRequestSerializer                    { get; set; }
             public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.TriggerMessageRequest>?                               CustomTriggerMessageRequestSerializer                        { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.DataTransferRequest>?                                 CustomDataTransferRequestSerializer                          { get; set; }
+            public CustomJObjectSerializerDelegate<              DataTransferRequest>?                                 CustomDataTransferRequestSerializer                          { get; set; }
 
 
             public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.CertificateSignedRequest>?                            CustomCertificateSignedRequestSerializer                     { get; set; }
@@ -13993,20 +19949,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             // Binary Data Streams Extensions
 
-            public CustomBinarySerializerDelegate <OCPP.CSMS.BinaryDataTransferRequest>?                               CustomBinaryDataTransferRequestSerializer                    { get; set; }
-            public CustomJObjectSerializerDelegate<OCPP.CSMS.GetFileRequest>?                                          CustomGetFileRequestSerializer                               { get; set; }
-            public CustomBinarySerializerDelegate <OCPP.CSMS.SendFileRequest>?                                         CustomSendFileRequestSerializer                              { get; set; }
-            public CustomJObjectSerializerDelegate<OCPP.CSMS.DeleteFileRequest>?                                       CustomDeleteFileRequestSerializer                            { get; set; }
+            public CustomBinarySerializerDelegate <OCPP.BinaryDataTransferRequest>?                                    CustomBinaryDataTransferRequestSerializer                    { get; set; }
+            public CustomJObjectSerializerDelegate<GetFileRequest>?                                                    CustomGetFileRequestSerializer                               { get; set; }
+            public CustomBinarySerializerDelegate <SendFileRequest>?                                                   CustomSendFileRequestSerializer                              { get; set; }
+            public CustomJObjectSerializerDelegate<DeleteFileRequest>?                                                 CustomDeleteFileRequestSerializer                            { get; set; }
 
 
             // E2E Security Extensions
 
-            public CustomJObjectSerializerDelegate<OCPP.CSMS.AddSignaturePolicyRequest>?                               CustomAddSignaturePolicyRequestSerializer                    { get; set; }
-            public CustomJObjectSerializerDelegate<OCPP.CSMS.UpdateSignaturePolicyRequest>?                            CustomUpdateSignaturePolicyRequestSerializer                 { get; set; }
-            public CustomJObjectSerializerDelegate<OCPP.CSMS.DeleteSignaturePolicyRequest>?                            CustomDeleteSignaturePolicyRequestSerializer                 { get; set; }
-            public CustomJObjectSerializerDelegate<OCPP.CSMS.AddUserRoleRequest>?                                      CustomAddUserRoleRequestSerializer                           { get; set; }
-            public CustomJObjectSerializerDelegate<OCPP.CSMS.UpdateUserRoleRequest>?                                   CustomUpdateUserRoleRequestSerializer                        { get; set; }
-            public CustomJObjectSerializerDelegate<OCPP.CSMS.DeleteUserRoleRequest>?                                   CustomDeleteUserRoleRequestSerializer                        { get; set; }
+            public CustomJObjectSerializerDelegate<AddSignaturePolicyRequest>?                                         CustomAddSignaturePolicyRequestSerializer                    { get; set; }
+            public CustomJObjectSerializerDelegate<UpdateSignaturePolicyRequest>?                                      CustomUpdateSignaturePolicyRequestSerializer                 { get; set; }
+            public CustomJObjectSerializerDelegate<DeleteSignaturePolicyRequest>?                                      CustomDeleteSignaturePolicyRequestSerializer                 { get; set; }
+            public CustomJObjectSerializerDelegate<AddUserRoleRequest>?                                                CustomAddUserRoleRequestSerializer                           { get; set; }
+            public CustomJObjectSerializerDelegate<UpdateUserRoleRequest>?                                             CustomUpdateUserRoleRequestSerializer                        { get; set; }
+            public CustomJObjectSerializerDelegate<DeleteUserRoleRequest>?                                             CustomDeleteUserRoleRequestSerializer                        { get; set; }
 
 
             // E2E Charging Tariffs
@@ -14027,7 +19983,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.NotifyReportResponse>?                                CustomNotifyReportResponseSerializer                         { get; set; }
             public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.NotifyMonitoringReportResponse>?                      CustomNotifyMonitoringReportResponseSerializer               { get; set; }
             public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.LogStatusNotificationResponse>?                       CustomLogStatusNotificationResponseSerializer                { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.DataTransferResponse>?                                CustomIncomingDataTransferResponseSerializer                 { get; set; }
+            public CustomJObjectSerializerDelegate<              DataTransferResponse>?                                CustomIncomingDataTransferResponseSerializer                 { get; set; }
 
             public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.SignCertificateResponse>?                             CustomSignCertificateResponseSerializer                      { get; set; }
             public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.Get15118EVCertificateResponse>?                       CustomGet15118EVCertificateResponseSerializer                { get; set; }
@@ -14052,7 +20008,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             // Binary Data Streams Extensions
-            public CustomBinarySerializerDelegate <OCPP.    CSMS.BinaryDataTransferResponse>?                          CustomIncomingBinaryDataTransferResponseSerializer           { get; set; }
+            public CustomBinarySerializerDelegate <OCPP.         BinaryDataTransferResponse>?                          CustomIncomingBinaryDataTransferResponseSerializer           { get; set; }
 
             #endregion
 
@@ -14068,7 +20024,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyReportRequest>?                              CustomNotifyReportRequestSerializer                          { get; set; }
             public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyMonitoringReportRequest>?                    CustomNotifyMonitoringReportRequestSerializer                { get; set; }
             public CustomJObjectSerializerDelegate<OCPPv2_1.CS.LogStatusNotificationRequest>?                     CustomLogStatusNotificationRequestSerializer                 { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.DataTransferRequest>?                              CustomIncomingDataTransferRequestSerializer                  { get; set; }
+            public CustomJObjectSerializerDelegate<            DataTransferRequest>?                              CustomIncomingDataTransferRequestSerializer                  { get; set; }
 
             public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SignCertificateRequest>?                           CustomSignCertificateRequestSerializer                       { get; set; }
             public CustomJObjectSerializerDelegate<OCPPv2_1.CS.Get15118EVCertificateRequest>?                     CustomGet15118EVCertificateRequestSerializer                 { get; set; }
@@ -14093,7 +20049,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             // Binary Data Streams Extensions
-            public CustomBinarySerializerDelegate <OCPP.    CS.BinaryDataTransferRequest>?                        CustomIncomingBinaryDataTransferRequestSerializer            { get; set; }
+            public CustomBinarySerializerDelegate <OCPP.       BinaryDataTransferRequest>?                        CustomIncomingBinaryDataTransferRequestSerializer            { get; set; }
 
             #endregion
 
@@ -14117,7 +20073,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SetNetworkProfileResponse>?                        CustomSetNetworkProfileResponseSerializer                    { get; set; }
             public CustomJObjectSerializerDelegate<OCPPv2_1.CS.ChangeAvailabilityResponse>?                       CustomChangeAvailabilityResponseSerializer                   { get; set; }
             public CustomJObjectSerializerDelegate<OCPPv2_1.CS.TriggerMessageResponse>?                           CustomTriggerMessageResponseSerializer                       { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.DataTransferResponse>?                             CustomDataTransferResponseSerializer                         { get; set; }
+            public CustomJObjectSerializerDelegate<            DataTransferResponse>?                             CustomDataTransferResponseSerializer                         { get; set; }
 
             public CustomJObjectSerializerDelegate<OCPPv2_1.CS.CertificateSignedResponse>?                        CustomCertificateSignedResponseSerializer                    { get; set; }
             public CustomJObjectSerializerDelegate<OCPPv2_1.CS.InstallCertificateResponse>?                       CustomInstallCertificateResponseSerializer                   { get; set; }
@@ -14153,10 +20109,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             // Binary Data Streams Extensions
-            public CustomBinarySerializerDelegate <OCPP.    CS.BinaryDataTransferResponse>?                       CustomBinaryDataTransferResponseSerializer                   { get; set; }
-            public CustomBinarySerializerDelegate <OCPP.    CS.GetFileResponse>?                                  CustomGetFileResponseSerializer                              { get; set; }
-            public CustomJObjectSerializerDelegate<OCPP.    CS.SendFileResponse>?                                 CustomSendFileResponseSerializer                             { get; set; }
-            public CustomJObjectSerializerDelegate<OCPP.    CS.DeleteFileResponse>?                               CustomDeleteFileResponseSerializer                           { get; set; }
+            public CustomBinarySerializerDelegate <OCPP.       BinaryDataTransferResponse>?                       CustomBinaryDataTransferResponseSerializer                   { get; set; }
+            public CustomBinarySerializerDelegate <            GetFileResponse>?                                  CustomGetFileResponseSerializer                              { get; set; }
+            public CustomJObjectSerializerDelegate<            SendFileResponse>?                                 CustomSendFileResponseSerializer                             { get; set; }
+            public CustomJObjectSerializerDelegate<            DeleteFileResponse>?                               CustomDeleteFileResponseSerializer                           { get; set; }
 
 
             // E2E Charging Tariff Extensions
@@ -14291,7 +20247,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             {
 
-                this.Id                      = NetworkingNode.Id;
                 this.parentNetworkingNode    = NetworkingNode;
                 this.RequireAuthentication   = RequireAuthentication;
                 this.DefaultRequestTimeout   = DefaultRequestTimeout ?? defaultRequestTimeout;
@@ -15055,7 +21010,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         // ToDo: Add aditional request signature!
 
                         // Explicit sending to upstream CSMS!
-                        response  = await parentNetworkingNode.BootNotification(request);
+                        response  = await parentNetworkingNode.OUT.BootNotification(request);
 
 
                         //response =  new OCPPv2_1.CSMS.BootNotificationResponse(
@@ -16121,7 +22076,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <OCPPv2_1.CSMS.OnIncomingDataTransferRequestDelegate>().
+                                                               OfType <OnIncomingDataTransferRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
                                                                                                                  connection,
@@ -16204,7 +22159,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                        out var errorResponse
                                    )
 
-                                       ? new OCPPv2_1.CSMS.DataTransferResponse(
+                                       ? new DataTransferResponse(
                                              Request:      request,
                                              Result:       Result.SignatureError(
                                                                $"Invalid signature(s): {errorResponse}"
@@ -16213,7 +22168,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                        : request.VendorId == Vendor_Id.GraphDefined
 
-                                             ? new OCPPv2_1.CSMS.DataTransferResponse(
+                                             ? new DataTransferResponse(
                                                    Request:      request,
                                                    Status:       DataTransferStatus.Accepted,
                                                    Data:         responseData,
@@ -16221,7 +22176,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                    CustomData:   null
                                                )
 
-                                             : new OCPPv2_1.CSMS.DataTransferResponse(
+                                             : new DataTransferResponse(
                                                    Request:      request,
                                                    Status:       DataTransferStatus.Rejected,
                                                    Data:         null,
@@ -16249,7 +22204,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <OCPPv2_1.CSMS.OnIncomingDataTransferResponseDelegate>().
+                                                                  OfType <OnIncomingDataTransferResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
                                                                                                                     connection,
@@ -18662,7 +24617,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <OCPP.CSMS.OnIncomingBinaryDataTransferRequestDelegate>().
+                                                               OfType <OnIncomingBinaryDataTransferRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
                                                                                                                  null,
@@ -18696,7 +24651,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
                     // Explicit sending to upstream CSMS!
-                    var response  = await parentNetworkingNode.BinaryDataTransfer(request);
+                    var response  = await parentNetworkingNode.OUT.BinaryDataTransfer(request);
 
 
 
@@ -18720,7 +24675,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         var responseTime         = Timestamp.Now;
 
                         var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <OCPP.CSMS.OnIncomingBinaryDataTransferResponseDelegate>().
+                                                                  OfType <OnIncomingBinaryDataTransferResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
                                                                                                                     null,
@@ -18854,7 +24809,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                     : new OCPPv2_1.CS.ResetResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -18950,7 +24905,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                     : new OCPPv2_1.CS.UpdateFirmwareResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -19045,7 +25000,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                     : new OCPPv2_1.CS.PublishFirmwareResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -19140,7 +25095,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                     : new OCPPv2_1.CS.UnpublishFirmwareResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -19234,7 +25189,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                     : new OCPPv2_1.CS.GetBaseReportResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -19333,7 +25288,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                     : new OCPPv2_1.CS.GetReportResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -19429,7 +25384,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                     : new OCPPv2_1.CS.GetLogResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -19529,7 +25484,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                     : new OCPPv2_1.CS.SetVariablesResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -19632,7 +25587,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                     : new OCPPv2_1.CS.GetVariablesResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -19731,7 +25686,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                     : new OCPPv2_1.CS.SetMonitoringBaseResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -19830,7 +25785,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                     : new OCPPv2_1.CS.GetMonitoringReportResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -19925,7 +25880,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                     : new OCPPv2_1.CS.SetMonitoringLevelResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -20025,7 +25980,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                     : new OCPPv2_1.CS.SetVariableMonitoringResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -20124,7 +26079,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                     : new OCPPv2_1.CS.ClearVariableMonitoringResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -20223,7 +26178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                     : new OCPPv2_1.CS.SetNetworkProfileResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -20319,7 +26274,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                     : new OCPPv2_1.CS.ChangeAvailabilityResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -20415,7 +26370,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                     : new OCPPv2_1.CS.TriggerMessageResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -20464,8 +26419,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// Transfer the given data to the given charging station.
             /// </summary>
             /// <param name="Request">A DataTransfer request.</param>
-            public async Task<OCPPv2_1.CS.DataTransferResponse>
-                TransferData(OCPPv2_1.CSMS.DataTransferRequest Request)
+            public async Task<DataTransferResponse>
+                TransferData(DataTransferRequest Request)
 
             {
 
@@ -20503,14 +26458,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                           ? await centralSystem.TransferData(Request)
 
-                                          : new OCPPv2_1.CS.DataTransferResponse(
+                                          : new DataTransferResponse(
                                                 Request,
                                                 Result.SignatureError(errorResponse)
                                             )
 
-                                    : new OCPPv2_1.CS.DataTransferResponse(
+                                    : new DataTransferResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -20606,7 +26561,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                     : new OCPPv2_1.CS.CertificateSignedResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -20701,7 +26656,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                     : new OCPPv2_1.CS.InstallCertificateResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -20796,7 +26751,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                     : new OCPPv2_1.CS.GetInstalledCertificateIdsResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -20893,7 +26848,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                     : new OCPPv2_1.CS.DeleteCertificateResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -20988,7 +26943,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                     : new OCPPv2_1.CS.NotifyCRLResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -21083,7 +27038,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                     : new OCPPv2_1.CS.GetLocalListVersionResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -21182,7 +27137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                     : new OCPPv2_1.CS.SendLocalListResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -21277,7 +27232,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                     : new OCPPv2_1.CS.ClearCacheResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -21375,7 +27330,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                     : new OCPPv2_1.CS.ReserveNowResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -21470,7 +27425,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                     : new OCPPv2_1.CS.CancelReservationResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -21592,7 +27547,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                     : new OCPPv2_1.CS.RequestStartTransactionResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -21687,7 +27642,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                     : new OCPPv2_1.CS.RequestStopTransactionResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -21782,7 +27737,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                     : new OCPPv2_1.CS.GetTransactionStatusResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -21899,7 +27854,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                     : new OCPPv2_1.CS.SetChargingProfileResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -21995,7 +27950,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                     : new OCPPv2_1.CS.GetChargingProfilesResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -22091,7 +28046,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                     : new OCPPv2_1.CS.ClearChargingProfileResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -22186,7 +28141,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                     : new OCPPv2_1.CS.GetCompositeScheduleResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -22283,7 +28238,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                     : new OCPPv2_1.CS.UpdateDynamicScheduleResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -22378,7 +28333,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                     : new OCPPv2_1.CS.NotifyAllowedEnergyTransferResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -22473,7 +28428,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                     : new OCPPv2_1.CS.UsePriorityChargingResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -22568,7 +28523,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                     : new OCPPv2_1.CS.UnlockConnectorResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -22666,7 +28621,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                     : new OCPPv2_1.CS.AFRRSignalResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -22766,7 +28721,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                     : new OCPPv2_1.CS.SetDisplayMessageResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -22861,7 +28816,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                     : new OCPPv2_1.CS.GetDisplayMessagesResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -22956,7 +28911,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                     : new OCPPv2_1.CS.ClearDisplayMessageResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -23052,7 +29007,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                     : new OCPPv2_1.CS.CostUpdatedResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -23150,7 +29105,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                     : new OCPPv2_1.CS.CustomerInformationResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -23196,14 +29151,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             // Binary Data Streams Extensions
 
-            #region TransferBinaryData          (Request)
+            #region BinaryDataTransfer          (Request)
 
             /// <summary>
             /// Transfer the given data to the given charging station.
             /// </summary>
             /// <param name="Request">A BinaryDataTransfer request.</param>
-            public async Task<OCPP.CS.BinaryDataTransferResponse>
-                BinaryDataTransfer(OCPP.CSMS.BinaryDataTransferRequest Request)
+            public async Task<BinaryDataTransferResponse>
+                BinaryDataTransfer(BinaryDataTransferRequest Request)
 
             {
 
@@ -23241,14 +29196,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                           ? await centralSystem.BinaryDataTransfer(Request)
 
-                                          : new OCPP.CS.BinaryDataTransferResponse(
+                                          : new BinaryDataTransferResponse(
                                                 Request,
                                                 Result.SignatureError(errorResponse)
                                             )
 
-                                    : new OCPP.CS.BinaryDataTransferResponse(
+                                    : new BinaryDataTransferResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -23343,7 +29298,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                     : new OCPP.CS.GetFileResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -23438,7 +29393,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                     : new OCPP.CS.SendFileResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -23532,7 +29487,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                     : new OCPP.CS.DeleteFileResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -23633,7 +29588,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                     : new OCPP.CS.AddSignaturePolicyResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -23732,7 +29687,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                     : new OCPP.CS.UpdateSignaturePolicyResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -23831,7 +29786,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                     : new OCPP.CS.DeleteSignaturePolicyResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -23930,7 +29885,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                     : new OCPP.CS.AddUserRoleResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -24029,7 +29984,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                     : new OCPP.CS.UpdateUserRoleResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -24128,7 +30083,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                     : new OCPP.CS.DeleteUserRoleResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -24238,7 +30193,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                     : new OCPPv2_1.CS.SetDefaultChargingTariffResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -24334,7 +30289,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                     : new OCPPv2_1.CS.GetDefaultChargingTariffResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -24441,7 +30396,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                     : new OCPPv2_1.CS.RemoveDefaultChargingTariffResponse(
                                           Request,
-                                          Result.Server("Unknown or unreachable charging station!")
+                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
                                       );
 
 
@@ -26499,6 +32454,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         }
 
+
         #region Data
 
         private          readonly  HashSet<SignaturePolicy>                                                                 signaturePolicies           = [];
@@ -26636,6 +32592,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public  ActingAsCSMS             AsCSMS                      { get; }
 
 
+        public  INetworkingNodeIN        IN                          { get; }
+
+        public  INetworkingNodeOUT       OUT                         { get; }
+
+
         public CS.INetworkingNodeOutgoingMessages? CSClient
             => AsCS.CSClient;
 
@@ -26654,1336 +32615,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         // as Charging Station (meaning: as a HTTP Web Socket client)
 
-        #region Outgoing Messages: Networking Node -> CSMS
-
-        #region SendBootNotification
-
-        /// <summary>
-        /// An event fired whenever a BootNotification request will be sent to the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnBootNotificationRequestDelegate?   OnBootNotificationRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a BootNotification request was received.
-        /// </summary>
-        public event OCPPv2_1.CS.OnBootNotificationResponseDelegate?  OnBootNotificationResponse;
-
-        #endregion
-
-        #region SendFirmwareStatusNotification
-
-        /// <summary>
-        /// An event fired whenever a FirmwareStatusNotification request will be sent to the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnFirmwareStatusNotificationRequestDelegate?   OnFirmwareStatusNotificationRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a FirmwareStatusNotification request was received.
-        /// </summary>
-        public event OCPPv2_1.CS.OnFirmwareStatusNotificationResponseDelegate?  OnFirmwareStatusNotificationResponse;
-
-        #endregion
-
-        #region SendPublishFirmwareStatusNotification
-
-        /// <summary>
-        /// An event fired whenever a PublishFirmwareStatusNotification request will be sent to the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnPublishFirmwareStatusNotificationRequestDelegate?   OnPublishFirmwareStatusNotificationRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a PublishFirmwareStatusNotification request was received.
-        /// </summary>
-        public event OCPPv2_1.CS.OnPublishFirmwareStatusNotificationResponseDelegate?  OnPublishFirmwareStatusNotificationResponse;
-
-        #endregion
-
-        #region SendHeartbeat
-
-        /// <summary>
-        /// An event fired whenever a Heartbeat request will be sent to the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnHeartbeatRequestDelegate?   OnHeartbeatRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a Heartbeat request was received.
-        /// </summary>
-        public event OCPPv2_1.CS.OnHeartbeatResponseDelegate?  OnHeartbeatResponse;
-
-        #endregion
-
-        #region NotifyEvent
-
-        /// <summary>
-        /// An event fired whenever a NotifyEvent request will be sent to the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnNotifyEventRequestDelegate?   OnNotifyEventRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a NotifyEvent request was received.
-        /// </summary>
-        public event OCPPv2_1.CS.OnNotifyEventResponseDelegate?  OnNotifyEventResponse;
-
-        #endregion
-
-        #region SendSecurityEventNotification
-
-        /// <summary>
-        /// An event fired whenever a SecurityEventNotification request will be sent to the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnSecurityEventNotificationRequestDelegate?   OnSecurityEventNotificationRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a SecurityEventNotification request was received.
-        /// </summary>
-        public event OCPPv2_1.CS.OnSecurityEventNotificationResponseDelegate?  OnSecurityEventNotificationResponse;
-
-        #endregion
-
-        #region NotifyReport
-
-        /// <summary>
-        /// An event fired whenever a NotifyReport request will be sent to the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnNotifyReportRequestDelegate?   OnNotifyReportRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a NotifyReport request was received.
-        /// </summary>
-        public event OCPPv2_1.CS.OnNotifyReportResponseDelegate?  OnNotifyReportResponse;
-
-        #endregion
-
-        #region NotifyMonitoringReport
-
-        /// <summary>
-        /// An event fired whenever a NotifyMonitoringReport request will be sent to the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnNotifyMonitoringReportRequestDelegate?   OnNotifyMonitoringReportRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a NotifyMonitoringReport request was received.
-        /// </summary>
-        public event OCPPv2_1.CS.OnNotifyMonitoringReportResponseDelegate?  OnNotifyMonitoringReportResponse;
-
-        #endregion
-
-        #region SendLogStatusNotification
-
-        /// <summary>
-        /// An event fired whenever a LogStatusNotification request will be sent to the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnLogStatusNotificationRequestDelegate?   OnLogStatusNotificationRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a LogStatusNotification request was received.
-        /// </summary>
-        public event OCPPv2_1.CS.OnLogStatusNotificationResponseDelegate?  OnLogStatusNotificationResponse;
-
-        #endregion
-
-        #region TransferData
-
-        /// <summary>
-        /// An event fired whenever a DataTransfer request will be sent to the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnDataTransferRequestDelegate?   OnDataTransferRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a DataTransfer request was received.
-        /// </summary>
-        public event OCPPv2_1.CS.OnDataTransferResponseDelegate?  OnDataTransferResponse;
-
-        #endregion
-
-
-        #region SignCertificate
-
-        /// <summary>
-        /// An event fired whenever a SignCertificate request will be sent to the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnSignCertificateRequestDelegate?   OnSignCertificateRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a SignCertificate request was received.
-        /// </summary>
-        public event OCPPv2_1.CS.OnSignCertificateResponseDelegate?  OnSignCertificateResponse;
-
-        #endregion
-
-        #region Get15118EVCertificate
-
-        /// <summary>
-        /// An event fired whenever a Get15118EVCertificate request will be sent to the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnGet15118EVCertificateRequestDelegate?   OnGet15118EVCertificateRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a Get15118EVCertificate request was received.
-        /// </summary>
-        public event OCPPv2_1.CS.OnGet15118EVCertificateResponseDelegate?  OnGet15118EVCertificateResponse;
-
-        #endregion
-
-        #region GetCertificateStatus
-
-        /// <summary>
-        /// An event fired whenever a GetCertificateStatus request will be sent to the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnGetCertificateStatusRequestDelegate?   OnGetCertificateStatusRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a GetCertificateStatus request was received.
-        /// </summary>
-        public event OCPPv2_1.CS.OnGetCertificateStatusResponseDelegate?  OnGetCertificateStatusResponse;
-
-        #endregion
-
-        #region GetCRL
-
-        /// <summary>
-        /// An event fired whenever a GetCRL request will be sent to the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnGetCRLRequestDelegate?   OnGetCRLRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a GetCRL request was received.
-        /// </summary>
-        public event OCPPv2_1.CS.OnGetCRLResponseDelegate?  OnGetCRLResponse;
-
-        #endregion
-
-
-        #region SendReservationStatusUpdate
-
-        /// <summary>
-        /// An event fired whenever a ReservationStatusUpdate request will be sent to the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnReservationStatusUpdateRequestDelegate?   OnReservationStatusUpdateRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a ReservationStatusUpdate request was received.
-        /// </summary>
-        public event OCPPv2_1.CS.OnReservationStatusUpdateResponseDelegate?  OnReservationStatusUpdateResponse;
-
-        #endregion
-
-        #region Authorize
-
-        /// <summary>
-        /// An event fired whenever an Authorize request will be sent to the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnAuthorizeRequestDelegate?   OnAuthorizeRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to an Authorize request was received.
-        /// </summary>
-        public event OCPPv2_1.CS.OnAuthorizeResponseDelegate?  OnAuthorizeResponse;
-
-        #endregion
-
-        #region NotifyEVChargingNeeds
-
-        /// <summary>
-        /// An event fired whenever a NotifyEVChargingNeeds request will be sent to the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnNotifyEVChargingNeedsRequestDelegate?   OnNotifyEVChargingNeedsRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a NotifyEVChargingNeeds request was received.
-        /// </summary>
-        public event OCPPv2_1.CS.OnNotifyEVChargingNeedsResponseDelegate?  OnNotifyEVChargingNeedsResponse;
-
-        #endregion
-
-        #region SendTransactionEvent
-
-        /// <summary>
-        /// An event fired whenever a TransactionEvent will be sent to the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnTransactionEventRequestDelegate?   OnTransactionEventRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a TransactionEvent request was received.
-        /// </summary>
-        public event OCPPv2_1.CS.OnTransactionEventResponseDelegate?  OnTransactionEventResponse;
-
-        #endregion
-
-        #region SendStatusNotification
-
-        /// <summary>
-        /// An event fired whenever a StatusNotification request will be sent to the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnStatusNotificationRequestDelegate?   OnStatusNotificationRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a StatusNotification request was received.
-        /// </summary>
-        public event OCPPv2_1.CS.OnStatusNotificationResponseDelegate?  OnStatusNotificationResponse;
-
-        #endregion
-
-        #region SendMeterValues
-
-        /// <summary>
-        /// An event fired whenever a MeterValues request will be sent to the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnMeterValuesRequestDelegate?   OnMeterValuesRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a MeterValues request was received.
-        /// </summary>
-        public event OCPPv2_1.CS.OnMeterValuesResponseDelegate?  OnMeterValuesResponse;
-
-        #endregion
-
-        #region NotifyChargingLimit
-
-        /// <summary>
-        /// An event fired whenever a NotifyChargingLimit request will be sent to the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnNotifyChargingLimitRequestDelegate?   OnNotifyChargingLimitRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a NotifyChargingLimit request was received.
-        /// </summary>
-        public event OCPPv2_1.CS.OnNotifyChargingLimitResponseDelegate?  OnNotifyChargingLimitResponse;
-
-        #endregion
-
-        #region SendClearedChargingLimit
-
-        /// <summary>
-        /// An event fired whenever a ClearedChargingLimit request will be sent to the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnClearedChargingLimitRequestDelegate?   OnClearedChargingLimitRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a ClearedChargingLimit request was received.
-        /// </summary>
-        public event OCPPv2_1.CS.OnClearedChargingLimitResponseDelegate?  OnClearedChargingLimitResponse;
-
-        #endregion
-
-        #region ReportChargingProfiles
-
-        /// <summary>
-        /// An event fired whenever a ReportChargingProfiles request will be sent to the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnReportChargingProfilesRequestDelegate?   OnReportChargingProfilesRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a ReportChargingProfiles request was received.
-        /// </summary>
-        public event OCPPv2_1.CS.OnReportChargingProfilesResponseDelegate?  OnReportChargingProfilesResponse;
-
-        #endregion
-
-        #region NotifyEVChargingSchedule
-
-        /// <summary>
-        /// An event fired whenever a NotifyEVChargingSchedule request will be sent to the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnNotifyEVChargingScheduleRequestDelegate?   OnNotifyEVChargingScheduleRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a NotifyEVChargingSchedule request was received.
-        /// </summary>
-        public event OCPPv2_1.CS.OnNotifyEVChargingScheduleResponseDelegate?  OnNotifyEVChargingScheduleResponse;
-
-        #endregion
-
-        #region NotifyPriorityCharging
-
-        /// <summary>
-        /// An event fired whenever a NotifyPriorityCharging request will be sent to the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnNotifyPriorityChargingRequestDelegate?   OnNotifyPriorityChargingRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a NotifyPriorityCharging request was received.
-        /// </summary>
-        public event OCPPv2_1.CS.OnNotifyPriorityChargingResponseDelegate?  OnNotifyPriorityChargingResponse;
-
-        #endregion
-
-        #region PullDynamicScheduleUpdate
-
-        /// <summary>
-        /// An event fired whenever a PullDynamicScheduleUpdate request will be sent to the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnPullDynamicScheduleUpdateRequestDelegate?   OnPullDynamicScheduleUpdateRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a PullDynamicScheduleUpdate request was received.
-        /// </summary>
-        public event OCPPv2_1.CS.OnPullDynamicScheduleUpdateResponseDelegate?  OnPullDynamicScheduleUpdateResponse;
-
-        #endregion
-
-
-        #region NotifyDisplayMessages
-
-        /// <summary>
-        /// An event fired whenever a NotifyDisplayMessages request will be sent to the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnNotifyDisplayMessagesRequestDelegate?   OnNotifyDisplayMessagesRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a NotifyDisplayMessages request was received.
-        /// </summary>
-        public event OCPPv2_1.CS.OnNotifyDisplayMessagesResponseDelegate?  OnNotifyDisplayMessagesResponse;
-
-        #endregion
-
-        #region NotifyCustomerInformation
-
-        /// <summary>
-        /// An event fired whenever a NotifyCustomerInformation request will be sent to the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnNotifyCustomerInformationRequestDelegate?   OnNotifyCustomerInformationRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a NotifyCustomerInformation request was received.
-        /// </summary>
-        public event OCPPv2_1.CS.OnNotifyCustomerInformationResponseDelegate?  OnNotifyCustomerInformationResponse;
-
-        #endregion
-
-
-        // Binary Data Streams Extensions
-
-        #region TransferBinaryData
-
-        /// <summary>
-        /// An event fired whenever a BinaryDataTransfer request will be sent to the CSMS.
-        /// </summary>
-        public event OCPP.CS.OnBinaryDataTransferRequestDelegate?   OnBinaryDataTransferRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a BinaryDataTransfer request was received.
-        /// </summary>
-        public event OCPP.CS.OnBinaryDataTransferResponseDelegate?  OnBinaryDataTransferResponse;
-
-        #endregion
-
-
-        // Overlay Networking Extensions
-
-        #region OnNotifyNetworkTopology (Request/-Response)
-
-        /// <summary>
-        /// An event fired whenever a NotifyNetworkTopology request will be sent to another node.
-        /// </summary>
-        public event OCPP.CS.OnNotifyNetworkTopologyRequestDelegate?   OnNotifyNetworkTopologyRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a NotifyNetworkTopology request was received.
-        /// </summary>
-        public event OCPP.CS.OnNotifyNetworkTopologyResponseDelegate?  OnNotifyNetworkTopologyResponse;
-
-        #endregion
-
-        #endregion
-
-        #region Incoming Messages: Networking Node <- CSMS
-
-        #region Reset
-
-        /// <summary>
-        /// An event fired whenever a Reset request was received from the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnResetRequestDelegate?   OnResetRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a Reset request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnResetResponseDelegate?  OnResetResponse;
-
-        #endregion
-
-        #region UpdateFirmware
-
-        /// <summary>
-        /// An event fired whenever an UpdateFirmware request was received from the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnUpdateFirmwareRequestDelegate?   OnUpdateFirmwareRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to an UpdateFirmware request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnUpdateFirmwareResponseDelegate?  OnUpdateFirmwareResponse;
-
-        #endregion
-
-        #region PublishFirmware
-
-        /// <summary>
-        /// An event fired whenever a PublishFirmware request was received from the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnPublishFirmwareRequestDelegate?   OnPublishFirmwareRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a PublishFirmware request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnPublishFirmwareResponseDelegate?  OnPublishFirmwareResponse;
-
-        #endregion
-
-        #region UnpublishFirmware
-
-        /// <summary>
-        /// An event fired whenever an UnpublishFirmware request was received from the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnUnpublishFirmwareRequestDelegate?   OnUnpublishFirmwareRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to an UnpublishFirmware request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnUnpublishFirmwareResponseDelegate?  OnUnpublishFirmwareResponse;
-
-        #endregion
-
-        #region GetBaseReport
-
-        /// <summary>
-        /// An event fired whenever a GetBaseReport request was received from the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnGetBaseReportRequestDelegate?   OnGetBaseReportRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a GetBaseReport request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnGetBaseReportResponseDelegate?  OnGetBaseReportResponse;
-
-        #endregion
-
-        #region GetReport
-
-        /// <summary>
-        /// An event fired whenever a GetReport request was received from the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnGetReportRequestDelegate?   OnGetReportRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a GetReport request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnGetReportResponseDelegate?  OnGetReportResponse;
-
-        #endregion
-
-        #region GetLog
-
-        /// <summary>
-        /// An event fired whenever a GetLog request was received from the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnGetLogRequestDelegate?   OnGetLogRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a GetLog request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnGetLogResponseDelegate?  OnGetLogResponse;
-
-        #endregion
-
-        #region SetVariables
-
-        /// <summary>
-        /// An event fired whenever a SetVariables request was received from the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnSetVariablesRequestDelegate?   OnSetVariablesRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a SetVariables request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnSetVariablesResponseDelegate?  OnSetVariablesResponse;
-
-        #endregion
-
-        #region GetVariables
-
-        /// <summary>
-        /// An event fired whenever a GetVariables request was received from the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnGetVariablesRequestDelegate?   OnGetVariablesRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a GetVariables request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnGetVariablesResponseDelegate?  OnGetVariablesResponse;
-
-        #endregion
-
-        #region SetMonitoringBase
-
-        /// <summary>
-        /// An event fired whenever a SetMonitoringBase request was received from the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnSetMonitoringBaseRequestDelegate?   OnSetMonitoringBaseRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a SetMonitoringBase request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnSetMonitoringBaseResponseDelegate?  OnSetMonitoringBaseResponse;
-
-        #endregion
-
-        #region GetMonitoringReport
-
-        /// <summary>
-        /// An event fired whenever a GetMonitoringReport request was received from the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnGetMonitoringReportRequestDelegate?   OnGetMonitoringReportRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a GetMonitoringReport request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnGetMonitoringReportResponseDelegate?  OnGetMonitoringReportResponse;
-
-        #endregion
-
-        #region SetMonitoringLevel
-
-        /// <summary>
-        /// An event fired whenever a SetMonitoringLevel request was received from the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnSetMonitoringLevelRequestDelegate?   OnSetMonitoringLevelRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a SetMonitoringLevel request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnSetMonitoringLevelResponseDelegate?  OnSetMonitoringLevelResponse;
-
-        #endregion
-
-        #region SetVariableMonitoring
-
-        /// <summary>
-        /// An event fired whenever a SetVariableMonitoring request was received from the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnSetVariableMonitoringRequestDelegate?   OnSetVariableMonitoringRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a SetVariableMonitoring request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnSetVariableMonitoringResponseDelegate?  OnSetVariableMonitoringResponse;
-
-        #endregion
-
-        #region ClearVariableMonitoring
-
-        /// <summary>
-        /// An event fired whenever a ClearVariableMonitoring request was received from the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnClearVariableMonitoringRequestDelegate?   OnClearVariableMonitoringRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a ClearVariableMonitoring request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnClearVariableMonitoringResponseDelegate?  OnClearVariableMonitoringResponse;
-
-        #endregion
-
-        #region SetNetworkProfile
-
-        /// <summary>
-        /// An event fired whenever a SetNetworkProfile request was received from the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnSetNetworkProfileRequestDelegate?   OnSetNetworkProfileRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a SetNetworkProfile request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnSetNetworkProfileResponseDelegate?  OnSetNetworkProfileResponse;
-
-        #endregion
-
-        #region ChangeAvailability
-
-        /// <summary>
-        /// An event fired whenever a ChangeAvailability request was received from the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnChangeAvailabilityRequestDelegate?   OnChangeAvailabilityRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a ChangeAvailability request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnChangeAvailabilityResponseDelegate?  OnChangeAvailabilityResponse;
-
-        #endregion
-
-        #region TriggerMessage
-
-        /// <summary>
-        /// An event fired whenever a TriggerMessage request was received from the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnTriggerMessageRequestDelegate?   OnTriggerMessageRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a TriggerMessage request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnTriggerMessageResponseDelegate?  OnTriggerMessageResponse;
-
-        #endregion
-
-        #region OnIncomingDataTransferRequest/-Response
-
-        /// <summary>
-        /// An event sent whenever a data transfer request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnIncomingDataTransferRequestDelegate?   OnIncomingDataTransferRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a data transfer request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnIncomingDataTransferResponseDelegate?  OnIncomingDataTransferResponse;
-
-        #endregion
-
-
-        #region SendSignedCertificate
-
-        /// <summary>
-        /// An event fired whenever a SignedCertificate request was received from the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnCertificateSignedRequestDelegate?   OnCertificateSignedRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a SignedCertificate request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnCertificateSignedResponseDelegate?  OnCertificateSignedResponse;
-
-        #endregion
-
-        #region InstallCertificate
-
-        /// <summary>
-        /// An event fired whenever an InstallCertificate request was received from the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnInstallCertificateRequestDelegate?   OnInstallCertificateRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to an InstallCertificate request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnInstallCertificateResponseDelegate?  OnInstallCertificateResponse;
-
-        #endregion
-
-        #region GetInstalledCertificateIds
-
-        /// <summary>
-        /// An event fired whenever a GetInstalledCertificateIds request was received from the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnGetInstalledCertificateIdsRequestDelegate?   OnGetInstalledCertificateIdsRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a GetInstalledCertificateIds request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnGetInstalledCertificateIdsResponseDelegate?  OnGetInstalledCertificateIdsResponse;
-
-        #endregion
-
-        #region DeleteCertificate
-
-        /// <summary>
-        /// An event fired whenever a DeleteCertificate request was received from the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnDeleteCertificateRequestDelegate?   OnDeleteCertificateRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a DeleteCertificate request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnDeleteCertificateResponseDelegate?  OnDeleteCertificateResponse;
-
-        #endregion
-
-        #region NotifyCRL
-
-        /// <summary>
-        /// An event fired whenever a NotifyCRL request was received from the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnNotifyCRLRequestDelegate?   OnNotifyCRLRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a NotifyCRL request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnNotifyCRLResponseDelegate?  OnNotifyCRLResponse;
-
-        #endregion
-
-
-        #region GetLocalListVersion
-
-        /// <summary>
-        /// An event fired whenever a GetLocalListVersion request was received from the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnGetLocalListVersionRequestDelegate?   OnGetLocalListVersionRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a GetLocalListVersion request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnGetLocalListVersionResponseDelegate?  OnGetLocalListVersionResponse;
-
-        #endregion
-
-        #region SendLocalList
-
-        /// <summary>
-        /// An event fired whenever a SendLocalList request was received from the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnSendLocalListRequestDelegate?   OnSendLocalListRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a SendLocalList request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnSendLocalListResponseDelegate?  OnSendLocalListResponse;
-
-        #endregion
-
-        #region ClearCache
-
-        /// <summary>
-        /// An event fired whenever a ClearCache request was received from the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnClearCacheRequestDelegate?   OnClearCacheRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a ClearCache request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnClearCacheResponseDelegate?  OnClearCacheResponse;
-
-        #endregion
-
-
-        #region ReserveNow
-
-        /// <summary>
-        /// An event fired whenever a ReserveNow request was received from the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnReserveNowRequestDelegate?   OnReserveNowRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a ReserveNow request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnReserveNowResponseDelegate?  OnReserveNowResponse;
-
-        #endregion
-
-        #region CancelReservation
-
-        /// <summary>
-        /// An event fired whenever a CancelReservation request was received from the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnCancelReservationRequestDelegate?   OnCancelReservationRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a CancelReservation request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnCancelReservationResponseDelegate?  OnCancelReservationResponse;
-
-        #endregion
-
-        #region StartCharging
-
-        /// <summary>
-        /// An event fired whenever a RequestStartTransaction request was received from the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnRequestStartTransactionRequestDelegate?   OnRequestStartTransactionRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a RequestStartTransaction request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnRequestStartTransactionResponseDelegate?  OnRequestStartTransactionResponse;
-
-        #endregion
-
-        #region StopCharging
-
-        /// <summary>
-        /// An event fired whenever a RequestStopTransaction request was received from the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnRequestStopTransactionRequestDelegate?   OnRequestStopTransactionRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a RequestStopTransaction request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnRequestStopTransactionResponseDelegate?  OnRequestStopTransactionResponse;
-
-        #endregion
-
-        #region GetTransactionStatus
-
-        /// <summary>
-        /// An event fired whenever a GetTransactionStatus request was received from the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnGetTransactionStatusRequestDelegate?   OnGetTransactionStatusRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a GetTransactionStatus request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnGetTransactionStatusResponseDelegate?  OnGetTransactionStatusResponse;
-
-        #endregion
-
-        #region SetChargingProfile
-
-        /// <summary>
-        /// An event fired whenever a SetChargingProfile request was received from the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnSetChargingProfileRequestDelegate?   OnSetChargingProfileRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a SetChargingProfile request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnSetChargingProfileResponseDelegate?  OnSetChargingProfileResponse;
-
-        #endregion
-
-        #region GetChargingProfiles
-
-        /// <summary>
-        /// An event fired whenever a GetChargingProfiles request was received from the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnGetChargingProfilesRequestDelegate?   OnGetChargingProfilesRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a GetChargingProfiles request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnGetChargingProfilesResponseDelegate?  OnGetChargingProfilesResponse;
-
-        #endregion
-
-        #region ClearChargingProfile
-
-        /// <summary>
-        /// An event fired whenever a ClearChargingProfile request was received from the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnClearChargingProfileRequestDelegate?   OnClearChargingProfileRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a ClearChargingProfile request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnClearChargingProfileResponseDelegate?  OnClearChargingProfileResponse;
-
-        #endregion
-
-        #region GetCompositeSchedule
-
-        /// <summary>
-        /// An event fired whenever a GetCompositeSchedule request was received from the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnGetCompositeScheduleRequestDelegate?   OnGetCompositeScheduleRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a GetCompositeSchedule request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnGetCompositeScheduleResponseDelegate?  OnGetCompositeScheduleResponse;
-
-        #endregion
-
-        #region UpdateDynamicSchedule
-
-        /// <summary>
-        /// An event fired whenever an UpdateDynamicSchedule request was received from the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnUpdateDynamicScheduleRequestDelegate?   OnUpdateDynamicScheduleRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to an UpdateDynamicSchedule request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnUpdateDynamicScheduleResponseDelegate?  OnUpdateDynamicScheduleResponse;
-
-        #endregion
-
-        #region NotifyAllowedEnergyTransfer
-
-        /// <summary>
-        /// An event fired whenever a NotifyAllowedEnergyTransfer request was received from the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnNotifyAllowedEnergyTransferRequestDelegate?   OnNotifyAllowedEnergyTransferRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a NotifyAllowedEnergyTransfer request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnNotifyAllowedEnergyTransferResponseDelegate?  OnNotifyAllowedEnergyTransferResponse;
-
-        #endregion
-
-        #region UsePriorityCharging
-
-        /// <summary>
-        /// An event fired whenever a UsePriorityCharging request was received from the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnUsePriorityChargingRequestDelegate?   OnUsePriorityChargingRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a UsePriorityCharging request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnUsePriorityChargingResponseDelegate?  OnUsePriorityChargingResponse;
-
-        #endregion
-
-        #region UnlockConnector
-
-        /// <summary>
-        /// An event fired whenever an UnlockConnector request was received from the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnUnlockConnectorRequestDelegate?   OnUnlockConnectorRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to an UnlockConnector request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnUnlockConnectorResponseDelegate?  OnUnlockConnectorResponse;
-
-        #endregion
-
-
-        #region AFRRSignal
-
-        /// <summary>
-        /// An event fired whenever an AFRR signal request was received from the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnAFRRSignalRequestDelegate?   OnAFRRSignalRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to an AFRR signal request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnAFRRSignalResponseDelegate?  OnAFRRSignalResponse;
-
-        #endregion
-
-
-        #region SetDisplayMessage
-
-        /// <summary>
-        /// An event fired whenever a SetDisplayMessage request was received from the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnSetDisplayMessageRequestDelegate?   OnSetDisplayMessageRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a SetDisplayMessage request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnSetDisplayMessageResponseDelegate?  OnSetDisplayMessageResponse;
-
-        #endregion
-
-        #region GetDisplayMessages
-
-        /// <summary>
-        /// An event fired whenever a GetDisplayMessages request was received from the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnGetDisplayMessagesRequestDelegate?   OnGetDisplayMessagesRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a GetDisplayMessages request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnGetDisplayMessagesResponseDelegate?  OnGetDisplayMessagesResponse;
-
-        #endregion
-
-        #region ClearDisplayMessage
-
-        /// <summary>
-        /// An event fired whenever a ClearDisplayMessage request was received from the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnClearDisplayMessageRequestDelegate?   OnClearDisplayMessageRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a ClearDisplayMessage request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnClearDisplayMessageResponseDelegate?  OnClearDisplayMessageResponse;
-
-        #endregion
-
-        #region SendCostUpdated
-
-        /// <summary>
-        /// An event fired whenever a CostUpdated request was received from the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnCostUpdatedRequestDelegate?   OnCostUpdatedRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a CostUpdated request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnCostUpdatedResponseDelegate?  OnCostUpdatedResponse;
-
-        #endregion
-
-        #region RequestCustomerInformation
-
-        /// <summary>
-        /// An event fired whenever a CustomerInformation request was received from the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnCustomerInformationRequestDelegate?   OnCustomerInformationRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a CustomerInformation request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnCustomerInformationResponseDelegate?  OnCustomerInformationResponse;
-
-        #endregion
-
-
-        // Binary Data Streams Extensions
-
-        #region OnIncomingBinaryDataTransferRequest/-Response
-
-        /// <summary>
-        /// An event sent whenever a BinaryDataTransfer request was sent.
-        /// </summary>
-        public event OCPP.CS.OnIncomingBinaryDataTransferRequestDelegate?   OnIncomingBinaryDataTransferRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a BinaryDataTransfer request was sent.
-        /// </summary>
-        public event OCPP.CS.OnIncomingBinaryDataTransferResponseDelegate?  OnIncomingBinaryDataTransferResponse;
-
-        #endregion
-
-        #region OnGetFileRequest/-Response
-
-        /// <summary>
-        /// An event sent whenever a GetFile request was sent.
-        /// </summary>
-        public event OCPP.CS.OnGetFileRequestDelegate?   OnGetFileRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a GetFile request was sent.
-        /// </summary>
-        public event OCPP.CS.OnGetFileResponseDelegate?  OnGetFileResponse;
-
-        #endregion
-
-        #region OnSendFileRequest/-Response
-
-        /// <summary>
-        /// An event sent whenever a SendFile request was sent.
-        /// </summary>
-        public event OCPP.CS.OnSendFileRequestDelegate?   OnSendFileRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a SendFile request was sent.
-        /// </summary>
-        public event OCPP.CS.OnSendFileResponseDelegate?  OnSendFileResponse;
-
-        #endregion
-
-        #region OnDeleteFileRequest/-Response
-
-        /// <summary>
-        /// An event sent whenever a DeleteFile request was sent.
-        /// </summary>
-        public event OCPP.CS.OnDeleteFileRequestDelegate?   OnDeleteFileRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a DeleteFile request was sent.
-        /// </summary>
-        public event OCPP.CS.OnDeleteFileResponseDelegate?  OnDeleteFileResponse;
-
-        #endregion
-
-
-        // E2E Security Extensions
-
-        #region AddSignaturePolicy
-
-        /// <summary>
-        /// An event fired whenever a AddSignaturePolicy request was received from the CSMS.
-        /// </summary>
-        public event OCPP.CS.OnAddSignaturePolicyRequestDelegate?   OnAddSignaturePolicyRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a AddSignaturePolicy request was sent.
-        /// </summary>
-        public event OCPP.CS.OnAddSignaturePolicyResponseDelegate?  OnAddSignaturePolicyResponse;
-
-        #endregion
-
-        #region UpdateSignaturePolicy
-
-        /// <summary>
-        /// An event fired whenever a UpdateSignaturePolicy request was received from the CSMS.
-        /// </summary>
-        public event OCPP.CS.OnUpdateSignaturePolicyRequestDelegate?   OnUpdateSignaturePolicyRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a UpdateSignaturePolicy request was sent.
-        /// </summary>
-        public event OCPP.CS.OnUpdateSignaturePolicyResponseDelegate?  OnUpdateSignaturePolicyResponse;
-
-        #endregion
-
-        #region DeleteSignaturePolicy
-
-        /// <summary>
-        /// An event fired whenever a DeleteSignaturePolicy request was received from the CSMS.
-        /// </summary>
-        public event OCPP.CS.OnDeleteSignaturePolicyRequestDelegate?   OnDeleteSignaturePolicyRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a DeleteSignaturePolicy request was sent.
-        /// </summary>
-        public event OCPP.CS.OnDeleteSignaturePolicyResponseDelegate?  OnDeleteSignaturePolicyResponse;
-
-        #endregion
-
-        #region AddUserRole
-
-        /// <summary>
-        /// An event fired whenever a AddUserRole request was received from the CSMS.
-        /// </summary>
-        public event OCPP.CS.OnAddUserRoleRequestDelegate?   OnAddUserRoleRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a AddUserRole request was sent.
-        /// </summary>
-        public event OCPP.CS.OnAddUserRoleResponseDelegate?  OnAddUserRoleResponse;
-
-        #endregion
-
-        #region UpdateUserRole
-
-        /// <summary>
-        /// An event fired whenever a UpdateUserRole request was received from the CSMS.
-        /// </summary>
-        public event OCPP.CS.OnUpdateUserRoleRequestDelegate?   OnUpdateUserRoleRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a UpdateUserRole request was sent.
-        /// </summary>
-        public event OCPP.CS.OnUpdateUserRoleResponseDelegate?  OnUpdateUserRoleResponse;
-
-        #endregion
-
-        #region DeleteUserRole
-
-        /// <summary>
-        /// An event fired whenever a DeleteUserRole request was received from the CSMS.
-        /// </summary>
-        public event OCPP.CS.OnDeleteUserRoleRequestDelegate?   OnDeleteUserRoleRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a DeleteUserRole request was sent.
-        /// </summary>
-        public event OCPP.CS.OnDeleteUserRoleResponseDelegate?  OnDeleteUserRoleResponse;
-
-        #endregion
-
-
-        // E2E Charging Tariffs Extensions
-
-        #region SetDefaultChargingTariff
-
-        /// <summary>
-        /// An event fired whenever a SetDefaultChargingTariff request was received from the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnSetDefaultChargingTariffRequestDelegate?   OnSetDefaultChargingTariffRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a SetDefaultChargingTariff request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnSetDefaultChargingTariffResponseDelegate?  OnSetDefaultChargingTariffResponse;
-
-        #endregion
-
-        #region GetDefaultChargingTariff
-
-        /// <summary>
-        /// An event fired whenever a GetDefaultChargingTariff request was received from the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnGetDefaultChargingTariffRequestDelegate?   OnGetDefaultChargingTariffRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a GetDefaultChargingTariff request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnGetDefaultChargingTariffResponseDelegate?  OnGetDefaultChargingTariffResponse;
-
-        #endregion
-
-        #region RemoveDefaultChargingTariff
-
-        /// <summary>
-        /// An event fired whenever a RemoveDefaultChargingTariff request was received from the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnRemoveDefaultChargingTariffRequestDelegate?   OnRemoveDefaultChargingTariffRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a RemoveDefaultChargingTariff request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnRemoveDefaultChargingTariffResponseDelegate?  OnRemoveDefaultChargingTariffResponse;
-
-        #endregion
-
-
-        public event OCPPv2_1.CS.OnResetDelegate? OnReset;
-        public event OCPPv2_1.CS.OnUpdateFirmwareDelegate? OnUpdateFirmware;
-        public event OCPPv2_1.CS.OnPublishFirmwareDelegate? OnPublishFirmware;
-        public event OCPPv2_1.CS.OnUnpublishFirmwareDelegate? OnUnpublishFirmware;
-        public event OCPPv2_1.CS.OnGetBaseReportDelegate? OnGetBaseReport;
-        public event OCPPv2_1.CS.OnGetReportDelegate? OnGetReport;
-        public event OCPPv2_1.CS.OnGetLogDelegate? OnGetLog;
-        public event OCPPv2_1.CS.OnSetVariablesDelegate? OnSetVariables;
-        public event OCPPv2_1.CS.OnGetVariablesDelegate? OnGetVariables;
-        public event OCPPv2_1.CS.OnSetMonitoringBaseDelegate? OnSetMonitoringBase;
-        public event OCPPv2_1.CS.OnGetMonitoringReportDelegate? OnGetMonitoringReport;
-        public event OCPPv2_1.CS.OnSetMonitoringLevelDelegate? OnSetMonitoringLevel;
-        public event OCPPv2_1.CS.OnSetVariableMonitoringDelegate? OnSetVariableMonitoring;
-        public event OCPPv2_1.CS.OnClearVariableMonitoringDelegate? OnClearVariableMonitoring;
-        public event OCPPv2_1.CS.OnSetNetworkProfileDelegate? OnSetNetworkProfile;
-        public event OCPPv2_1.CS.OnChangeAvailabilityDelegate? OnChangeAvailability;
-        public event OCPPv2_1.CS.OnTriggerMessageDelegate? OnTriggerMessage;
-        public event OCPPv2_1.CS.OnIncomingDataTransferDelegate? OnIncomingDataTransfer;
-        public event OCPPv2_1.CS.OnCertificateSignedDelegate? OnCertificateSigned;
-        public event OCPPv2_1.CS.OnInstallCertificateDelegate? OnInstallCertificate;
-        public event OCPPv2_1.CS.OnGetInstalledCertificateIdsDelegate? OnGetInstalledCertificateIds;
-        public event OCPPv2_1.CS.OnDeleteCertificateDelegate? OnDeleteCertificate;
-        public event OCPPv2_1.CS.OnNotifyCRLDelegate? OnNotifyCRL;
-        public event OCPPv2_1.CS.OnGetLocalListVersionDelegate? OnGetLocalListVersion;
-        public event OCPPv2_1.CS.OnSendLocalListDelegate? OnSendLocalList;
-        public event OCPPv2_1.CS.OnClearCacheDelegate? OnClearCache;
-        public event OCPPv2_1.CS.OnReserveNowDelegate? OnReserveNow;
-        public event OCPPv2_1.CS.OnCancelReservationDelegate? OnCancelReservation;
-        public event OCPPv2_1.CS.OnRequestStartTransactionDelegate? OnRequestStartTransaction;
-        public event OCPPv2_1.CS.OnRequestStopTransactionDelegate? OnRequestStopTransaction;
-        public event OCPPv2_1.CS.OnGetTransactionStatusDelegate? OnGetTransactionStatus;
-        public event OCPPv2_1.CS.OnSetChargingProfileDelegate? OnSetChargingProfile;
-        public event OCPPv2_1.CS.OnGetChargingProfilesDelegate? OnGetChargingProfiles;
-        public event OCPPv2_1.CS.OnClearChargingProfileDelegate? OnClearChargingProfile;
-        public event OCPPv2_1.CS.OnGetCompositeScheduleDelegate? OnGetCompositeSchedule;
-        public event OCPPv2_1.CS.OnUpdateDynamicScheduleDelegate? OnUpdateDynamicSchedule;
-        public event OCPPv2_1.CS.OnNotifyAllowedEnergyTransferDelegate? OnNotifyAllowedEnergyTransfer;
-        public event OCPPv2_1.CS.OnUsePriorityChargingDelegate? OnUsePriorityCharging;
-        public event OCPPv2_1.CS.OnUnlockConnectorDelegate? OnUnlockConnector;
-        public event OCPPv2_1.CS.OnAFRRSignalDelegate? OnAFRRSignal;
-        public event OCPPv2_1.CS.OnSetDisplayMessageDelegate? OnSetDisplayMessage;
-        public event OCPPv2_1.CS.OnGetDisplayMessagesDelegate? OnGetDisplayMessages;
-        public event OCPPv2_1.CS.OnClearDisplayMessageDelegate? OnClearDisplayMessage;
-        public event OCPPv2_1.CS.OnCostUpdatedDelegate? OnCostUpdated;
-        public event OCPPv2_1.CS.OnCustomerInformationDelegate? OnCustomerInformation;
-        public event OCPP.CS.OnIncomingBinaryDataTransferDelegate? OnIncomingBinaryDataTransfer;
-        public event OnGetFileDelegate? OnGetFile;
-        public event OnSendFileDelegate? OnSendFile;
-        public event OnDeleteFileDelegate? OnDeleteFile;
-        public event OnAddSignaturePolicyDelegate? OnAddSignaturePolicy;
-        public event OnUpdateSignaturePolicyDelegate? OnUpdateSignaturePolicy;
-        public event OnDeleteSignaturePolicyDelegate? OnDeleteSignaturePolicy;
-        public event OnAddUserRoleDelegate? OnAddUserRole;
-        public event OnUpdateUserRoleDelegate? OnUpdateUserRole;
-        public event OnDeleteUserRoleDelegate? OnDeleteUserRole;
-        public event OCPPv2_1.CS.OnSetDefaultChargingTariffDelegate? OnSetDefaultChargingTariff;
-        public event OCPPv2_1.CS.OnGetDefaultChargingTariffDelegate? OnGetDefaultChargingTariff;
-        public event OCPPv2_1.CS.OnRemoveDefaultChargingTariffDelegate? OnRemoveDefaultChargingTariff;
-
-        #endregion
-
-
-
-
-
-
-
-
         #endregion
 
         #region Custom JSON serializer delegates
@@ -27998,7 +32629,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyReportRequest>?                                 CustomNotifyReportRequestSerializer                          { get; set; }
         public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyMonitoringReportRequest>?                       CustomNotifyMonitoringReportRequestSerializer                { get; set; }
         public CustomJObjectSerializerDelegate<OCPPv2_1.CS.LogStatusNotificationRequest>?                        CustomLogStatusNotificationRequestSerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.DataTransferRequest>?                                 CustomDataTransferRequestSerializer                          { get; set; }
+        public CustomJObjectSerializerDelegate<            DataTransferRequest>?                                 CustomDataTransferRequestSerializer                          { get; set; }
 
         public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SignCertificateRequest>?                              CustomSignCertificateRequestSerializer                       { get; set; }
         public CustomJObjectSerializerDelegate<OCPPv2_1.CS.Get15118EVCertificateRequest>?                        CustomGet15118EVCertificateRequestSerializer                 { get; set; }
@@ -28023,7 +32654,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
         // Binary Data Streams Extensions
-        public CustomBinarySerializerDelegate <OCPP.    CS.BinaryDataTransferRequest>?                           CustomBinaryDataTransferRequestSerializer                    { get; set; }
+        public CustomBinarySerializerDelegate <            BinaryDataTransferRequest>?                           CustomBinaryDataTransferRequestSerializer                    { get; set; }
 
         #endregion
 
@@ -28037,7 +32668,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.NotifyReportResponse>?                           CustomNotifyReportResponseSerializer                         { get; set; }
         public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.NotifyMonitoringReportResponse>?                 CustomNotifyMonitoringReportResponseSerializer               { get; set; }
         public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.LogStatusNotificationResponse>?                  CustomLogStatusNotificationResponseSerializer                { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.DataTransferResponse>?                           CustomDataTransferResponseSerializer                         { get; set; }
+        public CustomJObjectSerializerDelegate<              DataTransferResponse>?                           CustomDataTransferResponseSerializer                         { get; set; }
 
         public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.SignCertificateResponse>?                        CustomSignCertificateResponseSerializer                      { get; set; }
         public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.Get15118EVCertificateResponse>?                  CustomGet15118EVCertificateResponseSerializer                { get; set; }
@@ -28062,10 +32693,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
         // Binary Data Streams Extensions
-        public CustomBinarySerializerDelegate <OCPP.    CSMS.BinaryDataTransferResponse>?                     CustomBinaryDataTransferResponseSerializer                   { get; set; }
+        public CustomBinarySerializerDelegate <              BinaryDataTransferResponse>?                     CustomBinaryDataTransferResponseSerializer                   { get; set; }
 
         #endregion
-
 
 
         public CustomJObjectSerializerDelegate<NotifyNetworkTopologyRequest>?                CustomNotifyNetworkTopologyRequestSerializer           { get; set; }
@@ -28282,6 +32912,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                             );
 
+            this.IN   = new INN (this);
+            this.OUT  = new OUTT(this);
+
         }
 
         #endregion
@@ -28410,3762 +33043,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         }
 
         public string? ClientCloseMessage => throw new NotImplementedException();
-
-        string? IHTTPClient.Description { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-        #endregion
-
-
-        #region Charging Station -> CSMS Messages
-
-        #region SendBootNotification                  (Request)
-
-        /// <summary>
-        /// Send a boot notification.
-        /// </summary>
-        /// <param name="Request">A boot notification request.</param>
-        public async Task<OCPPv2_1.CSMS.BootNotificationResponse>
-            BootNotification(OCPPv2_1.CS.BootNotificationRequest Request)
-
-        {
-
-            #region Send OnBootNotificationRequest event
-
-            var startTime  = Timestamp.Now;
-
-            try
-            {
-
-                OnBootNotificationRequest?.Invoke(startTime,
-                                                  this,
-                                                  Request);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnBootNotificationRequest));
-            }
-
-            #endregion
-
-
-            OCPPv2_1.CSMS.BootNotificationResponse? response = null;
-
-            if (!SignaturePolicy.SignRequestMessage(
-                    Request,
-                    Request.ToJSON(
-                        CustomBootNotificationRequestSerializer,
-                        CustomChargingStationSerializer,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out var errorResponse
-                ))
-            {
-
-                response  = new OCPPv2_1.CSMS.BootNotificationResponse(
-                                Request,
-                                Result.SignatureError(errorResponse)
-                            );
-
-            }
-
-            // ToDo: Currently hardcoded CSMS lookup!
-            else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
-            {
-
-                response  = AsCS.CSClient is not null
-
-                                ? await AsCS.CSClient.BootNotification(Request)
-
-                                : new OCPPv2_1.CSMS.BootNotificationResponse(
-                                      Request,
-                                      Result.Server("Unknown or unreachable charging station!")
-                                  );
-
-            }
-
-            else
-            {
-                // ...
-            }
-
-
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomBootNotificationResponseSerializer,
-                    CustomStatusInfoSerializer,
-                    CustomSignatureSerializer,
-                    CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
-
-
-            switch (response.Status)
-            {
-
-                case RegistrationStatus.Accepted:
-                    this.CSMSTime               = response.CurrentTime;
-                    this.SendHeartbeatEvery     = response.Interval >= TimeSpan.FromSeconds(5) ? response.Interval : TimeSpan.FromSeconds(5);
-             //       this.SendHeartbeatTimer.Change(this.SendHeartbeatEvery, this.SendHeartbeatEvery);
-                    this.DisableSendHeartbeats  = false;
-                    break;
-
-                case RegistrationStatus.Pending:
-                    // Do not reconnect before: response.HeartbeatInterval
-                    break;
-
-                case RegistrationStatus.Rejected:
-                    // Do not reconnect before: response.HeartbeatInterval
-                    break;
-
-            }
-
-
-            #region Send OnBootNotificationResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnBootNotificationResponse?.Invoke(endTime,
-                                                   this,
-                                                   Request,
-                                                   response,
-                                                   endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnBootNotificationResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region SendFirmwareStatusNotification        (Request)
-
-        /// <summary>
-        /// Send a firmware status notification to the CSMS.
-        /// </summary>
-        /// <param name="Status">The status of the firmware installation.</param>
-        /// <param name="UpdateFirmwareRequestId">The (optional) request id that was provided in the UpdateFirmwareRequest that started this firmware update.</param>
-        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-        /// 
-        /// <param name="RequestId">An optional request identification.</param>
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public async Task<OCPPv2_1.CSMS.FirmwareStatusNotificationResponse>
-            FirmwareStatusNotification(OCPPv2_1.CS.FirmwareStatusNotificationRequest Request)
-
-        {
-
-            #region Send OnFirmwareStatusNotificationRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnFirmwareStatusNotificationRequest?.Invoke(startTime,
-                                                            this,
-                                                            Request);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnFirmwareStatusNotificationRequest));
-            }
-
-            #endregion
-
-
-            OCPPv2_1.CSMS.FirmwareStatusNotificationResponse? response = null;
-
-            if (!SignaturePolicy.SignRequestMessage(
-                    Request,
-                    Request.ToJSON(
-                        CustomFirmwareStatusNotificationRequestSerializer,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out var errorResponse
-                ))
-            {
-
-                response  = new OCPPv2_1.CSMS.FirmwareStatusNotificationResponse(
-                                Request,
-                                Result.SignatureError(errorResponse)
-                            );
-
-            }
-
-            // ToDo: Currently hardcoded CSMS lookup!
-            else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
-            {
-
-                response  = AsCS.CSClient is not null
-
-                                ? await AsCS.CSClient.FirmwareStatusNotification(Request)
-
-                                : new OCPPv2_1.CSMS.FirmwareStatusNotificationResponse(
-                                      Request,
-                                      Result.Server("Unknown or unreachable charging station!")
-                                  );
-
-            }
-
-            else
-            {
-                // ...
-            }
-
-
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomFirmwareStatusNotificationResponseSerializer,
-                    CustomSignatureSerializer,
-                    CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
-
-
-            #region Send OnFirmwareStatusNotificationResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnFirmwareStatusNotificationResponse?.Invoke(endTime,
-                                                             this,
-                                                             Request,
-                                                             response,
-                                                             endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnFirmwareStatusNotificationResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region SendPublishFirmwareStatusNotification (Request)
-
-        /// <summary>
-        /// Send a publish firmware status notification to the CSMS.
-        /// </summary>
-        /// <param name="Status">The progress status of the publish firmware request.</param>
-        /// <param name="PublishFirmwareStatusNotificationRequestId">The optional unique identification of the publish firmware status notification request.</param>
-        /// <param name="DownloadLocations">The optional enumeration of downstream firmware download locations for all attached charging stations.</param>
-        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-        /// 
-        /// <param name="RequestId">An optional request identification.</param>
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public async Task<OCPPv2_1.CSMS.PublishFirmwareStatusNotificationResponse>
-            PublishFirmwareStatusNotification(OCPPv2_1.CS.PublishFirmwareStatusNotificationRequest Request)
-
-        {
-
-            #region Send OnPublishFirmwareStatusNotificationRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnPublishFirmwareStatusNotificationRequest?.Invoke(startTime,
-                                                                   this,
-                                                                   Request);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnPublishFirmwareStatusNotificationRequest));
-            }
-
-            #endregion
-
-
-            OCPPv2_1.CSMS.PublishFirmwareStatusNotificationResponse? response = null;
-
-            if (!SignaturePolicy.SignRequestMessage(
-                    Request,
-                    Request.ToJSON(
-                        CustomPublishFirmwareStatusNotificationRequestSerializer,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out var errorResponse
-                ))
-            {
-
-                response  = new OCPPv2_1.CSMS.PublishFirmwareStatusNotificationResponse(
-                                Request,
-                                Result.SignatureError(errorResponse)
-                            );
-
-            }
-
-            // ToDo: Currently hardcoded CSMS lookup!
-            else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
-            {
-
-                response  = AsCS.CSClient is not null
-
-                                ? await AsCS.CSClient.PublishFirmwareStatusNotification(Request)
-
-                                : new OCPPv2_1.CSMS.PublishFirmwareStatusNotificationResponse(
-                                      Request,
-                                      Result.Server("Unknown or unreachable charging station!")
-                                  );
-
-            }
-
-            else
-            {
-                // ...
-            }
-
-
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomPublishFirmwareStatusNotificationResponseSerializer,
-                    CustomSignatureSerializer,
-                    CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
-
-
-            #region Send OnPublishFirmwareStatusNotificationResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnPublishFirmwareStatusNotificationResponse?.Invoke(endTime,
-                                                                    this,
-                                                                    Request,
-                                                                    response,
-                                                                    endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnPublishFirmwareStatusNotificationResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region SendHeartbeat                         (Request)
-
-        /// <summary>
-        /// Send a heartbeat.
-        /// </summary>
-        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-        /// 
-        /// <param name="RequestId">An optional request identification.</param>
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public async Task<OCPPv2_1.CSMS.HeartbeatResponse>
-            Heartbeat(OCPPv2_1.CS.HeartbeatRequest Request)
-
-        {
-
-            #region Send OnHeartbeatRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnHeartbeatRequest?.Invoke(startTime,
-                                           this,
-                                           Request);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnHeartbeatRequest));
-            }
-
-            #endregion
-
-
-            OCPPv2_1.CSMS.HeartbeatResponse? response = null;
-
-            if (!SignaturePolicy.SignRequestMessage(
-                    Request,
-                    Request.ToJSON(
-                        CustomHeartbeatRequestSerializer,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out var errorResponse
-                ))
-            {
-
-                response  = new OCPPv2_1.CSMS.HeartbeatResponse(
-                                Request,
-                                Result.SignatureError(errorResponse)
-                            );
-
-            }
-
-            // ToDo: Currently hardcoded CSMS lookup!
-            else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
-            {
-
-                response  = AsCS.CSClient is not null
-
-                                ? await AsCS.CSClient.Heartbeat(Request)
-
-                                : new OCPPv2_1.CSMS.HeartbeatResponse(
-                                      Request,
-                                      Result.Server("Unknown or unreachable charging station!")
-                                  );
-
-            }
-
-            else
-            {
-                // ...
-            }
-
-
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomHeartbeatResponseSerializer,
-                    CustomSignatureSerializer,
-                    CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
-
-
-            #region Send OnHeartbeatResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnHeartbeatResponse?.Invoke(endTime,
-                                            this,
-                                            Request,
-                                            response,
-                                            endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnHeartbeatResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region NotifyEvent                           (Request)
-
-        /// <summary>
-        /// Notify about an event.
-        /// </summary>
-        /// <param name="GeneratedAt">The timestamp of the moment this message was generated at the charging station.</param>
-        /// <param name="SequenceNumber">The sequence number of this message. First message starts at 0.</param>
-        /// <param name="EventData">The enumeration of event data.</param>
-        /// <param name="ToBeContinued">The optional "to be continued" indicator whether another part of the monitoring data follows in an upcoming NotifyCustomerInformationRequest message. Default value when omitted is false.</param>
-        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-        /// 
-        /// <param name="RequestId">An optional request identification.</param>
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public async Task<OCPPv2_1.CSMS.NotifyEventResponse>
-            NotifyEvent(OCPPv2_1.CS.NotifyEventRequest Request)
-
-        {
-
-            #region Send OnNotifyEventRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnNotifyEventRequest?.Invoke(startTime,
-                                             this,
-                                             Request);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyEventRequest));
-            }
-
-            #endregion
-
-
-            OCPPv2_1.CSMS.NotifyEventResponse? response = null;
-
-            if (!SignaturePolicy.SignRequestMessage(
-                    Request,
-                    Request.ToJSON(
-                        CustomNotifyEventRequestSerializer,
-                        CustomEventDataSerializer,
-                        CustomComponentSerializer,
-                        CustomEVSESerializer,
-                        CustomVariableSerializer,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out var errorResponse
-                ))
-            {
-
-                response  = new OCPPv2_1.CSMS.NotifyEventResponse(
-                                Request,
-                                Result.SignatureError(errorResponse)
-                            );
-
-            }
-
-            // ToDo: Currently hardcoded CSMS lookup!
-            else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
-            {
-
-                response  = AsCS.CSClient is not null
-
-                                ? await AsCS.CSClient.NotifyEvent(Request)
-
-                                : new OCPPv2_1.CSMS.NotifyEventResponse(
-                                      Request,
-                                      Result.Server("Unknown or unreachable charging station!")
-                                  );
-
-            }
-
-            else
-            {
-                // ...
-            }
-
-
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomNotifyEventResponseSerializer,
-                    CustomSignatureSerializer,
-                    CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
-
-
-            #region Send OnNotifyEventResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnNotifyEventResponse?.Invoke(endTime,
-                                              this,
-                                              Request,
-                                              response,
-                                              endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyEventResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region SendSecurityEventNotification         (Request)
-
-        /// <summary>
-        /// Send a security event notification.
-        /// </summary>
-        /// <param name="Type">Type of the security event.</param>
-        /// <param name="Timestamp">The timestamp of the security event.</param>
-        /// <param name="TechInfo">Optional additional information about the occurred security event.</param>
-        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-        /// 
-        /// <param name="RequestId">An optional request identification.</param>
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public async Task<OCPPv2_1.CSMS.SecurityEventNotificationResponse>
-            SecurityEventNotification(OCPPv2_1.CS.SecurityEventNotificationRequest Request)
-
-        {
-
-            #region Send OnSecurityEventNotificationRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnSecurityEventNotificationRequest?.Invoke(startTime,
-                                                           this,
-                                                           Request);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnSecurityEventNotificationRequest));
-            }
-
-            #endregion
-
-
-            OCPPv2_1.CSMS.SecurityEventNotificationResponse? response = null;
-
-            if (!SignaturePolicy.SignRequestMessage(
-                    Request,
-                    Request.ToJSON(
-                        CustomSecurityEventNotificationRequestSerializer,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out var errorResponse
-                ))
-            {
-
-                response  = new OCPPv2_1.CSMS.SecurityEventNotificationResponse(
-                                Request,
-                                Result.SignatureError(errorResponse)
-                            );
-
-            }
-
-            // ToDo: Currently hardcoded CSMS lookup!
-            else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
-            {
-
-                response  = AsCS.CSClient is not null
-
-                                ? await AsCS.CSClient.SecurityEventNotification(Request)
-
-                                : new OCPPv2_1.CSMS.SecurityEventNotificationResponse(
-                                      Request,
-                                      Result.Server("Unknown or unreachable charging station!")
-                                  );
-
-            }
-
-            else
-            {
-                // ...
-            }
-
-
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomSecurityEventNotificationResponseSerializer,
-                    CustomSignatureSerializer,
-                    CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
-
-
-            #region Send OnSecurityEventNotificationResponse event
-
-            var endTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-            try
-            {
-
-                OnSecurityEventNotificationResponse?.Invoke(endTime,
-                                                            this,
-                                                            Request,
-                                                            response,
-                                                            endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnSecurityEventNotificationResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region NotifyReport                          (Request)
-
-        /// <summary>
-        /// Notify about a report.
-        /// </summary>
-        /// <param name="NotifyReportRequestId">The unique identification of the notify report request.</param>
-        /// <param name="SequenceNumber">The sequence number of this message. First message starts at 0.</param>
-        /// <param name="GeneratedAt">The timestamp of the moment this message was generated at the charging station.</param>
-        /// <param name="ReportData">The enumeration of report data. A single report data element contains only the component, variable and variable report data that caused the event.</param>
-        /// <param name="ToBeContinued">The optional "to be continued" indicator whether another part of the report follows in an upcoming NotifyReportRequest message. Default value when omitted is false.</param>
-        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-        /// 
-        /// <param name="RequestId">An optional request identification.</param>
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public async Task<OCPPv2_1.CSMS.NotifyReportResponse>
-            NotifyReport(OCPPv2_1.CS.NotifyReportRequest Request)
-
-        {
-
-            #region Send OnNotifyReportRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnNotifyReportRequest?.Invoke(startTime,
-                                              this,
-                                              Request);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyReportRequest));
-            }
-
-            #endregion
-
-
-            OCPPv2_1.CSMS.NotifyReportResponse? response = null;
-
-            if (!SignaturePolicy.SignRequestMessage(
-                    Request,
-                    Request.ToJSON(
-                        CustomNotifyReportRequestSerializer,
-                        CustomReportDataSerializer,
-                        CustomComponentSerializer,
-                        CustomEVSESerializer,
-                        CustomVariableSerializer,
-                        CustomVariableAttributeSerializer,
-                        CustomVariableCharacteristicsSerializer,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out var errorResponse
-                ))
-            {
-
-                response  = new OCPPv2_1.CSMS.NotifyReportResponse(
-                                Request,
-                                Result.SignatureError(errorResponse)
-                            );
-
-            }
-
-            // ToDo: Currently hardcoded CSMS lookup!
-            else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
-            {
-
-                response  = AsCS.CSClient is not null
-
-                                ? await AsCS.CSClient.NotifyReport(Request)
-
-                                : new OCPPv2_1.CSMS.NotifyReportResponse(
-                                      Request,
-                                      Result.Server("Unknown or unreachable charging station!")
-                                  );
-
-            }
-
-            else
-            {
-                // ...
-            }
-
-
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomNotifyReportResponseSerializer,
-                    CustomSignatureSerializer,
-                    CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
-
-
-            #region Send OnNotifyReportResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnNotifyReportResponse?.Invoke(endTime,
-                                               this,
-                                               Request,
-                                               response,
-                                               endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyReportResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region NotifyMonitoringReport                (Request)
-
-        /// <summary>
-        /// Notify about a monitoring report.
-        /// </summary>
-        /// <param name="NotifyMonitoringReportRequestId">The unique identification of the notify monitoring report request.</param>
-        /// <param name="SequenceNumber">The sequence number of this message. First message starts at 0.</param>
-        /// <param name="GeneratedAt">The timestamp of the moment this message was generated at the charging station.</param>
-        /// <param name="MonitoringData">The enumeration of event data. A single event data element contains only the component, variable and variable monitoring data that caused the event.</param>
-        /// <param name="ToBeContinued">The optional "to be continued" indicator whether another part of the monitoring data follows in an upcoming NotifyCustomerInformationRequest message. Default value when omitted is false.</param>
-        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-        /// 
-        /// <param name="RequestId">An optional request identification.</param>
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public async Task<OCPPv2_1.CSMS.NotifyMonitoringReportResponse>
-            NotifyMonitoringReport(OCPPv2_1.CS.NotifyMonitoringReportRequest Request)
-
-        {
-
-            #region Send OnNotifyMonitoringReportRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnNotifyMonitoringReportRequest?.Invoke(startTime,
-                                                        this,
-                                                        Request);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyMonitoringReportRequest));
-            }
-
-            #endregion
-
-
-            OCPPv2_1.CSMS.NotifyMonitoringReportResponse? response = null;
-
-            if (!SignaturePolicy.SignRequestMessage(
-                    Request,
-                    Request.ToJSON(
-                        CustomNotifyMonitoringReportRequestSerializer,
-                        CustomMonitoringDataSerializer,
-                        CustomComponentSerializer,
-                        CustomEVSESerializer,
-                        CustomVariableSerializer,
-                        CustomVariableMonitoringSerializer,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out var errorResponse
-                ))
-            {
-
-                response  = new OCPPv2_1.CSMS.NotifyMonitoringReportResponse(
-                                Request,
-                                Result.SignatureError(errorResponse)
-                            );
-
-            }
-
-            // ToDo: Currently hardcoded CSMS lookup!
-            else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
-            {
-
-                response  = AsCS.CSClient is not null
-
-                                ? await AsCS.CSClient.NotifyMonitoringReport(Request)
-
-                                : new OCPPv2_1.CSMS.NotifyMonitoringReportResponse(
-                                      Request,
-                                      Result.Server("Unknown or unreachable charging station!")
-                                  );
-
-            }
-
-            else
-            {
-                // ...
-            }
-
-
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomNotifyMonitoringReportResponseSerializer,
-                    CustomSignatureSerializer,
-                    CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
-
-
-            #region Send OnNotifyMonitoringReportResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnNotifyMonitoringReportResponse?.Invoke(endTime,
-                                                         this,
-                                                         Request,
-                                                         response,
-                                                         endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyMonitoringReportResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region SendLogStatusNotification             (Request)
-
-        /// <summary>
-        /// Send a log status notification.
-        /// </summary>
-        /// <param name="Status">The status of the log upload.</param>
-        /// <param name="LogRequestId">The optional request id that was provided in the GetLog request that started this log upload.</param>
-        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-        /// 
-        /// <param name="RequestId">An optional request identification.</param>
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public async Task<OCPPv2_1.CSMS.LogStatusNotificationResponse>
-            LogStatusNotification(OCPPv2_1.CS.LogStatusNotificationRequest Request)
-
-        {
-
-            #region Send OnLogStatusNotificationRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnLogStatusNotificationRequest?.Invoke(startTime,
-                                                       this,
-                                                       Request);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnLogStatusNotificationRequest));
-            }
-
-            #endregion
-
-
-            OCPPv2_1.CSMS.LogStatusNotificationResponse? response = null;
-
-            if (!SignaturePolicy.SignRequestMessage(
-                    Request,
-                    Request.ToJSON(
-                        CustomLogStatusNotificationRequestSerializer,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out var errorResponse
-                ))
-            {
-
-                response  = new OCPPv2_1.CSMS.LogStatusNotificationResponse(
-                                Request,
-                                Result.SignatureError(errorResponse)
-                            );
-
-            }
-
-            // ToDo: Currently hardcoded CSMS lookup!
-            else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
-            {
-
-                response  = AsCS.CSClient is not null
-
-                                ? await AsCS.CSClient.LogStatusNotification(Request)
-
-                                : new OCPPv2_1.CSMS.LogStatusNotificationResponse(
-                                      Request,
-                                      Result.Server("Unknown or unreachable charging station!")
-                                  );
-
-            }
-
-            else
-            {
-                // ...
-            }
-
-
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomLogStatusNotificationResponseSerializer,
-                    CustomSignatureSerializer,
-                    CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
-
-
-            #region Send OnLogStatusNotificationResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnLogStatusNotificationResponse?.Invoke(endTime,
-                                                        this,
-                                                        Request,
-                                                        response,
-                                                        endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnLogStatusNotificationResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region TransferData                          (Request)
-
-        /// <summary>
-        /// Send the given vendor-specific data to the CSMS.
-        /// </summary>
-        /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
-        /// <param name="MessageId">An optional message identification.</param>
-        /// <param name="Data">A vendor-specific JSON token.</param>
-        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-        /// 
-        /// <param name="RequestId">An optional request identification.</param>
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public async Task<OCPPv2_1.CSMS.DataTransferResponse>
-            DataTransfer(OCPPv2_1.CS.DataTransferRequest Request)
-
-        {
-
-            #region Send OnDataTransferRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnDataTransferRequest?.Invoke(startTime,
-                                              this,
-                                              Request);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnDataTransferRequest));
-            }
-
-            #endregion
-
-
-            OCPPv2_1.CSMS.DataTransferResponse? response = null;
-
-            if (!SignaturePolicy.SignRequestMessage(
-                    Request,
-                    Request.ToJSON(
-                        CustomDataTransferRequestSerializer,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out var errorResponse
-                ))
-            {
-
-                response  = new OCPPv2_1.CSMS.DataTransferResponse(
-                                Request,
-                                Result.SignatureError(errorResponse)
-                            );
-
-            }
-
-            // ToDo: Currently hardcoded CSMS lookup!
-            else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
-            {
-
-                response  = AsCS.CSClient is not null
-
-                                ? await AsCS.CSClient.DataTransfer(Request)
-
-                                : new OCPPv2_1.CSMS.DataTransferResponse(
-                                      Request,
-                                      Result.Server("Unknown or unreachable charging station!")
-                                  );
-
-            }
-
-            else
-            {
-                // ...
-            }
-
-
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomDataTransferResponseSerializer,
-                    CustomStatusInfoSerializer,
-                    CustomSignatureSerializer,
-                    CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
-
-
-            #region Send OnDataTransferResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnDataTransferResponse?.Invoke(endTime,
-                                               this,
-                                               Request,
-                                               response,
-                                               endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnDataTransferResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-
-        #region SendCertificateSigningRequest         (Request)
-
-        /// <summary>
-        /// Send a heartbeat.
-        /// </summary>
-        /// <param name="CSR">The PEM encoded RFC 2986 certificate signing request (CSR) [max 5500].</param>
-        /// <param name="CertificateType">Whether the certificate is to be used for both the 15118 connection (if implemented) and the charging station to central system (CSMS) connection.</param>
-        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-        /// 
-        /// <param name="RequestId">An optional request identification.</param>
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public async Task<OCPPv2_1.CSMS.SignCertificateResponse>
-            SignCertificate(OCPPv2_1.CS.SignCertificateRequest Request)
-
-        {
-
-            #region Send OnSignCertificateRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnSignCertificateRequest?.Invoke(startTime,
-                                                 this,
-                                                 Request);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnSignCertificateRequest));
-            }
-
-            #endregion
-
-
-            OCPPv2_1.CSMS.SignCertificateResponse? response = null;
-
-            if (!SignaturePolicy.SignRequestMessage(
-                    Request,
-                    Request.ToJSON(
-                        CustomSignCertificateRequestSerializer,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out var errorResponse
-                ))
-            {
-
-                response  = new OCPPv2_1.CSMS.SignCertificateResponse(
-                                Request,
-                                Result.SignatureError(errorResponse)
-                            );
-
-            }
-
-            // ToDo: Currently hardcoded CSMS lookup!
-            else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
-            {
-
-                response  = AsCS.CSClient is not null
-
-                                ? await AsCS.CSClient.SignCertificate(Request)
-
-                                : new OCPPv2_1.CSMS.SignCertificateResponse(
-                                      Request,
-                                      Result.Server("Unknown or unreachable charging station!")
-                                  );
-
-            }
-
-            else
-            {
-                // ...
-            }
-
-
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomSignCertificateResponseSerializer,
-                    CustomStatusInfoSerializer,
-                    CustomSignatureSerializer,
-                    CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
-
-
-            #region Send OnSignCertificateResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnSignCertificateResponse?.Invoke(endTime,
-                                                  this,
-                                                  Request,
-                                                  response,
-                                                  endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnSignCertificateResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region Get15118EVCertificate                 (Request)
-
-        /// <summary>
-        /// Get an ISO 15118 contract certificate.
-        /// </summary>
-        /// <param name="ISO15118SchemaVersion">ISO/IEC 15118 schema version used for the session between charging station and electric vehicle. Required for parsing the EXI data stream within the central system.</param>
-        /// <param name="CertificateAction">Whether certificate needs to be installed or updated.</param>
-        /// <param name="EXIRequest">Base64 encoded certificate installation request from the electric vehicle. [max 5600]</param>
-        /// <param name="MaximumContractCertificateChains">Optional number of contracts that EV wants to install at most.</param>
-        /// <param name="PrioritizedEMAIds">An optional enumeration of eMA Ids that have priority in case more contracts than maximumContractCertificateChains are available.</param>
-        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-        /// 
-        /// <param name="RequestId">An optional request identification.</param>
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public async Task<OCPPv2_1.CSMS.Get15118EVCertificateResponse>
-            Get15118EVCertificate(OCPPv2_1.CS.Get15118EVCertificateRequest Request)
-
-        {
-
-            #region Send OnGet15118EVCertificateRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnGet15118EVCertificateRequest?.Invoke(startTime,
-                                                       this,
-                                                       Request);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnGet15118EVCertificateRequest));
-            }
-
-            #endregion
-
-
-            OCPPv2_1.CSMS.Get15118EVCertificateResponse? response = null;
-
-            if (!SignaturePolicy.SignRequestMessage(
-                    Request,
-                    Request.ToJSON(
-                        CustomGet15118EVCertificateRequestSerializer,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out var errorResponse
-                ))
-            {
-
-                response  = new OCPPv2_1.CSMS.Get15118EVCertificateResponse(
-                                Request,
-                                Result.SignatureError(errorResponse)
-                            );
-
-            }
-
-            // ToDo: Currently hardcoded CSMS lookup!
-            else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
-            {
-
-                response  = AsCS.CSClient is not null
-
-                                ? await AsCS.CSClient.Get15118EVCertificate(Request)
-
-                                : new OCPPv2_1.CSMS.Get15118EVCertificateResponse(
-                                      Request,
-                                      Result.Server("Unknown or unreachable charging station!")
-                                  );
-
-            }
-
-            else
-            {
-                // ...
-            }
-
-
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomGet15118EVCertificateResponseSerializer,
-                    CustomStatusInfoSerializer,
-                    CustomSignatureSerializer,
-                    CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
-
-
-            #region Send OnGet15118EVCertificateResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnGet15118EVCertificateResponse?.Invoke(endTime,
-                                                        this,
-                                                        Request,
-                                                        response,
-                                                        endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnGet15118EVCertificateResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region GetCertificateStatus                  (Request)
-
-        /// <summary>
-        /// Get the status of a certificate.
-        /// </summary>
-        /// <param name="OCSPRequestData">The certificate of which the status is requested.</param>
-        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-        /// 
-        /// <param name="RequestId">An optional request identification.</param>
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public async Task<OCPPv2_1.CSMS.GetCertificateStatusResponse>
-            GetCertificateStatus(OCPPv2_1.CS.GetCertificateStatusRequest Request)
-
-        {
-
-            #region Send OnGetCertificateStatusRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnGetCertificateStatusRequest?.Invoke(startTime,
-                                                      this,
-                                                      Request);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnGetCertificateStatusRequest));
-            }
-
-            #endregion
-
-
-            OCPPv2_1.CSMS.GetCertificateStatusResponse? response = null;
-
-            if (!SignaturePolicy.SignRequestMessage(
-                    Request,
-                    Request.ToJSON(
-                        CustomGetCertificateStatusRequestSerializer,
-                        CustomOCSPRequestDataSerializer,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out var errorResponse
-                ))
-            {
-
-                response  = new OCPPv2_1.CSMS.GetCertificateStatusResponse(
-                                Request,
-                                Result.SignatureError(errorResponse)
-                            );
-
-            }
-
-            // ToDo: Currently hardcoded CSMS lookup!
-            else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
-            {
-
-                response  = AsCS.CSClient is not null
-
-                                ? await AsCS.CSClient.GetCertificateStatus(Request)
-
-                                : new OCPPv2_1.CSMS.GetCertificateStatusResponse(
-                                      Request,
-                                      Result.Server("Unknown or unreachable charging station!")
-                                  );
-
-            }
-
-            else
-            {
-                // ...
-            }
-
-
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomGetCertificateStatusResponseSerializer,
-                    CustomStatusInfoSerializer,
-                    CustomSignatureSerializer,
-                    CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
-
-
-            #region Send OnGetCertificateStatusResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnGetCertificateStatusResponse?.Invoke(endTime,
-                                                       this,
-                                                       Request,
-                                                       response,
-                                                       endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnGetCertificateStatusResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region GetCRL                                (Request)
-
-        /// <summary>
-        /// Get a certificate revocation list from CSMS for the specified certificate.
-        /// </summary>
-        /// 
-        /// <param name="GetCRLRequestId">The identification of this request.</param>
-        /// <param name="CertificateHashData">Certificate hash data.</param>
-        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-        /// 
-        /// <param name="RequestId">An optional request identification.</param>
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public async Task<OCPPv2_1.CSMS.GetCRLResponse>
-            GetCRL(OCPPv2_1.CS.GetCRLRequest Request)
-
-        {
-
-            #region Send OnGetCRLRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnGetCRLRequest?.Invoke(startTime,
-                                        this,
-                                        Request);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnGetCRLRequest));
-            }
-
-            #endregion
-
-
-            OCPPv2_1.CSMS.GetCRLResponse? response = null;
-
-            if (!SignaturePolicy.SignRequestMessage(
-                    Request,
-                    Request.ToJSON(
-                        CustomGetCRLRequestSerializer,
-                        CustomCertificateHashDataSerializer,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out var errorResponse
-                ))
-            {
-
-                response  = new OCPPv2_1.CSMS.GetCRLResponse(
-                                Request,
-                                Result.SignatureError(errorResponse)
-                            );
-
-            }
-
-            // ToDo: Currently hardcoded CSMS lookup!
-            else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
-            {
-
-                response  = AsCS.CSClient is not null
-
-                                ? await AsCS.CSClient.GetCRL(Request)
-
-                                : new OCPPv2_1.CSMS.GetCRLResponse(
-                                      Request,
-                                      Result.Server("Unknown or unreachable charging station!")
-                                  );
-
-            }
-
-            else
-            {
-                // ...
-            }
-
-
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomGetCRLResponseSerializer,
-                    CustomStatusInfoSerializer,
-                    CustomSignatureSerializer,
-                    CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
-
-
-            #region Send OnGetCRLResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnGetCRLResponse?.Invoke(endTime,
-                                         this,
-                                         Request,
-                                         response,
-                                         endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnGetCRLResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-
-        #region SendReservationStatusUpdate           (Request)
-
-        /// <summary>
-        /// Send a reservation status update.
-        /// </summary>
-        /// <param name="ReservationId">The unique identification of the transaction to update.</param>
-        /// <param name="ReservationUpdateStatus">The updated reservation status.</param>
-        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-        /// 
-        /// <param name="RequestId">An optional request identification.</param>
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public async Task<OCPPv2_1.CSMS.ReservationStatusUpdateResponse>
-            ReservationStatusUpdate(OCPPv2_1.CS.ReservationStatusUpdateRequest Request)
-
-        {
-
-            #region Send OnReservationStatusUpdateRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnReservationStatusUpdateRequest?.Invoke(startTime,
-                                                         this,
-                                                         Request);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnReservationStatusUpdateRequest));
-            }
-
-            #endregion
-
-
-            OCPPv2_1.CSMS.ReservationStatusUpdateResponse? response = null;
-
-            if (!SignaturePolicy.SignRequestMessage(
-                    Request,
-                    Request.ToJSON(
-                        CustomReservationStatusUpdateRequestSerializer,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out var errorResponse
-                ))
-            {
-
-                response  = new OCPPv2_1.CSMS.ReservationStatusUpdateResponse(
-                                Request,
-                                Result.SignatureError(errorResponse)
-                            );
-
-            }
-
-            // ToDo: Currently hardcoded CSMS lookup!
-            else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
-            {
-
-                response  = AsCS.CSClient is not null
-
-                                ? await AsCS.CSClient.ReservationStatusUpdate(Request)
-
-                                : new OCPPv2_1.CSMS.ReservationStatusUpdateResponse(
-                                      Request,
-                                      Result.Server("Unknown or unreachable charging station!")
-                                  );
-
-            }
-
-            else
-            {
-                // ...
-            }
-
-
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomReservationStatusUpdateResponseSerializer,
-                    CustomSignatureSerializer,
-                    CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
-
-
-            #region Send OnReservationStatusUpdateResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnReservationStatusUpdateResponse?.Invoke(endTime,
-                                                          this,
-                                                          Request,
-                                                          response,
-                                                          endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnReservationStatusUpdateResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region Authorize                             (Request)
-
-        /// <summary>
-        /// Authorize the given token.
-        /// </summary>
-        /// <param name="IdToken">The identifier that needs to be authorized.</param>
-        /// <param name="Certificate">An optional X.509 certificated presented by the electric vehicle/user (PEM format).</param>
-        /// <param name="ISO15118CertificateHashData">Optional information to verify the electric vehicle/user contract certificate via OCSP.</param>
-        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-        /// 
-        /// <param name="RequestId">An optional request identification.</param>
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public async Task<OCPPv2_1.CSMS.AuthorizeResponse>
-            Authorize(OCPPv2_1.CS.AuthorizeRequest Request)
-
-        {
-
-            #region Send OnAuthorizeRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnAuthorizeRequest?.Invoke(startTime,
-                                           this,
-                                           Request);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnAuthorizeRequest));
-            }
-
-            #endregion
-
-
-            OCPPv2_1.CSMS.AuthorizeResponse? response = null;
-
-            if (!SignaturePolicy.SignRequestMessage(
-                    Request,
-                    Request.ToJSON(
-                        CustomAuthorizeRequestSerializer,
-                        CustomIdTokenSerializer,
-                        CustomAdditionalInfoSerializer,
-                        CustomOCSPRequestDataSerializer,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out var errorResponse
-                ))
-            {
-
-                response  = new OCPPv2_1.CSMS.AuthorizeResponse(
-                                Request,
-                                Result.SignatureError(errorResponse)
-                            );
-
-            }
-
-            // ToDo: Currently hardcoded CSMS lookup!
-            else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
-            {
-
-                response  = AsCS.CSClient is not null
-
-                                ? await AsCS.CSClient.Authorize(Request)
-
-                                : new OCPPv2_1.CSMS.AuthorizeResponse(
-                                      Request,
-                                      Result.Server("Unknown or unreachable charging station!")
-                                  );
-
-            }
-
-            else
-            {
-                // ...
-            }
-
-
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomAuthorizeResponseSerializer,
-                    CustomIdTokenInfoSerializer,
-                    CustomIdTokenSerializer,
-                    CustomAdditionalInfoSerializer,
-                    CustomMessageContentSerializer,
-                    CustomTransactionLimitsSerializer,
-                    CustomSignatureSerializer,
-                    CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
-
-
-            #region Send OnAuthorizeResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnAuthorizeResponse?.Invoke(endTime,
-                                            this,
-                                            Request,
-                                            response,
-                                            endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnAuthorizeResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region NotifyEVChargingNeeds                 (Request)
-
-        /// <summary>
-        /// Notify about EV charging needs.
-        /// </summary>
-        /// <param name="EVSEId">The EVSE and connector to which the EV is connected to.</param>
-        /// <param name="ChargingNeeds">The characteristics of the energy delivery required.</param>
-        /// <param name="ReceivedTimestamp">An optional timestamp when the EV charging needs had been received, e.g. when the charging station was offline.</param>
-        /// <param name="MaxScheduleTuples">The optional maximum number of schedule tuples per schedule the car supports.</param>
-        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-        /// 
-        /// <param name="RequestId">An optional request identification.</param>
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public async Task<OCPPv2_1.CSMS.NotifyEVChargingNeedsResponse>
-            NotifyEVChargingNeeds(OCPPv2_1.CS.NotifyEVChargingNeedsRequest Request)
-
-        {
-
-            #region Send OnNotifyEVChargingNeedsRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnNotifyEVChargingNeedsRequest?.Invoke(startTime,
-                                                       this,
-                                                       Request);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyEVChargingNeedsRequest));
-            }
-
-            #endregion
-
-
-            OCPPv2_1.CSMS.NotifyEVChargingNeedsResponse? response = null;
-
-            if (!SignaturePolicy.SignRequestMessage(
-                    Request,
-                    Request.ToJSON(
-                        CustomNotifyEVChargingNeedsRequestSerializer,
-                        CustomChargingNeedsSerializer,
-                        CustomACChargingParametersSerializer,
-                        CustomDCChargingParametersSerializer,
-                        CustomV2XChargingParametersSerializer,
-                        CustomEVEnergyOfferSerializer,
-                        CustomEVPowerScheduleSerializer,
-                        CustomEVPowerScheduleEntrySerializer,
-                        CustomEVAbsolutePriceScheduleSerializer,
-                        CustomEVAbsolutePriceScheduleEntrySerializer,
-                        CustomEVPriceRuleSerializer,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out var errorResponse
-                ))
-            {
-
-                response  = new OCPPv2_1.CSMS.NotifyEVChargingNeedsResponse(
-                                Request,
-                                Result.SignatureError(errorResponse)
-                            );
-
-            }
-
-            // ToDo: Currently hardcoded CSMS lookup!
-            else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
-            {
-
-                response  = AsCS.CSClient is not null
-
-                                ? await AsCS.CSClient.NotifyEVChargingNeeds(Request)
-
-                                : new OCPPv2_1.CSMS.NotifyEVChargingNeedsResponse(
-                                      Request,
-                                      Result.Server("Unknown or unreachable charging station!")
-                                  );
-
-            }
-
-            else
-            {
-                // ...
-            }
-
-
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomNotifyEVChargingNeedsResponseSerializer,
-                    CustomStatusInfoSerializer,
-                    CustomSignatureSerializer,
-                    CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
-
-
-            #region Send OnNotifyEVChargingNeedsResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnNotifyEVChargingNeedsResponse?.Invoke(endTime,
-                                                        this,
-                                                        Request,
-                                                        response,
-                                                        endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyEVChargingNeedsResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region SendTransactionEvent                  (Request)
-
-        /// <summary>
-        /// Send a transaction event.
-        /// </summary>
-        /// <param name="EventType">The type of this transaction event. The first event of a transaction SHALL be of type "started", the last of type "ended". All others should be of type "updated".</param>
-        /// <param name="Timestamp">The timestamp at which this transaction event occurred.</param>
-        /// <param name="TriggerReason">The reason the charging station sends this message.</param>
-        /// <param name="SequenceNumber">This incremental sequence number, helps to determine whether all messages of a transaction have been received.</param>
-        /// <param name="TransactionInfo">Transaction related information.</param>
-        /// 
-        /// <param name="Offline">An optional indication whether this transaction event happened when the charging station was offline.</param>
-        /// <param name="NumberOfPhasesUsed">An optional numer of electrical phases used, when the charging station is able to report it.</param>
-        /// <param name="CableMaxCurrent">An optional maximum current of the connected cable in amperes.</param>
-        /// <param name="ReservationId">An optional unqiue reservation identification of the reservation that terminated as a result of this transaction.</param>
-        /// <param name="IdToken">An optional identification token for which a transaction has to be/was started.</param>
-        /// <param name="EVSE">An optional indication of the EVSE (and connector) used.</param>
-        /// <param name="MeterValues">An optional enumeration of meter values.</param>
-        /// <param name="PreconditioningStatus">The optional current status of the battery management system within the EV.</param>
-        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-        /// 
-        /// <param name="RequestId">An optional request identification.</param>
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public async Task<OCPPv2_1.CSMS.TransactionEventResponse>
-            TransactionEvent(OCPPv2_1.CS.TransactionEventRequest Request)
-
-        {
-
-            #region Send OnTransactionEventRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnTransactionEventRequest?.Invoke(startTime,
-                                                  this,
-                                                  Request);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnTransactionEventRequest));
-            }
-
-            #endregion
-
-
-            OCPPv2_1.CSMS.TransactionEventResponse? response = null;
-
-            if (!SignaturePolicy.SignRequestMessage(
-                    Request,
-                    Request.ToJSON(
-                        CustomTransactionEventRequestSerializer,
-                        CustomTransactionSerializer,
-                        CustomIdTokenSerializer,
-                        CustomAdditionalInfoSerializer,
-                        CustomEVSESerializer,
-                        CustomMeterValueSerializer,
-                        CustomSampledValueSerializer,
-                        CustomSignedMeterValueSerializer,
-                        CustomUnitsOfMeasureSerializer,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out var errorResponse
-                ))
-            {
-
-                response  = new OCPPv2_1.CSMS.TransactionEventResponse(
-                                Request,
-                                Result.SignatureError(errorResponse)
-                            );
-
-            }
-
-            // ToDo: Currently hardcoded CSMS lookup!
-            else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
-            {
-
-                response  = AsCS.CSClient is not null
-
-                                ? await AsCS.CSClient.TransactionEvent(Request)
-
-                                : new OCPPv2_1.CSMS.TransactionEventResponse(
-                                      Request,
-                                      Result.Server("Unknown or unreachable charging station!")
-                                  );
-
-            }
-
-            else
-            {
-                // ...
-            }
-
-
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomTransactionEventResponseSerializer,
-                    CustomIdTokenInfoSerializer,
-                    CustomIdTokenSerializer,
-                    CustomAdditionalInfoSerializer,
-                    CustomMessageContentSerializer,
-                    CustomSignatureSerializer,
-                    CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
-
-
-            #region Send OnTransactionEventResponse event
-
-            var endTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-            try
-            {
-
-                OnTransactionEventResponse?.Invoke(endTime,
-                                                   this,
-                                                   Request,
-                                                   response,
-                                                   endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnTransactionEventResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region SendStatusNotification                (Request)
-
-        /// <summary>
-        /// Send a status notification for the given connector.
-        /// </summary>
-        /// <param name="EVSEId">The identification of the EVSE to which the connector belongs for which the the status is reported.</param>
-        /// <param name="ConnectorId">The identification of the connector within the EVSE for which the status is reported.</param>
-        /// <param name="Timestamp">The time for which the status is reported.</param>
-        /// <param name="Status">The current status of the connector.</param>
-        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-        /// 
-        /// <param name="RequestId">An optional request identification.</param>
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public async Task<OCPPv2_1.CSMS.StatusNotificationResponse>
-            StatusNotification(OCPPv2_1.CS.StatusNotificationRequest Request)
-
-        {
-
-            #region Send OnStatusNotificationRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnStatusNotificationRequest?.Invoke(startTime,
-                                                    this,
-                                                    Request);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnStatusNotificationRequest));
-            }
-
-            #endregion
-
-
-            OCPPv2_1.CSMS.StatusNotificationResponse? response = null;
-
-            if (!SignaturePolicy.SignRequestMessage(
-                    Request,
-                    Request.ToJSON(
-                        CustomStatusNotificationRequestSerializer,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out var errorResponse
-                ))
-            {
-
-                response  = new OCPPv2_1.CSMS.StatusNotificationResponse(
-                                Request,
-                                Result.SignatureError(errorResponse)
-                            );
-
-            }
-
-            // ToDo: Currently hardcoded CSMS lookup!
-            else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
-            {
-
-                response  = AsCS.CSClient is not null
-
-                                ? await AsCS.CSClient.StatusNotification(Request)
-
-                                : new OCPPv2_1.CSMS.StatusNotificationResponse(
-                                      Request,
-                                      Result.Server("Unknown or unreachable charging station!")
-                                  );
-
-            }
-
-            else
-            {
-                // ...
-            }
-
-
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomStatusNotificationResponseSerializer,
-                    CustomSignatureSerializer,
-                    CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
-
-
-            #region Send OnStatusNotificationResponse event
-
-            var endTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-            try
-            {
-
-                OnStatusNotificationResponse?.Invoke(endTime,
-                                                     this,
-                                                     Request,
-                                                     response,
-                                                     endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnStatusNotificationResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region SendMeterValues                       (Request)
-
-        /// <summary>
-        /// Send a meter values for the given connector.
-        /// </summary>
-        /// <param name="EVSEId">The EVSE identification at the charging station.</param>
-        /// <param name="MeterValues">The sampled meter values with timestamps.</param>
-        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-        /// 
-        /// <param name="RequestId">An optional request identification.</param>
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public async Task<OCPPv2_1.CSMS.MeterValuesResponse>
-            MeterValues(OCPPv2_1.CS.MeterValuesRequest Request)
-
-        {
-
-            #region Send OnMeterValuesRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnMeterValuesRequest?.Invoke(startTime,
-                                             this,
-                                             Request);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnMeterValuesRequest));
-            }
-
-            #endregion
-
-
-            OCPPv2_1.CSMS.MeterValuesResponse? response = null;
-
-            if (!SignaturePolicy.SignRequestMessage(
-                    Request,
-                    Request.ToJSON(
-                        CustomMeterValuesRequestSerializer,
-                        CustomMeterValueSerializer,
-                        CustomSampledValueSerializer,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out var errorResponse
-                ))
-            {
-
-                response  = new OCPPv2_1.CSMS.MeterValuesResponse(
-                                Request,
-                                Result.SignatureError(errorResponse)
-                            );
-
-            }
-
-            // ToDo: Currently hardcoded CSMS lookup!
-            else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
-            {
-
-                response  = AsCS.CSClient is not null
-
-                                ? await AsCS.CSClient.MeterValues(Request)
-
-                                : new OCPPv2_1.CSMS.MeterValuesResponse(
-                                      Request,
-                                      Result.Server("Unknown or unreachable charging station!")
-                                  );
-
-            }
-
-            else
-            {
-                // ...
-            }
-
-
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomMeterValuesResponseSerializer,
-                    CustomSignatureSerializer,
-                    CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
-
-
-            #region Send OnMeterValuesResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnMeterValuesResponse?.Invoke(endTime,
-                                              this,
-                                              Request,
-                                              response,
-                                              endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnMeterValuesResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region NotifyChargingLimit                   (Request)
-
-        /// <summary>
-        /// Notify about a charging limit.
-        /// </summary>
-        /// <param name="ChargingLimit">The charging limit, its source and whether it is grid critical.</param>
-        /// <param name="ChargingSchedules">Limits for the available power or current over time, as set by the external source.</param>
-        /// <param name="EVSEId">An optional EVSE identification, when the charging schedule contained in this notification applies to an EVSE.</param>
-        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-        /// 
-        /// <param name="RequestId">An optional request identification.</param>
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public async Task<OCPPv2_1.CSMS.NotifyChargingLimitResponse>
-            NotifyChargingLimit(OCPPv2_1.CS.NotifyChargingLimitRequest Request)
-
-        {
-
-            #region Send OnNotifyChargingLimitRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnNotifyChargingLimitRequest?.Invoke(startTime,
-                                                     this,
-                                                     Request);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyChargingLimitRequest));
-            }
-
-            #endregion
-
-
-            OCPPv2_1.CSMS.NotifyChargingLimitResponse? response = null;
-
-            if (!SignaturePolicy.SignRequestMessage(
-                    Request,
-                    Request.ToJSON(
-
-                        CustomNotifyChargingLimitRequestSerializer,
-                        CustomChargingScheduleSerializer,
-                        CustomLimitBeyondSoCSerializer,
-                        CustomChargingSchedulePeriodSerializer,
-                        CustomV2XFreqWattEntrySerializer,
-                        CustomV2XSignalWattEntrySerializer,
-                        CustomSalesTariffSerializer,
-                        CustomSalesTariffEntrySerializer,
-                        CustomRelativeTimeIntervalSerializer,
-                        CustomConsumptionCostSerializer,
-                        CustomCostSerializer,
-
-                        CustomAbsolutePriceScheduleSerializer,
-                        CustomPriceRuleStackSerializer,
-                        CustomPriceRuleSerializer,
-                        CustomTaxRuleSerializer,
-                        CustomOverstayRuleListSerializer,
-                        CustomOverstayRuleSerializer,
-                        CustomAdditionalServiceSerializer,
-
-                        CustomPriceLevelScheduleSerializer,
-                        CustomPriceLevelScheduleEntrySerializer,
-
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-
-                    ),
-                    out var errorResponse
-                ))
-            {
-
-                response  = new OCPPv2_1.CSMS.NotifyChargingLimitResponse(
-                                Request,
-                                Result.SignatureError(errorResponse)
-                            );
-
-            }
-
-            // ToDo: Currently hardcoded CSMS lookup!
-            else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
-            {
-
-                response  = AsCS.CSClient is not null
-
-                                ? await AsCS.CSClient.NotifyChargingLimit(Request)
-
-                                : new OCPPv2_1.CSMS.NotifyChargingLimitResponse(
-                                      Request,
-                                      Result.Server("Unknown or unreachable charging station!")
-                                  );
-
-            }
-
-            else
-            {
-                // ...
-            }
-
-
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomNotifyChargingLimitResponseSerializer,
-                    CustomSignatureSerializer,
-                    CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
-
-
-            #region Send OnNotifyChargingLimitResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnNotifyChargingLimitResponse?.Invoke(endTime,
-                                                      this,
-                                                      Request,
-                                                      response,
-                                                      endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyChargingLimitResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region SendClearedChargingLimit              (Request)
-
-        /// <summary>
-        /// Send a heartbeat.
-        /// </summary>
-        /// <param name="ChargingLimitSource">A source of the charging limit.</param>
-        /// <param name="EVSEId">An optional EVSE identification.</param>
-        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-        /// 
-        /// <param name="RequestId">An optional request identification.</param>
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public async Task<OCPPv2_1.CSMS.ClearedChargingLimitResponse>
-            ClearedChargingLimit(OCPPv2_1.CS.ClearedChargingLimitRequest Request)
-
-        {
-
-            #region Send OnClearedChargingLimitRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnClearedChargingLimitRequest?.Invoke(startTime,
-                                                      this,
-                                                      Request);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnClearedChargingLimitRequest));
-            }
-
-            #endregion
-
-
-            OCPPv2_1.CSMS.ClearedChargingLimitResponse? response = null;
-
-            if (!SignaturePolicy.SignRequestMessage(
-                    Request,
-                    Request.ToJSON(
-                        CustomClearedChargingLimitRequestSerializer,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out var errorResponse
-                ))
-            {
-
-                response  = new OCPPv2_1.CSMS.ClearedChargingLimitResponse(
-                                Request,
-                                Result.SignatureError(errorResponse)
-                            );
-
-            }
-
-            // ToDo: Currently hardcoded CSMS lookup!
-            else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
-            {
-
-                response  = AsCS.CSClient is not null
-
-                                ? await AsCS.CSClient.ClearedChargingLimit(Request)
-
-                                : new OCPPv2_1.CSMS.ClearedChargingLimitResponse(
-                                      Request,
-                                      Result.Server("Unknown or unreachable charging station!")
-                                  );
-
-            }
-
-            else
-            {
-                // ...
-            }
-
-
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomClearedChargingLimitResponseSerializer,
-                    CustomSignatureSerializer,
-                    CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
-
-
-            #region Send OnClearedChargingLimitResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnClearedChargingLimitResponse?.Invoke(endTime,
-                                                       this,
-                                                       Request,
-                                                       response,
-                                                       endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnClearedChargingLimitResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region ReportChargingProfiles                (Request)
-
-        /// <summary>
-        /// Report about all charging profiles.
-        /// </summary>
-        /// <param name="ReportChargingProfilesRequestId">The request identification used to match the GetChargingProfilesRequest message with the resulting ReportChargingProfilesRequest messages. When the CSMS provided a requestId in the GetChargingProfilesRequest, this field SHALL contain the same value.</param>
-        /// <param name="ChargingLimitSource">The source that has installed this charging profile.</param>
-        /// <param name="EVSEId">The evse to which the charging profile applies. If evseId = 0, the message contains an overall limit for the charging station.</param>
-        /// <param name="ChargingProfiles">The enumeration of charging profiles.</param>
-        /// <param name="ToBeContinued">The optional "to be continued" indicator whether another part of the charging profiles follows. Default value when omitted is false.</param>
-        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-        /// 
-        /// <param name="RequestId">An optional request identification.</param>
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public async Task<OCPPv2_1.CSMS.ReportChargingProfilesResponse>
-            ReportChargingProfiles(OCPPv2_1.CS.ReportChargingProfilesRequest Request)
-
-        {
-
-            #region Send OnReportChargingProfilesRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnReportChargingProfilesRequest?.Invoke(startTime,
-                                                        this,
-                                                        Request);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnReportChargingProfilesRequest));
-            }
-
-            #endregion
-
-
-            OCPPv2_1.CSMS.ReportChargingProfilesResponse? response = null;
-
-            if (!SignaturePolicy.SignRequestMessage(
-                    Request,
-                    Request.ToJSON(
-
-                        CustomReportChargingProfilesRequestSerializer,
-                        CustomChargingProfileSerializer,
-                        CustomLimitBeyondSoCSerializer,
-                        CustomChargingScheduleSerializer,
-                        CustomChargingSchedulePeriodSerializer,
-                        CustomV2XFreqWattEntrySerializer,
-                        CustomV2XSignalWattEntrySerializer,
-                        CustomSalesTariffSerializer,
-                        CustomSalesTariffEntrySerializer,
-                        CustomRelativeTimeIntervalSerializer,
-                        CustomConsumptionCostSerializer,
-                        CustomCostSerializer,
-
-                        CustomAbsolutePriceScheduleSerializer,
-                        CustomPriceRuleStackSerializer,
-                        CustomPriceRuleSerializer,
-                        CustomTaxRuleSerializer,
-                        CustomOverstayRuleListSerializer,
-                        CustomOverstayRuleSerializer,
-                        CustomAdditionalServiceSerializer,
-
-                        CustomPriceLevelScheduleSerializer,
-                        CustomPriceLevelScheduleEntrySerializer,
-
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-
-                    ),
-                    out var errorResponse
-                ))
-            {
-
-                response  = new OCPPv2_1.CSMS.ReportChargingProfilesResponse(
-                                Request,
-                                Result.SignatureError(errorResponse)
-                            );
-
-            }
-
-            // ToDo: Currently hardcoded CSMS lookup!
-            else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
-            {
-
-                response  = AsCS.CSClient is not null
-
-                                ? await AsCS.CSClient.ReportChargingProfiles(Request)
-
-                                : new OCPPv2_1.CSMS.ReportChargingProfilesResponse(
-                                      Request,
-                                      Result.Server("Unknown or unreachable charging station!")
-                                  );
-
-            }
-
-            else
-            {
-                // ...
-            }
-
-
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomReportChargingProfilesResponseSerializer,
-                    CustomSignatureSerializer,
-                    CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
-
-
-            #region Send OnReportChargingProfilesResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnReportChargingProfilesResponse?.Invoke(endTime,
-                                                         this,
-                                                         Request,
-                                                         response,
-                                                         endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnReportChargingProfilesResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region NotifyEVChargingSchedule              (Request)
-
-        /// <summary>
-        /// Notify about an EV charging schedule.
-        /// </summary>
-        /// <param name="NotifyEVChargingScheduleRequestId">The request identification used to match the GetChargingProfilesRequest message with the resulting NotifyEVChargingScheduleRequest messages. When the CSMS provided a requestId in the GetChargingProfilesRequest, this field SHALL contain the same value.</param>
-        /// <param name="TimeBase">The charging periods contained within the charging schedule are relative to this time base.</param>
-        /// <param name="EVSEId">The charging schedule applies to this EVSE.</param>
-        /// <param name="ChargingSchedule">Planned energy consumption of the EV over time. Always relative to the time base.</param>
-        /// <param name="SelectedScheduleTupleId">The optional identification of the selected charging schedule from the provided charging profile.</param>
-        /// <param name="PowerToleranceAcceptance">True when power tolerance is accepted.</param>
-        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-        /// 
-        /// <param name="RequestId">An optional request identification.</param>
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public async Task<OCPPv2_1.CSMS.NotifyEVChargingScheduleResponse>
-            NotifyEVChargingSchedule(OCPPv2_1.CS.NotifyEVChargingScheduleRequest Request)
-
-        {
-
-            #region Send OnNotifyEVChargingScheduleRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnNotifyEVChargingScheduleRequest?.Invoke(startTime,
-                                                          this,
-                                                          Request);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyEVChargingScheduleRequest));
-            }
-
-            #endregion
-
-
-            OCPPv2_1.CSMS.NotifyEVChargingScheduleResponse? response = null;
-
-            if (!SignaturePolicy.SignRequestMessage(
-                    Request,
-                    Request.ToJSON(
-
-                        CustomNotifyEVChargingScheduleRequestSerializer,
-                        CustomChargingScheduleSerializer,
-                        CustomLimitBeyondSoCSerializer,
-                        CustomChargingSchedulePeriodSerializer,
-                        CustomV2XFreqWattEntrySerializer,
-                        CustomV2XSignalWattEntrySerializer,
-                        CustomSalesTariffSerializer,
-                        CustomSalesTariffEntrySerializer,
-                        CustomRelativeTimeIntervalSerializer,
-                        CustomConsumptionCostSerializer,
-                        CustomCostSerializer,
-
-                        CustomAbsolutePriceScheduleSerializer,
-                        CustomPriceRuleStackSerializer,
-                        CustomPriceRuleSerializer,
-                        CustomTaxRuleSerializer,
-                        CustomOverstayRuleListSerializer,
-                        CustomOverstayRuleSerializer,
-                        CustomAdditionalServiceSerializer,
-
-                        CustomPriceLevelScheduleSerializer,
-                        CustomPriceLevelScheduleEntrySerializer,
-
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-
-                    ),
-                    out var errorResponse
-                ))
-            {
-
-                response  = new OCPPv2_1.CSMS.NotifyEVChargingScheduleResponse(
-                                Request,
-                                Result.SignatureError(errorResponse)
-                            );
-
-            }
-
-            // ToDo: Currently hardcoded CSMS lookup!
-            else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
-            {
-
-                response  = AsCS.CSClient is not null
-
-                                ? await AsCS.CSClient.NotifyEVChargingSchedule(Request)
-
-                                : new OCPPv2_1.CSMS.NotifyEVChargingScheduleResponse(
-                                      Request,
-                                      Result.Server("Unknown or unreachable charging station!")
-                                  );
-
-            }
-
-            else
-            {
-                // ...
-            }
-
-
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomNotifyEVChargingScheduleResponseSerializer,
-                    CustomStatusInfoSerializer,
-                    CustomSignatureSerializer,
-                    CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
-
-
-            #region Send OnNotifyEVChargingScheduleResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnNotifyEVChargingScheduleResponse?.Invoke(endTime,
-                                                           this,
-                                                           Request,
-                                                           response,
-                                                           endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyEVChargingScheduleResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region NotifyPriorityCharging                (Request)
-
-        /// <summary>
-        /// Notify about priority charging.
-        /// </summary>
-        /// <param name="NotifyPriorityChargingRequestId">The request identification used to match the GetChargingProfilesRequest message with the resulting NotifyPriorityChargingRequest messages. When the CSMS provided a requestId in the GetChargingProfilesRequest, this field SHALL contain the same value.</param>
-        /// <param name="TransactionId">The transaction for which priority charging is requested.</param>
-        /// <param name="Activated">True, when priority charging was activated, or false, when it has stopped using the priority charging profile.</param>
-        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-        /// 
-        /// <param name="RequestId">An optional request identification.</param>
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public async Task<OCPPv2_1.CSMS.NotifyPriorityChargingResponse>
-            NotifyPriorityCharging(OCPPv2_1.CS.NotifyPriorityChargingRequest Request)
-
-        {
-
-            #region Send OnNotifyPriorityChargingRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnNotifyPriorityChargingRequest?.Invoke(startTime,
-                                                        this,
-                                                        Request);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyPriorityChargingRequest));
-            }
-
-            #endregion
-
-
-            OCPPv2_1.CSMS.NotifyPriorityChargingResponse? response = null;
-
-            if (!SignaturePolicy.SignRequestMessage(
-                    Request,
-                    Request.ToJSON(
-                        CustomNotifyPriorityChargingRequestSerializer,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out var errorResponse
-                ))
-            {
-
-                response  = new OCPPv2_1.CSMS.NotifyPriorityChargingResponse(
-                                Request,
-                                Result.SignatureError(errorResponse)
-                            );
-
-            }
-
-            // ToDo: Currently hardcoded CSMS lookup!
-            else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
-            {
-
-                response  = AsCS.CSClient is not null
-
-                                ? await AsCS.CSClient.NotifyPriorityCharging(Request)
-
-                                : new OCPPv2_1.CSMS.NotifyPriorityChargingResponse(
-                                      Request,
-                                      Result.Server("Unknown or unreachable charging station!")
-                                  );
-
-            }
-
-            else
-            {
-                // ...
-            }
-
-
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomNotifyPriorityChargingResponseSerializer,
-                    CustomSignatureSerializer,
-                    CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
-
-
-            #region Send OnNotifyPriorityChargingResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnNotifyPriorityChargingResponse?.Invoke(endTime,
-                                                         this,
-                                                         Request,
-                                                         response,
-                                                         endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyPriorityChargingResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region PullDynamicScheduleUpdate             (Request)
-
-        /// <summary>
-        /// Report about all charging profiles.
-        /// </summary>
-        /// <param name="PullDynamicScheduleUpdateRequestId">The request identification used to match the GetChargingProfilesRequest message with the resulting PullDynamicScheduleUpdateRequest messages. When the CSMS provided a requestId in the GetChargingProfilesRequest, this field SHALL contain the same value.</param>
-        /// <param name="ChargingProfileId">The identification of the charging profile for which an update is requested.</param>
-        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-        /// 
-        /// <param name="RequestId">An optional request identification.</param>
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public async Task<OCPPv2_1.CSMS.PullDynamicScheduleUpdateResponse>
-            PullDynamicScheduleUpdate(OCPPv2_1.CS.PullDynamicScheduleUpdateRequest Request)
-
-        {
-
-            #region Send OnPullDynamicScheduleUpdateRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnPullDynamicScheduleUpdateRequest?.Invoke(startTime,
-                                                           this,
-                                                           Request);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnPullDynamicScheduleUpdateRequest));
-            }
-
-            #endregion
-
-
-            OCPPv2_1.CSMS.PullDynamicScheduleUpdateResponse? response = null;
-
-            if (!SignaturePolicy.SignRequestMessage(
-                    Request,
-                    Request.ToJSON(
-                        CustomPullDynamicScheduleUpdateRequestSerializer,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out var errorResponse
-                ))
-            {
-
-                response  = new OCPPv2_1.CSMS.PullDynamicScheduleUpdateResponse(
-                                Request,
-                                Result.SignatureError(errorResponse)
-                            );
-
-            }
-
-            // ToDo: Currently hardcoded CSMS lookup!
-            else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
-            {
-
-                response  = AsCS.CSClient is not null
-
-                                ? await AsCS.CSClient.PullDynamicScheduleUpdate(Request)
-
-                                : new OCPPv2_1.CSMS.PullDynamicScheduleUpdateResponse(
-                                      Request,
-                                      Result.Server("Unknown or unreachable charging station!")
-                                  );
-
-            }
-
-            else
-            {
-                // ...
-            }
-
-
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomPullDynamicScheduleUpdateResponseSerializer,
-                    CustomSignatureSerializer,
-                    CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
-
-
-            #region Send OnPullDynamicScheduleUpdateResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnPullDynamicScheduleUpdateResponse?.Invoke(endTime,
-                                                            this,
-                                                            Request,
-                                                            response,
-                                                            endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnPullDynamicScheduleUpdateResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-
-        #region NotifyDisplayMessages                 (Request)
-
-        /// <summary>
-        /// NotifyDisplayMessages the given token.
-        /// </summary>
-        /// <param name="NotifyDisplayMessagesRequestId">The unique identification of the notify display messages request.</param>
-        /// <param name="MessageInfos">The requested display messages as configured in the charging station.</param>
-        /// <param name="ToBeContinued">The optional "to be continued" indicator whether another part of the monitoring data follows in an upcoming NotifyDisplayMessagesRequest message. Default value when omitted is false.</param>
-        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-        /// 
-        /// <param name="RequestId">An optional request identification.</param>
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public async Task<OCPPv2_1.CSMS.NotifyDisplayMessagesResponse>
-            NotifyDisplayMessages(OCPPv2_1.CS.NotifyDisplayMessagesRequest Request)
-
-        {
-
-            #region Send OnNotifyDisplayMessagesRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnNotifyDisplayMessagesRequest?.Invoke(startTime,
-                                                       this,
-                                                       Request);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyDisplayMessagesRequest));
-            }
-
-            #endregion
-
-
-            OCPPv2_1.CSMS.NotifyDisplayMessagesResponse? response = null;
-
-            if (!SignaturePolicy.SignRequestMessage(
-                    Request,
-                    Request.ToJSON(
-                        CustomNotifyDisplayMessagesRequestSerializer,
-                        CustomMessageInfoSerializer,
-                        CustomMessageContentSerializer,
-                        CustomComponentSerializer,
-                        CustomEVSESerializer,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out var errorResponse
-                ))
-            {
-
-                response  = new OCPPv2_1.CSMS.NotifyDisplayMessagesResponse(
-                                Request,
-                                Result.SignatureError(errorResponse)
-                            );
-
-            }
-
-            // ToDo: Currently hardcoded CSMS lookup!
-            else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
-            {
-
-                response  = AsCS.CSClient is not null
-
-                                ? await AsCS.CSClient.NotifyDisplayMessages(Request)
-
-                                : new OCPPv2_1.CSMS.NotifyDisplayMessagesResponse(
-                                      Request,
-                                      Result.Server("Unknown or unreachable charging station!")
-                                  );
-
-            }
-
-            else
-            {
-                // ...
-            }
-
-
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomNotifyDisplayMessagesResponseSerializer,
-                    CustomSignatureSerializer,
-                    CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
-
-
-            #region Send OnNotifyDisplayMessagesResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnNotifyDisplayMessagesResponse?.Invoke(endTime,
-                                                        this,
-                                                        Request,
-                                                        response,
-                                                        endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyDisplayMessagesResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region NotifyCustomerInformation             (Request)
-
-        /// <summary>
-        /// NotifyCustomerInformation the given token.
-        /// </summary>
-        /// <param name="NotifyCustomerInformationRequestId">The unique identification of the notify customer information request.</param>
-        /// <param name="Data">The requested data or a part of the requested data. No format specified in which the data is returned.</param>
-        /// <param name="SequenceNumber">The sequence number of this message. First message starts at 0.</param>
-        /// <param name="GeneratedAt">The timestamp of the moment this message was generated at the charging station.</param>
-        /// <param name="ToBeContinued">The optional "to be continued" indicator whether another part of the monitoring data follows in an upcoming NotifyCustomerInformationRequest message. Default value when omitted is false.</param>
-        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-        /// 
-        /// <param name="RequestId">An optional request identification.</param>
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public async Task<OCPPv2_1.CSMS.NotifyCustomerInformationResponse>
-            NotifyCustomerInformation(OCPPv2_1.CS.NotifyCustomerInformationRequest Request)
-
-        {
-
-            #region Send OnNotifyCustomerInformationRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnNotifyCustomerInformationRequest?.Invoke(startTime,
-                                                           this,
-                                                           Request);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyCustomerInformationRequest));
-            }
-
-            #endregion
-
-
-            OCPPv2_1.CSMS.NotifyCustomerInformationResponse? response = null;
-
-            if (!SignaturePolicy.SignRequestMessage(
-                    Request,
-                    Request.ToJSON(
-                        CustomNotifyCustomerInformationRequestSerializer,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out var errorResponse
-                ))
-            {
-
-                response  = new OCPPv2_1.CSMS.NotifyCustomerInformationResponse(
-                                Request,
-                                Result.SignatureError(errorResponse)
-                            );
-
-            }
-
-            // ToDo: Currently hardcoded CSMS lookup!
-            else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
-            {
-
-                response  = AsCS.CSClient is not null
-
-                                ? await AsCS.CSClient.NotifyCustomerInformation(Request)
-
-                                : new OCPPv2_1.CSMS.NotifyCustomerInformationResponse(
-                                      Request,
-                                      Result.Server("Unknown or unreachable charging station!")
-                                  );
-
-            }
-
-            else
-            {
-                // ...
-            }
-
-
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomNotifyCustomerInformationResponseSerializer,
-                    CustomSignatureSerializer,
-                    CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
-
-
-            #region Send OnNotifyCustomerInformationResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnNotifyCustomerInformationResponse?.Invoke(endTime,
-                                                            this,
-                                                            Request,
-                                                            response,
-                                                            endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyCustomerInformationResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #endregion
-
-
-        // Binary Data Streams Extensions
-
-        #region TransferBinaryData                    (Request)
-
-        /// <summary>
-        /// Send the given vendor-specific binary data to the CSMS.
-        /// </summary>
-        /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
-        /// <param name="MessageId">An optional message identification.</param>
-        /// <param name="BinaryData">A vendor-specific JSON token.</param>
-        /// <param name="CustomBinaryData">The custom data object to allow to store any kind of customer specific data.</param>
-        /// 
-        /// <param name="RequestId">An optional request identification.</param>
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public async Task<OCPP.CSMS.BinaryDataTransferResponse>
-            BinaryDataTransfer(OCPP.CS.BinaryDataTransferRequest Request)
-
-        {
-
-            #region Send OnBinaryDataTransferRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnBinaryDataTransferRequest?.Invoke(startTime,
-                                                    this,
-                                                    Request);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnBinaryDataTransferRequest));
-            }
-
-            #endregion
-
-
-            OCPP.CSMS.BinaryDataTransferResponse? response = null;
-
-            if (!SignaturePolicy.SignRequestMessage(
-                    Request,
-                    Request.ToBinary(
-                        CustomBinaryDataTransferRequestSerializer,
-                        CustomBinarySignatureSerializer,
-                        IncludeSignatures: false
-                    ),
-                    out var errorResponse
-                ))
-            {
-
-                response  = new OCPP.CSMS.BinaryDataTransferResponse(
-                                Request,
-                                Result.SignatureError(errorResponse)
-                            );
-
-            }
-
-            // ToDo: Currently hardcoded CSMS lookup!
-            else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
-            {
-
-                response  = AsCS.CSClient is not null
-
-                                ? await AsCS.CSClient.BinaryDataTransfer(Request)
-
-                                : new OCPP.CSMS.BinaryDataTransferResponse(
-                                      Request,
-                                      Result.Server("Unknown or unreachable charging station!")
-                                  );
-
-            }
-
-            else
-            {
-                // ...
-            }
-
-
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToBinary(
-                    CustomBinaryDataTransferResponseSerializer,
-                    null, //CustomStatusInfoSerializer,
-                    CustomBinarySignatureSerializer,
-                    IncludeSignatures: false
-                ),
-                out errorResponse
-            );
-
-
-            #region Send OnBinaryDataTransferResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnBinaryDataTransferResponse?.Invoke(endTime,
-                                                     this,
-                                                     Request,
-                                                     response,
-                                                     endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnBinaryDataTransferResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-
-        // Overlay Networking Extensions
-
-        #region NotifyNetworkTopology                 (Request)
-
-        /// <summary>
-        /// Notify about the current network topology or a current change within the topology.
-        /// </summary>
-        /// <param name="Request">A reset request.</param>
-        public async Task<NotifyNetworkTopologyResponse> NotifyNetworkTopology(NotifyNetworkTopologyRequest Request)
-        {
-
-            #region Send OnNotifyNetworkTopologyRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnNotifyNetworkTopologyRequest?.Invoke(startTime,
-                                                       this,
-                                                       Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyNetworkTopologyRequest));
-            }
-
-            #endregion
-
-
-            NotifyNetworkTopologyResponse? response = null;
-
-            if (!SignaturePolicy.SignRequestMessage(
-                    Request,
-                    Request.ToJSON(
-                        CustomNotifyNetworkTopologyRequestSerializer,
-                        CustomNetworkTopologyInformationSerializer,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out var errorResponse
-                ))
-            {
-
-                response  = new NotifyNetworkTopologyResponse(
-                                Request,
-                                Result.SignatureError(errorResponse)
-                            );
-
-            }
-
-            // ToDo: Currently hardcoded CSMS lookup!
-            else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
-            {
-
-                response  = AsCS.CSClient is not null
-
-                                ? await AsCS.CSClient.NotifyNetworkTopology(Request)
-
-                                : new NotifyNetworkTopologyResponse(
-                                      Request,
-                                      Result.Server("Unknown or unreachable charging station!")
-                                  );
-
-            }
-
-            else
-            {
-
-                response = LookupNetworkingNode(Request.DestinationNodeId, out var communicationChannel) &&
-                                communicationChannel is not null
-
-                                // FUTURE!!!
-
-                                ?  await communicationChannel.NotifyNetworkTopology(Request)
-
-                                : new NotifyNetworkTopologyResponse(
-                                      Request,
-                                      Result.Server("Unknown or unreachable charging station!")
-                                  );
-
-            }
-
-
-            SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    CustomNotifyNetworkTopologyResponseSerializer,
-                    //CustomStatusInfoSerializer,
-                    CustomSignatureSerializer,
-                    CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
-
-
-            #region Send OnNotifyNetworkTopologyResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnNotifyNetworkTopologyResponse?.Invoke(endTime,
-                                                        this,
-                                                        Request,
-                                                        response,
-                                                        endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnNotifyNetworkTopologyResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        public void Dispose()
-        {
-            throw new NotImplementedException();
-        }
 
         #endregion
 

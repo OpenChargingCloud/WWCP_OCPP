@@ -74,7 +74,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         CustomJObjectSerializerDelegate<TriggerMessageRequest>?                               CustomTriggerMessageRequestSerializer                        { get; set; }
 
-        CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.DataTransferRequest>?                   CustomDataTransferRequestSerializer                          { get; set; }
+        CustomJObjectSerializerDelegate<DataTransferRequest>?                                 CustomDataTransferRequestSerializer                          { get; set; }
 
 
         CustomJObjectSerializerDelegate<CertificateSignedRequest>?                            CustomCertificateSignedRequestSerializer                     { get; set; }
@@ -368,7 +368,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// Send the given vendor-specific data.
         /// </summary>
         /// <param name="Request">A data transfer request.</param>
-        Task<OCPPv2_1.CS.DataTransferResponse> TransferData(OCPPv2_1.CSMS.DataTransferRequest Request);
+        Task<DataTransferResponse> TransferData(DataTransferRequest Request);
 
         #endregion
 
@@ -646,112 +646,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// </summary>
         /// <param name="Request">A customer information request.</param>
         Task<CustomerInformationResponse> RequestCustomerInformation(CustomerInformationRequest Request);
-
-        #endregion
-
-
-        // Binary Data Streams Extensions
-
-        #region TransferBinaryData          (Request)
-
-        /// <summary>
-        /// Send the given vendor-specific binary data.
-        /// </summary>
-        /// <param name="Request">A BinaryDataTransfer request.</param>
-        Task<OCPP.CS.BinaryDataTransferResponse> BinaryDataTransfer(OCPP.CSMS.BinaryDataTransferRequest Request);
-
-        #endregion
-
-        #region GetFile                     (Request)
-
-        /// <summary>
-        /// Request to download the specified file.
-        /// </summary>
-        /// <param name="Request">A GetFile request.</param>
-        Task<GetFileResponse> GetFile(GetFileRequest Request);
-
-        #endregion
-
-        #region SendFile                    (Request)
-
-        /// <summary>
-        /// Send the given file to the charging station.
-        /// </summary>
-        /// <param name="Request">A SendFile request.</param>
-        Task<SendFileResponse> SendFile(SendFileRequest Request);
-
-        #endregion
-
-        #region DeleteFile                  (Request)
-
-        /// <summary>
-        /// Delete the given file from the charging station.
-        /// </summary>
-        /// <param name="Request">A DeleteFile request.</param>
-        Task<DeleteFileResponse> DeleteFile(DeleteFileRequest Request);
-
-        #endregion
-
-
-        // E2E Security Extensions
-
-        #region AddSignaturePolicy          (Request)
-
-        /// <summary>
-        /// Add a signature policy.
-        /// </summary>
-        /// <param name="Request">An AddSignaturePolicy request.</param>
-        Task<AddSignaturePolicyResponse> AddSignaturePolicy(AddSignaturePolicyRequest Request);
-
-        #endregion
-
-        #region UpdateSignaturePolicy       (Request)
-
-        /// <summary>
-        /// Update a signature policy.
-        /// </summary>
-        /// <param name="Request">An UpdateSignaturePolicy request.</param>
-        Task<UpdateSignaturePolicyResponse> UpdateSignaturePolicy(UpdateSignaturePolicyRequest Request);
-
-        #endregion
-
-        #region DeleteSignaturePolicy       (Request)
-
-        /// <summary>
-        /// Delete a signature policy.
-        /// </summary>
-        /// <param name="Request">A DeleteSignaturePolicy request.</param>
-        Task<DeleteSignaturePolicyResponse> DeleteSignaturePolicy(DeleteSignaturePolicyRequest Request);
-
-        #endregion
-
-        #region AddUserRole                 (Request)
-
-        /// <summary>
-        /// Add a user role.
-        /// </summary>
-        /// <param name="Request">An AddUserRole request.</param>
-        Task<AddUserRoleResponse> AddUserRole(AddUserRoleRequest Request);
-
-        #endregion
-
-        #region UpdateUserRole              (Request)
-
-        /// <summary>
-        /// Update a user role.
-        /// </summary>
-        /// <param name="Request">An UpdateUserRole request.</param>
-        Task<UpdateUserRoleResponse> UpdateUserRole(UpdateUserRoleRequest Request);
-
-        #endregion
-
-        #region DeleteUserRole              (Request)
-
-        /// <summary>
-        /// Delete a user role.
-        /// </summary>
-        /// <param name="Request">An DeleteUserRole request.</param>
-        Task<DeleteUserRoleResponse> DeleteUserRole(DeleteUserRoleRequest Request);
 
         #endregion
 

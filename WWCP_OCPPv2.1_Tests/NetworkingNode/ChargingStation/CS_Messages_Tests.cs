@@ -203,8 +203,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CS
                 chargingStation3               is not null)
             {
 
-                var nnIncomingBinaryDataTransferRequests    = new ConcurrentList<OCPP.CS.BinaryDataTransferRequest>();
-                var csmsIncomingBinaryDataTransferRequests  = new ConcurrentList<OCPP.CS.BinaryDataTransferRequest>();
+                var nnIncomingBinaryDataTransferRequests    = new ConcurrentList<BinaryDataTransferRequest>();
+                var csmsIncomingBinaryDataTransferRequests  = new ConcurrentList<BinaryDataTransferRequest>();
 
                 networkingNode1.AsCSMS.OnIncomingBinaryDataTransferRequest += (timestamp, sender, connection, incomingBinaryDataTransferRequest) => {
                     nnIncomingBinaryDataTransferRequests.  TryAdd(incomingBinaryDataTransferRequest);
@@ -220,7 +220,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CS
 
 
 
-                var binaryDataTransferRequests= new ConcurrentList<OCPP.CS.BinaryDataTransferRequest>();
+                var binaryDataTransferRequests= new ConcurrentList<BinaryDataTransferRequest>();
 
                 testCSMS01.OnIncomingBinaryDataTransferRequest += (timestamp, sender, connection, binaryDataTransferRequest) => {
                     binaryDataTransferRequests.TryAdd(binaryDataTransferRequest);

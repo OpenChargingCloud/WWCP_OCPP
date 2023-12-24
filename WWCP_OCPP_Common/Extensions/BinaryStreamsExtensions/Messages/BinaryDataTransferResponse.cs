@@ -23,13 +23,13 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPP.CS
+namespace cloud.charging.open.protocols.OCPP
 {
 
     /// <summary>
     /// A binary data transfer response.
     /// </summary>
-    public class BinaryDataTransferResponse : AResponse<CSMS.BinaryDataTransferRequest,
+    public class BinaryDataTransferResponse : AResponse<BinaryDataTransferRequest,
                                                         BinaryDataTransferResponse>,
                                               IResponse
     {
@@ -39,7 +39,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
         /// <summary>
         /// The JSON-LD context of this object.
         /// </summary>
-        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/cs/binaryDataTransferResponse");
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/binaryDataTransferResponse");
 
         #endregion
 
@@ -93,16 +93,16 @@ namespace cloud.charging.open.protocols.OCPP.CS
         /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
         /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
         /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
-        public BinaryDataTransferResponse(CSMS.BinaryDataTransferRequest  Request,
-                                          BinaryDataTransferStatus        Status,
-                                          String?                         AdditionalStatusInfo   = null,
-                                          Byte[]?                         Data                   = null,
-                                          BinaryFormats?                  Format                 = null,
-                                          DateTime?                       ResponseTimestamp      = null,
+        public BinaryDataTransferResponse(BinaryDataTransferRequest  Request,
+                                          BinaryDataTransferStatus   Status,
+                                          String?                    AdditionalStatusInfo   = null,
+                                          Byte[]?                    Data                   = null,
+                                          BinaryFormats?             Format                 = null,
+                                          DateTime?                  ResponseTimestamp      = null,
 
-                                          IEnumerable<KeyPair>?           SignKeys               = null,
-                                          IEnumerable<SignInfo>?          SignInfos              = null,
-                                          IEnumerable<Signature>?         Signatures             = null)
+                                          IEnumerable<KeyPair>?      SignKeys               = null,
+                                          IEnumerable<SignInfo>?     SignInfos              = null,
+                                          IEnumerable<Signature>?    Signatures             = null)
 
             : base(Request,
                    Result.OK(),
@@ -130,8 +130,8 @@ namespace cloud.charging.open.protocols.OCPP.CS
         /// </summary>
         /// <param name="Request">The BinaryDataTransfer request leading to this response.</param>
         /// <param name="Result">The result.</param>
-        public BinaryDataTransferResponse(CSMS.BinaryDataTransferRequest  Request,
-                                          Result                          Result)
+        public BinaryDataTransferResponse(BinaryDataTransferRequest  Request,
+                                          Result                     Result)
 
             : base(Request,
                    Result)
@@ -161,7 +161,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
         /// <param name="Request">The BinaryDataTransfer request leading to this response.</param>
         /// <param name="Binary">The binary to be parsed.</param>
         /// <param name="CustomBinaryDataTransferResponseParser">A delegate to parse custom binary data transfer responses.</param>
-        public static BinaryDataTransferResponse Parse(CSMS.BinaryDataTransferRequest                           Request,
+        public static BinaryDataTransferResponse Parse(BinaryDataTransferRequest                                Request,
                                                        Byte[]                                                   Binary,
                                                        CustomBinaryParserDelegate<BinaryDataTransferResponse>?  CustomBinaryDataTransferResponseParser  = null)
         {
@@ -193,7 +193,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
         /// <param name="BinaryDataTransferResponse">The parsed binary data transfer response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomBinaryDataTransferResponseParser">A delegate to parse custom binary data transfer responses.</param>
-        public static Boolean TryParse(CSMS.BinaryDataTransferRequest                           Request,
+        public static Boolean TryParse(BinaryDataTransferRequest                                Request,
                                        Byte[]                                                   Binary,
                                        out BinaryDataTransferResponse?                          BinaryDataTransferResponse,
                                        out String?                                              ErrorResponse,
@@ -426,7 +426,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
         /// The binary data transfer failed.
         /// </summary>
         /// <param name="Request">The BinaryDataTransfer request leading to this response.</param>
-        public static BinaryDataTransferResponse Failed(CSMS.BinaryDataTransferRequest  Request)
+        public static BinaryDataTransferResponse Failed(BinaryDataTransferRequest  Request)
 
             => new (Request,
                     Result.Server());

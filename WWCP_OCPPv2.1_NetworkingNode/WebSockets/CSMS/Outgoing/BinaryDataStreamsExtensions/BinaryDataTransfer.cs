@@ -36,9 +36,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #region Custom binary serializer delegates
 
-        public CustomBinarySerializerDelegate<BinaryDataTransferRequest>?       CustomBinaryDataTransferRequestSerializer    { get; set; }
+        public CustomBinarySerializerDelegate<BinaryDataTransferRequest>?  CustomBinaryDataTransferRequestSerializer    { get; set; }
 
-        public CustomBinaryParserDelegate<OCPP.CS.BinaryDataTransferResponse>?  CustomBinaryDataTransferResponseParser       { get; set; }
+        public CustomBinaryParserDelegate<BinaryDataTransferResponse>?     CustomBinaryDataTransferResponseParser       { get; set; }
 
         #endregion
 
@@ -59,7 +59,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #region BinaryDataTransfer(Request)
 
-        public async Task<OCPP.CS.BinaryDataTransferResponse> BinaryDataTransfer(BinaryDataTransferRequest Request)
+        public async Task<BinaryDataTransferResponse> BinaryDataTransfer(BinaryDataTransferRequest Request)
         {
 
             #region Send OnBinaryDataTransferRequest event
@@ -81,7 +81,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
             #endregion
 
 
-            OCPP.CS.BinaryDataTransferResponse? response = null;
+            BinaryDataTransferResponse? response = null;
 
             try
             {
@@ -103,24 +103,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                     sendRequestState.BinaryResponse is not null)
                 {
 
-                    if (OCPP.CS.BinaryDataTransferResponse.TryParse(Request,
-                                                                    sendRequestState.BinaryResponse.Payload,
-                                                                    out var dataTransferResponse,
-                                                                    out var errorResponse,
-                                                                    CustomBinaryDataTransferResponseParser) &&
+                    if (BinaryDataTransferResponse.TryParse(Request,
+                                                            sendRequestState.BinaryResponse.Payload,
+                                                            out var dataTransferResponse,
+                                                            out var errorResponse,
+                                                            CustomBinaryDataTransferResponseParser) &&
                         dataTransferResponse is not null)
                     {
                         response = dataTransferResponse;
                     }
 
-                    response ??= new OCPP.CS.BinaryDataTransferResponse(
+                    response ??= new BinaryDataTransferResponse(
                                          Request,
                                          Result.Format(errorResponse)
                                      );
 
                 }
 
-                response ??= new OCPP.CS.BinaryDataTransferResponse(
+                response ??= new BinaryDataTransferResponse(
                                  Request,
                                  BinaryDataTransferStatus.Rejected
                              );// Result.FromSendRequestState(sendRequestState));
@@ -129,7 +129,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
             catch (Exception e)
             {
 
-                response = new OCPP.CS.BinaryDataTransferResponse(
+                response = new BinaryDataTransferResponse(
                                Request,
                                Result.FromException(e)
                            );

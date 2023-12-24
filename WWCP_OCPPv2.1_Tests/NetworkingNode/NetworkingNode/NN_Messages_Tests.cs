@@ -197,7 +197,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
 
 
                 var reason    = BootReason.PowerUp;
-                var response  = await networkingNode1.NotifyNetworkTopology(
+                var response  = await networkingNode1.OUT.NotifyNetworkTopology(
                                     new NotifyNetworkTopologyRequest(
                                         NetworkingNode_Id.CSMS,
                                         new NetworkTopologyInformation(

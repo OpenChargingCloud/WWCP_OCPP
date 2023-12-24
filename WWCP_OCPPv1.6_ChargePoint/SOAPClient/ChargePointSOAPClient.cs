@@ -2126,8 +2126,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         // Security extensions
 
-        #region Security extensions
-
         public Task<LogStatusNotificationResponse>             LogStatusNotification(LogStatusNotificationRequest Request)
         {
             throw new NotImplementedException();
@@ -2148,13 +2146,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             throw new NotImplementedException();
         }
 
-        #endregion
-
-
 
         // Binary Data Streams Extensions
-
-        public Task<OCPP.CSMS.BinaryDataTransferResponse>      BinaryDataTransfer(OCPP.CS.BinaryDataTransferRequest Request)
+        public Task<BinaryDataTransferResponse>                BinaryDataTransfer(BinaryDataTransferRequest Request)
         {
             throw new NotImplementedException();
         }

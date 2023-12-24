@@ -32,7 +32,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
 
         // Binary Data Streams Extensions
 
-        #region TransferBinaryData                       (Request/-Response)
+        #region BinaryDataTransfer                       (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a BinaryDataTransfer request will be sent to the CSMS.
@@ -45,6 +45,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
         event OnBinaryDataTransferResponseDelegate?  OnBinaryDataTransferResponse;
 
         #endregion
+
 
     }
 

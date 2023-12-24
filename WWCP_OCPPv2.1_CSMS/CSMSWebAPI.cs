@@ -292,8 +292,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public CustomJObjectSerializerDelegate<NotifyMonitoringReportResponse>?                      CustomNotifyMonitoringReportResponseSerializer               { get; set; }
         public CustomJObjectSerializerDelegate<LogStatusNotificationRequest>?                        CustomLogStatusNotificationRequestSerializer                 { get; set; }
         public CustomJObjectSerializerDelegate<LogStatusNotificationResponse>?                       CustomLogStatusNotificationResponseSerializer                { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.DataTransferRequest>?                     CustomDataTransferRequestSerializer                          { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.DataTransferResponse>?                  CustomDataTransferResponseSerializer                         { get; set; }
+        public CustomJObjectSerializerDelegate<DataTransferRequest>?                                 CustomDataTransferRequestSerializer                          { get; set; }
+        public CustomJObjectSerializerDelegate<DataTransferResponse>?                                CustomDataTransferResponseSerializer                         { get; set; }
 
         public CustomJObjectSerializerDelegate<SignCertificateRequest>?                              CustomSignCertificateRequestSerializer                       { get; set; }
         public CustomJObjectSerializerDelegate<SignCertificateResponse>?                             CustomSignCertificateResponseSerializer                      { get; set; }
@@ -372,8 +372,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public CustomJObjectSerializerDelegate<ChangeAvailabilityResponse>?                          CustomChangeAvailabilityResponseSerializer                   { get; set; }
         public CustomJObjectSerializerDelegate<TriggerMessageRequest>?                               CustomTriggerMessageRequestSerializer                        { get; set; }
         public CustomJObjectSerializerDelegate<TriggerMessageResponse>?                              CustomTriggerMessageResponseSerializer                       { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.DataTransferRequest>?                   CustomData2TransferRequestSerializer                         { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.DataTransferResponse>?                    CustomData2TransferResponseSerializer                        { get; set; }
+        public CustomJObjectSerializerDelegate<DataTransferRequest>?                                 CustomData2TransferRequestSerializer                         { get; set; }
+        public CustomJObjectSerializerDelegate<DataTransferResponse>?                                CustomData2TransferResponseSerializer                        { get; set; }
 
         public CustomJObjectSerializerDelegate<CertificateSignedRequest>?                            CustomCertificateSignedRequestSerializer                     { get; set; }
         public CustomJObjectSerializerDelegate<CertificateSignedResponse>?                           CustomCertificateSignedResponseSerializer                    { get; set; }

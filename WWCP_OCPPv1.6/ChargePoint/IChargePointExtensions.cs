@@ -740,7 +740,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<OCPP.CSMS.BinaryDataTransferResponse>
+        public static Task<BinaryDataTransferResponse>
 
             TransferBinaryData(this IChargePoint             ChargePoint,
 
@@ -761,7 +761,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
 
                 => ChargePoint.BinaryDataTransfer(
-                       new OCPP.CS.BinaryDataTransferRequest(
+                       new BinaryDataTransferRequest(
 
                            ChargePoint.Id,
 

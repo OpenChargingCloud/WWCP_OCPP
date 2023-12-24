@@ -21,34 +21,34 @@ using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
+namespace cloud.charging.open.protocols.OCPP
 {
 
-    #region OnDataTransfer (Request/-Response) Delegate
+    #region OnBinaryDataTransfer (Request/-Response) Delegate
 
     /// <summary>
-    /// A delegate called whenever a data transfer request will be sent to a charging station.
+    /// A delegate called whenever a BinaryDataTransfer request will be sent to a charging station.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
-    public delegate Task OnDataTransferRequestDelegate(DateTime              Timestamp,
-                                                       IEventSender          Sender,
-                                                       DataTransferRequest   Request);
+    public delegate Task OnBinaryDataTransferRequestDelegate(DateTime                    Timestamp,
+                                                             IEventSender                Sender,
+                                                             BinaryDataTransferRequest   Request);
 
     /// <summary>
-    /// A delegate called whenever a response to a data transfer request was received.
+    /// A delegate called whenever a response to a BinaryDataTransfer request was received.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate Task OnDataTransferResponseDelegate(DateTime                  Timestamp,
-                                                        IEventSender              Sender,
-                                                        DataTransferRequest       Request,
-                                                        CS.DataTransferResponse   Response,
-                                                        TimeSpan                  Runtime);
+    public delegate Task OnBinaryDataTransferResponseDelegate(DateTime                     Timestamp,
+                                                              IEventSender                 Sender,
+                                                              BinaryDataTransferRequest    Request,
+                                                              BinaryDataTransferResponse   Response,
+                                                              TimeSpan                     Runtime);
 
     #endregion
 

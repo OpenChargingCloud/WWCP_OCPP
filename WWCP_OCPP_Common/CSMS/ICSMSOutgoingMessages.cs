@@ -27,13 +27,13 @@ namespace cloud.charging.open.protocols.OCPP
 
         // Binary Data Streams Extensions
 
-        #region TransferBinaryData          (Request)
+        #region BinaryDataTransfer          (Request)
 
         /// <summary>
         /// Send the given vendor-specific binary data.
         /// </summary>
         /// <param name="Request">A BinaryDataTransfer request.</param>
-        Task<CS.BinaryDataTransferResponse> BinaryDataTransfer(CSMS.BinaryDataTransferRequest Request);
+        Task<BinaryDataTransferResponse> BinaryDataTransfer(BinaryDataTransferRequest Request);
 
         #endregion
 

@@ -15,13 +15,13 @@
  * limitations under the License.
  */
 
-namespace cloud.charging.open.protocols.OCPP.CS
+namespace cloud.charging.open.protocols.OCPP.NN
 {
 
     /// <summary>
-    /// The common interface of all outgoing OCPP messages from a charging station.
+    /// The common interface of all outgoing OCPP messages from a networking node.
     /// </summary>
-    public interface ICSOutgoingMessages
+    public interface INNOutgoingMessages
     {
 
         // Binary Data Streams Extensions

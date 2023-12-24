@@ -17,11 +17,6 @@
 
 #region Usings
 
-using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
-using org.GraphDefined.Vanaheimr.Hermod.HTTP;
-
-using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
@@ -33,32 +28,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     /// <summary>
     /// The common interface of all charging station clients.
     /// </summary>
-    public interface INetworkingNodeOutgoingMessages : IHTTPClient,
-                                                       IEventSender
+    public interface INetworkingNodeOutgoingMessages : OCPP.NN.INNOutgoingMessages
     {
-
-        String?  ClientCloseMessage    { get; }
-
-
-        #region Custom JSON serializer delegates
-
-        #region Charging Station Messages
-
-        CustomJObjectSerializerDelegate<BootNotificationRequest>?  CustomBootNotificationRequestSerializer    { get; set; }
-
-
-        #endregion
-
-        #region Data Structures
-
-        CustomJObjectSerializerDelegate<ChargingStation>?          CustomChargingStationSerializer            { get; set; }
-        CustomJObjectSerializerDelegate<OCPP.Signature>?           CustomSignatureSerializer                  { get; set; }
-        CustomJObjectSerializerDelegate<CustomData>?               CustomCustomDataSerializer                 { get; set; }
-
-        #endregion
-
-        #endregion
-
 
         #region BootNotification                  (Request)
 
@@ -156,7 +127,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// Send the given vendor-specific data.
         /// </summary>
         /// <param name="Request">A data transfer request.</param>
-        public Task<OCPPv2_1.CSMS.DataTransferResponse> DataTransfer(OCPPv2_1.CS.DataTransferRequest Request);
+        public Task<DataTransferResponse> DataTransfer(DataTransferRequest Request);
 
         #endregion
 
@@ -340,19 +311,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// </summary>
         /// <param name="Request">A notify customer information request.</param>
         public Task<NotifyCustomerInformationResponse> NotifyCustomerInformation(NotifyCustomerInformationRequest Request);
-
-        #endregion
-
-
-        // Binary Data Streams Extensions
-
-        #region BinaryDataTransfer                (Request)
-
-        /// <summary>
-        /// Send the given vendor-specific binary data.
-        /// </summary>
-        /// <param name="Request">A BinaryDataTransfer request.</param>
-        public Task<OCPP.CSMS.BinaryDataTransferResponse> BinaryDataTransfer(OCPP.CS.BinaryDataTransferRequest Request);
 
         #endregion
 
