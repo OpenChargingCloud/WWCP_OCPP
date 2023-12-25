@@ -36,10 +36,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnUnpublishFirmwareRequestDelegate(DateTime                    Timestamp,
-                                           IEventSender                Sender,
-                                           WebSocketClientConnection   Connection,
-                                           UnpublishFirmwareRequest    Request);
+        OnUnpublishFirmwareRequestDelegate(DateTime                   Timestamp,
+                                           IEventSender               Sender,
+                                           IWebSocketConnection       Connection,
+                                           UnpublishFirmwareRequest   Request);
 
 
     /// <summary>
@@ -52,11 +52,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<UnpublishFirmwareResponse>
 
-        OnUnpublishFirmwareDelegate(DateTime                    Timestamp,
-                                    IEventSender                Sender,
-                                    WebSocketClientConnection   Connection,
-                                    UnpublishFirmwareRequest    Request,
-                                    CancellationToken           CancellationToken);
+        OnUnpublishFirmwareDelegate(DateTime                   Timestamp,
+                                    IEventSender               Sender,
+                                    IWebSocketConnection       Connection,
+                                    UnpublishFirmwareRequest   Request,
+                                    CancellationToken          CancellationToken);
 
 
     /// <summary>
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnUnpublishFirmwareResponseDelegate(DateTime                    Timestamp,
                                             IEventSender                Sender,
-                                            WebSocketClientConnection   Connection,
+                                            IWebSocketConnection        Connection,
                                             UnpublishFirmwareRequest    Request,
                                             UnpublishFirmwareResponse   Response,
                                             TimeSpan                    Runtime);

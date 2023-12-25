@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnGetLocalListVersionRequestDelegate(DateTime                     Timestamp,
                                              IEventSender                 Sender,
-                                             WebSocketClientConnection    Connection,
+                                             IWebSocketConnection         Connection,
                                              GetLocalListVersionRequest   Request);
 
 
@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnGetLocalListVersionDelegate(DateTime                     Timestamp,
                                       IEventSender                 Sender,
-                                      WebSocketClientConnection    Connection,
+                                      IWebSocketConnection         Connection,
                                       GetLocalListVersionRequest   Request,
                                       CancellationToken            CancellationToken);
 
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnGetLocalListVersionResponseDelegate(DateTime                      Timestamp,
                                               IEventSender                  Sender,
-                                              WebSocketClientConnection     Connection,
+                                              IWebSocketConnection          Connection,
                                               GetLocalListVersionRequest    Request,
                                               GetLocalListVersionResponse   Response,
                                               TimeSpan                      Runtime);

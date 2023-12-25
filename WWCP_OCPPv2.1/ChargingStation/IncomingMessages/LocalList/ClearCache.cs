@@ -36,10 +36,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnClearCacheRequestDelegate(DateTime                    Timestamp,
-                                    IEventSender                Sender,
-                                    WebSocketClientConnection   Connection,
-                                    ClearCacheRequest           Request);
+        OnClearCacheRequestDelegate(DateTime               Timestamp,
+                                    IEventSender           Sender,
+                                    IWebSocketConnection   Connection,
+                                    ClearCacheRequest      Request);
 
 
     /// <summary>
@@ -52,11 +52,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<ClearCacheResponse>
 
-        OnClearCacheDelegate(DateTime                    Timestamp,
-                             IEventSender                Sender,
-                             WebSocketClientConnection   Connection,
-                             ClearCacheRequest           Request,
-                             CancellationToken           CancellationToken);
+        OnClearCacheDelegate(DateTime               Timestamp,
+                             IEventSender           Sender,
+                             IWebSocketConnection   Connection,
+                             ClearCacheRequest      Request,
+                             CancellationToken      CancellationToken);
 
 
     /// <summary>
@@ -70,11 +70,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnClearCacheResponseDelegate(DateTime                    Timestamp,
-                                     IEventSender                Sender,
-                                     WebSocketClientConnection   Connection,
-                                     ClearCacheRequest           Request,
-                                     ClearCacheResponse          Response,
-                                     TimeSpan                    Runtime);
+        OnClearCacheResponseDelegate(DateTime               Timestamp,
+                                     IEventSender           Sender,
+                                     IWebSocketConnection   Connection,
+                                     ClearCacheRequest      Request,
+                                     ClearCacheResponse     Response,
+                                     TimeSpan               Runtime);
 
 }

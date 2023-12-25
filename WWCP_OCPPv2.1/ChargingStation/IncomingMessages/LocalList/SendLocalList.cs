@@ -36,10 +36,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnSendLocalListRequestDelegate(DateTime                    Timestamp,
-                                       IEventSender                Sender,
-                                       WebSocketClientConnection   Connection,
-                                       SendLocalListRequest        Request);
+        OnSendLocalListRequestDelegate(DateTime               Timestamp,
+                                       IEventSender           Sender,
+                                       IWebSocketConnection   Connection,
+                                       SendLocalListRequest   Request);
 
 
     /// <summary>
@@ -52,11 +52,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<SendLocalListResponse>
 
-        OnSendLocalListDelegate(DateTime                    Timestamp,
-                                IEventSender                Sender,
-                                WebSocketClientConnection   Connection,
-                                SendLocalListRequest        Request,
-                                CancellationToken           CancellationToken);
+        OnSendLocalListDelegate(DateTime               Timestamp,
+                                IEventSender           Sender,
+                                IWebSocketConnection   Connection,
+                                SendLocalListRequest   Request,
+                                CancellationToken      CancellationToken);
 
 
     /// <summary>
@@ -70,11 +70,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnSendLocalListResponseDelegate(DateTime                    Timestamp,
-                                        IEventSender                Sender,
-                                        WebSocketClientConnection   Connection,
-                                        SendLocalListRequest        Request,
-                                        SendLocalListResponse       Response,
-                                        TimeSpan                    Runtime);
+        OnSendLocalListResponseDelegate(DateTime                Timestamp,
+                                        IEventSender            Sender,
+                                        IWebSocketConnection    Connection,
+                                        SendLocalListRequest    Request,
+                                        SendLocalListResponse   Response,
+                                        TimeSpan                Runtime);
 
 }

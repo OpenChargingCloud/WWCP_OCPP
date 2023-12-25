@@ -36,10 +36,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnTriggerMessageRequestDelegate(DateTime                    Timestamp,
-                                        IEventSender                Sender,
-                                        WebSocketClientConnection   Connection,
-                                        TriggerMessageRequest       Request);
+        OnTriggerMessageRequestDelegate(DateTime                Timestamp,
+                                        IEventSender            Sender,
+                                        IWebSocketConnection    Connection,
+                                        TriggerMessageRequest   Request);
 
 
     /// <summary>
@@ -52,11 +52,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<TriggerMessageResponse>
 
-        OnTriggerMessageDelegate(DateTime                    Timestamp,
-                                 IEventSender                Sender,
-                                 WebSocketClientConnection   Connection,
-                                 TriggerMessageRequest       Request,
-                                 CancellationToken           CancellationToken);
+        OnTriggerMessageDelegate(DateTime                Timestamp,
+                                 IEventSender            Sender,
+                                 IWebSocketConnection    Connection,
+                                 TriggerMessageRequest   Request,
+                                 CancellationToken       CancellationToken);
 
 
     /// <summary>
@@ -70,11 +70,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnTriggerMessageResponseDelegate(DateTime                    Timestamp,
-                                         IEventSender                Sender,
-                                         WebSocketClientConnection   Connection,
-                                         TriggerMessageRequest       Request,
-                                         TriggerMessageResponse      Response,
-                                         TimeSpan                    Runtime);
+        OnTriggerMessageResponseDelegate(DateTime                 Timestamp,
+                                         IEventSender             Sender,
+                                         IWebSocketConnection     Connection,
+                                         TriggerMessageRequest    Request,
+                                         TriggerMessageResponse   Response,
+                                         TimeSpan                 Runtime);
 
 }

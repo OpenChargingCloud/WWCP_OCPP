@@ -36,10 +36,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnGetLogRequestDelegate(DateTime                    Timestamp,
-                                IEventSender                Sender,
-                                WebSocketClientConnection   Connection,
-                                GetLogRequest               Request);
+        OnGetLogRequestDelegate(DateTime               Timestamp,
+                                IEventSender           Sender,
+                                IWebSocketConnection   Connection,
+                                GetLogRequest          Request);
 
 
     /// <summary>
@@ -52,11 +52,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<GetLogResponse>
 
-        OnGetLogDelegate(DateTime                    Timestamp,
-                         IEventSender                Sender,
-                         WebSocketClientConnection   Connection,
-                         GetLogRequest               Request,
-                         CancellationToken           CancellationToken);
+        OnGetLogDelegate(DateTime               Timestamp,
+                         IEventSender           Sender,
+                         IWebSocketConnection   Connection,
+                         GetLogRequest          Request,
+                         CancellationToken      CancellationToken);
 
 
     /// <summary>
@@ -70,11 +70,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnGetLogResponseDelegate(DateTime                    Timestamp,
-                                 IEventSender                Sender,
-                                 WebSocketClientConnection   Connection,
-                                 GetLogRequest               Request,
-                                 GetLogResponse              Response,
-                                 TimeSpan                    Runtime);
+        OnGetLogResponseDelegate(DateTime               Timestamp,
+                                 IEventSender           Sender,
+                                 IWebSocketConnection   Connection,
+                                 GetLogRequest          Request,
+                                 GetLogResponse         Response,
+                                 TimeSpan               Runtime);
 
 }

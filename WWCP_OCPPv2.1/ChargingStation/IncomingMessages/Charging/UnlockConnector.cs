@@ -36,10 +36,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnUnlockConnectorRequestDelegate(DateTime                    Timestamp,
-                                         IEventSender                Sender,
-                                         WebSocketClientConnection   Connection,
-                                         UnlockConnectorRequest      Request);
+        OnUnlockConnectorRequestDelegate(DateTime                 Timestamp,
+                                         IEventSender             Sender,
+                                         IWebSocketConnection     Connection,
+                                         UnlockConnectorRequest   Request);
 
 
     /// <summary>
@@ -52,11 +52,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<UnlockConnectorResponse>
 
-        OnUnlockConnectorDelegate(DateTime                    Timestamp,
-                                  IEventSender                Sender,
-                                  WebSocketClientConnection   Connection,
-                                  UnlockConnectorRequest      Request,
-                                  CancellationToken           CancellationToken);
+        OnUnlockConnectorDelegate(DateTime                 Timestamp,
+                                  IEventSender             Sender,
+                                  IWebSocketConnection     Connection,
+                                  UnlockConnectorRequest   Request,
+                                  CancellationToken        CancellationToken);
 
 
     /// <summary>
@@ -70,11 +70,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnUnlockConnectorResponseDelegate(DateTime                    Timestamp,
-                                          IEventSender                Sender,
-                                          WebSocketClientConnection   Connection,
-                                          UnlockConnectorRequest      Request,
-                                          UnlockConnectorResponse     Response,
-                                          TimeSpan                    Runtime);
+        OnUnlockConnectorResponseDelegate(DateTime                  Timestamp,
+                                          IEventSender              Sender,
+                                          IWebSocketConnection      Connection,
+                                          UnlockConnectorRequest    Request,
+                                          UnlockConnectorResponse   Response,
+                                          TimeSpan                  Runtime);
 
 }

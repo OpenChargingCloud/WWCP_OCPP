@@ -36,10 +36,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnCertificateSignedRequestDelegate(DateTime                    Timestamp,
-                                           IEventSender                Sender,
-                                           WebSocketClientConnection   Connection,
-                                           CertificateSignedRequest    Request);
+        OnCertificateSignedRequestDelegate(DateTime                   Timestamp,
+                                           IEventSender               Sender,
+                                           IWebSocketConnection       Connection,
+                                           CertificateSignedRequest   Request);
 
 
     /// <summary>
@@ -52,11 +52,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<CertificateSignedResponse>
 
-        OnCertificateSignedDelegate(DateTime                    Timestamp,
-                                    IEventSender                Sender,
-                                    WebSocketClientConnection   Connection,
-                                    CertificateSignedRequest    Request,
-                                    CancellationToken           CancellationToken);
+        OnCertificateSignedDelegate(DateTime                   Timestamp,
+                                    IEventSender               Sender,
+                                    IWebSocketConnection       Connection,
+                                    CertificateSignedRequest   Request,
+                                    CancellationToken          CancellationToken);
 
 
     /// <summary>
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnCertificateSignedResponseDelegate(DateTime                    Timestamp,
                                             IEventSender                Sender,
-                                            WebSocketClientConnection   Connection,
+                                            IWebSocketConnection        Connection,
                                             CertificateSignedRequest    Request,
                                             CertificateSignedResponse   Response,
                                             TimeSpan                    Runtime);

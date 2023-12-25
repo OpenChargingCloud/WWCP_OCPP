@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnGetDisplayMessagesRequestDelegate(DateTime                    Timestamp,
                                             IEventSender                Sender,
-                                            WebSocketClientConnection   Connection,
+                                            IWebSocketConnection        Connection,
                                             GetDisplayMessagesRequest   Request);
 
 
@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnGetDisplayMessagesDelegate(DateTime                    Timestamp,
                                      IEventSender                Sender,
-                                     WebSocketClientConnection   Connection,
+                                     IWebSocketConnection        Connection,
                                      GetDisplayMessagesRequest   Request,
                                      CancellationToken           CancellationToken);
 
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnGetDisplayMessagesResponseDelegate(DateTime                     Timestamp,
                                              IEventSender                 Sender,
-                                             WebSocketClientConnection    Connection,
+                                             IWebSocketConnection         Connection,
                                              GetDisplayMessagesRequest    Request,
                                              GetDisplayMessagesResponse   Response,
                                              TimeSpan                     Runtime);

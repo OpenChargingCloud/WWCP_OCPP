@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnChangeAvailabilityRequestDelegate(DateTime                    Timestamp,
                                             IEventSender                Sender,
-                                            WebSocketClientConnection   Connection,
+                                            IWebSocketConnection        Connection,
                                             ChangeAvailabilityRequest   Request);
 
 
@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnChangeAvailabilityDelegate(DateTime                    Timestamp,
                                      IEventSender                Sender,
-                                     WebSocketClientConnection   Connection,
+                                     IWebSocketConnection        Connection,
                                      ChangeAvailabilityRequest   Request,
                                      CancellationToken           CancellationToken);
 
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnChangeAvailabilityResponseDelegate(DateTime                     Timestamp,
                                              IEventSender                 Sender,
-                                             WebSocketClientConnection    Connection,
+                                             IWebSocketConnection         Connection,
                                              ChangeAvailabilityRequest    Request,
                                              ChangeAvailabilityResponse   Response,
                                              TimeSpan                     Runtime);

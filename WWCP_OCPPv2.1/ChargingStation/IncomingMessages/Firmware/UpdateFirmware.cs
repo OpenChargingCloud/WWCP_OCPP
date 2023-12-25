@@ -36,10 +36,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnUpdateFirmwareRequestDelegate(DateTime                    Timestamp,
-                                        IEventSender                Sender,
-                                        WebSocketClientConnection   Connection,
-                                        UpdateFirmwareRequest       Request);
+        OnUpdateFirmwareRequestDelegate(DateTime                Timestamp,
+                                        IEventSender            Sender,
+                                        IWebSocketConnection    Connection,
+                                        UpdateFirmwareRequest   Request);
 
 
     /// <summary>
@@ -52,11 +52,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<UpdateFirmwareResponse>
 
-        OnUpdateFirmwareDelegate(DateTime                    Timestamp,
-                                 IEventSender                Sender,
-                                 WebSocketClientConnection   Connection,
-                                 UpdateFirmwareRequest       Request,
-                                 CancellationToken           CancellationToken);
+        OnUpdateFirmwareDelegate(DateTime                Timestamp,
+                                 IEventSender            Sender,
+                                 IWebSocketConnection    Connection,
+                                 UpdateFirmwareRequest   Request,
+                                 CancellationToken       CancellationToken);
 
 
     /// <summary>
@@ -70,11 +70,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnUpdateFirmwareResponseDelegate(DateTime                    Timestamp,
-                                         IEventSender                Sender,
-                                         WebSocketClientConnection   Connection,
-                                         UpdateFirmwareRequest       Request,
-                                         UpdateFirmwareResponse      Response,
-                                         TimeSpan                    Runtime);
+        OnUpdateFirmwareResponseDelegate(DateTime                 Timestamp,
+                                         IEventSender             Sender,
+                                         IWebSocketConnection     Connection,
+                                         UpdateFirmwareRequest    Request,
+                                         UpdateFirmwareResponse   Response,
+                                         TimeSpan                 Runtime);
 
 }

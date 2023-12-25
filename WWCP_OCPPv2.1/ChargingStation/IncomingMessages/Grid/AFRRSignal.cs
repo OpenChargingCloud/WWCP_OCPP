@@ -36,10 +36,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnAFRRSignalRequestDelegate(DateTime                    Timestamp,
-                                    IEventSender                Sender,
-                                    WebSocketClientConnection   Connection,
-                                    AFRRSignalRequest           Request);
+        OnAFRRSignalRequestDelegate(DateTime               Timestamp,
+                                    IEventSender           Sender,
+                                    IWebSocketConnection   Connection,
+                                    AFRRSignalRequest      Request);
 
 
     /// <summary>
@@ -52,11 +52,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<AFRRSignalResponse>
 
-        OnAFRRSignalDelegate(DateTime                    Timestamp,
-                             IEventSender                Sender,
-                             WebSocketClientConnection   Connection,
-                             AFRRSignalRequest           Request,
-                             CancellationToken           CancellationToken);
+        OnAFRRSignalDelegate(DateTime               Timestamp,
+                             IEventSender           Sender,
+                             IWebSocketConnection   Connection,
+                             AFRRSignalRequest      Request,
+                             CancellationToken      CancellationToken);
 
 
     /// <summary>
@@ -70,11 +70,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnAFRRSignalResponseDelegate(DateTime                    Timestamp,
-                                     IEventSender                Sender,
-                                     WebSocketClientConnection   Connection,
-                                     AFRRSignalRequest           Request,
-                                     AFRRSignalResponse          Response,
-                                     TimeSpan                    Runtime);
+        OnAFRRSignalResponseDelegate(DateTime               Timestamp,
+                                     IEventSender           Sender,
+                                     IWebSocketConnection   Connection,
+                                     AFRRSignalRequest      Request,
+                                     AFRRSignalResponse     Response,
+                                     TimeSpan               Runtime);
 
 }

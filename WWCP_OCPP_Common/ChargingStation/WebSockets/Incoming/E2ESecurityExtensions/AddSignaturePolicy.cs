@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
 
         OnAddSignaturePolicyRequestDelegate(DateTime                    Timestamp,
                                             IEventSender                Sender,
-                                            WebSocketClientConnection   Connection,
+                                            IWebSocketConnection        Connection,
                                             AddSignaturePolicyRequest   Request);
 
 
@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
 
         OnAddSignaturePolicyDelegate(DateTime                    Timestamp,
                                      IEventSender                Sender,
-                                     WebSocketClientConnection   Connection,
+                                     IWebSocketConnection        Connection,
                                      AddSignaturePolicyRequest   Request,
                                      CancellationToken           CancellationToken);
 
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
 
         OnAddSignaturePolicyResponseDelegate(DateTime                     Timestamp,
                                              IEventSender                 Sender,
-                                             WebSocketClientConnection    Connection,
+                                             IWebSocketConnection         Connection,
                                              AddSignaturePolicyRequest    Request,
                                              AddSignaturePolicyResponse   Response,
                                              TimeSpan                     Runtime);

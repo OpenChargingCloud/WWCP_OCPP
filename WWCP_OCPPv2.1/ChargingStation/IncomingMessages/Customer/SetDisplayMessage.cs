@@ -36,10 +36,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnSetDisplayMessageRequestDelegate(DateTime                    Timestamp,
-                                           IEventSender                Sender,
-                                           WebSocketClientConnection   Connection,
-                                           SetDisplayMessageRequest    Request);
+        OnSetDisplayMessageRequestDelegate(DateTime                   Timestamp,
+                                           IEventSender               Sender,
+                                           IWebSocketConnection       Connection,
+                                           SetDisplayMessageRequest   Request);
 
 
     /// <summary>
@@ -52,11 +52,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<SetDisplayMessageResponse>
 
-        OnSetDisplayMessageDelegate(DateTime                    Timestamp,
-                                    IEventSender                Sender,
-                                    WebSocketClientConnection   Connection,
-                                    SetDisplayMessageRequest    Request,
-                                    CancellationToken           CancellationToken);
+        OnSetDisplayMessageDelegate(DateTime                   Timestamp,
+                                    IEventSender               Sender,
+                                    IWebSocketConnection       Connection,
+                                    SetDisplayMessageRequest   Request,
+                                    CancellationToken          CancellationToken);
 
 
     /// <summary>
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnSetDisplayMessageResponseDelegate(DateTime                    Timestamp,
                                             IEventSender                Sender,
-                                            WebSocketClientConnection   Connection,
+                                            IWebSocketConnection        Connection,
                                             SetDisplayMessageRequest    Request,
                                             SetDisplayMessageResponse   Response,
                                             TimeSpan                    Runtime);

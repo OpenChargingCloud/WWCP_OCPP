@@ -36,10 +36,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnGetVariablesRequestDelegate(DateTime                    Timestamp,
-                                      IEventSender                Sender,
-                                      WebSocketClientConnection   Connection,
-                                      GetVariablesRequest         Request);
+        OnGetVariablesRequestDelegate(DateTime               Timestamp,
+                                      IEventSender           Sender,
+                                      IWebSocketConnection   Connection,
+                                      GetVariablesRequest    Request);
 
 
     /// <summary>
@@ -52,11 +52,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<GetVariablesResponse>
 
-        OnGetVariablesDelegate(DateTime                    Timestamp,
-                               IEventSender                Sender,
-                               WebSocketClientConnection   Connection,
-                               GetVariablesRequest         Request,
-                               CancellationToken           CancellationToken);
+        OnGetVariablesDelegate(DateTime               Timestamp,
+                               IEventSender           Sender,
+                               IWebSocketConnection   Connection,
+                               GetVariablesRequest    Request,
+                               CancellationToken      CancellationToken);
 
 
     /// <summary>
@@ -70,11 +70,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnGetVariablesResponseDelegate(DateTime                    Timestamp,
-                                       IEventSender                Sender,
-                                       WebSocketClientConnection   Connection,
-                                       GetVariablesRequest         Request,
-                                       GetVariablesResponse        Response,
-                                       TimeSpan                    Runtime);
+        OnGetVariablesResponseDelegate(DateTime               Timestamp,
+                                       IEventSender           Sender,
+                                       IWebSocketConnection   Connection,
+                                       GetVariablesRequest    Request,
+                                       GetVariablesResponse   Response,
+                                       TimeSpan               Runtime);
 
 }

@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnSetDefaultChargingTariffRequestDelegate(DateTime                          Timestamp,
                                                   IEventSender                      Sender,
-                                                  WebSocketClientConnection         Connection,
+                                                  IWebSocketConnection              Connection,
                                                   SetDefaultChargingTariffRequest   Request);
 
 
@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnSetDefaultChargingTariffDelegate(DateTime                          Timestamp,
                                            IEventSender                      Sender,
-                                           WebSocketClientConnection         Connection,
+                                           IWebSocketConnection              Connection,
                                            SetDefaultChargingTariffRequest   Request,
                                            CancellationToken                 CancellationToken);
 
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnSetDefaultChargingTariffResponseDelegate(DateTime                           Timestamp,
                                                    IEventSender                       Sender,
-                                                   WebSocketClientConnection          Connection,
+                                                   IWebSocketConnection               Connection,
                                                    SetDefaultChargingTariffRequest    Request,
                                                    SetDefaultChargingTariffResponse   Response,
                                                    TimeSpan                           Runtime);

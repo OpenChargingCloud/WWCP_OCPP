@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnGetInstalledCertificateIdsRequestDelegate(DateTime                            Timestamp,
                                                     IEventSender                        Sender,
-                                                    WebSocketClientConnection           Connection,
+                                                    IWebSocketConnection                Connection,
                                                     GetInstalledCertificateIdsRequest   Request);
 
 
@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnGetInstalledCertificateIdsDelegate(DateTime                            Timestamp,
                                              IEventSender                        Sender,
-                                             WebSocketClientConnection           Connection,
+                                             IWebSocketConnection                Connection,
                                              GetInstalledCertificateIdsRequest   Request,
                                              CancellationToken                   CancellationToken);
 
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnGetInstalledCertificateIdsResponseDelegate(DateTime                             Timestamp,
                                                      IEventSender                         Sender,
-                                                     WebSocketClientConnection            Connection,
+                                                     IWebSocketConnection                 Connection,
                                                      GetInstalledCertificateIdsRequest    Request,
                                                      GetInstalledCertificateIdsResponse   Response,
                                                      TimeSpan                             Runtime);

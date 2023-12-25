@@ -36,10 +36,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnNotifyCRLRequestDelegate(DateTime                    Timestamp,
-                                   IEventSender                Sender,
-                                   WebSocketClientConnection   Connection,
-                                   NotifyCRLRequest            Request);
+        OnNotifyCRLRequestDelegate(DateTime               Timestamp,
+                                   IEventSender           Sender,
+                                   IWebSocketConnection   Connection,
+                                   NotifyCRLRequest       Request);
 
 
     /// <summary>
@@ -51,11 +51,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<NotifyCRLResponse>
 
-        OnNotifyCRLDelegate(DateTime                    Timestamp,
-                            IEventSender                Sender,
-                            WebSocketClientConnection   Connection,
-                            NotifyCRLRequest            Request,
-                            CancellationToken           CancellationToken);
+        OnNotifyCRLDelegate(DateTime               Timestamp,
+                            IEventSender           Sender,
+                            IWebSocketConnection   Connection,
+                            NotifyCRLRequest       Request,
+                            CancellationToken      CancellationToken);
 
 
     /// <summary>
@@ -69,11 +69,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnNotifyCRLResponseDelegate(DateTime                    Timestamp,
-                                    IEventSender                Sender,
-                                    WebSocketClientConnection   Connection,
-                                    NotifyCRLRequest            Request,
-                                    NotifyCRLResponse           Response,
-                                    TimeSpan                    Runtime);
+        OnNotifyCRLResponseDelegate(DateTime               Timestamp,
+                                    IEventSender           Sender,
+                                    IWebSocketConnection   Connection,
+                                    NotifyCRLRequest       Request,
+                                    NotifyCRLResponse      Response,
+                                    TimeSpan               Runtime);
 
 }

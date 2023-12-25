@@ -20,6 +20,8 @@
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
+using cloud.charging.open.protocols.OCPP.CSMS;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPP.CS
@@ -34,10 +36,10 @@ namespace cloud.charging.open.protocols.OCPP.CS
     /// <param name="Request">The DeleteFile request.</param>
     public delegate Task
 
-        OnDeleteFileRequestDelegate(DateTime                    Timestamp,
-                                    IEventSender                Sender,
-                                    WebSocketClientConnection   Connection,
-                                    CSMS.DeleteFileRequest      Request);
+        OnDeleteFileRequestDelegate(DateTime               Timestamp,
+                                    IEventSender           Sender,
+                                    IWebSocketConnection   Connection,
+                                    DeleteFileRequest      Request);
 
 
     /// <summary>
@@ -50,11 +52,11 @@ namespace cloud.charging.open.protocols.OCPP.CS
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<DeleteFileResponse>
 
-        OnDeleteFileDelegate(DateTime                    Timestamp,
-                             IEventSender                Sender,
-                             WebSocketClientConnection   Connection,
-                             CSMS.DeleteFileRequest      Request,
-                             CancellationToken           CancellationToken);
+        OnDeleteFileDelegate(DateTime               Timestamp,
+                             IEventSender           Sender,
+                             IWebSocketConnection   Connection,
+                             DeleteFileRequest      Request,
+                             CancellationToken      CancellationToken);
 
 
     /// <summary>
@@ -68,11 +70,11 @@ namespace cloud.charging.open.protocols.OCPP.CS
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnDeleteFileResponseDelegate(DateTime                    Timestamp,
-                                     IEventSender                Sender,
-                                     WebSocketClientConnection   Connection,
-                                     CSMS.DeleteFileRequest      Request,
-                                     DeleteFileResponse          Response,
-                                     TimeSpan                    Runtime);
+        OnDeleteFileResponseDelegate(DateTime               Timestamp,
+                                     IEventSender           Sender,
+                                     IWebSocketConnection   Connection,
+                                     DeleteFileRequest      Request,
+                                     DeleteFileResponse     Response,
+                                     TimeSpan               Runtime);
 
 }

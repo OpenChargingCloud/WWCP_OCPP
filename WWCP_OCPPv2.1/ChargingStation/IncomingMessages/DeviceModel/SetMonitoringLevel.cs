@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnSetMonitoringLevelRequestDelegate(DateTime                    Timestamp,
                                             IEventSender                Sender,
-                                            WebSocketClientConnection   Connection,
+                                            IWebSocketConnection        Connection,
                                             SetMonitoringLevelRequest   Request);
 
 
@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnSetMonitoringLevelDelegate(DateTime                    Timestamp,
                                      IEventSender                Sender,
-                                     WebSocketClientConnection   Connection,
+                                     IWebSocketConnection        Connection,
                                      SetMonitoringLevelRequest   Request,
                                      CancellationToken           CancellationToken);
 
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnSetMonitoringLevelResponseDelegate(DateTime                     Timestamp,
                                              IEventSender                 Sender,
-                                             WebSocketClientConnection    Connection,
+                                             IWebSocketConnection         Connection,
                                              SetMonitoringLevelRequest    Request,
                                              SetMonitoringLevelResponse   Response,
                                              TimeSpan                     Runtime);

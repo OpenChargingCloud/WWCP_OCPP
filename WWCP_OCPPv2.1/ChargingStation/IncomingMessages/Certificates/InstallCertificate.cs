@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnInstallCertificateRequestDelegate(DateTime                    Timestamp,
                                             IEventSender                Sender,
-                                            WebSocketClientConnection   Connection,
+                                            IWebSocketConnection        Connection,
                                             InstallCertificateRequest   Request);
 
 
@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnInstallCertificateDelegate(DateTime                    Timestamp,
                                      IEventSender                Sender,
-                                     WebSocketClientConnection   Connection,
+                                     IWebSocketConnection        Connection,
                                      InstallCertificateRequest   Request,
                                      CancellationToken           CancellationToken);
 
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnInstallCertificateResponseDelegate(DateTime                     Timestamp,
                                              IEventSender                 Sender,
-                                             WebSocketClientConnection    Connection,
+                                             IWebSocketConnection         Connection,
                                              InstallCertificateRequest    Request,
                                              InstallCertificateResponse   Response,
                                              TimeSpan                     Runtime);

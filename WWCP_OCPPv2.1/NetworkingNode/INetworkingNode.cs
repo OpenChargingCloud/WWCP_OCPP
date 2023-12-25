@@ -38,6 +38,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
                                          INetworkingNodeIncomingMessagesEvents
     {
 
+        #region Incoming Messages: Networking Node <- CSMS
+
         #region Reset
 
         Task RaiseOnResetRequest (DateTime               Timestamp,
@@ -51,6 +53,795 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
                                   ResetRequest           Request,
                                   ResetResponse          Response,
                                   TimeSpan               Runtime);
+
+        #endregion
+
+        #region UpdateFirmware
+
+        Task RaiseOnUpdateFirmwareRequest (DateTime                 Timestamp,
+                                           IEventSender             Sender,
+                                           IWebSocketConnection     Connection,
+                                           UpdateFirmwareRequest    Request);
+
+        Task RaiseOnUpdateFirmwareResponse(DateTime                 Timestamp,
+                                           IEventSender             Sender,
+                                           IWebSocketConnection     Connection,
+                                           UpdateFirmwareRequest    Request,
+                                           UpdateFirmwareResponse   Response,
+                                           TimeSpan                 Runtime);
+
+        #endregion
+
+        #region PublishFirmware
+
+        Task RaiseOnPublishFirmwareRequest (DateTime                  Timestamp,
+                                            IEventSender              Sender,
+                                            IWebSocketConnection      Connection,
+                                            PublishFirmwareRequest    Request);
+
+        Task RaiseOnPublishFirmwareResponse(DateTime                  Timestamp,
+                                            IEventSender              Sender,
+                                            IWebSocketConnection      Connection,
+                                            PublishFirmwareRequest    Request,
+                                            PublishFirmwareResponse   Response,
+                                            TimeSpan                  Runtime);
+
+        #endregion
+
+        #region UnpublishFirmware
+
+        Task RaiseOnUnpublishFirmwareRequest (DateTime                    Timestamp,
+                                              IEventSender                Sender,
+                                              IWebSocketConnection        Connection,
+                                              UnpublishFirmwareRequest    Request);
+
+        Task RaiseOnUnpublishFirmwareResponse(DateTime                    Timestamp,
+                                              IEventSender                Sender,
+                                              IWebSocketConnection        Connection,
+                                              UnpublishFirmwareRequest    Request,
+                                              UnpublishFirmwareResponse   Response,
+                                              TimeSpan                    Runtime);
+
+        #endregion
+
+        #region GetBaseReport
+
+        Task RaiseOnGetBaseReportRequest (DateTime                Timestamp,
+                                          IEventSender            Sender,
+                                          IWebSocketConnection    Connection,
+                                          GetBaseReportRequest    Request);
+
+        Task RaiseOnGetBaseReportResponse(DateTime                Timestamp,
+                                          IEventSender            Sender,
+                                          IWebSocketConnection    Connection,
+                                          GetBaseReportRequest    Request,
+                                          GetBaseReportResponse   Response,
+                                          TimeSpan                Runtime);
+
+        #endregion
+
+        #region GetReport
+
+        Task RaiseOnGetReportRequest (DateTime               Timestamp,
+                                      IEventSender           Sender,
+                                      IWebSocketConnection   Connection,
+                                      GetReportRequest       Request);
+
+        Task RaiseOnGetReportResponse(DateTime               Timestamp,
+                                      IEventSender           Sender,
+                                      IWebSocketConnection   Connection,
+                                      GetReportRequest       Request,
+                                      GetReportResponse      Response,
+                                      TimeSpan               Runtime);
+
+        #endregion
+
+        #region GetLog
+
+        Task RaiseOnGetLogRequest (DateTime               Timestamp,
+                                   IEventSender           Sender,
+                                   IWebSocketConnection   Connection,
+                                   GetLogRequest          Request);
+
+        Task RaiseOnGetLogResponse(DateTime               Timestamp,
+                                   IEventSender           Sender,
+                                   IWebSocketConnection   Connection,
+                                   GetLogRequest          Request,
+                                   GetLogResponse         Response,
+                                   TimeSpan               Runtime);
+
+        #endregion
+
+        #region SetVariables
+
+        Task RaiseOnSetVariablesRequest (DateTime               Timestamp,
+                                         IEventSender           Sender,
+                                         IWebSocketConnection   Connection,
+                                         SetVariablesRequest    Request);
+
+        Task RaiseOnSetVariablesResponse(DateTime               Timestamp,
+                                         IEventSender           Sender,
+                                         IWebSocketConnection   Connection,
+                                         SetVariablesRequest    Request,
+                                         SetVariablesResponse   Response,
+                                         TimeSpan               Runtime);
+
+        #endregion
+
+        #region GetVariables
+
+        Task RaiseOnGetVariablesRequest (DateTime               Timestamp,
+                                         IEventSender           Sender,
+                                         IWebSocketConnection   Connection,
+                                         GetVariablesRequest    Request);
+
+        Task RaiseOnGetVariablesResponse(DateTime               Timestamp,
+                                         IEventSender           Sender,
+                                         IWebSocketConnection   Connection,
+                                         GetVariablesRequest    Request,
+                                         GetVariablesResponse   Response,
+                                         TimeSpan               Runtime);
+
+        #endregion
+
+        #region SetMonitoringBase
+
+        Task RaiseOnSetMonitoringBaseRequest (DateTime                    Timestamp,
+                                              IEventSender                Sender,
+                                              IWebSocketConnection        Connection,
+                                              SetMonitoringBaseRequest    Request);
+
+        Task RaiseOnSetMonitoringBaseResponse(DateTime                    Timestamp,
+                                              IEventSender                Sender,
+                                              IWebSocketConnection        Connection,
+                                              SetMonitoringBaseRequest    Request,
+                                              SetMonitoringBaseResponse   Response,
+                                              TimeSpan                    Runtime);
+
+        #endregion
+
+        #region GetMonitoringReport
+
+        Task RaiseOnGetMonitoringReportRequest (DateTime                      Timestamp,
+                                                IEventSender                  Sender,
+                                                IWebSocketConnection          Connection,
+                                                GetMonitoringReportRequest    Request);
+
+        Task RaiseOnGetMonitoringReportResponse(DateTime                      Timestamp,
+                                                IEventSender                  Sender,
+                                                IWebSocketConnection          Connection,
+                                                GetMonitoringReportRequest    Request,
+                                                GetMonitoringReportResponse   Response,
+                                                TimeSpan                      Runtime);
+
+        #endregion
+
+        #region SetMonitoringLevel
+
+        Task RaiseOnSetMonitoringLevelRequest (DateTime                     Timestamp,
+                                               IEventSender                 Sender,
+                                               IWebSocketConnection         Connection,
+                                               SetMonitoringLevelRequest    Request);
+
+        Task RaiseOnSetMonitoringLevelResponse(DateTime                     Timestamp,
+                                               IEventSender                 Sender,
+                                               IWebSocketConnection         Connection,
+                                               SetMonitoringLevelRequest    Request,
+                                               SetMonitoringLevelResponse   Response,
+                                               TimeSpan                     Runtime);
+
+        #endregion
+
+        #region SetVariableMonitoring
+
+        Task RaiseOnSetVariableMonitoringRequest (DateTime                        Timestamp,
+                                                  IEventSender                    Sender,
+                                                  IWebSocketConnection            Connection,
+                                                  SetVariableMonitoringRequest    Request);
+
+        Task RaiseOnSetVariableMonitoringResponse(DateTime                        Timestamp,
+                                                  IEventSender                    Sender,
+                                                  IWebSocketConnection            Connection,
+                                                  SetVariableMonitoringRequest    Request,
+                                                  SetVariableMonitoringResponse   Response,
+                                                  TimeSpan                        Runtime);
+
+        #endregion
+
+        #region ClearVariableMonitoring
+
+        Task RaiseOnClearVariableMonitoringRequest (DateTime                          Timestamp,
+                                                    IEventSender                      Sender,
+                                                    IWebSocketConnection              Connection,
+                                                    ClearVariableMonitoringRequest    Request);
+
+        Task RaiseOnClearVariableMonitoringResponse(DateTime                          Timestamp,
+                                                    IEventSender                      Sender,
+                                                    IWebSocketConnection              Connection,
+                                                    ClearVariableMonitoringRequest    Request,
+                                                    ClearVariableMonitoringResponse   Response,
+                                                    TimeSpan                          Runtime);
+
+        #endregion
+
+        #region SetNetworkProfile
+
+        Task RaiseOnSetNetworkProfileRequest (DateTime                    Timestamp,
+                                              IEventSender                Sender,
+                                              IWebSocketConnection        Connection,
+                                              SetNetworkProfileRequest    Request);
+
+        Task RaiseOnSetNetworkProfileResponse(DateTime                    Timestamp,
+                                              IEventSender                Sender,
+                                              IWebSocketConnection        Connection,
+                                              SetNetworkProfileRequest    Request,
+                                              SetNetworkProfileResponse   Response,
+                                              TimeSpan                    Runtime);
+
+        #endregion
+
+        #region ChangeAvailability
+
+        Task RaiseOnChangeAvailabilityRequest (DateTime                     Timestamp,
+                                               IEventSender                 Sender,
+                                               IWebSocketConnection         Connection,
+                                               ChangeAvailabilityRequest    Request);
+
+        Task RaiseOnChangeAvailabilityResponse(DateTime                     Timestamp,
+                                               IEventSender                 Sender,
+                                               IWebSocketConnection         Connection,
+                                               ChangeAvailabilityRequest    Request,
+                                               ChangeAvailabilityResponse   Response,
+                                               TimeSpan                     Runtime);
+
+        #endregion
+
+        #region TriggerMessage
+
+        Task RaiseOnTriggerMessageRequest (DateTime                 Timestamp,
+                                           IEventSender             Sender,
+                                           IWebSocketConnection     Connection,
+                                           TriggerMessageRequest    Request);
+
+        Task RaiseOnTriggerMessageResponse(DateTime                 Timestamp,
+                                           IEventSender             Sender,
+                                           IWebSocketConnection     Connection,
+                                           TriggerMessageRequest    Request,
+                                           TriggerMessageResponse   Response,
+                                           TimeSpan                 Runtime);
+
+        #endregion
+
+        #region IncomingDataTransfer
+
+        Task RaiseOnIncomingDataTransferRequest (DateTime               Timestamp,
+                                                 IEventSender           Sender,
+                                                 IWebSocketConnection   Connection,
+                                                 DataTransferRequest    Request);
+
+        Task RaiseOnIncomingDataTransferResponse(DateTime               Timestamp,
+                                                 IEventSender           Sender,
+                                                 IWebSocketConnection   Connection,
+                                                 DataTransferRequest    Request,
+                                                 DataTransferResponse   Response,
+                                                 TimeSpan               Runtime);
+
+        #endregion
+
+
+        #region CertificateSigned
+
+        Task RaiseOnCertificateSignedRequest (DateTime                    Timestamp,
+                                              IEventSender                Sender,
+                                              IWebSocketConnection        Connection,
+                                              CertificateSignedRequest    Request);
+
+        Task RaiseOnCertificateSignedResponse(DateTime                    Timestamp,
+                                              IEventSender                Sender,
+                                              IWebSocketConnection        Connection,
+                                              CertificateSignedRequest    Request,
+                                              CertificateSignedResponse   Response,
+                                              TimeSpan                    Runtime);
+
+        #endregion
+
+        #region InstallCertificate
+
+        Task RaiseOnInstallCertificateRequest (DateTime                     Timestamp,
+                                               IEventSender                 Sender,
+                                               IWebSocketConnection         Connection,
+                                               InstallCertificateRequest    Request);
+
+        Task RaiseOnInstallCertificateResponse(DateTime                     Timestamp,
+                                               IEventSender                 Sender,
+                                               IWebSocketConnection         Connection,
+                                               InstallCertificateRequest    Request,
+                                               InstallCertificateResponse   Response,
+                                               TimeSpan                     Runtime);
+
+        #endregion
+
+        #region GetInstalledCertificateIds
+
+        Task RaiseOnGetInstalledCertificateIdsRequest (DateTime                             Timestamp,
+                                                       IEventSender                         Sender,
+                                                       IWebSocketConnection                 Connection,
+                                                       GetInstalledCertificateIdsRequest    Request);
+
+        Task RaiseOnGetInstalledCertificateIdsResponse(DateTime                             Timestamp,
+                                                       IEventSender                         Sender,
+                                                       IWebSocketConnection                 Connection,
+                                                       GetInstalledCertificateIdsRequest    Request,
+                                                       GetInstalledCertificateIdsResponse   Response,
+                                                       TimeSpan                             Runtime);
+
+        #endregion
+
+        #region DeleteCertificate
+
+        Task RaiseOnDeleteCertificateRequest (DateTime                    Timestamp,
+                                              IEventSender                Sender,
+                                              IWebSocketConnection        Connection,
+                                              DeleteCertificateRequest    Request);
+
+        Task RaiseOnDeleteCertificateResponse(DateTime                    Timestamp,
+                                              IEventSender                Sender,
+                                              IWebSocketConnection        Connection,
+                                              DeleteCertificateRequest    Request,
+                                              DeleteCertificateResponse   Response,
+                                              TimeSpan                    Runtime);
+
+        #endregion
+
+        #region NotifyCRL
+
+        Task RaiseOnNotifyCRLRequest (DateTime               Timestamp,
+                                      IEventSender           Sender,
+                                      IWebSocketConnection   Connection,
+                                      NotifyCRLRequest       Request);
+
+        Task RaiseOnNotifyCRLResponse(DateTime               Timestamp,
+                                      IEventSender           Sender,
+                                      IWebSocketConnection   Connection,
+                                      NotifyCRLRequest       Request,
+                                      NotifyCRLResponse      Response,
+                                      TimeSpan               Runtime);
+
+        #endregion
+
+
+        #region GetLocalListVersion
+
+        Task RaiseOnGetLocalListVersionRequest (DateTime                      Timestamp,
+                                                IEventSender                  Sender,
+                                                IWebSocketConnection          Connection,
+                                                GetLocalListVersionRequest    Request);
+
+        Task RaiseOnGetLocalListVersionResponse(DateTime                      Timestamp,
+                                                IEventSender                  Sender,
+                                                IWebSocketConnection          Connection,
+                                                GetLocalListVersionRequest    Request,
+                                                GetLocalListVersionResponse   Response,
+                                                TimeSpan                      Runtime);
+
+        #endregion
+
+        #region SendLocalList
+
+        Task RaiseOnSendLocalListRequest (DateTime                Timestamp,
+                                          IEventSender            Sender,
+                                          IWebSocketConnection    Connection,
+                                          SendLocalListRequest    Request);
+
+        Task RaiseOnSendLocalListResponse(DateTime                Timestamp,
+                                          IEventSender            Sender,
+                                          IWebSocketConnection    Connection,
+                                          SendLocalListRequest    Request,
+                                          SendLocalListResponse   Response,
+                                          TimeSpan                Runtime);
+
+        #endregion
+
+        #region ClearCache
+
+        Task RaiseOnClearCacheRequest (DateTime               Timestamp,
+                                       IEventSender           Sender,
+                                       IWebSocketConnection   Connection,
+                                       ClearCacheRequest      Request);
+
+        Task RaiseOnClearCacheResponse(DateTime               Timestamp,
+                                       IEventSender           Sender,
+                                       IWebSocketConnection   Connection,
+                                       ClearCacheRequest      Request,
+                                       ClearCacheResponse     Response,
+                                       TimeSpan               Runtime);
+
+        #endregion
+
+
+        #region ReserveNow
+
+        Task RaiseOnReserveNowRequest (DateTime               Timestamp,
+                                       IEventSender           Sender,
+                                       IWebSocketConnection   Connection,
+                                       ReserveNowRequest      Request);
+
+        Task RaiseOnReserveNowResponse(DateTime               Timestamp,
+                                       IEventSender           Sender,
+                                       IWebSocketConnection   Connection,
+                                       ReserveNowRequest      Request,
+                                       ReserveNowResponse     Response,
+                                       TimeSpan               Runtime);
+
+        #endregion
+
+        #region CancelReservation
+
+        Task RaiseOnCancelReservationRequest (DateTime                    Timestamp,
+                                              IEventSender                Sender,
+                                              IWebSocketConnection        Connection,
+                                              CancelReservationRequest    Request);
+
+        Task RaiseOnCancelReservationResponse(DateTime                    Timestamp,
+                                              IEventSender                Sender,
+                                              IWebSocketConnection        Connection,
+                                              CancelReservationRequest    Request,
+                                              CancelReservationResponse   Response,
+                                              TimeSpan                    Runtime);
+
+        #endregion
+
+        #region RequestStartTransaction
+
+        Task RaiseOnRequestStartTransactionRequest (DateTime                          Timestamp,
+                                                    IEventSender                      Sender,
+                                                    IWebSocketConnection              Connection,
+                                                    RequestStartTransactionRequest    Request);
+
+        Task RaiseOnRequestStartTransactionResponse(DateTime                          Timestamp,
+                                                    IEventSender                      Sender,
+                                                    IWebSocketConnection              Connection,
+                                                    RequestStartTransactionRequest    Request,
+                                                    RequestStartTransactionResponse   Response,
+                                                    TimeSpan                          Runtime);
+
+        #endregion
+
+        #region RequestStopTransaction
+
+        Task RaiseOnRequestStopTransactionRequest (DateTime                         Timestamp,
+                                                   IEventSender                     Sender,
+                                                   IWebSocketConnection             Connection,
+                                                   RequestStopTransactionRequest    Request);
+
+        Task RaiseOnRequestStopTransactionResponse(DateTime                         Timestamp,
+                                                   IEventSender                     Sender,
+                                                   IWebSocketConnection             Connection,
+                                                   RequestStopTransactionRequest    Request,
+                                                   RequestStopTransactionResponse   Response,
+                                                   TimeSpan                         Runtime);
+
+        #endregion
+
+        #region GetTransactionStatus
+
+        Task RaiseOnGetTransactionStatusRequest (DateTime                       Timestamp,
+                                                 IEventSender                   Sender,
+                                                 IWebSocketConnection           Connection,
+                                                 GetTransactionStatusRequest    Request);
+
+        Task RaiseOnGetTransactionStatusResponse(DateTime                       Timestamp,
+                                                 IEventSender                   Sender,
+                                                 IWebSocketConnection           Connection,
+                                                 GetTransactionStatusRequest    Request,
+                                                 GetTransactionStatusResponse   Response,
+                                                 TimeSpan                       Runtime);
+
+        #endregion
+
+        #region SetChargingProfile
+
+        Task RaiseOnSetChargingProfileRequest (DateTime                     Timestamp,
+                                               IEventSender                 Sender,
+                                               IWebSocketConnection         Connection,
+                                               SetChargingProfileRequest    Request);
+
+        Task RaiseOnSetChargingProfileResponse(DateTime                     Timestamp,
+                                               IEventSender                 Sender,
+                                               IWebSocketConnection         Connection,
+                                               SetChargingProfileRequest    Request,
+                                               SetChargingProfileResponse   Response,
+                                               TimeSpan                     Runtime);
+
+        #endregion
+
+        #region GetChargingProfiles
+
+        Task RaiseOnGetChargingProfilesRequest (DateTime                      Timestamp,
+                                                IEventSender                  Sender,
+                                                IWebSocketConnection          Connection,
+                                                GetChargingProfilesRequest    Request);
+
+        Task RaiseOnGetChargingProfilesResponse(DateTime                      Timestamp,
+                                                IEventSender                  Sender,
+                                                IWebSocketConnection          Connection,
+                                                GetChargingProfilesRequest    Request,
+                                                GetChargingProfilesResponse   Response,
+                                                TimeSpan                      Runtime);
+
+        #endregion
+
+        #region ClearChargingProfile
+
+        Task RaiseOnClearChargingProfileRequest (DateTime                       Timestamp,
+                                                 IEventSender                   Sender,
+                                                 IWebSocketConnection           Connection,
+                                                 ClearChargingProfileRequest    Request);
+
+        Task RaiseOnClearChargingProfileResponse(DateTime                       Timestamp,
+                                                 IEventSender                   Sender,
+                                                 IWebSocketConnection           Connection,
+                                                 ClearChargingProfileRequest    Request,
+                                                 ClearChargingProfileResponse   Response,
+                                                 TimeSpan                       Runtime);
+
+        #endregion
+
+        #region GetCompositeSchedule
+
+        Task RaiseOnGetCompositeScheduleRequest (DateTime                       Timestamp,
+                                                 IEventSender                   Sender,
+                                                 IWebSocketConnection           Connection,
+                                                 GetCompositeScheduleRequest    Request);
+
+        Task RaiseOnGetCompositeScheduleResponse(DateTime                       Timestamp,
+                                                 IEventSender                   Sender,
+                                                 IWebSocketConnection           Connection,
+                                                 GetCompositeScheduleRequest    Request,
+                                                 GetCompositeScheduleResponse   Response,
+                                                 TimeSpan                       Runtime);
+
+        #endregion
+
+        #region UpdateDynamicSchedule
+
+        Task RaiseOnUpdateDynamicScheduleRequest (DateTime                        Timestamp,
+                                                  IEventSender                    Sender,
+                                                  IWebSocketConnection            Connection,
+                                                  UpdateDynamicScheduleRequest    Request);
+
+        Task RaiseOnUpdateDynamicScheduleResponse(DateTime                        Timestamp,
+                                                  IEventSender                    Sender,
+                                                  IWebSocketConnection            Connection,
+                                                  UpdateDynamicScheduleRequest    Request,
+                                                  UpdateDynamicScheduleResponse   Response,
+                                                  TimeSpan                        Runtime);
+
+        #endregion
+
+        #region NotifyAllowedEnergyTransfer
+
+        Task RaiseOnNotifyAllowedEnergyTransferRequest (DateTime                              Timestamp,
+                                                        IEventSender                          Sender,
+                                                        IWebSocketConnection                  Connection,
+                                                        NotifyAllowedEnergyTransferRequest    Request);
+
+        Task RaiseOnNotifyAllowedEnergyTransferResponse(DateTime                              Timestamp,
+                                                        IEventSender                          Sender,
+                                                        IWebSocketConnection                  Connection,
+                                                        NotifyAllowedEnergyTransferRequest    Request,
+                                                        NotifyAllowedEnergyTransferResponse   Response,
+                                                        TimeSpan                              Runtime);
+
+        #endregion
+
+        #region UsePriorityCharging
+
+        Task RaiseOnUsePriorityChargingRequest (DateTime                      Timestamp,
+                                                IEventSender                  Sender,
+                                                IWebSocketConnection          Connection,
+                                                UsePriorityChargingRequest    Request);
+
+        Task RaiseOnUsePriorityChargingResponse(DateTime                      Timestamp,
+                                                IEventSender                  Sender,
+                                                IWebSocketConnection          Connection,
+                                                UsePriorityChargingRequest    Request,
+                                                UsePriorityChargingResponse   Response,
+                                                TimeSpan                      Runtime);
+
+        #endregion
+
+        #region UnlockConnector
+
+        Task RaiseOnUnlockConnectorRequest (DateTime                  Timestamp,
+                                            IEventSender              Sender,
+                                            IWebSocketConnection      Connection,
+                                            UnlockConnectorRequest    Request);
+
+        Task RaiseOnUnlockConnectorResponse(DateTime                  Timestamp,
+                                            IEventSender              Sender,
+                                            IWebSocketConnection      Connection,
+                                            UnlockConnectorRequest    Request,
+                                            UnlockConnectorResponse   Response,
+                                            TimeSpan                  Runtime);
+
+        #endregion
+
+
+        #region AFRRSignal
+
+        Task RaiseOnAFRRSignalRequest (DateTime               Timestamp,
+                                       IEventSender           Sender,
+                                       IWebSocketConnection   Connection,
+                                       AFRRSignalRequest      Request);
+
+        Task RaiseOnAFRRSignalResponse(DateTime               Timestamp,
+                                       IEventSender           Sender,
+                                       IWebSocketConnection   Connection,
+                                       AFRRSignalRequest      Request,
+                                       AFRRSignalResponse     Response,
+                                       TimeSpan               Runtime);
+
+        #endregion
+
+
+        #region SetDisplayMessage
+
+        Task RaiseOnSetDisplayMessageRequest (DateTime                    Timestamp,
+                                              IEventSender                Sender,
+                                              IWebSocketConnection        Connection,
+                                              SetDisplayMessageRequest    Request);
+
+        Task RaiseOnSetDisplayMessageResponse(DateTime                    Timestamp,
+                                              IEventSender                Sender,
+                                              IWebSocketConnection        Connection,
+                                              SetDisplayMessageRequest    Request,
+                                              SetDisplayMessageResponse   Response,
+                                              TimeSpan                    Runtime);
+
+        #endregion
+
+        #region GetDisplayMessages
+
+        Task RaiseOnGetDisplayMessagesRequest (DateTime                     Timestamp,
+                                               IEventSender                 Sender,
+                                               IWebSocketConnection         Connection,
+                                               GetDisplayMessagesRequest    Request);
+
+        Task RaiseOnGetDisplayMessagesResponse(DateTime                     Timestamp,
+                                               IEventSender                 Sender,
+                                               IWebSocketConnection         Connection,
+                                               GetDisplayMessagesRequest    Request,
+                                               GetDisplayMessagesResponse   Response,
+                                               TimeSpan                     Runtime);
+
+        #endregion
+
+        #region ClearDisplayMessage
+
+        Task RaiseOnClearDisplayMessageRequest (DateTime                      Timestamp,
+                                                IEventSender                  Sender,
+                                                IWebSocketConnection          Connection,
+                                                ClearDisplayMessageRequest    Request);
+
+        Task RaiseOnClearDisplayMessageResponse(DateTime                      Timestamp,
+                                                IEventSender                  Sender,
+                                                IWebSocketConnection          Connection,
+                                                ClearDisplayMessageRequest    Request,
+                                                ClearDisplayMessageResponse   Response,
+                                                TimeSpan                      Runtime);
+
+        #endregion
+
+        #region CostUpdated
+
+        Task RaiseOnCostUpdatedRequest (DateTime               Timestamp,
+                                        IEventSender           Sender,
+                                        IWebSocketConnection   Connection,
+                                        CostUpdatedRequest     Request);
+
+        Task RaiseOnCostUpdatedResponse(DateTime               Timestamp,
+                                        IEventSender           Sender,
+                                        IWebSocketConnection   Connection,
+                                        CostUpdatedRequest     Request,
+                                        CostUpdatedResponse    Response,
+                                        TimeSpan               Runtime);
+
+        #endregion
+
+        #region CustomerInformation
+
+        Task RaiseOnCustomerInformationRequest (DateTime                      Timestamp,
+                                                IEventSender                  Sender,
+                                                IWebSocketConnection          Connection,
+                                                CustomerInformationRequest    Request);
+
+        Task RaiseOnCustomerInformationResponse(DateTime                      Timestamp,
+                                                IEventSender                  Sender,
+                                                IWebSocketConnection          Connection,
+                                                CustomerInformationRequest    Request,
+                                                CustomerInformationResponse   Response,
+                                                TimeSpan                      Runtime);
+
+        #endregion
+
+
+        // Binary Data Streams Extensions
+
+        #region OnIncomingBinaryDataTransferRequest/-Response
+
+
+
+        #endregion
+
+        #region OnGetFileRequest/-Response
+
+
+
+        #endregion
+
+        #region OnSendFileRequest/-Response
+
+
+
+        #endregion
+
+        #region OnDeleteFileRequest/-Response
+
+
+
+        #endregion
+
+
+        // E2E Security Extensions
+
+        #region AddSignaturePolicy
+
+
+        #endregion
+
+        #region UpdateSignaturePolicy
+
+
+        #endregion
+
+        #region DeleteSignaturePolicy
+
+
+        #endregion
+
+        #region AddUserRole
+
+
+        #endregion
+
+        #region UpdateUserRole
+
+
+        #endregion
+
+        #region DeleteUserRole
+
+
+        #endregion
+
+
+        // E2E Charging Tariffs Extensions
+
+        #region SetDefaultChargingTariff
+
+
+        #endregion
+
+        #region GetDefaultChargingTariff
+
+
+        #endregion
+
+        #region RemoveDefaultChargingTariff
+
+
+        #endregion
 
         #endregion
 

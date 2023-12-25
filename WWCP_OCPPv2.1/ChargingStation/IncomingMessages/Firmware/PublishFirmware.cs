@@ -36,10 +36,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnPublishFirmwareRequestDelegate(DateTime                    Timestamp,
-                                         IEventSender                Sender,
-                                         WebSocketClientConnection   Connection,
-                                         PublishFirmwareRequest      Request);
+        OnPublishFirmwareRequestDelegate(DateTime                 Timestamp,
+                                         IEventSender             Sender,
+                                         IWebSocketConnection     Connection,
+                                         PublishFirmwareRequest   Request);
 
 
     /// <summary>
@@ -52,11 +52,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<PublishFirmwareResponse>
 
-        OnPublishFirmwareDelegate(DateTime                    Timestamp,
-                                  IEventSender                Sender,
-                                  WebSocketClientConnection   Connection,
-                                  PublishFirmwareRequest      Request,
-                                  CancellationToken           CancellationToken);
+        OnPublishFirmwareDelegate(DateTime                 Timestamp,
+                                  IEventSender             Sender,
+                                  IWebSocketConnection     Connection,
+                                  PublishFirmwareRequest   Request,
+                                  CancellationToken        CancellationToken);
 
 
     /// <summary>
@@ -70,11 +70,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnPublishFirmwareResponseDelegate(DateTime                    Timestamp,
-                                          IEventSender                Sender,
-                                          WebSocketClientConnection   Connection,
-                                          PublishFirmwareRequest      Request,
-                                          PublishFirmwareResponse     Response,
-                                          TimeSpan                    Runtime);
+        OnPublishFirmwareResponseDelegate(DateTime                  Timestamp,
+                                          IEventSender              Sender,
+                                          IWebSocketConnection      Connection,
+                                          PublishFirmwareRequest    Request,
+                                          PublishFirmwareResponse   Response,
+                                          TimeSpan                  Runtime);
 
 }

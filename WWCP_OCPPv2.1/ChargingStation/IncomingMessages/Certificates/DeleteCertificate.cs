@@ -36,10 +36,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnDeleteCertificateRequestDelegate(DateTime                    Timestamp,
-                                           IEventSender                Sender,
-                                           WebSocketClientConnection   Connection,
-                                           DeleteCertificateRequest    Request);
+        OnDeleteCertificateRequestDelegate(DateTime                   Timestamp,
+                                           IEventSender               Sender,
+                                           IWebSocketConnection       Connection,
+                                           DeleteCertificateRequest   Request);
 
 
     /// <summary>
@@ -52,11 +52,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<DeleteCertificateResponse>
 
-        OnDeleteCertificateDelegate(DateTime                    Timestamp,
-                                    IEventSender                Sender,
-                                    WebSocketClientConnection   Connection,
-                                    DeleteCertificateRequest    Request,
-                                    CancellationToken           CancellationToken);
+        OnDeleteCertificateDelegate(DateTime                   Timestamp,
+                                    IEventSender               Sender,
+                                    IWebSocketConnection       Connection,
+                                    DeleteCertificateRequest   Request,
+                                    CancellationToken          CancellationToken);
 
 
     /// <summary>
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnDeleteCertificateResponseDelegate(DateTime                    Timestamp,
                                             IEventSender                Sender,
-                                            WebSocketClientConnection   Connection,
+                                            IWebSocketConnection        Connection,
                                             DeleteCertificateRequest    Request,
                                             DeleteCertificateResponse   Response,
                                             TimeSpan                    Runtime);

@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnGetMonitoringReportRequestDelegate(DateTime                     Timestamp,
                                              IEventSender                 Sender,
-                                             WebSocketClientConnection    Connection,
+                                             IWebSocketConnection         Connection,
                                              GetMonitoringReportRequest   Request);
 
 
@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnGetMonitoringReportDelegate(DateTime                     Timestamp,
                                       IEventSender                 Sender,
-                                      WebSocketClientConnection    Connection,
+                                      IWebSocketConnection         Connection,
                                       GetMonitoringReportRequest   Request,
                                       CancellationToken            CancellationToken);
 
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnGetMonitoringReportResponseDelegate(DateTime                      Timestamp,
                                               IEventSender                  Sender,
-                                              WebSocketClientConnection     Connection,
+                                              IWebSocketConnection          Connection,
                                               GetMonitoringReportRequest    Request,
                                               GetMonitoringReportResponse   Response,
                                               TimeSpan                      Runtime);

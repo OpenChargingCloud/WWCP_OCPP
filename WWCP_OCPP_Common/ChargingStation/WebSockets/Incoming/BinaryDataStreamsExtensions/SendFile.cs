@@ -36,10 +36,10 @@ namespace cloud.charging.open.protocols.OCPP.CS
     /// <param name="Request">The SendFile request.</param>
     public delegate Task
 
-        OnSendFileRequestDelegate(DateTime                    Timestamp,
-                                  IEventSender                Sender,
-                                  WebSocketClientConnection   Connection,
-                                  SendFileRequest             Request);
+        OnSendFileRequestDelegate(DateTime               Timestamp,
+                                  IEventSender           Sender,
+                                  IWebSocketConnection   Connection,
+                                  SendFileRequest        Request);
 
 
     /// <summary>
@@ -52,11 +52,11 @@ namespace cloud.charging.open.protocols.OCPP.CS
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<SendFileResponse>
 
-        OnSendFileDelegate(DateTime                    Timestamp,
-                           IEventSender                Sender,
-                           WebSocketClientConnection   Connection,
-                           SendFileRequest             Request,
-                           CancellationToken           CancellationToken);
+        OnSendFileDelegate(DateTime               Timestamp,
+                           IEventSender           Sender,
+                           IWebSocketConnection   Connection,
+                           SendFileRequest        Request,
+                           CancellationToken      CancellationToken);
 
 
     /// <summary>
@@ -70,11 +70,11 @@ namespace cloud.charging.open.protocols.OCPP.CS
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnSendFileResponseDelegate(DateTime                    Timestamp,
-                                   IEventSender                Sender,
-                                   WebSocketClientConnection   Connection,
-                                   SendFileRequest             Request,
-                                   SendFileResponse            Response,
-                                   TimeSpan                    Runtime);
+        OnSendFileResponseDelegate(DateTime               Timestamp,
+                                   IEventSender           Sender,
+                                   IWebSocketConnection   Connection,
+                                   SendFileRequest        Request,
+                                   SendFileResponse       Response,
+                                   TimeSpan               Runtime);
 
 }

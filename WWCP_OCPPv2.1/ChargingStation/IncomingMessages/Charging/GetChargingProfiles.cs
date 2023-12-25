@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnGetChargingProfilesRequestDelegate(DateTime                     Timestamp,
                                              IEventSender                 Sender,
-                                             WebSocketClientConnection    Connection,
+                                             IWebSocketConnection         Connection,
                                              GetChargingProfilesRequest   Request);
 
 
@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnGetChargingProfilesDelegate(DateTime                     Timestamp,
                                       IEventSender                 Sender,
-                                      WebSocketClientConnection    Connection,
+                                      IWebSocketConnection         Connection,
                                       GetChargingProfilesRequest   Request,
                                       CancellationToken            CancellationToken);
 
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnGetChargingProfilesResponseDelegate(DateTime                      Timestamp,
                                               IEventSender                  Sender,
-                                              WebSocketClientConnection     Connection,
+                                              IWebSocketConnection          Connection,
                                               GetChargingProfilesRequest    Request,
                                               GetChargingProfilesResponse   Response,
                                               TimeSpan                      Runtime);

@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnNotifyAllowedEnergyTransferRequestDelegate(DateTime                             Timestamp,
                                                      IEventSender                         Sender,
-                                                     WebSocketClientConnection            Connection,
+                                                     IWebSocketConnection                 Connection,
                                                      NotifyAllowedEnergyTransferRequest   Request);
 
 
@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnNotifyAllowedEnergyTransferDelegate(DateTime                             Timestamp,
                                               IEventSender                         Sender,
-                                              WebSocketClientConnection            Connection,
+                                              IWebSocketConnection                 Connection,
                                               NotifyAllowedEnergyTransferRequest   Request,
                                               CancellationToken                    CancellationToken);
 
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnNotifyAllowedEnergyTransferResponseDelegate(DateTime                              Timestamp,
                                                       IEventSender                          Sender,
-                                                      WebSocketClientConnection             Connection,
+                                                      IWebSocketConnection                  Connection,
                                                       NotifyAllowedEnergyTransferRequest    Request,
                                                       NotifyAllowedEnergyTransferResponse   Response,
                                                       TimeSpan                              Runtime);

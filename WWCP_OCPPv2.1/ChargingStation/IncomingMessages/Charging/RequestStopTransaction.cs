@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnRequestStopTransactionRequestDelegate(DateTime                        Timestamp,
                                                 IEventSender                    Sender,
-                                                WebSocketClientConnection       Connection,
+                                                IWebSocketConnection            Connection,
                                                 RequestStopTransactionRequest   Request);
 
 
@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnRequestStopTransactionDelegate(DateTime                        Timestamp,
                                          IEventSender                    Sender,
-                                         WebSocketClientConnection       Connection,
+                                         IWebSocketConnection            Connection,
                                          RequestStopTransactionRequest   Request,
                                          CancellationToken               CancellationToken);
 
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnRequestStopTransactionResponseDelegate(DateTime                         Timestamp,
                                                  IEventSender                     Sender,
-                                                 WebSocketClientConnection        Connection,
+                                                 IWebSocketConnection             Connection,
                                                  RequestStopTransactionRequest    Request,
                                                  RequestStopTransactionResponse   Response,
                                                  TimeSpan                         Runtime);

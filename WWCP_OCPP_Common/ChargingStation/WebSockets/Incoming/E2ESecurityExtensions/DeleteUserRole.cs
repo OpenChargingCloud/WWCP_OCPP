@@ -36,10 +36,10 @@ namespace cloud.charging.open.protocols.OCPP.CS
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnDeleteUserRoleRequestDelegate(DateTime                    Timestamp,
-                                        IEventSender                Sender,
-                                        WebSocketClientConnection   Connection,
-                                        DeleteUserRoleRequest       Request);
+        OnDeleteUserRoleRequestDelegate(DateTime                Timestamp,
+                                        IEventSender            Sender,
+                                        IWebSocketConnection    Connection,
+                                        DeleteUserRoleRequest   Request);
 
 
     /// <summary>
@@ -52,11 +52,11 @@ namespace cloud.charging.open.protocols.OCPP.CS
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<DeleteUserRoleResponse>
 
-        OnDeleteUserRoleDelegate(DateTime                    Timestamp,
-                                 IEventSender                Sender,
-                                 WebSocketClientConnection   Connection,
-                                 DeleteUserRoleRequest       Request,
-                                 CancellationToken           CancellationToken);
+        OnDeleteUserRoleDelegate(DateTime                Timestamp,
+                                 IEventSender            Sender,
+                                 IWebSocketConnection    Connection,
+                                 DeleteUserRoleRequest   Request,
+                                 CancellationToken       CancellationToken);
 
 
     /// <summary>
@@ -70,11 +70,11 @@ namespace cloud.charging.open.protocols.OCPP.CS
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnDeleteUserRoleResponseDelegate(DateTime                    Timestamp,
-                                         IEventSender                Sender,
-                                         WebSocketClientConnection   Connection,
-                                         DeleteUserRoleRequest       Request,
-                                         DeleteUserRoleResponse      Response,
-                                         TimeSpan                    Runtime);
+        OnDeleteUserRoleResponseDelegate(DateTime                 Timestamp,
+                                         IEventSender             Sender,
+                                         IWebSocketConnection     Connection,
+                                         DeleteUserRoleRequest    Request,
+                                         DeleteUserRoleResponse   Response,
+                                         TimeSpan                 Runtime);
 
 }

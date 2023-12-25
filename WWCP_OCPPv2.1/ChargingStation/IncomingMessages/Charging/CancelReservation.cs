@@ -36,10 +36,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Request">The cancel reservation request.</param>
     public delegate Task
 
-        OnCancelReservationRequestDelegate(DateTime                    Timestamp,
-                                           IEventSender                Sender,
-                                           WebSocketClientConnection   Connection,
-                                           CancelReservationRequest    Request);
+        OnCancelReservationRequestDelegate(DateTime                   Timestamp,
+                                           IEventSender               Sender,
+                                           IWebSocketConnection       Connection,
+                                           CancelReservationRequest   Request);
 
 
     /// <summary>
@@ -52,11 +52,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<CancelReservationResponse>
 
-        OnCancelReservationDelegate(DateTime                    Timestamp,
-                                    IEventSender                Sender,
-                                    WebSocketClientConnection   Connection,
-                                    CancelReservationRequest    Request,
-                                    CancellationToken           CancellationToken);
+        OnCancelReservationDelegate(DateTime                   Timestamp,
+                                    IEventSender               Sender,
+                                    IWebSocketConnection       Connection,
+                                    CancelReservationRequest   Request,
+                                    CancellationToken          CancellationToken);
 
 
     /// <summary>
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnCancelReservationResponseDelegate(DateTime                    Timestamp,
                                             IEventSender                Sender,
-                                            WebSocketClientConnection   Connection,
+                                            IWebSocketConnection        Connection,
                                             CancelReservationRequest    Request,
                                             CancelReservationResponse   Response,
                                             TimeSpan                    Runtime);

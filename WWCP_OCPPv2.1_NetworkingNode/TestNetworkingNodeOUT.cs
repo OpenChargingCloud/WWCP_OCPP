@@ -34,16 +34,16 @@ using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    /// <summary>
-    /// A networking node for testing.
-    /// </summary>
-    public partial class TestNetworkingNode : INetworkingNode,
-                                            //  INetworkingNode2,
-                                              IEventSender
-    {
+        public class OUTT : INetworkingNodeOUT,
 
-        public class OUTT : INetworkingNodeOUT
-        {
+                            // as CS
+                            INetworkingNodeOutgoingMessages,
+                            INetworkingNodeOutgoingMessagesEvents,
+
+                            // as CSMS
+                            NetworkingNode.CSMS.INetworkingNodeOutgoingMessagesEvents
+
+    {
 
             /// <summary>
             /// The sender identification.
@@ -11284,8 +11284,5 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
         }
-
-
-    }
 
 }

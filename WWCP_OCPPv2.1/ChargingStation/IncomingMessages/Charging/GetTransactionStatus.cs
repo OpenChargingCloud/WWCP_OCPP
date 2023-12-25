@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnGetTransactionStatusRequestDelegate(DateTime                      Timestamp,
                                               IEventSender                  Sender,
-                                              WebSocketClientConnection     Connection,
+                                              IWebSocketConnection          Connection,
                                               GetTransactionStatusRequest   Request);
 
 
@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnGetTransactionStatusDelegate(DateTime                      Timestamp,
                                        IEventSender                  Sender,
-                                       WebSocketClientConnection     Connection,
+                                       IWebSocketConnection          Connection,
                                        GetTransactionStatusRequest   Request,
                                        CancellationToken             CancellationToken);
 
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnGetTransactionStatusResponseDelegate(DateTime                       Timestamp,
                                                IEventSender                   Sender,
-                                               WebSocketClientConnection      Connection,
+                                               IWebSocketConnection           Connection,
                                                GetTransactionStatusRequest    Request,
                                                GetTransactionStatusResponse   Response,
                                                TimeSpan                       Runtime);

@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnGetCompositeScheduleRequestDelegate(DateTime                      Timestamp,
                                               IEventSender                  Sender,
-                                              WebSocketClientConnection     Connection,
+                                              IWebSocketConnection          Connection,
                                               GetCompositeScheduleRequest   Request);
 
 
@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnGetCompositeScheduleDelegate(DateTime                      Timestamp,
                                        IEventSender                  Sender,
-                                       WebSocketClientConnection     Connection,
+                                       IWebSocketConnection          Connection,
                                        GetCompositeScheduleRequest   Request,
                                        CancellationToken             CancellationToken);
 
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnGetCompositeScheduleResponseDelegate(DateTime                       Timestamp,
                                                IEventSender                   Sender,
-                                               WebSocketClientConnection      Connection,
+                                               IWebSocketConnection           Connection,
                                                GetCompositeScheduleRequest    Request,
                                                GetCompositeScheduleResponse   Response,
                                                TimeSpan                       Runtime);

@@ -36,10 +36,10 @@ namespace cloud.charging.open.protocols.OCPP.CS
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnAddUserRoleRequestDelegate(DateTime                    Timestamp,
-                                     IEventSender                Sender,
-                                     WebSocketClientConnection   Connection,
-                                     AddUserRoleRequest          Request);
+        OnAddUserRoleRequestDelegate(DateTime               Timestamp,
+                                     IEventSender           Sender,
+                                     IWebSocketConnection   Connection,
+                                     AddUserRoleRequest     Request);
 
 
     /// <summary>
@@ -52,11 +52,11 @@ namespace cloud.charging.open.protocols.OCPP.CS
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<AddUserRoleResponse>
 
-        OnAddUserRoleDelegate(DateTime                    Timestamp,
-                              IEventSender                Sender,
-                              WebSocketClientConnection   Connection,
-                              AddUserRoleRequest          Request,
-                              CancellationToken           CancellationToken);
+        OnAddUserRoleDelegate(DateTime               Timestamp,
+                              IEventSender           Sender,
+                              IWebSocketConnection   Connection,
+                              AddUserRoleRequest     Request,
+                              CancellationToken      CancellationToken);
 
 
     /// <summary>
@@ -70,11 +70,11 @@ namespace cloud.charging.open.protocols.OCPP.CS
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnAddUserRoleResponseDelegate(DateTime                    Timestamp,
-                                      IEventSender                Sender,
-                                      WebSocketClientConnection   Connection,
-                                      AddUserRoleRequest          Request,
-                                      AddUserRoleResponse         Response,
-                                      TimeSpan                    Runtime);
+        OnAddUserRoleResponseDelegate(DateTime               Timestamp,
+                                      IEventSender           Sender,
+                                      IWebSocketConnection   Connection,
+                                      AddUserRoleRequest     Request,
+                                      AddUserRoleResponse    Response,
+                                      TimeSpan               Runtime);
 
 }

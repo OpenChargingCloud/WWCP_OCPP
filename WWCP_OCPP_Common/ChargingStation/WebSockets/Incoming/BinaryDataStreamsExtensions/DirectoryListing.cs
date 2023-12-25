@@ -36,10 +36,10 @@ namespace cloud.charging.open.protocols.OCPP.CS
     /// <param name="Request">The ListDirectory request.</param>
     public delegate Task
 
-        OnListDirectoryRequestDelegate(DateTime                    Timestamp,
-                                       IEventSender                Sender,
-                                       WebSocketClientConnection   Connection,
-                                       ListDirectoryRequest        Request);
+        OnListDirectoryRequestDelegate(DateTime               Timestamp,
+                                       IEventSender           Sender,
+                                       IWebSocketConnection   Connection,
+                                       ListDirectoryRequest   Request);
 
 
     /// <summary>
@@ -52,11 +52,11 @@ namespace cloud.charging.open.protocols.OCPP.CS
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<ListDirectoryResponse>
 
-        OnListDirectoryDelegate(DateTime                    Timestamp,
-                                IEventSender                Sender,
-                                WebSocketClientConnection   Connection,
-                                ListDirectoryRequest        Request,
-                                CancellationToken           CancellationToken);
+        OnListDirectoryDelegate(DateTime               Timestamp,
+                                IEventSender           Sender,
+                                IWebSocketConnection   Connection,
+                                ListDirectoryRequest   Request,
+                                CancellationToken      CancellationToken);
 
 
     /// <summary>
@@ -70,11 +70,11 @@ namespace cloud.charging.open.protocols.OCPP.CS
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnListDirectoryResponseDelegate(DateTime                    Timestamp,
-                                        IEventSender                Sender,
-                                        WebSocketClientConnection   Connection,
-                                        ListDirectoryRequest        Request,
-                                        ListDirectoryResponse       Response,
-                                        TimeSpan                    Runtime);
+        OnListDirectoryResponseDelegate(DateTime                Timestamp,
+                                        IEventSender            Sender,
+                                        IWebSocketConnection    Connection,
+                                        ListDirectoryRequest    Request,
+                                        ListDirectoryResponse   Response,
+                                        TimeSpan                Runtime);
 
 }

@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnUpdateDynamicScheduleRequestDelegate(DateTime                       Timestamp,
                                                IEventSender                   Sender,
-                                               WebSocketClientConnection      Connection,
+                                               IWebSocketConnection           Connection,
                                                UpdateDynamicScheduleRequest   Request);
 
 
@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnUpdateDynamicScheduleDelegate(DateTime                       Timestamp,
                                         IEventSender                   Sender,
-                                        WebSocketClientConnection      Connection,
+                                        IWebSocketConnection           Connection,
                                         UpdateDynamicScheduleRequest   Request,
                                         CancellationToken              CancellationToken);
 
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnUpdateDynamicScheduleResponseDelegate(DateTime                        Timestamp,
                                                 IEventSender                    Sender,
-                                                WebSocketClientConnection       Connection,
+                                                IWebSocketConnection            Connection,
                                                 UpdateDynamicScheduleRequest    Request,
                                                 UpdateDynamicScheduleResponse   Response,
                                                 TimeSpan                        Runtime);

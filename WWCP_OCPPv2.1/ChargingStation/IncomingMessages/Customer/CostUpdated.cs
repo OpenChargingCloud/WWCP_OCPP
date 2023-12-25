@@ -36,10 +36,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnCostUpdatedRequestDelegate(DateTime                    Timestamp,
-                                     IEventSender                Sender,
-                                     WebSocketClientConnection   Connection,
-                                     CostUpdatedRequest          Request);
+        OnCostUpdatedRequestDelegate(DateTime               Timestamp,
+                                     IEventSender           Sender,
+                                     IWebSocketConnection   Connection,
+                                     CostUpdatedRequest     Request);
 
 
     /// <summary>
@@ -52,11 +52,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<CostUpdatedResponse>
 
-        OnCostUpdatedDelegate(DateTime                    Timestamp,
-                              IEventSender                Sender,
-                              WebSocketClientConnection   Connection,
-                              CostUpdatedRequest          Request,
-                              CancellationToken           CancellationToken);
+        OnCostUpdatedDelegate(DateTime               Timestamp,
+                              IEventSender           Sender,
+                              IWebSocketConnection   Connection,
+                              CostUpdatedRequest     Request,
+                              CancellationToken      CancellationToken);
 
 
     /// <summary>
@@ -70,11 +70,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnCostUpdatedResponseDelegate(DateTime                    Timestamp,
-                                      IEventSender                Sender,
-                                      WebSocketClientConnection   Connection,
-                                      CostUpdatedRequest          Request,
-                                      CostUpdatedResponse         Response,
-                                      TimeSpan                    Runtime);
+        OnCostUpdatedResponseDelegate(DateTime               Timestamp,
+                                      IEventSender           Sender,
+                                      IWebSocketConnection   Connection,
+                                      CostUpdatedRequest     Request,
+                                      CostUpdatedResponse    Response,
+                                      TimeSpan               Runtime);
 
 }
