@@ -104,52 +104,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             /// <summary>
-            /// The charging station vendor identification.
-            /// </summary>
-            [Mandatory]
-            public String                   VendorName                  { get; }
-
-            /// <summary>
-            ///  The charging station model identification.
-            /// </summary>
-            [Mandatory]
-            public String                   Model                       { get; }
-
-
-            /// <summary>
-            /// The optional multi-language charging station description.
-            /// </summary>
-            [Optional]
-            public I18NString?              Description                 { get; }
-
-            /// <summary>
-            /// The optional serial number of the charging station.
-            /// </summary>
-            [Optional]
-            public String?                  SerialNumber                { get; }
-
-            /// <summary>
-            /// The optional firmware version of the charging station.
-            /// </summary>
-            [Optional]
-            public String?                  FirmwareVersion             { get; }
-
-            /// <summary>
-            /// The modem of the charging station.
-            /// </summary>
-            [Optional]
-            public Modem?                   Modem                       { get; }
-
-            /// <summary>
-            /// The optional meter type of the main power meter of the charging station.
-            /// </summary>
-            [Optional]
-
-
-            public CustomData?              CustomData                  { get; set; }
-
-
-            /// <summary>
             /// The time span between heartbeat requests.
             /// </summary>
             public TimeSpan                 SendHeartbeatEvery          { get; set; }
@@ -163,9 +117,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// The default request timeout for all requests.
             /// </summary>
             public TimeSpan                 DefaultRequestTimeout       { get; }
-
-
-
 
             /// <summary>
             /// The maintenance interval.
@@ -215,1711 +166,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
-            #region Custom JSON serializer delegates
-
-            #region CSMS Request  Messages
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.ResetRequest>?                                   CustomResetRequestSerializer                                 { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.UpdateFirmwareRequest>?                          CustomUpdateFirmwareRequestSerializer                        { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.PublishFirmwareRequest>?                         CustomPublishFirmwareRequestSerializer                       { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.UnpublishFirmwareRequest>?                       CustomUnpublishFirmwareRequestSerializer                     { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.GetBaseReportRequest>?                           CustomGetBaseReportRequestSerializer                         { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.GetReportRequest>?                               CustomGetReportRequestSerializer                             { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.GetLogRequest>?                                  CustomGetLogRequestSerializer                                { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.SetVariablesRequest>?                            CustomSetVariablesRequestSerializer                          { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.GetVariablesRequest>?                            CustomGetVariablesRequestSerializer                          { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.SetMonitoringBaseRequest>?                       CustomSetMonitoringBaseRequestSerializer                     { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.GetMonitoringReportRequest>?                     CustomGetMonitoringReportRequestSerializer                   { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.SetMonitoringLevelRequest>?                      CustomSetMonitoringLevelRequestSerializer                    { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.SetVariableMonitoringRequest>?                   CustomSetVariableMonitoringRequestSerializer                 { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.ClearVariableMonitoringRequest>?                 CustomClearVariableMonitoringRequestSerializer               { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.SetNetworkProfileRequest>?                       CustomSetNetworkProfileRequestSerializer                     { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.ChangeAvailabilityRequest>?                      CustomChangeAvailabilityRequestSerializer                    { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.TriggerMessageRequest>?                          CustomTriggerMessageRequestSerializer                        { get; set; }
-            public CustomJObjectSerializerDelegate<              DataTransferRequest>?                            CustomIncomingDataTransferRequestSerializer                  { get; set; }
-
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.CertificateSignedRequest>?                       CustomCertificateSignedRequestSerializer                     { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.InstallCertificateRequest>?                      CustomInstallCertificateRequestSerializer                    { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.GetInstalledCertificateIdsRequest>?              CustomGetInstalledCertificateIdsRequestSerializer            { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.DeleteCertificateRequest>?                       CustomDeleteCertificateRequestSerializer                     { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.NotifyCRLRequest>?                               CustomNotifyCRLRequestSerializer                             { get; set; }
-
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.GetLocalListVersionRequest>?                     CustomGetLocalListVersionRequestSerializer                   { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.SendLocalListRequest>?                           CustomSendLocalListRequestSerializer                         { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.ClearCacheRequest>?                              CustomClearCacheRequestSerializer                            { get; set; }
-
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.ReserveNowRequest>?                              CustomReserveNowRequestSerializer                            { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.CancelReservationRequest>?                       CustomCancelReservationRequestSerializer                     { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.RequestStartTransactionRequest>?                 CustomRequestStartTransactionRequestSerializer               { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.RequestStopTransactionRequest>?                  CustomRequestStopTransactionRequestSerializer                { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.GetTransactionStatusRequest>?                    CustomGetTransactionStatusRequestSerializer                  { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.SetChargingProfileRequest>?                      CustomSetChargingProfileRequestSerializer                    { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.GetChargingProfilesRequest>?                     CustomGetChargingProfilesRequestSerializer                   { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.ClearChargingProfileRequest>?                    CustomClearChargingProfileRequestSerializer                  { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.GetCompositeScheduleRequest>?                    CustomGetCompositeScheduleRequestSerializer                  { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.UpdateDynamicScheduleRequest>?                   CustomUpdateDynamicScheduleRequestSerializer                 { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.NotifyAllowedEnergyTransferRequest>?             CustomNotifyAllowedEnergyTransferRequestSerializer           { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.UsePriorityChargingRequest>?                     CustomUsePriorityChargingRequestSerializer                   { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.UnlockConnectorRequest>?                         CustomUnlockConnectorRequestSerializer                       { get; set; }
-
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.AFRRSignalRequest>?                              CustomAFRRSignalRequestSerializer                            { get; set; }
-
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.SetDisplayMessageRequest>?                       CustomSetDisplayMessageRequestSerializer                     { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.GetDisplayMessagesRequest>?                      CustomGetDisplayMessagesRequestSerializer                    { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.ClearDisplayMessageRequest>?                     CustomClearDisplayMessageRequestSerializer                   { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.CostUpdatedRequest>?                             CustomCostUpdatedRequestSerializer                           { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.CustomerInformationRequest>?                     CustomCustomerInformationRequestSerializer                   { get; set; }
-
-
-            // Binary Data Streams Extensions
-            public CustomBinarySerializerDelegate <              BinaryDataTransferRequest>?                      CustomIncomingBinaryDataTransferRequestSerializer            { get; set; }
-            public CustomJObjectSerializerDelegate<              GetFileRequest>?                                 CustomGetFileRequestSerializer                               { get; set; }
-            public CustomBinarySerializerDelegate <              SendFileRequest>?                                CustomSendFileRequestSerializer                              { get; set; }
-            public CustomJObjectSerializerDelegate<              DeleteFileRequest>?                              CustomDeleteFileRequestSerializer                            { get; set; }
-
-
-            // E2E Security Extensions
-            public CustomJObjectSerializerDelegate<              AddSignaturePolicyRequest>?                      CustomAddSignaturePolicyRequestSerializer                    { get; set; }
-            public CustomJObjectSerializerDelegate<              UpdateSignaturePolicyRequest>?                   CustomUpdateSignaturePolicyRequestSerializer                 { get; set; }
-            public CustomJObjectSerializerDelegate<              DeleteSignaturePolicyRequest>?                   CustomDeleteSignaturePolicyRequestSerializer                 { get; set; }
-            public CustomJObjectSerializerDelegate<              AddUserRoleRequest>?                             CustomAddUserRoleRequestSerializer                           { get; set; }
-            public CustomJObjectSerializerDelegate<              UpdateUserRoleRequest>?                          CustomUpdateUserRoleRequestSerializer                        { get; set; }
-            public CustomJObjectSerializerDelegate<              DeleteUserRoleRequest>?                          CustomDeleteUserRoleRequestSerializer                        { get; set; }
-
-
-            // E2E Charging Tariffs Extensions
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.SetDefaultChargingTariffRequest>?                CustomSetDefaultChargingTariffRequestSerializer              { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.GetDefaultChargingTariffRequest>?                CustomGetDefaultChargingTariffRequestSerializer              { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.RemoveDefaultChargingTariffRequest>?             CustomRemoveDefaultChargingTariffRequestSerializer           { get; set; }
-
-            #endregion
-
-            #region CSMS Response Messages
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.BootNotificationResponse>?                       CustomBootNotificationResponseSerializer                     { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.FirmwareStatusNotificationResponse>?             CustomFirmwareStatusNotificationResponseSerializer           { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.PublishFirmwareStatusNotificationResponse>?      CustomPublishFirmwareStatusNotificationResponseSerializer    { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.HeartbeatResponse>?                              CustomHeartbeatResponseSerializer                            { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.NotifyEventResponse>?                            CustomNotifyEventResponseSerializer                          { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.SecurityEventNotificationResponse>?              CustomSecurityEventNotificationResponseSerializer            { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.NotifyReportResponse>?                           CustomNotifyReportResponseSerializer                         { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.NotifyMonitoringReportResponse>?                 CustomNotifyMonitoringReportResponseSerializer               { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.LogStatusNotificationResponse>?                  CustomLogStatusNotificationResponseSerializer                { get; set; }
-            public CustomJObjectSerializerDelegate<              DataTransferResponse>?                           CustomDataTransferResponseSerializer                         { get; set; }
-
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.SignCertificateResponse>?                        CustomSignCertificateResponseSerializer                      { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.Get15118EVCertificateResponse>?                  CustomGet15118EVCertificateResponseSerializer                { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.GetCertificateStatusResponse>?                   CustomGetCertificateStatusResponseSerializer                 { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.GetCRLResponse>?                                 CustomGetCRLResponseSerializer                               { get; set; }
-
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.ReservationStatusUpdateResponse>?                CustomReservationStatusUpdateResponseSerializer              { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.AuthorizeResponse>?                              CustomAuthorizeResponseSerializer                            { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.NotifyEVChargingNeedsResponse>?                  CustomNotifyEVChargingNeedsResponseSerializer                { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.TransactionEventResponse>?                       CustomTransactionEventResponseSerializer                     { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.StatusNotificationResponse>?                     CustomStatusNotificationResponseSerializer                   { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.MeterValuesResponse>?                            CustomMeterValuesResponseSerializer                          { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.NotifyChargingLimitResponse>?                    CustomNotifyChargingLimitResponseSerializer                  { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.ClearedChargingLimitResponse>?                   CustomClearedChargingLimitResponseSerializer                 { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.ReportChargingProfilesResponse>?                 CustomReportChargingProfilesResponseSerializer               { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.NotifyEVChargingScheduleResponse>?               CustomNotifyEVChargingScheduleResponseSerializer             { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.NotifyPriorityChargingResponse>?                 CustomNotifyPriorityChargingResponseSerializer               { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.PullDynamicScheduleUpdateResponse>?              CustomPullDynamicScheduleUpdateResponseSerializer            { get; set; }
-
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.NotifyDisplayMessagesResponse>?                  CustomNotifyDisplayMessagesResponseSerializer                { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.NotifyCustomerInformationResponse>?              CustomNotifyCustomerInformationResponseSerializer            { get; set; }
-
-
-            // Binary Data Streams Extensions
-            public CustomBinarySerializerDelegate <              BinaryDataTransferResponse>?                     CustomBinaryDataTransferResponseSerializer                   { get; set; }
-
-            #endregion
-
-
-            #region Charging Station Request  Messages
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.BootNotificationRequest>?                             CustomBootNotificationRequestSerializer                      { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.FirmwareStatusNotificationRequest>?                   CustomFirmwareStatusNotificationRequestSerializer            { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.PublishFirmwareStatusNotificationRequest>?            CustomPublishFirmwareStatusNotificationRequestSerializer     { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.HeartbeatRequest>?                                    CustomHeartbeatRequestSerializer                             { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyEventRequest>?                                  CustomNotifyEventRequestSerializer                           { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SecurityEventNotificationRequest>?                    CustomSecurityEventNotificationRequestSerializer             { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyReportRequest>?                                 CustomNotifyReportRequestSerializer                          { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyMonitoringReportRequest>?                       CustomNotifyMonitoringReportRequestSerializer                { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.LogStatusNotificationRequest>?                        CustomLogStatusNotificationRequestSerializer                 { get; set; }
-            public CustomJObjectSerializerDelegate<            DataTransferRequest>?                                 CustomDataTransferRequestSerializer                          { get; set; }
-
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SignCertificateRequest>?                              CustomSignCertificateRequestSerializer                       { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.Get15118EVCertificateRequest>?                        CustomGet15118EVCertificateRequestSerializer                 { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetCertificateStatusRequest>?                         CustomGetCertificateStatusRequestSerializer                  { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetCRLRequest>?                                       CustomGetCRLRequestSerializer                                { get; set; }
-
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.ReservationStatusUpdateRequest>?                      CustomReservationStatusUpdateRequestSerializer               { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.AuthorizeRequest>?                                    CustomAuthorizeRequestSerializer                             { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyEVChargingNeedsRequest>?                        CustomNotifyEVChargingNeedsRequestSerializer                 { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.TransactionEventRequest>?                             CustomTransactionEventRequestSerializer                      { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.StatusNotificationRequest>?                           CustomStatusNotificationRequestSerializer                    { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.MeterValuesRequest>?                                  CustomMeterValuesRequestSerializer                           { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyChargingLimitRequest>?                          CustomNotifyChargingLimitRequestSerializer                   { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.ClearedChargingLimitRequest>?                         CustomClearedChargingLimitRequestSerializer                  { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.ReportChargingProfilesRequest>?                       CustomReportChargingProfilesRequestSerializer                { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyEVChargingScheduleRequest>?                     CustomNotifyEVChargingScheduleRequestSerializer              { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyPriorityChargingRequest>?                       CustomNotifyPriorityChargingRequestSerializer                { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.PullDynamicScheduleUpdateRequest>?                    CustomPullDynamicScheduleUpdateRequestSerializer             { get; set; }
-
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyDisplayMessagesRequest>?                        CustomNotifyDisplayMessagesRequestSerializer                 { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyCustomerInformationRequest>?                    CustomNotifyCustomerInformationRequestSerializer             { get; set; }
-
-
-            // Binary Data Streams Extensions
-            public CustomBinarySerializerDelegate <            BinaryDataTransferRequest>?                           CustomBinaryDataTransferRequestSerializer                    { get; set; }
-
-            #endregion
-
-            #region Charging Station Response Messages
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.ResetResponse>?                                       CustomResetResponseSerializer                                { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.UpdateFirmwareResponse>?                              CustomUpdateFirmwareResponseSerializer                       { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.PublishFirmwareResponse>?                             CustomPublishFirmwareResponseSerializer                      { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.UnpublishFirmwareResponse>?                           CustomUnpublishFirmwareResponseSerializer                    { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetBaseReportResponse>?                               CustomGetBaseReportResponseSerializer                        { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetReportResponse>?                                   CustomGetReportResponseSerializer                            { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetLogResponse>?                                      CustomGetLogResponseSerializer                               { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SetVariablesResponse>?                                CustomSetVariablesResponseSerializer                         { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetVariablesResponse>?                                CustomGetVariablesResponseSerializer                         { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SetMonitoringBaseResponse>?                           CustomSetMonitoringBaseResponseSerializer                    { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetMonitoringReportResponse>?                         CustomGetMonitoringReportResponseSerializer                  { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SetMonitoringLevelResponse>?                          CustomSetMonitoringLevelResponseSerializer                   { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SetVariableMonitoringResponse>?                       CustomSetVariableMonitoringResponseSerializer                { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.ClearVariableMonitoringResponse>?                     CustomClearVariableMonitoringResponseSerializer              { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SetNetworkProfileResponse>?                           CustomSetNetworkProfileResponseSerializer                    { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.ChangeAvailabilityResponse>?                          CustomChangeAvailabilityResponseSerializer                   { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.TriggerMessageResponse>?                              CustomTriggerMessageResponseSerializer                       { get; set; }
-            public CustomJObjectSerializerDelegate<            DataTransferResponse>?                                CustomIncomingDataTransferResponseSerializer                 { get; set; }
-
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.CertificateSignedResponse>?                           CustomCertificateSignedResponseSerializer                    { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.InstallCertificateResponse>?                          CustomInstallCertificateResponseSerializer                   { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetInstalledCertificateIdsResponse>?                  CustomGetInstalledCertificateIdsResponseSerializer           { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.DeleteCertificateResponse>?                           CustomDeleteCertificateResponseSerializer                    { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyCRLResponse>?                                   CustomNotifyCRLResponseSerializer                            { get; set; }
-
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetLocalListVersionResponse>?                         CustomGetLocalListVersionResponseSerializer                  { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SendLocalListResponse>?                               CustomSendLocalListResponseSerializer                        { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.ClearCacheResponse>?                                  CustomClearCacheResponseSerializer                           { get; set; }
-
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.ReserveNowResponse>?                                  CustomReserveNowResponseSerializer                           { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.CancelReservationResponse>?                           CustomCancelReservationResponseSerializer                    { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.RequestStartTransactionResponse>?                     CustomRequestStartTransactionResponseSerializer              { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.RequestStopTransactionResponse>?                      CustomRequestStopTransactionResponseSerializer               { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetTransactionStatusResponse>?                        CustomGetTransactionStatusResponseSerializer                 { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SetChargingProfileResponse>?                          CustomSetChargingProfileResponseSerializer                   { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetChargingProfilesResponse>?                         CustomGetChargingProfilesResponseSerializer                  { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.ClearChargingProfileResponse>?                        CustomClearChargingProfileResponseSerializer                 { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetCompositeScheduleResponse>?                        CustomGetCompositeScheduleResponseSerializer                 { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.UpdateDynamicScheduleResponse>?                       CustomUpdateDynamicScheduleResponseSerializer                { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyAllowedEnergyTransferResponse>?                 CustomNotifyAllowedEnergyTransferResponseSerializer          { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.UsePriorityChargingResponse>?                         CustomUsePriorityChargingResponseSerializer                  { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.UnlockConnectorResponse>?                             CustomUnlockConnectorResponseSerializer                      { get; set; }
-
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.AFRRSignalResponse>?                                  CustomAFRRSignalResponseSerializer                           { get; set; }
-
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SetDisplayMessageResponse>?                           CustomSetDisplayMessageResponseSerializer                    { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetDisplayMessagesResponse>?                          CustomGetDisplayMessagesResponseSerializer                   { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.ClearDisplayMessageResponse>?                         CustomClearDisplayMessageResponseSerializer                  { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.CostUpdatedResponse>?                                 CustomCostUpdatedResponseSerializer                          { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.CustomerInformationResponse>?                         CustomCustomerInformationResponseSerializer                  { get; set; }
-
-
-            // Binary Data Streams Extensions
-            public CustomBinarySerializerDelegate <            BinaryDataTransferResponse>?                          CustomIncomingBinaryDataTransferResponseSerializer           { get; set; }
-            public CustomBinarySerializerDelegate <            GetFileResponse>?                                     CustomGetFileResponseSerializer                              { get; set; }
-            public CustomJObjectSerializerDelegate<            SendFileResponse>?                                    CustomSendFileResponseSerializer                             { get; set; }
-            public CustomJObjectSerializerDelegate<            DeleteFileResponse>?                                  CustomDeleteFileResponseSerializer                           { get; set; }
-
-
-            // E2E Security Extensions
-            public CustomJObjectSerializerDelegate<            AddSignaturePolicyResponse>?                          CustomAddSignaturePolicyResponseSerializer                   { get; set; }
-            public CustomJObjectSerializerDelegate<            UpdateSignaturePolicyResponse>?                       CustomUpdateSignaturePolicyResponseSerializer                { get; set; }
-            public CustomJObjectSerializerDelegate<            DeleteSignaturePolicyResponse>?                       CustomDeleteSignaturePolicyResponseSerializer                { get; set; }
-            public CustomJObjectSerializerDelegate<            AddUserRoleResponse>?                                 CustomAddUserRoleResponseSerializer                          { get; set; }
-            public CustomJObjectSerializerDelegate<            UpdateUserRoleResponse>?                              CustomUpdateUserRoleResponseSerializer                       { get; set; }
-            public CustomJObjectSerializerDelegate<            DeleteUserRoleResponse>?                              CustomDeleteUserRoleResponseSerializer                       { get; set; }
-
-
-            // E2E Charging Tariff Extensions
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SetDefaultChargingTariffResponse>?                    CustomSetDefaultChargingTariffResponseSerializer             { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetDefaultChargingTariffResponse>?                    CustomGetDefaultChargingTariffResponseSerializer             { get; set; }
-            public CustomJObjectSerializerDelegate<OCPPv2_1.CS.RemoveDefaultChargingTariffResponse>?                 CustomRemoveDefaultChargingTariffResponseSerializer          { get; set; }
-
-            #endregion
-
-            public CustomJObjectSerializerDelegate<OCPP.NN.NotifyNetworkTopologyRequest>?                CustomNotifyNetworkTopologyRequestSerializer           { get; set; }
-            public CustomJObjectSerializerDelegate<OCPP.NN.NotifyNetworkTopologyResponse>?               CustomNotifyNetworkTopologyResponseSerializer          { get; set; }
-
-
-            #region Data Structures
-
-            public CustomJObjectSerializerDelegate<StatusInfo>?                                          CustomStatusInfoSerializer                                   { get; set; }
-            public CustomJObjectSerializerDelegate<EVSEStatusInfo<SetDefaultChargingTariffStatus>>?      CustomEVSEStatusInfoSerializer                               { get; set; }
-            public CustomJObjectSerializerDelegate<EVSEStatusInfo<RemoveDefaultChargingTariffStatus>>?   CustomEVSEStatusInfoSerializer2                              { get; set; }
-            public CustomJObjectSerializerDelegate<OCPP.Signature>?                                      CustomSignatureSerializer                                    { get; set; }
-            public CustomJObjectSerializerDelegate<CustomData>?                                          CustomCustomDataSerializer                                   { get; set; }
-            public CustomJObjectSerializerDelegate<Firmware>?                                            CustomFirmwareSerializer                                     { get; set; }
-            public CustomJObjectSerializerDelegate<ComponentVariable>?                                   CustomComponentVariableSerializer                            { get; set; }
-            public CustomJObjectSerializerDelegate<Component>?                                           CustomComponentSerializer                                    { get; set; }
-            public CustomJObjectSerializerDelegate<EVSE>?                                                CustomEVSESerializer                                         { get; set; }
-            public CustomJObjectSerializerDelegate<Variable>?                                            CustomVariableSerializer                                     { get; set; }
-            public CustomJObjectSerializerDelegate<PeriodicEventStreamParameters>?                       CustomPeriodicEventStreamParametersSerializer                { get; set; }
-            public CustomJObjectSerializerDelegate<LogParameters>?                                       CustomLogParametersSerializer                                { get; set; }
-            public CustomJObjectSerializerDelegate<SetVariableData>?                                     CustomSetVariableDataSerializer                              { get; set; }
-            public CustomJObjectSerializerDelegate<GetVariableData>?                                     CustomGetVariableDataSerializer                              { get; set; }
-            public CustomJObjectSerializerDelegate<SetMonitoringData>?                                   CustomSetMonitoringDataSerializer                            { get; set; }
-            public CustomJObjectSerializerDelegate<NetworkConnectionProfile>?                            CustomNetworkConnectionProfileSerializer                     { get; set; }
-            public CustomJObjectSerializerDelegate<VPNConfiguration>?                                    CustomVPNConfigurationSerializer                             { get; set; }
-            public CustomJObjectSerializerDelegate<APNConfiguration>?                                    CustomAPNConfigurationSerializer                             { get; set; }
-            public CustomJObjectSerializerDelegate<CertificateHashData>?                                 CustomCertificateHashDataSerializer                          { get; set; }
-            public CustomJObjectSerializerDelegate<AuthorizationData>?                                   CustomAuthorizationDataSerializer                            { get; set; }
-            public CustomJObjectSerializerDelegate<IdToken>?                                             CustomIdTokenSerializer                                      { get; set; }
-            public CustomJObjectSerializerDelegate<AdditionalInfo>?                                      CustomAdditionalInfoSerializer                               { get; set; }
-            public CustomJObjectSerializerDelegate<IdTokenInfo>?                                         CustomIdTokenInfoSerializer                                  { get; set; }
-            public CustomJObjectSerializerDelegate<MessageContent>?                                      CustomMessageContentSerializer                               { get; set; }
-            public CustomJObjectSerializerDelegate<ChargingProfile>?                                     CustomChargingProfileSerializer                              { get; set; }
-            public CustomJObjectSerializerDelegate<LimitBeyondSoC>?                                      CustomLimitBeyondSoCSerializer                               { get; set; }
-            public CustomJObjectSerializerDelegate<ChargingSchedule>?                                    CustomChargingScheduleSerializer                             { get; set; }
-            public CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?                              CustomChargingSchedulePeriodSerializer                       { get; set; }
-            public CustomJObjectSerializerDelegate<V2XFreqWattEntry>?                                    CustomV2XFreqWattEntrySerializer                             { get; set; }
-            public CustomJObjectSerializerDelegate<V2XSignalWattEntry>?                                  CustomV2XSignalWattEntrySerializer                           { get; set; }
-            public CustomJObjectSerializerDelegate<SalesTariff>?                                         CustomSalesTariffSerializer                                  { get; set; }
-            public CustomJObjectSerializerDelegate<SalesTariffEntry>?                                    CustomSalesTariffEntrySerializer                             { get; set; }
-            public CustomJObjectSerializerDelegate<RelativeTimeInterval>?                                CustomRelativeTimeIntervalSerializer                         { get; set; }
-            public CustomJObjectSerializerDelegate<ConsumptionCost>?                                     CustomConsumptionCostSerializer                              { get; set; }
-            public CustomJObjectSerializerDelegate<Cost>?                                                CustomCostSerializer                                         { get; set; }
-
-            public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.AbsolutePriceSchedule>?    CustomAbsolutePriceScheduleSerializer                        { get; set; }
-            public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceRuleStack>?           CustomPriceRuleStackSerializer                               { get; set; }
-            public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceRule>?                CustomPriceRuleSerializer                                    { get; set; }
-            public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.TaxRule>?                  CustomTaxRuleSerializer                                      { get; set; }
-            public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.OverstayRuleList>?         CustomOverstayRuleListSerializer                             { get; set; }
-            public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.OverstayRule>?             CustomOverstayRuleSerializer                                 { get; set; }
-            public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.AdditionalService>?        CustomAdditionalServiceSerializer                            { get; set; }
-
-            public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceLevelSchedule>?       CustomPriceLevelScheduleSerializer                           { get; set; }
-            public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceLevelScheduleEntry>?  CustomPriceLevelScheduleEntrySerializer                      { get; set; }
-
-            public CustomJObjectSerializerDelegate<TransactionLimits>?                                   CustomTransactionLimitsSerializer                            { get; set; }
-
-            public CustomJObjectSerializerDelegate<ChargingProfileCriterion>?                            CustomChargingProfileCriterionSerializer                     { get; set; }
-            public CustomJObjectSerializerDelegate<ClearChargingProfile>?                                CustomClearChargingProfileSerializer                         { get; set; }
-            public CustomJObjectSerializerDelegate<MessageInfo>?                                         CustomMessageInfoSerializer                                  { get; set; }
-
-
-
-            public CustomJObjectSerializerDelegate<ChargingStation>?                                     CustomChargingStationSerializer                              { get; set; }
-            public CustomJObjectSerializerDelegate<EventData>?                                           CustomEventDataSerializer                                    { get; set; }
-            public CustomJObjectSerializerDelegate<ReportData>?                                          CustomReportDataSerializer                                   { get; set; }
-            public CustomJObjectSerializerDelegate<VariableAttribute>?                                   CustomVariableAttributeSerializer                            { get; set; }
-            public CustomJObjectSerializerDelegate<VariableCharacteristics>?                             CustomVariableCharacteristicsSerializer                      { get; set; }
-            public CustomJObjectSerializerDelegate<MonitoringData>?                                      CustomMonitoringDataSerializer                               { get; set; }
-            public CustomJObjectSerializerDelegate<VariableMonitoring>?                                  CustomVariableMonitoringSerializer                           { get; set; }
-            public CustomJObjectSerializerDelegate<OCSPRequestData>?                                     CustomOCSPRequestDataSerializer                              { get; set; }
-
-            public CustomJObjectSerializerDelegate<ChargingNeeds>?                                       CustomChargingNeedsSerializer                                { get; set; }
-            public CustomJObjectSerializerDelegate<ACChargingParameters>?                                CustomACChargingParametersSerializer                         { get; set; }
-            public CustomJObjectSerializerDelegate<DCChargingParameters>?                                CustomDCChargingParametersSerializer                         { get; set; }
-            public CustomJObjectSerializerDelegate<V2XChargingParameters>?                               CustomV2XChargingParametersSerializer                        { get; set; }
-            public CustomJObjectSerializerDelegate<EVEnergyOffer>?                                       CustomEVEnergyOfferSerializer                                { get; set; }
-            public CustomJObjectSerializerDelegate<EVPowerSchedule>?                                     CustomEVPowerScheduleSerializer                              { get; set; }
-            public CustomJObjectSerializerDelegate<EVPowerScheduleEntry>?                                CustomEVPowerScheduleEntrySerializer                         { get; set; }
-            public CustomJObjectSerializerDelegate<EVAbsolutePriceSchedule>?                             CustomEVAbsolutePriceScheduleSerializer                      { get; set; }
-            public CustomJObjectSerializerDelegate<EVAbsolutePriceScheduleEntry>?                        CustomEVAbsolutePriceScheduleEntrySerializer                 { get; set; }
-            public CustomJObjectSerializerDelegate<EVPriceRule>?                                         CustomEVPriceRuleSerializer                                  { get; set; }
-
-            public CustomJObjectSerializerDelegate<Transaction>?                                         CustomTransactionSerializer                                  { get; set; }
-            public CustomJObjectSerializerDelegate<MeterValue>?                                          CustomMeterValueSerializer                                   { get; set; }
-            public CustomJObjectSerializerDelegate<SampledValue>?                                        CustomSampledValueSerializer                                 { get; set; }
-            public CustomJObjectSerializerDelegate<SignedMeterValue>?                                    CustomSignedMeterValueSerializer                             { get; set; }
-            public CustomJObjectSerializerDelegate<UnitsOfMeasure>?                                      CustomUnitsOfMeasureSerializer                               { get; set; }
-
-            public CustomJObjectSerializerDelegate<SetVariableResult>?                                   CustomSetVariableResultSerializer                            { get; set; }
-            public CustomJObjectSerializerDelegate<GetVariableResult>?                                   CustomGetVariableResultSerializer                            { get; set; }
-            public CustomJObjectSerializerDelegate<SetMonitoringResult>?                                 CustomSetMonitoringResultSerializer                          { get; set; }
-            public CustomJObjectSerializerDelegate<ClearMonitoringResult>?                               CustomClearMonitoringResultSerializer                        { get; set; }
-            public CustomJObjectSerializerDelegate<CompositeSchedule>?                                   CustomCompositeScheduleSerializer                            { get; set; }
-
-
-            // Binary Data Streams Extensions
-            public CustomBinarySerializerDelegate<OCPP.Signature>?                                       CustomBinarySignatureSerializer                              { get; set; }
-
-
-            // E2E Security Extensions
-
-
-
-            // E2E Charging Tariff Extensions
-
-            public CustomJObjectSerializerDelegate<ChargingTariff>?                                      CustomChargingTariffSerializer                               { get; set; }
-            public CustomJObjectSerializerDelegate<Price>?                                               CustomPriceSerializer                                        { get; set; }
-            public CustomJObjectSerializerDelegate<TariffElement>?                                       CustomTariffElementSerializer                                { get; set; }
-            public CustomJObjectSerializerDelegate<PriceComponent>?                                      CustomPriceComponentSerializer                               { get; set; }
-            public CustomJObjectSerializerDelegate<TaxRate>?                                             CustomTaxRateSerializer                                      { get; set; }
-            public CustomJObjectSerializerDelegate<TariffRestrictions>?                                  CustomTariffRestrictionsSerializer                           { get; set; }
-            public CustomJObjectSerializerDelegate<EnergyMix>?                                           CustomEnergyMixSerializer                                    { get; set; }
-            public CustomJObjectSerializerDelegate<EnergySource>?                                        CustomEnergySourceSerializer                                 { get; set; }
-            public CustomJObjectSerializerDelegate<EnvironmentalImpact>?                                 CustomEnvironmentalImpactSerializer                          { get; set; }
-
-            #endregion
-
-            public CustomJObjectSerializerDelegate<NetworkTopologyInformation>?                          CustomNetworkTopologyInformationSerializer             { get; set; }
-
-            #endregion
-
-            #region Events
-
-            #region Charging Station -> CSMS
-
-            //#region SendBootNotification
-
-            /// <summary>
-            /// An event fired whenever a BootNotification request will be sent to the CSMS.
-            /// </summary>
-            //public event OCPPv2_1.CS.OnBootNotificationRequestDelegate? OnBootNotificationRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a BootNotification request was received.
-            /// </summary>
-            //public event OCPPv2_1.CS.OnBootNotificationResponseDelegate? OnBootNotificationResponse;
-
-            //#endregion
-
-            //#region SendFirmwareStatusNotification
-
-            /// <summary>
-            /// An event fired whenever a FirmwareStatusNotification request will be sent to the CSMS.
-            /// </summary>
-            //public event OCPPv2_1.CS.OnFirmwareStatusNotificationRequestDelegate? OnFirmwareStatusNotificationRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a FirmwareStatusNotification request was received.
-            /// </summary>
-            //public event OCPPv2_1.CS.OnFirmwareStatusNotificationResponseDelegate? OnFirmwareStatusNotificationResponse;
-
-            //#endregion
-
-            //#region SendPublishFirmwareStatusNotification
-
-            /// <summary>
-            /// An event fired whenever a PublishFirmwareStatusNotification request will be sent to the CSMS.
-            /// </summary>
-            //public event OCPPv2_1.CS.OnPublishFirmwareStatusNotificationRequestDelegate? OnPublishFirmwareStatusNotificationRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a PublishFirmwareStatusNotification request was received.
-            /// </summary>
-            //public event OCPPv2_1.CS.OnPublishFirmwareStatusNotificationResponseDelegate? OnPublishFirmwareStatusNotificationResponse;
-
-            //#endregion
-
-            //#region SendHeartbeat
-
-            /// <summary>
-            /// An event fired whenever a Heartbeat request will be sent to the CSMS.
-            /// </summary>
-            //public event OCPPv2_1.CS.OnHeartbeatRequestDelegate? OnHeartbeatRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a Heartbeat request was received.
-            /// </summary>
-            //public event OCPPv2_1.CS.OnHeartbeatResponseDelegate? OnHeartbeatResponse;
-
-            //#endregion
-
-            //#region NotifyEvent
-
-            /// <summary>
-            /// An event fired whenever a NotifyEvent request will be sent to the CSMS.
-            /// </summary>
-            //public event OCPPv2_1.CS.OnNotifyEventRequestDelegate? OnNotifyEventRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a NotifyEvent request was received.
-            /// </summary>
-            //public event OCPPv2_1.CS.OnNotifyEventResponseDelegate? OnNotifyEventResponse;
-
-            //#endregion
-
-            //#region SendSecurityEventNotification
-
-            /// <summary>
-            /// An event fired whenever a SecurityEventNotification request will be sent to the CSMS.
-            /// </summary>
-            //public event OCPPv2_1.CS.OnSecurityEventNotificationRequestDelegate? OnSecurityEventNotificationRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a SecurityEventNotification request was received.
-            /// </summary>
-            //public event OCPPv2_1.CS.OnSecurityEventNotificationResponseDelegate? OnSecurityEventNotificationResponse;
-
-            //#endregion
-
-            //#region NotifyReport
-
-            /// <summary>
-            /// An event fired whenever a NotifyReport request will be sent to the CSMS.
-            /// </summary>
-            //public event OCPPv2_1.CS.OnNotifyReportRequestDelegate? OnNotifyReportRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a NotifyReport request was received.
-            /// </summary>
-            //public event OCPPv2_1.CS.OnNotifyReportResponseDelegate? OnNotifyReportResponse;
-
-            //#endregion
-
-            //#region NotifyMonitoringReport
-
-            /// <summary>
-            /// An event fired whenever a NotifyMonitoringReport request will be sent to the CSMS.
-            /// </summary>
-            //public event OCPPv2_1.CS.OnNotifyMonitoringReportRequestDelegate? OnNotifyMonitoringReportRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a NotifyMonitoringReport request was received.
-            /// </summary>
-            //public event OCPPv2_1.CS.OnNotifyMonitoringReportResponseDelegate? OnNotifyMonitoringReportResponse;
-
-            //#endregion
-
-            //#region SendLogStatusNotification
-
-            /// <summary>
-            /// An event fired whenever a LogStatusNotification request will be sent to the CSMS.
-            /// </summary>
-            //public event OCPPv2_1.CS.OnLogStatusNotificationRequestDelegate? OnLogStatusNotificationRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a LogStatusNotification request was received.
-            /// </summary>
-            //public event OCPPv2_1.CS.OnLogStatusNotificationResponseDelegate? OnLogStatusNotificationResponse;
-
-            //#endregion
-
-            //#region TransferData
-
-            /// <summary>
-            /// An event fired whenever a DataTransfer request will be sent to the CSMS.
-            /// </summary>
-            //public event OnDataTransferRequestDelegate? OnDataTransferRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a DataTransfer request was received.
-            /// </summary>
-            //public event OnDataTransferResponseDelegate? OnDataTransferResponse;
-
-            //#endregion
-
-
-            //#region SignCertificate
-
-            /// <summary>
-            /// An event fired whenever a SignCertificate request will be sent to the CSMS.
-            /// </summary>
-            //public event OCPPv2_1.CS.OnSignCertificateRequestDelegate? OnSignCertificateRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a SignCertificate request was received.
-            /// </summary>
-            //public event OCPPv2_1.CS.OnSignCertificateResponseDelegate? OnSignCertificateResponse;
-
-            //#endregion
-
-            //#region Get15118EVCertificate
-
-            /// <summary>
-            /// An event fired whenever a Get15118EVCertificate request will be sent to the CSMS.
-            /// </summary>
-            //public event OCPPv2_1.CS.OnGet15118EVCertificateRequestDelegate? OnGet15118EVCertificateRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a Get15118EVCertificate request was received.
-            /// </summary>
-            //public event OCPPv2_1.CS.OnGet15118EVCertificateResponseDelegate? OnGet15118EVCertificateResponse;
-
-            //#endregion
-
-            //#region GetCertificateStatus
-
-            /// <summary>
-            /// An event fired whenever a GetCertificateStatus request will be sent to the CSMS.
-            /// </summary>
-            //public event OCPPv2_1.CS.OnGetCertificateStatusRequestDelegate? OnGetCertificateStatusRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a GetCertificateStatus request was received.
-            /// </summary>
-            //public event OCPPv2_1.CS.OnGetCertificateStatusResponseDelegate? OnGetCertificateStatusResponse;
-
-            //#endregion
-
-            //#region GetCRL
-
-            /// <summary>
-            /// An event fired whenever a GetCRL request will be sent to the CSMS.
-            /// </summary>
-            //public event OCPPv2_1.CS.OnGetCRLRequestDelegate? OnGetCRLRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a GetCRL request was received.
-            /// </summary>
-            //public event OCPPv2_1.CS.OnGetCRLResponseDelegate? OnGetCRLResponse;
-
-            //#endregion
-
-
-            //#region SendReservationStatusUpdate
-
-            /// <summary>
-            /// An event fired whenever a ReservationStatusUpdate request will be sent to the CSMS.
-            /// </summary>
-            //public event OCPPv2_1.CS.OnReservationStatusUpdateRequestDelegate? OnReservationStatusUpdateRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a ReservationStatusUpdate request was received.
-            /// </summary>
-            //public event OCPPv2_1.CS.OnReservationStatusUpdateResponseDelegate? OnReservationStatusUpdateResponse;
-
-            //#endregion
-
-            //#region Authorize
-
-            /// <summary>
-            /// An event fired whenever an Authorize request will be sent to the CSMS.
-            /// </summary>
-            //public event OCPPv2_1.CS.OnAuthorizeRequestDelegate? OnAuthorizeRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to an Authorize request was received.
-            /// </summary>
-            //public event OCPPv2_1.CS.OnAuthorizeResponseDelegate? OnAuthorizeResponse;
-
-            //#endregion
-
-            //#region NotifyEVChargingNeeds
-
-            /// <summary>
-            /// An event fired whenever a NotifyEVChargingNeeds request will be sent to the CSMS.
-            /// </summary>
-            //public event OCPPv2_1.CS.OnNotifyEVChargingNeedsRequestDelegate? OnNotifyEVChargingNeedsRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a NotifyEVChargingNeeds request was received.
-            /// </summary>
-            //public event OCPPv2_1.CS.OnNotifyEVChargingNeedsResponseDelegate? OnNotifyEVChargingNeedsResponse;
-
-            //#endregion
-
-            //#region SendTransactionEvent
-
-            /// <summary>
-            /// An event fired whenever a TransactionEvent will be sent to the CSMS.
-            /// </summary>
-            //public event OCPPv2_1.CS.OnTransactionEventRequestDelegate? OnTransactionEventRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a TransactionEvent request was received.
-            /// </summary>
-            //public event OCPPv2_1.CS.OnTransactionEventResponseDelegate? OnTransactionEventResponse;
-
-            //#endregion
-
-            //#region SendStatusNotification
-
-            /// <summary>
-            /// An event fired whenever a StatusNotification request will be sent to the CSMS.
-            /// </summary>
-            //public event OCPPv2_1.CS.OnStatusNotificationRequestDelegate? OnStatusNotificationRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a StatusNotification request was received.
-            /// </summary>
-            //public event OCPPv2_1.CS.OnStatusNotificationResponseDelegate? OnStatusNotificationResponse;
-
-            //#endregion
-
-            //#region SendMeterValues
-
-            /// <summary>
-            /// An event fired whenever a MeterValues request will be sent to the CSMS.
-            /// </summary>
-            //public event OCPPv2_1.CS.OnMeterValuesRequestDelegate? OnMeterValuesRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a MeterValues request was received.
-            /// </summary>
-            //public event OCPPv2_1.CS.OnMeterValuesResponseDelegate? OnMeterValuesResponse;
-
-            //#endregion
-
-            //#region NotifyChargingLimit
-
-            /// <summary>
-            /// An event fired whenever a NotifyChargingLimit request will be sent to the CSMS.
-            /// </summary>
-            //public event OCPPv2_1.CS.OnNotifyChargingLimitRequestDelegate? OnNotifyChargingLimitRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a NotifyChargingLimit request was received.
-            /// </summary>
-            //public event OCPPv2_1.CS.OnNotifyChargingLimitResponseDelegate? OnNotifyChargingLimitResponse;
-
-            //#endregion
-
-            //#region SendClearedChargingLimit
-
-            /// <summary>
-            /// An event fired whenever a ClearedChargingLimit request will be sent to the CSMS.
-            /// </summary>
-            //public event OCPPv2_1.CS.OnClearedChargingLimitRequestDelegate? OnClearedChargingLimitRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a ClearedChargingLimit request was received.
-            /// </summary>
-            //public event OCPPv2_1.CS.OnClearedChargingLimitResponseDelegate? OnClearedChargingLimitResponse;
-
-            //#endregion
-
-            //#region ReportChargingProfiles
-
-            /// <summary>
-            /// An event fired whenever a ReportChargingProfiles request will be sent to the CSMS.
-            /// </summary>
-            //public event OCPPv2_1.CS.OnReportChargingProfilesRequestDelegate? OnReportChargingProfilesRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a ReportChargingProfiles request was received.
-            /// </summary>
-            //public event OCPPv2_1.CS.OnReportChargingProfilesResponseDelegate? OnReportChargingProfilesResponse;
-
-            //#endregion
-
-            //#region NotifyEVChargingSchedule
-
-            /// <summary>
-            /// An event fired whenever a NotifyEVChargingSchedule request will be sent to the CSMS.
-            /// </summary>
-            //public event OCPPv2_1.CS.OnNotifyEVChargingScheduleRequestDelegate? OnNotifyEVChargingScheduleRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a NotifyEVChargingSchedule request was received.
-            /// </summary>
-            //public event OCPPv2_1.CS.OnNotifyEVChargingScheduleResponseDelegate? OnNotifyEVChargingScheduleResponse;
-
-            //#endregion
-
-            //#region NotifyPriorityCharging
-
-            /// <summary>
-            /// An event fired whenever a NotifyPriorityCharging request will be sent to the CSMS.
-            /// </summary>
-            //public event OCPPv2_1.CS.OnNotifyPriorityChargingRequestDelegate? OnNotifyPriorityChargingRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a NotifyPriorityCharging request was received.
-            /// </summary>
-            //public event OCPPv2_1.CS.OnNotifyPriorityChargingResponseDelegate? OnNotifyPriorityChargingResponse;
-
-            //#endregion
-
-            //#region PullDynamicScheduleUpdate
-
-            /// <summary>
-            /// An event fired whenever a PullDynamicScheduleUpdate request will be sent to the CSMS.
-            /// </summary>
-            //public event OCPPv2_1.CS.OnPullDynamicScheduleUpdateRequestDelegate? OnPullDynamicScheduleUpdateRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a PullDynamicScheduleUpdate request was received.
-            /// </summary>
-            //public event OCPPv2_1.CS.OnPullDynamicScheduleUpdateResponseDelegate? OnPullDynamicScheduleUpdateResponse;
-
-            //#endregion
-
-
-            //#region NotifyDisplayMessages
-
-            /// <summary>
-            /// An event fired whenever a NotifyDisplayMessages request will be sent to the CSMS.
-            /// </summary>
-            //public event OCPPv2_1.CS.OnNotifyDisplayMessagesRequestDelegate? OnNotifyDisplayMessagesRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a NotifyDisplayMessages request was received.
-            /// </summary>
-            //public event OCPPv2_1.CS.OnNotifyDisplayMessagesResponseDelegate? OnNotifyDisplayMessagesResponse;
-
-            //#endregion
-
-            //#region NotifyCustomerInformation
-
-            /// <summary>
-            /// An event fired whenever a NotifyCustomerInformation request will be sent to the CSMS.
-            /// </summary>
-            //public event OCPPv2_1.CS.OnNotifyCustomerInformationRequestDelegate? OnNotifyCustomerInformationRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a NotifyCustomerInformation request was received.
-            /// </summary>
-            //public event OCPPv2_1.CS.OnNotifyCustomerInformationResponseDelegate? OnNotifyCustomerInformationResponse;
-
-            //#endregion
-
-
-            //Binary Data Streams Extensions
-
-            //#region TransferBinaryData
-
-            /// <summary>
-            /// An event fired whenever a BinaryDataTransfer request will be sent to the CSMS.
-            /// </summary>
-            //public event OnBinaryDataTransferRequestDelegate? OnBinaryDataTransferRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a BinaryDataTransfer request was received.
-            /// </summary>
-            //public event OnBinaryDataTransferResponseDelegate? OnBinaryDataTransferResponse;
-
-            //#endregion
-
-
-            //Overlay Networking Extensions
-
-            //#region OnNotifyNetworkTopology (Request/-Response)
-
-            /// <summary>
-            /// An event fired whenever a NotifyNetworkTopology request will be sent to another node.
-            /// </summary>
-            //public event OCPP.CS.OnNotifyNetworkTopologyRequestDelegate? OnNotifyNetworkTopologyRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a NotifyNetworkTopology request was received.
-            /// </summary>
-            //public event OCPP.CS.OnNotifyNetworkTopologyResponseDelegate? OnNotifyNetworkTopologyResponse;
-
-            //#endregion
-
-            #endregion
-
-            #region Charging Station <- CSMS
-
-            ////ToDo: Are those events really required here?
-            //public event OCPPv2_1.CS.OnUpdateFirmwareDelegate?                OnUpdateFirmware;
-            //public event OCPPv2_1.CS.OnPublishFirmwareDelegate?               OnPublishFirmware;
-            //public event OCPPv2_1.CS.OnUnpublishFirmwareDelegate?             OnUnpublishFirmware;
-            //public event OCPPv2_1.CS.OnGetBaseReportDelegate?                 OnGetBaseReport;
-            //public event OCPPv2_1.CS.OnGetReportDelegate?                     OnGetReport;
-            //public event OCPPv2_1.CS.OnGetLogDelegate?                        OnGetLog;
-            //public event OCPPv2_1.CS.OnSetVariablesDelegate?                  OnSetVariables;
-            //public event OCPPv2_1.CS.OnGetVariablesDelegate?                  OnGetVariables;
-            //public event OCPPv2_1.CS.OnSetMonitoringBaseDelegate?             OnSetMonitoringBase;
-            //public event OCPPv2_1.CS.OnGetMonitoringReportDelegate?           OnGetMonitoringReport;
-            //public event OCPPv2_1.CS.OnSetMonitoringLevelDelegate?            OnSetMonitoringLevel;
-            //public event OCPPv2_1.CS.OnSetVariableMonitoringDelegate?         OnSetVariableMonitoring;
-            //public event OCPPv2_1.CS.OnClearVariableMonitoringDelegate?       OnClearVariableMonitoring;
-            //public event OCPPv2_1.CS.OnSetNetworkProfileDelegate?             OnSetNetworkProfile;
-            //public event OCPPv2_1.CS.OnChangeAvailabilityDelegate?            OnChangeAvailability;
-            //public event OCPPv2_1.CS.OnTriggerMessageDelegate?                OnTriggerMessage;
-            //public event             OnIncomingDataTransferDelegate?          OnIncomingDataTransfer;
-
-            //public event OCPPv2_1.CS.OnCertificateSignedDelegate?             OnCertificateSigned;
-            //public event OCPPv2_1.CS.OnInstallCertificateDelegate?            OnInstallCertificate;
-            //public event OCPPv2_1.CS.OnGetInstalledCertificateIdsDelegate?    OnGetInstalledCertificateIds;
-            //public event OCPPv2_1.CS.OnDeleteCertificateDelegate?             OnDeleteCertificate;
-            //public event OCPPv2_1.CS.OnNotifyCRLDelegate?                     OnNotifyCRL;
-
-            //public event OCPPv2_1.CS.OnGetLocalListVersionDelegate?           OnGetLocalListVersion;
-            //public event OCPPv2_1.CS.OnSendLocalListDelegate?                 OnSendLocalList;
-            //public event OCPPv2_1.CS.OnClearCacheDelegate?                    OnClearCache;
-
-            //public event OCPPv2_1.CS.OnReserveNowDelegate?                    OnReserveNow;
-            //public event OCPPv2_1.CS.OnCancelReservationDelegate?             OnCancelReservation;
-            //public event OCPPv2_1.CS.OnRequestStartTransactionDelegate?       OnRequestStartTransaction;
-            //public event OCPPv2_1.CS.OnRequestStopTransactionDelegate?        OnRequestStopTransaction;
-            //public event OCPPv2_1.CS.OnGetTransactionStatusDelegate?          OnGetTransactionStatus;
-            //public event OCPPv2_1.CS.OnSetChargingProfileDelegate?            OnSetChargingProfile;
-            //public event OCPPv2_1.CS.OnGetChargingProfilesDelegate?           OnGetChargingProfiles;
-            //public event OCPPv2_1.CS.OnClearChargingProfileDelegate?          OnClearChargingProfile;
-            //public event OCPPv2_1.CS.OnGetCompositeScheduleDelegate?          OnGetCompositeSchedule;
-            //public event OCPPv2_1.CS.OnUpdateDynamicScheduleDelegate?         OnUpdateDynamicSchedule;
-            //public event OCPPv2_1.CS.OnNotifyAllowedEnergyTransferDelegate?   OnNotifyAllowedEnergyTransfer;
-            //public event OCPPv2_1.CS.OnUsePriorityChargingDelegate?           OnUsePriorityCharging;
-            //public event OCPPv2_1.CS.OnUnlockConnectorDelegate?               OnUnlockConnector;
-
-            //public event OCPPv2_1.CS.OnAFRRSignalDelegate?                    OnAFRRSignal;
-
-            //public event OCPPv2_1.CS.OnSetDisplayMessageDelegate?             OnSetDisplayMessage;
-            //public event OCPPv2_1.CS.OnGetDisplayMessagesDelegate?            OnGetDisplayMessages;
-            //public event OCPPv2_1.CS.OnClearDisplayMessageDelegate?           OnClearDisplayMessage;
-            //public event OCPPv2_1.CS.OnCostUpdatedDelegate?                   OnCostUpdated;
-            //public event OCPPv2_1.CS.OnCustomerInformationDelegate?           OnCustomerInformation;
-
-            //// Binary Data Streams Extensions
-            //public event             OnIncomingBinaryDataTransferDelegate?    OnIncomingBinaryDataTransfer;
-            //public event             OnGetFileDelegate?                       OnGetFile;
-            //public event             OnSendFileDelegate?                      OnSendFile;
-            //public event             OnDeleteFileDelegate?                    OnDeleteFile;
-
-            //// E2E Security Extensions
-            //public event             OnAddSignaturePolicyDelegate?            OnAddSignaturePolicy;
-            //public event             OnUpdateSignaturePolicyDelegate?         OnUpdateSignaturePolicy;
-            //public event             OnDeleteSignaturePolicyDelegate?         OnDeleteSignaturePolicy;
-            //public event             OnAddUserRoleDelegate?                   OnAddUserRole;
-            //public event             OnUpdateUserRoleDelegate?                OnUpdateUserRole;
-            //public event             OnDeleteUserRoleDelegate?                OnDeleteUserRole;
-
-
-            #region UpdateFirmware
-
-            ///// <summary>
-            ///// An event fired whenever an UpdateFirmware request was received from the CSMS.
-            ///// </summary>
-            //public event OCPPv2_1.CS.OnUpdateFirmwareRequestDelegate?   OnUpdateFirmwareRequest;
-
-            ///// <summary>
-            ///// An event fired whenever a response to an UpdateFirmware request was sent.
-            ///// </summary>
-            //public event OCPPv2_1.CS.OnUpdateFirmwareResponseDelegate?  OnUpdateFirmwareResponse;
-
-            #endregion
-
-            #region PublishFirmware
-
-            /// <summary>
-            /// An event fired whenever a PublishFirmware request was received from the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnPublishFirmwareRequestDelegate?   OnPublishFirmwareRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a PublishFirmware request was sent.
-            /// </summary>
-            public event OCPPv2_1.CS.OnPublishFirmwareResponseDelegate?  OnPublishFirmwareResponse;
-
-            #endregion
-
-            #region UnpublishFirmware
-
-            /// <summary>
-            /// An event fired whenever an UnpublishFirmware request was received from the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnUnpublishFirmwareRequestDelegate?   OnUnpublishFirmwareRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to an UnpublishFirmware request was sent.
-            /// </summary>
-            public event OCPPv2_1.CS.OnUnpublishFirmwareResponseDelegate?  OnUnpublishFirmwareResponse;
-
-            #endregion
-
-            #region GetBaseReport
-
-            /// <summary>
-            /// An event fired whenever a GetBaseReport request was received from the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnGetBaseReportRequestDelegate?   OnGetBaseReportRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a GetBaseReport request was sent.
-            /// </summary>
-            public event OCPPv2_1.CS.OnGetBaseReportResponseDelegate?  OnGetBaseReportResponse;
-
-            #endregion
-
-            #region GetReport
-
-            /// <summary>
-            /// An event fired whenever a GetReport request was received from the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnGetReportRequestDelegate?   OnGetReportRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a GetReport request was sent.
-            /// </summary>
-            public event OCPPv2_1.CS.OnGetReportResponseDelegate?  OnGetReportResponse;
-
-            #endregion
-
-            #region GetLog
-
-            /// <summary>
-            /// An event fired whenever a GetLog request was received from the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnGetLogRequestDelegate?   OnGetLogRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a GetLog request was sent.
-            /// </summary>
-            public event OCPPv2_1.CS.OnGetLogResponseDelegate?  OnGetLogResponse;
-
-            #endregion
-
-            #region SetVariables
-
-            /// <summary>
-            /// An event fired whenever a SetVariables request was received from the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnSetVariablesRequestDelegate?   OnSetVariablesRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a SetVariables request was sent.
-            /// </summary>
-            public event OCPPv2_1.CS.OnSetVariablesResponseDelegate?  OnSetVariablesResponse;
-
-            #endregion
-
-            #region GetVariables
-
-            /// <summary>
-            /// An event fired whenever a GetVariables request was received from the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnGetVariablesRequestDelegate?   OnGetVariablesRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a GetVariables request was sent.
-            /// </summary>
-            public event OCPPv2_1.CS.OnGetVariablesResponseDelegate?  OnGetVariablesResponse;
-
-            #endregion
-
-            #region SetMonitoringBase
-
-            /// <summary>
-            /// An event fired whenever a SetMonitoringBase request was received from the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnSetMonitoringBaseRequestDelegate?   OnSetMonitoringBaseRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a SetMonitoringBase request was sent.
-            /// </summary>
-            public event OCPPv2_1.CS.OnSetMonitoringBaseResponseDelegate?  OnSetMonitoringBaseResponse;
-
-            #endregion
-
-            #region GetMonitoringReport
-
-            /// <summary>
-            /// An event fired whenever a GetMonitoringReport request was received from the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnGetMonitoringReportRequestDelegate?   OnGetMonitoringReportRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a GetMonitoringReport request was sent.
-            /// </summary>
-            public event OCPPv2_1.CS.OnGetMonitoringReportResponseDelegate?  OnGetMonitoringReportResponse;
-
-            #endregion
-
-            #region SetMonitoringLevel
-
-            /// <summary>
-            /// An event fired whenever a SetMonitoringLevel request was received from the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnSetMonitoringLevelRequestDelegate?   OnSetMonitoringLevelRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a SetMonitoringLevel request was sent.
-            /// </summary>
-            public event OCPPv2_1.CS.OnSetMonitoringLevelResponseDelegate?  OnSetMonitoringLevelResponse;
-
-            #endregion
-
-            #region SetVariableMonitoring
-
-            /// <summary>
-            /// An event fired whenever a SetVariableMonitoring request was received from the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnSetVariableMonitoringRequestDelegate?   OnSetVariableMonitoringRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a SetVariableMonitoring request was sent.
-            /// </summary>
-            public event OCPPv2_1.CS.OnSetVariableMonitoringResponseDelegate?  OnSetVariableMonitoringResponse;
-
-            #endregion
-
-            #region ClearVariableMonitoring
-
-            /// <summary>
-            /// An event fired whenever a ClearVariableMonitoring request was received from the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnClearVariableMonitoringRequestDelegate?   OnClearVariableMonitoringRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a ClearVariableMonitoring request was sent.
-            /// </summary>
-            public event OCPPv2_1.CS.OnClearVariableMonitoringResponseDelegate?  OnClearVariableMonitoringResponse;
-
-            #endregion
-
-            #region SetNetworkProfile
-
-            /// <summary>
-            /// An event fired whenever a SetNetworkProfile request was received from the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnSetNetworkProfileRequestDelegate?   OnSetNetworkProfileRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a SetNetworkProfile request was sent.
-            /// </summary>
-            public event OCPPv2_1.CS.OnSetNetworkProfileResponseDelegate?  OnSetNetworkProfileResponse;
-
-            #endregion
-
-            #region ChangeAvailability
-
-            /// <summary>
-            /// An event fired whenever a ChangeAvailability request was received from the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnChangeAvailabilityRequestDelegate?   OnChangeAvailabilityRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a ChangeAvailability request was sent.
-            /// </summary>
-            public event OCPPv2_1.CS.OnChangeAvailabilityResponseDelegate?  OnChangeAvailabilityResponse;
-
-            #endregion
-
-            #region TriggerMessage
-
-            /// <summary>
-            /// An event fired whenever a TriggerMessage request was received from the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnTriggerMessageRequestDelegate?   OnTriggerMessageRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a TriggerMessage request was sent.
-            /// </summary>
-            public event OCPPv2_1.CS.OnTriggerMessageResponseDelegate?  OnTriggerMessageResponse;
-
-            #endregion
-
-            #region OnIncomingDataTransferRequest/-Response
-
-            /// <summary>
-            /// An event sent whenever a data transfer request was sent.
-            /// </summary>
-            public event OnIncomingDataTransferRequestDelegate?   OnIncomingDataTransferRequest;
-
-            /// <summary>
-            /// An event sent whenever a response to a data transfer request was sent.
-            /// </summary>
-            public event OnIncomingDataTransferResponseDelegate?  OnIncomingDataTransferResponse;
-
-            #endregion
-
-
-            #region SendSignedCertificate
-
-            /// <summary>
-            /// An event fired whenever a SignedCertificate request was received from the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnCertificateSignedRequestDelegate?   OnCertificateSignedRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a SignedCertificate request was sent.
-            /// </summary>
-            public event OCPPv2_1.CS.OnCertificateSignedResponseDelegate?  OnCertificateSignedResponse;
-
-            #endregion
-
-            #region InstallCertificate
-
-            /// <summary>
-            /// An event fired whenever an InstallCertificate request was received from the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnInstallCertificateRequestDelegate?   OnInstallCertificateRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to an InstallCertificate request was sent.
-            /// </summary>
-            public event OCPPv2_1.CS.OnInstallCertificateResponseDelegate?  OnInstallCertificateResponse;
-
-            #endregion
-
-            #region GetInstalledCertificateIds
-
-            /// <summary>
-            /// An event fired whenever a GetInstalledCertificateIds request was received from the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnGetInstalledCertificateIdsRequestDelegate?   OnGetInstalledCertificateIdsRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a GetInstalledCertificateIds request was sent.
-            /// </summary>
-            public event OCPPv2_1.CS.OnGetInstalledCertificateIdsResponseDelegate?  OnGetInstalledCertificateIdsResponse;
-
-            #endregion
-
-            #region DeleteCertificate
-
-            /// <summary>
-            /// An event fired whenever a DeleteCertificate request was received from the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnDeleteCertificateRequestDelegate?   OnDeleteCertificateRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a DeleteCertificate request was sent.
-            /// </summary>
-            public event OCPPv2_1.CS.OnDeleteCertificateResponseDelegate?  OnDeleteCertificateResponse;
-
-            #endregion
-
-            #region NotifyCRL
-
-            /// <summary>
-            /// An event fired whenever a NotifyCRL request was received from the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnNotifyCRLRequestDelegate?   OnNotifyCRLRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a NotifyCRL request was sent.
-            /// </summary>
-            public event OCPPv2_1.CS.OnNotifyCRLResponseDelegate?  OnNotifyCRLResponse;
-
-            #endregion
-
-
-            #region GetLocalListVersion
-
-            /// <summary>
-            /// An event fired whenever a GetLocalListVersion request was received from the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnGetLocalListVersionRequestDelegate?   OnGetLocalListVersionRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a GetLocalListVersion request was sent.
-            /// </summary>
-            public event OCPPv2_1.CS.OnGetLocalListVersionResponseDelegate?  OnGetLocalListVersionResponse;
-
-            #endregion
-
-            #region SendLocalList
-
-            /// <summary>
-            /// An event fired whenever a SendLocalList request was received from the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnSendLocalListRequestDelegate?   OnSendLocalListRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a SendLocalList request was sent.
-            /// </summary>
-            public event OCPPv2_1.CS.OnSendLocalListResponseDelegate?  OnSendLocalListResponse;
-
-            #endregion
-
-            #region ClearCache
-
-            /// <summary>
-            /// An event fired whenever a ClearCache request was received from the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnClearCacheRequestDelegate?   OnClearCacheRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a ClearCache request was sent.
-            /// </summary>
-            public event OCPPv2_1.CS.OnClearCacheResponseDelegate?  OnClearCacheResponse;
-
-            #endregion
-
-
-            #region ReserveNow
-
-            /// <summary>
-            /// An event fired whenever a ReserveNow request was received from the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnReserveNowRequestDelegate?   OnReserveNowRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a ReserveNow request was sent.
-            /// </summary>
-            public event OCPPv2_1.CS.OnReserveNowResponseDelegate?  OnReserveNowResponse;
-
-            #endregion
-
-            #region CancelReservation
-
-            /// <summary>
-            /// An event fired whenever a CancelReservation request was received from the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnCancelReservationRequestDelegate?   OnCancelReservationRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a CancelReservation request was sent.
-            /// </summary>
-            public event OCPPv2_1.CS.OnCancelReservationResponseDelegate?  OnCancelReservationResponse;
-
-            #endregion
-
-            #region StartCharging
-
-            /// <summary>
-            /// An event fired whenever a RequestStartTransaction request was received from the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnRequestStartTransactionRequestDelegate?   OnRequestStartTransactionRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a RequestStartTransaction request was sent.
-            /// </summary>
-            public event OCPPv2_1.CS.OnRequestStartTransactionResponseDelegate?  OnRequestStartTransactionResponse;
-
-            #endregion
-
-            #region StopCharging
-
-            /// <summary>
-            /// An event fired whenever a RequestStopTransaction request was received from the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnRequestStopTransactionRequestDelegate?   OnRequestStopTransactionRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a RequestStopTransaction request was sent.
-            /// </summary>
-            public event OCPPv2_1.CS.OnRequestStopTransactionResponseDelegate?  OnRequestStopTransactionResponse;
-
-            #endregion
-
-            #region GetTransactionStatus
-
-            /// <summary>
-            /// An event fired whenever a GetTransactionStatus request was received from the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnGetTransactionStatusRequestDelegate?   OnGetTransactionStatusRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a GetTransactionStatus request was sent.
-            /// </summary>
-            public event OCPPv2_1.CS.OnGetTransactionStatusResponseDelegate?  OnGetTransactionStatusResponse;
-
-            #endregion
-
-            #region SetChargingProfile
-
-            /// <summary>
-            /// An event fired whenever a SetChargingProfile request was received from the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnSetChargingProfileRequestDelegate?   OnSetChargingProfileRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a SetChargingProfile request was sent.
-            /// </summary>
-            public event OCPPv2_1.CS.OnSetChargingProfileResponseDelegate?  OnSetChargingProfileResponse;
-
-            #endregion
-
-            #region GetChargingProfiles
-
-            /// <summary>
-            /// An event fired whenever a GetChargingProfiles request was received from the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnGetChargingProfilesRequestDelegate?   OnGetChargingProfilesRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a GetChargingProfiles request was sent.
-            /// </summary>
-            public event OCPPv2_1.CS.OnGetChargingProfilesResponseDelegate?  OnGetChargingProfilesResponse;
-
-            #endregion
-
-            #region ClearChargingProfile
-
-            /// <summary>
-            /// An event fired whenever a ClearChargingProfile request was received from the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnClearChargingProfileRequestDelegate?   OnClearChargingProfileRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a ClearChargingProfile request was sent.
-            /// </summary>
-            public event OCPPv2_1.CS.OnClearChargingProfileResponseDelegate?  OnClearChargingProfileResponse;
-
-            #endregion
-
-            #region GetCompositeSchedule
-
-            /// <summary>
-            /// An event fired whenever a GetCompositeSchedule request was received from the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnGetCompositeScheduleRequestDelegate?   OnGetCompositeScheduleRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a GetCompositeSchedule request was sent.
-            /// </summary>
-            public event OCPPv2_1.CS.OnGetCompositeScheduleResponseDelegate?  OnGetCompositeScheduleResponse;
-
-            #endregion
-
-            #region UpdateDynamicSchedule
-
-            /// <summary>
-            /// An event fired whenever an UpdateDynamicSchedule request was received from the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnUpdateDynamicScheduleRequestDelegate?   OnUpdateDynamicScheduleRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to an UpdateDynamicSchedule request was sent.
-            /// </summary>
-            public event OCPPv2_1.CS.OnUpdateDynamicScheduleResponseDelegate?  OnUpdateDynamicScheduleResponse;
-
-            #endregion
-
-            #region NotifyAllowedEnergyTransfer
-
-            /// <summary>
-            /// An event fired whenever a NotifyAllowedEnergyTransfer request was received from the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnNotifyAllowedEnergyTransferRequestDelegate?   OnNotifyAllowedEnergyTransferRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a NotifyAllowedEnergyTransfer request was sent.
-            /// </summary>
-            public event OCPPv2_1.CS.OnNotifyAllowedEnergyTransferResponseDelegate?  OnNotifyAllowedEnergyTransferResponse;
-
-            #endregion
-
-            #region UsePriorityCharging
-
-            /// <summary>
-            /// An event fired whenever a UsePriorityCharging request was received from the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnUsePriorityChargingRequestDelegate?   OnUsePriorityChargingRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a UsePriorityCharging request was sent.
-            /// </summary>
-            public event OCPPv2_1.CS.OnUsePriorityChargingResponseDelegate?  OnUsePriorityChargingResponse;
-
-            #endregion
-
-            #region UnlockConnector
-
-            /// <summary>
-            /// An event fired whenever an UnlockConnector request was received from the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnUnlockConnectorRequestDelegate?   OnUnlockConnectorRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to an UnlockConnector request was sent.
-            /// </summary>
-            public event OCPPv2_1.CS.OnUnlockConnectorResponseDelegate?  OnUnlockConnectorResponse;
-
-            #endregion
-
-
-            #region AFRRSignal
-
-            /// <summary>
-            /// An event fired whenever an AFRR signal request was received from the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnAFRRSignalRequestDelegate?   OnAFRRSignalRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to an AFRR signal request was sent.
-            /// </summary>
-            public event OCPPv2_1.CS.OnAFRRSignalResponseDelegate?  OnAFRRSignalResponse;
-
-            #endregion
-
-
-            #region SetDisplayMessage
-
-            /// <summary>
-            /// An event fired whenever a SetDisplayMessage request was received from the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnSetDisplayMessageRequestDelegate?   OnSetDisplayMessageRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a SetDisplayMessage request was sent.
-            /// </summary>
-            public event OCPPv2_1.CS.OnSetDisplayMessageResponseDelegate?  OnSetDisplayMessageResponse;
-
-            #endregion
-
-            #region GetDisplayMessages
-
-            /// <summary>
-            /// An event fired whenever a GetDisplayMessages request was received from the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnGetDisplayMessagesRequestDelegate?   OnGetDisplayMessagesRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a GetDisplayMessages request was sent.
-            /// </summary>
-            public event OCPPv2_1.CS.OnGetDisplayMessagesResponseDelegate?  OnGetDisplayMessagesResponse;
-
-            #endregion
-
-            #region ClearDisplayMessage
-
-            /// <summary>
-            /// An event fired whenever a ClearDisplayMessage request was received from the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnClearDisplayMessageRequestDelegate?   OnClearDisplayMessageRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a ClearDisplayMessage request was sent.
-            /// </summary>
-            public event OCPPv2_1.CS.OnClearDisplayMessageResponseDelegate?  OnClearDisplayMessageResponse;
-
-            #endregion
-
-            #region SendCostUpdated
-
-            /// <summary>
-            /// An event fired whenever a CostUpdated request was received from the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnCostUpdatedRequestDelegate?   OnCostUpdatedRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a CostUpdated request was sent.
-            /// </summary>
-            public event OCPPv2_1.CS.OnCostUpdatedResponseDelegate?  OnCostUpdatedResponse;
-
-            #endregion
-
-            #region RequestCustomerInformation
-
-            /// <summary>
-            /// An event fired whenever a CustomerInformation request was received from the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnCustomerInformationRequestDelegate?   OnCustomerInformationRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a CustomerInformation request was sent.
-            /// </summary>
-            public event OCPPv2_1.CS.OnCustomerInformationResponseDelegate?  OnCustomerInformationResponse;
-
-            #endregion
-
-
-            // Binary Data Streams Extensions
-
-            #region OnIncomingBinaryDataTransferRequest/-Response
-
-            /// <summary>
-            /// An event sent whenever a BinaryDataTransfer request was sent.
-            /// </summary>
-            public event OnIncomingBinaryDataTransferRequestDelegate?   OnIncomingBinaryDataTransferRequest;
-
-            /// <summary>
-            /// An event sent whenever a response to a BinaryDataTransfer request was sent.
-            /// </summary>
-            public event OnIncomingBinaryDataTransferResponseDelegate?  OnIncomingBinaryDataTransferResponse;
-
-            #endregion
-
-            #region OnGetFileRequest/-Response
-
-            /// <summary>
-            /// An event sent whenever a GetFile request was sent.
-            /// </summary>
-            public event OCPP.CS.OnGetFileRequestDelegate?   OnGetFileRequest;
-
-            /// <summary>
-            /// An event sent whenever a response to a GetFile request was sent.
-            /// </summary>
-            public event OCPP.CS.OnGetFileResponseDelegate?  OnGetFileResponse;
-
-            #endregion
-
-            #region OnSendFileRequest/-Response
-
-            /// <summary>
-            /// An event sent whenever a SendFile request was sent.
-            /// </summary>
-            public event OCPP.CS.OnSendFileRequestDelegate?   OnSendFileRequest;
-
-            /// <summary>
-            /// An event sent whenever a response to a SendFile request was sent.
-            /// </summary>
-            public event OCPP.CS.OnSendFileResponseDelegate?  OnSendFileResponse;
-
-            #endregion
-
-            #region OnDeleteFileRequest/-Response
-
-            /// <summary>
-            /// An event sent whenever a DeleteFile request was sent.
-            /// </summary>
-            public event OCPP.CS.OnDeleteFileRequestDelegate?   OnDeleteFileRequest;
-
-            /// <summary>
-            /// An event sent whenever a response to a DeleteFile request was sent.
-            /// </summary>
-            public event OCPP.CS.OnDeleteFileResponseDelegate?  OnDeleteFileResponse;
-
-            #endregion
-
-
-            // E2E Security Extensions
-
-            #region AddSignaturePolicy
-
-            /// <summary>
-            /// An event fired whenever a AddSignaturePolicy request was received from the CSMS.
-            /// </summary>
-            public event OCPP.CS.OnAddSignaturePolicyRequestDelegate?   OnAddSignaturePolicyRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a AddSignaturePolicy request was sent.
-            /// </summary>
-            public event OCPP.CS.OnAddSignaturePolicyResponseDelegate?  OnAddSignaturePolicyResponse;
-
-            #endregion
-
-            #region UpdateSignaturePolicy
-
-            /// <summary>
-            /// An event fired whenever a UpdateSignaturePolicy request was received from the CSMS.
-            /// </summary>
-            public event OCPP.CS.OnUpdateSignaturePolicyRequestDelegate?   OnUpdateSignaturePolicyRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a UpdateSignaturePolicy request was sent.
-            /// </summary>
-            public event OCPP.CS.OnUpdateSignaturePolicyResponseDelegate?  OnUpdateSignaturePolicyResponse;
-
-            #endregion
-
-            #region DeleteSignaturePolicy
-
-            /// <summary>
-            /// An event fired whenever a DeleteSignaturePolicy request was received from the CSMS.
-            /// </summary>
-            public event OCPP.CS.OnDeleteSignaturePolicyRequestDelegate?   OnDeleteSignaturePolicyRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a DeleteSignaturePolicy request was sent.
-            /// </summary>
-            public event OCPP.CS.OnDeleteSignaturePolicyResponseDelegate?  OnDeleteSignaturePolicyResponse;
-
-            #endregion
-
-            #region AddUserRole
-
-            /// <summary>
-            /// An event fired whenever a AddUserRole request was received from the CSMS.
-            /// </summary>
-            public event OCPP.CS.OnAddUserRoleRequestDelegate?   OnAddUserRoleRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a AddUserRole request was sent.
-            /// </summary>
-            public event OCPP.CS.OnAddUserRoleResponseDelegate?  OnAddUserRoleResponse;
-
-            #endregion
-
-            #region UpdateUserRole
-
-            /// <summary>
-            /// An event fired whenever a UpdateUserRole request was received from the CSMS.
-            /// </summary>
-            public event OCPP.CS.OnUpdateUserRoleRequestDelegate?   OnUpdateUserRoleRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a UpdateUserRole request was sent.
-            /// </summary>
-            public event OCPP.CS.OnUpdateUserRoleResponseDelegate?  OnUpdateUserRoleResponse;
-
-            #endregion
-
-            #region DeleteUserRole
-
-            /// <summary>
-            /// An event fired whenever a DeleteUserRole request was received from the CSMS.
-            /// </summary>
-            public event OCPP.CS.OnDeleteUserRoleRequestDelegate?   OnDeleteUserRoleRequest;
-
-            /// <summary>
-            /// An event fired whenever a response to a DeleteUserRole request was sent.
-            /// </summary>
-            public event OCPP.CS.OnDeleteUserRoleResponseDelegate?  OnDeleteUserRoleResponse;
-
-            #endregion
-
-
-            // E2E Charging Tariffs Extensions
-
-            #region SetDefaultChargingTariff
-
-            /// <summary>
-            /// An event fired whenever a SetDefaultChargingTariff request was received from the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnSetDefaultChargingTariffRequestDelegate?   OnSetDefaultChargingTariffRequest;
-
-            public event OCPPv2_1.CS.OnSetDefaultChargingTariffDelegate?          OnSetDefaultChargingTariff;
-
-            /// <summary>
-            /// An event fired whenever a response to a SetDefaultChargingTariff request was sent.
-            /// </summary>
-            public event OCPPv2_1.CS.OnSetDefaultChargingTariffResponseDelegate?  OnSetDefaultChargingTariffResponse;
-
-            #endregion
-
-            #region GetDefaultChargingTariff
-
-            /// <summary>
-            /// An event fired whenever a GetDefaultChargingTariff request was received from the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnGetDefaultChargingTariffRequestDelegate?   OnGetDefaultChargingTariffRequest;
-
-            public event OCPPv2_1.CS.OnGetDefaultChargingTariffDelegate?          OnGetDefaultChargingTariff;
-
-            /// <summary>
-            /// An event fired whenever a response to a GetDefaultChargingTariff request was sent.
-            /// </summary>
-            public event OCPPv2_1.CS.OnGetDefaultChargingTariffResponseDelegate?  OnGetDefaultChargingTariffResponse;
-
-            #endregion
-
-            #region RemoveDefaultChargingTariff
-
-            /// <summary>
-            /// An event fired whenever a RemoveDefaultChargingTariff request was received from the CSMS.
-            /// </summary>
-            public event OCPPv2_1.CS.OnRemoveDefaultChargingTariffRequestDelegate?   OnRemoveDefaultChargingTariffRequest;
-
-            public event OCPPv2_1.CS.OnRemoveDefaultChargingTariffDelegate?          OnRemoveDefaultChargingTariff;
-
-            /// <summary>
-            /// An event fired whenever a response to a RemoveDefaultChargingTariff request was sent.
-            /// </summary>
-            public event OCPPv2_1.CS.OnRemoveDefaultChargingTariffResponseDelegate?  OnRemoveDefaultChargingTariffResponse;
-
-            #endregion
-
-            #endregion
-
-            #endregion
-
             #region Constructor(s)
 
             /// <summary>
             /// Create a new charging station for testing.
             /// </summary>
             /// <param name="Id">The charging station identification.</param>
-            /// <param name="VendorName">The charging station vendor identification.</param>
-            /// <param name="Model">The charging station model identification.</param>
-            /// 
-            /// <param name="Description">An optional multi-language charging station description.</param>
-            /// <param name="SerialNumber">An optional serial number of the charging station.</param>
-            /// <param name="FirmwareVersion">An optional firmware version of the charging station.</param>
-            /// <param name="MeterType">An optional meter type of the main power meter of the charging station.</param>
-            /// <param name="MeterSerialNumber">An optional serial number of the main power meter of the charging station.</param>
-            /// <param name="MeterPublicKey">An optional public key of the main power meter of the charging station.</param>
             /// 
             /// <param name="SendHeartbeatEvery">The time span between heartbeat requests.</param>
             /// 
             /// <param name="DefaultRequestTimeout">The default request timeout for all requests.</param>
             public ActingAsCS(TestNetworkingNode                 NetworkingNode,
-                              String                             VendorName,
-                              String                             Model,
-
-                              I18NString?                        Description               = null,
-                              String?                            SerialNumber              = null,
-                              String?                            FirmwareVersion           = null,
-                              Modem?                             Modem                     = null,
 
                               Boolean                            DisableSendHeartbeats     = false,
                               TimeSpan?                          SendHeartbeatEvery        = null,
@@ -1935,13 +192,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             {
 
-                if (VendorName.IsNullOrEmpty())
-                    throw new ArgumentNullException(nameof(VendorName),  "The given charging station vendor must not be null or empty!");
-
-                if (Model.     IsNullOrEmpty())
-                    throw new ArgumentNullException(nameof(Model),       "The given charging station model must not be null or empty!");
-
-
                 this.parentNetworkingNode     = NetworkingNode;
 
                 //this.Configuration = new Dictionary<String, ConfigurationData> {
@@ -1950,14 +200,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 //    { "doNotChangeMe",  new ConfigurationData("never",    AccessRights.ReadOnly,  false) },
                 //    { "password",       new ConfigurationData("12345678", AccessRights.WriteOnly, false) }
                 //};
-                this.EnqueuedRequests         = new List<EnqueuedRequest>();
-
-                this.VendorName               = VendorName;
-                this.Model                    = Model;
-                this.Description              = Description;
-                this.SerialNumber             = SerialNumber;
-                this.FirmwareVersion          = FirmwareVersion;
-                this.Modem                    = Modem;
+                this.EnqueuedRequests         = [];
 
                 this.DefaultRequestTimeout    = DefaultRequestTimeout ?? TimeSpan.FromMinutes(1);
 
@@ -2127,9 +370,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
                              request,
                              request.ToJSON(
-                                 CustomResetRequestSerializer,
-                                 CustomSignatureSerializer,
-                                 CustomCustomDataSerializer
+                                 parentNetworkingNode.CustomResetRequestSerializer,
+                                 parentNetworkingNode.CustomSignatureSerializer,
+                                 parentNetworkingNode.CustomCustomDataSerializer
                              ),
                              out var errorResponse
                          ))
@@ -2197,10 +440,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomResetResponseSerializer,
-                            CustomStatusInfoSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
+                            parentNetworkingNode.CustomResetResponseSerializer,
+                            parentNetworkingNode.CustomStatusInfoSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
                         ),
                         out var errorResponse2);
 
@@ -2271,10 +514,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
                                  request,
                                  request.ToJSON(
-                                     CustomUpdateFirmwareRequestSerializer,
-                                     CustomFirmwareSerializer,
-                                     CustomSignatureSerializer,
-                                     CustomCustomDataSerializer
+                                     parentNetworkingNode.CustomUpdateFirmwareRequestSerializer,
+                                     parentNetworkingNode.CustomFirmwareSerializer,
+                                     parentNetworkingNode.CustomSignatureSerializer,
+                                     parentNetworkingNode.CustomCustomDataSerializer
                                  ),
                                  out var errorResponse
                              ))
@@ -2317,10 +560,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomUpdateFirmwareResponseSerializer,
-                            CustomStatusInfoSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
+                            parentNetworkingNode.CustomUpdateFirmwareResponseSerializer,
+                            parentNetworkingNode.CustomStatusInfoSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
                         ),
                         out var errorResponse2);
 
@@ -2392,9 +635,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
                                  request,
                                  request.ToJSON(
-                                     CustomPublishFirmwareRequestSerializer,
-                                     CustomSignatureSerializer,
-                                     CustomCustomDataSerializer
+                                     parentNetworkingNode.CustomPublishFirmwareRequestSerializer,
+                                     parentNetworkingNode.CustomSignatureSerializer,
+                                     parentNetworkingNode.CustomCustomDataSerializer
                                  ),
                                  out var errorResponse
                              ))
@@ -2438,10 +681,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomPublishFirmwareResponseSerializer,
-                            CustomStatusInfoSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
+                            parentNetworkingNode.CustomPublishFirmwareResponseSerializer,
+                            parentNetworkingNode.CustomStatusInfoSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
                         ),
                         out var errorResponse2);
 
@@ -2512,9 +755,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
                                  request,
                                  request.ToJSON(
-                                     CustomUnpublishFirmwareRequestSerializer,
-                                     CustomSignatureSerializer,
-                                     CustomCustomDataSerializer
+                                     parentNetworkingNode.CustomUnpublishFirmwareRequestSerializer,
+                                     parentNetworkingNode.CustomSignatureSerializer,
+                                     parentNetworkingNode.CustomCustomDataSerializer
                                  ),
                                  out var errorResponse
                              ))
@@ -2553,9 +796,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomUnpublishFirmwareResponseSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
+                            parentNetworkingNode.CustomUnpublishFirmwareResponseSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
                         ),
                         out var errorResponse2);
 
@@ -2626,9 +869,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
                                  request,
                                  request.ToJSON(
-                                     CustomGetBaseReportRequestSerializer,
-                                     CustomSignatureSerializer,
-                                     CustomCustomDataSerializer
+                                     parentNetworkingNode.CustomGetBaseReportRequestSerializer,
+                                     parentNetworkingNode.CustomSignatureSerializer,
+                                     parentNetworkingNode.CustomCustomDataSerializer
                                  ),
                                  out var errorResponse
                              ))
@@ -2669,10 +912,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomGetBaseReportResponseSerializer,
-                            CustomStatusInfoSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
+                            parentNetworkingNode.CustomGetBaseReportResponseSerializer,
+                            parentNetworkingNode.CustomStatusInfoSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
                         ),
                         out var errorResponse2);
 
@@ -2743,13 +986,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
                                  request,
                                  request.ToJSON(
-                                     CustomGetReportRequestSerializer,
-                                     CustomComponentVariableSerializer,
-                                     CustomComponentSerializer,
-                                     CustomEVSESerializer,
-                                     CustomVariableSerializer,
-                                     CustomSignatureSerializer,
-                                     CustomCustomDataSerializer
+                                     parentNetworkingNode.CustomGetReportRequestSerializer,
+                                     parentNetworkingNode.CustomComponentVariableSerializer,
+                                     parentNetworkingNode.CustomComponentSerializer,
+                                     parentNetworkingNode.CustomEVSESerializer,
+                                     parentNetworkingNode.CustomVariableSerializer,
+                                     parentNetworkingNode.CustomSignatureSerializer,
+                                     parentNetworkingNode.CustomCustomDataSerializer
                                  ),
                                  out var errorResponse
                              ))
@@ -2791,10 +1034,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomGetReportResponseSerializer,
-                            CustomStatusInfoSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
+                            parentNetworkingNode.CustomGetReportResponseSerializer,
+                            parentNetworkingNode.CustomStatusInfoSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
                         ),
                         out var errorResponse2);
 
@@ -2865,10 +1108,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
                                  request,
                                  request.ToJSON(
-                                     CustomGetLogRequestSerializer,
-                                     CustomLogParametersSerializer,
-                                     CustomSignatureSerializer,
-                                     CustomCustomDataSerializer
+                                     parentNetworkingNode.CustomGetLogRequestSerializer,
+                                     parentNetworkingNode.CustomLogParametersSerializer,
+                                     parentNetworkingNode.CustomSignatureSerializer,
+                                     parentNetworkingNode.CustomCustomDataSerializer
                                  ),
                                  out var errorResponse
                              ))
@@ -2912,10 +1155,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomGetLogResponseSerializer,
-                            CustomStatusInfoSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
+                            parentNetworkingNode.CustomGetLogResponseSerializer,
+                            parentNetworkingNode.CustomStatusInfoSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
                         ),
                         out var errorResponse2);
 
@@ -2986,13 +1229,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
                                  request,
                                  request.ToJSON(
-                                     CustomSetVariablesRequestSerializer,
-                                     CustomSetVariableDataSerializer,
-                                     CustomComponentSerializer,
-                                     CustomEVSESerializer,
-                                     CustomVariableSerializer,
-                                     CustomSignatureSerializer,
-                                     CustomCustomDataSerializer
+                                     parentNetworkingNode.CustomSetVariablesRequestSerializer,
+                                     parentNetworkingNode.CustomSetVariableDataSerializer,
+                                     parentNetworkingNode.CustomComponentSerializer,
+                                     parentNetworkingNode.CustomEVSESerializer,
+                                     parentNetworkingNode.CustomVariableSerializer,
+                                     parentNetworkingNode.CustomSignatureSerializer,
+                                     parentNetworkingNode.CustomCustomDataSerializer
                                  ),
                                  out var errorResponse
                              ))
@@ -3038,14 +1281,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomSetVariablesResponseSerializer,
-                            CustomSetVariableResultSerializer,
-                            CustomComponentSerializer,
-                            CustomEVSESerializer,
-                            CustomVariableSerializer,
-                            CustomStatusInfoSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
+                            parentNetworkingNode.CustomSetVariablesResponseSerializer,
+                            parentNetworkingNode.CustomSetVariableResultSerializer,
+                            parentNetworkingNode.CustomComponentSerializer,
+                            parentNetworkingNode.CustomEVSESerializer,
+                            parentNetworkingNode.CustomVariableSerializer,
+                            parentNetworkingNode.CustomStatusInfoSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
                         ),
                         out var errorResponse2);
 
@@ -3116,13 +1359,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
                                  request,
                                  request.ToJSON(
-                                     CustomGetVariablesRequestSerializer,
-                                     CustomGetVariableDataSerializer,
-                                     CustomComponentSerializer,
-                                     CustomEVSESerializer,
-                                     CustomVariableSerializer,
-                                     CustomSignatureSerializer,
-                                     CustomCustomDataSerializer
+                                     parentNetworkingNode.CustomGetVariablesRequestSerializer,
+                                     parentNetworkingNode.CustomGetVariableDataSerializer,
+                                     parentNetworkingNode.CustomComponentSerializer,
+                                     parentNetworkingNode.CustomEVSESerializer,
+                                     parentNetworkingNode.CustomVariableSerializer,
+                                     parentNetworkingNode.CustomSignatureSerializer,
+                                     parentNetworkingNode.CustomCustomDataSerializer
                                  ),
                                  out var errorResponse
                              ))
@@ -3169,14 +1412,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomGetVariablesResponseSerializer,
-                            CustomGetVariableResultSerializer,
-                            CustomComponentSerializer,
-                            CustomEVSESerializer,
-                            CustomVariableSerializer,
-                            CustomStatusInfoSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
+                            parentNetworkingNode.CustomGetVariablesResponseSerializer,
+                            parentNetworkingNode.CustomGetVariableResultSerializer,
+                            parentNetworkingNode.CustomComponentSerializer,
+                            parentNetworkingNode.CustomEVSESerializer,
+                            parentNetworkingNode.CustomVariableSerializer,
+                            parentNetworkingNode.CustomStatusInfoSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
                         ),
                         out var errorResponse2);
 
@@ -3247,9 +1490,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
                                  request,
                                  request.ToJSON(
-                                     CustomSetMonitoringBaseRequestSerializer,
-                                     CustomSignatureSerializer,
-                                     CustomCustomDataSerializer
+                                     parentNetworkingNode.CustomSetMonitoringBaseRequestSerializer,
+                                     parentNetworkingNode.CustomSignatureSerializer,
+                                     parentNetworkingNode.CustomCustomDataSerializer
                                  ),
                                  out var errorResponse
                              ))
@@ -3289,10 +1532,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomSetMonitoringBaseResponseSerializer,
-                            CustomStatusInfoSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
+                            parentNetworkingNode.CustomSetMonitoringBaseResponseSerializer,
+                            parentNetworkingNode.CustomStatusInfoSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
                         ),
                         out var errorResponse2);
 
@@ -3363,13 +1606,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
                                  request,
                                  request.ToJSON(
-                                     CustomGetMonitoringReportRequestSerializer,
-                                     CustomComponentVariableSerializer,
-                                     CustomComponentSerializer,
-                                     CustomEVSESerializer,
-                                     CustomVariableSerializer,
-                                     CustomSignatureSerializer,
-                                     CustomCustomDataSerializer
+                                     parentNetworkingNode.CustomGetMonitoringReportRequestSerializer,
+                                     parentNetworkingNode.CustomComponentVariableSerializer,
+                                     parentNetworkingNode.CustomComponentSerializer,
+                                     parentNetworkingNode.CustomEVSESerializer,
+                                     parentNetworkingNode.CustomVariableSerializer,
+                                     parentNetworkingNode.CustomSignatureSerializer,
+                                     parentNetworkingNode.CustomCustomDataSerializer
                                  ),
                                  out var errorResponse
                              ))
@@ -3411,10 +1654,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomGetMonitoringReportResponseSerializer,
-                            CustomStatusInfoSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
+                            parentNetworkingNode.CustomGetMonitoringReportResponseSerializer,
+                            parentNetworkingNode.CustomStatusInfoSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
                         ),
                         out var errorResponse2);
 
@@ -3485,9 +1728,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
                                  request,
                                  request.ToJSON(
-                                     CustomSetMonitoringLevelRequestSerializer,
-                                     CustomSignatureSerializer,
-                                     CustomCustomDataSerializer
+                                     parentNetworkingNode.CustomSetMonitoringLevelRequestSerializer,
+                                     parentNetworkingNode.CustomSignatureSerializer,
+                                     parentNetworkingNode.CustomCustomDataSerializer
                                  ),
                                  out var errorResponse
                              ))
@@ -3527,10 +1770,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomSetMonitoringLevelResponseSerializer,
-                            CustomStatusInfoSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
+                            parentNetworkingNode.CustomSetMonitoringLevelResponseSerializer,
+                            parentNetworkingNode.CustomStatusInfoSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
                         ),
                         out var errorResponse2);
 
@@ -3601,14 +1844,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
                                  request,
                                  request.ToJSON(
-                                     CustomSetVariableMonitoringRequestSerializer,
-                                     CustomSetMonitoringDataSerializer,
-                                     CustomComponentSerializer,
-                                     CustomEVSESerializer,
-                                     CustomVariableSerializer,
-                                     CustomPeriodicEventStreamParametersSerializer,
-                                     CustomSignatureSerializer,
-                                     CustomCustomDataSerializer
+                                     parentNetworkingNode.CustomSetVariableMonitoringRequestSerializer,
+                                     parentNetworkingNode.CustomSetMonitoringDataSerializer,
+                                     parentNetworkingNode.CustomComponentSerializer,
+                                     parentNetworkingNode.CustomEVSESerializer,
+                                     parentNetworkingNode.CustomVariableSerializer,
+                                     parentNetworkingNode.CustomPeriodicEventStreamParametersSerializer,
+                                     parentNetworkingNode.CustomSignatureSerializer,
+                                     parentNetworkingNode.CustomCustomDataSerializer
                                  ),
                                  out var errorResponse
                              ))
@@ -3656,14 +1899,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomSetVariableMonitoringResponseSerializer,
-                            CustomSetMonitoringResultSerializer,
-                            CustomComponentSerializer,
-                            CustomEVSESerializer,
-                            CustomVariableSerializer,
-                            CustomStatusInfoSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
+                            parentNetworkingNode.CustomSetVariableMonitoringResponseSerializer,
+                            parentNetworkingNode.CustomSetMonitoringResultSerializer,
+                            parentNetworkingNode.CustomComponentSerializer,
+                            parentNetworkingNode.CustomEVSESerializer,
+                            parentNetworkingNode.CustomVariableSerializer,
+                            parentNetworkingNode.CustomStatusInfoSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
                         ),
                         out var errorResponse2);
 
@@ -3734,9 +1977,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
                                  request,
                                  request.ToJSON(
-                                     CustomClearVariableMonitoringRequestSerializer,
-                                     CustomSignatureSerializer,
-                                     CustomCustomDataSerializer
+                                     parentNetworkingNode.CustomClearVariableMonitoringRequestSerializer,
+                                     parentNetworkingNode.CustomSignatureSerializer,
+                                     parentNetworkingNode.CustomCustomDataSerializer
                                  ),
                                  out var errorResponse
                              ))
@@ -3780,11 +2023,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomClearVariableMonitoringResponseSerializer,
-                            CustomClearMonitoringResultSerializer,
-                            CustomStatusInfoSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
+                            parentNetworkingNode.CustomClearVariableMonitoringResponseSerializer,
+                            parentNetworkingNode.CustomClearMonitoringResultSerializer,
+                            parentNetworkingNode.CustomStatusInfoSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
                         ),
                         out var errorResponse2);
 
@@ -3855,12 +2098,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
                                  request,
                                  request.ToJSON(
-                                     CustomSetNetworkProfileRequestSerializer,
-                                     CustomNetworkConnectionProfileSerializer,
-                                     CustomVPNConfigurationSerializer,
-                                     CustomAPNConfigurationSerializer,
-                                     CustomSignatureSerializer,
-                                     CustomCustomDataSerializer
+                                     parentNetworkingNode.CustomSetNetworkProfileRequestSerializer,
+                                     parentNetworkingNode.CustomNetworkConnectionProfileSerializer,
+                                     parentNetworkingNode.CustomVPNConfigurationSerializer,
+                                     parentNetworkingNode.CustomAPNConfigurationSerializer,
+                                     parentNetworkingNode.CustomSignatureSerializer,
+                                     parentNetworkingNode.CustomCustomDataSerializer
                                  ),
                                  out var errorResponse
                              ))
@@ -3900,10 +2143,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomSetNetworkProfileResponseSerializer,
-                            CustomStatusInfoSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
+                            parentNetworkingNode.CustomSetNetworkProfileResponseSerializer,
+                            parentNetworkingNode.CustomStatusInfoSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
                         ),
                         out var errorResponse2);
 
@@ -3974,10 +2217,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
                                  request,
                                  request.ToJSON(
-                                     CustomChangeAvailabilityRequestSerializer,
-                                     CustomEVSESerializer,
-                                     CustomSignatureSerializer,
-                                     CustomCustomDataSerializer
+                                     parentNetworkingNode.CustomChangeAvailabilityRequestSerializer,
+                                     parentNetworkingNode.CustomEVSESerializer,
+                                     parentNetworkingNode.CustomSignatureSerializer,
+                                     parentNetworkingNode.CustomCustomDataSerializer
                                  ),
                                  out var errorResponse
                              ))
@@ -4025,10 +2268,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomChangeAvailabilityResponseSerializer,
-                            CustomStatusInfoSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
+                            parentNetworkingNode.CustomChangeAvailabilityResponseSerializer,
+                            parentNetworkingNode.CustomStatusInfoSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
                         ),
                         out var errorResponse2);
 
@@ -4099,10 +2342,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
                                  request,
                                  request.ToJSON(
-                                     CustomTriggerMessageRequestSerializer,
-                                     CustomEVSESerializer,
-                                     CustomSignatureSerializer,
-                                     CustomCustomDataSerializer
+                                     parentNetworkingNode.CustomTriggerMessageRequestSerializer,
+                                     parentNetworkingNode.CustomEVSESerializer,
+                                     parentNetworkingNode.CustomSignatureSerializer,
+                                     parentNetworkingNode.CustomCustomDataSerializer
                                  ),
                                  out var errorResponse
                              ))
@@ -4218,10 +2461,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomTriggerMessageResponseSerializer,
-                            CustomStatusInfoSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
+                            parentNetworkingNode.CustomTriggerMessageResponseSerializer,
+                            parentNetworkingNode.CustomStatusInfoSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
                         ),
                         out var errorResponse2);
 
@@ -4292,9 +2535,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
                                  request,
                                  request.ToJSON(
-                                     CustomIncomingDataTransferRequestSerializer,
-                                     CustomSignatureSerializer,
-                                     CustomCustomDataSerializer
+                                     parentNetworkingNode.CustomIncomingDataTransferRequestSerializer,
+                                     parentNetworkingNode.CustomSignatureSerializer,
+                                     parentNetworkingNode.CustomCustomDataSerializer
                                  ),
                                  out var errorResponse
                              ))
@@ -4382,10 +2625,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomIncomingDataTransferResponseSerializer,
-                            CustomStatusInfoSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
+                            parentNetworkingNode.CustomIncomingDataTransferResponseSerializer,
+                            parentNetworkingNode.CustomStatusInfoSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
                         ),
                         out var errorResponse2);
 
@@ -4457,9 +2700,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
                                  request,
                                  request.ToJSON(
-                                     CustomCertificateSignedRequestSerializer,
-                                     CustomSignatureSerializer,
-                                     CustomCustomDataSerializer
+                                     parentNetworkingNode.CustomCertificateSignedRequestSerializer,
+                                     parentNetworkingNode.CustomSignatureSerializer,
+                                     parentNetworkingNode.CustomCustomDataSerializer
                                  ),
                                  out var errorResponse
                              ))
@@ -4502,10 +2745,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomCertificateSignedResponseSerializer,
-                            CustomStatusInfoSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
+                            parentNetworkingNode.CustomCertificateSignedResponseSerializer,
+                            parentNetworkingNode.CustomStatusInfoSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
                         ),
                         out var errorResponse2);
 
@@ -4576,9 +2819,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
                                  request,
                                  request.ToJSON(
-                                     CustomInstallCertificateRequestSerializer,
-                                     CustomSignatureSerializer,
-                                     CustomCustomDataSerializer
+                                     parentNetworkingNode.CustomInstallCertificateRequestSerializer,
+                                     parentNetworkingNode.CustomSignatureSerializer,
+                                     parentNetworkingNode.CustomCustomDataSerializer
                                  ),
                                  out var errorResponse
                              ))
@@ -4625,10 +2868,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomInstallCertificateResponseSerializer,
-                            CustomStatusInfoSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
+                            parentNetworkingNode.CustomInstallCertificateResponseSerializer,
+                            parentNetworkingNode.CustomStatusInfoSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
                         ),
                         out var errorResponse2);
 
@@ -4699,9 +2942,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
                                  request,
                                  request.ToJSON(
-                                     CustomGetInstalledCertificateIdsRequestSerializer,
-                                     CustomSignatureSerializer,
-                                     CustomCustomDataSerializer
+                                     parentNetworkingNode.CustomGetInstalledCertificateIdsRequestSerializer,
+                                     parentNetworkingNode.CustomSignatureSerializer,
+                                     parentNetworkingNode.CustomCustomDataSerializer
                                  ),
                                  out var errorResponse
                              ))
@@ -4758,11 +3001,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomGetInstalledCertificateIdsResponseSerializer,
-                            CustomCertificateHashDataSerializer,
-                            CustomStatusInfoSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
+                            parentNetworkingNode.CustomGetInstalledCertificateIdsResponseSerializer,
+                            parentNetworkingNode.CustomCertificateHashDataSerializer,
+                            parentNetworkingNode.CustomStatusInfoSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
                         ),
                         out var errorResponse2);
 
@@ -4833,10 +3076,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
                                  request,
                                  request.ToJSON(
-                                     CustomDeleteCertificateRequestSerializer,
-                                     CustomCertificateHashDataSerializer,
-                                     CustomSignatureSerializer,
-                                     CustomCustomDataSerializer
+                                     parentNetworkingNode.CustomDeleteCertificateRequestSerializer,
+                                     parentNetworkingNode.CustomCertificateHashDataSerializer,
+                                     parentNetworkingNode.CustomSignatureSerializer,
+                                     parentNetworkingNode.CustomCustomDataSerializer
                                  ),
                                  out var errorResponse
                              ))
@@ -4882,10 +3125,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomDeleteCertificateResponseSerializer,
-                            CustomStatusInfoSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
+                            parentNetworkingNode.CustomDeleteCertificateResponseSerializer,
+                            parentNetworkingNode.CustomStatusInfoSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
                         ),
                         out var errorResponse2);
 
@@ -4956,9 +3199,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
                                  request,
                                  request.ToJSON(
-                                     CustomNotifyCRLRequestSerializer,
-                                     CustomSignatureSerializer,
-                                     CustomCustomDataSerializer
+                                     parentNetworkingNode.CustomNotifyCRLRequestSerializer,
+                                     parentNetworkingNode.CustomSignatureSerializer,
+                                     parentNetworkingNode.CustomCustomDataSerializer
                                  ),
                                  out var errorResponse
                              ))
@@ -4998,9 +3241,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomNotifyCRLResponseSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
+                            parentNetworkingNode.CustomNotifyCRLResponseSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
                         ),
                         out var errorResponse2);
 
@@ -5072,9 +3315,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
                                  request,
                                  request.ToJSON(
-                                     CustomGetLocalListVersionRequestSerializer,
-                                     CustomSignatureSerializer,
-                                     CustomCustomDataSerializer
+                                     parentNetworkingNode.CustomGetLocalListVersionRequestSerializer,
+                                     parentNetworkingNode.CustomSignatureSerializer,
+                                     parentNetworkingNode.CustomCustomDataSerializer
                                  ),
                                  out var errorResponse
                              ))
@@ -5113,9 +3356,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomGetLocalListVersionResponseSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
+                            parentNetworkingNode.CustomGetLocalListVersionResponseSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
                         ),
                         out var errorResponse2);
 
@@ -5186,14 +3429,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
                                  request,
                                  request.ToJSON(
-                                     CustomSendLocalListRequestSerializer,
-                                     CustomAuthorizationDataSerializer,
-                                     CustomIdTokenSerializer,
-                                     CustomAdditionalInfoSerializer,
-                                     CustomIdTokenInfoSerializer,
-                                     CustomMessageContentSerializer,
-                                     CustomSignatureSerializer,
-                                     CustomCustomDataSerializer
+                                     parentNetworkingNode.CustomSendLocalListRequestSerializer,
+                                     parentNetworkingNode.CustomAuthorizationDataSerializer,
+                                     parentNetworkingNode.CustomIdTokenSerializer,
+                                     parentNetworkingNode.CustomAdditionalInfoSerializer,
+                                     parentNetworkingNode.CustomIdTokenInfoSerializer,
+                                     parentNetworkingNode.CustomMessageContentSerializer,
+                                     parentNetworkingNode.CustomSignatureSerializer,
+                                     parentNetworkingNode.CustomCustomDataSerializer
                                  ),
                                  out var errorResponse
                              ))
@@ -5234,10 +3477,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomSendLocalListResponseSerializer,
-                            CustomStatusInfoSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
+                            parentNetworkingNode.CustomSendLocalListResponseSerializer,
+                            parentNetworkingNode.CustomStatusInfoSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
                         ),
                         out var errorResponse2);
 
@@ -5308,9 +3551,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
                                  request,
                                  request.ToJSON(
-                                     CustomClearCacheRequestSerializer,
-                                     CustomSignatureSerializer,
-                                     CustomCustomDataSerializer
+                                     parentNetworkingNode.CustomClearCacheRequestSerializer,
+                                     parentNetworkingNode.CustomSignatureSerializer,
+                                     parentNetworkingNode.CustomCustomDataSerializer
                                  ),
                                  out var errorResponse
                              ))
@@ -5349,10 +3592,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomClearCacheResponseSerializer,
-                            CustomStatusInfoSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
+                            parentNetworkingNode.CustomClearCacheResponseSerializer,
+                            parentNetworkingNode.CustomStatusInfoSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
                         ),
                         out var errorResponse2);
 
@@ -5424,11 +3667,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
                                  request,
                                  request.ToJSON(
-                                     CustomReserveNowRequestSerializer,
-                                     CustomIdTokenSerializer,
-                                     CustomAdditionalInfoSerializer,
-                                     CustomSignatureSerializer,
-                                     CustomCustomDataSerializer
+                                     parentNetworkingNode.CustomReserveNowRequestSerializer,
+                                     parentNetworkingNode.CustomIdTokenSerializer,
+                                     parentNetworkingNode.CustomAdditionalInfoSerializer,
+                                     parentNetworkingNode.CustomSignatureSerializer,
+                                     parentNetworkingNode.CustomCustomDataSerializer
                                  ),
                                  out var errorResponse
                              ))
@@ -5478,10 +3721,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomReserveNowResponseSerializer,
-                            CustomStatusInfoSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
+                            parentNetworkingNode.CustomReserveNowResponseSerializer,
+                            parentNetworkingNode.CustomStatusInfoSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
                         ),
                         out var errorResponse2);
 
@@ -5552,9 +3795,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
                                  request,
                                  request.ToJSON(
-                                     CustomCancelReservationRequestSerializer,
-                                     CustomSignatureSerializer,
-                                     CustomCustomDataSerializer
+                                     parentNetworkingNode.CustomCancelReservationRequestSerializer,
+                                     parentNetworkingNode.CustomSignatureSerializer,
+                                     parentNetworkingNode.CustomCustomDataSerializer
                                  ),
                                  out var errorResponse
                              ))
@@ -5600,10 +3843,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomCancelReservationResponseSerializer,
-                            CustomStatusInfoSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
+                            parentNetworkingNode.CustomCancelReservationResponseSerializer,
+                            parentNetworkingNode.CustomStatusInfoSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
                         ),
                         out var errorResponse2);
 
@@ -5675,36 +3918,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                  request,
                                  request.ToJSON(
 
-                                     CustomRequestStartTransactionRequestSerializer,
-                                     CustomIdTokenSerializer,
-                                     CustomAdditionalInfoSerializer,
-                                     CustomChargingProfileSerializer,
-                                     CustomLimitBeyondSoCSerializer,
-                                     CustomChargingScheduleSerializer,
-                                     CustomChargingSchedulePeriodSerializer,
-                                     CustomV2XFreqWattEntrySerializer,
-                                     CustomV2XSignalWattEntrySerializer,
-                                     CustomSalesTariffSerializer,
-                                     CustomSalesTariffEntrySerializer,
-                                     CustomRelativeTimeIntervalSerializer,
-                                     CustomConsumptionCostSerializer,
-                                     CustomCostSerializer,
+                                     parentNetworkingNode.CustomRequestStartTransactionRequestSerializer,
+                                     parentNetworkingNode.CustomIdTokenSerializer,
+                                     parentNetworkingNode.CustomAdditionalInfoSerializer,
+                                     parentNetworkingNode.CustomChargingProfileSerializer,
+                                     parentNetworkingNode.CustomLimitBeyondSoCSerializer,
+                                     parentNetworkingNode.CustomChargingScheduleSerializer,
+                                     parentNetworkingNode.CustomChargingSchedulePeriodSerializer,
+                                     parentNetworkingNode.CustomV2XFreqWattEntrySerializer,
+                                     parentNetworkingNode.CustomV2XSignalWattEntrySerializer,
+                                     parentNetworkingNode.CustomSalesTariffSerializer,
+                                     parentNetworkingNode.CustomSalesTariffEntrySerializer,
+                                     parentNetworkingNode.CustomRelativeTimeIntervalSerializer,
+                                     parentNetworkingNode.CustomConsumptionCostSerializer,
+                                     parentNetworkingNode.CustomCostSerializer,
 
-                                     CustomAbsolutePriceScheduleSerializer,
-                                     CustomPriceRuleStackSerializer,
-                                     CustomPriceRuleSerializer,
-                                     CustomTaxRuleSerializer,
-                                     CustomOverstayRuleListSerializer,
-                                     CustomOverstayRuleSerializer,
-                                     CustomAdditionalServiceSerializer,
+                                     parentNetworkingNode.CustomAbsolutePriceScheduleSerializer,
+                                     parentNetworkingNode.CustomPriceRuleStackSerializer,
+                                     parentNetworkingNode.CustomPriceRuleSerializer,
+                                     parentNetworkingNode.CustomTaxRuleSerializer,
+                                     parentNetworkingNode.CustomOverstayRuleListSerializer,
+                                     parentNetworkingNode.CustomOverstayRuleSerializer,
+                                     parentNetworkingNode.CustomAdditionalServiceSerializer,
 
-                                     CustomPriceLevelScheduleSerializer,
-                                     CustomPriceLevelScheduleEntrySerializer,
+                                     parentNetworkingNode.CustomPriceLevelScheduleSerializer,
+                                     parentNetworkingNode.CustomPriceLevelScheduleEntrySerializer,
 
-                                     CustomTransactionLimitsSerializer,
+                                     parentNetworkingNode.CustomTransactionLimitsSerializer,
 
-                                     CustomSignatureSerializer,
-                                     CustomCustomDataSerializer
+                                     parentNetworkingNode.CustomSignatureSerializer,
+                                     parentNetworkingNode.CustomCustomDataSerializer
 
                                  ),
                                  out var errorResponse
@@ -5743,10 +3986,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomRequestStartTransactionResponseSerializer,
-                            CustomStatusInfoSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
+                            parentNetworkingNode.CustomRequestStartTransactionResponseSerializer,
+                            parentNetworkingNode.CustomStatusInfoSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
                         ),
                         out var errorResponse2);
 
@@ -5817,9 +4060,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
                                  request,
                                  request.ToJSON(
-                                     CustomRequestStopTransactionRequestSerializer,
-                                     CustomSignatureSerializer,
-                                     CustomCustomDataSerializer
+                                     parentNetworkingNode.CustomRequestStopTransactionRequestSerializer,
+                                     parentNetworkingNode.CustomSignatureSerializer,
+                                     parentNetworkingNode.CustomCustomDataSerializer
                                  ),
                                  out var errorResponse
                              ))
@@ -5857,10 +4100,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomRequestStopTransactionResponseSerializer,
-                            CustomStatusInfoSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
+                            parentNetworkingNode.CustomRequestStopTransactionResponseSerializer,
+                            parentNetworkingNode.CustomStatusInfoSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
                         ),
                         out var errorResponse2);
 
@@ -5931,9 +4174,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
                                  request,
                                  request.ToJSON(
-                                     CustomGetTransactionStatusRequestSerializer,
-                                     CustomSignatureSerializer,
-                                     CustomCustomDataSerializer
+                                     parentNetworkingNode.CustomGetTransactionStatusRequestSerializer,
+                                     parentNetworkingNode.CustomSignatureSerializer,
+                                     parentNetworkingNode.CustomCustomDataSerializer
                                  ),
                                  out var errorResponse
                              ))
@@ -5972,9 +4215,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomGetTransactionStatusResponseSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
+                            parentNetworkingNode.CustomGetTransactionStatusResponseSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
                         ),
                         out var errorResponse2);
 
@@ -6046,32 +4289,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                  request,
                                  request.ToJSON(
 
-                                     CustomSetChargingProfileRequestSerializer,
-                                     CustomChargingProfileSerializer,
-                                     CustomLimitBeyondSoCSerializer,
-                                     CustomChargingScheduleSerializer,
-                                     CustomChargingSchedulePeriodSerializer,
-                                     CustomV2XFreqWattEntrySerializer,
-                                     CustomV2XSignalWattEntrySerializer,
-                                     CustomSalesTariffSerializer,
-                                     CustomSalesTariffEntrySerializer,
-                                     CustomRelativeTimeIntervalSerializer,
-                                     CustomConsumptionCostSerializer,
-                                     CustomCostSerializer,
+                                     parentNetworkingNode.CustomSetChargingProfileRequestSerializer,
+                                     parentNetworkingNode.CustomChargingProfileSerializer,
+                                     parentNetworkingNode.CustomLimitBeyondSoCSerializer,
+                                     parentNetworkingNode.CustomChargingScheduleSerializer,
+                                     parentNetworkingNode.CustomChargingSchedulePeriodSerializer,
+                                     parentNetworkingNode.CustomV2XFreqWattEntrySerializer,
+                                     parentNetworkingNode.CustomV2XSignalWattEntrySerializer,
+                                     parentNetworkingNode.CustomSalesTariffSerializer,
+                                     parentNetworkingNode.CustomSalesTariffEntrySerializer,
+                                     parentNetworkingNode.CustomRelativeTimeIntervalSerializer,
+                                     parentNetworkingNode.CustomConsumptionCostSerializer,
+                                     parentNetworkingNode.CustomCostSerializer,
 
-                                     CustomAbsolutePriceScheduleSerializer,
-                                     CustomPriceRuleStackSerializer,
-                                     CustomPriceRuleSerializer,
-                                     CustomTaxRuleSerializer,
-                                     CustomOverstayRuleListSerializer,
-                                     CustomOverstayRuleSerializer,
-                                     CustomAdditionalServiceSerializer,
+                                     parentNetworkingNode.CustomAbsolutePriceScheduleSerializer,
+                                     parentNetworkingNode.CustomPriceRuleStackSerializer,
+                                     parentNetworkingNode.CustomPriceRuleSerializer,
+                                     parentNetworkingNode.CustomTaxRuleSerializer,
+                                     parentNetworkingNode.CustomOverstayRuleListSerializer,
+                                     parentNetworkingNode.CustomOverstayRuleSerializer,
+                                     parentNetworkingNode.CustomAdditionalServiceSerializer,
 
-                                     CustomPriceLevelScheduleSerializer,
-                                     CustomPriceLevelScheduleEntrySerializer,
+                                     parentNetworkingNode.CustomPriceLevelScheduleSerializer,
+                                     parentNetworkingNode.CustomPriceLevelScheduleEntrySerializer,
 
-                                     CustomSignatureSerializer,
-                                     CustomCustomDataSerializer
+                                     parentNetworkingNode.CustomSignatureSerializer,
+                                     parentNetworkingNode.CustomCustomDataSerializer
 
                                  ),
                                  out var errorResponse
@@ -6111,10 +4354,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomSetChargingProfileResponseSerializer,
-                            CustomStatusInfoSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
+                            parentNetworkingNode.CustomSetChargingProfileResponseSerializer,
+                            parentNetworkingNode.CustomStatusInfoSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
                         ),
                         out var errorResponse2);
 
@@ -6185,10 +4428,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
                                  request,
                                  request.ToJSON(
-                                     CustomGetChargingProfilesRequestSerializer,
-                                     CustomChargingProfileCriterionSerializer,
-                                     CustomSignatureSerializer,
-                                     CustomCustomDataSerializer
+                                     parentNetworkingNode.CustomGetChargingProfilesRequestSerializer,
+                                     parentNetworkingNode.CustomChargingProfileCriterionSerializer,
+                                     parentNetworkingNode.CustomSignatureSerializer,
+                                     parentNetworkingNode.CustomCustomDataSerializer
                                  ),
                                  out var errorResponse
                              ))
@@ -6228,10 +4471,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomGetChargingProfilesResponseSerializer,
-                            CustomStatusInfoSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
+                            parentNetworkingNode.CustomGetChargingProfilesResponseSerializer,
+                            parentNetworkingNode.CustomStatusInfoSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
                         ),
                         out var errorResponse2);
 
@@ -6302,10 +4545,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
                                  request,
                                  request.ToJSON(
-                                     CustomClearChargingProfileRequestSerializer,
-                                     CustomClearChargingProfileSerializer,
-                                     CustomSignatureSerializer,
-                                     CustomCustomDataSerializer
+                                     parentNetworkingNode.CustomClearChargingProfileRequestSerializer,
+                                     parentNetworkingNode.CustomClearChargingProfileSerializer,
+                                     parentNetworkingNode.CustomSignatureSerializer,
+                                     parentNetworkingNode.CustomCustomDataSerializer
                                  ),
                                  out var errorResponse
                              ))
@@ -6346,10 +4589,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomClearChargingProfileResponseSerializer,
-                            CustomStatusInfoSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
+                            parentNetworkingNode.CustomClearChargingProfileResponseSerializer,
+                            parentNetworkingNode.CustomStatusInfoSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
                         ),
                         out var errorResponse2);
 
@@ -6420,9 +4663,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
                                  request,
                                  request.ToJSON(
-                                     CustomGetCompositeScheduleRequestSerializer,
-                                     CustomSignatureSerializer,
-                                     CustomCustomDataSerializer
+                                     parentNetworkingNode.CustomGetCompositeScheduleRequestSerializer,
+                                     parentNetworkingNode.CustomSignatureSerializer,
+                                     parentNetworkingNode.CustomCustomDataSerializer
                                  ),
                                  out var errorResponse
                              ))
@@ -6465,12 +4708,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomGetCompositeScheduleResponseSerializer,
-                            CustomCompositeScheduleSerializer,
-                            CustomChargingSchedulePeriodSerializer,
-                            CustomStatusInfoSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
+                            parentNetworkingNode.CustomGetCompositeScheduleResponseSerializer,
+                            parentNetworkingNode.CustomCompositeScheduleSerializer,
+                            parentNetworkingNode.CustomChargingSchedulePeriodSerializer,
+                            parentNetworkingNode.CustomStatusInfoSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
                         ),
                         out var errorResponse2);
 
@@ -6541,9 +4784,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
                                  request,
                                  request.ToJSON(
-                                     CustomUpdateDynamicScheduleRequestSerializer,
-                                     CustomSignatureSerializer,
-                                     CustomCustomDataSerializer
+                                     parentNetworkingNode.CustomUpdateDynamicScheduleRequestSerializer,
+                                     parentNetworkingNode.CustomSignatureSerializer,
+                                     parentNetworkingNode.CustomCustomDataSerializer
                                  ),
                                  out var errorResponse
                              ))
@@ -6599,10 +4842,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomUpdateDynamicScheduleResponseSerializer,
-                            CustomStatusInfoSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
+                            parentNetworkingNode.CustomUpdateDynamicScheduleResponseSerializer,
+                            parentNetworkingNode.CustomStatusInfoSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
                         ),
                         out var errorResponse2);
 
@@ -6673,9 +4916,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
                                  request,
                                  request.ToJSON(
-                                     CustomNotifyAllowedEnergyTransferRequestSerializer,
-                                     CustomSignatureSerializer,
-                                     CustomCustomDataSerializer
+                                     parentNetworkingNode.CustomNotifyAllowedEnergyTransferRequestSerializer,
+                                     parentNetworkingNode.CustomSignatureSerializer,
+                                     parentNetworkingNode.CustomCustomDataSerializer
                                  ),
                                  out var errorResponse
                              ))
@@ -6715,10 +4958,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomNotifyAllowedEnergyTransferResponseSerializer,
-                            CustomStatusInfoSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
+                            parentNetworkingNode.CustomNotifyAllowedEnergyTransferResponseSerializer,
+                            parentNetworkingNode.CustomStatusInfoSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
                         ),
                         out var errorResponse2);
 
@@ -6789,9 +5032,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
                                  request,
                                  request.ToJSON(
-                                     CustomUsePriorityChargingRequestSerializer,
-                                     CustomSignatureSerializer,
-                                     CustomCustomDataSerializer
+                                     parentNetworkingNode.CustomUsePriorityChargingRequestSerializer,
+                                     parentNetworkingNode.CustomSignatureSerializer,
+                                     parentNetworkingNode.CustomCustomDataSerializer
                                  ),
                                  out var errorResponse
                              ))
@@ -6832,10 +5075,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomUsePriorityChargingResponseSerializer,
-                            CustomStatusInfoSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
+                            parentNetworkingNode.CustomUsePriorityChargingResponseSerializer,
+                            parentNetworkingNode.CustomStatusInfoSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
                         ),
                         out var errorResponse2);
 
@@ -6906,9 +5149,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
                                  request,
                                  request.ToJSON(
-                                     CustomUnlockConnectorRequestSerializer,
-                                     CustomSignatureSerializer,
-                                     CustomCustomDataSerializer
+                                     parentNetworkingNode.CustomUnlockConnectorRequestSerializer,
+                                     parentNetworkingNode.CustomSignatureSerializer,
+                                     parentNetworkingNode.CustomCustomDataSerializer
                                  ),
                                  out var errorResponse
                              ))
@@ -6949,10 +5192,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomUnlockConnectorResponseSerializer,
-                            CustomStatusInfoSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
+                            parentNetworkingNode.CustomUnlockConnectorResponseSerializer,
+                            parentNetworkingNode.CustomStatusInfoSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
                         ),
                         out var errorResponse2);
 
@@ -7024,9 +5267,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
                                  request,
                                  request.ToJSON(
-                                     CustomAFRRSignalRequestSerializer,
-                                     CustomSignatureSerializer,
-                                     CustomCustomDataSerializer
+                                     parentNetworkingNode.CustomAFRRSignalRequestSerializer,
+                                     parentNetworkingNode.CustomSignatureSerializer,
+                                     parentNetworkingNode.CustomCustomDataSerializer
                                  ),
                                  out var errorResponse
                              ))
@@ -7069,10 +5312,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomAFRRSignalResponseSerializer,
-                            CustomStatusInfoSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
+                            parentNetworkingNode.CustomAFRRSignalResponseSerializer,
+                            parentNetworkingNode.CustomStatusInfoSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
                         ),
                         out var errorResponse2);
 
@@ -7144,13 +5387,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
                                  request,
                                  request.ToJSON(
-                                     CustomSetDisplayMessageRequestSerializer,
-                                     CustomMessageInfoSerializer,
-                                     CustomMessageContentSerializer,
-                                     CustomComponentSerializer,
-                                     CustomEVSESerializer,
-                                     CustomSignatureSerializer,
-                                     CustomCustomDataSerializer
+                                     parentNetworkingNode.CustomSetDisplayMessageRequestSerializer,
+                                     parentNetworkingNode.CustomMessageInfoSerializer,
+                                     parentNetworkingNode.CustomMessageContentSerializer,
+                                     parentNetworkingNode.CustomComponentSerializer,
+                                     parentNetworkingNode.CustomEVSESerializer,
+                                     parentNetworkingNode.CustomSignatureSerializer,
+                                     parentNetworkingNode.CustomCustomDataSerializer
                                  ),
                                  out var errorResponse
                              ))
@@ -7203,10 +5446,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomSetDisplayMessageResponseSerializer,
-                            CustomStatusInfoSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
+                            parentNetworkingNode.CustomSetDisplayMessageResponseSerializer,
+                            parentNetworkingNode.CustomStatusInfoSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
                         ),
                         out var errorResponse2);
 
@@ -7277,9 +5520,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
                                  request,
                                  request.ToJSON(
-                                     CustomGetDisplayMessagesRequestSerializer,
-                                     CustomSignatureSerializer,
-                                     CustomCustomDataSerializer
+                                     parentNetworkingNode.CustomGetDisplayMessagesRequestSerializer,
+                                     parentNetworkingNode.CustomSignatureSerializer,
+                                     parentNetworkingNode.CustomCustomDataSerializer
                                  ),
                                  out var errorResponse
                              ))
@@ -7338,10 +5581,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomGetDisplayMessagesResponseSerializer,
-                            CustomStatusInfoSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
+                            parentNetworkingNode.CustomGetDisplayMessagesResponseSerializer,
+                            parentNetworkingNode.CustomStatusInfoSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
                         ),
                         out var errorResponse2);
 
@@ -7412,9 +5655,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
                                  request,
                                  request.ToJSON(
-                                     CustomClearDisplayMessageRequestSerializer,
-                                     CustomSignatureSerializer,
-                                     CustomCustomDataSerializer
+                                     parentNetworkingNode.CustomClearDisplayMessageRequestSerializer,
+                                     parentNetworkingNode.CustomSignatureSerializer,
+                                     parentNetworkingNode.CustomCustomDataSerializer
                                  ),
                                  out var errorResponse
                              ))
@@ -7463,10 +5706,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomClearDisplayMessageResponseSerializer,
-                            CustomStatusInfoSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
+                            parentNetworkingNode.CustomClearDisplayMessageResponseSerializer,
+                            parentNetworkingNode.CustomStatusInfoSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
                         ),
                         out var errorResponse2);
 
@@ -7537,9 +5780,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
                                  request,
                                  request.ToJSON(
-                                     CustomCostUpdatedRequestSerializer,
-                                     CustomSignatureSerializer,
-                                     CustomCustomDataSerializer
+                                     parentNetworkingNode.CustomCostUpdatedRequestSerializer,
+                                     parentNetworkingNode.CustomSignatureSerializer,
+                                     parentNetworkingNode.CustomCustomDataSerializer
                                  ),
                                  out var errorResponse
                              ))
@@ -7591,9 +5834,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomCostUpdatedResponseSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
+                            parentNetworkingNode.CustomCostUpdatedResponseSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
                         ),
                         out var errorResponse2);
 
@@ -7648,7 +5891,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //    response = new OCPPv2_1.CS.CustomerInformationResponse(
                     //                   Request:  request,
                     //                   Result:   Result.GenericError(
-                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid CustomerInformation request for charging station '{request.ChargingStationId}'!"
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid parentNetworkingNode.CustomerInformation request for charging station '{request.ChargingStationId}'!"
                     //                             )
                     //               );
                     //}
@@ -7664,12 +5907,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
                                  request,
                                  request.ToJSON(
-                                     CustomCustomerInformationRequestSerializer,
-                                     CustomIdTokenSerializer,
-                                     CustomAdditionalInfoSerializer,
-                                     CustomCertificateHashDataSerializer,
-                                     CustomSignatureSerializer,
-                                     CustomCustomDataSerializer
+                                     parentNetworkingNode.CustomCustomerInformationRequestSerializer,
+                                     parentNetworkingNode.CustomIdTokenSerializer,
+                                     parentNetworkingNode.CustomAdditionalInfoSerializer,
+                                     parentNetworkingNode.CustomCertificateHashDataSerializer,
+                                     parentNetworkingNode.CustomSignatureSerializer,
+                                     parentNetworkingNode.CustomCustomDataSerializer
                                  ),
                                  out var errorResponse
                              ))
@@ -7711,14 +5954,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                            : "-";
 
 
-                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming CustomerInformation request ({request.CustomerInformationRequestId}) to {command} for customer '{customer}'!");
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming parentNetworkingNode.CustomerInformation request ({request.CustomerInformationRequestId}) to {command} for customer '{customer}'!");
 
-                            // CustomerInformationRequestId
+                            // parentNetworkingNode.CustomerInformationRequestId
                             // Report
                             // Clear
-                            // CustomerIdentifier
+                            // parentNetworkingNode.CustomerIdentifier
                             // IdToken
-                            // CustomerCertificate
+                            // parentNetworkingNode.CustomerCertificate
 
 
 
@@ -7752,10 +5995,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomCustomerInformationResponseSerializer,
-                            CustomStatusInfoSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
+                            parentNetworkingNode.CustomCustomerInformationResponseSerializer,
+                            parentNetworkingNode.CustomStatusInfoSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
                         ),
                         out var errorResponse2);
 
@@ -7829,8 +6072,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
                                  request,
                                  request.ToBinary(
-                                     CustomIncomingBinaryDataTransferRequestSerializer,
-                                     CustomBinarySignatureSerializer,
+                                     parentNetworkingNode.CustomIncomingBinaryDataTransferRequestSerializer,
+                                     parentNetworkingNode.CustomBinarySignatureSerializer,
                                      IncludeSignatures: false
                                  ),
                                  out var errorResponse
@@ -7887,9 +6130,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToBinary(
-                            CustomIncomingBinaryDataTransferResponseSerializer,
+                            parentNetworkingNode.CustomIncomingBinaryDataTransferResponseSerializer,
                             null, //CustomStatusInfoSerializer,
-                            CustomBinarySignatureSerializer,
+                            parentNetworkingNode.CustomBinarySignatureSerializer,
                             IncludeSignatures: false
                         ),
                         out var errorResponse2);
@@ -7961,9 +6204,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
                                  request,
                                  request.ToJSON(
-                                     CustomGetFileRequestSerializer,
-                                     CustomSignatureSerializer,
-                                     CustomCustomDataSerializer
+                                     parentNetworkingNode.CustomGetFileRequestSerializer,
+                                     parentNetworkingNode.CustomSignatureSerializer,
+                                     parentNetworkingNode.CustomCustomDataSerializer
                                  ),
                                  out var errorResponse
                              ))
@@ -8012,9 +6255,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToBinary(
-                            CustomGetFileResponseSerializer,
+                            parentNetworkingNode.CustomGetFileResponseSerializer,
                             null, //CustomStatusInfoSerializer,
-                            CustomBinarySignatureSerializer,
+                            parentNetworkingNode.CustomBinarySignatureSerializer,
                             IncludeSignatures: false
                         ),
                         out var errorResponse2);
@@ -8086,8 +6329,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
                                  request,
                                  request.ToBinary(
-                                     CustomSendFileRequestSerializer,
-                                     CustomBinarySignatureSerializer,
+                                     parentNetworkingNode.CustomSendFileRequestSerializer,
+                                     parentNetworkingNode.CustomBinarySignatureSerializer,
                                      IncludeSignatures: false
                                  ),
                                  out var errorResponse
@@ -8133,10 +6376,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomSendFileResponseSerializer,
-                            CustomStatusInfoSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
+                            parentNetworkingNode.CustomSendFileResponseSerializer,
+                            parentNetworkingNode.CustomStatusInfoSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
                         ),
                         out var errorResponse2);
 
@@ -8207,9 +6450,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
                                  request,
                                  request.ToJSON(
-                                     CustomDeleteFileRequestSerializer,
-                                     CustomSignatureSerializer,
-                                     CustomCustomDataSerializer
+                                     parentNetworkingNode.CustomDeleteFileRequestSerializer,
+                                     parentNetworkingNode.CustomSignatureSerializer,
+                                     parentNetworkingNode.CustomCustomDataSerializer
                                  ),
                                  out var errorResponse
                              ))
@@ -8254,10 +6497,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomDeleteFileResponseSerializer,
-                            CustomStatusInfoSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
+                            parentNetworkingNode.CustomDeleteFileResponseSerializer,
+                            parentNetworkingNode.CustomStatusInfoSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
                         ),
                         out var errorResponse2);
 
@@ -8379,10 +6622,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomAddSignaturePolicyResponseSerializer,
-                            CustomStatusInfoSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
+                            parentNetworkingNode.CustomAddSignaturePolicyResponseSerializer,
+                            parentNetworkingNode.CustomStatusInfoSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
                         ),
                         out var errorResponse2);
 
@@ -8499,10 +6742,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomUpdateSignaturePolicyResponseSerializer,
-                            CustomStatusInfoSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
+                            parentNetworkingNode.CustomUpdateSignaturePolicyResponseSerializer,
+                            parentNetworkingNode.CustomStatusInfoSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
                         ),
                         out var errorResponse2);
 
@@ -8619,10 +6862,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomDeleteSignaturePolicyResponseSerializer,
-                            CustomStatusInfoSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
+                            parentNetworkingNode.CustomDeleteSignaturePolicyResponseSerializer,
+                            parentNetworkingNode.CustomStatusInfoSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
                         ),
                         out var errorResponse2);
 
@@ -8739,10 +6982,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomAddUserRoleResponseSerializer,
-                            CustomStatusInfoSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
+                            parentNetworkingNode.CustomAddUserRoleResponseSerializer,
+                            parentNetworkingNode.CustomStatusInfoSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
                         ),
                         out var errorResponse2);
 
@@ -8859,10 +7102,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomUpdateUserRoleResponseSerializer,
-                            CustomStatusInfoSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
+                            parentNetworkingNode.CustomUpdateUserRoleResponseSerializer,
+                            parentNetworkingNode.CustomStatusInfoSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
                         ),
                         out var errorResponse2);
 
@@ -8979,10 +7222,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomDeleteUserRoleResponseSerializer,
-                            CustomStatusInfoSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
+                            parentNetworkingNode.CustomDeleteUserRoleResponseSerializer,
+                            parentNetworkingNode.CustomStatusInfoSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
                         ),
                         out var errorResponse2);
 
@@ -9056,20 +7299,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
                                  request,
                                  request.ToJSON(
-                                     CustomSetDefaultChargingTariffRequestSerializer,
-                                     CustomChargingTariffSerializer,
-                                     CustomPriceSerializer,
-                                     CustomTariffElementSerializer,
-                                     CustomPriceComponentSerializer,
-                                     CustomTaxRateSerializer,
-                                     CustomTariffRestrictionsSerializer,
-                                     CustomEnergyMixSerializer,
-                                     CustomEnergySourceSerializer,
-                                     CustomEnvironmentalImpactSerializer,
-                                     CustomIdTokenSerializer,
-                                     CustomAdditionalInfoSerializer,
-                                     CustomSignatureSerializer,
-                                     CustomCustomDataSerializer
+                                     parentNetworkingNode.CustomSetDefaultChargingTariffRequestSerializer,
+                                     parentNetworkingNode.CustomChargingTariffSerializer,
+                                     parentNetworkingNode.CustomPriceSerializer,
+                                     parentNetworkingNode.CustomTariffElementSerializer,
+                                     parentNetworkingNode.CustomPriceComponentSerializer,
+                                     parentNetworkingNode.CustomTaxRateSerializer,
+                                     parentNetworkingNode.CustomTariffRestrictionsSerializer,
+                                     parentNetworkingNode.CustomEnergyMixSerializer,
+                                     parentNetworkingNode.CustomEnergySourceSerializer,
+                                     parentNetworkingNode.CustomEnvironmentalImpactSerializer,
+                                     parentNetworkingNode.CustomIdTokenSerializer,
+                                     parentNetworkingNode.CustomAdditionalInfoSerializer,
+                                     parentNetworkingNode.CustomSignatureSerializer,
+                                     parentNetworkingNode.CustomCustomDataSerializer
                                  ),
                                  out var errorResponse
                              ))
@@ -9172,11 +7415,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomSetDefaultChargingTariffResponseSerializer,
-                            CustomStatusInfoSerializer,
-                            CustomEVSEStatusInfoSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
+                            parentNetworkingNode.CustomSetDefaultChargingTariffResponseSerializer,
+                            parentNetworkingNode.CustomStatusInfoSerializer,
+                            parentNetworkingNode.CustomEVSEStatusInfoSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
                         ),
                         out var errorResponse2);
 
@@ -9247,9 +7490,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
                                  request,
                                  request.ToJSON(
-                                     CustomGetDefaultChargingTariffRequestSerializer,
-                                     CustomSignatureSerializer,
-                                     CustomCustomDataSerializer
+                                     parentNetworkingNode.CustomGetDefaultChargingTariffRequestSerializer,
+                                     parentNetworkingNode.CustomSignatureSerializer,
+                                     parentNetworkingNode.CustomCustomDataSerializer
                                  ),
                                  out var errorResponse
                              ))
@@ -9289,21 +7532,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomGetDefaultChargingTariffResponseSerializer,
-                            CustomStatusInfoSerializer,
-                            CustomChargingTariffSerializer,
-                            CustomPriceSerializer,
-                            CustomTariffElementSerializer,
-                            CustomPriceComponentSerializer,
-                            CustomTaxRateSerializer,
-                            CustomTariffRestrictionsSerializer,
-                            CustomEnergyMixSerializer,
-                            CustomEnergySourceSerializer,
-                            CustomEnvironmentalImpactSerializer,
-                            CustomIdTokenSerializer,
-                            CustomAdditionalInfoSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
+                            parentNetworkingNode.CustomGetDefaultChargingTariffResponseSerializer,
+                            parentNetworkingNode.CustomStatusInfoSerializer,
+                            parentNetworkingNode.CustomChargingTariffSerializer,
+                            parentNetworkingNode.CustomPriceSerializer,
+                            parentNetworkingNode.CustomTariffElementSerializer,
+                            parentNetworkingNode.CustomPriceComponentSerializer,
+                            parentNetworkingNode.CustomTaxRateSerializer,
+                            parentNetworkingNode.CustomTariffRestrictionsSerializer,
+                            parentNetworkingNode.CustomEnergyMixSerializer,
+                            parentNetworkingNode.CustomEnergySourceSerializer,
+                            parentNetworkingNode.CustomEnvironmentalImpactSerializer,
+                            parentNetworkingNode.CustomIdTokenSerializer,
+                            parentNetworkingNode.CustomAdditionalInfoSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
                         ),
                         out var errorResponse2);
 
@@ -9374,9 +7617,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
                                  request,
                                  request.ToJSON(
-                                     CustomRemoveDefaultChargingTariffRequestSerializer,
-                                     CustomSignatureSerializer,
-                                     CustomCustomDataSerializer
+                                     parentNetworkingNode.CustomRemoveDefaultChargingTariffRequestSerializer,
+                                     parentNetworkingNode.CustomSignatureSerializer,
+                                     parentNetworkingNode.CustomCustomDataSerializer
                                  ),
                                  out var errorResponse
                              ))
@@ -9415,11 +7658,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomRemoveDefaultChargingTariffResponseSerializer,
-                            CustomStatusInfoSerializer,
-                            CustomEVSEStatusInfoSerializer2,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
+                            parentNetworkingNode.CustomRemoveDefaultChargingTariffResponseSerializer,
+                            parentNetworkingNode.CustomStatusInfoSerializer,
+                            parentNetworkingNode.CustomEVSEStatusInfoSerializer2,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
                         ),
                         out var errorResponse2);
 
