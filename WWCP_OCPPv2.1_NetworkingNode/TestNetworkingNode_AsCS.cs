@@ -2350,41 +2350,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #region OnPublishFirmware
 
                 IncomingMessages.OnPublishFirmware += async (timestamp,
-                                                                  sender,
-                                                                  connection,
-                                                                  request,
-                                                                  cancellationToken) => {
+                                                             sender,
+                                                             connection,
+                                                             request,
+                                                             cancellationToken) => {
 
                     #region Send OnPublishFirmwareRequest event
 
-                    var startTime      = Timestamp.Now;
+                    var startTime = Timestamp.Now;
 
-                    var requestLogger  = OnPublishFirmwareRequest;
-                    if (requestLogger is not null)
-                    {
-
-                        var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <OCPPv2_1.CS.OnPublishFirmwareRequestDelegate>().
-                                                               Select (loggingDelegate => loggingDelegate.Invoke(startTime,
-                                                                                                                 this,
-                                                                                                                 connection,
-                                                                                                                 request)).
-                                                               ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(requestLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnPublishFirmwareRequest),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnPublishFirmwareRequest(startTime,
+                                                                                this,
+                                                                                connection,
+                                                                                request);
 
                     #endregion
 
@@ -2472,36 +2450,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnPublishFirmwareResponse event
 
-                    var responseLogger = OnPublishFirmwareResponse;
-                    if (responseLogger is not null)
-                    {
+                    var responseTime = Timestamp.Now;
 
-                        var responseTime         = Timestamp.Now;
-
-                        var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <OCPPv2_1.CS.OnPublishFirmwareResponseDelegate>().
-                                                                  Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
-                                                                                                                    this,
-                                                                                                                    connection,
-                                                                                                                    request,
-                                                                                                                    response,
-                                                                                                                    responseTime - startTime)).
-                                                                  ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(responseLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnPublishFirmwareResponse),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnPublishFirmwareResponse(responseTime,
+                                                                                 this,
+                                                                                 connection,
+                                                                                 request,
+                                                                                 response,
+                                                                                 responseTime - startTime);
 
                     #endregion
 
@@ -2514,41 +2470,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #region OnUnpublishFirmware
 
                 IncomingMessages.OnUnpublishFirmware += async (timestamp,
-                                                                    sender,
-                                                                    connection,
-                                                                    request,
-                                                                    cancellationToken) => {
+                                                               sender,
+                                                               connection,
+                                                               request,
+                                                               cancellationToken) => {
 
                     #region Send OnUnpublishFirmwareRequest event
 
-                    var startTime      = Timestamp.Now;
+                    var startTime = Timestamp.Now;
 
-                    var requestLogger  = OnUnpublishFirmwareRequest;
-                    if (requestLogger is not null)
-                    {
-
-                        var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <OCPPv2_1.CS.OnUnpublishFirmwareRequestDelegate>().
-                                                               Select (loggingDelegate => loggingDelegate.Invoke(startTime,
-                                                                                                                 this,
-                                                                                                                 connection,
-                                                                                                                 request)).
-                                                               ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(requestLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnUnpublishFirmwareRequest),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnUnpublishFirmwareRequest(startTime,
+                                                                                  this,
+                                                                                  connection,
+                                                                                  request);
 
                     #endregion
 
@@ -2630,36 +2564,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnUnpublishFirmwareResponse event
 
-                    var responseLogger = OnUnpublishFirmwareResponse;
-                    if (responseLogger is not null)
-                    {
+                    var responseTime = Timestamp.Now;
 
-                        var responseTime         = Timestamp.Now;
-
-                        var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <OCPPv2_1.CS.OnUnpublishFirmwareResponseDelegate>().
-                                                                  Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
-                                                                                                                    this,
-                                                                                                                    connection,
-                                                                                                                    request,
-                                                                                                                    response,
-                                                                                                                    responseTime - startTime)).
-                                                                  ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(responseLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnUnpublishFirmwareResponse),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnUnpublishFirmwareResponse(responseTime,
+                                                                                   this,
+                                                                                   connection,
+                                                                                   request,
+                                                                                   response,
+                                                                                   responseTime - startTime);
 
                     #endregion
 
@@ -2672,43 +2584,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #region OnGetBaseReport
 
                 IncomingMessages.OnGetBaseReport += async (timestamp,
-                                                                sender,
-                                                                connection,
-                                                                request,
-                                                                cancellationToken) => {
+                                                           sender,
+                                                           connection,
+                                                           request,
+                                                           cancellationToken) => {
 
                     #region Send OnGetBaseReportRequest event
 
-                    var startTime      = Timestamp.Now;
+                    var startTime = Timestamp.Now;
 
-                    var requestLogger  = OnGetBaseReportRequest;
-                    if (requestLogger is not null)
-                    {
+                    await parentNetworkingNode.IN.RaiseOnGetBaseReportRequest(startTime,
+                                                                              this,
+                                                                              connection,
+                                                                              request);
 
-                        var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <OCPPv2_1.CS.OnGetBaseReportRequestDelegate>().
-                                                               Select (loggingDelegate => loggingDelegate.Invoke(startTime,
-                                                                                                                 this,
-                                                                                                                 connection,
-                                                                                                                 request)).
-                                                               ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(requestLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnGetBaseReportRequest),
-                                      e
-                                  );
-                        }
-
-                    }
-
-                                                                    #endregion
+                    #endregion
 
 
                     #region Check charging station identification
@@ -2791,36 +2681,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnGetBaseReportResponse event
 
-                    var responseLogger = OnGetBaseReportResponse;
-                    if (responseLogger is not null)
-                    {
+                    var responseTime = Timestamp.Now;
 
-                        var responseTime         = Timestamp.Now;
-
-                        var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <OCPPv2_1.CS.OnGetBaseReportResponseDelegate>().
-                                                                  Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
-                                                                                                                    this,
-                                                                                                                    connection,
-                                                                                                                    request,
-                                                                                                                    response,
-                                                                                                                    responseTime - startTime)).
-                                                                  ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(responseLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnGetBaseReportResponse),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnGetBaseReportResponse(responseTime,
+                                                                               this,
+                                                                               connection,
+                                                                               request,
+                                                                               response,
+                                                                               responseTime - startTime);
 
                     #endregion
 
@@ -2833,41 +2701,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #region OnGetReport
 
                 IncomingMessages.OnGetReport += async (timestamp,
-                                                            sender,
-                                                            connection,
-                                                            request,
-                                                            cancellationToken) => {
+                                                       sender,
+                                                       connection,
+                                                       request,
+                                                       cancellationToken) => {
 
                     #region Send OnGetReportRequest event
 
-                    var startTime      = Timestamp.Now;
+                    var startTime = Timestamp.Now;
 
-                    var requestLogger  = OnGetReportRequest;
-                    if (requestLogger is not null)
-                    {
-
-                        var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <OCPPv2_1.CS.OnGetReportRequestDelegate>().
-                                                               Select (loggingDelegate => loggingDelegate.Invoke(startTime,
-                                                                                                                 this,
-                                                                                                                 connection,
-                                                                                                                 request)).
-                                                               ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(requestLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnGetReportRequest),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnGetReportRequest(startTime,
+                                                                          this,
+                                                                          connection,
+                                                                          request);
 
                     #endregion
 
@@ -2957,36 +2803,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnGetReportResponse event
 
-                    var responseLogger = OnGetReportResponse;
-                    if (responseLogger is not null)
-                    {
+                    var responseTime = Timestamp.Now;
 
-                        var responseTime         = Timestamp.Now;
-
-                        var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <OCPPv2_1.CS.OnGetReportResponseDelegate>().
-                                                                  Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
-                                                                                                                    this,
-                                                                                                                    connection,
-                                                                                                                    request,
-                                                                                                                    response,
-                                                                                                                    responseTime - startTime)).
-                                                                  ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(responseLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnGetReportResponse),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnGetReportResponse(responseTime,
+                                                                           this,
+                                                                           connection,
+                                                                           request,
+                                                                           response,
+                                                                           responseTime - startTime);
 
                     #endregion
 
@@ -2999,41 +2823,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #region OnGetLog
 
                 IncomingMessages.OnGetLog += async (timestamp,
-                                                         sender,
-                                                         connection,
-                                                         request,
-                                                         cancellationToken) => {
+                                                    sender,
+                                                    connection,
+                                                    request,
+                                                    cancellationToken) => {
 
                     #region Send OnGetLogRequest event
 
-                    var startTime      = Timestamp.Now;
+                    var startTime = Timestamp.Now;
 
-                    var requestLogger  = OnGetLogRequest;
-                    if (requestLogger is not null)
-                    {
-
-                        var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <OCPPv2_1.CS.OnGetLogRequestDelegate>().
-                                                               Select (loggingDelegate => loggingDelegate.Invoke(startTime,
-                                                                                                                 this,
-                                                                                                                 connection,
-                                                                                                                 request)).
-                                                               ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(requestLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnGetLogRequest),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnGetLogRequest(startTime,
+                                                                       this,
+                                                                       connection,
+                                                                       request);
 
                     #endregion
 
@@ -3122,36 +2924,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnGetLogResponse event
 
-                    var responseLogger = OnGetLogResponse;
-                    if (responseLogger is not null)
-                    {
+                    var responseTime = Timestamp.Now;
 
-                        var responseTime         = Timestamp.Now;
-
-                        var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <OCPPv2_1.CS.OnGetLogResponseDelegate>().
-                                                                  Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
-                                                                                                                    this,
-                                                                                                                    connection,
-                                                                                                                    request,
-                                                                                                                    response,
-                                                                                                                    responseTime - startTime)).
-                                                                  ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(responseLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnGetLogResponse),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnGetLogResponse(responseTime,
+                                                                        this,
+                                                                        connection,
+                                                                        request,
+                                                                        response,
+                                                                        responseTime - startTime);
 
                     #endregion
 
@@ -3164,41 +2944,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #region OnSetVariables
 
                 IncomingMessages.OnSetVariables += async (timestamp,
-                                                               sender,
-                                                               connection,
-                                                               request,
-                                                               cancellationToken) => {
+                                                          sender,
+                                                          connection,
+                                                          request,
+                                                          cancellationToken) => {
 
                     #region Send OnSetVariablesRequest event
 
-                    var startTime      = Timestamp.Now;
+                    var startTime = Timestamp.Now;
 
-                    var requestLogger  = OnSetVariablesRequest;
-                    if (requestLogger is not null)
-                    {
-
-                        var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <OCPPv2_1.CS.OnSetVariablesRequestDelegate>().
-                                                               Select (loggingDelegate => loggingDelegate.Invoke(startTime,
-                                                                                                                 this,
-                                                                                                                 connection,
-                                                                                                                 request)).
-                                                               ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(requestLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnSetVariablesRequest),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnSetVariablesRequest(startTime,
+                                                                             this,
+                                                                             connection,
+                                                                             request);
 
                     #endregion
 
@@ -3296,36 +3054,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnSetVariablesResponse event
 
-                    var responseLogger = OnSetVariablesResponse;
-                    if (responseLogger is not null)
-                    {
+                    var responseTime = Timestamp.Now;
 
-                        var responseTime         = Timestamp.Now;
-
-                        var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <OCPPv2_1.CS.OnSetVariablesResponseDelegate>().
-                                                                  Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
-                                                                                                                    this,
-                                                                                                                    connection,
-                                                                                                                    request,
-                                                                                                                    response,
-                                                                                                                    responseTime - startTime)).
-                                                                  ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(responseLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnSetVariablesResponse),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnSetVariablesResponse(responseTime,
+                                                                              this,
+                                                                              connection,
+                                                                              request,
+                                                                              response,
+                                                                              responseTime - startTime);
 
                     #endregion
 
@@ -3338,41 +3074,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #region OnGetVariables
 
                 IncomingMessages.OnGetVariables += async (timestamp,
-                                                               sender,
-                                                               connection,
-                                                               request,
-                                                               cancellationToken) => {
+                                                          sender,
+                                                          connection,
+                                                          request,
+                                                          cancellationToken) => {
 
                     #region Send OnGetVariablesRequest event
 
-                    var startTime      = Timestamp.Now;
+                    var startTime = Timestamp.Now;
 
-                    var requestLogger  = OnGetVariablesRequest;
-                    if (requestLogger is not null)
-                    {
-
-                        var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <OCPPv2_1.CS.OnGetVariablesRequestDelegate>().
-                                                               Select (loggingDelegate => loggingDelegate.Invoke(startTime,
-                                                                                                                 this,
-                                                                                                                 connection,
-                                                                                                                 request)).
-                                                               ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(requestLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnGetVariablesRequest),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnGetVariablesRequest(startTime,
+                                                                             this,
+                                                                             connection,
+                                                                             request);
 
                     #endregion
 
@@ -3471,36 +3185,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnGetVariablesResponse event
 
-                    var responseLogger = OnGetVariablesResponse;
-                    if (responseLogger is not null)
-                    {
+                    var responseTime = Timestamp.Now;
 
-                        var responseTime         = Timestamp.Now;
-
-                        var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <OCPPv2_1.CS.OnGetVariablesResponseDelegate>().
-                                                                  Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
-                                                                                                                    this,
-                                                                                                                    connection,
-                                                                                                                    request,
-                                                                                                                    response,
-                                                                                                                    responseTime - startTime)).
-                                                                  ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(responseLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnGetVariablesResponse),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnGetVariablesResponse(responseTime,
+                                                                              this,
+                                                                              connection,
+                                                                              request,
+                                                                              response,
+                                                                              responseTime - startTime);
 
                     #endregion
 
@@ -3513,41 +3205,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #region OnSetMonitoringBase
 
                 IncomingMessages.OnSetMonitoringBase += async (timestamp,
-                                                                    sender,
-                                                                    connection,
-                                                                    request,
-                                                                    cancellationToken) => {
+                                                               sender,
+                                                               connection,
+                                                               request,
+                                                               cancellationToken) => {
 
                     #region Send OnSetMonitoringBaseRequest event
 
-                    var startTime      = Timestamp.Now;
+                    var startTime = Timestamp.Now;
 
-                    var requestLogger  = OnSetMonitoringBaseRequest;
-                    if (requestLogger is not null)
-                    {
-
-                        var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <OCPPv2_1.CS.OnSetMonitoringBaseRequestDelegate>().
-                                                               Select (loggingDelegate => loggingDelegate.Invoke(startTime,
-                                                                                                                 this,
-                                                                                                                 connection,
-                                                                                                                 request)).
-                                                               ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(requestLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnSetMonitoringBaseRequest),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnSetMonitoringBaseRequest(startTime,
+                                                                                  this,
+                                                                                  connection,
+                                                                                  request);
 
                     #endregion
 
@@ -3631,36 +3301,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnSetMonitoringBaseResponse event
 
-                    var responseLogger = OnSetMonitoringBaseResponse;
-                    if (responseLogger is not null)
-                    {
+                    var responseTime = Timestamp.Now;
 
-                        var responseTime         = Timestamp.Now;
-
-                        var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <OCPPv2_1.CS.OnSetMonitoringBaseResponseDelegate>().
-                                                                  Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
-                                                                                                                    this,
-                                                                                                                    connection,
-                                                                                                                    request,
-                                                                                                                    response,
-                                                                                                                    responseTime - startTime)).
-                                                                  ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(responseLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnSetMonitoringBaseResponse),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnSetMonitoringBaseResponse(responseTime,
+                                                                                   this,
+                                                                                   connection,
+                                                                                   request,
+                                                                                   response,
+                                                                                   responseTime - startTime);
 
                     #endregion
 
@@ -3673,41 +3321,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #region OnGetMonitoringReport
 
                 IncomingMessages.OnGetMonitoringReport += async (timestamp,
-                                                                      sender,
-                                                                      connection,
-                                                                      request,
-                                                                      cancellationToken) => {
+                                                                 sender,
+                                                                 connection,
+                                                                 request,
+                                                                 cancellationToken) => {
 
                     #region Send OnGetMonitoringReportRequest event
 
-                    var startTime      = Timestamp.Now;
+                    var startTime = Timestamp.Now;
 
-                    var requestLogger  = OnGetMonitoringReportRequest;
-                    if (requestLogger is not null)
-                    {
-
-                        var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <OCPPv2_1.CS.OnGetMonitoringReportRequestDelegate>().
-                                                               Select (loggingDelegate => loggingDelegate.Invoke(startTime,
-                                                                                                                 this,
-                                                                                                                 connection,
-                                                                                                                 request)).
-                                                               ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(requestLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnGetMonitoringReportRequest),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnGetMonitoringReportRequest(startTime,
+                                                                                    this,
+                                                                                    connection,
+                                                                                    request);
 
                     #endregion
 
@@ -3797,36 +3423,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnGetMonitoringReportResponse event
 
-                    var responseLogger = OnGetMonitoringReportResponse;
-                    if (responseLogger is not null)
-                    {
+                    var responseTime = Timestamp.Now;
 
-                        var responseTime         = Timestamp.Now;
-
-                        var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <OCPPv2_1.CS.OnGetMonitoringReportResponseDelegate>().
-                                                                  Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
-                                                                                                                    this,
-                                                                                                                    connection,
-                                                                                                                    request,
-                                                                                                                    response,
-                                                                                                                    responseTime - startTime)).
-                                                                  ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(responseLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnGetMonitoringReportResponse),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnGetMonitoringReportResponse(responseTime,
+                                                                                     this,
+                                                                                     connection,
+                                                                                     request,
+                                                                                     response,
+                                                                                     responseTime - startTime);
 
                     #endregion
 
@@ -3839,41 +3443,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #region OnSetMonitoringLevel
 
                 IncomingMessages.OnSetMonitoringLevel += async (timestamp,
-                                                                     sender,
-                                                                     connection,
-                                                                     request,
-                                                                     cancellationToken) => {
+                                                                sender,
+                                                                connection,
+                                                                request,
+                                                                cancellationToken) => {
 
                     #region Send OnSetMonitoringLevelRequest event
 
-                    var startTime      = Timestamp.Now;
+                    var startTime = Timestamp.Now;
 
-                    var requestLogger  = OnSetMonitoringLevelRequest;
-                    if (requestLogger is not null)
-                    {
-
-                        var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <OCPPv2_1.CS.OnSetMonitoringLevelRequestDelegate>().
-                                                               Select (loggingDelegate => loggingDelegate.Invoke(startTime,
-                                                                                                                 this,
-                                                                                                                 connection,
-                                                                                                                 request)).
-                                                               ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(requestLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnSetMonitoringLevelRequest),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnSetMonitoringLevelRequest(startTime,
+                                                                                   this,
+                                                                                   connection,
+                                                                                   request);
 
                     #endregion
 
@@ -3957,36 +3539,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnSetMonitoringLevelResponse event
 
-                    var responseLogger = OnSetMonitoringLevelResponse;
-                    if (responseLogger is not null)
-                    {
+                    var responseTime = Timestamp.Now;
 
-                        var responseTime         = Timestamp.Now;
-
-                        var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <OCPPv2_1.CS.OnSetMonitoringLevelResponseDelegate>().
-                                                                  Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
-                                                                                                                    this,
-                                                                                                                    connection,
-                                                                                                                    request,
-                                                                                                                    response,
-                                                                                                                    responseTime - startTime)).
-                                                                  ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(responseLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnSetMonitoringLevelResponse),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnSetMonitoringLevelResponse(responseTime,
+                                                                                    this,
+                                                                                    connection,
+                                                                                    request,
+                                                                                    response,
+                                                                                    responseTime - startTime);
 
                     #endregion
 
@@ -3999,41 +3559,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #region OnSetVariableMonitoring
 
                 IncomingMessages.OnSetVariableMonitoring += async (timestamp,
-                                                                        sender,
-                                                                        connection,
-                                                                        request,
-                                                                        cancellationToken) => {
+                                                                   sender,
+                                                                   connection,
+                                                                   request,
+                                                                   cancellationToken) => {
 
                     #region Send OnSetVariableMonitoringRequest event
 
-                    var startTime      = Timestamp.Now;
+                    var startTime = Timestamp.Now;
 
-                    var requestLogger  = OnSetVariableMonitoringRequest;
-                    if (requestLogger is not null)
-                    {
-
-                        var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <OCPPv2_1.CS.OnSetVariableMonitoringRequestDelegate>().
-                                                               Select (loggingDelegate => loggingDelegate.Invoke(startTime,
-                                                                                                                 this,
-                                                                                                                 connection,
-                                                                                                                 request)).
-                                                               ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(requestLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnSetVariableMonitoringRequest),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnSetVariableMonitoringRequest(startTime,
+                                                                                      this,
+                                                                                      connection,
+                                                                                      request);
 
                     #endregion
 
@@ -4134,36 +3672,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnSetVariableMonitoringResponse event
 
-                    var responseLogger = OnSetVariableMonitoringResponse;
-                    if (responseLogger is not null)
-                    {
+                    var responseTime = Timestamp.Now;
 
-                        var responseTime         = Timestamp.Now;
-
-                        var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <OCPPv2_1.CS.OnSetVariableMonitoringResponseDelegate>().
-                                                                  Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
-                                                                                                                    this,
-                                                                                                                    connection,
-                                                                                                                    request,
-                                                                                                                    response,
-                                                                                                                    responseTime - startTime)).
-                                                                  ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(responseLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnSetVariableMonitoringResponse),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnSetVariableMonitoringResponse(responseTime,
+                                                                                       this,
+                                                                                       connection,
+                                                                                       request,
+                                                                                       response,
+                                                                                       responseTime - startTime);
 
                     #endregion
 
@@ -4176,41 +3692,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #region OnClearVariableMonitoring
 
                 IncomingMessages.OnClearVariableMonitoring += async (timestamp,
-                                                                          sender,
-                                                                          connection,
-                                                                          request,
-                                                                          cancellationToken) => {
+                                                                     sender,
+                                                                     connection,
+                                                                     request,
+                                                                     cancellationToken) => {
 
                     #region Send OnClearVariableMonitoringRequest event
 
-                    var startTime      = Timestamp.Now;
+                    var startTime = Timestamp.Now;
 
-                    var requestLogger  = OnClearVariableMonitoringRequest;
-                    if (requestLogger is not null)
-                    {
-
-                        var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <OCPPv2_1.CS.OnClearVariableMonitoringRequestDelegate>().
-                                                               Select (loggingDelegate => loggingDelegate.Invoke(startTime,
-                                                                                                                 this,
-                                                                                                                 connection,
-                                                                                                                 request)).
-                                                               ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(requestLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnClearVariableMonitoringRequest),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnClearVariableMonitoringRequest(startTime,
+                                                                                        this,
+                                                                                        connection,
+                                                                                        request);
 
                     #endregion
 
@@ -4299,36 +3793,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnClearVariableMonitoringResponse event
 
-                    var responseLogger = OnClearVariableMonitoringResponse;
-                    if (responseLogger is not null)
-                    {
+                    var responseTime = Timestamp.Now;
 
-                        var responseTime         = Timestamp.Now;
-
-                        var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <OCPPv2_1.CS.OnClearVariableMonitoringResponseDelegate>().
-                                                                  Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
-                                                                                                                    this,
-                                                                                                                    connection,
-                                                                                                                    request,
-                                                                                                                    response,
-                                                                                                                    responseTime - startTime)).
-                                                                  ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(responseLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnClearVariableMonitoringResponse),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnClearVariableMonitoringResponse(responseTime,
+                                                                                         this,
+                                                                                         connection,
+                                                                                         request,
+                                                                                         response,
+                                                                                         responseTime - startTime);
 
                     #endregion
 
@@ -4341,41 +3813,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #region OnSetNetworkProfile
 
                 IncomingMessages.OnSetNetworkProfile += async (timestamp,
-                                                                    sender,
-                                                                    connection,
-                                                                    request,
-                                                                    cancellationToken) => {
+                                                               sender,
+                                                               connection,
+                                                               request,
+                                                               cancellationToken) => {
 
                     #region Send OnSetNetworkProfileRequest event
 
-                    var startTime      = Timestamp.Now;
+                    var startTime = Timestamp.Now;
 
-                    var requestLogger  = OnSetNetworkProfileRequest;
-                    if (requestLogger is not null)
-                    {
-
-                        var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <OCPPv2_1.CS.OnSetNetworkProfileRequestDelegate>().
-                                                               Select (loggingDelegate => loggingDelegate.Invoke(startTime,
-                                                                                                                 this,
-                                                                                                                 connection,
-                                                                                                                 request)).
-                                                               ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(requestLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnSetNetworkProfileRequest),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnSetNetworkProfileRequest(startTime,
+                                                                                  this,
+                                                                                  connection,
+                                                                                  request);
 
                     #endregion
 
@@ -4462,36 +3912,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnSetNetworkProfileResponse event
 
-                    var responseLogger = OnSetNetworkProfileResponse;
-                    if (responseLogger is not null)
-                    {
+                    var responseTime = Timestamp.Now;
 
-                        var responseTime         = Timestamp.Now;
-
-                        var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <OCPPv2_1.CS.OnSetNetworkProfileResponseDelegate>().
-                                                                  Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
-                                                                                                                    this,
-                                                                                                                    connection,
-                                                                                                                    request,
-                                                                                                                    response,
-                                                                                                                    responseTime - startTime)).
-                                                                  ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(responseLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnSetNetworkProfileResponse),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnSetNetworkProfileResponse(responseTime,
+                                                                                   this,
+                                                                                   connection,
+                                                                                   request,
+                                                                                   response,
+                                                                                   responseTime - startTime);
 
                     #endregion
 
@@ -4504,41 +3932,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #region OnChangeAvailability
 
                 IncomingMessages.OnChangeAvailability += async (timestamp,
-                                                                     sender,
-                                                                     connection,
-                                                                     request,
-                                                                     cancellationToken) => {
+                                                                sender,
+                                                                connection,
+                                                                request,
+                                                                cancellationToken) => {
 
                     #region Send OnChangeAvailabilityRequest event
 
-                    var startTime      = Timestamp.Now;
+                    var startTime = Timestamp.Now;
 
-                    var requestLogger  = OnChangeAvailabilityRequest;
-                    if (requestLogger is not null)
-                    {
-
-                        var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <OCPPv2_1.CS.OnChangeAvailabilityRequestDelegate>().
-                                                               Select (loggingDelegate => loggingDelegate.Invoke(startTime,
-                                                                                                                 this,
-                                                                                                                 connection,
-                                                                                                                 request)).
-                                                               ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(requestLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnChangeAvailabilityRequest),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnChangeAvailabilityRequest(startTime,
+                                                                                   this,
+                                                                                   connection,
+                                                                                   request);
 
                     #endregion
 
@@ -4631,36 +4037,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnChangeAvailabilityResponse event
 
-                    var responseLogger = OnChangeAvailabilityResponse;
-                    if (responseLogger is not null)
-                    {
+                    var responseTime = Timestamp.Now;
 
-                        var responseTime         = Timestamp.Now;
-
-                        var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <OCPPv2_1.CS.OnChangeAvailabilityResponseDelegate>().
-                                                                  Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
-                                                                                                                    this,
-                                                                                                                    connection,
-                                                                                                                    request,
-                                                                                                                    response,
-                                                                                                                    responseTime - startTime)).
-                                                                  ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(responseLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnChangeAvailabilityResponse),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnChangeAvailabilityResponse(responseTime,
+                                                                                    this,
+                                                                                    connection,
+                                                                                    request,
+                                                                                    response,
+                                                                                    responseTime - startTime);
 
                     #endregion
 
@@ -4673,41 +4057,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #region OnTriggerMessage
 
                 IncomingMessages.OnTriggerMessage += async (timestamp,
-                                                                 sender,
-                                                                 connection,
-                                                                 request,
-                                                                 cancellationToken) => {
+                                                            sender,
+                                                            connection,
+                                                            request,
+                                                            cancellationToken) => {
 
                     #region Send OnTriggerMessageRequest event
 
-                    var startTime      = Timestamp.Now;
+                    var startTime = Timestamp.Now;
 
-                    var requestLogger  = OnTriggerMessageRequest;
-                    if (requestLogger is not null)
-                    {
-
-                        var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <OCPPv2_1.CS.OnTriggerMessageRequestDelegate>().
-                                                               Select (loggingDelegate => loggingDelegate.Invoke(startTime,
-                                                                                                                 this,
-                                                                                                                 connection,
-                                                                                                                 request)).
-                                                               ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(requestLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnTriggerMessageRequest),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnTriggerMessageRequest(startTime,
+                                                                               this,
+                                                                               connection,
+                                                                               request);
 
                     #endregion
 
@@ -4868,36 +4230,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnTriggerMessageResponse event
 
-                    var responseLogger = OnTriggerMessageResponse;
-                    if (responseLogger is not null)
-                    {
+                    var responseTime = Timestamp.Now;
 
-                        var responseTime         = Timestamp.Now;
-
-                        var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <OCPPv2_1.CS.OnTriggerMessageResponseDelegate>().
-                                                                  Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
-                                                                                                                    this,
-                                                                                                                    connection,
-                                                                                                                    request,
-                                                                                                                    response,
-                                                                                                                    responseTime - startTime)).
-                                                                  ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(responseLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnTriggerMessageResponse),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnTriggerMessageResponse(responseTime,
+                                                                                this,
+                                                                                connection,
+                                                                                request,
+                                                                                response,
+                                                                                responseTime - startTime);
 
                     #endregion
 
@@ -4910,41 +4250,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #region OnIncomingDataTransfer
 
                 IncomingMessages.OnIncomingDataTransfer += async (timestamp,
-                                                                       sender,
-                                                                       connection,
-                                                                       request,
-                                                                       cancellationToken) => {
+                                                                  sender,
+                                                                  connection,
+                                                                  request,
+                                                                  cancellationToken) => {
 
-                    #region Send OnDataTransferRequest event
+                    #region Send OnIncomingDataTransferRequest event
 
-                    var startTime      = Timestamp.Now;
+                    var startTime = Timestamp.Now;
 
-                    var requestLogger  = OnIncomingDataTransferRequest;
-                    if (requestLogger is not null)
-                    {
-
-                        var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <OnIncomingDataTransferRequestDelegate>().
-                                                               Select (loggingDelegate => loggingDelegate.Invoke(startTime,
-                                                                                                                 this,
-                                                                                                                 connection,
-                                                                                                                 request)).
-                                                               ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(requestLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnIncomingDataTransferRequest),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnIncomingDataTransferRequest(startTime,
+                                                                                     this,
+                                                                                     connection,
+                                                                                     request);
 
                     #endregion
 
@@ -5074,38 +4392,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    #region Send OnDataTransferResponse event
+                    #region Send OnIncomingDataTransferResponse event
 
-                    var responseLogger = OnIncomingDataTransferResponse;
-                    if (responseLogger is not null)
-                    {
+                    var responseTime = Timestamp.Now;
 
-                        var responseTime         = Timestamp.Now;
-
-                        var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <OnIncomingDataTransferResponseDelegate>().
-                                                                  Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
-                                                                                                                    this,
-                                                                                                                    connection,
-                                                                                                                    request,
-                                                                                                                    response,
-                                                                                                                    responseTime - startTime)).
-                                                                  ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(responseLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnIncomingDataTransferResponse),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnIncomingDataTransferResponse(responseTime,
+                                                                                      this,
+                                                                                      connection,
+                                                                                      request,
+                                                                                      response,
+                                                                                      responseTime - startTime);
 
                     #endregion
 
@@ -5119,41 +4415,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #region OnCertificateSigned
 
                 IncomingMessages.OnCertificateSigned += async (timestamp,
-                                                                    sender,
-                                                                    connection,
-                                                                    request,
-                                                                    cancellationToken) => {
+                                                               sender,
+                                                               connection,
+                                                               request,
+                                                               cancellationToken) => {
 
                     #region Send OnCertificateSignedRequest event
 
-                    var startTime      = Timestamp.Now;
+                    var startTime = Timestamp.Now;
 
-                    var requestLogger  = OnCertificateSignedRequest;
-                    if (requestLogger is not null)
-                    {
-
-                        var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <OCPPv2_1.CS.OnCertificateSignedRequestDelegate>().
-                                                               Select (loggingDelegate => loggingDelegate.Invoke(startTime,
-                                                                                                                 this,
-                                                                                                                 connection,
-                                                                                                                 request)).
-                                                               ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(requestLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnCertificateSignedRequest),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnCertificateSignedRequest(startTime,
+                                                                                  this,
+                                                                                  connection,
+                                                                                  request);
 
                     #endregion
 
@@ -5240,36 +4514,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnCertificateSignedResponse event
 
-                    var responseLogger = OnCertificateSignedResponse;
-                    if (responseLogger is not null)
-                    {
+                    var responseTime = Timestamp.Now;
 
-                        var responseTime         = Timestamp.Now;
-
-                        var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <OCPPv2_1.CS.OnCertificateSignedResponseDelegate>().
-                                                                  Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
-                                                                                                                    this,
-                                                                                                                    connection,
-                                                                                                                    request,
-                                                                                                                    response,
-                                                                                                                    responseTime - startTime)).
-                                                                  ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(responseLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnCertificateSignedResponse),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnCertificateSignedResponse(responseTime,
+                                                                                   this,
+                                                                                   connection,
+                                                                                   request,
+                                                                                   response,
+                                                                                   responseTime - startTime);
 
                     #endregion
 
@@ -5282,41 +4534,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #region OnInstallCertificate
 
                 IncomingMessages.OnInstallCertificate += async (timestamp,
-                                                                     sender,
-                                                                     connection,
-                                                                     request,
-                                                                     cancellationToken) => {
+                                                                sender,
+                                                                connection,
+                                                                request,
+                                                                cancellationToken) => {
 
                     #region Send OnInstallCertificateRequest event
 
-                    var startTime      = Timestamp.Now;
+                    var startTime = Timestamp.Now;
 
-                    var requestLogger  = OnInstallCertificateRequest;
-                    if (requestLogger is not null)
-                    {
-
-                        var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <OCPPv2_1.CS.OnInstallCertificateRequestDelegate>().
-                                                               Select (loggingDelegate => loggingDelegate.Invoke(startTime,
-                                                                                                                 this,
-                                                                                                                 connection,
-                                                                                                                 request)).
-                                                               ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(requestLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnInstallCertificateRequest),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnInstallCertificateRequest(startTime,
+                                                                                   this,
+                                                                                   connection,
+                                                                                   request);
 
                     #endregion
 
@@ -5407,36 +4637,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnInstallCertificateResponse event
 
-                    var responseLogger = OnInstallCertificateResponse;
-                    if (responseLogger is not null)
-                    {
+                    var responseTime = Timestamp.Now;
 
-                        var responseTime         = Timestamp.Now;
-
-                        var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <OCPPv2_1.CS.OnInstallCertificateResponseDelegate>().
-                                                                  Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
-                                                                                                                    this,
-                                                                                                                    connection,
-                                                                                                                    request,
-                                                                                                                    response,
-                                                                                                                    responseTime - startTime)).
-                                                                  ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(responseLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnInstallCertificateResponse),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnInstallCertificateResponse(responseTime,
+                                                                                    this,
+                                                                                    connection,
+                                                                                    request,
+                                                                                    response,
+                                                                                    responseTime - startTime);
 
                     #endregion
 
@@ -5449,41 +4657,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #region OnGetInstalledCertificateIds
 
                 IncomingMessages.OnGetInstalledCertificateIds += async (timestamp,
-                                                                             sender,
-                                                                             connection,
-                                                                             request,
-                                                                             cancellationToken) => {
+                                                                        sender,
+                                                                        connection,
+                                                                        request,
+                                                                        cancellationToken) => {
 
                     #region Send OnGetInstalledCertificateIdsRequest event
 
-                    var startTime      = Timestamp.Now;
+                    var startTime = Timestamp.Now;
 
-                    var requestLogger  = OnGetInstalledCertificateIdsRequest;
-                    if (requestLogger is not null)
-                    {
-
-                        var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <OCPPv2_1.CS.OnGetInstalledCertificateIdsRequestDelegate>().
-                                                               Select (loggingDelegate => loggingDelegate.Invoke(startTime,
-                                                                                                                 this,
-                                                                                                                 connection,
-                                                                                                                 request)).
-                                                               ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(requestLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnGetInstalledCertificateIdsRequest),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnGetInstalledCertificateIdsRequest(startTime,
+                                                                                           this,
+                                                                                           connection,
+                                                                                           request);
 
                     #endregion
 
@@ -5585,36 +4771,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnGetInstalledCertificateIdsResponse event
 
-                    var responseLogger = OnGetInstalledCertificateIdsResponse;
-                    if (responseLogger is not null)
-                    {
+                    var responseTime = Timestamp.Now;
 
-                        var responseTime         = Timestamp.Now;
-
-                        var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <OCPPv2_1.CS.OnGetInstalledCertificateIdsResponseDelegate>().
-                                                                  Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
-                                                                                                                    this,
-                                                                                                                    connection,
-                                                                                                                    request,
-                                                                                                                    response,
-                                                                                                                    responseTime - startTime)).
-                                                                  ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(responseLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnGetInstalledCertificateIdsResponse),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnGetInstalledCertificateIdsResponse(responseTime,
+                                                                                            this,
+                                                                                            connection,
+                                                                                            request,
+                                                                                            response,
+                                                                                            responseTime - startTime);
 
                     #endregion
 
@@ -5627,41 +4791,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #region OnDeleteCertificate
 
                 IncomingMessages.OnDeleteCertificate += async (timestamp,
-                                                                    sender,
-                                                                    connection,
-                                                                    request,
-                                                                    cancellationToken) => {
+                                                               sender,
+                                                               connection,
+                                                               request,
+                                                               cancellationToken) => {
 
                     #region Send OnDeleteCertificateRequest event
 
-                    var startTime      = Timestamp.Now;
+                    var startTime = Timestamp.Now;
 
-                    var requestLogger  = OnDeleteCertificateRequest;
-                    if (requestLogger is not null)
-                    {
-
-                        var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <OCPPv2_1.CS.OnDeleteCertificateRequestDelegate>().
-                                                               Select (loggingDelegate => loggingDelegate.Invoke(startTime,
-                                                                                                                 this,
-                                                                                                                 connection,
-                                                                                                                 request)).
-                                                               ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(requestLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnDeleteCertificateRequest),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnDeleteCertificateRequest(startTime,
+                                                                                  this,
+                                                                                  connection,
+                                                                                  request);
 
                     #endregion
 
@@ -5752,36 +4894,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnDeleteCertificateResponse event
 
-                    var responseLogger = OnDeleteCertificateResponse;
-                    if (responseLogger is not null)
-                    {
+                    var responseTime = Timestamp.Now;
 
-                        var responseTime         = Timestamp.Now;
-
-                        var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <OCPPv2_1.CS.OnDeleteCertificateResponseDelegate>().
-                                                                  Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
-                                                                                                                    this,
-                                                                                                                    connection,
-                                                                                                                    request,
-                                                                                                                    response,
-                                                                                                                    responseTime - startTime)).
-                                                                  ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(responseLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnDeleteCertificateResponse),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnDeleteCertificateResponse(responseTime,
+                                                                                   this,
+                                                                                   connection,
+                                                                                   request,
+                                                                                   response,
+                                                                                   responseTime - startTime);
 
                     #endregion
 
@@ -5794,41 +4914,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #region OnNotifyCRL
 
                 IncomingMessages.OnNotifyCRL += async (timestamp,
-                                                            sender,
-                                                            connection,
-                                                            request,
-                                                            cancellationToken) => {
+                                                       sender,
+                                                       connection,
+                                                       request,
+                                                       cancellationToken) => {
 
                     #region Send OnNotifyCRLRequest event
 
-                    var startTime      = Timestamp.Now;
+                    var startTime = Timestamp.Now;
 
-                    var requestLogger  = OnNotifyCRLRequest;
-                    if (requestLogger is not null)
-                    {
-
-                        var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <OCPPv2_1.CS.OnNotifyCRLRequestDelegate>().
-                                                               Select (loggingDelegate => loggingDelegate.Invoke(startTime,
-                                                                                                                 this,
-                                                                                                                 connection,
-                                                                                                                 request)).
-                                                               ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(requestLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnNotifyCRLRequest),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnNotifyCRLRequest(startTime,
+                                                                          this,
+                                                                          connection,
+                                                                          request);
 
                     #endregion
 
@@ -5911,36 +5009,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnNotifyCRLResponse event
 
-                    var responseLogger = OnNotifyCRLResponse;
-                    if (responseLogger is not null)
-                    {
+                    var responseTime = Timestamp.Now;
 
-                        var responseTime         = Timestamp.Now;
-
-                        var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <OCPPv2_1.CS.OnNotifyCRLResponseDelegate>().
-                                                                  Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
-                                                                                                                    this,
-                                                                                                                    connection,
-                                                                                                                    request,
-                                                                                                                    response,
-                                                                                                                    responseTime - startTime)).
-                                                                  ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(responseLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnNotifyCRLResponse),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnNotifyCRLResponse(responseTime,
+                                                                           this,
+                                                                           connection,
+                                                                           request,
+                                                                           response,
+                                                                           responseTime - startTime);
 
                     #endregion
 
@@ -5954,41 +5030,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #region OnGetLocalListVersion
 
                 IncomingMessages.OnGetLocalListVersion += async (timestamp,
-                                                                      sender,
-                                                                      connection,
-                                                                      request,
-                                                                      cancellationToken) => {
+                                                                 sender,
+                                                                 connection,
+                                                                 request,
+                                                                 cancellationToken) => {
 
                     #region Send OnGetLocalListVersionRequest event
 
-                    var startTime      = Timestamp.Now;
+                    var startTime = Timestamp.Now;
 
-                    var requestLogger  = OnGetLocalListVersionRequest;
-                    if (requestLogger is not null)
-                    {
-
-                        var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <OCPPv2_1.CS.OnGetLocalListVersionRequestDelegate>().
-                                                               Select (loggingDelegate => loggingDelegate.Invoke(startTime,
-                                                                                                                 this,
-                                                                                                                 connection,
-                                                                                                                 request)).
-                                                               ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(requestLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnGetLocalListVersionRequest),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnGetLocalListVersionRequest(startTime,
+                                                                                    this,
+                                                                                    connection,
+                                                                                    request);
 
                     #endregion
 
@@ -6070,36 +5124,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnGetLocalListVersionResponse event
 
-                    var responseLogger = OnGetLocalListVersionResponse;
-                    if (responseLogger is not null)
-                    {
+                    var responseTime = Timestamp.Now;
 
-                        var responseTime         = Timestamp.Now;
-
-                        var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <OCPPv2_1.CS.OnGetLocalListVersionResponseDelegate>().
-                                                                  Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
-                                                                                                                    this,
-                                                                                                                    connection,
-                                                                                                                    request,
-                                                                                                                    response,
-                                                                                                                    responseTime - startTime)).
-                                                                  ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(responseLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnGetLocalListVersionResponse),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnGetLocalListVersionResponse(responseTime,
+                                                                                     this,
+                                                                                     connection,
+                                                                                     request,
+                                                                                     response,
+                                                                                     responseTime - startTime);
 
                     #endregion
 
@@ -6112,41 +5144,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #region OnSendLocalList
 
                 IncomingMessages.OnSendLocalList += async (timestamp,
-                                                                sender,
-                                                                connection,
-                                                                request,
-                                                                cancellationToken) => {
+                                                           sender,
+                                                           connection,
+                                                           request,
+                                                           cancellationToken) => {
 
                     #region Send OnSendLocalListRequest event
 
-                    var startTime      = Timestamp.Now;
+                    var startTime = Timestamp.Now;
 
-                    var requestLogger  = OnSendLocalListRequest;
-                    if (requestLogger is not null)
-                    {
-
-                        var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <OCPPv2_1.CS.OnSendLocalListRequestDelegate>().
-                                                               Select (loggingDelegate => loggingDelegate.Invoke(startTime,
-                                                                                                                 this,
-                                                                                                                 connection,
-                                                                                                                 request)).
-                                                               ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(requestLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnSendLocalListRequest),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnSendLocalListRequest(startTime,
+                                                                              this,
+                                                                              connection,
+                                                                              request);
 
                     #endregion
 
@@ -6236,36 +5246,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnSendLocalListResponse event
 
-                    var responseLogger = OnSendLocalListResponse;
-                    if (responseLogger is not null)
-                    {
+                    var responseTime = Timestamp.Now;
 
-                        var responseTime         = Timestamp.Now;
-
-                        var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <OCPPv2_1.CS.OnSendLocalListResponseDelegate>().
-                                                                  Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
-                                                                                                                    this,
-                                                                                                                    connection,
-                                                                                                                    request,
-                                                                                                                    response,
-                                                                                                                    responseTime - startTime)).
-                                                                  ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(responseLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnSendLocalListResponse),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnSendLocalListResponse(responseTime,
+                                                                               this,
+                                                                               connection,
+                                                                               request,
+                                                                               response,
+                                                                               responseTime - startTime);
 
                     #endregion
 
@@ -6278,41 +5266,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #region OnClearCache
 
                 IncomingMessages.OnClearCache += async (timestamp,
-                                                             sender,
-                                                             connection,
-                                                             request,
-                                                             cancellationToken) => {
+                                                        sender,
+                                                        connection,
+                                                        request,
+                                                        cancellationToken) => {
 
                     #region Send OnClearCacheRequest event
 
-                    var startTime      = Timestamp.Now;
+                    var startTime = Timestamp.Now;
 
-                    var requestLogger  = OnClearCacheRequest;
-                    if (requestLogger is not null)
-                    {
-
-                        var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <OCPPv2_1.CS.OnClearCacheRequestDelegate>().
-                                                               Select (loggingDelegate => loggingDelegate.Invoke(startTime,
-                                                                                                                 this,
-                                                                                                                 connection,
-                                                                                                                 request)).
-                                                               ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(requestLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnClearCacheRequest),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnClearCacheRequest(startTime,
+                                                                           this,
+                                                                           connection,
+                                                                           request);
 
                     #endregion
 
@@ -6395,36 +5361,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnClearCacheResponse event
 
-                    var responseLogger = OnClearCacheResponse;
-                    if (responseLogger is not null)
-                    {
+                    var responseTime = Timestamp.Now;
 
-                        var responseTime         = Timestamp.Now;
-
-                        var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <OCPPv2_1.CS.OnClearCacheResponseDelegate>().
-                                                                  Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
-                                                                                                                    this,
-                                                                                                                    connection,
-                                                                                                                    request,
-                                                                                                                    response,
-                                                                                                                    responseTime - startTime)).
-                                                                  ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(responseLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnClearCacheResponse),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnClearCacheResponse(responseTime,
+                                                                            this,
+                                                                            connection,
+                                                                            request,
+                                                                            response,
+                                                                            responseTime - startTime);
 
                     #endregion
 
@@ -6438,41 +5382,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #region OnReserveNow
 
                 IncomingMessages.OnReserveNow += async (timestamp,
-                                                             sender,
-                                                             connection,
-                                                             request,
-                                                             cancellationToken) => {
+                                                        sender,
+                                                        connection,
+                                                        request,
+                                                        cancellationToken) => {
 
                     #region Send OnReserveNowRequest event
 
-                    var startTime      = Timestamp.Now;
+                    var startTime = Timestamp.Now;
 
-                    var requestLogger  = OnReserveNowRequest;
-                    if (requestLogger is not null)
-                    {
-
-                        var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <OCPPv2_1.CS.OnReserveNowRequestDelegate>().
-                                                               Select (loggingDelegate => loggingDelegate.Invoke(startTime,
-                                                                                                                 this,
-                                                                                                                 connection,
-                                                                                                                 request)).
-                                                               ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(requestLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnReserveNowRequest),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnReserveNowRequest(startTime,
+                                                                           this,
+                                                                           connection,
+                                                                           request);
 
                     #endregion
 
@@ -6568,36 +5490,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnReserveNowResponse event
 
-                    var responseLogger = OnReserveNowResponse;
-                    if (responseLogger is not null)
-                    {
+                    var responseTime = Timestamp.Now;
 
-                        var responseTime         = Timestamp.Now;
-
-                        var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <OCPPv2_1.CS.OnReserveNowResponseDelegate>().
-                                                                  Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
-                                                                                                                    this,
-                                                                                                                    connection,
-                                                                                                                    request,
-                                                                                                                    response,
-                                                                                                                    responseTime - startTime)).
-                                                                  ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(responseLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnReserveNowResponse),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnReserveNowResponse(responseTime,
+                                                                            this,
+                                                                            connection,
+                                                                            request,
+                                                                            response,
+                                                                            responseTime - startTime);
 
                     #endregion
 
@@ -6610,41 +5510,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #region OnCancelReservation
 
                 IncomingMessages.OnCancelReservation += async (timestamp,
-                                                                    sender,
-                                                                    connection,
-                                                                    request,
-                                                                    cancellationToken) => {
+                                                               sender,
+                                                               connection,
+                                                               request,
+                                                               cancellationToken) => {
 
                     #region Send OnCancelReservationRequest event
 
-                    var startTime      = Timestamp.Now;
+                    var startTime = Timestamp.Now;
 
-                    var requestLogger  = OnCancelReservationRequest;
-                    if (requestLogger is not null)
-                    {
-
-                        var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <OCPPv2_1.CS.OnCancelReservationRequestDelegate>().
-                                                               Select (loggingDelegate => loggingDelegate.Invoke(startTime,
-                                                                                                                 this,
-                                                                                                                 connection,
-                                                                                                                 request)).
-                                                               ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(requestLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnCancelReservationRequest),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnCancelReservationRequest(startTime,
+                                                                                  this,
+                                                                                  connection,
+                                                                                  request);
 
                     #endregion
 
@@ -6734,36 +5612,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnCancelReservationResponse event
 
-                    var responseLogger = OnCancelReservationResponse;
-                    if (responseLogger is not null)
-                    {
+                    var responseTime = Timestamp.Now;
 
-                        var responseTime         = Timestamp.Now;
-
-                        var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <OCPPv2_1.CS.OnCancelReservationResponseDelegate>().
-                                                                  Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
-                                                                                                                    this,
-                                                                                                                    connection,
-                                                                                                                    request,
-                                                                                                                    response,
-                                                                                                                    responseTime - startTime)).
-                                                                  ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(responseLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnCancelReservationResponse),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnCancelReservationResponse(responseTime,
+                                                                                   this,
+                                                                                   connection,
+                                                                                   request,
+                                                                                   response,
+                                                                                   responseTime - startTime);
 
                     #endregion
 
@@ -6776,41 +5632,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #region OnRequestStartTransaction
 
                 IncomingMessages.OnRequestStartTransaction += async (timestamp,
-                                                                          sender,
-                                                                          connection,
-                                                                          request,
-                                                                          cancellationToken) => {
+                                                                     sender,
+                                                                     connection,
+                                                                     request,
+                                                                     cancellationToken) => {
 
                     #region Send OnRequestStartTransactionRequest event
 
-                    var startTime      = Timestamp.Now;
+                    var startTime = Timestamp.Now;
 
-                    var requestLogger  = OnRequestStartTransactionRequest;
-                    if (requestLogger is not null)
-                    {
-
-                        var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <OCPPv2_1.CS.OnRequestStartTransactionRequestDelegate>().
-                                                               Select (loggingDelegate => loggingDelegate.Invoke(startTime,
-                                                                                                                 this,
-                                                                                                                 connection,
-                                                                                                                 request)).
-                                                               ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(requestLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnRequestStartTransactionRequest),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnRequestStartTransactionRequest(startTime,
+                                                                                        this,
+                                                                                        connection,
+                                                                                        request);
 
                     #endregion
 
@@ -6921,36 +5755,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnRequestStartTransactionResponse event
 
-                    var responseLogger = OnRequestStartTransactionResponse;
-                    if (responseLogger is not null)
-                    {
+                    var responseTime = Timestamp.Now;
 
-                        var responseTime         = Timestamp.Now;
-
-                        var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <OCPPv2_1.CS.OnRequestStartTransactionResponseDelegate>().
-                                                                  Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
-                                                                                                                    this,
-                                                                                                                    connection,
-                                                                                                                    request,
-                                                                                                                    response,
-                                                                                                                    responseTime - startTime)).
-                                                                  ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(responseLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnRequestStartTransactionResponse),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnRequestStartTransactionResponse(responseTime,
+                                                                                         this,
+                                                                                         connection,
+                                                                                         request,
+                                                                                         response,
+                                                                                         responseTime - startTime);
 
                     #endregion
 
@@ -6963,41 +5775,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #region OnRequestStopTransaction
 
                 IncomingMessages.OnRequestStopTransaction += async (timestamp,
-                                                                         sender,
-                                                                         connection,
-                                                                         request,
-                                                                         cancellationToken) => {
+                                                                    sender,
+                                                                    connection,
+                                                                    request,
+                                                                    cancellationToken) => {
 
                     #region Send OnRequestStopTransactionRequest event
 
-                    var startTime      = Timestamp.Now;
+                    var startTime = Timestamp.Now;
 
-                    var requestLogger  = OnRequestStopTransactionRequest;
-                    if (requestLogger is not null)
-                    {
-
-                        var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <OCPPv2_1.CS.OnRequestStopTransactionRequestDelegate>().
-                                                               Select (loggingDelegate => loggingDelegate.Invoke(startTime,
-                                                                                                                 this,
-                                                                                                                 connection,
-                                                                                                                 request)).
-                                                               ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(requestLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnRequestStopTransactionRequest),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnRequestStopTransactionRequest(startTime,
+                                                                                       this,
+                                                                                       connection,
+                                                                                       request);
 
                     #endregion
 
@@ -7079,36 +5869,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnRequestStopTransactionResponse event
 
-                    var responseLogger = OnRequestStopTransactionResponse;
-                    if (responseLogger is not null)
-                    {
+                    var responseTime = Timestamp.Now;
 
-                        var responseTime         = Timestamp.Now;
-
-                        var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <OCPPv2_1.CS.OnRequestStopTransactionResponseDelegate>().
-                                                                  Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
-                                                                                                                    this,
-                                                                                                                    connection,
-                                                                                                                    request,
-                                                                                                                    response,
-                                                                                                                    responseTime - startTime)).
-                                                                  ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(responseLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnRequestStopTransactionResponse),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnRequestStopTransactionResponse(responseTime,
+                                                                                        this,
+                                                                                        connection,
+                                                                                        request,
+                                                                                        response,
+                                                                                        responseTime - startTime);
 
                     #endregion
 
@@ -7121,41 +5889,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #region OnGetTransactionStatus
 
                 IncomingMessages.OnGetTransactionStatus += async (timestamp,
-                                                                       sender,
-                                                                       connection,
-                                                                       request,
-                                                                       cancellationToken) => {
+                                                                  sender,
+                                                                  connection,
+                                                                  request,
+                                                                  cancellationToken) => {
 
                     #region Send OnGetTransactionStatusRequest event
 
-                    var startTime      = Timestamp.Now;
+                    var startTime = Timestamp.Now;
 
-                    var requestLogger  = OnGetTransactionStatusRequest;
-                    if (requestLogger is not null)
-                    {
-
-                        var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <OCPPv2_1.CS.OnGetTransactionStatusRequestDelegate>().
-                                                               Select (loggingDelegate => loggingDelegate.Invoke(startTime,
-                                                                                                                 this,
-                                                                                                                 connection,
-                                                                                                                 request)).
-                                                               ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(requestLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnGetTransactionStatusRequest),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnGetTransactionStatusRequest(startTime,
+                                                                                     this,
+                                                                                     connection,
+                                                                                     request);
 
                     #endregion
 
@@ -7237,36 +5983,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnGetTransactionStatusResponse event
 
-                    var responseLogger = OnGetTransactionStatusResponse;
-                    if (responseLogger is not null)
-                    {
+                    var responseTime = Timestamp.Now;
 
-                        var responseTime         = Timestamp.Now;
-
-                        var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <OCPPv2_1.CS.OnGetTransactionStatusResponseDelegate>().
-                                                                  Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
-                                                                                                                    this,
-                                                                                                                    connection,
-                                                                                                                    request,
-                                                                                                                    response,
-                                                                                                                    responseTime - startTime)).
-                                                                  ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(responseLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnGetTransactionStatusResponse),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnGetTransactionStatusResponse(responseTime,
+                                                                                      this,
+                                                                                      connection,
+                                                                                      request,
+                                                                                      response,
+                                                                                      responseTime - startTime);
 
                     #endregion
 
@@ -7279,41 +6003,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #region OnSetChargingProfile
 
                 IncomingMessages.OnSetChargingProfile += async (timestamp,
-                                                                     sender,
-                                                                     connection,
-                                                                     request,
-                                                                     cancellationToken) => {
+                                                                sender,
+                                                                connection,
+                                                                request,
+                                                                cancellationToken) => {
 
                     #region Send OnSetChargingProfileRequest event
 
-                    var startTime      = Timestamp.Now;
+                    var startTime = Timestamp.Now;
 
-                    var requestLogger  = OnSetChargingProfileRequest;
-                    if (requestLogger is not null)
-                    {
-
-                        var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <OCPPv2_1.CS.OnSetChargingProfileRequestDelegate>().
-                                                               Select (loggingDelegate => loggingDelegate.Invoke(startTime,
-                                                                                                                 this,
-                                                                                                                 connection,
-                                                                                                                 request)).
-                                                               ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(requestLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnSetChargingProfileRequest),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnSetChargingProfileRequest(startTime,
+                                                                                   this,
+                                                                                   connection,
+                                                                                   request);
 
                     #endregion
 
@@ -7421,36 +6123,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnSetChargingProfileResponse event
 
-                    var responseLogger = OnSetChargingProfileResponse;
-                    if (responseLogger is not null)
-                    {
+                    var responseTime = Timestamp.Now;
 
-                        var responseTime         = Timestamp.Now;
-
-                        var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <OCPPv2_1.CS.OnSetChargingProfileResponseDelegate>().
-                                                                  Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
-                                                                                                                    this,
-                                                                                                                    connection,
-                                                                                                                    request,
-                                                                                                                    response,
-                                                                                                                    responseTime - startTime)).
-                                                                  ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(responseLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnSetChargingProfileResponse),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnSetChargingProfileResponse(responseTime,
+                                                                                    this,
+                                                                                    connection,
+                                                                                    request,
+                                                                                    response,
+                                                                                    responseTime - startTime);
 
                     #endregion
 
@@ -7463,41 +6143,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #region OnGetChargingProfiles
 
                 IncomingMessages.OnGetChargingProfiles += async (timestamp,
-                                                                      sender,
-                                                                      connection,
-                                                                      request,
-                                                                      cancellationToken) => {
+                                                                 sender,
+                                                                 connection,
+                                                                 request,
+                                                                 cancellationToken) => {
 
                     #region Send OnGetChargingProfilesRequest event
 
-                    var startTime      = Timestamp.Now;
+                    var startTime = Timestamp.Now;
 
-                    var requestLogger  = OnGetChargingProfilesRequest;
-                    if (requestLogger is not null)
-                    {
-
-                        var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <OCPPv2_1.CS.OnGetChargingProfilesRequestDelegate>().
-                                                               Select (loggingDelegate => loggingDelegate.Invoke(startTime,
-                                                                                                                 this,
-                                                                                                                 connection,
-                                                                                                                 request)).
-                                                               ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(requestLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnGetChargingProfilesRequest),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnGetChargingProfilesRequest(startTime,
+                                                                                    this,
+                                                                                    connection,
+                                                                                    request);
 
                     #endregion
 
@@ -7582,36 +6240,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnGetChargingProfilesResponse event
 
-                    var responseLogger = OnGetChargingProfilesResponse;
-                    if (responseLogger is not null)
-                    {
+                    var responseTime = Timestamp.Now;
 
-                        var responseTime         = Timestamp.Now;
-
-                        var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <OCPPv2_1.CS.OnGetChargingProfilesResponseDelegate>().
-                                                                  Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
-                                                                                                                    this,
-                                                                                                                    connection,
-                                                                                                                    request,
-                                                                                                                    response,
-                                                                                                                    responseTime - startTime)).
-                                                                  ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(responseLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnGetChargingProfilesResponse),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnGetChargingProfilesResponse(responseTime,
+                                                                                     this,
+                                                                                     connection,
+                                                                                     request,
+                                                                                     response,
+                                                                                     responseTime - startTime);
 
                     #endregion
 
@@ -7624,41 +6260,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #region OnClearChargingProfile
 
                 IncomingMessages.OnClearChargingProfile += async (timestamp,
-                                                                       sender,
-                                                                       connection,
-                                                                       request,
-                                                                       cancellationToken) => {
+                                                                  sender,
+                                                                  connection,
+                                                                  request,
+                                                                  cancellationToken) => {
 
                     #region Send OnClearChargingProfileRequest event
 
-                    var startTime      = Timestamp.Now;
+                    var startTime = Timestamp.Now;
 
-                    var requestLogger  = OnClearChargingProfileRequest;
-                    if (requestLogger is not null)
-                    {
-
-                        var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <OCPPv2_1.CS.OnClearChargingProfileRequestDelegate>().
-                                                               Select (loggingDelegate => loggingDelegate.Invoke(startTime,
-                                                                                                                 this,
-                                                                                                                 connection,
-                                                                                                                 request)).
-                                                               ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(requestLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnClearChargingProfileRequest),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnClearChargingProfileRequest(startTime,
+                                                                                     this,
+                                                                                     connection,
+                                                                                     request);
 
                     #endregion
 
@@ -7744,36 +6358,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnClearChargingProfileResponse event
 
-                    var responseLogger = OnClearChargingProfileResponse;
-                    if (responseLogger is not null)
-                    {
+                    var responseTime = Timestamp.Now;
 
-                        var responseTime         = Timestamp.Now;
-
-                        var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <OCPPv2_1.CS.OnClearChargingProfileResponseDelegate>().
-                                                                  Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
-                                                                                                                    this,
-                                                                                                                    connection,
-                                                                                                                    request,
-                                                                                                                    response,
-                                                                                                                    responseTime - startTime)).
-                                                                  ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(responseLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnClearChargingProfileResponse),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnClearChargingProfileResponse(responseTime,
+                                                                                      this,
+                                                                                      connection,
+                                                                                      request,
+                                                                                      response,
+                                                                                      responseTime - startTime);
 
                     #endregion
 
@@ -7786,41 +6378,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #region OnGetCompositeSchedule
 
                 IncomingMessages.OnGetCompositeSchedule += async (timestamp,
-                                                                       sender,
-                                                                       connection,
-                                                                       request,
-                                                                       cancellationToken) => {
+                                                                  sender,
+                                                                  connection,
+                                                                  request,
+                                                                  cancellationToken) => {
 
                     #region Send OnGetCompositeScheduleRequest event
 
-                    var startTime      = Timestamp.Now;
+                    var startTime = Timestamp.Now;
 
-                    var requestLogger  = OnGetCompositeScheduleRequest;
-                    if (requestLogger is not null)
-                    {
-
-                        var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <OCPPv2_1.CS.OnGetCompositeScheduleRequestDelegate>().
-                                                               Select (loggingDelegate => loggingDelegate.Invoke(startTime,
-                                                                                                                 this,
-                                                                                                                 connection,
-                                                                                                                 request)).
-                                                               ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(requestLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnGetCompositeScheduleRequest),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnGetCompositeScheduleRequest(startTime,
+                                                                                     this,
+                                                                                     connection,
+                                                                                     request);
 
                     #endregion
 
@@ -7909,36 +6479,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnGetCompositeScheduleResponse event
 
-                    var responseLogger = OnGetCompositeScheduleResponse;
-                    if (responseLogger is not null)
-                    {
+                    var responseTime = Timestamp.Now;
 
-                        var responseTime         = Timestamp.Now;
-
-                        var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <OCPPv2_1.CS.OnGetCompositeScheduleResponseDelegate>().
-                                                                  Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
-                                                                                                                    this,
-                                                                                                                    connection,
-                                                                                                                    request,
-                                                                                                                    response,
-                                                                                                                    responseTime - startTime)).
-                                                                  ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(responseLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnGetCompositeScheduleResponse),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnGetCompositeScheduleResponse(responseTime,
+                                                                                      this,
+                                                                                      connection,
+                                                                                      request,
+                                                                                      response,
+                                                                                      responseTime - startTime);
 
                     #endregion
 
@@ -7951,41 +6499,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #region OnUpdateDynamicSchedule
 
                 IncomingMessages.OnUpdateDynamicSchedule += async (timestamp,
-                                                                        sender,
-                                                                        connection,
-                                                                        request,
-                                                                        cancellationToken) => {
+                                                                   sender,
+                                                                   connection,
+                                                                   request,
+                                                                   cancellationToken) => {
 
                     #region Send OnUpdateDynamicScheduleRequest event
 
-                    var startTime      = Timestamp.Now;
+                    var startTime = Timestamp.Now;
 
-                    var requestLogger  = OnUpdateDynamicScheduleRequest;
-                    if (requestLogger is not null)
-                    {
-
-                        var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <OCPPv2_1.CS.OnUpdateDynamicScheduleRequestDelegate>().
-                                                               Select (loggingDelegate => loggingDelegate.Invoke(startTime,
-                                                                                                                 this,
-                                                                                                                 connection,
-                                                                                                                 request)).
-                                                               ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(requestLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnUpdateDynamicScheduleRequest),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnUpdateDynamicScheduleRequest(startTime,
+                                                                                      this,
+                                                                                      connection,
+                                                                                      request);
 
                     #endregion
 
@@ -8085,36 +6611,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnUpdateDynamicScheduleResponse event
 
-                    var responseLogger = OnUpdateDynamicScheduleResponse;
-                    if (responseLogger is not null)
-                    {
+                    var responseTime = Timestamp.Now;
 
-                        var responseTime         = Timestamp.Now;
-
-                        var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <OCPPv2_1.CS.OnUpdateDynamicScheduleResponseDelegate>().
-                                                                  Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
-                                                                                                                    this,
-                                                                                                                    connection,
-                                                                                                                    request,
-                                                                                                                    response,
-                                                                                                                    responseTime - startTime)).
-                                                                  ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(responseLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnUpdateDynamicScheduleResponse),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnUpdateDynamicScheduleResponse(responseTime,
+                                                                                       this,
+                                                                                       connection,
+                                                                                       request,
+                                                                                       response,
+                                                                                       responseTime - startTime);
 
                     #endregion
 
@@ -8127,41 +6631,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #region OnNotifyAllowedEnergyTransfer
 
                 IncomingMessages.OnNotifyAllowedEnergyTransfer += async (timestamp,
-                                                                              sender,
-                                                                              connection,
-                                                                              request,
-                                                                              cancellationToken) => {
+                                                                         sender,
+                                                                         connection,
+                                                                         request,
+                                                                         cancellationToken) => {
 
                     #region Send OnNotifyAllowedEnergyTransferRequest event
 
-                    var startTime      = Timestamp.Now;
+                    var startTime = Timestamp.Now;
 
-                    var requestLogger  = OnNotifyAllowedEnergyTransferRequest;
-                    if (requestLogger is not null)
-                    {
-
-                        var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <OCPPv2_1.CS.OnNotifyAllowedEnergyTransferRequestDelegate>().
-                                                               Select (loggingDelegate => loggingDelegate.Invoke(startTime,
-                                                                                                                 this,
-                                                                                                                 connection,
-                                                                                                                 request)).
-                                                               ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(requestLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnNotifyAllowedEnergyTransferRequest),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnNotifyAllowedEnergyTransferRequest(startTime,
+                                                                                            this,
+                                                                                            connection,
+                                                                                            request);
 
                     #endregion
 
@@ -8245,36 +6727,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnNotifyAllowedEnergyTransferResponse event
 
-                    var responseLogger = OnNotifyAllowedEnergyTransferResponse;
-                    if (responseLogger is not null)
-                    {
+                    var responseTime = Timestamp.Now;
 
-                        var responseTime         = Timestamp.Now;
-
-                        var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <OCPPv2_1.CS.OnNotifyAllowedEnergyTransferResponseDelegate>().
-                                                                  Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
-                                                                                                                    this,
-                                                                                                                    connection,
-                                                                                                                    request,
-                                                                                                                    response,
-                                                                                                                    responseTime - startTime)).
-                                                                  ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(responseLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnNotifyAllowedEnergyTransferResponse),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnNotifyAllowedEnergyTransferResponse(responseTime,
+                                                                                             this,
+                                                                                             connection,
+                                                                                             request,
+                                                                                             response,
+                                                                                             responseTime - startTime);
 
                     #endregion
 
@@ -8287,41 +6747,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #region OnUsePriorityCharging
 
                 IncomingMessages.OnUsePriorityCharging += async (timestamp,
-                                                                      sender,
-                                                                      connection,
-                                                                      request,
-                                                                      cancellationToken) => {
+                                                                 sender,
+                                                                 connection,
+                                                                 request,
+                                                                 cancellationToken) => {
 
                     #region Send OnUsePriorityChargingRequest event
 
-                    var startTime      = Timestamp.Now;
+                    var startTime = Timestamp.Now;
 
-                    var requestLogger  = OnUsePriorityChargingRequest;
-                    if (requestLogger is not null)
-                    {
-
-                        var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <OCPPv2_1.CS.OnUsePriorityChargingRequestDelegate>().
-                                                               Select (loggingDelegate => loggingDelegate.Invoke(startTime,
-                                                                                                                 this,
-                                                                                                                 connection,
-                                                                                                                 request)).
-                                                               ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(requestLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnUsePriorityChargingRequest),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnUsePriorityChargingRequest(startTime,
+                                                                                    this,
+                                                                                    connection,
+                                                                                    request);
 
                     #endregion
 
@@ -8406,36 +6844,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnUsePriorityChargingResponse event
 
-                    var responseLogger = OnUsePriorityChargingResponse;
-                    if (responseLogger is not null)
-                    {
+                    var responseTime = Timestamp.Now;
 
-                        var responseTime         = Timestamp.Now;
-
-                        var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <OCPPv2_1.CS.OnUsePriorityChargingResponseDelegate>().
-                                                                  Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
-                                                                                                                    this,
-                                                                                                                    connection,
-                                                                                                                    request,
-                                                                                                                    response,
-                                                                                                                    responseTime - startTime)).
-                                                                  ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(responseLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnUsePriorityChargingResponse),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnUsePriorityChargingResponse(responseTime,
+                                                                                     this,
+                                                                                     connection,
+                                                                                     request,
+                                                                                     response,
+                                                                                     responseTime - startTime);
 
                     #endregion
 
@@ -8448,41 +6864,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #region OnUnlockConnector
 
                 IncomingMessages.OnUnlockConnector += async (timestamp,
-                                                                  sender,
-                                                                  connection,
-                                                                  request,
-                                                                  cancellationToken) => {
+                                                             sender,
+                                                             connection,
+                                                             request,
+                                                             cancellationToken) => {
 
                     #region Send OnUnlockConnectorRequest event
 
-                    var startTime      = Timestamp.Now;
+                    var startTime = Timestamp.Now;
 
-                    var requestLogger  = OnUnlockConnectorRequest;
-                    if (requestLogger is not null)
-                    {
-
-                        var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <OCPPv2_1.CS.OnUnlockConnectorRequestDelegate>().
-                                                               Select (loggingDelegate => loggingDelegate.Invoke(startTime,
-                                                                                                                 this,
-                                                                                                                 connection,
-                                                                                                                 request)).
-                                                               ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(requestLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnUnlockConnectorRequest),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnUnlockConnectorRequest(startTime,
+                                                                                this,
+                                                                                connection,
+                                                                                request);
 
                     #endregion
 
@@ -8567,36 +6961,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnUnlockConnectorResponse event
 
-                    var responseLogger = OnUnlockConnectorResponse;
-                    if (responseLogger is not null)
-                    {
+                    var responseTime = Timestamp.Now;
 
-                        var responseTime         = Timestamp.Now;
-
-                        var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <OCPPv2_1.CS.OnUnlockConnectorResponseDelegate>().
-                                                                  Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
-                                                                                                                    this,
-                                                                                                                    connection,
-                                                                                                                    request,
-                                                                                                                    response,
-                                                                                                                    responseTime - startTime)).
-                                                                  ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(responseLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnUnlockConnectorResponse),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnUnlockConnectorResponse(responseTime,
+                                                                                 this,
+                                                                                 connection,
+                                                                                 request,
+                                                                                 response,
+                                                                                 responseTime - startTime);
 
                     #endregion
 
@@ -8610,41 +6982,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #region OnAFRRSignal
 
                 IncomingMessages.OnAFRRSignal += async (timestamp,
-                                                             sender,
-                                                             connection,
-                                                             request,
-                                                             cancellationToken) => {
+                                                        sender,
+                                                        connection,
+                                                        request,
+                                                        cancellationToken) => {
 
                     #region Send OnAFRRSignalRequest event
 
-                    var startTime      = Timestamp.Now;
+                    var startTime = Timestamp.Now;
 
-                    var requestLogger  = OnAFRRSignalRequest;
-                    if (requestLogger is not null)
-                    {
-
-                        var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <OCPPv2_1.CS.OnAFRRSignalRequestDelegate>().
-                                                               Select (loggingDelegate => loggingDelegate.Invoke(startTime,
-                                                                                                                 this,
-                                                                                                                 connection,
-                                                                                                                 request)).
-                                                               ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(requestLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnAFRRSignalRequest),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnAFRRSignalRequest(startTime,
+                                                                           this,
+                                                                           connection,
+                                                                           request);
 
                     #endregion
 
@@ -8731,36 +7081,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnAFRRSignalResponse event
 
-                    var responseLogger = OnAFRRSignalResponse;
-                    if (responseLogger is not null)
-                    {
+                    var responseTime = Timestamp.Now;
 
-                        var responseTime         = Timestamp.Now;
-
-                        var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <OCPPv2_1.CS.OnAFRRSignalResponseDelegate>().
-                                                                  Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
-                                                                                                                    this,
-                                                                                                                    connection,
-                                                                                                                    request,
-                                                                                                                    response,
-                                                                                                                    responseTime - startTime)).
-                                                                  ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(responseLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnAFRRSignalResponse),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnAFRRSignalResponse(responseTime,
+                                                                            this,
+                                                                            connection,
+                                                                            request,
+                                                                            response,
+                                                                            responseTime - startTime);
 
                     #endregion
 
@@ -8774,41 +7102,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #region OnSetDisplayMessage
 
                 IncomingMessages.OnSetDisplayMessage += async (timestamp,
-                                                                    sender,
-                                                                    connection,
-                                                                    request,
-                                                                    cancellationToken) => {
+                                                               sender,
+                                                               connection,
+                                                               request,
+                                                               cancellationToken) => {
 
                     #region Send OnSetDisplayMessageRequest event
 
-                    var startTime      = Timestamp.Now;
+                    var startTime = Timestamp.Now;
 
-                    var requestLogger  = OnSetDisplayMessageRequest;
-                    if (requestLogger is not null)
-                    {
-
-                        var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <OCPPv2_1.CS.OnSetDisplayMessageRequestDelegate>().
-                                                               Select (loggingDelegate => loggingDelegate.Invoke(startTime,
-                                                                                                                 this,
-                                                                                                                 connection,
-                                                                                                                 request)).
-                                                               ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(requestLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnSetDisplayMessageRequest),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnSetDisplayMessageRequest(startTime,
+                                                                                  this,
+                                                                                  connection,
+                                                                                  request);
 
                     #endregion
 
@@ -8909,36 +7215,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnSetDisplayMessageResponse event
 
-                    var responseLogger = OnSetDisplayMessageResponse;
-                    if (responseLogger is not null)
-                    {
+                    var responseTime = Timestamp.Now;
 
-                        var responseTime         = Timestamp.Now;
-
-                        var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <OCPPv2_1.CS.OnSetDisplayMessageResponseDelegate>().
-                                                                  Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
-                                                                                                                    this,
-                                                                                                                    connection,
-                                                                                                                    request,
-                                                                                                                    response,
-                                                                                                                    responseTime - startTime)).
-                                                                  ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(responseLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnSetDisplayMessageResponse),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnSetDisplayMessageResponse(responseTime,
+                                                                                   this,
+                                                                                   connection,
+                                                                                   request,
+                                                                                   response,
+                                                                                   responseTime - startTime);
 
                     #endregion
 
@@ -8951,41 +7235,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #region OnGetDisplayMessages
 
                 IncomingMessages.OnGetDisplayMessages += async (timestamp,
-                                                                     sender,
-                                                                     connection,
-                                                                     request,
-                                                                     cancellationToken) => {
+                                                                sender,
+                                                                connection,
+                                                                request,
+                                                                cancellationToken) => {
 
                     #region Send OnGetDisplayMessagesRequest event
 
-                    var startTime      = Timestamp.Now;
+                    var startTime = Timestamp.Now;
 
-                    var requestLogger  = OnGetDisplayMessagesRequest;
-                    if (requestLogger is not null)
-                    {
-
-                        var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <OCPPv2_1.CS.OnGetDisplayMessagesRequestDelegate>().
-                                                               Select (loggingDelegate => loggingDelegate.Invoke(startTime,
-                                                                                                                 this,
-                                                                                                                 connection,
-                                                                                                                 request)).
-                                                               ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(requestLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnGetDisplayMessagesRequest),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnGetDisplayMessagesRequest(startTime,
+                                                                                   this,
+                                                                                   connection,
+                                                                                   request);
 
                     #endregion
 
@@ -9088,36 +7350,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnGetDisplayMessagesResponse event
 
-                    var responseLogger = OnGetDisplayMessagesResponse;
-                    if (responseLogger is not null)
-                    {
+                    var responseTime = Timestamp.Now;
 
-                        var responseTime         = Timestamp.Now;
-
-                        var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <OCPPv2_1.CS.OnGetDisplayMessagesResponseDelegate>().
-                                                                  Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
-                                                                                                                    this,
-                                                                                                                    connection,
-                                                                                                                    request,
-                                                                                                                    response,
-                                                                                                                    responseTime - startTime)).
-                                                                  ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(responseLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnGetDisplayMessagesResponse),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnGetDisplayMessagesResponse(responseTime,
+                                                                                    this,
+                                                                                    connection,
+                                                                                    request,
+                                                                                    response,
+                                                                                    responseTime - startTime);
 
                     #endregion
 
@@ -9130,41 +7370,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #region OnClearDisplayMessage
 
                 IncomingMessages.OnClearDisplayMessage += async (timestamp,
-                                                                      sender,
-                                                                      connection,
-                                                                      request,
-                                                                      cancellationToken) => {
+                                                                 sender,
+                                                                 connection,
+                                                                 request,
+                                                                 cancellationToken) => {
 
                     #region Send OnClearDisplayMessageRequest event
 
-                    var startTime      = Timestamp.Now;
+                    var startTime = Timestamp.Now;
 
-                    var requestLogger  = OnClearDisplayMessageRequest;
-                    if (requestLogger is not null)
-                    {
-
-                        var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <OCPPv2_1.CS.OnClearDisplayMessageRequestDelegate>().
-                                                               Select (loggingDelegate => loggingDelegate.Invoke(startTime,
-                                                                                                                 this,
-                                                                                                                 connection,
-                                                                                                                 request)).
-                                                               ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(requestLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnClearDisplayMessageRequest),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnClearDisplayMessageRequest(startTime,
+                                                                                    this,
+                                                                                    connection,
+                                                                                    request);
 
                     #endregion
 
@@ -9257,36 +7475,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnClearDisplayMessageResponse event
 
-                    var responseLogger = OnClearDisplayMessageResponse;
-                    if (responseLogger is not null)
-                    {
+                    var responseTime = Timestamp.Now;
 
-                        var responseTime         = Timestamp.Now;
-
-                        var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <OCPPv2_1.CS.OnClearDisplayMessageResponseDelegate>().
-                                                                  Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
-                                                                                                                    this,
-                                                                                                                    connection,
-                                                                                                                    request,
-                                                                                                                    response,
-                                                                                                                    responseTime - startTime)).
-                                                                  ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(responseLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnClearDisplayMessageResponse),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnClearDisplayMessageResponse(responseTime,
+                                                                                     this,
+                                                                                     connection,
+                                                                                     request,
+                                                                                     response,
+                                                                                     responseTime - startTime);
 
                     #endregion
 
@@ -9299,43 +7495,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #region OnCostUpdated
 
                 IncomingMessages.OnCostUpdated += async (timestamp,
-                                                              sender,
-                                                              connection,
-                                                              request,
-                                                              cancellationToken) => {
+                                                         sender,
+                                                         connection,
+                                                         request,
+                                                         cancellationToken) => {
 
                     #region Send OnCostUpdatedRequest event
 
-                    var startTime      = Timestamp.Now;
+                    var startTime = Timestamp.Now;
 
-                    var requestLogger  = OnCostUpdatedRequest;
-                    if (requestLogger is not null)
-                    {
-
-                        var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <OCPPv2_1.CS.OnCostUpdatedRequestDelegate>().
-                                                               Select (loggingDelegate => loggingDelegate.Invoke(startTime,
-                                                                                                                 this,
-                                                                                                                 connection,
-                                                                                                                 request)).
-                                                               ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(requestLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnCostUpdatedRequest),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnCostUpdatedRequest(startTime,
+                                                                            this,
+                                                                            connection,
+                                                                            request);
 
                     #endregion
+
 
                     #region Check charging station identification
 
@@ -9427,36 +7602,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnCostUpdatedResponse event
 
-                    var responseLogger = OnCostUpdatedResponse;
-                    if (responseLogger is not null)
-                    {
+                    var responseTime = Timestamp.Now;
 
-                        var responseTime         = Timestamp.Now;
-
-                        var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <OCPPv2_1.CS.OnCostUpdatedResponseDelegate>().
-                                                                  Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
-                                                                                                                    this,
-                                                                                                                    connection,
-                                                                                                                    request,
-                                                                                                                    response,
-                                                                                                                    responseTime - startTime)).
-                                                                  ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(responseLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnCostUpdatedResponse),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnCostUpdatedResponse(responseTime,
+                                                                             this,
+                                                                             connection,
+                                                                             request,
+                                                                             response,
+                                                                             responseTime - startTime);
 
                     #endregion
 
@@ -9469,41 +7622,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #region OnCustomerInformation
 
                 IncomingMessages.OnCustomerInformation += async (timestamp,
-                                                                      sender,
-                                                                      connection,
-                                                                      request,
-                                                                      cancellationToken) => {
+                                                                 sender,
+                                                                 connection,
+                                                                 request,
+                                                                 cancellationToken) => {
 
                     #region Send OnCustomerInformationRequest event
 
-                    var startTime      = Timestamp.Now;
+                    var startTime = Timestamp.Now;
 
-                    var requestLogger  = OnCustomerInformationRequest;
-                    if (requestLogger is not null)
-                    {
-
-                        var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <OCPPv2_1.CS.OnCustomerInformationRequestDelegate>().
-                                                               Select (loggingDelegate => loggingDelegate.Invoke(startTime,
-                                                                                                                 this,
-                                                                                                                 connection,
-                                                                                                                 request)).
-                                                               ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(requestLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnCustomerInformationRequest),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnCustomerInformationRequest(startTime,
+                                                                                    this,
+                                                                                    connection,
+                                                                                    request);
 
                     #endregion
 
@@ -9633,36 +7764,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnCustomerInformationResponse event
 
-                    var responseLogger = OnCustomerInformationResponse;
-                    if (responseLogger is not null)
-                    {
+                    var responseTime = Timestamp.Now;
 
-                        var responseTime         = Timestamp.Now;
-
-                        var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <OCPPv2_1.CS.OnCustomerInformationResponseDelegate>().
-                                                                  Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
-                                                                                                                    this,
-                                                                                                                    connection,
-                                                                                                                    request,
-                                                                                                                    response,
-                                                                                                                    responseTime - startTime)).
-                                                                  ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(responseLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnCustomerInformationResponse),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnCustomerInformationResponse(responseTime,
+                                                                                     this,
+                                                                                     connection,
+                                                                                     request,
+                                                                                     response,
+                                                                                     responseTime - startTime);
 
                     #endregion
 
@@ -9678,41 +7787,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #region OnIncomingBinaryDataTransfer
 
                 IncomingMessages.OnIncomingBinaryDataTransfer += async (timestamp,
-                                                                             sender,
-                                                                             connection,
-                                                                             request,
-                                                                             cancellationToken) => {
+                                                                        sender,
+                                                                        connection,
+                                                                        request,
+                                                                        cancellationToken) => {
 
                     #region Send OnBinaryDataTransferRequest event
 
-                    var startTime      = Timestamp.Now;
+                    var startTime = Timestamp.Now;
 
-                    var requestLogger  = OnIncomingBinaryDataTransferRequest;
-                    if (requestLogger is not null)
-                    {
-
-                        var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <OnIncomingBinaryDataTransferRequestDelegate>().
-                                                               Select (loggingDelegate => loggingDelegate.Invoke(startTime,
-                                                                                                                 this,
-                                                                                                                 connection,
-                                                                                                                 request)).
-                                                               ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(requestLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnIncomingBinaryDataTransferRequest),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnIncomingBinaryDataTransferRequest(startTime,
+                                                                                           this,
+                                                                                           connection,
+                                                                                           request);
 
                     #endregion
 
@@ -9812,36 +7899,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnBinaryDataTransferResponse event
 
-                    var responseLogger = OnIncomingBinaryDataTransferResponse;
-                    if (responseLogger is not null)
-                    {
+                    var responseTime = Timestamp.Now;
 
-                        var responseTime         = Timestamp.Now;
-
-                        var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <OnIncomingBinaryDataTransferResponseDelegate>().
-                                                                  Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
-                                                                                                                    this,
-                                                                                                                    connection,
-                                                                                                                    request,
-                                                                                                                    response,
-                                                                                                                    responseTime - startTime)).
-                                                                  ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(responseLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnIncomingBinaryDataTransferResponse),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnIncomingBinaryDataTransferResponse(responseTime,
+                                                                                            this,
+                                                                                            connection,
+                                                                                            request,
+                                                                                            response,
+                                                                                            responseTime - startTime);
 
                     #endregion
 
@@ -9854,41 +7919,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #region OnGetFile
 
                 IncomingMessages.OnGetFile += async (timestamp,
-                                                          sender,
-                                                          connection,
-                                                          request,
-                                                          cancellationToken) => {
+                                                     sender,
+                                                     connection,
+                                                     request,
+                                                     cancellationToken) => {
 
                     #region Send OnGetFileRequest event
 
-                    var startTime      = Timestamp.Now;
+                    var startTime = Timestamp.Now;
 
-                    var requestLogger  = OnGetFileRequest;
-                    if (requestLogger is not null)
-                    {
-
-                        var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <OCPP.CS.OnGetFileRequestDelegate>().
-                                                               Select (loggingDelegate => loggingDelegate.Invoke(startTime,
-                                                                                                                 this,
-                                                                                                                 connection,
-                                                                                                                 request)).
-                                                               ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(requestLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnGetFileRequest),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnGetFileRequest(startTime,
+                                                                        this,
+                                                                        connection,
+                                                                        request);
 
                     #endregion
 
@@ -9981,36 +8024,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnGetFileResponse event
 
-                    var responseLogger = OnGetFileResponse;
-                    if (responseLogger is not null)
-                    {
+                    var responseTime = Timestamp.Now;
 
-                        var responseTime         = Timestamp.Now;
-
-                        var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <OCPP.CS.OnGetFileResponseDelegate>().
-                                                                  Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
-                                                                                                                    this,
-                                                                                                                    connection,
-                                                                                                                    request,
-                                                                                                                    response,
-                                                                                                                    responseTime - startTime)).
-                                                                  ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(responseLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnGetFileResponse),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnGetFileResponse(responseTime,
+                                                                         this,
+                                                                         connection,
+                                                                         request,
+                                                                         response,
+                                                                         responseTime - startTime);
 
                     #endregion
 
@@ -10030,34 +8051,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnSendFileRequest event
 
-                    var startTime      = Timestamp.Now;
+                    var startTime = Timestamp.Now;
 
-                    var requestLogger  = OnSendFileRequest;
-                    if (requestLogger is not null)
-                    {
-
-                        var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <OCPP.CS.OnSendFileRequestDelegate>().
-                                                               Select (loggingDelegate => loggingDelegate.Invoke(startTime,
-                                                                                                                 this,
-                                                                                                                 connection,
-                                                                                                                 request)).
-                                                               ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(requestLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnSendFileRequest),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnSendFileRequest(startTime,
+                                                                         this,
+                                                                         connection,
+                                                                         request);
 
                     #endregion
 
@@ -10146,36 +8145,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnSendFileResponse event
 
-                    var responseLogger = OnSendFileResponse;
-                    if (responseLogger is not null)
-                    {
+                    var responseTime = Timestamp.Now;
 
-                        var responseTime         = Timestamp.Now;
-
-                        var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <OCPP.CS.OnSendFileResponseDelegate>().
-                                                                  Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
-                                                                                                                    this,
-                                                                                                                    connection,
-                                                                                                                    request,
-                                                                                                                    response,
-                                                                                                                    responseTime - startTime)).
-                                                                  ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(responseLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnSendFileResponse),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnSendFileResponse(responseTime,
+                                                                          this,
+                                                                          connection,
+                                                                          request,
+                                                                          response,
+                                                                          responseTime - startTime);
 
                     #endregion
 
@@ -10195,34 +8172,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnDeleteFileRequest event
 
-                    var startTime      = Timestamp.Now;
+                    var startTime = Timestamp.Now;
 
-                    var requestLogger  = OnDeleteFileRequest;
-                    if (requestLogger is not null)
-                    {
-
-                        var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <OCPP.CS.OnDeleteFileRequestDelegate>().
-                                                               Select (loggingDelegate => loggingDelegate.Invoke(startTime,
-                                                                                                                 this,
-                                                                                                                 connection,
-                                                                                                                 request)).
-                                                               ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(requestLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnDeleteFileRequest),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnDeleteFileRequest(startTime,
+                                                                           this,
+                                                                           connection,
+                                                                           request);
 
                     #endregion
 
@@ -10311,36 +8266,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnDeleteFileResponse event
 
-                    var responseLogger = OnDeleteFileResponse;
-                    if (responseLogger is not null)
-                    {
+                    var responseTime = Timestamp.Now;
 
-                        var responseTime         = Timestamp.Now;
-
-                        var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <OCPP.CS.OnDeleteFileResponseDelegate>().
-                                                                  Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
-                                                                                                                    this,
-                                                                                                                    connection,
-                                                                                                                    request,
-                                                                                                                    response,
-                                                                                                                    responseTime - startTime)).
-                                                                  ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(responseLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnDeleteFileResponse),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnDeleteFileResponse(responseTime,
+                                                                            this,
+                                                                            connection,
+                                                                            request,
+                                                                            response,
+                                                                            responseTime - startTime);
 
                     #endregion
 
@@ -10363,34 +8296,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnAddSignaturePolicyRequest event
 
-                    var startTime      = Timestamp.Now;
+                    var startTime = Timestamp.Now;
 
-                    var requestLogger  = OnAddSignaturePolicyRequest;
-                    if (requestLogger is not null)
-                    {
-
-                        var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                               OfType <OCPP.CS.OnAddSignaturePolicyRequestDelegate>().
-                                                               Select (loggingDelegate => loggingDelegate.Invoke(startTime,
-                                                                                                                 this,
-                                                                                                                 connection,
-                                                                                                                 request)).
-                                                               ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(requestLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnAddSignaturePolicyRequest),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnAddSignaturePolicyRequest(startTime,
+                                                                                   this,
+                                                                                   connection,
+                                                                                   request);
 
                     #endregion
 
@@ -10480,36 +8391,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Send OnAddSignaturePolicyResponse event
 
-                    var responseLogger = OnAddSignaturePolicyResponse;
-                    if (responseLogger is not null)
-                    {
+                    var responseTime = Timestamp.Now;
 
-                        var responseTime         = Timestamp.Now;
-
-                        var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                                  OfType <OCPP.CS.OnAddSignaturePolicyResponseDelegate>().
-                                                                  Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
-                                                                                                                    this,
-                                                                                                                    connection,
-                                                                                                                    request,
-                                                                                                                    response,
-                                                                                                                    responseTime - startTime)).
-                                                                  ToArray();
-
-                        try
-                        {
-                            await Task.WhenAll(responseLoggerTasks);
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnAddSignaturePolicyResponse),
-                                      e
-                                  );
-                        }
-
-                    }
+                    await parentNetworkingNode.IN.RaiseOnAddSignaturePolicyResponse(responseTime,
+                                                                                    this,
+                                                                                    connection,
+                                                                                    request,
+                                                                                    response,
+                                                                                    responseTime - startTime);
 
                     #endregion
 

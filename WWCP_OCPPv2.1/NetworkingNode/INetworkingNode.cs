@@ -768,27 +768,67 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
 
         // Binary Data Streams Extensions
 
-        #region OnIncomingBinaryDataTransferRequest/-Response
+        #region IncomingBinaryDataTransfer
 
+        Task RaiseOnIncomingBinaryDataTransferRequest (DateTime                     Timestamp,
+                                                       IEventSender                 Sender,
+                                                       IWebSocketConnection         Connection,
+                                                       BinaryDataTransferRequest    Request);
 
-
-        #endregion
-
-        #region OnGetFileRequest/-Response
-
-
-
-        #endregion
-
-        #region OnSendFileRequest/-Response
-
-
+        Task RaiseOnIncomingBinaryDataTransferResponse(DateTime                     Timestamp,
+                                                       IEventSender                 Sender,
+                                                       IWebSocketConnection         Connection,
+                                                       BinaryDataTransferRequest    Request,
+                                                       BinaryDataTransferResponse   Response,
+                                                       TimeSpan                     Runtime);
 
         #endregion
 
-        #region OnDeleteFileRequest/-Response
+        #region GetFile
 
+        Task RaiseOnGetFileRequest(DateTime                Timestamp,
+                                   IEventSender            Sender,
+                                   IWebSocketConnection    Connection,
+                                   GetFileRequest          Request);
 
+        Task RaiseOnGetFileResponse(DateTime               Timestamp,
+                                    IEventSender           Sender,
+                                    IWebSocketConnection   Connection,
+                                    GetFileRequest         Request,
+                                    GetFileResponse        Response,
+                                    TimeSpan               Runtime);
+
+        #endregion
+
+        #region SendFile
+
+        Task RaiseOnSendFileRequest (DateTime               Timestamp,
+                                     IEventSender           Sender,
+                                     IWebSocketConnection   Connection,
+                                     SendFileRequest        Request);
+
+        Task RaiseOnSendFileResponse(DateTime               Timestamp,
+                                     IEventSender           Sender,
+                                     IWebSocketConnection   Connection,
+                                     SendFileRequest        Request,
+                                     SendFileResponse       Response,
+                                     TimeSpan               Runtime);
+
+        #endregion
+
+        #region DeleteFile
+
+        Task RaiseOnDeleteFileRequest (DateTime               Timestamp,
+                                       IEventSender           Sender,
+                                       IWebSocketConnection   Connection,
+                                       DeleteFileRequest      Request);
+
+        Task RaiseOnDeleteFileResponse(DateTime               Timestamp,
+                                       IEventSender           Sender,
+                                       IWebSocketConnection   Connection,
+                                       DeleteFileRequest      Request,
+                                       DeleteFileResponse     Response,
+                                       TimeSpan               Runtime);
 
         #endregion
 
@@ -797,31 +837,97 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
 
         #region AddSignaturePolicy
 
+        Task RaiseOnAddSignaturePolicyRequest (DateTime                     Timestamp,
+                                               IEventSender                 Sender,
+                                               IWebSocketConnection         Connection,
+                                               AddSignaturePolicyRequest    Request);
+
+        Task RaiseOnAddSignaturePolicyResponse(DateTime                     Timestamp,
+                                               IEventSender                 Sender,
+                                               IWebSocketConnection         Connection,
+                                               AddSignaturePolicyRequest    Request,
+                                               AddSignaturePolicyResponse   Response,
+                                               TimeSpan                     Runtime);
 
         #endregion
 
         #region UpdateSignaturePolicy
 
+        Task RaiseOnUpdateSignaturePolicyRequest (DateTime                        Timestamp,
+                                                  IEventSender                    Sender,
+                                                  IWebSocketConnection            Connection,
+                                                  UpdateSignaturePolicyRequest    Request);
+
+        Task RaiseOnUpdateSignaturePolicyResponse(DateTime                        Timestamp,
+                                                  IEventSender                    Sender,
+                                                  IWebSocketConnection            Connection,
+                                                  UpdateSignaturePolicyRequest    Request,
+                                                  UpdateSignaturePolicyResponse   Response,
+                                                  TimeSpan                        Runtime);
 
         #endregion
 
         #region DeleteSignaturePolicy
 
+        Task RaiseOnDeleteSignaturePolicyRequest (DateTime                        Timestamp,
+                                                  IEventSender                    Sender,
+                                                  IWebSocketConnection            Connection,
+                                                  DeleteSignaturePolicyRequest    Request);
+
+        Task RaiseOnDeleteSignaturePolicyResponse(DateTime                        Timestamp,
+                                                  IEventSender                    Sender,
+                                                  IWebSocketConnection            Connection,
+                                                  DeleteSignaturePolicyRequest    Request,
+                                                  DeleteSignaturePolicyResponse   Response,
+                                                  TimeSpan                        Runtime);
 
         #endregion
 
         #region AddUserRole
 
+        Task RaiseOnAddUserRoleRequest (DateTime               Timestamp,
+                                        IEventSender           Sender,
+                                        IWebSocketConnection   Connection,
+                                        AddUserRoleRequest     Request);
+
+        Task RaiseOnAddUserRoleResponse(DateTime               Timestamp,
+                                        IEventSender           Sender,
+                                        IWebSocketConnection   Connection,
+                                        AddUserRoleRequest     Request,
+                                        AddUserRoleResponse    Response,
+                                        TimeSpan               Runtime);
 
         #endregion
 
         #region UpdateUserRole
 
+        Task RaiseOnUpdateUserRoleRequest (DateTime                 Timestamp,
+                                           IEventSender             Sender,
+                                           IWebSocketConnection     Connection,
+                                           UpdateUserRoleRequest    Request);
+
+        Task RaiseOnUpdateUserRoleResponse(DateTime                 Timestamp,
+                                           IEventSender             Sender,
+                                           IWebSocketConnection     Connection,
+                                           UpdateUserRoleRequest    Request,
+                                           UpdateUserRoleResponse   Response,
+                                           TimeSpan                 Runtime);
 
         #endregion
 
         #region DeleteUserRole
 
+        Task RaiseOnDeleteUserRoleRequest (DateTime                 Timestamp,
+                                           IEventSender             Sender,
+                                           IWebSocketConnection     Connection,
+                                           DeleteUserRoleRequest    Request);
+
+        Task RaiseOnDeleteUserRoleResponse(DateTime                 Timestamp,
+                                           IEventSender             Sender,
+                                           IWebSocketConnection     Connection,
+                                           DeleteUserRoleRequest    Request,
+                                           DeleteUserRoleResponse   Response,
+                                           TimeSpan                 Runtime);
 
         #endregion
 
@@ -830,16 +936,49 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
 
         #region SetDefaultChargingTariff
 
+        Task RaiseOnSetDefaultChargingTariffRequest (DateTime                           Timestamp,
+                                                     IEventSender                       Sender,
+                                                     IWebSocketConnection               Connection,
+                                                     SetDefaultChargingTariffRequest    Request);
+
+        Task RaiseOnSetDefaultChargingTariffResponse(DateTime                           Timestamp,
+                                                     IEventSender                       Sender,
+                                                     IWebSocketConnection               Connection,
+                                                     SetDefaultChargingTariffRequest    Request,
+                                                     SetDefaultChargingTariffResponse   Response,
+                                                     TimeSpan                           Runtime);
 
         #endregion
 
         #region GetDefaultChargingTariff
 
+        Task RaiseOnGetDefaultChargingTariffRequest (DateTime                           Timestamp,
+                                                     IEventSender                       Sender,
+                                                     IWebSocketConnection               Connection,
+                                                     GetDefaultChargingTariffRequest    Request);
+
+        Task RaiseOnGetDefaultChargingTariffResponse(DateTime                           Timestamp,
+                                                     IEventSender                       Sender,
+                                                     IWebSocketConnection               Connection,
+                                                     GetDefaultChargingTariffRequest    Request,
+                                                     GetDefaultChargingTariffResponse   Response,
+                                                     TimeSpan                           Runtime);
 
         #endregion
 
         #region RemoveDefaultChargingTariff
 
+        Task RaiseOnRemoveDefaultChargingTariffRequest (DateTime                              Timestamp,
+                                                        IEventSender                          Sender,
+                                                        IWebSocketConnection                  Connection,
+                                                        RemoveDefaultChargingTariffRequest    Request);
+
+        Task RaiseOnRemoveDefaultChargingTariffResponse(DateTime                              Timestamp,
+                                                        IEventSender                          Sender,
+                                                        IWebSocketConnection                  Connection,
+                                                        RemoveDefaultChargingTariffRequest    Request,
+                                                        RemoveDefaultChargingTariffResponse   Response,
+                                                        TimeSpan                              Runtime);
 
         #endregion
 
