@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever an UsePriorityCharging websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?                        OnUsePriorityChargingWSRequest;
+        public event WebSocketJSONRequestLogHandler?                        OnUsePriorityChargingWSRequest;
 
         /// <summary>
         /// An event sent whenever an UsePriorityCharging request was received.
@@ -76,7 +76,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a websocket response to an UsePriorityCharging request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?            OnUsePriorityChargingWSResponse;
+        public event WebSocketJSONRequestJSONResponseLogHandler?            OnUsePriorityChargingWSResponse;
 
         #endregion
 

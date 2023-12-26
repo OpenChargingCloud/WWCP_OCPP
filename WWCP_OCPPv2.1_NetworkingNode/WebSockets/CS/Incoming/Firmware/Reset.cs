@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a reset websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?                OnResetWSRequest;
+        public event WebSocketJSONRequestLogHandler?                OnResetWSRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
@@ -76,7 +76,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a websocket response to a reset request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?    OnResetWSResponse;
+        public event WebSocketJSONRequestJSONResponseLogHandler?    OnResetWSResponse;
 
         #endregion
 

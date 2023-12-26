@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a clear display message websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?                        OnClearDisplayMessageWSRequest;
+        public event WebSocketJSONRequestLogHandler?                        OnClearDisplayMessageWSRequest;
 
         /// <summary>
         /// An event sent whenever a clear display message request was received.
@@ -76,7 +76,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a websocket response to a clear display message request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?            OnClearDisplayMessageWSResponse;
+        public event WebSocketJSONRequestJSONResponseLogHandler?            OnClearDisplayMessageWSResponse;
 
         #endregion
 

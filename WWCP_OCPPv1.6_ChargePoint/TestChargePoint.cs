@@ -1145,10 +1145,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region ConnectWebSocket(...)
 
-        public async Task<HTTPResponse?> ConnectWebSocket(String                               From,
-                                                          String                               To,
-
-                                                          URL                                  RemoteURL,
+        public async Task<HTTPResponse?> ConnectWebSocket(URL                                  RemoteURL,
                                                           HTTPHostname?                        VirtualHostname              = null,
                                                           String?                              Description                  = null,
                                                           Boolean?                             PreferIPv4                   = null,
@@ -1182,8 +1179,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             var chargePointWSClient   = new ChargePointWSClient(
 
                                             Id,
-                                            From,
-                                            To,
 
                                             RemoteURL,
                                             VirtualHostname,

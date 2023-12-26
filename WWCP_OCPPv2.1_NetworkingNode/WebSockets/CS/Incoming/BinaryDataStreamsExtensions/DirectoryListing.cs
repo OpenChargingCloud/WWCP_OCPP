@@ -55,7 +55,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a ListDirectory websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?                OnListDirectoryWSRequest;
+        public event WebSocketJSONRequestLogHandler?                OnListDirectoryWSRequest;
 
         /// <summary>
         /// An event sent whenever a ListDirectory request was received.
@@ -75,7 +75,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a websocket response to a ListDirectory request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?    OnListDirectoryWSResponse;
+        public event WebSocketJSONRequestJSONResponseLogHandler?    OnListDirectoryWSResponse;
 
         #endregion
 

@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a get monitoring report websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?                        OnGetMonitoringReportWSRequest;
+        public event WebSocketJSONRequestLogHandler?                        OnGetMonitoringReportWSRequest;
 
         /// <summary>
         /// An event sent whenever a get monitoring report request was received.
@@ -76,7 +76,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a websocket response to a get monitoring report request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?            OnGetMonitoringReportWSResponse;
+        public event WebSocketJSONRequestJSONResponseLogHandler?            OnGetMonitoringReportWSResponse;
 
         #endregion
 

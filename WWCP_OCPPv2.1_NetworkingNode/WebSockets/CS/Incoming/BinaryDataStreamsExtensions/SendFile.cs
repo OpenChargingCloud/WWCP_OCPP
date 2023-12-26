@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a SendFile websocket request was received.
         /// </summary>
-        public event WSClientBinaryRequestLogHandler?                OnSendFileWSRequest;
+        public event WwebSocketBinaryRequestLogHandler?                OnSendFileWSRequest;
 
         /// <summary>
         /// An event sent whenever a SendFile request was received.
@@ -74,7 +74,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a websocket response to a SendFile request was sent.
         /// </summary>
-        public event WSClientBinaryRequestJSONResponseLogHandler?    OnSendFileWSResponse;
+        public event WebSocketBinaryRequestJSONResponseLogHandler?    OnSendFileWSResponse;
 
         #endregion
 

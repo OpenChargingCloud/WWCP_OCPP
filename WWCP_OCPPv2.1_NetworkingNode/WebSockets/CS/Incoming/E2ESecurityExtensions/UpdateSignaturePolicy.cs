@@ -53,7 +53,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever an UpdateSignaturePolicy websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?                      OnUpdateSignaturePolicyWSRequest;
+        public event WebSocketJSONRequestLogHandler?                      OnUpdateSignaturePolicyWSRequest;
 
         /// <summary>
         /// An event sent whenever an UpdateSignaturePolicy request was received.
@@ -73,7 +73,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a websocket response to an UpdateSignaturePolicy request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?          OnUpdateSignaturePolicyWSResponse;
+        public event WebSocketJSONRequestJSONResponseLogHandler?          OnUpdateSignaturePolicyWSResponse;
 
         #endregion
 

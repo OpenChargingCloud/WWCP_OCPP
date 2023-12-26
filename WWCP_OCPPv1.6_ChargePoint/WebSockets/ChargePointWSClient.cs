@@ -122,8 +122,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// and connecting to a central system to invoke methods.
         /// </summary>
         /// <param name="ChargeBoxIdentity">The unique identification of this charge box.</param>
-        /// <param name="From">The source URI of the websocket message.</param>
-        /// <param name="To">The destination URI of the websocket message.</param>
         /// 
         /// <param name="RemoteURL">The remote URL of the HTTP endpoint to connect to.</param>
         /// <param name="VirtualHostname">An optional HTTP virtual hostname.</param>
@@ -142,8 +140,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="HTTPLogger">A HTTP logger.</param>
         /// <param name="DNSClient">The DNS client to use.</param>
         public ChargePointWSClient(NetworkingNode_Id                    ChargeBoxIdentity,
-                                   String                               From,
-                                   String                               To,
 
                                    URL                                  RemoteURL,
                                    HTTPHostname?                        VirtualHostname              = null,
@@ -175,8 +171,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                    DNSClient?                           DNSClient                    = null)
 
             : base(ChargeBoxIdentity,
-                   From,
-                   To,
 
                    RemoteURL,
                    VirtualHostname,

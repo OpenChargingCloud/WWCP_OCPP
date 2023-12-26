@@ -34,9 +34,12 @@ using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS;
 namespace cloud.charging.open.protocols.OCPPv2_1.NN
 {
 
-    public interface INetworkingNodeIN : //INetworkingNodeIncomingMessages,
+    public interface INetworkingNodeIN : INetworkingNodeIncomingMessages,
                                          INetworkingNodeIncomingMessagesEvents
     {
+
+        void WireEvents(INetworkingNodeIncomingMessages IncomingMessages);
+
 
         #region Incoming Messages: Networking Node <- CSMS
 

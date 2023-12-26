@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a change availability websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?                       OnChangeAvailabilityWSRequest;
+        public event WebSocketJSONRequestLogHandler?                       OnChangeAvailabilityWSRequest;
 
         /// <summary>
         /// An event sent whenever a change availability request was received.
@@ -76,7 +76,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a websocket response to a change availability request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?           OnChangeAvailabilityWSResponse;
+        public event WebSocketJSONRequestJSONResponseLogHandler?           OnChangeAvailabilityWSResponse;
 
         #endregion
 

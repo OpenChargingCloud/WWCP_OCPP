@@ -146,8 +146,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 testCSMS01.AddOrUpdateHTTPBasicAuth(chargingStation1Id, "1234abcd");
 
                 var response = chargingStation1.ConnectWebSocket(
-                                   From:                    "From:GD001",
-                                   To:                      "To:OCPPTest01",
                                    RemoteURL:               URL.Parse("http://127.0.0.1:" + (testNetworkingNodeWebSockets01?.IPPort ?? testBackendWebSockets01?.IPPort).ToString() + "/" + chargingStation1.Id),
                                    HTTPAuthentication:      HTTPBasicAuthentication.Create(chargingStation1Id.ToString(), "1234abcd"),
                                    DisableWebSocketPings:   true
@@ -275,8 +273,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 testCSMS01.AddOrUpdateHTTPBasicAuth(chargingStation2Id, "1234abcd");
 
                 var response = chargingStation2.ConnectWebSocket(
-                                   From:                    "From:GD002",
-                                   To:                      "To:OCPPTest01",
                                    RemoteURL:               URL.Parse("http://127.0.0.1:" + testBackendWebSockets01.IPPort.ToString() + "/" + chargingStation2.Id),
                                    HTTPAuthentication:      HTTPBasicAuthentication.Create(chargingStation2Id.ToString(), "1234abcd"),
                                    DisableWebSocketPings:   true

@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a trigger message websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?                   OnTriggerMessageWSRequest;
+        public event WebSocketJSONRequestLogHandler?                   OnTriggerMessageWSRequest;
 
         /// <summary>
         /// An event sent whenever a trigger message request was received.
@@ -76,7 +76,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a websocket response to a trigger message request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?       OnTriggerMessageWSResponse;
+        public event WebSocketJSONRequestJSONResponseLogHandler?       OnTriggerMessageWSResponse;
 
         #endregion
 

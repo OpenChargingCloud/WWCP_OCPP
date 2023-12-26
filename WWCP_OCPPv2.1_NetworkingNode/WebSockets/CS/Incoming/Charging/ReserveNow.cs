@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a reserve now websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?                OnReserveNowWSRequest;
+        public event WebSocketJSONRequestLogHandler?                OnReserveNowWSRequest;
 
         /// <summary>
         /// An event sent whenever a reserve now request was received.
@@ -76,7 +76,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a websocket response to a reserve now request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?    OnReserveNowWSResponse;
+        public event WebSocketJSONRequestJSONResponseLogHandler?    OnReserveNowWSResponse;
 
         #endregion
 

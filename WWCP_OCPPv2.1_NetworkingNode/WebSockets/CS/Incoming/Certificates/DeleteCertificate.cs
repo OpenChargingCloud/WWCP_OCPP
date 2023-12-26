@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a delete certificate websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?                      OnDeleteCertificateWSRequest;
+        public event WebSocketJSONRequestLogHandler?                      OnDeleteCertificateWSRequest;
 
         /// <summary>
         /// An event sent whenever a delete certificate request was received.
@@ -76,7 +76,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a websocket response to a delete certificate request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?          OnDeleteCertificateWSResponse;
+        public event WebSocketJSONRequestJSONResponseLogHandler?          OnDeleteCertificateWSResponse;
 
         #endregion
 

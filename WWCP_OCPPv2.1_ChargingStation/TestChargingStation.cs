@@ -2159,10 +2159,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region ConnectWebSocket(...)
 
-        public async Task<HTTPResponse?> ConnectWebSocket(String                               From,
-                                                          String                               To,
-
-                                                          URL                                  RemoteURL,
+        public async Task<HTTPResponse?> ConnectWebSocket(URL                                  RemoteURL,
                                                           HTTPHostname?                        VirtualHostname              = null,
                                                           String?                              Description                  = null,
                                                           RemoteCertificateValidationHandler?  RemoteCertificateValidator   = null,
@@ -2195,9 +2192,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         {
 
             var chargingStationWSClient = new ChargingStationWSClient(
+
                                               Id,
-                                              From,
-                                              To,
 
                                               RemoteURL,
                                               VirtualHostname,

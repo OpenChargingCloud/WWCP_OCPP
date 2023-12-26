@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a clear variable monitoring websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?                            OnClearVariableMonitoringWSRequest;
+        public event WebSocketJSONRequestLogHandler?                            OnClearVariableMonitoringWSRequest;
 
         /// <summary>
         /// An event sent whenever a clear variable monitoring request was received.
@@ -76,7 +76,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a websocket response to a clear variable monitoring request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?                OnClearVariableMonitoringWSResponse;
+        public event WebSocketJSONRequestJSONResponseLogHandler?                OnClearVariableMonitoringWSResponse;
 
         #endregion
 

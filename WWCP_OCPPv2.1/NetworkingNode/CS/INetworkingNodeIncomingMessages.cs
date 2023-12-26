@@ -19,6 +19,7 @@
 
 using cloud.charging.open.protocols.OCPP.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
 
@@ -26,10 +27,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 {
 
     /// <summary>
-    /// The common interface of all charging station servers.
+    /// The common interface of all noetworking node incoming messages.
     /// </summary>
     public interface INetworkingNodeIncomingMessages
     {
+
+        // CS
 
         #region OnReset
 
@@ -567,6 +570,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
         #endregion
 
+
+
+
+        // CSMS
+
+        #region OnBootNotification
+
+        /// <summary>
+        /// An event sent whenever a boot notification was received.
+        /// </summary>
+        event OnBootNotificationDelegate           OnBootNotification;
+
+        #endregion
 
     }
 

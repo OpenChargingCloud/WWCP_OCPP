@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a NotifyAllowedEnergyTransfer websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?                                OnNotifyAllowedEnergyTransferWSRequest;
+        public event WebSocketJSONRequestLogHandler?                                OnNotifyAllowedEnergyTransferWSRequest;
 
         /// <summary>
         /// An event sent whenever a NotifyAllowedEnergyTransfer request was received.
@@ -76,7 +76,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a websocket response to a NotifyAllowedEnergyTransfer request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?                    OnNotifyAllowedEnergyTransferWSResponse;
+        public event WebSocketJSONRequestJSONResponseLogHandler?                    OnNotifyAllowedEnergyTransferWSResponse;
 
         #endregion
 

@@ -53,7 +53,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever an AddUserRole websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?                OnAddUserRoleWSRequest;
+        public event WebSocketJSONRequestLogHandler?                OnAddUserRoleWSRequest;
 
         /// <summary>
         /// An event sent whenever an AddUserRole request was received.
@@ -73,7 +73,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a websocket response to an AddUserRole request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?    OnAddUserRoleWSResponse;
+        public event WebSocketJSONRequestJSONResponseLogHandler?    OnAddUserRoleWSResponse;
 
         #endregion
 

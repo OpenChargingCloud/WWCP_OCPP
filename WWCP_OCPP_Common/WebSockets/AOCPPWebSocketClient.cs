@@ -77,16 +77,6 @@ namespace cloud.charging.open.protocols.OCPP.CS
             => Id.ToString();
 
         /// <summary>
-        /// The source URI of the websocket message.
-        /// </summary>
-        public String                                From               { get; }
-
-        /// <summary>
-        /// The destination URI of the websocket message.
-        /// </summary>
-        public String                                To                 { get; }
-
-        /// <summary>
         /// The JSON formatting to use.
         /// </summary>
         public Formatting                            JSONFormatting     { get; set; } = Formatting.None;
@@ -118,8 +108,6 @@ namespace cloud.charging.open.protocols.OCPP.CS
         /// and connecting to a CSMS to invoke methods.
         /// </summary>
         /// <param name="ChargingStationIdentity">The unique identification of this charging station.</param>
-        /// <param name="From">The source URI of the websocket message.</param>
-        /// <param name="To">The destination URI of the websocket message.</param>
         /// 
         /// <param name="RemoteURL">The remote URL of the HTTP endpoint to connect to.</param>
         /// <param name="VirtualHostname">An optional HTTP virtual hostname.</param>
@@ -139,8 +127,6 @@ namespace cloud.charging.open.protocols.OCPP.CS
         /// <param name="HTTPLogger">A HTTP logger.</param>
         /// <param name="DNSClient">The DNS client to use.</param>
         public AOCPPWebSocketClient(NetworkingNode_Id                    ChargingStationIdentity,
-                                    String                               From,
-                                    String                               To,
 
                                     URL                                  RemoteURL,
                                     HTTPHostname?                        VirtualHostname              = null,
@@ -205,29 +191,13 @@ namespace cloud.charging.open.protocols.OCPP.CS
 
         {
 
-            #region Initial checks
+            this.Id              = ChargingStationIdentity;
+            this.NetworkingMode  = NetworkingMode ?? WebSockets.NetworkingMode.Standard;
 
-            if (ChargingStationIdentity.IsNullOrEmpty)
-                throw new ArgumentNullException(nameof(ChargingStationIdentity),  "The given charging station identification must not be null or empty!");
-
-            if (From.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(From),                     "The given websocket message source must not be null or empty!");
-
-            if (To.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(To),                       "The given websocket message destination must not be null or empty!");
-
-            #endregion
-
-            this.Id                       = ChargingStationIdentity;
-            this.From                     = From;
-            this.To                       = To;
-
-            this.NetworkingMode           = NetworkingMode ?? WebSockets.NetworkingMode.Standard;
-
-            //this.Logger                   = new ChargePointwebsocketClient.CPClientLogger(this,
-            //                                                                         LoggingPath,
-            //                                                                         LoggingContext,
-            //                                                                         LogfileCreator);
+            //this.Logger          = new ChargePointwebsocketClient.CPClientLogger(this,
+            //                                                                LoggingPath,
+            //                                                                LoggingContext,
+            //                                                                LogfileCreator);
 
         }
 

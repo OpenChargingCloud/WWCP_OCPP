@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a DeleteFile websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?                OnDeleteFileWSRequest;
+        public event WebSocketJSONRequestLogHandler?                OnDeleteFileWSRequest;
 
         /// <summary>
         /// An event sent whenever a DeleteFile request was received.
@@ -76,7 +76,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a websocket response to a DeleteFile request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?    OnDeleteFileWSResponse;
+        public event WebSocketJSONRequestJSONResponseLogHandler?    OnDeleteFileWSResponse;
 
         #endregion
 

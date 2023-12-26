@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a set monitoring base websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?                      OnSetMonitoringBaseWSRequest;
+        public event WebSocketJSONRequestLogHandler?                      OnSetMonitoringBaseWSRequest;
 
         /// <summary>
         /// An event sent whenever a set monitoring base request was received.
@@ -76,7 +76,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a websocket response to a set monitoring base request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?          OnSetMonitoringBaseWSResponse;
+        public event WebSocketJSONRequestJSONResponseLogHandler?          OnSetMonitoringBaseWSResponse;
 
         #endregion
 

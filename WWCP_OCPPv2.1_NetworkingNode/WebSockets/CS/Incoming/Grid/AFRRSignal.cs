@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever an AFRRSignal websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?                OnAFRRSignalWSRequest;
+        public event WebSocketJSONRequestLogHandler?                OnAFRRSignalWSRequest;
 
         /// <summary>
         /// An event sent whenever an AFRRSignal request was received.
@@ -76,7 +76,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a websocket response to an AFRRSignal request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?    OnAFRRSignalWSResponse;
+        public event WebSocketJSONRequestJSONResponseLogHandler?    OnAFRRSignalWSResponse;
 
         #endregion
 

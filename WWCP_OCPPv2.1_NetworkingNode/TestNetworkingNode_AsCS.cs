@@ -247,10 +247,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region ConnectWebSocket(...)
 
-            public async Task<HTTPResponse?> ConnectWebSocket(String                               From,
-                                                              String                               To,
-
-                                                              URL                                  RemoteURL,
+            public async Task<HTTPResponse?> ConnectWebSocket(URL                                  RemoteURL,
                                                               HTTPHostname?                        VirtualHostname              = null,
                                                               String?                              Description                  = null,
                                                               RemoteCertificateValidationHandler?  RemoteCertificateValidator   = null,
@@ -283,9 +280,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 var networkingNodeWSClient = new NetworkingNodeWSClient(
+
                                                  parentNetworkingNode.Id,
-                                                 From,
-                                                 To,
 
                                                  RemoteURL,
                                                  VirtualHostname,
@@ -321,6 +317,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 this.CSClient  = networkingNodeWSClient;
 
+                parentNetworkingNode.IN.WireEvents(networkingNodeWSClient);
                 WireEvents(networkingNodeWSClient);
 
                 var response = await networkingNodeWSClient.Connect();
@@ -342,132 +339,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             public void WireEvents(INetworkingNodeIncomingMessages IncomingMessages)
             {
-
-                #region OnReset
-
-                IncomingMessages.OnReset += async (timestamp,
-                                                   sender,
-                                                   connection,
-                                                   request,
-                                                   cancellationToken) => {
-
-                    #region Send OnResetRequest event
-
-                    var startTime = Timestamp.Now;
-
-                    await parentNetworkingNode.IN.RaiseOnResetRequest(startTime,
-                                                                      this,
-                                                                      connection,
-                                                                      request);
-
-                    #endregion
-
-
-                    #region Check request signature(s)
-
-                    OCPPv2_1.CS.ResetResponse? response = null;
-
-                    if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
-                             request,
-                             request.ToJSON(
-                                 parentNetworkingNode.CustomResetRequestSerializer,
-                                 parentNetworkingNode.CustomSignatureSerializer,
-                                 parentNetworkingNode.CustomCustomDataSerializer
-                             ),
-                             out var errorResponse
-                         ))
-                    {
-
-                        response = new OCPPv2_1.CS.ResetResponse(
-                                       Request:  request,
-                                       Result:   Result.SignatureError(
-                                                     $"Invalid signature: {errorResponse}"
-                                                 )
-                                   );
-
-                    }
-
-                    #endregion
-
-                    else if (request.DestinationNodeId != parentNetworkingNode.Id)
-                    {
-
-                        DebugX.Log($"Forwarding incoming '{request.ResetType}' reset request to '{request.DestinationNodeId}'!");
-
-                        response = await parentNetworkingNode.AsCSMS.Reset(request);
-
-                    }
-
-                    else
-                    {
-
-                        var me_or_not_me = request.DestinationNodeId;
-
-                        DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming '{request.ResetType}' reset request{(request.EVSEId.HasValue ? $" for EVSE '{request.EVSEId}" : "")}'!");
-
-                        // ResetType
-
-                        // Reset entire charging station
-                        if (!request.EVSEId.HasValue)
-                        {
-
-                            response = new OCPPv2_1.CS.ResetResponse(
-                                           Request:      request,
-                                           Status:       ResetStatus.Accepted,
-                                           StatusInfo:   null,
-                                           CustomData:   null
-                                       );
-
-                        }
-
-                        // Unknown EVSE
-                        else
-                        {
-
-                            response = new OCPPv2_1.CS.ResetResponse(
-                                           Request:      request,
-                                           Status:       ResetStatus.Rejected,
-                                           StatusInfo:   null,
-                                           CustomData:   null
-                                       );
-
-                        }
-
-                    }
-
-                    #region Sign response message
-
-                    parentNetworkingNode.SignaturePolicy.SignResponseMessage(
-                        response,
-                        response.ToJSON(
-                            parentNetworkingNode.CustomResetResponseSerializer,
-                            parentNetworkingNode.CustomStatusInfoSerializer,
-                            parentNetworkingNode.CustomSignatureSerializer,
-                            parentNetworkingNode.CustomCustomDataSerializer
-                        ),
-                        out var errorResponse2);
-
-                    #endregion
-
-
-                    #region Send OnResetResponse event
-
-                    var responseTime = Timestamp.Now;
-
-                    await parentNetworkingNode.IN.RaiseOnResetResponse(responseTime,
-                                                                       this,
-                                                                       connection,
-                                                                       request,
-                                                                       response,
-                                                                       responseTime - startTime);
-
-                    #endregion
-
-                    return response;
-
-                };
-
-                #endregion
 
                 #region OnUpdateFirmware
 

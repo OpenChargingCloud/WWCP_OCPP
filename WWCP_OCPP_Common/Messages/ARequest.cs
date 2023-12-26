@@ -175,15 +175,15 @@ namespace cloud.charging.open.protocols.OCPP
 
             => ToAbstractJSON(null, RequestData);
 
-        public JObject ToAbstractJSON(WebSocketServerConnection  Connection,
-                                      Object                     RequestData)
+        public JObject ToAbstractJSON(IWebSocketConnection  Connection,
+                                      Object                RequestData)
         {
 
             var json = JSONObject.Create(
                            new JProperty("id",                  RequestId.       ToString()),
                            new JProperty("timestamp",           RequestTimestamp.ToIso8601()),
                            new JProperty("eventTrackingId",     EventTrackingId. ToString()),
-                           new JProperty("connection",          Connection?.     ToJSON()),
+                         //  new JProperty("connection",          Connection?.     ToJSON()),
                            new JProperty("destinationNodeId",   DestinationNodeId.ToString()),
                            new JProperty("networkPath",         NetworkPath.     ToJSON()),
                            new JProperty("timeout",             RequestTimeout.  TotalSeconds),

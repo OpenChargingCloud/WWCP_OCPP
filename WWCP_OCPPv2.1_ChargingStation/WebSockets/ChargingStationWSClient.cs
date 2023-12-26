@@ -171,8 +171,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="HTTPLogger">A HTTP logger.</param>
         /// <param name="DNSClient">The DNS client to use.</param>
         public ChargingStationWSClient(NetworkingNode_Id                    ChargingStationIdentity,
-                                       String                               From,
-                                       String                               To,
 
                                        URL                                  RemoteURL,
                                        HTTPHostname?                        VirtualHostname              = null,
@@ -206,8 +204,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                        DNSClient?                           DNSClient                    = null)
 
             : base(ChargingStationIdentity,
-                   From,
-                   To,
 
                    RemoteURL,
                    VirtualHostname,

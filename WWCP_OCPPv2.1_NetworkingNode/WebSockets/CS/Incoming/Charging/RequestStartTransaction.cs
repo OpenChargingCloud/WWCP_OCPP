@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a request start transaction websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?                            OnRequestStartTransactionWSRequest;
+        public event WebSocketJSONRequestLogHandler?                            OnRequestStartTransactionWSRequest;
 
         /// <summary>
         /// An event sent whenever a request start transaction request was received.
@@ -76,7 +76,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a websocket response to a request start transaction request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?                OnRequestStartTransactionWSResponse;
+        public event WebSocketJSONRequestJSONResponseLogHandler?                OnRequestStartTransactionWSResponse;
 
         #endregion
 

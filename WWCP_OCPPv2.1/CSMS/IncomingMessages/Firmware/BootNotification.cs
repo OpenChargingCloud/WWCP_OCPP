@@ -36,10 +36,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Request">The boot notification request.</param>
     public delegate Task
 
-        OnBootNotificationRequestDelegate(DateTime                    Timestamp,
-                                          IEventSender                Sender,
-                                          WebSocketServerConnection   Connection,
-                                          BootNotificationRequest     Request);
+        OnBootNotificationRequestDelegate(DateTime                  Timestamp,
+                                          IEventSender              Sender,
+                                          IWebSocketConnection      Connection,
+                                          BootNotificationRequest   Request);
 
 
     /// <summary>
@@ -52,11 +52,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<BootNotificationResponse>
 
-        OnBootNotificationDelegate(DateTime                    Timestamp,
-                                   IEventSender                Sender,
-                                   WebSocketServerConnection   Connection,
-                                   BootNotificationRequest     Request,
-                                   CancellationToken           CancellationToken);
+        OnBootNotificationDelegate(DateTime                  Timestamp,
+                                   IEventSender              Sender,
+                                   IWebSocketConnection      Connection,
+                                   BootNotificationRequest   Request,
+                                   CancellationToken         CancellationToken);
 
 
     /// <summary>
@@ -70,11 +70,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Runtime">The runtime of the boot notification response.</param>
     public delegate Task
 
-        OnBootNotificationResponseDelegate(DateTime                    Timestamp,
-                                           IEventSender                Sender,
-                                           WebSocketServerConnection   Connection,
-                                           BootNotificationRequest     Request,
-                                           BootNotificationResponse    Response,
-                                           TimeSpan                    Runtime);
+        OnBootNotificationResponseDelegate(DateTime                   Timestamp,
+                                           IEventSender               Sender,
+                                           IWebSocketConnection       Connection,
+                                           BootNotificationRequest    Request,
+                                           BootNotificationResponse   Response,
+                                           TimeSpan                   Runtime);
 
 }

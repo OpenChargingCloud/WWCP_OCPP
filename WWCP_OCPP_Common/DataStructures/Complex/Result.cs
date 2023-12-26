@@ -210,6 +210,15 @@ namespace cloud.charging.open.protocols.OCPP
             => new (ResultCode.SecurityError,
                     Description);
 
+        /// <summary>
+        /// The message was filtered by administrative filter rules.
+        /// </summary>
+        /// <param name="Description">A human-readable description.</param>
+        public static Result Filtered(String? Description = null)
+
+            => new (ResultCode.Filtered,
+                    Description);
+
         #endregion
 
 

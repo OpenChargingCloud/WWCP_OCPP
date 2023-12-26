@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever an install certificate websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?                       OnInstallCertificateWSRequest;
+        public event WebSocketJSONRequestLogHandler?                       OnInstallCertificateWSRequest;
 
         /// <summary>
         /// An event sent whenever an install certificate request was received.
@@ -76,7 +76,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a websocket response to an install certificate request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?           OnInstallCertificateWSResponse;
+        public event WebSocketJSONRequestJSONResponseLogHandler?           OnInstallCertificateWSResponse;
 
         #endregion
 

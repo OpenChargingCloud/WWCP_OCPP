@@ -229,6 +229,12 @@ namespace cloud.charging.open.protocols.OCPP
             = Register("SecurityError");
 
         /// <summary>
+        /// The message was filtered by administrative filter rules.
+        /// </summary>
+        public static ResultCode Filtered                        { get; }
+            = Register("Filtered");
+
+        /// <summary>
         /// Payload for Action is syntactically incorrect or not conform the PDU structure for Action.
         /// </summary>
         public static ResultCode FormationViolation              { get; }

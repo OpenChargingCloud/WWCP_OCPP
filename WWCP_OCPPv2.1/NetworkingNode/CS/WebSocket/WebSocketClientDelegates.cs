@@ -35,12 +35,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     /// <param name="Timestamp">The timestamp of the incoming request.</param>
     /// <param name="Connection">The HTTP WebSocket client connection.</param>
     /// <param name="JSONRequest">The incoming JSON request.</param>
-    public delegate Task WSClientJSONRequestLogHandler(DateTime                    Timestamp,
-                                                       WebSocketClientConnection   Connection,
-                                                       NetworkingNode_Id           NetworkingNodeId,
-                                                       NetworkPath                 NetworkPath,
-                                                       EventTracking_Id            EventTrackingId,
-                                                       JObject                     JSONRequest);
+    public delegate Task WebSocketJSONRequestLogHandler(DateTime               Timestamp,
+                                                        IWebSocketConnection   Connection,
+                                                        NetworkingNode_Id      NetworkingNodeId,
+                                                        NetworkPath            NetworkPath,
+                                                        EventTracking_Id       EventTrackingId,
+                                                        JObject                JSONRequest);
 
     /// <summary>
     /// The delegate for the HTTP web socket request log.
@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     /// <param name="Timestamp">The timestamp of the incoming request.</param>
     /// <param name="Connection">The HTTP WebSocket client connection.</param>
     /// <param name="BinaryRequest">The incoming binary request.</param>
-    public delegate Task WSClientBinaryRequestLogHandler(DateTime                    Timestamp,
-                                                         WebSocketClientConnection   Connection,
-                                                         NetworkingNode_Id           NetworkingNodeId,
-                                                         NetworkPath                 NetworkPath,
-                                                         EventTracking_Id            EventTrackingId,
-                                                         Byte[]                      BinaryRequest);
+    public delegate Task WwebSocketBinaryRequestLogHandler(DateTime               Timestamp,
+                                                           IWebSocketConnection   Connection,
+                                                           NetworkingNode_Id      NetworkingNodeId,
+                                                           NetworkPath            NetworkPath,
+                                                           EventTracking_Id       EventTrackingId,
+                                                           Byte[]                 BinaryRequest);
 
 
 
@@ -68,16 +68,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     /// <param name="JSONResponse">The outgoing JSON WebSocket response.</param>
     /// <param name="ErrorResponse">The outgoing WebSocket error response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate Task WSClientJSONRequestJSONResponseLogHandler    (DateTime                    Timestamp,
-                                                                       WebSocketClientConnection   Connection,
-                                                                       NetworkingNode_Id           NetworkingNodeId,
-                                                                       NetworkPath                 NetworkPath,
-                                                                       EventTracking_Id            EventTrackingId,
-                                                                       DateTime                    RequestTimestamp,
-                                                                       JObject                     JSONRequest,
-                                                                       JObject?                    JSONResponse,
-                                                                       JArray?                     ErrorResponse,
-                                                                       TimeSpan                    Runtime);
+    public delegate Task WebSocketJSONRequestJSONResponseLogHandler    (DateTime               Timestamp,
+                                                                        IWebSocketConnection   Connection,
+                                                                        NetworkingNode_Id      NetworkingNodeId,
+                                                                        NetworkPath            NetworkPath,
+                                                                        EventTracking_Id       EventTrackingId,
+                                                                        DateTime               RequestTimestamp,
+                                                                        JObject                JSONRequest,
+                                                                        JObject?               JSONResponse,
+                                                                        JArray?                ErrorResponse,
+                                                                        TimeSpan               Runtime);
 
     /// <summary>
     /// The delegate for the HTTP web socket response log.
@@ -88,16 +88,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     /// <param name="BinaryResponse">The outgoing binary WebSocket response.</param>
     /// <param name="ErrorResponse">The outgoing WebSocket error response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate Task WSClientJSONRequestBinaryResponseLogHandler  (DateTime                    Timestamp,
-                                                                       WebSocketClientConnection   Connection,
-                                                                       NetworkingNode_Id           NetworkingNodeId,
-                                                                       NetworkPath                 NetworkPath,
-                                                                       EventTracking_Id            EventTrackingId,
-                                                                       DateTime                    RequestTimestamp,
-                                                                       JObject                     JSONRequest,
-                                                                       Byte[]?                     BinaryResponse,
-                                                                       JArray?                     ErrorResponse,
-                                                                       TimeSpan                    Runtime);
+    public delegate Task WebSocketJSONRequestBinaryResponseLogHandler  (DateTime              Timestamp,
+                                                                        IWebSocketConnection   Connection,
+                                                                        NetworkingNode_Id      NetworkingNodeId,
+                                                                        NetworkPath            NetworkPath,
+                                                                        EventTracking_Id       EventTrackingId,
+                                                                        DateTime               RequestTimestamp,
+                                                                        JObject                JSONRequest,
+                                                                        Byte[]?                BinaryResponse,
+                                                                        JArray?                ErrorResponse,
+                                                                        TimeSpan               Runtime);
 
     /// <summary>
     /// The delegate for the HTTP web socket response log.
@@ -108,16 +108,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     /// <param name="JSONResponse">The outgoing JSON WebSocket response.</param>
     /// <param name="ErrorResponse">The outgoing WebSocket error response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate Task WSClientBinaryRequestJSONResponseLogHandler  (DateTime                    Timestamp,
-                                                                       WebSocketClientConnection   Connection,
-                                                                       NetworkingNode_Id           NetworkingNodeId,
-                                                                       NetworkPath                 NetworkPath,
-                                                                       EventTracking_Id            EventTrackingId,
-                                                                       DateTime                    RequestTimestamp,
-                                                                       Byte[]                      BinaryRequest,
-                                                                       JObject?                    JSONResponse,
-                                                                       JArray?                     ErrorResponse,
-                                                                       TimeSpan                    Runtime);
+    public delegate Task WebSocketBinaryRequestJSONResponseLogHandler  (DateTime              Timestamp,
+                                                                        IWebSocketConnection   Connection,
+                                                                        NetworkingNode_Id      NetworkingNodeId,
+                                                                        NetworkPath            NetworkPath,
+                                                                        EventTracking_Id       EventTrackingId,
+                                                                        DateTime               RequestTimestamp,
+                                                                        Byte[]                 BinaryRequest,
+                                                                        JObject?               JSONResponse,
+                                                                        JArray?                ErrorResponse,
+                                                                        TimeSpan               Runtime);
 
     /// <summary>
     /// The delegate for the HTTP web socket response log.
@@ -128,16 +128,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     /// <param name="BinaryResponse">The outgoing binary WebSocket response.</param>
     /// <param name="ErrorResponse">The outgoing WebSocket error response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate Task WSClientBinaryRequestBinaryResponseLogHandler(DateTime                    Timestamp,
-                                                                       WebSocketClientConnection   Connection,
-                                                                       NetworkingNode_Id           NetworkingNodeId,
-                                                                       NetworkPath                 NetworkPath,
-                                                                       EventTracking_Id            EventTrackingId,
-                                                                       DateTime                    RequestTimestamp,
-                                                                       Byte[]                      BinaryRequest,
-                                                                       Byte[]?                     BinaryResponse,
-                                                                       JArray?                     ErrorResponse,
-                                                                       TimeSpan                    Runtime);
+    public delegate Task WebSocketBinaryRequestBinaryResponseLogHandler(DateTime               Timestamp,
+                                                                        IWebSocketConnection   Connection,
+                                                                        NetworkingNode_Id      NetworkingNodeId,
+                                                                        NetworkPath            NetworkPath,
+                                                                        EventTracking_Id       EventTrackingId,
+                                                                        DateTime               RequestTimestamp,
+                                                                        Byte[]                 BinaryRequest,
+                                                                        Byte[]?                BinaryResponse,
+                                                                        JArray?                ErrorResponse,
+                                                                        TimeSpan               Runtime);
 
 
 

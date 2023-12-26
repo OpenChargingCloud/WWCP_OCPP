@@ -174,7 +174,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 await this.EventLog.SubmitEvent("OnBootNotificationRequest",
                                                 new JObject(
                                                     new JProperty("timestamp",          logTimestamp.           ToIso8601()),
-                                                    new JProperty("connection",         connection.             ToJSON()),
+                                                    //new JProperty("connection",         connection.             ToJSON()),
                                                     new JProperty("request",            request.                ToJSON()),
                                                     new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
                                                     new JProperty("eventTrackingId",    request.EventTrackingId.ToString())
@@ -192,7 +192,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                 new JObject(
                                                     new JProperty("timestamp",          logTimestamp.           ToIso8601()),
                                                     new JProperty("eventTrackingId",    request.EventTrackingId.ToString()),
-                                                    new JProperty("connection",         connection.             ToJSON()),
+                                                    //new JProperty("connection",         connection.             ToJSON()),
                                                     new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
                                                     new JProperty("response",           response.               ToJSON()),

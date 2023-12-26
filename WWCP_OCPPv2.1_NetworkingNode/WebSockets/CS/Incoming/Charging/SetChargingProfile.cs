@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a set charging profile websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?                       OnSetChargingProfileWSRequest;
+        public event WebSocketJSONRequestLogHandler?                       OnSetChargingProfileWSRequest;
 
         /// <summary>
         /// An event sent whenever a set charging profile request was received.
@@ -76,7 +76,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a websocket response to a set charging profile request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?           OnSetChargingProfileWSResponse;
+        public event WebSocketJSONRequestJSONResponseLogHandler?           OnSetChargingProfileWSResponse;
 
         #endregion
 

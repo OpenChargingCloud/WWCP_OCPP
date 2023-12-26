@@ -24,6 +24,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
+using cloud.charging.open.protocols.OCPPv2_1.CS;
 
 #endregion
 
@@ -65,20 +67,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
             {
 
                 var nnResetRequestsIN   = new ConcurrentList<ResetRequest>();
+                var nnResetRequestsFWD  = new ConcurrentList<Tuple<ResetRequest, ForwardingDecision<ResetRequest, ResetResponse>>>();
                 var nnResetRequestsOUT  = new ConcurrentList<ResetRequest>();
                 var csResetRequests     = new ConcurrentList<ResetRequest>();
 
-                networkingNode1.IN. OnResetRequest += (timestamp, sender, connection, resetRequest) => {
+                networkingNode1.IN. OnResetRequest     += (timestamp, sender, connection, resetRequest) => {
                     nnResetRequestsIN.TryAdd(resetRequest);
                     return Task.CompletedTask;
                 };
 
-                networkingNode1.OUT.OnResetRequest += (timestamp, sender,             resetRequest) => {
+                networkingNode1.FORWARD.OnResetLogging += (timestamp, sender, connection, resetRequest, forwardingDecision) => {
+                    nnResetRequestsFWD.TryAdd(new Tuple<ResetRequest, ForwardingDecision<ResetRequest, ResetResponse>>(resetRequest, forwardingDecision));
+                    return Task.CompletedTask;
+                };
+
+                networkingNode1.OUT.OnResetRequest     += (timestamp, sender,             resetRequest) => {
                     nnResetRequestsOUT.TryAdd(resetRequest);
                     return Task.CompletedTask;
                 };
 
-                chargingStation1.   OnResetRequest += (timestamp, sender, connection, resetRequest) => {
+                chargingStation1.   OnResetRequest     += (timestamp, sender, connection, resetRequest) => {
                     csResetRequests.TryAdd(resetRequest);
                     return Task.CompletedTask;
                 };
@@ -102,13 +110,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
                     Assert.That(response.Result.ResultCode,                      Is.EqualTo(ResultCode.OK));
                     Assert.That(response.Status,                                 Is.EqualTo(ResetStatus.Accepted));
 
-                    Assert.That(nnResetRequestsIN. Count,                        Is.EqualTo(1), "The ResetRequest did not reach the networking node!");
+                    Assert.That(nnResetRequestsIN. Count,                        Is.EqualTo(1), "The ResetRequest did not reach the INPUT of the networking node!");
                     Assert.That(nnResetRequestsIN. First().DestinationNodeId,    Is.EqualTo(chargingStation1.Id));
                     Assert.That(nnResetRequestsIN. First().NetworkPath.Length,   Is.EqualTo(1));
                     Assert.That(nnResetRequestsIN. First().NetworkPath.Source,   Is.EqualTo(testCSMS01.      Id.ToNetworkingNodeId));
                     Assert.That(nnResetRequestsIN. First().NetworkPath.Last,     Is.EqualTo(testCSMS01.      Id.ToNetworkingNodeId));
 
-                    Assert.That(nnResetRequestsOUT.Count,                        Is.EqualTo(1), "The ResetRequest did not reach the networking node!");
+                    Assert.That(nnResetRequestsFWD.Count,                        Is.EqualTo(1), "The ResetRequest did not reach the FORWARD of the networking node!");
+
+                    Assert.That(nnResetRequestsOUT.Count,                        Is.EqualTo(1), "The ResetRequest did not reach the OUTPUT of the networking node!");
                     Assert.That(nnResetRequestsOUT.First().DestinationNodeId,    Is.EqualTo(chargingStation1.Id));
                     Assert.That(nnResetRequestsOUT.First().NetworkPath.Length,   Is.EqualTo(1));
                     Assert.That(nnResetRequestsOUT.First().NetworkPath.Source,   Is.EqualTo(testCSMS01.      Id.ToNetworkingNodeId));

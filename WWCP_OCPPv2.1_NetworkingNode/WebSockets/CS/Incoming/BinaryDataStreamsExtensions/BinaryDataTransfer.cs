@@ -52,7 +52,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a BinaryDataTransfer websocket request was received.
         /// </summary>
-        public event WSClientBinaryRequestLogHandler?                  OnIncomingBinaryDataTransferWSRequest;
+        public event WwebSocketBinaryRequestLogHandler?                  OnIncomingBinaryDataTransferWSRequest;
 
         /// <summary>
         /// An event sent whenever a BinaryDataTransfer request was received.
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a websocket response to a BinaryDataTransfer request was sent.
         /// </summary>
-        public event WSClientBinaryRequestBinaryResponseLogHandler?    OnIncomingBinaryDataTransferWSResponse;
+        public event WebSocketBinaryRequestBinaryResponseLogHandler?    OnIncomingBinaryDataTransferWSResponse;
 
         #endregion
 

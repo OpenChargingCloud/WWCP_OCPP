@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a SetDefaultChargingTariff websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?                             OnSetDefaultChargingTariffWSRequest;
+        public event WebSocketJSONRequestLogHandler?                             OnSetDefaultChargingTariffWSRequest;
 
         /// <summary>
         /// An event sent whenever a SetDefaultChargingTariff request was received.
@@ -74,7 +74,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a websocket response to a SetDefaultChargingTariff request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?                 OnSetDefaultChargingTariffWSResponse;
+        public event WebSocketJSONRequestJSONResponseLogHandler?                 OnSetDefaultChargingTariffWSResponse;
 
         #endregion
 

@@ -21,8 +21,6 @@ using System.Reflection;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 
-using Newtonsoft.Json;
-
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
@@ -30,9 +28,9 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.Logging;
 
 using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPP.CS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
 using cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages;
-using cloud.charging.open.protocols.OCPP.CS;
 
 #endregion
 
@@ -57,10 +55,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         public new const String  DefaultHTTPUserAgent   = $"GraphDefined OCPP {Version.String} NN WebSocket Client";
 
         private const    String  LogfileName            = "NetworkingNodeWSClient.log";
-
-        #endregion
-
-        #region Properties
 
         #endregion
 
@@ -139,10 +133,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
         #endregion
 
-        #region Events
-
-        #endregion
-
         #region Constructor(s)
 
         /// <summary>
@@ -150,8 +140,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// and connecting to a CSMS to invoke methods.
         /// </summary>
         /// <param name="NetworkingNodeIdentity">The unique identification of this networking node.</param>
-        /// <param name="From">The source URI of the websocket message.</param>
-        /// <param name="To">The destination URI of the websocket message.</param>
         /// 
         /// <param name="RemoteURL">The remote URL of the HTTP endpoint to connect to.</param>
         /// <param name="VirtualHostname">An optional HTTP virtual hostname.</param>
@@ -171,8 +159,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <param name="HTTPLogger">A HTTP logger.</param>
         /// <param name="DNSClient">The DNS client to use.</param>
         public NetworkingNodeWSClient(NetworkingNode_Id                    NetworkingNodeIdentity,
-                                      String                               From,
-                                      String                               To,
 
                                       URL                                  RemoteURL,
                                       HTTPHostname?                        VirtualHostname              = null,
@@ -206,8 +192,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
                                       DNSClient?                           DNSClient                    = null)
 
             : base(NetworkingNodeIdentity,
-                   From,
-                   To,
 
                    RemoteURL,
                    VirtualHostname,
@@ -242,25 +226,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
         {
 
-            #region Initial checks
+            this.NetworkingMode  = NetworkingMode ?? OCPP.WebSockets.NetworkingMode.Standard;
 
-            if (NetworkingNodeIdentity.IsNullOrEmpty)
-                throw new ArgumentNullException(nameof(NetworkingNodeIdentity),  "The given networking node identification must not be null or empty!");
-
-            if (From.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(From),                     "The given websocket message source must not be null or empty!");
-
-            if (To.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(To),                       "The given websocket message destination must not be null or empty!");
-
-            #endregion
-
-            this.NetworkingMode           = NetworkingMode ?? OCPP.WebSockets.NetworkingMode.Standard;
-
-            //this.Logger                   = new ChargePointwebsocketClient.CPClientLogger(this,
-            //                                                                         LoggingPath,
-            //                                                                         LoggingContext,
-            //                                                                         LogfileCreator);
+            //this.Logger          = new ChargePointwebsocketClient.CPClientLogger(this,
+            //                                                                LoggingPath,
+            //                                                                LoggingContext,
+            //                                                                LogfileCreator);
 
             #region Reflect "Receive_XXX" messages and wire them...
 

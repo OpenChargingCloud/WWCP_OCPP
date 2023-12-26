@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever an UnlockConnector websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?                    OnUnlockConnectorWSRequest;
+        public event WebSocketJSONRequestLogHandler?                    OnUnlockConnectorWSRequest;
 
         /// <summary>
         /// An event sent whenever an UnlockConnector request was received.
@@ -76,7 +76,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a websocket response to an UnlockConnector request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?        OnUnlockConnectorWSResponse;
+        public event WebSocketJSONRequestJSONResponseLogHandler?        OnUnlockConnectorWSResponse;
 
         #endregion
 

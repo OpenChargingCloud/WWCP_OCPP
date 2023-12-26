@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a get variables websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?                 OnGetVariablesWSRequest;
+        public event WebSocketJSONRequestLogHandler?                 OnGetVariablesWSRequest;
 
         /// <summary>
         /// An event sent whenever a get variables request was received.
@@ -76,7 +76,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a websocket response to a get variables request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?     OnGetVariablesWSResponse;
+        public event WebSocketJSONRequestJSONResponseLogHandler?     OnGetVariablesWSResponse;
 
         #endregion
 
