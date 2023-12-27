@@ -25,7 +25,6 @@ using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.NN;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
-using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS;
 
 #endregion
 
@@ -89,105 +88,76 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
-        public void WireBootNotification(INetworkingNodeIncomingMessages IncomingMessages)
+        private async Task<BootNotificationResponse>
+
+            ProcessIT(DateTime                 timestamp,
+                      IEventSender             sender,
+                      IWebSocketConnection     connection,
+                      BootNotificationRequest  request,
+                      CancellationToken        cancellationToken)
+
         {
 
-            #region OnBootNotification
+            #region Send OnBootNotificationRequest event
 
-            IncomingMessages.OnBootNotification += async (timestamp,
-                                                          sender,
-                                                          connection,
-                                                          request,
-                                                          cancellationToken) => {
+            var startTime = Timestamp.Now;
 
-                #region Send OnBootNotificationRequest event
-
-                var startTime = Timestamp.Now;
-
-                var requestLogger = OnBootNotificationRequest;
-                if (requestLogger is not null)
+            var requestLogger = OnBootNotificationRequest;
+            if (requestLogger is not null)
+            {
+                try
                 {
-                    try
-                    {
 
-                        await Task.WhenAll(requestLogger.GetInvocationList().
-                                                         OfType <OCPPv2_1.CSMS.OnBootNotificationRequestDelegate>().
-                                                         Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
-                                                                                                           sender,
-                                                                                                           connection,
-                                                                                                           request)).
-                                                         ToArray());
-
-                    }
-                    catch (Exception e)
-                    {
-                        await HandleErrors(
-                                  nameof(TestNetworkingNode),
-                                  nameof(OnBootNotificationRequest),
-                                  e
-                              );
-                    }
+                    await Task.WhenAll(requestLogger.GetInvocationList().
+                                                        OfType <OCPPv2_1.CSMS.OnBootNotificationRequestDelegate>().
+                                                        Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
+                                                                                                        sender,
+                                                                                                        connection,
+                                                                                                        request)).
+                                                        ToArray());
 
                 }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                                nameof(TestNetworkingNode),
+                                nameof(OnBootNotificationRequest),
+                                e
+                            );
+                }
 
-                #endregion
+            }
+
+            #endregion
 
 
-                #region Forwarding of the request...
+            #region Forwarding of the request...
 
-                BootNotificationResponse? response = null;
+            BootNotificationResponse? response = null;
 
-                if (request.DestinationNodeId != parentNetworkingNode.Id)
+            if (request.DestinationNodeId != parentNetworkingNode.Id)
+            {
+
+                #region Check request signature(s)
+
+                if (!parentNetworkingNode.ForwardingSignaturePolicy.VerifyRequestMessage(
+                        request,
+                        request.ToJSON(
+                            parentNetworkingNode.CustomBootNotificationRequestSerializer,
+                            parentNetworkingNode.CustomChargingStationSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse
+                    ))
                 {
 
-                    #region Check request signature(s)
-
-                    if (!parentNetworkingNode.ForwardingSignaturePolicy.VerifyRequestMessage(
-                            request,
-                            request.ToJSON(
-                                parentNetworkingNode.CustomBootNotificationRequestSerializer,
-                                parentNetworkingNode.CustomChargingStationSerializer,
-                                parentNetworkingNode.CustomSignatureSerializer,
-                                parentNetworkingNode.CustomCustomDataSerializer
-                            ),
-                            out var errorResponse
-                        ))
-                    {
-
-                        response = new BootNotificationResponse(
-                                       Request:  request,
-                                       Result:   Result.SignatureError(
-                                                       $"Invalid signature: {errorResponse}"
-                                                   )
-                                   );
-
-                    }
-
-                    #endregion
-
-                    else
-                    {
-
-                        DebugX.Log($"Forwarding incoming BootNotification request to '{request.DestinationNodeId}'!");
-
-                        var filterResult  = await parentNetworkingNode.FORWARD.ProcessBootNotification(request,
-                                                                                                       connection,
-                                                                                                       cancellationToken);
-
-                        switch (filterResult.Result)
-                        {
-
-                            case ForwardingResult.FORWARD:
-                                //response = await parentNetworkingNode.AsCSMS.BootNotification(request);
-                                break;
-
-                            case ForwardingResult.DROP:
-                                response = filterResult.DropResponse;
-                                break;
-
-                        }
-
-                    }
+                    response = new BootNotificationResponse(
+                                    Request:  request,
+                                    Result:   Result.SignatureError(
+                                                    $"Invalid signature: {errorResponse}"
+                                                )
+                                );
 
                 }
 
@@ -196,134 +166,170 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 else
                 {
 
-                    #region Check request signature(s)
+                    DebugX.Log($"Forwarding incoming BootNotification request to '{request.DestinationNodeId}'!");
 
-                    if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
-                            request,
-                            request.ToJSON(
-                                parentNetworkingNode.CustomBootNotificationRequestSerializer,
-                                parentNetworkingNode.CustomChargingStationSerializer,
-                                parentNetworkingNode.CustomSignatureSerializer,
-                                parentNetworkingNode.CustomCustomDataSerializer
-                            ),
-                            out var errorResponse
-                        ))
+                    var filterResult  = await parentNetworkingNode.FORWARD.ProcessBootNotification(request,
+                                                                                                    connection,
+                                                                                                    cancellationToken);
+
+                    switch (filterResult.Result)
                     {
 
-                        response = new BootNotificationResponse(
-                                       Request:  request,
-                                       Result:   Result.SignatureError(
-                                                       $"Invalid signature: {errorResponse}"
-                                                   )
-                                   );
+                        case ForwardingResult.FORWARD:
+                            response = await parentNetworkingNode.OUT.BootNotification(request);
+                            break;
+
+                        case ForwardingResult.DROP:
+                            response = filterResult.DropResponse;
+                            break;
 
                     }
 
-                    #endregion
+                }
 
-                    else
+            }
+
+            #endregion
+
+            else
+            {
+
+                #region Check request signature(s)
+
+                if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
+                        request,
+                        request.ToJSON(
+                            parentNetworkingNode.CustomBootNotificationRequestSerializer,
+                            parentNetworkingNode.CustomChargingStationSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse
+                    ))
+                {
+
+                    response = new BootNotificationResponse(
+                                    Request:  request,
+                                    Result:   Result.SignatureError(
+                                                    $"Invalid signature: {errorResponse}"
+                                                )
+                                );
+
+                }
+
+                #endregion
+
+                else
+                {
+
+                    var requestHandler = OnBootNotification;
+                    if (requestHandler is not null)
                     {
-
-                        var requestHandler = OnBootNotification;
-                        if (requestHandler is not null)
+                        try
                         {
-                            try
-                            {
 
-                                response = (await Task.WhenAll(
-                                                      requestHandler.GetInvocationList().
-                                                                     OfType <OnBootNotificationDelegate>().
-                                                                     Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
-                                                                                                                         sender,
-                                                                                                                         connection,
-                                                                                                                         request,
-                                                                                                                         cancellationToken)).
-                                                                     ToArray())).First();
+                            response = (await Task.WhenAll(
+                                                    requestHandler.GetInvocationList().
+                                                                    OfType <OnBootNotificationDelegate>().
+                                                                    Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
+                                                                                                                        sender,
+                                                                                                                        connection,
+                                                                                                                        request,
+                                                                                                                        cancellationToken)).
+                                                                    ToArray())).First();
 
-                            }
-                            catch (Exception e)
-                            {
-                                await HandleErrors(
-                                            nameof(TestNetworkingNode),
-                                            nameof(OnBootNotificationRequest),
-                                            e
-                                        );
-                            }
-
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                        nameof(TestNetworkingNode),
+                                        nameof(OnBootNotificationRequest),
+                                        e
+                                    );
                         }
 
                     }
 
                 }
 
-                #region Default response
+            }
 
-                response ??= new BootNotificationResponse(
-                                 Request:       request,
-                                 Status:        RegistrationStatus.Rejected,
-                                 CurrentTime:   Timestamp.Now,
-                                 Interval:      TimeSpan.FromMinutes(5),
-                                 StatusInfo:    null,
-                                 CustomData:    null
-                             );
+            #region Default response
 
-                #endregion
-
-                #region Sign response message
-
-                parentNetworkingNode.SignaturePolicy.SignResponseMessage(
-                    response,
-                    response.ToJSON(
-                        parentNetworkingNode.CustomBootNotificationResponseSerializer,
-                        parentNetworkingNode.CustomStatusInfoSerializer,
-                        parentNetworkingNode.CustomSignatureSerializer,
-                        parentNetworkingNode.CustomCustomDataSerializer
-                    ),
-                    out var errorResponse2);
-
-                #endregion
-
-
-                #region Send OnBootNotificationResponse event
-
-                var endTime = Timestamp.Now;
-
-                var responseLogger = OnBootNotificationResponse;
-                if (responseLogger is not null)
-                {
-                    try
-                    {
-
-                        await Task.WhenAll(responseLogger.GetInvocationList().
-                                                          OfType <OCPPv2_1.CSMS.OnBootNotificationResponseDelegate>().
-                                                          Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
-                                                                                                              sender,
-                                                                                                              connection,
-                                                                                                              request,
-                                                                                                              response,
-                                                                                                              endTime - startTime)).
-                                                          ToArray());
-
-                    }
-                    catch (Exception e)
-                    {
-                        await HandleErrors(
-                                    nameof(TestNetworkingNode),
-                                    nameof(OnBootNotificationRequest),
-                                    e
-                                );
-                    }
-
-                }
-
-                #endregion
-
-                return response;
-
-            };
+            response ??= new BootNotificationResponse(
+                                Request:       request,
+                                Status:        RegistrationStatus.Rejected,
+                                CurrentTime:   Timestamp.Now,
+                                Interval:      TimeSpan.FromMinutes(5),
+                                StatusInfo:    null,
+                                CustomData:    null
+                            );
 
             #endregion
 
+            #region Sign response message
+
+            parentNetworkingNode.SignaturePolicy.SignResponseMessage(
+                response,
+                response.ToJSON(
+                    parentNetworkingNode.CustomBootNotificationResponseSerializer,
+                    parentNetworkingNode.CustomStatusInfoSerializer,
+                    parentNetworkingNode.CustomSignatureSerializer,
+                    parentNetworkingNode.CustomCustomDataSerializer
+                ),
+                out var errorResponse2);
+
+            #endregion
+
+
+            #region Send OnBootNotificationResponse event
+
+            var endTime = Timestamp.Now;
+
+            var responseLogger = OnBootNotificationResponse;
+            if (responseLogger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(responseLogger.GetInvocationList().
+                                                        OfType <OCPPv2_1.CSMS.OnBootNotificationResponseDelegate>().
+                                                        Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
+                                                                                                            sender,
+                                                                                                            connection,
+                                                                                                            request,
+                                                                                                            response,
+                                                                                                            endTime - startTime)).
+                                                        ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                                nameof(TestNetworkingNode),
+                                nameof(OnBootNotificationRequest),
+                                e
+                            );
+                }
+
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+
+        public void WireBootNotification(NetworkingNode.CS.  INetworkingNodeIncomingMessages IncomingMessages)
+        {
+            IncomingMessages.OnBootNotification += ProcessIT;
+        }
+
+        // MAIN!!!
+        public void WireBootNotification(NetworkingNode.CSMS.INetworkingNodeIncomingMessages IncomingMessages)
+        {
+            IncomingMessages.OnBootNotification += ProcessIT;
         }
 
     }
@@ -358,11 +364,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     var results = await Task.WhenAll(requestFilter.GetInvocationList().
                                                      OfType <OnBootNotificationFilterDelegate>().
-                                                     Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
-                                                                                                       parentNetworkingNode,
-                                                                                                       Connection,
-                                                                                                       Request,
-                                                                                                       CancellationToken)).
+                                                     Select (filterDelegate => filterDelegate.Invoke(Timestamp.Now,
+                                                                                                     parentNetworkingNode,
+                                                                                                     Connection,
+                                                                                                     Request,
+                                                                                                     CancellationToken)).
                                                      ToArray());
 
                     var response = results.First();

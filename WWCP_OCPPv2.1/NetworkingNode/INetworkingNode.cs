@@ -27,18 +27,20 @@ using cloud.charging.open.protocols.OCPP.CS;
 using cloud.charging.open.protocols.OCPP.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
-using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS;
 
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.NN
 {
 
-    public interface INetworkingNodeIN : INetworkingNodeIncomingMessages,
-                                         INetworkingNodeIncomingMessagesEvents
+    public interface INetworkingNodeIN : NetworkingNode.CS.  INetworkingNodeIncomingMessages,
+                                         NetworkingNode.CS.  INetworkingNodeIncomingMessagesEvents,
+                                         NetworkingNode.CSMS.INetworkingNodeIncomingMessages,
+                                         NetworkingNode.CSMS.INetworkingNodeIncomingMessagesEvents
     {
 
-        void WireEvents(INetworkingNodeIncomingMessages IncomingMessages);
+        void WireEvents(NetworkingNode.CS.  INetworkingNodeIncomingMessages IncomingMessages);
+        void WireEvents(NetworkingNode.CSMS.INetworkingNodeIncomingMessages IncomingMessages);
 
 
         #region Incoming Messages: Networking Node <- CSMS
@@ -991,12 +993,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
 
 
     public interface INetworkingNodeOUT : IEventSender,
-
-                                          // as CS
-                                          INetworkingNodeOutgoingMessages,
-                                          INetworkingNodeOutgoingMessagesEvents,
-
-                                          // as CSMS
+                                          NetworkingNode.CS.  INetworkingNodeOutgoingMessages,
+                                          NetworkingNode.CS.  INetworkingNodeOutgoingMessagesEvents,
+                                          NetworkingNode.CSMS.INetworkingNodeOutgoingMessages,
                                           NetworkingNode.CSMS.INetworkingNodeOutgoingMessagesEvents
 
     {

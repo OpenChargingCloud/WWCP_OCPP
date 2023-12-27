@@ -337,7 +337,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public  INetworkingNodeOUT       OUT                         { get; }
 
-        public  FORWARD                      FORWARD                     { get; }
+        public  FORWARD                  FORWARD                     { get; }
 
         public CS.INetworkingNodeOutgoingMessages? CSClient
             => AsCS.CSClient;
@@ -799,7 +799,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             this.OUT      = new OUTPUT(this);
             this.FORWARD  = new FORWARD (this);
 
-            Connect();
+            Wire();
 
         }
 
@@ -927,8 +927,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
-        public void Connect()
+        public void Wire()
         {
+
+            // CS
 
             #region OnReset
 
@@ -976,18 +978,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
-            FORWARD.OnReset += async (timestamp,
-                                      sender,
-                                      connection,
-                                      request,
-                                      cancellationToken) => {
+            FORWARD.OnReset += (timestamp,
+                                sender,
+                                connection,
+                                request,
+                                cancellationToken) =>
 
-                return new ForwardingDecision<OCPPv2_1.CSMS.ResetRequest, OCPPv2_1.CS.ResetResponse>(
-                           request,
-                           ForwardingResult.FORWARD
-                       );
+                Task.FromResult(
+                    new ForwardingDecision<OCPPv2_1.CSMS.ResetRequest, OCPPv2_1.CS.ResetResponse>(
+                        request,
+                        ForwardingResult.FORWARD
+                    )
+                );
 
-            };
+
+
+            // CSMS
+
+            FORWARD.OnBootNotification += (timestamp,
+                                           sender,
+                                           connection,
+                                           request,
+                                           cancellationToken) =>
+
+                Task.FromResult(
+                    new ForwardingDecision<OCPPv2_1.CS.BootNotificationRequest, OCPPv2_1.CSMS.BootNotificationResponse>(
+                        request,
+                        ForwardingResult.FORWARD
+                    )
+                );
+
+
 
         }
 

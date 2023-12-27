@@ -28,11 +28,11 @@ namespace cloud.charging.open.protocols.OCPP.NN
 
         #region BinaryDataTransfer                    (Request)
 
-        /// <summary>
-        /// Send the given vendor-specific binary data.
-        /// </summary>
-        /// <param name="Request">A BinaryDataTransfer request.</param>
-        public Task<BinaryDataTransferResponse> BinaryDataTransfer(BinaryDataTransferRequest Request);
+        ///// <summary>
+        ///// Send the given vendor-specific binary data.
+        ///// </summary>
+        ///// <param name="Request">A BinaryDataTransfer request.</param>
+        //public Task<BinaryDataTransferResponse> BinaryDataTransfer(BinaryDataTransferRequest Request);
 
         #endregion
 

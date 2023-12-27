@@ -18,14 +18,13 @@
 #region Usings
 
 using NUnit.Framework;
-using NUnit.Framework.Legacy;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
-using cloud.charging.open.protocols.OCPPv2_1.CS;
 
 #endregion
 
@@ -66,12 +65,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
                 chargingStation3        is not null)
             {
 
+                var csmsResetRequests   = new ConcurrentList<ResetRequest>();
                 var nnResetRequestsIN   = new ConcurrentList<ResetRequest>();
                 var nnResetRequestsFWD  = new ConcurrentList<Tuple<ResetRequest, ForwardingDecision<ResetRequest, ResetResponse>>>();
                 var nnResetRequestsOUT  = new ConcurrentList<ResetRequest>();
                 var csResetRequests     = new ConcurrentList<ResetRequest>();
 
-                networkingNode1.IN. OnResetRequest     += (timestamp, sender, connection, resetRequest) => {
+                testCSMS01.             OnResetRequest += (timestamp, sender,             resetRequest) => {
+                    csmsResetRequests.TryAdd(resetRequest);
+                    return Task.CompletedTask;
+                };
+
+                networkingNode1.IN.     OnResetRequest += (timestamp, sender, connection, resetRequest) => {
                     nnResetRequestsIN.TryAdd(resetRequest);
                     return Task.CompletedTask;
                 };
@@ -81,12 +86,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
                     return Task.CompletedTask;
                 };
 
-                networkingNode1.OUT.OnResetRequest     += (timestamp, sender,             resetRequest) => {
+                networkingNode1.OUT.    OnResetRequest += (timestamp, sender,             resetRequest) => {
                     nnResetRequestsOUT.TryAdd(resetRequest);
                     return Task.CompletedTask;
                 };
 
-                chargingStation1.   OnResetRequest     += (timestamp, sender, connection, resetRequest) => {
+                chargingStation1.       OnResetRequest += (timestamp, sender, connection, resetRequest) => {
                     csResetRequests.TryAdd(resetRequest);
                     return Task.CompletedTask;
                 };
@@ -109,6 +114,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
 
                     Assert.That(response.Result.ResultCode,                      Is.EqualTo(ResultCode.OK));
                     Assert.That(response.Status,                                 Is.EqualTo(ResetStatus.Accepted));
+
+                    Assert.That(csmsResetRequests. Count,                        Is.EqualTo(1), "The ResetRequest did not leave the CSMS!");
 
                     Assert.That(nnResetRequestsIN. Count,                        Is.EqualTo(1), "The ResetRequest did not reach the INPUT of the networking node!");
                     Assert.That(nnResetRequestsIN. First().DestinationNodeId,    Is.EqualTo(chargingStation1.Id));

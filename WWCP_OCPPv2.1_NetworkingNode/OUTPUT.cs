@@ -26,20 +26,23 @@ using cloud.charging.open.protocols.OCPP.CS;
 using cloud.charging.open.protocols.OCPP.NN;
 using cloud.charging.open.protocols.OCPPv2_1.NN;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS;
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages;
+using cloud.charging.open.protocols.OCPPv2_1.CS;
 
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    public partial class OUTPUT : INetworkingNodeOUT,
+    public partial class OUTPUT(TestNetworkingNode NetworkingNode) : INetworkingNodeOUT,
 
                                   // as CS
                                   INetworkingNodeOutgoingMessages,
                                   INetworkingNodeOutgoingMessagesEvents,
 
                                   // as CSMS
-                                  NetworkingNode.CSMS.INetworkingNodeOutgoingMessagesEvents
+                                  CSMS.INetworkingNodeOutgoingMessagesEvents
 
     {
 
@@ -50,9 +53,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             => parentNetworkingNode.Id.ToString();
 
 
+
         #region Data
 
-        private readonly            TestNetworkingNode          parentNetworkingNode;
+        private readonly            TestNetworkingNode parentNetworkingNode = NetworkingNode;
 
         #endregion
 
@@ -330,7 +334,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a BootNotification request will be sent to the CSMS.
         /// </summary>
-        public event OCPPv2_1.CS.OnBootNotificationRequestDelegate?   OnBootNotificationRequest;
+        public event OCPPv2_1.CSMS.OnBootNotificationRequestDelegate?   OnBootNotificationRequest;
 
         public async Task RaiseOnBootNotificationRequest(DateTime                             Timestamp,
                                                             IEventSender                         Sender,
@@ -369,7 +373,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a response to a BootNotification request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnBootNotificationResponseDelegate?  OnBootNotificationResponse;
+        public event OCPPv2_1.CSMS.OnBootNotificationResponseDelegate?  OnBootNotificationResponse;
 
         public async Task RaiseOnBootNotificationResponse(DateTime                                Timestamp,
                                                             IEventSender                            Sender,
@@ -7485,19 +7489,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         }
 
         #endregion
-
         #endregion
 
-        #endregion
+        //event OCPPv2_1.CSMS.OnBootNotificationRequestDelegate? INetworkingNodeOutgoingMessagesEvents.OnBootNotificationRequest
+        //{
+        //    add
+        //    {
+        //        throw new NotImplementedException();
+        //    }
 
-        #region Constructor(s)
+        //    remove
+        //    {
+        //        throw new NotImplementedException();
+        //    }
+        //}
 
-        public OUTPUT(TestNetworkingNode NetworkingNode)
-        {
+        //event OCPPv2_1.CSMS.OnBootNotificationResponseDelegate? INetworkingNodeOutgoingMessagesEvents.OnBootNotificationResponse
+        //{
+        //    add
+        //    {
+        //        throw new NotImplementedException();
+        //    }
 
-            this.parentNetworkingNode = NetworkingNode;
-
-        }
+        //    remove
+        //    {
+        //        throw new NotImplementedException();
+        //    }
+        //}
 
         #endregion
 
@@ -7692,7 +7710,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 response  = parentNetworkingNode.AsCS.CSClient is not null
 
-                                ? await parentNetworkingNode.AsCS.CSClient.BinaryDataTransfer(Request)
+                                ? await parentNetworkingNode.OUT.BinaryDataTransfer(Request)
 
                                 : new BinaryDataTransferResponse(
                                         Request,
@@ -7898,8 +7916,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnBootNotificationRequest?.Invoke(startTime,
-                                                    this,
-                                                    Request);
+                                                  parentNetworkingNode,
+                                                  null,
+                                                  Request);
 
             }
             catch (Exception e)
@@ -7993,7 +8012,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnBootNotificationResponse?.Invoke(endTime,
-                                                    this,
+                                                    parentNetworkingNode,
+                                                    null,
                                                     Request,
                                                     response,
                                                     endTime - startTime);
@@ -11276,6 +11296,296 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             return Task.CompletedTask;
 
+        }
+
+        public Task<ResetResponse> Reset(ResetRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<UpdateFirmwareResponse> UpdateFirmware(UpdateFirmwareRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<PublishFirmwareResponse> PublishFirmware(PublishFirmwareRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<UnpublishFirmwareResponse> UnpublishFirmware(UnpublishFirmwareRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<GetBaseReportResponse> GetBaseReport(GetBaseReportRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<GetReportResponse> GetReport(GetReportRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<GetLogResponse> GetLog(GetLogRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<SetVariablesResponse> SetVariables(SetVariablesRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<GetVariablesResponse> GetVariables(GetVariablesRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<SetMonitoringBaseResponse> SetMonitoringBase(SetMonitoringBaseRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<GetMonitoringReportResponse> GetMonitoringReport(GetMonitoringReportRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<SetMonitoringLevelResponse> SetMonitoringLevel(SetMonitoringLevelRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<SetVariableMonitoringResponse> SetVariableMonitoring(SetVariableMonitoringRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ClearVariableMonitoringResponse> ClearVariableMonitoring(ClearVariableMonitoringRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<SetNetworkProfileResponse> SetNetworkProfile(SetNetworkProfileRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ChangeAvailabilityResponse> ChangeAvailability(ChangeAvailabilityRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<TriggerMessageResponse> TriggerMessage(TriggerMessageRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<DataTransferResponse> TransferData(DataTransferRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<CertificateSignedResponse> SendSignedCertificate(CertificateSignedRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<InstallCertificateResponse> InstallCertificate(InstallCertificateRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<GetInstalledCertificateIdsResponse> GetInstalledCertificateIds(GetInstalledCertificateIdsRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<DeleteCertificateResponse> DeleteCertificate(DeleteCertificateRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<NotifyCRLResponse> NotifyCRLAvailability(NotifyCRLRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<GetLocalListVersionResponse> GetLocalListVersion(GetLocalListVersionRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<SendLocalListResponse> SendLocalList(SendLocalListRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ClearCacheResponse> ClearCache(ClearCacheRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ReserveNowResponse> ReserveNow(ReserveNowRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<CancelReservationResponse> CancelReservation(CancelReservationRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<RequestStartTransactionResponse> StartCharging(RequestStartTransactionRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<RequestStopTransactionResponse> StopCharging(RequestStopTransactionRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<GetTransactionStatusResponse> GetTransactionStatus(GetTransactionStatusRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<SetChargingProfileResponse> SetChargingProfile(SetChargingProfileRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<GetChargingProfilesResponse> GetChargingProfiles(GetChargingProfilesRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ClearChargingProfileResponse> ClearChargingProfile(ClearChargingProfileRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<GetCompositeScheduleResponse> GetCompositeSchedule(GetCompositeScheduleRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<UpdateDynamicScheduleResponse> UpdateDynamicSchedule(UpdateDynamicScheduleRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<NotifyAllowedEnergyTransferResponse> NotifyAllowedEnergyTransfer(NotifyAllowedEnergyTransferRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<UsePriorityChargingResponse> UsePriorityCharging(UsePriorityChargingRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<UnlockConnectorResponse> UnlockConnector(UnlockConnectorRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<AFRRSignalResponse> SendAFRRSignal(AFRRSignalRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<SetDisplayMessageResponse> SetDisplayMessage(SetDisplayMessageRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<GetDisplayMessagesResponse> GetDisplayMessages(GetDisplayMessagesRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ClearDisplayMessageResponse> ClearDisplayMessage(ClearDisplayMessageRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<CostUpdatedResponse> SendCostUpdated(CostUpdatedRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<CustomerInformationResponse> RequestCustomerInformation(CustomerInformationRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<SetDefaultChargingTariffResponse> SetDefaultChargingTariff(SetDefaultChargingTariffRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<GetDefaultChargingTariffResponse> GetDefaultChargingTariff(GetDefaultChargingTariffRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<RemoveDefaultChargingTariffResponse> RemoveDefaultChargingTariff(RemoveDefaultChargingTariffRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<GetFileResponse> GetFile(GetFileRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<SendFileResponse> SendFile(SendFileRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<DeleteFileResponse> DeleteFile(DeleteFileRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ListDirectoryResponse> ListDirectory(ListDirectoryRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<AddSignaturePolicyResponse> AddSignaturePolicy(AddSignaturePolicyRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<UpdateSignaturePolicyResponse> UpdateSignaturePolicy(UpdateSignaturePolicyRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<DeleteSignaturePolicyResponse> DeleteSignaturePolicy(DeleteSignaturePolicyRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<AddUserRoleResponse> AddUserRole(AddUserRoleRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<UpdateUserRoleResponse> UpdateUserRole(UpdateUserRoleRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<DeleteUserRoleResponse> DeleteUserRole(DeleteUserRoleRequest Request)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

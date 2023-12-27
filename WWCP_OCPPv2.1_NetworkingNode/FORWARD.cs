@@ -28,8 +28,8 @@ using cloud.charging.open.protocols.OCPPv2_1.CS;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    public partial class FORWARD(TestNetworkingNode    NetworkingNode,
-                                 ForwardingResult  DefaultResult   = ForwardingResult.DROP)
+    public partial class FORWARD(TestNetworkingNode  NetworkingNode,
+                                 ForwardingResult    DefaultResult   = ForwardingResult.DROP)
     {
 
         #region Data

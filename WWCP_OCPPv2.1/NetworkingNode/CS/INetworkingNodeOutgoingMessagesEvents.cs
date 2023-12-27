@@ -15,6 +15,12 @@
  * limitations under the License.
  */
 
+#region
+
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+
+#endregion
+
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 {
 
@@ -24,19 +30,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     public interface INetworkingNodeOutgoingMessagesEvents
     {
 
-        //#region SendBootNotification                     (Request/-Response)
+        #region SendBootNotification                     (Request/-Response)
 
-        ///// <summary>
-        ///// An event fired whenever a BootNotification request will be sent to the CSMS.
-        ///// </summary>
-        //event OnBootNotificationRequestDelegate?   OnBootNotificationRequest;
+        /// <summary>
+        /// An event fired whenever a BootNotification request will be sent to the CSMS.
+        /// </summary>
+        event OnBootNotificationRequestDelegate?     OnBootNotificationRequest;
 
-        ///// <summary>
-        ///// An event fired whenever a response to a BootNotification request was received.
-        ///// </summary>
-        //event OnBootNotificationResponseDelegate?  OnBootNotificationResponse;
+        /// <summary>
+        /// An event fired whenever a response to a BootNotification request was received.
+        /// </summary>
+        event OnBootNotificationResponseDelegate?    OnBootNotificationResponse;
 
-        //#endregion
+        #endregion
 
         //#region SendFirmwareStatusNotification           (Request/-Response)
 

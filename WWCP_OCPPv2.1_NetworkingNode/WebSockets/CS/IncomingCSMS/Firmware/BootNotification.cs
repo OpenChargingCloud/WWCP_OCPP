@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a BootNotification request was received.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnBootNotificationRequestDelegate?     OnBootNotificationRequest2;
+        public event OCPPv2_1.CSMS.OnBootNotificationRequestDelegate?     OnBootNotificationRequest;
 
         /// <summary>
         /// An event sent whenever a BootNotification was received.
@@ -71,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a response to a BootNotification was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnBootNotificationResponseDelegate?    OnBootNotificationResponse2;
+        public event OCPPv2_1.CSMS.OnBootNotificationResponseDelegate?    OnBootNotificationResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a BootNotification was sent.
@@ -139,7 +139,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
                     try
                     {
 
-                        OnBootNotificationRequest2?.Invoke(Timestamp.Now,
+                        OnBootNotificationRequest?.Invoke(Timestamp.Now,
                                                           this,
                                                           Connection,
                                                           request);
@@ -180,7 +180,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
                     try
                     {
 
-                        OnBootNotificationResponse2?.Invoke(Timestamp.Now,
+                        OnBootNotificationResponse?.Invoke(Timestamp.Now,
                                                            this,
                                                            Connection,
                                                            request,

@@ -166,10 +166,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnBootNotificationRequest/-Response
 
-            this.NetworkingNode.AsCSMS.OnBootNotificationRequest += async (logTimestamp,
-                                                                           sender,
-                                                                           connection,
-                                                                           request) =>
+            this.NetworkingNode.IN.OnBootNotificationRequest += async (logTimestamp,
+                                                                       sender,
+                                                                       connection,
+                                                                       request) =>
 
                 await this.EventLog.SubmitEvent("OnBootNotificationRequest",
                                                 new JObject(
@@ -181,12 +181,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                 ));
 
 
-            this.NetworkingNode.AsCSMS.OnBootNotificationResponse += async (logTimestamp,
-                                                                            sender,
-                                                                            connection,
-                                                                            request,
-                                                                            response,
-                                                                            runtime) =>
+            this.NetworkingNode.IN.OnBootNotificationResponse += async (logTimestamp,
+                                                                        sender,
+                                                                        connection,
+                                                                        request,
+                                                                        response,
+                                                                        runtime) =>
 
                 await this.EventLog.SubmitEvent("OnBootNotificationResponse",
                                                 new JObject(

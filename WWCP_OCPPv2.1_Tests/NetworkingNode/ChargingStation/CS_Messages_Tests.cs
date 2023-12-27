@@ -23,6 +23,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -99,16 +101,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CS
                 chargingStation3               is not null)
             {
 
-                var nnBootNotificationRequests    = new ConcurrentList<BootNotificationRequest>();
-                var csmsBootNotificationRequests  = new ConcurrentList<BootNotificationRequest>();
+                var csBootNotificationRequests     = new ConcurrentList<BootNotificationRequest>();
+                var nnBootNotificationRequestsIN   = new ConcurrentList<BootNotificationRequest>();
+                var nnBootNotificationRequestsFWD  = new ConcurrentList<Tuple<BootNotificationRequest, ForwardingDecision<BootNotificationRequest, BootNotificationResponse>>>();
+                var nnBootNotificationRequestsOUT  = new ConcurrentList<BootNotificationRequest>();
+                var csmsBootNotificationRequests   = new ConcurrentList<BootNotificationRequest>();
 
-                networkingNode1.AsCSMS.OnBootNotificationRequest += (timestamp, sender, connection, bootNotificationRequest) => {
-                    nnBootNotificationRequests.  TryAdd(bootNotificationRequest);
+                chargingStation1.       OnBootNotificationRequest += (timestamp, sender,             bootNotificationRequest) => {
+                    csBootNotificationRequests.   TryAdd(bootNotificationRequest);
                     return Task.CompletedTask;
                 };
 
-                testCSMS01.            OnBootNotificationRequest += (timestamp, sender, connection, bootNotificationRequest) => {
-                    csmsBootNotificationRequests.TryAdd(bootNotificationRequest);
+                networkingNode1.IN.     OnBootNotificationRequest += (timestamp, sender, connection, bootNotificationRequest) => {
+                    nnBootNotificationRequestsIN. TryAdd(bootNotificationRequest);
+                    return Task.CompletedTask;
+                };
+
+                networkingNode1.FORWARD.OnBootNotificationLogging += (timestamp, sender, connection, bootNotificationRequest, forwardingDecision) => {
+                    nnBootNotificationRequestsFWD.TryAdd(new Tuple<BootNotificationRequest, ForwardingDecision<BootNotificationRequest, BootNotificationResponse>>(bootNotificationRequest, forwardingDecision));
+                    return Task.CompletedTask;
+                };
+
+                networkingNode1.OUT.    OnBootNotificationRequest += (timestamp, sender, connection, bootNotificationRequest) => {
+                    nnBootNotificationRequestsOUT.TryAdd(bootNotificationRequest);
+                    return Task.CompletedTask;
+                };
+
+                testCSMS01.        OnBootNotificationRequest      += (timestamp, sender, connection, bootNotificationRequest) => {
+                    csmsBootNotificationRequests. TryAdd(bootNotificationRequest);
                     return Task.CompletedTask;
                 };
 
@@ -124,24 +144,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CS
 
                 Assert.Multiple(() => {
 
-                    Assert.That(response.Result.ResultCode,                                Is.EqualTo(ResultCode.OK));
-                    Assert.That(response.Status,                                           Is.EqualTo(RegistrationStatus.Accepted));
+                    Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                                             Is.EqualTo(RegistrationStatus.Accepted));
 
-                    Assert.That(nnBootNotificationRequests.  Count,                        Is.EqualTo(1), "The BootNotification did not reach the networking node!");
-                    Assert.That(nnBootNotificationRequests.  First().DestinationNodeId,    Is.EqualTo(NetworkingNode_Id.CSMS));
-                    Assert.That(nnBootNotificationRequests.  First().NetworkPath.Length,   Is.EqualTo(1));
-                    Assert.That(nnBootNotificationRequests.  First().NetworkPath.Source,   Is.EqualTo(chargingStation1.Id));
-                    Assert.That(nnBootNotificationRequests.  First().NetworkPath.Last,     Is.EqualTo(chargingStation1.Id));
-                    Assert.That(nnBootNotificationRequests.  First().Reason,               Is.EqualTo(reason));
+                    Assert.That(csBootNotificationRequests.    Count,                        Is.EqualTo(1), "The BootNotification did not leave the charging station!");
 
-                    Assert.That(csmsBootNotificationRequests.Count,                        Is.EqualTo(1), "The BootNotification did not reach the CSMS!");
-                    Assert.That(csmsBootNotificationRequests.First().DestinationNodeId,    Is.EqualTo(NetworkingNode_Id.CSMS));
-                    Assert.That(csmsBootNotificationRequests.First().NetworkPath.Length,   Is.EqualTo(2));
-                    Assert.That(csmsBootNotificationRequests.First().NetworkPath.Source,   Is.EqualTo(chargingStation1.Id));
-                    Assert.That(csmsBootNotificationRequests.First().NetworkPath.Last,     Is.EqualTo(networkingNode1. Id));
-                    Assert.That(csmsBootNotificationRequests.First().Reason,               Is.EqualTo(reason));
+                    Assert.That(nnBootNotificationRequestsIN.  Count,                        Is.EqualTo(1), "The BootNotification did not reach the INPUT of the networking node!");
+                    Assert.That(nnBootNotificationRequestsIN.  First().DestinationNodeId,    Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(nnBootNotificationRequestsIN.  First().NetworkPath.Length,   Is.EqualTo(1));
+                    Assert.That(nnBootNotificationRequestsIN.  First().NetworkPath.Source,   Is.EqualTo(chargingStation1.Id));
+                    Assert.That(nnBootNotificationRequestsIN.  First().NetworkPath.Last,     Is.EqualTo(chargingStation1.Id));
+                    Assert.That(nnBootNotificationRequestsIN.  First().Reason,               Is.EqualTo(reason));
 
-                    Assert.That(nnBootNotificationRequests.  First().ChargingStation,      Is.Not.Null);
+                    Assert.That(nnBootNotificationRequestsFWD. Count,                        Is.EqualTo(1), "The BootNotification did not reach the FORWARD of the networking node!");
+
+                    Assert.That(nnBootNotificationRequestsOUT. Count,                        Is.EqualTo(1), "The BootNotification did not reach the OUTPUT of the networking node!");
+
+                    Assert.That(csmsBootNotificationRequests.  Count,                        Is.EqualTo(1), "The BootNotification did not reach the CSMS!");
+                    Assert.That(csmsBootNotificationRequests.  First().DestinationNodeId,    Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(csmsBootNotificationRequests.  First().NetworkPath.Length,   Is.EqualTo(2));
+                    Assert.That(csmsBootNotificationRequests.  First().NetworkPath.Source,   Is.EqualTo(chargingStation1.Id));
+                    Assert.That(csmsBootNotificationRequests.  First().NetworkPath.Last,     Is.EqualTo(networkingNode1. Id));
+                    Assert.That(csmsBootNotificationRequests.  First().Reason,               Is.EqualTo(reason));
+
+                    Assert.That(nnBootNotificationRequestsIN.  First().ChargingStation,      Is.Not.Null);
 
                 });
 

@@ -30,6 +30,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     public interface INetworkingNodeIncomingMessagesEvents
     {
 
+        // CS
+
         #region OnReset                         (Request/-Response)
 
         /// <summary>

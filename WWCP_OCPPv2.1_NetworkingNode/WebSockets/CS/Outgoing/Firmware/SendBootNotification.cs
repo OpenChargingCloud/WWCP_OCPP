@@ -52,7 +52,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever a boot notification request will be sent to the CSMS.
         /// </summary>
-        public event OCPPv2_1.CS.OnBootNotificationRequestDelegate?     OnBootNotificationRequest;
+        public event OCPPv2_1.CS.OnBootNotificationRequestDelegate?     OnBootNotificationRequest2;
 
         /// <summary>
         /// An event fired whenever a boot notification request will be sent to the CSMS.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever a response to a boot notification request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnBootNotificationResponseDelegate?    OnBootNotificationResponse;
+        public event OCPPv2_1.CS.OnBootNotificationResponseDelegate?    OnBootNotificationResponse2;
 
         #endregion
 
@@ -91,7 +91,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
             try
             {
 
-                OnBootNotificationRequest?.Invoke(startTime,
+                OnBootNotificationRequest2?.Invoke(startTime,
                                                   this,
                                                   Request);
 
@@ -179,7 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
             try
             {
 
-                OnBootNotificationResponse?.Invoke(endTime,
+                OnBootNotificationResponse2?.Invoke(endTime,
                                                    this,
                                                    Request,
                                                    response,

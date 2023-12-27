@@ -17,6 +17,8 @@
 
 #region Usings
 
+using org.GraphDefined.Vanaheimr.Illias;
+
 using cloud.charging.open.protocols.OCPP;
 
 #endregion
@@ -38,6 +40,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public ForwardingResult  Result          { get; } = Result;
         public TResponse?        DropResponse    { get; } = DropResponse;
         public String?           LogMessage      { get; } = LogMessage;
+
+
+        public override String ToString()
+
+            => $"{Result}{(LogMessage.IsNotNullOrEmpty() ? $": {LogMessage}" : "")}";
 
     }
 

@@ -20,8 +20,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
     public enum ForwardingResult
     {
-        FORWARD,
-        DROP
+        DROP,
+        FORWARD
     }
 
 }

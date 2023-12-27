@@ -26,7 +26,7 @@ using cloud.charging.open.protocols.OCPP.CSMS;
 using cloud.charging.open.protocols.OCPP.CS;
 using cloud.charging.open.protocols.OCPP.NN;
 using cloud.charging.open.protocols.OCPPv2_1.NN;
-using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS;
+//using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 
@@ -37,6 +37,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
     public partial class INPUT : INetworkingNodeIN
     {
+
+        public IEnumerable<NetworkingNode_Id> NetworkingNodeIds => throw new NotImplementedException();
+
+        public string Id => throw new NotImplementedException();
+
+
 
         #region Data
 
@@ -5358,6 +5364,463 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+        #region NetworkingNode <- Charging Station
+
+        #region OnBootNotification (Request/-Response)
+
+        ///// <summary>
+        ///// An event fired whenever a BootNotification request was sent from a charging station.
+        ///// </summary>
+        //public event OCPPv2_1.CSMS.OnBootNotificationRequestDelegate?   OnBootNotificationRequest;
+
+        ///// <summary>
+        ///// An event fired whenever a response to a BootNotification request was received.
+        ///// </summary>
+        //public event OCPPv2_1.CSMS.OnBootNotificationResponseDelegate?  OnBootNotificationResponse;
+
+        #endregion
+
+        #region OnFirmwareStatusNotification (Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a FirmwareStatusNotification request was sent from a charging station.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnFirmwareStatusNotificationRequestDelegate?   OnFirmwareStatusNotificationRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a FirmwareStatusNotification request was received.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnFirmwareStatusNotificationResponseDelegate?  OnFirmwareStatusNotificationResponse;
+
+        #endregion
+
+        #region OnPublishFirmwareStatusNotification (Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a PublishFirmwareStatusNotification request was sent from a charging station.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnPublishFirmwareStatusNotificationRequestDelegate?   OnPublishFirmwareStatusNotificationRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a PublishFirmwareStatusNotification request was received.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnPublishFirmwareStatusNotificationResponseDelegate?  OnPublishFirmwareStatusNotificationResponse;
+
+        #endregion
+
+        #region OnHeartbeat (Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a Heartbeat request was sent from a charging station.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnHeartbeatRequestDelegate?   OnHeartbeatRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a Heartbeat request was received.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnHeartbeatResponseDelegate?  OnHeartbeatResponse;
+
+        #endregion
+
+        #region OnNotifyEvent (Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a NotifyEvent request was sent from a charging station.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnNotifyEventRequestDelegate?   OnNotifyEventRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a NotifyEvent request was received.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnNotifyEventResponseDelegate?  OnNotifyEventResponse;
+
+        #endregion
+
+        #region OnSecurityEventNotification (Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a SecurityEventNotification request was sent from a charging station.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnSecurityEventNotificationRequestDelegate?   OnSecurityEventNotificationRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a SecurityEventNotification request was received.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnSecurityEventNotificationResponseDelegate?  OnSecurityEventNotificationResponse;
+
+        #endregion
+
+        #region OnNotifyReport (Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a NotifyReport request was sent from a charging station.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnNotifyReportRequestDelegate?   OnNotifyReportRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a NotifyReport request was received.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnNotifyReportResponseDelegate?  OnNotifyReportResponse;
+
+        #endregion
+
+        #region OnNotifyMonitoringReport (Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a NotifyMonitoringReport request was sent from a charging station.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnNotifyMonitoringReportRequestDelegate?   OnNotifyMonitoringReportRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a NotifyMonitoringReport request was received.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnNotifyMonitoringReportResponseDelegate?  OnNotifyMonitoringReportResponse;
+
+        #endregion
+
+        #region OnLogStatusNotification (Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a LogStatusNotification request was sent from a charging station.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnLogStatusNotificationRequestDelegate?   OnLogStatusNotificationRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a LogStatusNotification request was received.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnLogStatusNotificationResponseDelegate?  OnLogStatusNotificationResponse;
+
+        #endregion
+
+        #region OnIncomingDataTransfer (Request/-Response) (DUPLICATE!)
+
+        ///// <summary>
+        ///// An event sent whenever an IncomingDataTransfer request was received.
+        ///// </summary>
+        //public event OnIncomingDataTransferRequestDelegate?   OnIncomingDataTransferRequest;
+
+        ///// <summary>
+        ///// An event sent whenever a response to an IncomingDataTransfer request was sent.
+        ///// </summary>
+        //public event OnIncomingDataTransferResponseDelegate?  OnIncomingDataTransferResponse;
+
+        #endregion
+
+
+        #region OnSignCertificate (Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a SignCertificate request was sent from a charging station.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnSignCertificateRequestDelegate?   OnSignCertificateRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a SignCertificate request was received.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnSignCertificateResponseDelegate?  OnSignCertificateResponse;
+
+        #endregion
+
+        #region OnGet15118EVCertificate (Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a Get15118EVCertificate request was sent from a charging station.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnGet15118EVCertificateRequestDelegate?   OnGet15118EVCertificateRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a Get15118EVCertificate request was received.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnGet15118EVCertificateResponseDelegate?  OnGet15118EVCertificateResponse;
+
+        #endregion
+
+        #region OnGetCertificateStatus (Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a GetCertificateStatus request was sent from a charging station.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnGetCertificateStatusRequestDelegate?   OnGetCertificateStatusRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a GetCertificateStatus request was received.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnGetCertificateStatusResponseDelegate?  OnGetCertificateStatusResponse;
+
+        #endregion
+
+        #region OnGetCRL (Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a GetCRL request was sent from a charging station.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnGetCRLRequestDelegate?   OnGetCRLRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a GetCRL request was received.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnGetCRLResponseDelegate?  OnGetCRLResponse;
+
+        #endregion
+
+
+        #region OnReservationStatusUpdate (Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a ReservationStatusUpdate request was sent from a charging station.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnReservationStatusUpdateRequestDelegate?   OnReservationStatusUpdateRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a ReservationStatusUpdate request was received.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnReservationStatusUpdateResponseDelegate?  OnReservationStatusUpdateResponse;
+
+        #endregion
+
+        #region OnAuthorize (Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever an Authorize request was sent from a charging station.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnAuthorizeRequestDelegate?   OnAuthorizeRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to an Authorize request was received.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnAuthorizeResponseDelegate?  OnAuthorizeResponse;
+
+        #endregion
+
+        #region OnNotifyEVChargingNeeds (Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a NotifyEVChargingNeeds request was sent from a charging station.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnNotifyEVChargingNeedsRequestDelegate?   OnNotifyEVChargingNeedsRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a NotifyEVChargingNeeds request was received.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnNotifyEVChargingNeedsResponseDelegate?  OnNotifyEVChargingNeedsResponse;
+
+        #endregion
+
+        #region OnTransactionEvent (Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a TransactionEvent was sent from a charging station.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnTransactionEventRequestDelegate?   OnTransactionEventRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a TransactionEvent request was received.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnTransactionEventResponseDelegate?  OnTransactionEventResponse;
+
+        #endregion
+
+        #region OnStatusNotification (Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a StatusNotification request was sent from a charging station.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnStatusNotificationRequestDelegate?   OnStatusNotificationRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a StatusNotification request was received.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnStatusNotificationResponseDelegate?  OnStatusNotificationResponse;
+
+        #endregion
+
+        #region OnMeterValues (Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a MeterValues request was sent from a charging station.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnMeterValuesRequestDelegate?   OnMeterValuesRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a MeterValues request was received.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnMeterValuesResponseDelegate?  OnMeterValuesResponse;
+
+        #endregion
+
+        #region OnNotifyChargingLimit (Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a NotifyChargingLimit request was sent from a charging station.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnNotifyChargingLimitRequestDelegate?   OnNotifyChargingLimitRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a NotifyChargingLimit request was received.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnNotifyChargingLimitResponseDelegate?  OnNotifyChargingLimitResponse;
+
+        #endregion
+
+        #region OnClearedChargingLimit (Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a ClearedChargingLimit request was sent from a charging station.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnClearedChargingLimitRequestDelegate?   OnClearedChargingLimitRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a ClearedChargingLimit request was received.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnClearedChargingLimitResponseDelegate?  OnClearedChargingLimitResponse;
+
+        #endregion
+
+        #region OnReportChargingProfiles (Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a ReportChargingProfiles request was sent from a charging station.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnReportChargingProfilesRequestDelegate?   OnReportChargingProfilesRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a ReportChargingProfiles request was received.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnReportChargingProfilesResponseDelegate?  OnReportChargingProfilesResponse;
+
+        #endregion
+
+        #region OnNotifyEVChargingSchedule (Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a NotifyEVChargingSchedule request was sent from a charging station.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnNotifyEVChargingScheduleRequestDelegate?   OnNotifyEVChargingScheduleRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a NotifyEVChargingSchedule request was received.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnNotifyEVChargingScheduleResponseDelegate?  OnNotifyEVChargingScheduleResponse;
+
+        #endregion
+
+        #region OnNotifyPriorityCharging (Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a NotifyPriorityCharging request was sent from a charging station.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnNotifyPriorityChargingRequestDelegate?   OnNotifyPriorityChargingRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a NotifyPriorityCharging request was received.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnNotifyPriorityChargingResponseDelegate?  OnNotifyPriorityChargingResponse;
+
+        #endregion
+
+        #region OnPullDynamicScheduleUpdate (Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a PullDynamicScheduleUpdate request was sent from a charging station.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnPullDynamicScheduleUpdateRequestDelegate?   OnPullDynamicScheduleUpdateRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a PullDynamicScheduleUpdate request was received.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnPullDynamicScheduleUpdateResponseDelegate?  OnPullDynamicScheduleUpdateResponse;
+
+        #endregion
+
+
+        #region OnNotifyDisplayMessages (Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a NotifyDisplayMessages request was sent from a charging station.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnNotifyDisplayMessagesRequestDelegate?   OnNotifyDisplayMessagesRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a NotifyDisplayMessages request was received.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnNotifyDisplayMessagesResponseDelegate?  OnNotifyDisplayMessagesResponse;
+
+        #endregion
+
+        #region OnNotifyCustomerInformation (Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a NotifyCustomerInformation request was sent from a charging station.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnNotifyCustomerInformationRequestDelegate?   OnNotifyCustomerInformationRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a NotifyCustomerInformation request was received.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnNotifyCustomerInformationResponseDelegate?  OnNotifyCustomerInformationResponse;
+
+        #endregion
+
+
+        // Binary Data Streams Extensions
+
+        #region OnIncomingBinaryDataTransfer (Request/-Response) (DUPLICATE!)
+
+        ///// <summary>
+        ///// An event sent whenever an IncomingBinaryDataTransfer request was received.
+        ///// </summary>
+        //public event OnIncomingBinaryDataTransferRequestDelegate?   OnIncomingBinaryDataTransferRequest;
+
+        ///// <summary>
+        ///// An event sent whenever a response to an IncomingBinaryDataTransfer request was sent.
+        ///// </summary>
+        //public event OnIncomingBinaryDataTransferResponseDelegate?  OnIncomingBinaryDataTransferResponse;
+
+        #endregion
+
+
+        public event NetworkingNode.CSMS.OnNetworkingNodeNewWebSocketConnectionDelegate? OnNetworkingNodeNewWebSocketConnection;
+        public event NetworkingNode.CSMS.OnNetworkingNodeCloseMessageReceivedDelegate? OnNetworkingNodeCloseMessageReceived;
+        public event NetworkingNode.CSMS.OnNetworkingNodeTCPConnectionClosedDelegate? OnNetworkingNodeTCPConnectionClosed;
+        public event OnFirmwareStatusNotificationDelegate? OnFirmwareStatusNotification;
+        public event OnPublishFirmwareStatusNotificationDelegate? OnPublishFirmwareStatusNotification;
+        public event OnHeartbeatDelegate? OnHeartbeat;
+        public event OnNotifyEventDelegate? OnNotifyEvent;
+        public event OnSecurityEventNotificationDelegate? OnSecurityEventNotification;
+        public event OnNotifyReportDelegate? OnNotifyReport;
+        public event OnNotifyMonitoringReportDelegate? OnNotifyMonitoringReport;
+        public event OnLogStatusNotificationDelegate? OnLogStatusNotification;
+        public event OnSignCertificateDelegate? OnSignCertificate;
+        public event OnGet15118EVCertificateDelegate? OnGet15118EVCertificate;
+        public event OnGetCertificateStatusDelegate? OnGetCertificateStatus;
+        public event OnGetCRLDelegate? OnGetCRL;
+        public event OnReservationStatusUpdateDelegate? OnReservationStatusUpdate;
+        public event OnAuthorizeDelegate? OnAuthorize;
+        public event OnNotifyEVChargingNeedsDelegate? OnNotifyEVChargingNeeds;
+        public event OnTransactionEventDelegate? OnTransactionEvent;
+        public event OnStatusNotificationDelegate? OnStatusNotification;
+        public event OnMeterValuesDelegate? OnMeterValues;
+        public event OnNotifyChargingLimitDelegate? OnNotifyChargingLimit;
+        public event OnClearedChargingLimitDelegate? OnClearedChargingLimit;
+        public event OnReportChargingProfilesDelegate? OnReportChargingProfiles;
+        public event OnNotifyEVChargingScheduleDelegate? OnNotifyEVChargingSchedule;
+        public event OnNotifyPriorityChargingDelegate? OnNotifyPriorityCharging;
+        public event OnPullDynamicScheduleUpdateDelegate? OnPullDynamicScheduleUpdate;
+        public event OnNotifyDisplayMessagesDelegate? OnNotifyDisplayMessages;
+        public event OnNotifyCustomerInformationDelegate? OnNotifyCustomerInformation;
+        public event OCPP.OnWebSocketJSONMessageRequestDelegate? OnJSONMessageRequestReceived;
+        public event OCPP.OnWebSocketJSONMessageResponseDelegate? OnJSONMessageResponseSent;
+        public event OCPP.OnWebSocketTextErrorResponseDelegate? OnJSONErrorResponseSent;
+        public event OCPP.OnWebSocketJSONMessageRequestDelegate? OnJSONMessageRequestSent;
+        public event OCPP.OnWebSocketJSONMessageResponseDelegate? OnJSONMessageResponseReceived;
+        public event OCPP.OnWebSocketTextErrorResponseDelegate? OnJSONErrorResponseReceived;
+        public event OCPP.OnWebSocketBinaryMessageRequestDelegate? OnBinaryMessageRequestReceived;
+        public event OCPP.OnWebSocketBinaryMessageResponseDelegate? OnBinaryMessageResponseSent;
+        public event OCPP.OnWebSocketBinaryMessageRequestDelegate? OnBinaryMessageRequestSent;
+        public event OCPP.OnWebSocketBinaryMessageResponseDelegate? OnBinaryMessageResponseReceived;
+
+        #endregion
+
         #endregion
 
         #region Constructor(s)
@@ -5388,12 +5851,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
-        public void WireEvents(INetworkingNodeIncomingMessages IncomingMessages)
+        public void WireEvents(NetworkingNode.CS.INetworkingNodeIncomingMessages IncomingMessages)
         {
 
             // CSMS -> CS
             WireReset           (IncomingMessages);
 
+
+            // CS -> CSMS
+            WireBootNotification(IncomingMessages);
+
+        }
+
+
+        public void WireEvents(NetworkingNode.CSMS.INetworkingNodeIncomingMessages IncomingMessages)
+        {
+
+            // CSMS -> CS
+            WireReset           (IncomingMessages);
 
             // CS -> CSMS
             WireBootNotification(IncomingMessages);
