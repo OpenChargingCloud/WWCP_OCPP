@@ -99,7 +99,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
             Timestamp.Reset();
 
             testCSMS01      = new TestCSMS(
-                                  Id:                      CSMS_Id.Parse("OCPPTest01"),
+                                  Id:                      NetworkingNode_Id.Parse("OCPPTest01"),
                                   RequireAuthentication:   RequireAuthentication,
                                   HTTPUploadPort:          IPPort.Parse(9100),
                                   DNSClient:               new DNSClient(

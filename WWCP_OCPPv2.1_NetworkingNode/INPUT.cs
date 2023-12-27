@@ -22,35 +22,70 @@ using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPP.CSMS;
 using cloud.charging.open.protocols.OCPP.CS;
 using cloud.charging.open.protocols.OCPP.NN;
-using cloud.charging.open.protocols.OCPPv2_1.NN;
-//using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS;
-using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using cloud.charging.open.protocols.OCPP.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
+using cloud.charging.open.protocols.OCPPv2_1.NN;
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    public partial class INPUT : INetworkingNodeIN
+    public partial class INPUT(TestNetworkingNode NetworkingNode) : INetworkingNodeIN,
+                                                                    CS.  INetworkingNodeIncomingMessages,
+                                                                    CS.  INetworkingNodeIncomingMessagesEvents,
+                                                                    CSMS.INetworkingNodeIncomingMessages,
+                                                                    CSMS.INetworkingNodeIncomingMessagesEvents
     {
 
         public IEnumerable<NetworkingNode_Id> NetworkingNodeIds => throw new NotImplementedException();
 
-        public string Id => throw new NotImplementedException();
-
-
 
         #region Data
 
-        private readonly TestNetworkingNode parentNetworkingNode;
+        private readonly TestNetworkingNode parentNetworkingNode = NetworkingNode;
 
         #endregion
 
         #region Events
+
+        public event NetworkingNode.CSMS.OnNetworkingNodeNewWebSocketConnectionDelegate? OnNetworkingNodeNewWebSocketConnection;
+        public event NetworkingNode.CSMS.OnNetworkingNodeCloseMessageReceivedDelegate? OnNetworkingNodeCloseMessageReceived;
+        public event NetworkingNode.CSMS.OnNetworkingNodeTCPConnectionClosedDelegate? OnNetworkingNodeTCPConnectionClosed;
+
+
+        public event OCPP.OnWebSocketJSONMessageRequestDelegate? OnJSONMessageRequestReceived;
+        public event OCPP.OnWebSocketJSONMessageResponseDelegate? OnJSONMessageResponseSent;
+        public event OCPP.OnWebSocketTextErrorResponseDelegate? OnJSONErrorResponseSent;
+        public event OCPP.OnWebSocketJSONMessageRequestDelegate? OnJSONMessageRequestSent;
+        public event OCPP.OnWebSocketJSONMessageResponseDelegate? OnJSONMessageResponseReceived;
+        public event OCPP.OnWebSocketTextErrorResponseDelegate? OnJSONErrorResponseReceived;
+
+        public event OCPP.OnWebSocketBinaryMessageRequestDelegate? OnBinaryMessageRequestReceived;
+        public event OCPP.OnWebSocketBinaryMessageResponseDelegate? OnBinaryMessageResponseSent;
+        public event OCPP.OnWebSocketBinaryMessageRequestDelegate? OnBinaryMessageRequestSent;
+        public event OCPP.OnWebSocketBinaryMessageResponseDelegate? OnBinaryMessageResponseReceived;
+
+
+        // Binary Data Streams Extensions
+
+        #region OnIncomingBinaryDataTransfer (Request/-Response) (DUPLICATE!)
+
+        ///// <summary>
+        ///// An event sent whenever an IncomingBinaryDataTransfer request was received.
+        ///// </summary>
+        //public event OnIncomingBinaryDataTransferRequestDelegate?   OnIncomingBinaryDataTransferRequest;
+
+        ///// <summary>
+        ///// An event sent whenever a response to an IncomingBinaryDataTransfer request was sent.
+        ///// </summary>
+        //public event OnIncomingBinaryDataTransferResponseDelegate?  OnIncomingBinaryDataTransferResponse;
+
+        #endregion
+
 
         #region Incoming Messages: Networking Node <- CSMS
 
@@ -4053,32 +4088,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region IncomingBinaryDataTransfer
 
-        /// <summary>
-        /// An event sent whenever a BinaryDataTransfer request was sent.
-        /// </summary>
-        public event OnIncomingBinaryDataTransferRequestDelegate?   OnIncomingBinaryDataTransferRequest;
+
 
         public async Task RaiseOnIncomingBinaryDataTransferRequest(DateTime                    Timestamp,
-                                                                    IEventSender                Sender,
-                                                                    IWebSocketConnection        Connection,
-                                                                    BinaryDataTransferRequest   Request)
+                                                                   IEventSender                Sender,
+                                                                   IWebSocketConnection        Connection,
+                                                                   BinaryDataTransferRequest   Request)
         {
 
             var requestLogger = OnIncomingBinaryDataTransferRequest;
             if (requestLogger is not null)
             {
-
-                var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                        OfType <OnIncomingBinaryDataTransferRequestDelegate>().
-                                                        Select (loggingDelegate => loggingDelegate.Invoke(Timestamp,
-                                                                                                            Sender,
-                                                                                                            Connection,
-                                                                                                            Request)).
-                                                        ToArray();
-
                 try
                 {
-                    await Task.WhenAll(requestLoggerTasks);
+
+                    await Task.WhenAll(requestLogger.GetInvocationList().
+                                                     OfType <OnIncomingBinaryDataTransferRequestDelegate>().
+                                                     Select (loggingDelegate => loggingDelegate.Invoke(Timestamp,
+                                                                                                       Sender,
+                                                                                                       Connection,
+                                                                                                       Request)).
+                                                     ToArray());
+
                 }
                 catch (Exception e)
                 {
@@ -4094,11 +4125,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         }
 
 
-        /// <summary>
-        /// An event sent whenever a response to a BinaryDataTransfer request was sent.
-        /// </summary>
-        public event OnIncomingBinaryDataTransferResponseDelegate?  OnIncomingBinaryDataTransferResponse;
-
         public async Task RaiseOnIncomingBinaryDataTransferResponse(DateTime                     Timestamp,
                                                                     IEventSender                 Sender,
                                                                     IWebSocketConnection         Connection,
@@ -4110,20 +4136,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             var requestLogger = OnIncomingBinaryDataTransferResponse;
             if (requestLogger is not null)
             {
-
-                var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                        OfType <OnIncomingBinaryDataTransferResponseDelegate>().
-                                                        Select (loggingDelegate => loggingDelegate.Invoke(Timestamp,
-                                                                                                            Sender,
-                                                                                                            Connection,
-                                                                                                            Request,
-                                                                                                            Response,
-                                                                                                            Runtime)).
-                                                        ToArray();
-
                 try
                 {
-                    await Task.WhenAll(requestLoggerTasks);
+
+                    await Task.WhenAll(requestLogger.GetInvocationList().
+                                                     OfType <OnIncomingBinaryDataTransferResponseDelegate>().
+                                                     Select (loggingDelegate => loggingDelegate.Invoke(Timestamp,
+                                                                                                       Sender,
+                                                                                                       Connection,
+                                                                                                       Request,
+                                                                                                       Response,
+                                                                                                       Runtime)).
+                                                     ToArray());
+
                 }
                 catch (Exception e)
                 {
@@ -5321,14 +5346,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnChangeAvailabilityDelegate? OnChangeAvailability;
         public event OnTriggerMessageDelegate? OnTriggerMessage;
         public event OnIncomingDataTransferDelegate? OnIncomingDataTransfer;
+
         public event OnCertificateSignedDelegate? OnCertificateSigned;
         public event OnInstallCertificateDelegate? OnInstallCertificate;
         public event OnGetInstalledCertificateIdsDelegate? OnGetInstalledCertificateIds;
         public event OnDeleteCertificateDelegate? OnDeleteCertificate;
         public event OnNotifyCRLDelegate? OnNotifyCRL;
+
         public event OnGetLocalListVersionDelegate? OnGetLocalListVersion;
         public event OnSendLocalListDelegate? OnSendLocalList;
         public event OnClearCacheDelegate? OnClearCache;
+
         public event OnReserveNowDelegate? OnReserveNow;
         public event OnCancelReservationDelegate? OnCancelReservation;
         public event OnRequestStartTransactionDelegate? OnRequestStartTransaction;
@@ -5342,43 +5370,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnNotifyAllowedEnergyTransferDelegate? OnNotifyAllowedEnergyTransfer;
         public event OnUsePriorityChargingDelegate? OnUsePriorityCharging;
         public event OnUnlockConnectorDelegate? OnUnlockConnector;
+
         public event OnAFRRSignalDelegate? OnAFRRSignal;
+
         public event OnSetDisplayMessageDelegate? OnSetDisplayMessage;
         public event OnGetDisplayMessagesDelegate? OnGetDisplayMessages;
         public event OnClearDisplayMessageDelegate? OnClearDisplayMessage;
         public event OnCostUpdatedDelegate? OnCostUpdated;
         public event OnCustomerInformationDelegate? OnCustomerInformation;
-        public event OnIncomingBinaryDataTransferDelegate? OnIncomingBinaryDataTransfer;
+
         public event OnGetFileDelegate? OnGetFile;
         public event OnSendFileDelegate? OnSendFile;
         public event OnDeleteFileDelegate? OnDeleteFile;
+
         public event OnAddSignaturePolicyDelegate? OnAddSignaturePolicy;
         public event OnUpdateSignaturePolicyDelegate? OnUpdateSignaturePolicy;
         public event OnDeleteSignaturePolicyDelegate? OnDeleteSignaturePolicy;
         public event OnAddUserRoleDelegate? OnAddUserRole;
         public event OnUpdateUserRoleDelegate? OnUpdateUserRole;
         public event OnDeleteUserRoleDelegate? OnDeleteUserRole;
+
         public event OnSetDefaultChargingTariffDelegate? OnSetDefaultChargingTariff;
         public event OnGetDefaultChargingTariffDelegate? OnGetDefaultChargingTariff;
         public event OnRemoveDefaultChargingTariffDelegate? OnRemoveDefaultChargingTariff;
 
         #endregion
 
-        #region NetworkingNode <- Charging Station
+        #region Charging Station -> NetworkingNode
 
-        #region OnBootNotification (Request/-Response)
-
-        ///// <summary>
-        ///// An event fired whenever a BootNotification request was sent from a charging station.
-        ///// </summary>
-        //public event OCPPv2_1.CSMS.OnBootNotificationRequestDelegate?   OnBootNotificationRequest;
-
-        ///// <summary>
-        ///// An event fired whenever a response to a BootNotification request was received.
-        ///// </summary>
-        //public event OCPPv2_1.CSMS.OnBootNotificationResponseDelegate?  OnBootNotificationResponse;
-
-        #endregion
+        // OnBootNotification
 
         #region OnFirmwareStatusNotification (Request/-Response)
 
@@ -5386,6 +5406,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// An event fired whenever a FirmwareStatusNotification request was sent from a charging station.
         /// </summary>
         public event OCPPv2_1.CSMS.OnFirmwareStatusNotificationRequestDelegate?   OnFirmwareStatusNotificationRequest;
+
+        public event OnFirmwareStatusNotificationDelegate? OnFirmwareStatusNotification;
 
         /// <summary>
         /// An event fired whenever a response to a FirmwareStatusNotification request was received.
@@ -5401,6 +5423,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OCPPv2_1.CSMS.OnPublishFirmwareStatusNotificationRequestDelegate?   OnPublishFirmwareStatusNotificationRequest;
 
+        public event OnPublishFirmwareStatusNotificationDelegate? OnPublishFirmwareStatusNotification;
+
         /// <summary>
         /// An event fired whenever a response to a PublishFirmwareStatusNotification request was received.
         /// </summary>
@@ -5414,6 +5438,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// An event fired whenever a Heartbeat request was sent from a charging station.
         /// </summary>
         public event OCPPv2_1.CSMS.OnHeartbeatRequestDelegate?   OnHeartbeatRequest;
+
+        public event OnHeartbeatDelegate? OnHeartbeat;
 
         /// <summary>
         /// An event fired whenever a response to a Heartbeat request was received.
@@ -5429,6 +5455,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OCPPv2_1.CSMS.OnNotifyEventRequestDelegate?   OnNotifyEventRequest;
 
+        public event OnNotifyEventDelegate? OnNotifyEvent;
+
         /// <summary>
         /// An event fired whenever a response to a NotifyEvent request was received.
         /// </summary>
@@ -5442,6 +5470,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// An event fired whenever a SecurityEventNotification request was sent from a charging station.
         /// </summary>
         public event OCPPv2_1.CSMS.OnSecurityEventNotificationRequestDelegate?   OnSecurityEventNotificationRequest;
+
+        public event OnSecurityEventNotificationDelegate? OnSecurityEventNotification;
 
         /// <summary>
         /// An event fired whenever a response to a SecurityEventNotification request was received.
@@ -5457,6 +5487,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OCPPv2_1.CSMS.OnNotifyReportRequestDelegate?   OnNotifyReportRequest;
 
+        public event OnNotifyReportDelegate? OnNotifyReport;
+
         /// <summary>
         /// An event fired whenever a response to a NotifyReport request was received.
         /// </summary>
@@ -5470,6 +5502,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// An event fired whenever a NotifyMonitoringReport request was sent from a charging station.
         /// </summary>
         public event OCPPv2_1.CSMS.OnNotifyMonitoringReportRequestDelegate?   OnNotifyMonitoringReportRequest;
+
+        public event OnNotifyMonitoringReportDelegate? OnNotifyMonitoringReport;
 
         /// <summary>
         /// An event fired whenever a response to a NotifyMonitoringReport request was received.
@@ -5485,6 +5519,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OCPPv2_1.CSMS.OnLogStatusNotificationRequestDelegate?   OnLogStatusNotificationRequest;
 
+        public event OnLogStatusNotificationDelegate? OnLogStatusNotification;
+
         /// <summary>
         /// An event fired whenever a response to a LogStatusNotification request was received.
         /// </summary>
@@ -5492,19 +5528,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region OnIncomingDataTransfer (Request/-Response) (DUPLICATE!)
-
-        ///// <summary>
-        ///// An event sent whenever an IncomingDataTransfer request was received.
-        ///// </summary>
-        //public event OnIncomingDataTransferRequestDelegate?   OnIncomingDataTransferRequest;
-
-        ///// <summary>
-        ///// An event sent whenever a response to an IncomingDataTransfer request was sent.
-        ///// </summary>
-        //public event OnIncomingDataTransferResponseDelegate?  OnIncomingDataTransferResponse;
-
-        #endregion
+        // DataTransfer
 
 
         #region OnSignCertificate (Request/-Response)
@@ -5513,6 +5537,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// An event fired whenever a SignCertificate request was sent from a charging station.
         /// </summary>
         public event OCPPv2_1.CSMS.OnSignCertificateRequestDelegate?   OnSignCertificateRequest;
+
+        public event OnSignCertificateDelegate? OnSignCertificate;
 
         /// <summary>
         /// An event fired whenever a response to a SignCertificate request was received.
@@ -5528,6 +5554,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OCPPv2_1.CSMS.OnGet15118EVCertificateRequestDelegate?   OnGet15118EVCertificateRequest;
 
+        public event OnGet15118EVCertificateDelegate? OnGet15118EVCertificate;
+
         /// <summary>
         /// An event fired whenever a response to a Get15118EVCertificate request was received.
         /// </summary>
@@ -5542,6 +5570,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OCPPv2_1.CSMS.OnGetCertificateStatusRequestDelegate?   OnGetCertificateStatusRequest;
 
+        public event OnGetCertificateStatusDelegate? OnGetCertificateStatus;
+
         /// <summary>
         /// An event fired whenever a response to a GetCertificateStatus request was received.
         /// </summary>
@@ -5555,6 +5585,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// An event fired whenever a GetCRL request was sent from a charging station.
         /// </summary>
         public event OCPPv2_1.CSMS.OnGetCRLRequestDelegate?   OnGetCRLRequest;
+
+        public event OnGetCRLDelegate? OnGetCRL;
 
         /// <summary>
         /// An event fired whenever a response to a GetCRL request was received.
@@ -5571,6 +5603,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OCPPv2_1.CSMS.OnReservationStatusUpdateRequestDelegate?   OnReservationStatusUpdateRequest;
 
+        public event OnReservationStatusUpdateDelegate? OnReservationStatusUpdate;
+
         /// <summary>
         /// An event fired whenever a response to a ReservationStatusUpdate request was received.
         /// </summary>
@@ -5584,6 +5618,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// An event fired whenever an Authorize request was sent from a charging station.
         /// </summary>
         public event OCPPv2_1.CSMS.OnAuthorizeRequestDelegate?   OnAuthorizeRequest;
+
+        public event OnAuthorizeDelegate? OnAuthorize;
 
         /// <summary>
         /// An event fired whenever a response to an Authorize request was received.
@@ -5599,6 +5635,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OCPPv2_1.CSMS.OnNotifyEVChargingNeedsRequestDelegate?   OnNotifyEVChargingNeedsRequest;
 
+        public event OnNotifyEVChargingNeedsDelegate? OnNotifyEVChargingNeeds;
+
         /// <summary>
         /// An event fired whenever a response to a NotifyEVChargingNeeds request was received.
         /// </summary>
@@ -5612,6 +5650,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// An event fired whenever a TransactionEvent was sent from a charging station.
         /// </summary>
         public event OCPPv2_1.CSMS.OnTransactionEventRequestDelegate?   OnTransactionEventRequest;
+
+        public event OnTransactionEventDelegate? OnTransactionEvent;
 
         /// <summary>
         /// An event fired whenever a response to a TransactionEvent request was received.
@@ -5627,6 +5667,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OCPPv2_1.CSMS.OnStatusNotificationRequestDelegate?   OnStatusNotificationRequest;
 
+        public event OnStatusNotificationDelegate? OnStatusNotification;
+
         /// <summary>
         /// An event fired whenever a response to a StatusNotification request was received.
         /// </summary>
@@ -5640,6 +5682,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// An event fired whenever a MeterValues request was sent from a charging station.
         /// </summary>
         public event OCPPv2_1.CSMS.OnMeterValuesRequestDelegate?   OnMeterValuesRequest;
+
+        public event OnMeterValuesDelegate? OnMeterValues;
 
         /// <summary>
         /// An event fired whenever a response to a MeterValues request was received.
@@ -5655,6 +5699,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OCPPv2_1.CSMS.OnNotifyChargingLimitRequestDelegate?   OnNotifyChargingLimitRequest;
 
+        public event OnNotifyChargingLimitDelegate? OnNotifyChargingLimit;
+
         /// <summary>
         /// An event fired whenever a response to a NotifyChargingLimit request was received.
         /// </summary>
@@ -5668,6 +5714,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// An event fired whenever a ClearedChargingLimit request was sent from a charging station.
         /// </summary>
         public event OCPPv2_1.CSMS.OnClearedChargingLimitRequestDelegate?   OnClearedChargingLimitRequest;
+
+        public event OnClearedChargingLimitDelegate? OnClearedChargingLimit;
 
         /// <summary>
         /// An event fired whenever a response to a ClearedChargingLimit request was received.
@@ -5683,6 +5731,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OCPPv2_1.CSMS.OnReportChargingProfilesRequestDelegate?   OnReportChargingProfilesRequest;
 
+        public event OnReportChargingProfilesDelegate? OnReportChargingProfiles;
+
         /// <summary>
         /// An event fired whenever a response to a ReportChargingProfiles request was received.
         /// </summary>
@@ -5696,6 +5746,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// An event fired whenever a NotifyEVChargingSchedule request was sent from a charging station.
         /// </summary>
         public event OCPPv2_1.CSMS.OnNotifyEVChargingScheduleRequestDelegate?   OnNotifyEVChargingScheduleRequest;
+
+        public event OnNotifyEVChargingScheduleDelegate? OnNotifyEVChargingSchedule;
 
         /// <summary>
         /// An event fired whenever a response to a NotifyEVChargingSchedule request was received.
@@ -5711,6 +5763,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OCPPv2_1.CSMS.OnNotifyPriorityChargingRequestDelegate?   OnNotifyPriorityChargingRequest;
 
+        public event OnNotifyPriorityChargingDelegate? OnNotifyPriorityCharging;
+
         /// <summary>
         /// An event fired whenever a response to a NotifyPriorityCharging request was received.
         /// </summary>
@@ -5724,6 +5778,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// An event fired whenever a PullDynamicScheduleUpdate request was sent from a charging station.
         /// </summary>
         public event OCPPv2_1.CSMS.OnPullDynamicScheduleUpdateRequestDelegate?   OnPullDynamicScheduleUpdateRequest;
+
+        public event OnPullDynamicScheduleUpdateDelegate? OnPullDynamicScheduleUpdate;
 
         /// <summary>
         /// An event fired whenever a response to a PullDynamicScheduleUpdate request was received.
@@ -5740,6 +5796,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OCPPv2_1.CSMS.OnNotifyDisplayMessagesRequestDelegate?   OnNotifyDisplayMessagesRequest;
 
+        public event OnNotifyDisplayMessagesDelegate? OnNotifyDisplayMessages;
+
         /// <summary>
         /// An event fired whenever a response to a NotifyDisplayMessages request was received.
         /// </summary>
@@ -5754,6 +5812,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OCPPv2_1.CSMS.OnNotifyCustomerInformationRequestDelegate?   OnNotifyCustomerInformationRequest;
 
+        public event OnNotifyCustomerInformationDelegate? OnNotifyCustomerInformation;
+
         /// <summary>
         /// An event fired whenever a response to a NotifyCustomerInformation request was received.
         /// </summary>
@@ -5761,76 +5821,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-
-        // Binary Data Streams Extensions
-
-        #region OnIncomingBinaryDataTransfer (Request/-Response) (DUPLICATE!)
-
-        ///// <summary>
-        ///// An event sent whenever an IncomingBinaryDataTransfer request was received.
-        ///// </summary>
-        //public event OnIncomingBinaryDataTransferRequestDelegate?   OnIncomingBinaryDataTransferRequest;
-
-        ///// <summary>
-        ///// An event sent whenever a response to an IncomingBinaryDataTransfer request was sent.
-        ///// </summary>
-        //public event OnIncomingBinaryDataTransferResponseDelegate?  OnIncomingBinaryDataTransferResponse;
-
         #endregion
-
-
-        public event NetworkingNode.CSMS.OnNetworkingNodeNewWebSocketConnectionDelegate? OnNetworkingNodeNewWebSocketConnection;
-        public event NetworkingNode.CSMS.OnNetworkingNodeCloseMessageReceivedDelegate? OnNetworkingNodeCloseMessageReceived;
-        public event NetworkingNode.CSMS.OnNetworkingNodeTCPConnectionClosedDelegate? OnNetworkingNodeTCPConnectionClosed;
-        public event OnFirmwareStatusNotificationDelegate? OnFirmwareStatusNotification;
-        public event OnPublishFirmwareStatusNotificationDelegate? OnPublishFirmwareStatusNotification;
-        public event OnHeartbeatDelegate? OnHeartbeat;
-        public event OnNotifyEventDelegate? OnNotifyEvent;
-        public event OnSecurityEventNotificationDelegate? OnSecurityEventNotification;
-        public event OnNotifyReportDelegate? OnNotifyReport;
-        public event OnNotifyMonitoringReportDelegate? OnNotifyMonitoringReport;
-        public event OnLogStatusNotificationDelegate? OnLogStatusNotification;
-        public event OnSignCertificateDelegate? OnSignCertificate;
-        public event OnGet15118EVCertificateDelegate? OnGet15118EVCertificate;
-        public event OnGetCertificateStatusDelegate? OnGetCertificateStatus;
-        public event OnGetCRLDelegate? OnGetCRL;
-        public event OnReservationStatusUpdateDelegate? OnReservationStatusUpdate;
-        public event OnAuthorizeDelegate? OnAuthorize;
-        public event OnNotifyEVChargingNeedsDelegate? OnNotifyEVChargingNeeds;
-        public event OnTransactionEventDelegate? OnTransactionEvent;
-        public event OnStatusNotificationDelegate? OnStatusNotification;
-        public event OnMeterValuesDelegate? OnMeterValues;
-        public event OnNotifyChargingLimitDelegate? OnNotifyChargingLimit;
-        public event OnClearedChargingLimitDelegate? OnClearedChargingLimit;
-        public event OnReportChargingProfilesDelegate? OnReportChargingProfiles;
-        public event OnNotifyEVChargingScheduleDelegate? OnNotifyEVChargingSchedule;
-        public event OnNotifyPriorityChargingDelegate? OnNotifyPriorityCharging;
-        public event OnPullDynamicScheduleUpdateDelegate? OnPullDynamicScheduleUpdate;
-        public event OnNotifyDisplayMessagesDelegate? OnNotifyDisplayMessages;
-        public event OnNotifyCustomerInformationDelegate? OnNotifyCustomerInformation;
-        public event OCPP.OnWebSocketJSONMessageRequestDelegate? OnJSONMessageRequestReceived;
-        public event OCPP.OnWebSocketJSONMessageResponseDelegate? OnJSONMessageResponseSent;
-        public event OCPP.OnWebSocketTextErrorResponseDelegate? OnJSONErrorResponseSent;
-        public event OCPP.OnWebSocketJSONMessageRequestDelegate? OnJSONMessageRequestSent;
-        public event OCPP.OnWebSocketJSONMessageResponseDelegate? OnJSONMessageResponseReceived;
-        public event OCPP.OnWebSocketTextErrorResponseDelegate? OnJSONErrorResponseReceived;
-        public event OCPP.OnWebSocketBinaryMessageRequestDelegate? OnBinaryMessageRequestReceived;
-        public event OCPP.OnWebSocketBinaryMessageResponseDelegate? OnBinaryMessageResponseSent;
-        public event OCPP.OnWebSocketBinaryMessageRequestDelegate? OnBinaryMessageRequestSent;
-        public event OCPP.OnWebSocketBinaryMessageResponseDelegate? OnBinaryMessageResponseReceived;
-
-        #endregion
-
-        #endregion
-
-        #region Constructor(s)
-
-        public INPUT(TestNetworkingNode NetworkingNode)
-        {
-
-            this.parentNetworkingNode = NetworkingNode;
-
-        }
 
         #endregion
 
@@ -5851,20 +5842,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
-        public void WireEvents(NetworkingNode.CS.INetworkingNodeIncomingMessages IncomingMessages)
+        public void WireEvents(CS.INetworkingNodeIncomingMessages IncomingMessages)
         {
 
             // CSMS -> CS
-            WireReset           (IncomingMessages);
+            WireReset             (IncomingMessages);
+            WireBinaryDataTransfer(IncomingMessages);
 
 
             // CS -> CSMS
-            WireBootNotification(IncomingMessages);
+            WireBootNotification  (IncomingMessages);
 
         }
 
 
-        public void WireEvents(NetworkingNode.CSMS.INetworkingNodeIncomingMessages IncomingMessages)
+        public void WireEvents(CSMS.INetworkingNodeIncomingMessages IncomingMessages)
         {
 
             // CSMS -> CS

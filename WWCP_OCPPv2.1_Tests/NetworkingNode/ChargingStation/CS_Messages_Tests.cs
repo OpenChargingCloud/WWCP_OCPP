@@ -229,15 +229,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CS
                 chargingStation3               is not null)
             {
 
-                var nnIncomingBinaryDataTransferRequests    = new ConcurrentList<BinaryDataTransferRequest>();
+                var csBinaryDataTransferRequestsOUT         = new ConcurrentList<BinaryDataTransferRequest>();
+                var nnBinaryDataTransferRequestsIN          = new ConcurrentList<BinaryDataTransferRequest>();
+                var nnBinaryDataTransferRequestsFWD         = new ConcurrentList<Tuple<BinaryDataTransferRequest, ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>>>();
+                var nnBinaryDataTransferRequestsOUT         = new ConcurrentList<BinaryDataTransferRequest>();
                 var csmsIncomingBinaryDataTransferRequests  = new ConcurrentList<BinaryDataTransferRequest>();
 
-                networkingNode1.AsCSMS.OnIncomingBinaryDataTransferRequest += (timestamp, sender, connection, incomingBinaryDataTransferRequest) => {
-                    nnIncomingBinaryDataTransferRequests.  TryAdd(incomingBinaryDataTransferRequest);
+                chargingStation1.       OnBinaryDataTransferRequest         += (timestamp, sender, binaryDataTransferRequest) => {
+                    csBinaryDataTransferRequestsOUT.TryAdd(binaryDataTransferRequest);
                     return Task.CompletedTask;
                 };
 
-                testCSMS01.            OnIncomingBinaryDataTransferRequest += (timestamp, sender, connection, incomingBinaryDataTransferRequest) => {
+                networkingNode1.IN.     OnIncomingBinaryDataTransferRequest += (timestamp, sender, connection, incomingBinaryDataTransferRequest) => {
+                    nnBinaryDataTransferRequestsIN. TryAdd(incomingBinaryDataTransferRequest);
+                    return Task.CompletedTask;
+                };
+
+                networkingNode1.FORWARD.OnBinaryDataTransferLogging += (timestamp, sender, connection, binaryDataTransferRequest, forwardingDecision) => {
+                    nnBinaryDataTransferRequestsFWD.TryAdd(new Tuple<BinaryDataTransferRequest, ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>>(binaryDataTransferRequest, forwardingDecision));
+                    return Task.CompletedTask;
+                };
+
+                networkingNode1.OUT.    OnBinaryDataTransferRequest         += (timestamp, sender,             binaryDataTransferRequest) => {
+                    nnBinaryDataTransferRequestsOUT.TryAdd(binaryDataTransferRequest);
+                    return Task.CompletedTask;
+                };
+
+                testCSMS01.            OnIncomingBinaryDataTransferRequest  += (timestamp, sender, connection, incomingBinaryDataTransferRequest) => {
                     csmsIncomingBinaryDataTransferRequests.TryAdd(incomingBinaryDataTransferRequest);
                     return Task.CompletedTask;
                 };
@@ -245,26 +263,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CS
                 chargingStation1.NetworkingMode = OCPP.WebSockets.NetworkingMode.NetworkingExtensions;
 
 
-
-                var binaryDataTransferRequests= new ConcurrentList<BinaryDataTransferRequest>();
-
-                testCSMS01.OnIncomingBinaryDataTransferRequest += (timestamp, sender, connection, binaryDataTransferRequest) => {
-                    binaryDataTransferRequests.TryAdd(binaryDataTransferRequest);
-                    return Task.CompletedTask;
-                };
-
-
                 var vendorId   = Vendor_Id. GraphDefined;
                 var messageId  = Message_Id.GraphDefined_TestMessage;
                 var data       = "Hello world!".ToUTF8Bytes();
 
-
                 var response   = await chargingStation1.TransferBinaryData(
-                                     VendorId:    vendorId,
-                                     MessageId:   messageId,
-                                     Data:        data,
-                                     Format:      BinaryFormats.TextIds
-                                 );
+                                           VendorId:    vendorId,
+                                           MessageId:   messageId,
+                                           Data:        data,
+                                           Format:      BinaryFormats.TextIds
+                                       );
 
 
                 Assert.Multiple(() => {
@@ -273,14 +281,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CS
                     Assert.That(response.Status,                                                     Is.EqualTo(BinaryDataTransferStatus.Accepted));
                     Assert.That(response.Data?.ToUTF8String(),                                       Is.EqualTo(data.Reverse().ToUTF8String()));
 
-                    Assert.That(nnIncomingBinaryDataTransferRequests.  Count,                        Is.EqualTo(1), "The BinaryDataTransfer did not reach the networking node!");
-                    Assert.That(nnIncomingBinaryDataTransferRequests.  First().DestinationNodeId,    Is.EqualTo(NetworkingNode_Id.CSMS));
-                    Assert.That(nnIncomingBinaryDataTransferRequests.  First().NetworkPath.Length,   Is.EqualTo(1));
-                    Assert.That(nnIncomingBinaryDataTransferRequests.  First().NetworkPath.Source,   Is.EqualTo(chargingStation1.Id));
-                    Assert.That(nnIncomingBinaryDataTransferRequests.  First().NetworkPath.Last,     Is.EqualTo(chargingStation1.Id));
-                    Assert.That(nnIncomingBinaryDataTransferRequests.  First().VendorId,             Is.EqualTo(vendorId));
-                    Assert.That(nnIncomingBinaryDataTransferRequests.  First().MessageId,            Is.EqualTo(messageId));
-                    Assert.That(nnIncomingBinaryDataTransferRequests.  First().Data,                 Is.EqualTo(data));
+                    Assert.That(csBinaryDataTransferRequestsOUT.       Count,                        Is.EqualTo(1), "The BinaryDataTransfer did not leave the charging station!");
+
+                    Assert.That(nnBinaryDataTransferRequestsIN.        Count,                        Is.EqualTo(1), "The BinaryDataTransfer did not reach the INPUT of the networking node!");
+                    Assert.That(nnBinaryDataTransferRequestsIN.        First().DestinationNodeId,    Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(nnBinaryDataTransferRequestsIN.        First().NetworkPath.Length,   Is.EqualTo(1));
+                    Assert.That(nnBinaryDataTransferRequestsIN.        First().NetworkPath.Source,   Is.EqualTo(chargingStation1.Id));
+                    Assert.That(nnBinaryDataTransferRequestsIN.        First().NetworkPath.Last,     Is.EqualTo(chargingStation1.Id));
+                    Assert.That(nnBinaryDataTransferRequestsIN.        First().VendorId,             Is.EqualTo(vendorId));
+                    Assert.That(nnBinaryDataTransferRequestsIN.        First().MessageId,            Is.EqualTo(messageId));
+                    Assert.That(nnBinaryDataTransferRequestsIN.        First().Data,                 Is.EqualTo(data));
+
+                    Assert.That(nnBinaryDataTransferRequestsFWD.       Count,                        Is.EqualTo(1), "The BinaryDataTransfer did not reach the FORWARD of the networking node!");
+
+                    Assert.That(nnBinaryDataTransferRequestsOUT.       Count,                        Is.EqualTo(1), "The BinaryDataTransfer did not reach the OUTPUT of the networking node!");
 
                     Assert.That(csmsIncomingBinaryDataTransferRequests.Count,                        Is.EqualTo(1), "The BinaryDataTransfer did not reach the CSMS!");
                     Assert.That(csmsIncomingBinaryDataTransferRequests.First().DestinationNodeId,    Is.EqualTo(NetworkingNode_Id.CSMS));

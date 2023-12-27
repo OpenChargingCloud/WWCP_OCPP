@@ -930,6 +930,66 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public void Wire()
         {
 
+            // Bidirectional
+
+            #region OnReset
+
+            IN.OnIncomingBinaryDataTransfer += async (timestamp,
+                                                      sender,
+                                                      connection,
+                                                      request,
+                                                      cancellationToken) => {
+
+                BinaryDataTransferResponse? response = null;
+
+                DebugX.Log($"Charging Station '{Id}': Incoming BinaryDataTransfer request: {request.VendorId}.{request.MessageId?.ToString() ?? "-"}: {request.Data?.ToHexString() ?? "-"}!");
+
+                // VendorId
+                // MessageId
+                // Data
+
+                var responseBinaryData = request.Data;
+
+                if (request.Data is not null)
+                    responseBinaryData = request.Data.Reverse();
+
+                response = request.VendorId == Vendor_Id.GraphDefined
+
+                                ? new BinaryDataTransferResponse(
+                                        Request:                request,
+                                        Status:                 BinaryDataTransferStatus.Accepted,
+                                        AdditionalStatusInfo:   null,
+                                        Data:                   responseBinaryData
+                                    )
+
+                                : new BinaryDataTransferResponse(
+                                        Request:                request,
+                                        Status:                 BinaryDataTransferStatus.Rejected,
+                                        AdditionalStatusInfo:   null,
+                                        Data:                   responseBinaryData
+                                    );
+
+                return response;
+
+            };
+
+            #endregion
+
+            FORWARD.OnBinaryDataTransfer += (timestamp,
+                                             sender,
+                                             connection,
+                                             request,
+                                             cancellationToken) =>
+
+                Task.FromResult(
+                    new ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>(
+                        request,
+                        ForwardingResult.FORWARD
+                    )
+                );
+
+
+
             // CS
 
             #region OnReset

@@ -33,7 +33,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                              ICSMSIncomingMessagesEvents
     {
 
-        CSMS_Id                    Id                       { get; }
+        NetworkingNode_Id          Id                       { get; }
 
         TimeSpan                   DefaultRequestTimeout    { get; }
 

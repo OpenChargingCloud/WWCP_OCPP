@@ -34,11 +34,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                     ICSMSIncomingMessagesEvents
     {
 
-        void AddRedirect   (NetworkingNode_Id DestinationNodeId,
-                            NetworkingNode_Id NetworkingHubId);
+        void AddStaticRouting   (NetworkingNode_Id DestinationNodeId,
+                                 NetworkingNode_Id NetworkingHubId);
 
-        void RemoveRedirect(NetworkingNode_Id DestinationNodeId,
-                            NetworkingNode_Id NetworkingHubId);
+        void RemoveStaticRouting(NetworkingNode_Id DestinationNodeId,
+                                 NetworkingNode_Id NetworkingHubId);
 
 
         /// <summary>

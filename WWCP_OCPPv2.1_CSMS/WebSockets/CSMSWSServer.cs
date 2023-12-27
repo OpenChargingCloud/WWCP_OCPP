@@ -40,7 +40,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// The CSMS HTTP/WebSocket/JSON server.
     /// </summary>
     public partial class CSMSWSServer : AOCPPWebSocketServer,
-                                        ICSMSWebsocketsChannel
+                                        ICSMSWebsocketsChannel,
+                                        IEventSender
     {
 
         #region Data
@@ -230,7 +231,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         {
 
             this.CSMS              = CSMS;
-            this.NetworkingNodeId  = CSMS.Id.ToNetworkingNodeId;
+            this.NetworkingNodeId  = CSMS.Id;
 
             #region Reflect "Receive_XXX" messages and wire them...
 

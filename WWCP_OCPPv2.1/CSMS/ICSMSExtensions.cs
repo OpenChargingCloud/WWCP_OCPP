@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty.Append(CSMS.Id.ToNetworkingNodeId),
+                           NetworkPath.Empty.Append(CSMS.Id),
                            CancellationToken
                        )
                    );
@@ -153,7 +153,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty.Append(CSMS.Id.ToNetworkingNodeId),
+                           NetworkPath.Empty.Append(CSMS.Id),
                            CancellationToken
                        )
                    );
@@ -222,7 +222,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty.Append(CSMS.Id.ToNetworkingNodeId),
+                           NetworkPath.Empty.Append(CSMS.Id),
                            CancellationToken
                        )
                    );
@@ -279,7 +279,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty.Append(CSMS.Id.ToNetworkingNodeId),
+                           NetworkPath.Empty.Append(CSMS.Id),
                            CancellationToken
                        )
                    );
@@ -339,7 +339,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty.Append(CSMS.Id.ToNetworkingNodeId),
+                           NetworkPath.Empty.Append(CSMS.Id),
                            CancellationToken
                        )
                    );
@@ -402,7 +402,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty.Append(CSMS.Id.ToNetworkingNodeId),
+                           NetworkPath.Empty.Append(CSMS.Id),
                            CancellationToken
                        )
                    );
@@ -471,7 +471,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty.Append(CSMS.Id.ToNetworkingNodeId),
+                           NetworkPath.Empty.Append(CSMS.Id),
                            CancellationToken
                        )
                    );
@@ -529,7 +529,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty.Append(CSMS.Id.ToNetworkingNodeId),
+                           NetworkPath.Empty.Append(CSMS.Id),
                            CancellationToken
                        )
                    );
@@ -586,7 +586,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty.Append(CSMS.Id.ToNetworkingNodeId),
+                           NetworkPath.Empty.Append(CSMS.Id),
                            CancellationToken
                        )
                    );
@@ -643,7 +643,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty.Append(CSMS.Id.ToNetworkingNodeId),
+                           NetworkPath.Empty.Append(CSMS.Id),
                            CancellationToken
                        )
                    );
@@ -706,7 +706,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty.Append(CSMS.Id.ToNetworkingNodeId),
+                           NetworkPath.Empty.Append(CSMS.Id),
                            CancellationToken
                        )
                    );
@@ -763,7 +763,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty.Append(CSMS.Id.ToNetworkingNodeId),
+                           NetworkPath.Empty.Append(CSMS.Id),
                            CancellationToken
                        )
                    );
@@ -820,7 +820,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty.Append(CSMS.Id.ToNetworkingNodeId),
+                           NetworkPath.Empty.Append(CSMS.Id),
                            CancellationToken
                        )
                    );
@@ -877,7 +877,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty.Append(CSMS.Id.ToNetworkingNodeId),
+                           NetworkPath.Empty.Append(CSMS.Id),
                            CancellationToken
                        )
                    );
@@ -937,7 +937,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty.Append(CSMS.Id.ToNetworkingNodeId),
+                           NetworkPath.Empty.Append(CSMS.Id),
                            CancellationToken
                        )
                    );
@@ -999,7 +999,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty.Append(CSMS.Id.ToNetworkingNodeId),
+                           NetworkPath.Empty.Append(CSMS.Id),
                            CancellationToken
                        )
                    );
@@ -1062,7 +1062,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty.Append(CSMS.Id.ToNetworkingNodeId),
+                           NetworkPath.Empty.Append(CSMS.Id),
                            CancellationToken
                        )
                    );
@@ -1125,7 +1125,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty.Append(CSMS.Id.ToNetworkingNodeId),
+                           NetworkPath.Empty.Append(CSMS.Id),
                            CancellationToken
                        )
                    );
@@ -1185,7 +1185,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty.Append(CSMS.Id.ToNetworkingNodeId),
+                           NetworkPath.Empty.Append(CSMS.Id),
                            CancellationToken
                        )
                    );
@@ -1245,7 +1245,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty.Append(CSMS.Id.ToNetworkingNodeId),
+                           NetworkPath.Empty.Append(CSMS.Id),
                            CancellationToken
                        )
                    );
@@ -1302,7 +1302,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty.Append(CSMS.Id.ToNetworkingNodeId),
+                           NetworkPath.Empty.Append(CSMS.Id),
                            CancellationToken
                        )
                    );
@@ -1359,7 +1359,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty.Append(CSMS.Id.ToNetworkingNodeId),
+                           NetworkPath.Empty.Append(CSMS.Id),
                            CancellationToken
                        )
                    );
@@ -1422,7 +1422,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty.Append(CSMS.Id.ToNetworkingNodeId),
+                           NetworkPath.Empty.Append(CSMS.Id),
                            CancellationToken
                        )
                    );
@@ -1477,7 +1477,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty.Append(CSMS.Id.ToNetworkingNodeId),
+                           NetworkPath.Empty.Append(CSMS.Id),
                            CancellationToken
                        )
                    );
@@ -1540,7 +1540,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty.Append(CSMS.Id.ToNetworkingNodeId),
+                           NetworkPath.Empty.Append(CSMS.Id),
                            CancellationToken
                        )
                    );
@@ -1594,7 +1594,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty.Append(CSMS.Id.ToNetworkingNodeId),
+                           NetworkPath.Empty.Append(CSMS.Id),
                            CancellationToken
                        )
                    );
@@ -1667,7 +1667,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty.Append(CSMS.Id.ToNetworkingNodeId),
+                           NetworkPath.Empty.Append(CSMS.Id),
                            CancellationToken
                        )
                    );
@@ -1724,7 +1724,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty.Append(CSMS.Id.ToNetworkingNodeId),
+                           NetworkPath.Empty.Append(CSMS.Id),
                            CancellationToken
                        )
                    );
@@ -1796,7 +1796,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty.Append(CSMS.Id.ToNetworkingNodeId),
+                           NetworkPath.Empty.Append(CSMS.Id),
                            CancellationToken
                        )
                    );
@@ -1853,7 +1853,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty.Append(CSMS.Id.ToNetworkingNodeId),
+                           NetworkPath.Empty.Append(CSMS.Id),
                            CancellationToken
                        )
                    );
@@ -1910,7 +1910,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty.Append(CSMS.Id.ToNetworkingNodeId),
+                           NetworkPath.Empty.Append(CSMS.Id),
                            CancellationToken
                        )
                    );
@@ -1970,7 +1970,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty.Append(CSMS.Id.ToNetworkingNodeId),
+                           NetworkPath.Empty.Append(CSMS.Id),
                            CancellationToken
                        )
                    );
@@ -2032,7 +2032,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty.Append(CSMS.Id.ToNetworkingNodeId),
+                           NetworkPath.Empty.Append(CSMS.Id),
                            CancellationToken
                        )
                    );
@@ -2092,7 +2092,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty.Append(CSMS.Id.ToNetworkingNodeId),
+                           NetworkPath.Empty.Append(CSMS.Id),
                            CancellationToken
                        )
                    );
@@ -2155,7 +2155,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty.Append(CSMS.Id.ToNetworkingNodeId),
+                           NetworkPath.Empty.Append(CSMS.Id),
                            CancellationToken
                        )
                    );
@@ -2261,7 +2261,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty.Append(CSMS.Id.ToNetworkingNodeId),
+                           NetworkPath.Empty.Append(CSMS.Id),
                            CancellationToken
 
                        )
@@ -2319,7 +2319,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty.Append(CSMS.Id.ToNetworkingNodeId),
+                           NetworkPath.Empty.Append(CSMS.Id),
                            CancellationToken
                        )
                    );
@@ -2379,7 +2379,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty.Append(CSMS.Id.ToNetworkingNodeId),
+                           NetworkPath.Empty.Append(CSMS.Id),
                            CancellationToken
                        )
                    );
@@ -2438,7 +2438,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty.Append(CSMS.Id.ToNetworkingNodeId),
+                           NetworkPath.Empty.Append(CSMS.Id),
                            CancellationToken
                        )
                    );
@@ -2501,7 +2501,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty.Append(CSMS.Id.ToNetworkingNodeId),
+                           NetworkPath.Empty.Append(CSMS.Id),
                            CancellationToken
                        )
                    );
@@ -2558,7 +2558,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty.Append(CSMS.Id.ToNetworkingNodeId),
+                           NetworkPath.Empty.Append(CSMS.Id),
                            CancellationToken
                        )
                    );
@@ -2623,7 +2623,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty.Append(CSMS.Id.ToNetworkingNodeId),
+                           NetworkPath.Empty.Append(CSMS.Id),
                            CancellationToken
                        )
                    );
@@ -2679,7 +2679,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty.Append(CSMS.Id.ToNetworkingNodeId),
+                           NetworkPath.Empty.Append(CSMS.Id),
                            CancellationToken
                        )
                    );
@@ -2738,7 +2738,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty.Append(CSMS.Id.ToNetworkingNodeId),
+                           NetworkPath.Empty.Append(CSMS.Id),
                            CancellationToken
                        )
                    );
@@ -2809,7 +2809,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty.Append(CSMS.Id.ToNetworkingNodeId),
+                           NetworkPath.Empty.Append(CSMS.Id),
                            CancellationToken
                        )
                    );
@@ -2873,7 +2873,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty.Append(CSMS.Id.ToNetworkingNodeId),
+                           NetworkPath.Empty.Append(CSMS.Id),
                            CancellationToken
                        )
                    );
@@ -2933,7 +2933,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty.Append(CSMS.Id.ToNetworkingNodeId),
+                           NetworkPath.Empty.Append(CSMS.Id),
                            CancellationToken
                        )
                    );
@@ -3008,7 +3008,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty.Append(CSMS.Id.ToNetworkingNodeId),
+                           NetworkPath.Empty.Append(CSMS.Id),
                            CancellationToken
                        )
                    );
@@ -3072,7 +3072,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty.Append(CSMS.Id.ToNetworkingNodeId),
+                           NetworkPath.Empty.Append(CSMS.Id),
                            CancellationToken
                        )
                    );
@@ -3140,7 +3140,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty.Append(CSMS.Id.ToNetworkingNodeId),
+                           NetworkPath.Empty.Append(CSMS.Id),
                            CancellationToken
                        )
                    );
@@ -3211,7 +3211,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty.Append(CSMS.Id.ToNetworkingNodeId),
+                           NetworkPath.Empty.Append(CSMS.Id),
                            CancellationToken
                        )
                    );
@@ -3267,7 +3267,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty.Append(CSMS.Id.ToNetworkingNodeId),
+                           NetworkPath.Empty.Append(CSMS.Id),
                            CancellationToken
                        )
                    );
@@ -3327,7 +3327,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.Empty.Append(CSMS.Id.ToNetworkingNodeId),
+                           NetworkPath.Empty.Append(CSMS.Id),
                            CancellationToken
                        )
                    );

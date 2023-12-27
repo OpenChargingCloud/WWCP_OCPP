@@ -992,8 +992,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
     }
 
 
-    public interface INetworkingNodeOUT : IEventSender,
-                                          NetworkingNode.CS.  INetworkingNodeOutgoingMessages,
+    public interface INetworkingNodeOUT : NetworkingNode.CS.  INetworkingNodeOutgoingMessages,
                                           NetworkingNode.CS.  INetworkingNodeOutgoingMessagesEvents,
                                           NetworkingNode.CSMS.INetworkingNodeOutgoingMessages,
                                           NetworkingNode.CSMS.INetworkingNodeOutgoingMessagesEvents

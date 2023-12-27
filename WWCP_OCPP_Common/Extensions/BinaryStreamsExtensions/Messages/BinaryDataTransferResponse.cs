@@ -315,11 +315,11 @@ namespace cloud.charging.open.protocols.OCPP
         /// </summary>
         /// <param name="CustomBinaryDataTransferResponseSerializer">A delegate to serialize custom binary data transfer responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
-        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
+        /// <param name="CustomBinarySignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="IncludeSignatures">Whether to include the digital signatures (default), or not.</param>
         public Byte[] ToBinary(CustomBinarySerializerDelegate<BinaryDataTransferResponse>?  CustomBinaryDataTransferResponseSerializer   = null,
                                CustomJObjectSerializerDelegate<StatusInfo>?                 CustomStatusInfoSerializer                   = null,
-                               CustomBinarySerializerDelegate<Signature>?                   CustomSignatureSerializer                    = null,
+                               CustomBinarySerializerDelegate<Signature>?                   CustomBinarySignatureSerializer              = null,
                                Boolean                                                      IncludeSignatures                            = true)
         {
 

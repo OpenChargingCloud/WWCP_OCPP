@@ -127,7 +127,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 => reachableChargingStations.Values.SelectMany(csmsChannel => csmsChannel.Item1.NetworkingNodeIds);
 
 
-            public Dictionary<String, Transaction_Id> TransactionIds = new ();
+            public Dictionary<String, Transaction_Id> TransactionIds = [];
 
             /// <summary>
             /// The enumeration of all signature policies.
@@ -6371,84 +6371,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
-
-            #region Reset                       (Request)
-
-            /// <summary>
-            /// Reset the given charging station.
-            /// </summary>
-            /// <param name="Request">A Reset request.</param>
-            public async Task<OCPPv2_1.CS.ResetResponse>
-                Reset(OCPPv2_1.CSMS.ResetRequest Request)
-
-            {
-
-                #region Send OnResetRequest event
-
-                var startTime = Timestamp.Now;
-
-                await parentNetworkingNode.OUT.RaiseOnResetRequest(startTime,
-                                                                   this,
-                                                                   Request);
-
-                #endregion
-
-
-                var response  = LookupNetworkingNode(Request.DestinationNodeId, out var channel) &&
-                                    channel is not null
-
-                                    ? SignaturePolicy.SignRequestMessage(
-                                          Request,
-                                          Request.ToJSON(
-                                              CustomResetRequestSerializer,
-                                              CustomSignatureSerializer,
-                                              CustomCustomDataSerializer
-                                          ),
-                                          out var errorResponse
-                                      )
-
-                                          ? await channel.Reset(Request)
-
-                                          : new OCPPv2_1.CS.ResetResponse(
-                                                Request,
-                                                Result.SignatureError(errorResponse)
-                                            )
-
-                                    : new OCPPv2_1.CS.ResetResponse(
-                                          Request,
-                                          Result.UnknownOrUnreachable(Request.DestinationNodeId)
-                                      );
-
-
-                SignaturePolicy.VerifyResponseMessage(
-                    response,
-                    response.ToJSON(
-                        CustomResetResponseSerializer,
-                        CustomStatusInfoSerializer,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out errorResponse
-                );
-
-
-                #region Send OnResetResponse event
-
-                var endTime = Timestamp.Now;
-
-                await parentNetworkingNode.OUT.RaiseOnResetResponse(startTime,
-                                                                    this,
-                                                                    Request,
-                                                                    response,
-                                                                    endTime - startTime);
-
-                #endregion
-
-                return response;
-
-            }
-
-            #endregion
 
             #region UpdateFirmware              (Request)
 

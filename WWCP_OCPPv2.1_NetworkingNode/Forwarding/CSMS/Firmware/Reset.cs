@@ -177,7 +177,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         case ForwardingResult.FORWARD:
-                            response = await parentNetworkingNode.AsCSMS.Reset(request);
+                            response = await parentNetworkingNode.OUT.Reset(request);
                             break;
 
                         case ForwardingResult.DROP:
@@ -320,12 +320,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
         // MAIN!!!
-        public void WireReset(NetworkingNode.CS.  INetworkingNodeIncomingMessages IncomingMessages)
+        public void WireReset(CS.  INetworkingNodeIncomingMessages IncomingMessages)
         {
             IncomingMessages.OnReset += ProcessIT;
         }
 
-        public void WireReset(NetworkingNode.CSMS.INetworkingNodeIncomingMessages IncomingMessages)
+        public void WireReset(CSMS.INetworkingNodeIncomingMessages IncomingMessages)
         {
             //IncomingMessages.OnReset += ProcessIT;
         }
@@ -444,6 +444,143 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             return forwardingDecision;
 
         }
+
+    }
+
+
+    public partial class OUTPUT
+    {
+
+        #region Events
+
+        /// <summary>
+        /// An event fired whenever a Reset request will be sent.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnResetRequestDelegate?   OnResetRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a Reset request was received.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnResetResponseDelegate?  OnResetResponse;
+
+        #endregion
+
+
+        /// <summary>
+        /// Send a Reset request.
+        /// </summary>
+        /// <param name="Request">A Reset request.</param>
+        public async Task<ResetResponse> Reset(ResetRequest Request)
+        {
+
+            #region Send OnResetRequest event
+
+            var startTime = Timestamp.Now;
+
+            var requestLogger = OnResetRequest;
+            if (requestLogger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(requestLogger.GetInvocationList().
+                                                     OfType <OCPPv2_1.CSMS.OnResetRequestDelegate>().
+                                                     Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                       parentNetworkingNode,
+                                                                                                       Request)).
+                                                     ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(TestNetworkingNode),
+                              nameof(OnResetRequest),
+                              e
+                          );
+                }
+
+            }
+
+            #endregion
+
+
+            var response = LookupNetworkingNode(Request.DestinationNodeId, out var channel) &&
+                                channel is not null
+
+                                ? parentNetworkingNode.SignaturePolicy.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          parentNetworkingNode.CustomResetRequestSerializer,
+                                          parentNetworkingNode.CustomSignatureSerializer,
+                                          parentNetworkingNode.CustomCustomDataSerializer
+                                      ),
+                                      out var errorResponse
+                                  )
+
+                                      ? await channel.Reset(Request)
+
+                                      : new ResetResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new ResetResponse(
+                                      Request,
+                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                  );
+
+
+            parentNetworkingNode.SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    parentNetworkingNode.CustomResetResponseSerializer,
+                    parentNetworkingNode.CustomStatusInfoSerializer,
+                    parentNetworkingNode.CustomSignatureSerializer,
+                    parentNetworkingNode.CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
+
+
+            #region Send OnResetResponse event
+
+            var endTime = Timestamp.Now;
+
+            var responseLogger = OnResetResponse;
+            if (responseLogger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(responseLogger.GetInvocationList().
+                                                      OfType <OCPPv2_1.CSMS.OnResetResponseDelegate>().
+                                                      Select (loggingDelegate => loggingDelegate.Invoke(endTime,
+                                                                                                        parentNetworkingNode,
+                                                                                                        Request,
+                                                                                                        response,
+                                                                                                        endTime - startTime)).
+                                                      ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(TestNetworkingNode),
+                              nameof(OnResetRequest),
+                              e
+                          );
+                }
+
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+
 
     }
 

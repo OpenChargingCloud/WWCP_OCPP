@@ -371,7 +371,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
             #region Setup CSMS v2.1 (compatible with v2.0.1)
 
             var testCSMSv2_1 = new OCPPv2_1.TestCSMS(
-                                   Id:                      OCPPv2_1.CSMS_Id.Parse("OCPPv2.1-Test-01"),
+                                   Id:                      NetworkingNode_Id.Parse("OCPPv2.1-Test-01"),
                                    RequireAuthentication:   false,
                                    HTTPUploadPort:          IPPort.Parse(9921),
                                    DNSClient:               dnsClient

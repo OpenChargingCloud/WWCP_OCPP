@@ -21,14 +21,12 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPP.CSMS;
 using cloud.charging.open.protocols.OCPP.CS;
 using cloud.charging.open.protocols.OCPP.NN;
-using cloud.charging.open.protocols.OCPPv2_1.NN;
-using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS;
-using cloud.charging.open.protocols.OCPPv2_1.CSMS;
-using cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages;
+using cloud.charging.open.protocols.OCPP.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
+using cloud.charging.open.protocols.OCPPv2_1.NN;
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
 
@@ -36,27 +34,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
     public partial class OUTPUT(TestNetworkingNode NetworkingNode) : INetworkingNodeOUT,
-
-                                  // as CS
-                                  INetworkingNodeOutgoingMessages,
-                                  INetworkingNodeOutgoingMessagesEvents,
-
-                                  // as CSMS
-                                  CSMS.INetworkingNodeOutgoingMessagesEvents
+                                                                     CS.  INetworkingNodeOutgoingMessages,
+                                                                     CS.  INetworkingNodeOutgoingMessagesEvents,
+                                                                     CSMS.INetworkingNodeOutgoingMessages,
+                                                                     CSMS.INetworkingNodeOutgoingMessagesEvents
 
     {
 
-        /// <summary>
-        /// The sender identification.
-        /// </summary>
-        String IEventSender.Id
-            => parentNetworkingNode.Id.ToString();
-
-
-
         #region Data
 
-        private readonly            TestNetworkingNode parentNetworkingNode = NetworkingNode;
+        private readonly TestNetworkingNode parentNetworkingNode = NetworkingNode;
 
         #endregion
 
@@ -154,11 +141,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region BinaryDataTransfer
 
-        /// <summary>
-        /// An event fired whenever a BinaryDataTransfer request will be sent to the CSMS.
-        /// </summary>
-        public event OnBinaryDataTransferRequestDelegate?   OnBinaryDataTransferRequest;
-
         public async Task RaiseOnBinaryDataTransferRequest(DateTime                        Timestamp,
                                                             IEventSender                    Sender,
                                                             OCPP.BinaryDataTransferRequest  Request)
@@ -191,12 +173,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
 
         }
-
-
-        /// <summary>
-        /// An event fired whenever a response to a BinaryDataTransfer request was received.
-        /// </summary>
-        public event OnBinaryDataTransferResponseDelegate?  OnBinaryDataTransferResponse;
 
         public async Task RaiseOnBinaryDataTransferResponse(DateTime                         Timestamp,
                                                             IEventSender                     Sender,
@@ -2633,11 +2609,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region OnReset                       (Request/-Response)
 
-        /// <summary>
-        /// An event fired whenever a Reset request will be sent to the charging station.
-        /// </summary>
-        public event OCPPv2_1.CSMS.OnResetRequestDelegate?   OnResetRequest;
-
         public async Task RaiseOnResetRequest(DateTime                    Timestamp,
                                                 IEventSender                Sender,
                                                 OCPPv2_1.CSMS.ResetRequest  Request)
@@ -2672,10 +2643,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         }
 
 
-        /// <summary>
-        /// An event fired whenever a response to a Reset request was received.
-        /// </summary>
-        public event OCPPv2_1.CSMS.OnResetResponseDelegate?  OnResetResponse;
+
 
         public async Task RaiseOnResetResponse(DateTime                    Timestamp,
                                                 IEventSender                Sender,
@@ -7550,7 +7518,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnDataTransferRequest?.Invoke(startTime,
-                                                this,
+                                                parentNetworkingNode,
                                                 Request);
 
             }
@@ -7623,7 +7591,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnDataTransferResponse?.Invoke(endTime,
-                                                this,
+                                                parentNetworkingNode,
                                                 Request,
                                                 response,
                                                 endTime - startTime);
@@ -7632,128 +7600,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             catch (Exception e)
             {
                 DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnDataTransferResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        // Binary Data Streams Extensions
-
-        #region BinaryDataTransfer                    (Request)
-
-        /// <summary>
-        /// Send the given vendor-specific binary data to the CSMS.
-        /// </summary>
-        /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
-        /// <param name="MessageId">An optional message identification.</param>
-        /// <param name="BinaryData">A vendor-specific JSON token.</param>
-        /// <param name="CustomBinaryData">The custom data object to allow to store any kind of customer specific data.</param>
-        /// 
-        /// <param name="RequestId">An optional request identification.</param>
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public async Task<BinaryDataTransferResponse>
-            BinaryDataTransfer(BinaryDataTransferRequest Request)
-
-        {
-
-            #region Send OnBinaryDataTransferRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnBinaryDataTransferRequest?.Invoke(startTime,
-                                                    this,
-                                                    Request);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnBinaryDataTransferRequest));
-            }
-
-            #endregion
-
-
-            BinaryDataTransferResponse? response = null;
-
-            if (!parentNetworkingNode.SignaturePolicy.SignRequestMessage(
-                    Request,
-                    Request.ToBinary(
-                        parentNetworkingNode.CustomBinaryDataTransferRequestSerializer,
-                        parentNetworkingNode.CustomBinarySignatureSerializer,
-                        IncludeSignatures: false
-                    ),
-                    out var errorResponse
-                ))
-            {
-
-                response  = new BinaryDataTransferResponse(
-                                Request,
-                                Result.SignatureError(errorResponse)
-                            );
-
-            }
-
-            // ToDo: Currently hardcoded CSMS lookup!
-            else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
-            {
-
-                response  = parentNetworkingNode.AsCS.CSClient is not null
-
-                                ? await parentNetworkingNode.OUT.BinaryDataTransfer(Request)
-
-                                : new BinaryDataTransferResponse(
-                                        Request,
-                                        Result.UnknownOrUnreachable(Request.DestinationNodeId)
-                                    );
-
-            }
-
-            else
-            {
-                // ...
-            }
-
-
-            parentNetworkingNode.SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToBinary(
-                    parentNetworkingNode.CustomBinaryDataTransferResponseSerializer,
-                    null, //parentNetworkingNode.CustomStatusInfoSerializer,
-                    parentNetworkingNode.CustomBinarySignatureSerializer,
-                    IncludeSignatures: false
-                ),
-                out errorResponse
-            );
-
-
-            #region Send OnBinaryDataTransferResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnBinaryDataTransferResponse?.Invoke(endTime,
-                                                        this,
-                                                        Request,
-                                                        response,
-                                                        endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnBinaryDataTransferResponse));
             }
 
             #endregion
@@ -7784,7 +7630,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnNotifyNetworkTopologyRequest?.Invoke(startTime,
-                                                        this,
+                                                        parentNetworkingNode,
                                                         Request);
             }
             catch (Exception e)
@@ -7869,7 +7715,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnNotifyNetworkTopologyResponse?.Invoke(endTime,
-                                                        this,
+                                                        parentNetworkingNode,
                                                         Request,
                                                         response,
                                                         endTime - startTime);
@@ -8059,7 +7905,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnFirmwareStatusNotificationRequest?.Invoke(startTime,
-                                                            this,
+                                                            parentNetworkingNode,
                                                             Request);
 
             }
@@ -8131,7 +7977,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnFirmwareStatusNotificationResponse?.Invoke(endTime,
-                                                                this,
+                                                                parentNetworkingNode,
                                                                 Request,
                                                                 response,
                                                                 endTime - startTime);
@@ -8178,7 +8024,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnPublishFirmwareStatusNotificationRequest?.Invoke(startTime,
-                                                                    this,
+                                                                    parentNetworkingNode,
                                                                     Request);
 
             }
@@ -8250,7 +8096,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnPublishFirmwareStatusNotificationResponse?.Invoke(endTime,
-                                                                    this,
+                                                                    parentNetworkingNode,
                                                                     Request,
                                                                     response,
                                                                     endTime - startTime);
@@ -8294,7 +8140,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnHeartbeatRequest?.Invoke(startTime,
-                                            this,
+                                            parentNetworkingNode,
                                             Request);
 
             }
@@ -8366,7 +8212,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnHeartbeatResponse?.Invoke(endTime,
-                                            this,
+                                            parentNetworkingNode,
                                             Request,
                                             response,
                                             endTime - startTime);
@@ -8414,7 +8260,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnNotifyEventRequest?.Invoke(startTime,
-                                                this,
+                                                parentNetworkingNode,
                                                 Request);
 
             }
@@ -8490,7 +8336,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnNotifyEventResponse?.Invoke(endTime,
-                                                this,
+                                                parentNetworkingNode,
                                                 Request,
                                                 response,
                                                 endTime - startTime);
@@ -8537,7 +8383,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnSecurityEventNotificationRequest?.Invoke(startTime,
-                                                            this,
+                                                            parentNetworkingNode,
                                                             Request);
 
             }
@@ -8609,7 +8455,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnSecurityEventNotificationResponse?.Invoke(endTime,
-                                                            this,
+                                                            parentNetworkingNode,
                                                             Request,
                                                             response,
                                                             endTime - startTime);
@@ -8658,7 +8504,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnNotifyReportRequest?.Invoke(startTime,
-                                                this,
+                                                parentNetworkingNode,
                                                 Request);
 
             }
@@ -8736,7 +8582,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnNotifyReportResponse?.Invoke(endTime,
-                                                this,
+                                                parentNetworkingNode,
                                                 Request,
                                                 response,
                                                 endTime - startTime);
@@ -8785,7 +8631,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnNotifyMonitoringReportRequest?.Invoke(startTime,
-                                                        this,
+                                                        parentNetworkingNode,
                                                         Request);
 
             }
@@ -8862,7 +8708,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnNotifyMonitoringReportResponse?.Invoke(endTime,
-                                                            this,
+                                                            parentNetworkingNode,
                                                             Request,
                                                             response,
                                                             endTime - startTime);
@@ -8908,7 +8754,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnLogStatusNotificationRequest?.Invoke(startTime,
-                                                        this,
+                                                        parentNetworkingNode,
                                                         Request);
 
             }
@@ -8980,7 +8826,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnLogStatusNotificationResponse?.Invoke(endTime,
-                                                        this,
+                                                        parentNetworkingNode,
                                                         Request,
                                                         response,
                                                         endTime - startTime);
@@ -9027,7 +8873,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnSignCertificateRequest?.Invoke(startTime,
-                                                    this,
+                                                    parentNetworkingNode,
                                                     Request);
 
             }
@@ -9100,7 +8946,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnSignCertificateResponse?.Invoke(endTime,
-                                                    this,
+                                                    parentNetworkingNode,
                                                     Request,
                                                     response,
                                                     endTime - startTime);
@@ -9149,7 +8995,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnGet15118EVCertificateRequest?.Invoke(startTime,
-                                                        this,
+                                                        parentNetworkingNode,
                                                         Request);
 
             }
@@ -9222,7 +9068,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnGet15118EVCertificateResponse?.Invoke(endTime,
-                                                        this,
+                                                        parentNetworkingNode,
                                                         Request,
                                                         response,
                                                         endTime - startTime);
@@ -9267,7 +9113,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnGetCertificateStatusRequest?.Invoke(startTime,
-                                                        this,
+                                                        parentNetworkingNode,
                                                         Request);
 
             }
@@ -9341,7 +9187,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnGetCertificateStatusResponse?.Invoke(endTime,
-                                                        this,
+                                                        parentNetworkingNode,
                                                         Request,
                                                         response,
                                                         endTime - startTime);
@@ -9388,7 +9234,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnGetCRLRequest?.Invoke(startTime,
-                                        this,
+                                        parentNetworkingNode,
                                         Request);
 
             }
@@ -9462,7 +9308,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnGetCRLResponse?.Invoke(endTime,
-                                            this,
+                                            parentNetworkingNode,
                                             Request,
                                             response,
                                             endTime - startTime);
@@ -9509,7 +9355,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnReservationStatusUpdateRequest?.Invoke(startTime,
-                                                            this,
+                                                            parentNetworkingNode,
                                                             Request);
 
             }
@@ -9581,7 +9427,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnReservationStatusUpdateResponse?.Invoke(endTime,
-                                                            this,
+                                                            parentNetworkingNode,
                                                             Request,
                                                             response,
                                                             endTime - startTime);
@@ -9628,7 +9474,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnAuthorizeRequest?.Invoke(startTime,
-                                            this,
+                                            parentNetworkingNode,
                                             Request);
 
             }
@@ -9708,7 +9554,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnAuthorizeResponse?.Invoke(endTime,
-                                            this,
+                                            parentNetworkingNode,
                                             Request,
                                             response,
                                             endTime - startTime);
@@ -9756,7 +9602,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnNotifyEVChargingNeedsRequest?.Invoke(startTime,
-                                                        this,
+                                                        parentNetworkingNode,
                                                         Request);
 
             }
@@ -9839,7 +9685,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnNotifyEVChargingNeedsResponse?.Invoke(endTime,
-                                                        this,
+                                                        parentNetworkingNode,
                                                         Request,
                                                         response,
                                                         endTime - startTime);
@@ -9897,7 +9743,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnTransactionEventRequest?.Invoke(startTime,
-                                                    this,
+                                                    parentNetworkingNode,
                                                     Request);
 
             }
@@ -9981,7 +9827,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnTransactionEventResponse?.Invoke(endTime,
-                                                    this,
+                                                    parentNetworkingNode,
                                                     Request,
                                                     response,
                                                     endTime - startTime);
@@ -10029,7 +9875,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnStatusNotificationRequest?.Invoke(startTime,
-                                                    this,
+                                                    parentNetworkingNode,
                                                     Request);
 
             }
@@ -10101,7 +9947,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnStatusNotificationResponse?.Invoke(endTime,
-                                                        this,
+                                                        parentNetworkingNode,
                                                         Request,
                                                         response,
                                                         endTime - startTime);
@@ -10147,7 +9993,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnMeterValuesRequest?.Invoke(startTime,
-                                                this,
+                                                parentNetworkingNode,
                                                 Request);
 
             }
@@ -10221,7 +10067,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnMeterValuesResponse?.Invoke(endTime,
-                                                this,
+                                                parentNetworkingNode,
                                                 Request,
                                                 response,
                                                 endTime - startTime);
@@ -10268,7 +10114,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnNotifyChargingLimitRequest?.Invoke(startTime,
-                                                        this,
+                                                        parentNetworkingNode,
                                                         Request);
 
             }
@@ -10364,7 +10210,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnNotifyChargingLimitResponse?.Invoke(endTime,
-                                                        this,
+                                                        parentNetworkingNode,
                                                         Request,
                                                         response,
                                                         endTime - startTime);
@@ -10410,7 +10256,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnClearedChargingLimitRequest?.Invoke(startTime,
-                                                        this,
+                                                        parentNetworkingNode,
                                                         Request);
 
             }
@@ -10482,7 +10328,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnClearedChargingLimitResponse?.Invoke(endTime,
-                                                        this,
+                                                        parentNetworkingNode,
                                                         Request,
                                                         response,
                                                         endTime - startTime);
@@ -10531,7 +10377,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnReportChargingProfilesRequest?.Invoke(startTime,
-                                                        this,
+                                                        parentNetworkingNode,
                                                         Request);
 
             }
@@ -10628,7 +10474,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnReportChargingProfilesResponse?.Invoke(endTime,
-                                                            this,
+                                                            parentNetworkingNode,
                                                             Request,
                                                             response,
                                                             endTime - startTime);
@@ -10678,7 +10524,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnNotifyEVChargingScheduleRequest?.Invoke(startTime,
-                                                            this,
+                                                            parentNetworkingNode,
                                                             Request);
 
             }
@@ -10775,7 +10621,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnNotifyEVChargingScheduleResponse?.Invoke(endTime,
-                                                            this,
+                                                            parentNetworkingNode,
                                                             Request,
                                                             response,
                                                             endTime - startTime);
@@ -10822,7 +10668,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnNotifyPriorityChargingRequest?.Invoke(startTime,
-                                                        this,
+                                                        parentNetworkingNode,
                                                         Request);
 
             }
@@ -10894,7 +10740,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnNotifyPriorityChargingResponse?.Invoke(endTime,
-                                                            this,
+                                                            parentNetworkingNode,
                                                             Request,
                                                             response,
                                                             endTime - startTime);
@@ -10940,7 +10786,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnPullDynamicScheduleUpdateRequest?.Invoke(startTime,
-                                                            this,
+                                                            parentNetworkingNode,
                                                             Request);
 
             }
@@ -11012,7 +10858,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnPullDynamicScheduleUpdateResponse?.Invoke(endTime,
-                                                            this,
+                                                            parentNetworkingNode,
                                                             Request,
                                                             response,
                                                             endTime - startTime);
@@ -11060,7 +10906,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnNotifyDisplayMessagesRequest?.Invoke(startTime,
-                                                        this,
+                                                        parentNetworkingNode,
                                                         Request);
 
             }
@@ -11136,7 +10982,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnNotifyDisplayMessagesResponse?.Invoke(endTime,
-                                                        this,
+                                                        parentNetworkingNode,
                                                         Request,
                                                         response,
                                                         endTime - startTime);
@@ -11185,7 +11031,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnNotifyCustomerInformationRequest?.Invoke(startTime,
-                                                            this,
+                                                            parentNetworkingNode,
                                                             Request);
 
             }
@@ -11257,7 +11103,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnNotifyCustomerInformationResponse?.Invoke(endTime,
-                                                            this,
+                                                            parentNetworkingNode,
                                                             Request,
                                                             response,
                                                             endTime - startTime);
@@ -11288,8 +11134,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region HandleErrors(Module, Caller, ExceptionOccured)
 
         private Task HandleErrors(String     Module,
-                                    String     Caller,
-                                    Exception  ExceptionOccured)
+                                  String     Caller,
+                                  Exception  ExceptionOccured)
         {
 
             DebugX.LogException(ExceptionOccured, $"{Module}.{Caller}");
@@ -11298,10 +11144,43 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         }
 
-        public Task<ResetResponse> Reset(ResetRequest Request)
+        #endregion
+
+
+        public Boolean LookupNetworkingNode(NetworkingNode_Id                 DestinationNodeId,
+                                            out CSMS.INetworkingNodeChannel?  NetworkingNodeChannel)
         {
-            throw new NotImplementedException();
+
+            if (parentNetworkingNode.AsCSMS.LookupNetworkingNode(DestinationNodeId, out var cc))
+            {
+                NetworkingNodeChannel = cc;
+                return true;
+            }
+
+            if (DestinationNodeId == NetworkingNode_Id.CSMS)
+            {
+                //parentNetworkingNode.AsCS.CSClient.DataTransfer
+            }
+
+        //    var lookUpNetworkingNodeId = NetworkingNodeId;
+
+        //    //if (reachableViaNetworkingHubs.TryGetValue(lookUpNetworkingNodeId, out var networkingHubId))
+        //    //    lookUpNetworkingNodeId = networkingHubId;
+
+        //    if (parentNetworkingNode.reachableChargingStations.TryGetValue(lookUpNetworkingNodeId, out var networkingNodeChannel) &&
+        //        networkingNodeChannel?.Item1 is not null)
+        //    {
+        //        NetworkingNodeChannel = networkingNodeChannel.Item1;
+        //        return true;
+        //    }
+
+            NetworkingNodeChannel = null;
+            return false;
+
         }
+
+
+
 
         public Task<UpdateFirmwareResponse> UpdateFirmware(UpdateFirmwareRequest Request)
         {
@@ -11587,8 +11466,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         {
             throw new NotImplementedException();
         }
-
-        #endregion
 
 
     }

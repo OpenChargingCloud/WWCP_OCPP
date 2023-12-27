@@ -35,14 +35,14 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
 
         //// Binary Data Streams Extensions
 
-        //#region OnIncomingBinaryDataTransfer
+        #region OnIncomingBinaryDataTransfer
 
-        ///// <summary>
-        ///// An event sent whenever an incoming BinaryDataTransfer request was received.
-        ///// </summary>
-        //event OnIncomingBinaryDataTransferDelegate    OnIncomingBinaryDataTransfer;
+        /// <summary>
+        /// An event sent whenever an incoming BinaryDataTransfer request was received.
+        /// </summary>
+        event OnIncomingBinaryDataTransferDelegate    OnIncomingBinaryDataTransfer;
 
-        //#endregion
+        #endregion
 
 
     }

@@ -258,7 +258,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public HTTPEventSource<JObject>                   EventLog            { get; }
 
 
-        private ConcurrentDictionary<CSMS_Id, ICSMSWebSocket> csmss = new();
+        private readonly ConcurrentDictionary<OCPP.NetworkingNode_Id, ICSMSWebSocket> csmss = [];
 
         public IEnumerable<ICSMSWebSocket> CSMSs
             => csmss.Values;

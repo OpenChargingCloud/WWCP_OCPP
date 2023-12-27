@@ -96,27 +96,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         // Binary Data Streams Extensions
 
-        public event OnIncomingBinaryDataTransferDelegate? OnIncomingBinaryDataTransfer;
-        public event OnGetFileDelegate? OnGetFile;
-        public event OnSendFileDelegate? OnSendFile;
-        public event OnDeleteFileDelegate? OnDeleteFile;
+        public event OnGetFileDelegate?                      OnGetFile;
+        public event OnSendFileDelegate?                     OnSendFile;
+        public event OnDeleteFileDelegate?                   OnDeleteFile;
 
 
         // E2E Security Extensions
 
-        public event OnAddSignaturePolicyDelegate? OnAddSignaturePolicy;
-        public event OnUpdateSignaturePolicyDelegate? OnUpdateSignaturePolicy;
-        public event OnDeleteSignaturePolicyDelegate? OnDeleteSignaturePolicy;
-        public event OnAddUserRoleDelegate? OnAddUserRole;
-        public event OnUpdateUserRoleDelegate? OnUpdateUserRole;
-        public event OnDeleteUserRoleDelegate? OnDeleteUserRole;
+        public event OnAddSignaturePolicyDelegate?           OnAddSignaturePolicy;
+        public event OnUpdateSignaturePolicyDelegate?        OnUpdateSignaturePolicy;
+        public event OnDeleteSignaturePolicyDelegate?        OnDeleteSignaturePolicy;
+        public event OnAddUserRoleDelegate?                  OnAddUserRole;
+        public event OnUpdateUserRoleDelegate?               OnUpdateUserRole;
+        public event OnDeleteUserRoleDelegate?               OnDeleteUserRole;
 
 
         // E2E Charging Tariffs Extensions
 
-        public event OnSetDefaultChargingTariffDelegate? OnSetDefaultChargingTariff;
-        public event OnGetDefaultChargingTariffDelegate? OnGetDefaultChargingTariff;
-        public event OnRemoveDefaultChargingTariffDelegate? OnRemoveDefaultChargingTariff;
+        public event OnSetDefaultChargingTariffDelegate?     OnSetDefaultChargingTariff;
+        public event OnGetDefaultChargingTariffDelegate?     OnGetDefaultChargingTariff;
+        public event OnRemoveDefaultChargingTariffDelegate?  OnRemoveDefaultChargingTariff;
 
         #endregion
 

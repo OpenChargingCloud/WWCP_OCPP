@@ -311,10 +311,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #region OnIncomingBinaryDataTransfer
 
-        /// <summary>
-        /// An event sent whenever a BinaryDataTransfer request was received.
-        /// </summary>
-        event OCPP.OnIncomingBinaryDataTransferDelegate   OnIncomingBinaryDataTransfer;
+        ///// <summary>
+        ///// An event sent whenever a BinaryDataTransfer request was received.
+        ///// </summary>
+        //event OCPP.OnIncomingBinaryDataTransferDelegate   OnIncomingBinaryDataTransfer;
 
         #endregion
 

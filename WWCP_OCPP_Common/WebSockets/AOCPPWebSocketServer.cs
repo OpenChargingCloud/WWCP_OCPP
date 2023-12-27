@@ -1235,7 +1235,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
 
         }
 
-        public void AddRedirect(NetworkingNode_Id DestinationNodeId,
+        public void AddStaticRouting(NetworkingNode_Id DestinationNodeId,
                                 NetworkingNode_Id NetworkingHubId)
         {
 
@@ -1244,7 +1244,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
 
         }
 
-        public void RemoveRedirect(NetworkingNode_Id DestinationNodeId,
+        public void RemoveStaticRouting(NetworkingNode_Id DestinationNodeId,
                                    NetworkingNode_Id NetworkingHubId)
         {
 

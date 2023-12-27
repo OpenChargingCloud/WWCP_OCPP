@@ -27,7 +27,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
     /// <summary>
     /// The common interface of all events for incoming OCPP messages at a charging station management system.
     /// </summary>
-    public interface ICSMSIncomingMessagesEvents : IEventSender
+    public interface ICSMSIncomingMessagesEvents
     {
 
         #region Properties
@@ -82,12 +82,12 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         /// <summary>
         /// An event sent whenever a firmware status notification request was received.
         /// </summary>
-        event OnIncomingBinaryDataTransferRequestDelegate    OnIncomingBinaryDataTransferRequest;
+        event OnIncomingBinaryDataTransferRequestDelegate     OnIncomingBinaryDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a response to a firmware status notification request was sent.
         /// </summary>
-        event OnIncomingBinaryDataTransferResponseDelegate   OnIncomingBinaryDataTransferResponse;
+        event OnIncomingBinaryDataTransferResponseDelegate    OnIncomingBinaryDataTransferResponse;
 
         #endregion
 

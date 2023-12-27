@@ -29,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     /// <summary>
     /// The common interface of all noetworking node incoming messages.
     /// </summary>
-    public interface INetworkingNodeIncomingMessages
+    public interface INetworkingNodeIncomingMessages : OCPP.NetworkingNode.INetworkingNodeIncomingMessages
     {
 
         // CS
@@ -449,10 +449,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
         #region OnIncomingBinaryDataTransfer
 
-        /// <summary>
-        /// An event sent whenever a BinaryDataTransfer request was received.
-        /// </summary>
-        event OCPP.OnIncomingBinaryDataTransferDelegate   OnIncomingBinaryDataTransfer;
+        ///// <summary>
+        ///// An event sent whenever a BinaryDataTransfer request was received.
+        ///// </summary>
+        //event OCPP.OnIncomingBinaryDataTransferDelegate   OnIncomingBinaryDataTransfer;
 
         #endregion
 
