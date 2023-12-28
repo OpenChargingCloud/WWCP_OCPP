@@ -17,11 +17,6 @@
 
 #region Usings
 
-using org.GraphDefined.Vanaheimr.Illias;
-
-using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPP.CS;
-using cloud.charging.open.protocols.OCPP.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
@@ -36,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
     public interface INetworkingNodeOutgoingMessages : OCPP.NN.CSMS.INetworkingNodeOutgoingMessages
     {
 
-        #region Custom JSON serializer delegates
+        #region !!!Custom JSON serializer delegates
 
         //#region CSMS Request Messages
 
@@ -363,13 +358,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         #endregion
 
 
-        #region SendSignedCertificate       (Request)
+        #region CertificateSigned           (Request)
 
         /// <summary>
         /// Send the signed certificate to the charging station.
         /// </summary>
         /// <param name="Request">A certificate signed request.</param>
-        Task<CertificateSignedResponse> SendSignedCertificate(CertificateSignedRequest Request);
+        Task<CertificateSignedResponse> CertificateSigned(CertificateSignedRequest Request);
 
         #endregion
 
@@ -403,13 +398,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #endregion
 
-        #region NotifyCRLAvailability       (Request)
+        #region NotifyCRL                   (Request)
 
         /// <summary>
         /// Notify the charging station about the status of a certificate revocation list.
         /// </summary>
         /// <param name="Request">A NotifyCRL request.</param>
-        Task<NotifyCRLResponse> NotifyCRLAvailability(NotifyCRLRequest Request);
+        Task<NotifyCRLResponse> NotifyCRL(NotifyCRLRequest Request);
 
         #endregion
 
@@ -465,23 +460,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #endregion
 
-        #region StartCharging               (Request)
+        #region RequestStartTransaction     (Request)
 
         /// <summary>
         /// Start a charging process (transaction).
         /// </summary>
         /// <param name="Request">A request start transaction request.</param>
-        Task<RequestStartTransactionResponse> StartCharging(RequestStartTransactionRequest Request);
+        Task<RequestStartTransactionResponse> RequestStartTransaction(RequestStartTransactionRequest Request);
 
         #endregion
 
-        #region StopCharging                (Request)
+        #region RequestStopTransaction      (Request)
 
         /// <summary>
         /// Stop a charging process (transaction).
         /// </summary>
         /// <param name="Request">A request stop transaction request.</param>
-        Task<RequestStopTransactionResponse> StopCharging(RequestStopTransactionRequest Request);
+        Task<RequestStopTransactionResponse> RequestStopTransaction(RequestStopTransactionRequest Request);
 
         #endregion
 
@@ -576,7 +571,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         #endregion
 
 
-        #region SendAFRRSignal              (Request)
+        #region AFRRSignal                  (Request)
 
         /// <summary>
         /// Send an aFRR signal to the charging station.
@@ -584,7 +579,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// from the v2xSignalWattCurve in the charging schedule period.
         /// </summary>
         /// <param name="Request">An unlock connector request.</param>
-        Task<AFRRSignalResponse> SendAFRRSignal(AFRRSignalRequest Request);
+        Task<AFRRSignalResponse> AFRRSignal(AFRRSignalRequest Request);
 
         #endregion
 
@@ -619,23 +614,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #endregion
 
-        #region SendCostUpdated             (Request)
+        #region CostUpdated                 (Request)
 
         /// <summary>
         /// Send updated cost(s).
         /// </summary>
         /// <param name="Request">A cost updated request.</param>
-        Task<CostUpdatedResponse> SendCostUpdated(CostUpdatedRequest Request);
+        Task<CostUpdatedResponse> CostUpdated(CostUpdatedRequest Request);
 
         #endregion
 
-        #region RequestCustomerInformation  (Request)
+        #region CustomerInformation         (Request)
 
         /// <summary>
         /// Request customer information.
         /// </summary>
         /// <param name="Request">A customer information request.</param>
-        Task<CustomerInformationResponse> RequestCustomerInformation(CustomerInformationRequest Request);
+        Task<CustomerInformationResponse> CustomerInformation(CustomerInformationRequest Request);
 
         #endregion
 

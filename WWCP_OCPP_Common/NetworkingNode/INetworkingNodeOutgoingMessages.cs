@@ -32,7 +32,7 @@ namespace cloud.charging.open.protocols.OCPP.NN
         /// Send the given vendor-specific binary data.
         /// </summary>
         /// <param name="Request">A BinaryDataTransfer request.</param>
-        public Task<BinaryDataTransferResponse> BinaryDataTransfer(BinaryDataTransferRequest Request);
+        Task<BinaryDataTransferResponse> BinaryDataTransfer(BinaryDataTransferRequest Request);
 
         #endregion
 
@@ -45,7 +45,7 @@ namespace cloud.charging.open.protocols.OCPP.NN
         /// Notify about the current network topology or a current change within the topology.
         /// </summary>
         /// <param name="Request">A reset request.</param>
-        //Task<NotifyNetworkTopologyResponse> NotifyNetworkTopology(NotifyNetworkTopologyRequest Request);
+        Task<NotifyNetworkTopologyResponse> NotifyNetworkTopology(NotifyNetworkTopologyRequest Request);
 
         #endregion
 

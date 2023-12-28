@@ -100,7 +100,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #endregion
 
-        #region GetReport
+        #region GetReport                      (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a GetReport request will be sent to the CSMS.
@@ -114,7 +114,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #endregion
 
-        #region GetLog
+        #region GetLog                         (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a GetLog request will be sent to the CSMS.
@@ -128,7 +128,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #endregion
 
-        #region SetVariables
+        #region SetVariables                   (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a SetVariables request will be sent to the CSMS.
@@ -142,7 +142,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #endregion
 
-        #region GetVariables
+        #region GetVariables                   (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a GetVariables request will be sent to the CSMS.
@@ -156,7 +156,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #endregion
 
-        #region SetMonitoringBase
+        #region SetMonitoringBase              (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a SetMonitoringBase request will be sent to the CSMS.
@@ -170,7 +170,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #endregion
 
-        #region GetMonitoringReport
+        #region GetMonitoringReport            (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a GetMonitoringReport request will be sent to the CSMS.
@@ -184,7 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #endregion
 
-        #region SetMonitoringLevel
+        #region SetMonitoringLevel             (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a SetMonitoringLevel request will be sent to the CSMS.
@@ -198,7 +198,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #endregion
 
-        #region SetVariableMonitoring
+        #region SetVariableMonitoring          (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a SetVariableMonitoring request will be sent to the CSMS.
@@ -212,7 +212,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #endregion
 
-        #region ClearVariableMonitoring
+        #region ClearVariableMonitoring        (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a ClearVariableMonitoring request will be sent to the CSMS.
@@ -226,7 +226,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #endregion
 
-        #region SetNetworkProfile
+        #region SetNetworkProfile              (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a SetNetworkProfile request will be sent to the CSMS.
@@ -240,7 +240,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #endregion
 
-        #region ChangeAvailability
+        #region ChangeAvailability             (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a ChangeAvailability request will be sent to the CSMS.
@@ -254,7 +254,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #endregion
 
-        #region TriggerMessage
+        #region TriggerMessage                 (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a TriggerMessage request will be sent to the CSMS.
@@ -269,7 +269,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         #endregion
 
 
-        #region SendSignedCertificate
+        #region SendSignedCertificate          (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a SignedCertificate request will be sent to the CSMS.
@@ -283,7 +283,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #endregion
 
-        #region InstallCertificate
+        #region InstallCertificate             (Request/-Response)
 
         /// <summary>
         /// An event fired whenever an InstallCertificate request will be sent to the CSMS.
@@ -297,7 +297,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #endregion
 
-        #region GetInstalledCertificateIds
+        #region GetInstalledCertificateIds     (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a GetInstalledCertificateIds request will be sent to the CSMS.
@@ -311,7 +311,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #endregion
 
-        #region DeleteCertificate
+        #region DeleteCertificate              (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a DeleteCertificate request will be sent to the CSMS.
@@ -325,7 +325,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #endregion
 
-        #region NotifyCRL
+        #region NotifyCRL                      (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a NotifyCRL request will be sent to the CSMS.
@@ -340,7 +340,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         #endregion
 
 
-        #region GetLocalListVersion
+        #region GetLocalListVersion            (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a GetLocalListVersion request will be sent to the CSMS.
@@ -354,7 +354,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #endregion
 
-        #region SendLocalList
+        #region SendLocalList                  (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a SendLocalList request will be sent to the CSMS.
@@ -368,7 +368,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #endregion
 
-        #region ClearCache
+        #region ClearCache                     (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a ClearCache request will be sent to the CSMS.
@@ -383,7 +383,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         #endregion
 
 
-        #region ReserveNow
+        #region ReserveNow                     (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a ReserveNow request will be sent to the CSMS.
@@ -397,7 +397,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #endregion
 
-        #region CancelReservation
+        #region CancelReservation              (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a CancelReservation request will be sent to the CSMS.
@@ -411,7 +411,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #endregion
 
-        #region StartCharging
+        #region StartCharging                  (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a RequestStartTransaction request will be sent to the CSMS.
@@ -425,7 +425,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #endregion
 
-        #region StopCharging
+        #region StopCharging                   (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a RequestStopTransaction request will be sent to the CSMS.
@@ -439,7 +439,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #endregion
 
-        #region GetTransactionStatus
+        #region GetTransactionStatus           (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a GetTransactionStatus request will be sent to the CSMS.
@@ -453,7 +453,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #endregion
 
-        #region SetChargingProfile
+        #region SetChargingProfile             (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a SetChargingProfile request will be sent to the CSMS.
@@ -467,7 +467,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #endregion
 
-        #region GetChargingProfiles
+        #region GetChargingProfiles            (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a GetChargingProfiles request will be sent to the CSMS.
@@ -481,7 +481,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #endregion
 
-        #region ClearChargingProfile
+        #region ClearChargingProfile           (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a ClearChargingProfile request will be sent to the CSMS.
@@ -495,7 +495,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #endregion
 
-        #region GetCompositeSchedule
+        #region GetCompositeSchedule           (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a GetCompositeSchedule request will be sent to the CSMS.
@@ -509,7 +509,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #endregion
 
-        #region UpdateDynamicSchedule
+        #region UpdateDynamicSchedule          (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a UpdateDynamicSchedule request will be sent to the CSMS.
@@ -537,7 +537,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #endregion
 
-        #region UsePriorityCharging
+        #region UsePriorityCharging            (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a UsePriorityCharging request will be sent to the CSMS.
@@ -551,7 +551,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #endregion
 
-        #region UnlockConnector
+        #region UnlockConnector                (Request/-Response)
 
         /// <summary>
         /// An event fired whenever an UnlockConnector request will be sent to the CSMS.
@@ -566,7 +566,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         #endregion
 
 
-        #region AFRRSignal
+        #region AFRRSignal                     (Request/-Response)
 
         /// <summary>
         /// An event fired whenever an AFRR signal request will be sent to the CSMS.
@@ -581,7 +581,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         #endregion
 
 
-        #region SetDisplayMessage
+        #region SetDisplayMessage              (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a SetDisplayMessage request will be sent to the CSMS.
@@ -595,7 +595,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #endregion
 
-        #region GetDisplayMessages
+        #region GetDisplayMessages             (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a GetDisplayMessages request will be sent to the CSMS.
@@ -609,7 +609,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #endregion
 
-        #region ClearDisplayMessage
+        #region ClearDisplayMessage            (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a ClearDisplayMessage request will be sent to the CSMS.
@@ -623,7 +623,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #endregion
 
-        #region SendCostUpdated
+        #region SendCostUpdated                (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a CostUpdated request will be sent to the CSMS.
@@ -637,7 +637,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #endregion
 
-        #region RequestCustomerInformation
+        #region RequestCustomerInformation     (Request/-Response)
 
         /// <summary>
         /// An event fired whenever a CustomerInformation request will be sent to the CSMS.

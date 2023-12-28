@@ -11252,7 +11252,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         }
 
 
-        public Task<CertificateSignedResponse> SendSignedCertificate(CertificateSignedRequest Request)
+        public Task<CertificateSignedResponse> CertificateSigned(CertificateSignedRequest Request)
         {
             throw new NotImplementedException();
         }
@@ -11272,7 +11272,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             throw new NotImplementedException();
         }
 
-        public Task<NotifyCRLResponse> NotifyCRLAvailability(NotifyCRLRequest Request)
+        public Task<NotifyCRLResponse> NotifyCRL(NotifyCRLRequest Request)
         {
             throw new NotImplementedException();
         }
@@ -11304,12 +11304,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             throw new NotImplementedException();
         }
 
-        public Task<RequestStartTransactionResponse> StartCharging(RequestStartTransactionRequest Request)
+        public Task<RequestStartTransactionResponse> RequestStartTransaction(RequestStartTransactionRequest Request)
         {
             throw new NotImplementedException();
         }
 
-        public Task<RequestStopTransactionResponse> StopCharging(RequestStopTransactionRequest Request)
+        public Task<RequestStopTransactionResponse> RequestStopTransaction(RequestStopTransactionRequest Request)
         {
             throw new NotImplementedException();
         }
@@ -11360,7 +11360,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         }
 
 
-        public Task<AFRRSignalResponse> SendAFRRSignal(AFRRSignalRequest Request)
+        public Task<AFRRSignalResponse> AFRRSignal(AFRRSignalRequest Request)
         {
             throw new NotImplementedException();
         }
@@ -11381,12 +11381,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             throw new NotImplementedException();
         }
 
-        public Task<CostUpdatedResponse> SendCostUpdated(CostUpdatedRequest Request)
+        public Task<CostUpdatedResponse> CostUpdated(CostUpdatedRequest Request)
         {
             throw new NotImplementedException();
         }
 
-        public Task<CustomerInformationResponse> RequestCustomerInformation(CustomerInformationRequest Request)
+        public Task<CustomerInformationResponse> CustomerInformation(CustomerInformationRequest Request)
         {
             throw new NotImplementedException();
         }

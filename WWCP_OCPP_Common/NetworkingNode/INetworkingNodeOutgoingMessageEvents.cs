@@ -46,42 +46,6 @@ namespace cloud.charging.open.protocols.OCPP.NN
 
         #endregion
 
-        #region OnGetFile               (Request/-Response)
-
-        /// <summary>
-        /// An event sent whenever a GetFile request was received.
-        /// </summary>
-        //event OnGetFileDelegate  OnGetFile;
-
-        #endregion
-
-        #region OnSendFile              (Request/-Response)
-
-        /// <summary>
-        /// An event sent whenever a SendFile request was received.
-        /// </summary>
-        //event OnSendFileDelegate  OnSendFile;
-
-        #endregion
-
-        #region OnDeleteFile            (Request/-Response)
-
-        /// <summary>
-        /// An event sent whenever a DeleteFile request was received.
-        /// </summary>
-        //event OnDeleteFileDelegate  OnDeleteFile;
-
-        #endregion
-
-        #region OnListDirectory         (Request/-Response)
-
-        /// <summary>
-        /// An event sent whenever a ListDirectory request was received.
-        /// </summary>
-        //event OnListDirectoryDelegate  OnListDirectory;
-
-        #endregion
-
 
         // Overlay Networking Extensions
 
@@ -90,12 +54,12 @@ namespace cloud.charging.open.protocols.OCPP.NN
         /// <summary>
         /// An event fired whenever a NotifyNetworkTopology request will be sent to a charging station.
         /// </summary>
-        //event OnNotifyNetworkTopologyRequestDelegate?              OnNotifyNetworkTopologyRequest;
+        event OnNotifyNetworkTopologyRequestDelegate?              OnNotifyNetworkTopologyRequest;
 
         /// <summary>
         /// An event fired whenever a response to a NotifyNetworkTopology request was received.
         /// </summary>
-        //event OnNotifyNetworkTopologyResponseDelegate?             OnNotifyNetworkTopologyResponse;
+        event OnNotifyNetworkTopologyResponseDelegate?             OnNotifyNetworkTopologyResponse;
 
         #endregion
 
