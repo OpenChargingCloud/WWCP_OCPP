@@ -28,7 +28,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
     /// <summary>
     /// The common interface of all NetworkingNode CSMS servers.
     /// </summary>
-    public interface INetworkingNodeIncomingMessages : OCPP.NetworkingNode.INetworkingNodeIncomingMessages
+    public interface INetworkingNodeIncomingMessages : OCPP.NN.CSMS.INetworkingNodeIncomingMessages
     {
 
         #region HTTP Web Socket connection management
@@ -129,15 +129,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// An event sent whenever a log status notification was received.
         /// </summary>
         event OnLogStatusNotificationDelegate                 OnLogStatusNotification;
-
-        #endregion
-
-        #region OnIncomingDataTransfer
-
-        /// <summary>
-        /// An event sent whenever a data transfer request was received.
-        /// </summary>
-        event OnIncomingDataTransferDelegate    OnIncomingDataTransfer;
 
         #endregion
 
@@ -303,18 +294,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// An event sent whenever a notify customer information was received.
         /// </summary>
         event OnNotifyCustomerInformationDelegate           OnNotifyCustomerInformation;
-
-        #endregion
-
-
-        // Binary Data Streams Extensions
-
-        #region OnIncomingBinaryDataTransfer
-
-        ///// <summary>
-        ///// An event sent whenever a BinaryDataTransfer request was received.
-        ///// </summary>
-        //event OCPP.OnIncomingBinaryDataTransferDelegate   OnIncomingBinaryDataTransfer;
 
         #endregion
 

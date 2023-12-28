@@ -35,7 +35,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     public partial class NetworkingNodeWSClient : AOCPPWebSocketClient,
                                                   INetworkingNodeWebSocketClient,
                                                   INetworkingNodeIncomingMessages,
-                                                  INetworkingNodeOutgoingMessagesEvents
+                                                  INetworkingNodeOutgoingMessageEvents
     {
 
         #region Custom JSON serializer delegates
@@ -51,7 +51,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever a heartbeat request will be sent to the CSMS.
         /// </summary>
-        public event OCPP.CS.OnNotifyNetworkTopologyRequestDelegate?     OnNotifyNetworkTopologyRequest;
+        public event OCPP.NN.OnNotifyNetworkTopologyRequestDelegate?     OnNotifyNetworkTopologyRequest;
 
         /// <summary>
         /// An event fired whenever a heartbeat request will be sent to the CSMS.
@@ -66,7 +66,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever a response to a heartbeat request was received.
         /// </summary>
-        public event OCPP.CS.OnNotifyNetworkTopologyResponseDelegate?    OnNotifyNetworkTopologyResponse;
+        public event OCPP.NN.OnNotifyNetworkTopologyResponseDelegate?    OnNotifyNetworkTopologyResponse;
 
         #endregion
 

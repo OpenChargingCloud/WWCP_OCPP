@@ -59,9 +59,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         #endregion
 
 
-        #region StopCharging(Request)
+        #region RequestStopTransaction(Request)
 
-        public async Task<RequestStopTransactionResponse> StopCharging(RequestStopTransactionRequest Request)
+        public async Task<RequestStopTransactionResponse> RequestStopTransaction(RequestStopTransactionRequest Request)
         {
 
             #region Send OnRequestStopTransactionRequest event

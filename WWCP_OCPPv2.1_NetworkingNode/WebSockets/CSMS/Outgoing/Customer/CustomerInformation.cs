@@ -38,52 +38,52 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #region Custom JSON serializer delegates
 
-        public CustomJObjectSerializerDelegate<AFRRSignalRequest>?   CustomAFRRSignalRequestSerializer     { get; set; }
+        public CustomJObjectSerializerDelegate<CustomerInformationRequest>?  CustomCustomerInformationRequestSerializer    { get; set; }
 
-        public CustomJObjectParserDelegate<AFRRSignalResponse>?      CustomAFRRSignalResponseParser        { get; set; }
+        public CustomJObjectParserDelegate<CustomerInformationResponse>?     CustomCustomerInformationResponseParser       { get; set; }
 
         #endregion
 
         #region Events
 
         /// <summary>
-        /// An event sent whenever an AFRR signal request was sent.
+        /// An event sent whenever a CustomerInformation request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnAFRRSignalRequestDelegate?     OnAFRRSignalRequest;
+        public event OCPPv2_1.CSMS.OnCustomerInformationRequestDelegate?     OnCustomerInformationRequest;
 
         /// <summary>
-        /// An event sent whenever a response to an AFRR signal request was sent.
+        /// An event sent whenever a response to a CustomerInformation request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnAFRRSignalResponseDelegate?    OnAFRRSignalResponse;
+        public event OCPPv2_1.CSMS.OnCustomerInformationResponseDelegate?    OnCustomerInformationResponse;
 
         #endregion
 
 
-        #region SendAFRRSignal(Request)
+        #region RequestCustomerInformation(Request)
 
-        public async Task<AFRRSignalResponse> SendAFRRSignal(AFRRSignalRequest Request)
+        public async Task<CustomerInformationResponse> CustomerInformation(CustomerInformationRequest Request)
         {
 
-            #region Send OnAFRRSignalRequest event
+            #region Send OnCustomerInformationRequest event
 
             var startTime = Timestamp.Now;
 
             try
             {
 
-                OnAFRRSignalRequest?.Invoke(startTime,
-                                            this,
-                                            Request);
+                OnCustomerInformationRequest?.Invoke(startTime,
+                                                     this,
+                                                     Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnAFRRSignalRequest));
+                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnCustomerInformationRequest));
             }
 
             #endregion
 
 
-            AFRRSignalResponse? response = null;
+            CustomerInformationResponse? response = null;
 
             try
             {
@@ -95,7 +95,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                                                  Request.RequestId,
                                                  Request.Action,
                                                  Request.ToJSON(
-                                                     CustomAFRRSignalRequestSerializer,
+                                                     CustomCustomerInformationRequestSerializer,
+                                                     CustomIdTokenSerializer,
+                                                     CustomAdditionalInfoSerializer,
+                                                     CustomCertificateHashDataSerializer,
                                                      CustomSignatureSerializer,
                                                      CustomCustomDataSerializer
                                                  ),
@@ -106,24 +109,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                     sendRequestState.JSONResponse is not null)
                 {
 
-                    if (AFRRSignalResponse.TryParse(Request,
-                                                    sendRequestState.JSONResponse.Payload,
-                                                    out var unlockConnectorResponse,
-                                                    out var errorResponse,
-                                                    CustomAFRRSignalResponseParser) &&
-                        unlockConnectorResponse is not null)
+                    if (CustomerInformationResponse.TryParse(Request,
+                                                             sendRequestState.JSONResponse.Payload,
+                                                             out var customerInformationResponse,
+                                                             out var errorResponse,
+                                                             CustomCustomerInformationResponseParser) &&
+                        customerInformationResponse is not null)
                     {
-                        response = unlockConnectorResponse;
+                        response = customerInformationResponse;
                     }
 
-                    response ??= new AFRRSignalResponse(
+                    response ??= new CustomerInformationResponse(
                                      Request,
                                      Result.Format(errorResponse)
                                  );
 
                 }
 
-                response ??= new AFRRSignalResponse(
+                response ??= new CustomerInformationResponse(
                                  Request,
                                  Result.FromSendRequestState(sendRequestState)
                              );
@@ -131,30 +134,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
             }
             catch (Exception e)
             {
-                response = new AFRRSignalResponse(
+
+                response = new CustomerInformationResponse(
                                Request,
                                Result.FromException(e)
                            );
+
             }
 
 
-            #region Send OnAFRRSignalResponse event
+            #region Send OnCustomerInformationResponse event
 
             var endTime = Timestamp.Now;
 
             try
             {
 
-                OnAFRRSignalResponse?.Invoke(endTime,
-                                             this,
-                                             Request,
-                                             response,
-                                             endTime - startTime);
+                OnCustomerInformationResponse?.Invoke(endTime,
+                                                      this,
+                                                      Request,
+                                                      response,
+                                                      endTime - startTime);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnAFRRSignalResponse));
+                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnCustomerInformationResponse));
             }
 
             #endregion

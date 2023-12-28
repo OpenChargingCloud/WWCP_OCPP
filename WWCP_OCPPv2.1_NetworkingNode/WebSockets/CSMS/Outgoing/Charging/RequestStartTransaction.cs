@@ -59,9 +59,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         #endregion
 
 
-        #region StartCharging(Request)
+        #region RequestStartTransaction(Request)
 
-        public async Task<RequestStartTransactionResponse> StartCharging(RequestStartTransactionRequest Request)
+        public async Task<RequestStartTransactionResponse> RequestStartTransaction(RequestStartTransactionRequest Request)
         {
 
             #region Send OnRequestStartTransactionRequest event

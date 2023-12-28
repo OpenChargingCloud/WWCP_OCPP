@@ -21,31 +21,16 @@ using cloud.charging.open.protocols.OCPP.CSMS;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPP
+namespace cloud.charging.open.protocols.OCPP.NN.CSMS
 {
 
     /// <summary>
-    /// The common interface of all events for outgoing OCPP messages
-    /// from a charging station management system.
+    /// The common interface of all networking node outgoing CSMS message events.
     /// </summary>
-    public interface INNOutgoingMessagesEvents
+    public interface INetworkingNodeOutgoingMessageEvents : NN.INetworkingNodeOutgoingMessageEvents
     {
 
         // Binary Data Streams Extensions
-
-        #region BinaryDataTransfer             (Request/-Response)
-
-        /// <summary>
-        /// An event fired whenever a Reset request will be sent to a charging station.
-        /// </summary>
-        event OnBinaryDataTransferRequestDelegate?              OnBinaryDataTransferRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a Reset request was received.
-        /// </summary>
-        event OnBinaryDataTransferResponseDelegate?             OnBinaryDataTransferResponse;
-
-        #endregion
 
         #region GetFile                        (Request/-Response)
 

@@ -21,26 +21,35 @@ using cloud.charging.open.protocols.OCPP.CSMS;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPP.NetworkingNode
+namespace cloud.charging.open.protocols.OCPP.NN
 {
 
     /// <summary>
-    /// The common interface of all incoming OCPP messages at a charging station management system.
+    /// The common interface of all networking node incoming messages.
     /// </summary>
     public interface INetworkingNodeIncomingMessages
     {
 
-        
-
-
-        //// Binary Data Streams Extensions
+        // Binary Data Streams Extensions
 
         #region OnIncomingBinaryDataTransfer
 
         /// <summary>
         /// An event sent whenever an incoming BinaryDataTransfer request was received.
         /// </summary>
-        event OnIncomingBinaryDataTransferDelegate    OnIncomingBinaryDataTransfer;
+        event OnIncomingBinaryDataTransferDelegate     OnIncomingBinaryDataTransfer;
+
+        #endregion
+
+
+        // Overlay Networking Extensions
+
+        #region OnIncomingNotifyNetworkTopology
+
+        /// <summary>
+        /// An event sent whenever an incoming NotifyNetworkTopology request was received.
+        /// </summary>
+        //event OnIncomingNotifyNetworkTopologyDelegate  OnNotifyNetworkTopologyTransfer;
 
         #endregion
 

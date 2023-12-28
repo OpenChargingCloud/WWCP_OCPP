@@ -28,7 +28,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
     /// <summary>
     /// The common interface of all CSMS servers.
     /// </summary>
-    public interface INetworkingNodeIncomingMessagesEvents : OCPP.CSMS.ICSMSIncomingMessagesEvents
+    public interface INetworkingNodeIncomingMessageEvents : OCPP.NN.CSMS.INetworkingNodeIncomingMessageEvents
     {
 
         #region OnBootNotification                     (Request/-Response)
@@ -159,15 +159,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #region OnDataTransfer                         (Request/-Response)
 
-        /// <summary>
-        /// An event sent whenever a data transfer request was received.
-        /// </summary>
-        event OnIncomingDataTransferRequestDelegate     OnIncomingDataTransferRequest;
+        ///// <summary>
+        ///// An event sent whenever a data transfer request was received.
+        ///// </summary>
+        //event OnIncomingDataTransferRequestDelegate     OnIncomingDataTransferRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a data transfer request was sent.
-        /// </summary>
-        event OnIncomingDataTransferResponseDelegate    OnIncomingDataTransferResponse;
+        ///// <summary>
+        ///// An event sent whenever a response to a data transfer request was sent.
+        ///// </summary>
+        //event OnIncomingDataTransferResponseDelegate    OnIncomingDataTransferResponse;
 
         #endregion
 

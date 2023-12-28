@@ -35,9 +35,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
     public partial class OUTPUT(TestNetworkingNode NetworkingNode) : INetworkingNodeOUT,
                                                                      CS.  INetworkingNodeOutgoingMessages,
-                                                                     CS.  INetworkingNodeOutgoingMessagesEvents,
+                                                                     CS.  INetworkingNodeOutgoingMessageEvents,
                                                                      CSMS.INetworkingNodeOutgoingMessages,
-                                                                     CSMS.INetworkingNodeOutgoingMessagesEvents
+                                                                     CSMS.INetworkingNodeOutgoingMessageEvents
 
     {
 
@@ -52,11 +52,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Outgoing Message Events
 
         #region DataTransfer
-
-        /// <summary>
-        /// An event fired whenever a DataTransfer request will be sent to the CSMS.
-        /// </summary>
-        public event OnDataTransferRequestDelegate?   OnDataTransferRequest;
 
         public async Task RaiseOnDataTransferRequest(DateTime                      Timestamp,
                                                         IEventSender                  Sender,
@@ -90,12 +85,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
 
         }
-
-
-        /// <summary>
-        /// An event fired whenever a response to a DataTransfer request was received.
-        /// </summary>
-        public event OnDataTransferResponseDelegate?  OnDataTransferResponse;
 
         public async Task RaiseOnDataTransferResponse(DateTime                        Timestamp,
                                                         IEventSender                    Sender,
@@ -7506,7 +7495,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<DataTransferResponse>
-            DataTransfer(DataTransferRequest Request)
+            DataTransfer23(DataTransferRequest Request)
 
         {
 
@@ -11147,8 +11136,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
-        public Boolean LookupNetworkingNode(NetworkingNode_Id                 DestinationNodeId,
-                                            out CSMS.INetworkingNodeChannel?  NetworkingNodeChannel)
+        public Boolean LookupNetworkingNode(NetworkingNode_Id            DestinationNodeId,
+                                            out INetworkingNodeChannel?  NetworkingNodeChannel)
         {
 
             if (parentNetworkingNode.AsCSMS.LookupNetworkingNode(DestinationNodeId, out var cc))
@@ -11262,10 +11251,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             throw new NotImplementedException();
         }
 
-        public Task<DataTransferResponse> TransferData(DataTransferRequest Request)
-        {
-            throw new NotImplementedException();
-        }
 
         public Task<CertificateSignedResponse> SendSignedCertificate(CertificateSignedRequest Request)
         {
@@ -11292,6 +11277,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             throw new NotImplementedException();
         }
 
+
         public Task<GetLocalListVersionResponse> GetLocalListVersion(GetLocalListVersionRequest Request)
         {
             throw new NotImplementedException();
@@ -11306,6 +11292,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         {
             throw new NotImplementedException();
         }
+
 
         public Task<ReserveNowResponse> ReserveNow(ReserveNowRequest Request)
         {
@@ -11372,10 +11359,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             throw new NotImplementedException();
         }
 
+
         public Task<AFRRSignalResponse> SendAFRRSignal(AFRRSignalRequest Request)
         {
             throw new NotImplementedException();
         }
+
 
         public Task<SetDisplayMessageResponse> SetDisplayMessage(SetDisplayMessageRequest Request)
         {
@@ -11402,6 +11391,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             throw new NotImplementedException();
         }
 
+
         public Task<SetDefaultChargingTariffResponse> SetDefaultChargingTariff(SetDefaultChargingTariffRequest Request)
         {
             throw new NotImplementedException();
@@ -11416,6 +11406,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         {
             throw new NotImplementedException();
         }
+
 
         public Task<GetFileResponse> GetFile(GetFileRequest Request)
         {
@@ -11436,6 +11427,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         {
             throw new NotImplementedException();
         }
+
 
         public Task<AddSignaturePolicyResponse> AddSignaturePolicy(AddSignaturePolicyRequest Request)
         {

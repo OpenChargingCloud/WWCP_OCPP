@@ -39,7 +39,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     public partial class NetworkingNodeWSClient : AOCPPWebSocketClient,
                                                   INetworkingNodeWebSocketClient,
                                                   INetworkingNodeIncomingMessages,
-                                                  INetworkingNodeOutgoingMessagesEvents
+                                                  INetworkingNodeOutgoingMessageEvents
     {
 
         #region Custom JSON parser delegates

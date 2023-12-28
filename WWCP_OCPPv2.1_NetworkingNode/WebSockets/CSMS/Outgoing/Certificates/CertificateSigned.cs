@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// Send the signed certificate to the charging station.
         /// </summary>
         /// <param name="Request">A certificate signed request.</param>
-        public async Task<CertificateSignedResponse> SendSignedCertificate(CertificateSignedRequest Request)
+        public async Task<CertificateSignedResponse> CertificateSigned(CertificateSignedRequest Request)
         {
 
             #region Send OnCertificateSignedRequest event

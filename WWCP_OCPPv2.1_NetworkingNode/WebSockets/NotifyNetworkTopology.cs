@@ -21,6 +21,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.CSMS;
+using cloud.charging.open.protocols.OCPP.NN;
 
 #endregion
 
@@ -36,52 +37,52 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #region Custom JSON serializer delegates
 
-        public CustomJObjectSerializerDelegate<DataTransferRequest>?  CustomDataTransferRequestSerializer    { get; set; }
+        public CustomJObjectSerializerDelegate<NotifyNetworkTopologyRequest>?  CustomNotifyNetworkTopologyRequestSerializer    { get; set; }
 
-        public CustomJObjectParserDelegate<DataTransferResponse>?     CustomDataTransferResponseParser       { get; set; }
+        public CustomJObjectParserDelegate<NotifyNetworkTopologyResponse>?     CustomNotifyNetworkTopologyResponseParser       { get; set; }
 
         #endregion
 
         #region Events
 
         /// <summary>
-        /// An event sent whenever a DataTransfer request was sent.
+        /// An event sent whenever a NotifyNetworkTopology request was sent.
         /// </summary>
-        public event OnDataTransferRequestDelegate?     OnDataTransferRequest;
+        public event OnNotifyNetworkTopologyRequestDelegate?     OnNotifyNetworkTopologyRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a DataTransfer request was sent.
+        /// An event sent whenever a response to a NotifyNetworkTopology request was sent.
         /// </summary>
-        public event OnDataTransferResponseDelegate?    OnDataTransferResponse;
+        public event OnNotifyNetworkTopologyResponseDelegate?    OnNotifyNetworkTopologyResponse;
 
         #endregion
 
 
-        #region TransferData(Request)
+        #region NotifyNetworkTopology(Request)
 
-        public async Task<DataTransferResponse> TransferData(DataTransferRequest Request)
+        public async Task<NotifyNetworkTopologyResponse> NotifyNetworkTopology(NotifyNetworkTopologyRequest Request)
         {
 
-            #region Send OnDataTransferRequest event
+            #region Send OnNotifyNetworkTopologyRequest event
 
             var startTime = Timestamp.Now;
 
             try
             {
 
-                OnDataTransferRequest?.Invoke(startTime,
+                OnNotifyNetworkTopologyRequest?.Invoke(startTime,
                                               this,
                                               Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnDataTransferRequest));
+                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnNotifyNetworkTopologyRequest));
             }
 
             #endregion
 
 
-            DataTransferResponse? response = null;
+            NotifyNetworkTopologyResponse? response = null;
 
             try
             {
@@ -93,7 +94,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                                                  Request.RequestId,
                                                  Request.Action,
                                                  Request.ToJSON(
-                                                     CustomDataTransferRequestSerializer,
+                                                     CustomNotifyNetworkTopologyRequestSerializer,
+                                                     null, //CustomNotifyNetworkTopologySerializer,
                                                      CustomSignatureSerializer,
                                                      CustomCustomDataSerializer
                                                  ),
@@ -104,24 +106,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                     sendRequestState.JSONResponse is not null)
                 {
 
-                    if (DataTransferResponse.TryParse(Request,
+                    if (NotifyNetworkTopologyResponse.TryParse(Request,
                                                       sendRequestState.JSONResponse.Payload,
                                                       out var dataTransferResponse,
                                                       out var errorResponse,
-                                                      CustomDataTransferResponseParser) &&
+                                                      CustomNotifyNetworkTopologyResponseParser) &&
                         dataTransferResponse is not null)
                     {
                         response = dataTransferResponse;
                     }
 
-                    response ??= new DataTransferResponse(
+                    response ??= new NotifyNetworkTopologyResponse(
                                          Request,
                                          Result.Format(errorResponse)
                                      );
 
                 }
 
-                response ??= new DataTransferResponse(
+                response ??= new NotifyNetworkTopologyResponse(
                                      Request,
                                      Result.FromSendRequestState(sendRequestState)
                                  );
@@ -130,7 +132,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
             catch (Exception e)
             {
 
-                response = new DataTransferResponse(
+                response = new NotifyNetworkTopologyResponse(
                                Request,
                                Result.FromException(e)
                            );
@@ -138,14 +140,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
             }
 
 
-            #region Send OnDataTransferResponse event
+            #region Send OnNotifyNetworkTopologyResponse event
 
             var endTime = Timestamp.Now;
 
             try
             {
 
-                OnDataTransferResponse?.Invoke(endTime,
+                OnNotifyNetworkTopologyResponse?.Invoke(endTime,
                                                this,
                                                Request,
                                                response,
@@ -154,7 +156,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnDataTransferResponse));
+                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnNotifyNetworkTopologyResponse));
             }
 
             #endregion

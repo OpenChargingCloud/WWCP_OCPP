@@ -15,26 +15,15 @@
  * limitations under the License.
  */
 
-namespace cloud.charging.open.protocols.OCPP.NN
+namespace cloud.charging.open.protocols.OCPP.NN.CS
 {
 
     /// <summary>
-    /// The common interface of all outgoing OCPP messages from a networking node.
+    /// The common interface of all networking node outgoing CS message events.
     /// </summary>
-    public interface INNOutgoingMessages
+    public interface INetworkingNodeOutgoingMessageEvents : NN.INetworkingNodeOutgoingMessageEvents
     {
 
-        // Binary Data Streams Extensions
-
-        #region BinaryDataTransfer                    (Request)
-
-        ///// <summary>
-        ///// Send the given vendor-specific binary data.
-        ///// </summary>
-        ///// <param name="Request">A BinaryDataTransfer request.</param>
-        //public Task<BinaryDataTransferResponse> BinaryDataTransfer(BinaryDataTransferRequest Request);
-
-        #endregion
 
 
     }

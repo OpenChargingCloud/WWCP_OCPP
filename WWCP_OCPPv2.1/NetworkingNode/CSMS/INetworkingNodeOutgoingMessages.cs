@@ -33,7 +33,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
     /// <summary>
     /// The common interface of all CSMS clients.
     /// </summary>
-    public interface INetworkingNodeOutgoingMessages : OCPP.ICSMSOutgoingMessages
+    public interface INetworkingNodeOutgoingMessages : OCPP.NN.CSMS.INetworkingNodeOutgoingMessages
     {
 
         #region Custom JSON serializer delegates
@@ -359,16 +359,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// </summary>
         /// <param name="Request">A trigger message request.</param>
         Task<TriggerMessageResponse> TriggerMessage(TriggerMessageRequest Request);
-
-        #endregion
-
-        #region TransferData                (Request)
-
-        /// <summary>
-        /// Send the given vendor-specific data.
-        /// </summary>
-        /// <param name="Request">A data transfer request.</param>
-        Task<DataTransferResponse> TransferData(DataTransferRequest Request);
 
         #endregion
 

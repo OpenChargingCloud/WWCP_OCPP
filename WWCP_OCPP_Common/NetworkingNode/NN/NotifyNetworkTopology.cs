@@ -23,7 +23,7 @@ using cloud.charging.open.protocols.OCPP.NN;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPP.CS
+namespace cloud.charging.open.protocols.OCPP.NN
 {
 
     #region OnNotifyNetworkTopology (Request/-Response) Delegate

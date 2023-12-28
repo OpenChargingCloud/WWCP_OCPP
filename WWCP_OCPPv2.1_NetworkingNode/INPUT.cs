@@ -36,9 +36,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
     public partial class INPUT(TestNetworkingNode NetworkingNode) : INetworkingNodeIN,
                                                                     CS.  INetworkingNodeIncomingMessages,
-                                                                    CS.  INetworkingNodeIncomingMessagesEvents,
+                                                                    CS.  INetworkingNodeIncomingMessageEvents,
                                                                     CSMS.INetworkingNodeIncomingMessages,
-                                                                    CSMS.INetworkingNodeIncomingMessagesEvents
+                                                                    CSMS.INetworkingNodeIncomingMessageEvents
     {
 
         public IEnumerable<NetworkingNode_Id> NetworkingNodeIds => throw new NotImplementedException();
@@ -1588,11 +1588,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region IncomingDataTransfer
 
-        /// <summary>
-        /// An event sent whenever a data transfer request was sent.
-        /// </summary>
-        public event OnIncomingDataTransferRequestDelegate?   OnIncomingDataTransferRequest;
-
         public async Task RaiseOnIncomingDataTransferRequest(DateTime               Timestamp,
                                                                 IEventSender           Sender,
                                                                 IWebSocketConnection   Connection,
@@ -1627,12 +1622,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
 
         }
-
-
-        /// <summary>
-        /// An event sent whenever a response to a data transfer request was sent.
-        /// </summary>
-        public event OnIncomingDataTransferResponseDelegate?  OnIncomingDataTransferResponse;
 
         public async Task RaiseOnIncomingDataTransferResponse(DateTime               Timestamp,
                                                                 IEventSender           Sender,
@@ -5345,7 +5334,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnSetNetworkProfileDelegate? OnSetNetworkProfile;
         public event OnChangeAvailabilityDelegate? OnChangeAvailability;
         public event OnTriggerMessageDelegate? OnTriggerMessage;
-        public event OnIncomingDataTransferDelegate? OnIncomingDataTransfer;
 
         public event OnCertificateSignedDelegate? OnCertificateSigned;
         public event OnInstallCertificateDelegate? OnInstallCertificate;

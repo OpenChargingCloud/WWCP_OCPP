@@ -315,10 +315,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                  DNSClient ?? parentNetworkingNode.DNSClient
                                              );
 
-                this.CSClient  = networkingNodeWSClient;
+                //this.CSClient  = networkingNodeWSClient;
 
                 parentNetworkingNode.IN.WireEvents(networkingNodeWSClient);
-                WireEvents(networkingNodeWSClient);
+                //WireEvents(networkingNodeWSClient);
 
                 var response = await networkingNodeWSClient.Connect();
 
@@ -338,6 +338,175 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             private readonly ConcurrentDictionary<InstallCertificateUse, Certificate>     certificates      = new ();
 
             public void WireEvents(INetworkingNodeIncomingMessages IncomingMessages)
+            {
+
+                #region OnIncomingDataTransfer
+
+                IncomingMessages.OnIncomingDataTransfer += async (timestamp,
+                                                                  sender,
+                                                                  connection,
+                                                                  request,
+                                                                  cancellationToken) => {
+
+                    #region Send OnIncomingDataTransferRequest event
+
+                    var startTime = Timestamp.Now;
+
+                    await parentNetworkingNode.IN.RaiseOnIncomingDataTransferRequest(startTime,
+                                                                                     this,
+                                                                                     connection,
+                                                                                     request);
+
+                    #endregion
+
+
+                    #region Check charging station identification
+
+                    DataTransferResponse? response = null;
+
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.DataTransferResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid DataTransfer request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
+
+                    #endregion
+
+                    #region Check request signature(s)
+
+                    else
+                    {
+
+                        if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
+                                 request,
+                                 request.ToJSON(
+                                     parentNetworkingNode.CustomIncomingDataTransferRequestSerializer,
+                                     parentNetworkingNode.CustomSignatureSerializer,
+                                     parentNetworkingNode.CustomCustomDataSerializer
+                                 ),
+                                 out var errorResponse
+                             ))
+                        {
+
+                            response = new DataTransferResponse(
+                                           Request:  request,
+                                           Result:   Result.SignatureError(
+                                                         $"Invalid signature: {errorResponse}"
+                                                     )
+                                       );
+
+                        }
+
+                    #endregion
+
+                        else
+                        {
+
+                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming data transfer request: {request.VendorId}.{request.MessageId?.ToString() ?? "-"}: {request.Data ?? "-"}!");
+
+                            // VendorId
+                            // MessageId
+                            // Data
+
+                            var responseData = request.Data;
+
+                            if (request.Data is not null)
+                            {
+
+                                if      (request.Data.Type == JTokenType.String)
+                                    responseData = request.Data.ToString().Reverse();
+
+                                else if (request.Data.Type == JTokenType.Object) {
+
+                                    var responseObject = new JObject();
+
+                                    foreach (var property in (request.Data as JObject)!)
+                                    {
+                                        if (property.Value?.Type == JTokenType.String)
+                                            responseObject.Add(property.Key,
+                                                               property.Value.ToString().Reverse());
+                                    }
+
+                                    responseData = responseObject;
+
+                                }
+
+                                else if (request.Data.Type == JTokenType.Array) {
+
+                                    var responseArray = new JArray();
+
+                                    foreach (var element in (request.Data as JArray)!)
+                                    {
+                                        if (element?.Type == JTokenType.String)
+                                            responseArray.Add(element.ToString().Reverse());
+                                    }
+
+                                    responseData = responseArray;
+
+                                }
+
+                            }
+
+                            if (request.VendorId == Vendor_Id.GraphDefined)
+                            {
+                                response = new DataTransferResponse(
+                                               request,
+                                               DataTransferStatus.Accepted,
+                                               responseData
+                                           );
+                            }
+                            else
+                                response = new DataTransferResponse(
+                                               request,
+                                               DataTransferStatus.Rejected
+                                           );
+
+                        }
+
+                    }
+
+                    #region Sign response message
+
+                    parentNetworkingNode.SignaturePolicy.SignResponseMessage(
+                        response,
+                        response.ToJSON(
+                            parentNetworkingNode.CustomIncomingDataTransferResponseSerializer,
+                            parentNetworkingNode.CustomStatusInfoSerializer,
+                            parentNetworkingNode.CustomSignatureSerializer,
+                            parentNetworkingNode.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse2);
+
+                    #endregion
+
+
+                    #region Send OnIncomingDataTransferResponse event
+
+                    var responseTime = Timestamp.Now;
+
+                    await parentNetworkingNode.IN.RaiseOnIncomingDataTransferResponse(responseTime,
+                                                                                      this,
+                                                                                      connection,
+                                                                                      request,
+                                                                                      response,
+                                                                                      responseTime - startTime);
+
+                    #endregion
+
+                    return response;
+
+                };
+
+                #endregion
+
+            }
+
+            public void WireEvents(CS.INetworkingNodeIncomingMessages IncomingMessages)
             {
 
                 #region OnUpdateFirmware
@@ -2361,169 +2530,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 #endregion
 
-                #region OnIncomingDataTransfer
 
-                IncomingMessages.OnIncomingDataTransfer += async (timestamp,
-                                                                  sender,
-                                                                  connection,
-                                                                  request,
-                                                                  cancellationToken) => {
-
-                    #region Send OnIncomingDataTransferRequest event
-
-                    var startTime = Timestamp.Now;
-
-                    await parentNetworkingNode.IN.RaiseOnIncomingDataTransferRequest(startTime,
-                                                                                     this,
-                                                                                     connection,
-                                                                                     request);
-
-                    #endregion
-
-
-                    #region Check charging station identification
-
-                    DataTransferResponse? response = null;
-
-                    //if (request.ChargingStationId != Id)
-                    //{
-                    //    response = new OCPPv2_1.CS.DataTransferResponse(
-                    //                   Request:  request,
-                    //                   Result:   Result.GenericError(
-                    //                                 $"Charging Station '{parentNetworkingNode.Id}': Invalid DataTransfer request for charging station '{request.ChargingStationId}'!"
-                    //                             )
-                    //               );
-                    //}
-                    if (1 == 2) { }
-
-                    #endregion
-
-                    #region Check request signature(s)
-
-                    else
-                    {
-
-                        if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
-                                 request,
-                                 request.ToJSON(
-                                     parentNetworkingNode.CustomIncomingDataTransferRequestSerializer,
-                                     parentNetworkingNode.CustomSignatureSerializer,
-                                     parentNetworkingNode.CustomCustomDataSerializer
-                                 ),
-                                 out var errorResponse
-                             ))
-                        {
-
-                            response = new DataTransferResponse(
-                                           Request:  request,
-                                           Result:   Result.SignatureError(
-                                                         $"Invalid signature: {errorResponse}"
-                                                     )
-                                       );
-
-                        }
-
-                    #endregion
-
-                        else
-                        {
-
-                            DebugX.Log($"Charging Station '{parentNetworkingNode.Id}': Incoming data transfer request: {request.VendorId}.{request.MessageId?.ToString() ?? "-"}: {request.Data ?? "-"}!");
-
-                            // VendorId
-                            // MessageId
-                            // Data
-
-                            var responseData = request.Data;
-
-                            if (request.Data is not null)
-                            {
-
-                                if      (request.Data.Type == JTokenType.String)
-                                    responseData = request.Data.ToString().Reverse();
-
-                                else if (request.Data.Type == JTokenType.Object) {
-
-                                    var responseObject = new JObject();
-
-                                    foreach (var property in (request.Data as JObject)!)
-                                    {
-                                        if (property.Value?.Type == JTokenType.String)
-                                            responseObject.Add(property.Key,
-                                                               property.Value.ToString().Reverse());
-                                    }
-
-                                    responseData = responseObject;
-
-                                }
-
-                                else if (request.Data.Type == JTokenType.Array) {
-
-                                    var responseArray = new JArray();
-
-                                    foreach (var element in (request.Data as JArray)!)
-                                    {
-                                        if (element?.Type == JTokenType.String)
-                                            responseArray.Add(element.ToString().Reverse());
-                                    }
-
-                                    responseData = responseArray;
-
-                                }
-
-                            }
-
-                            if (request.VendorId == Vendor_Id.GraphDefined)
-                            {
-                                response = new DataTransferResponse(
-                                               request,
-                                               DataTransferStatus.Accepted,
-                                               responseData
-                                           );
-                            }
-                            else
-                                response = new DataTransferResponse(
-                                               request,
-                                               DataTransferStatus.Rejected
-                                           );
-
-                        }
-
-                    }
-
-                    #region Sign response message
-
-                    parentNetworkingNode.SignaturePolicy.SignResponseMessage(
-                        response,
-                        response.ToJSON(
-                            parentNetworkingNode.CustomIncomingDataTransferResponseSerializer,
-                            parentNetworkingNode.CustomStatusInfoSerializer,
-                            parentNetworkingNode.CustomSignatureSerializer,
-                            parentNetworkingNode.CustomCustomDataSerializer
-                        ),
-                        out var errorResponse2);
-
-                    #endregion
-
-
-                    #region Send OnIncomingDataTransferResponse event
-
-                    var responseTime = Timestamp.Now;
-
-                    await parentNetworkingNode.IN.RaiseOnIncomingDataTransferResponse(responseTime,
-                                                                                      this,
-                                                                                      connection,
-                                                                                      request,
-                                                                                      response,
-                                                                                      responseTime - startTime);
-
-                    #endregion
-
-                    return response;
-
-                };
-
-                #endregion
 
 
                 #region OnCertificateSigned

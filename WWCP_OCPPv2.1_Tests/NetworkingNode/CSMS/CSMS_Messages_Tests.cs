@@ -147,11 +147,130 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
         #endregion
 
 
+        #region TransferData_Test()
+
+        /// <summary>
+        /// A test for transfering vendor-specific data to a charging station.
+        /// </summary>
+        [Test]
+        public async Task TransferData_Test()
+        {
+
+            InitNetworkingNode1 = true;
+
+            Assert.Multiple(() => {
+                Assert.That(testCSMS01,                       Is.Not.Null);
+                Assert.That(testBackendWebSockets01,          Is.Not.Null);
+                Assert.That(networkingNode1,                  Is.Not.Null);
+                Assert.That(testNetworkingNodeWebSockets01,   Is.Not.Null);
+                Assert.That(chargingStation1,                 Is.Not.Null);
+                Assert.That(chargingStation2,                 Is.Not.Null);
+                Assert.That(chargingStation3,                 Is.Not.Null);
+            });
+
+            if (testCSMS01                     is not null &&
+                testBackendWebSockets01        is not null &&
+                networkingNode1                is not null &&
+                testNetworkingNodeWebSockets01 is not null &&
+                chargingStation1               is not null &&
+                chargingStation2               is not null &&
+                chargingStation3               is not null)
+            {
+
+                var csmsDataTransferRequestsOUT     = new ConcurrentList<DataTransferRequest>();
+                var nnDataTransferRequestsIN        = new ConcurrentList<DataTransferRequest>();
+                var nnDataTransferRequestsFWD       = new ConcurrentList<Tuple<DataTransferRequest, ForwardingDecision<DataTransferRequest, DataTransferResponse>>>();
+                var nnDataTransferRequestsOUT       = new ConcurrentList<DataTransferRequest>();
+                var csIncomingDataTransferRequests  = new ConcurrentList<DataTransferRequest>();
+
+                testCSMS01.             OnDataTransferRequest         += (timestamp, sender, binaryDataTransferRequest) => {
+                    csmsDataTransferRequestsOUT.   TryAdd(binaryDataTransferRequest);
+                    return Task.CompletedTask;
+                };
+
+                networkingNode1.IN.     OnIncomingDataTransferRequest += (timestamp, sender, connection, incomingDataTransferRequest) => {
+                    nnDataTransferRequestsIN.      TryAdd(incomingDataTransferRequest);
+                    return Task.CompletedTask;
+                };
+
+                networkingNode1.FORWARD.OnDataTransferLogging         += (timestamp, sender, connection, binaryDataTransferRequest, forwardingDecision) => {
+                    nnDataTransferRequestsFWD.TryAdd(new Tuple<DataTransferRequest, ForwardingDecision<DataTransferRequest, DataTransferResponse>>(binaryDataTransferRequest, forwardingDecision));
+                    return Task.CompletedTask;
+                };
+
+                networkingNode1.OUT.    OnDataTransferRequest         += (timestamp, sender,             binaryDataTransferRequest) => {
+                    nnDataTransferRequestsOUT.     TryAdd(binaryDataTransferRequest);
+                    return Task.CompletedTask;
+                };
+
+                chargingStation1.       OnIncomingDataTransferRequest += (timestamp, sender, connection, incomingDataTransferRequest) => {
+                    csIncomingDataTransferRequests.TryAdd(incomingDataTransferRequest);
+                    return Task.CompletedTask;
+                };
+
+                // Charging Station 1 is reachable via the networking node 1!
+                // Good old "static routing" ;)
+                testCSMS01.AddStaticRouting(chargingStation1.Id,
+                                            networkingNode1.Id);
+
+                //chargingStation1.NetworkingMode = OCPP.WebSockets.NetworkingMode.NetworkingExtensions;
+
+
+                var vendorId   = Vendor_Id. GraphDefined;
+                var messageId  = Message_Id.GraphDefined_TestMessage;
+                var data       = "Hello world!";
+
+
+                var response   = await testCSMS01.TransferData(
+                                           DestinationNodeId:   chargingStation1.Id,
+                                           VendorId:            vendorId,
+                                           MessageId:           messageId,
+                                           Data:                data
+                                       );
+
+
+                Assert.Multiple(() => {
+
+                    Assert.That(response.Result.ResultCode,                                        Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                                                   Is.EqualTo(DataTransferStatus.Accepted));
+                    Assert.That(response.Data?.ToString(),                                         Is.EqualTo(data.Reverse().ToString()));
+
+                    Assert.That(csmsDataTransferRequestsOUT.   Count,                        Is.EqualTo(1), "The DataTransfer did not leave the CSMS!");
+
+                    Assert.That(nnDataTransferRequestsIN.      Count,                        Is.EqualTo(1), "The DataTransfer did not reach the networking node!");
+                    Assert.That(nnDataTransferRequestsIN.      First().DestinationNodeId,    Is.EqualTo(chargingStation1.Id));
+                    Assert.That(nnDataTransferRequestsIN.      First().NetworkPath.Length,   Is.EqualTo(1));
+                    Assert.That(nnDataTransferRequestsIN.      First().NetworkPath.Source,   Is.EqualTo(testCSMS01.Id));
+                    Assert.That(nnDataTransferRequestsIN.      First().NetworkPath.Last,     Is.EqualTo(testCSMS01.Id));
+                    Assert.That(nnDataTransferRequestsIN.      First().VendorId,             Is.EqualTo(vendorId));
+                    Assert.That(nnDataTransferRequestsIN.      First().MessageId,            Is.EqualTo(messageId));
+                    Assert.That(nnDataTransferRequestsIN.      First().Data,                 Is.EqualTo(data));
+
+                    Assert.That(nnDataTransferRequestsFWD.     Count,                        Is.EqualTo(1), "The DataTransfer did not reach the FORWARD of the networking node!");
+
+                    Assert.That(nnDataTransferRequestsOUT.     Count,                        Is.EqualTo(1), "The DataTransfer did not reach the OUTPUT of the networking node!");
+
+                    Assert.That(csIncomingDataTransferRequests.Count,                        Is.EqualTo(1), "The DataTransfer did not reach the charging station!");
+                    //Assert.That(csIncomingDataTransferRequests.First().DestinationNodeId,    Is.EqualTo(NetworkingNode_Id.CSMS));
+                    //Assert.That(csIncomingDataTransferRequests.First().NetworkPath.Length,   Is.EqualTo(2));
+                    //Assert.That(csIncomingDataTransferRequests.First().NetworkPath.Source,   Is.EqualTo(chargingStation1.Id));
+                    //Assert.That(csIncomingDataTransferRequests.First().NetworkPath.Last,     Is.EqualTo(networkingNode1. Id));
+                    Assert.That(csIncomingDataTransferRequests.First().VendorId,             Is.EqualTo(vendorId));
+                    Assert.That(csIncomingDataTransferRequests.First().MessageId,            Is.EqualTo(messageId));
+                    Assert.That(csIncomingDataTransferRequests.First().Data,                 Is.EqualTo(data));
+
+                });
+
+            }
+
+        }
+
+        #endregion
 
         #region TransferBinaryData_Test()
 
         /// <summary>
-        /// A test for transfering binary data to a charging station.
+        /// A test for transfering vendor-specific binary data to a charging station.
         /// </summary>
         [Test]
         public async Task TransferBinaryData_Test()

@@ -27,7 +27,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     /// <summary>
     /// The common interface of all charging station clients.
     /// </summary>
-    public interface INetworkingNodeOutgoingMessagesEvents
+    public interface INetworkingNodeOutgoingMessageEvents : OCPP.NN.CS.INetworkingNodeOutgoingMessageEvents
     {
 
         #region SendBootNotification                     (Request/-Response)

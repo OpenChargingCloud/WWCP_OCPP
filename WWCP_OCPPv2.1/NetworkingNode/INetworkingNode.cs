@@ -33,10 +33,12 @@ using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 namespace cloud.charging.open.protocols.OCPPv2_1.NN
 {
 
-    public interface INetworkingNodeIN : NetworkingNode.CS.  INetworkingNodeIncomingMessages,
-                                         NetworkingNode.CS.  INetworkingNodeIncomingMessagesEvents,
+    public interface INetworkingNodeIN : NetworkingNode.     INetworkingNodeIncomingMessages,
+                                         NetworkingNode.     INetworkingNodeIncomingMessageEvents,
+                                         NetworkingNode.CS.  INetworkingNodeIncomingMessages,
+                                         NetworkingNode.CS.  INetworkingNodeIncomingMessageEvents,
                                          NetworkingNode.CSMS.INetworkingNodeIncomingMessages,
-                                         NetworkingNode.CSMS.INetworkingNodeIncomingMessagesEvents
+                                         NetworkingNode.CSMS.INetworkingNodeIncomingMessageEvents
     {
 
         void WireEvents(NetworkingNode.CS.  INetworkingNodeIncomingMessages IncomingMessages);
@@ -992,10 +994,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
     }
 
 
-    public interface INetworkingNodeOUT : NetworkingNode.CS.  INetworkingNodeOutgoingMessages,
-                                          NetworkingNode.CS.  INetworkingNodeOutgoingMessagesEvents,
+    public interface INetworkingNodeOUT : NetworkingNode.     INetworkingNodeOutgoingMessages,
+                                          NetworkingNode.     INetworkingNodeOutgoingMessageEvents,
+                                          NetworkingNode.CS.  INetworkingNodeOutgoingMessages,
+                                          NetworkingNode.CS.  INetworkingNodeOutgoingMessageEvents,
                                           NetworkingNode.CSMS.INetworkingNodeOutgoingMessages,
-                                          NetworkingNode.CSMS.INetworkingNodeOutgoingMessagesEvents
+                                          NetworkingNode.CSMS.INetworkingNodeOutgoingMessageEvents
 
     {
 

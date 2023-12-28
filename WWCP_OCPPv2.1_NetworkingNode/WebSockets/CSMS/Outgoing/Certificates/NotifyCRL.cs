@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// Notify the charging station about the status of a certificate revocation list.
         /// </summary>
         /// <param name="Request">A delete certificate request.</param>
-        public async Task<NotifyCRLResponse> NotifyCRLAvailability(NotifyCRLRequest Request)
+        public async Task<NotifyCRLResponse> NotifyCRL(NotifyCRLRequest Request)
         {
 
             #region Send OnNotifyCRLRequest event

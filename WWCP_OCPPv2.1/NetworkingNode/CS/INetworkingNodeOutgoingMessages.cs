@@ -28,7 +28,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     /// <summary>
     /// The common interface of all charging station clients.
     /// </summary>
-    public interface INetworkingNodeOutgoingMessages : OCPP.NN.INNOutgoingMessages
+    public interface INetworkingNodeOutgoingMessages : OCPP.NN.CS.INetworkingNodeOutgoingMessages
     {
 
         #region BootNotification                  (Request)
@@ -118,16 +118,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// </summary>
         /// <param name="Request">A log status notification request.</param>
         public Task<LogStatusNotificationResponse> LogStatusNotification(LogStatusNotificationRequest Request);
-
-        #endregion
-
-        #region DataTransfer                      (Request)
-
-        /// <summary>
-        /// Send the given vendor-specific data.
-        /// </summary>
-        /// <param name="Request">A data transfer request.</param>
-        public Task<DataTransferResponse> DataTransfer(DataTransferRequest Request);
 
         #endregion
 

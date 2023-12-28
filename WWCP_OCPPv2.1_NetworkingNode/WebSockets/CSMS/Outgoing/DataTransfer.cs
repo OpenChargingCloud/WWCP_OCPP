@@ -21,8 +21,6 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.CSMS;
-using cloud.charging.open.protocols.OCPPv2_1.CS;
-using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
 
@@ -38,52 +36,52 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #region Custom JSON serializer delegates
 
-        public CustomJObjectSerializerDelegate<CostUpdatedRequest>?  CustomCostUpdatedRequestSerializer    { get; set; }
+        public CustomJObjectSerializerDelegate<DataTransferRequest>?  CustomDataTransferRequestSerializer    { get; set; }
 
-        public CustomJObjectParserDelegate<CostUpdatedResponse>?     CustomCostUpdatedResponseParser       { get; set; }
+        public CustomJObjectParserDelegate<DataTransferResponse>?     CustomDataTransferResponseParser       { get; set; }
 
         #endregion
 
         #region Events
 
         /// <summary>
-        /// An event sent whenever a CostUpdated request was sent.
+        /// An event sent whenever a DataTransfer request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnCostUpdatedRequestDelegate?     OnCostUpdatedRequest;
+        public event OnDataTransferRequestDelegate?     OnDataTransferRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a CostUpdated request was sent.
+        /// An event sent whenever a response to a DataTransfer request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnCostUpdatedResponseDelegate?    OnCostUpdatedResponse;
+        public event OnDataTransferResponseDelegate?    OnDataTransferResponse;
 
         #endregion
 
 
-        #region SendCostUpdated(Request)
+        #region DataTransfer(Request)
 
-        public async Task<CostUpdatedResponse> SendCostUpdated(CostUpdatedRequest Request)
+        public async Task<DataTransferResponse> DataTransfer(DataTransferRequest Request)
         {
 
-            #region Send OnCostUpdatedRequest event
+            #region Send OnDataTransferRequest event
 
             var startTime = Timestamp.Now;
 
             try
             {
 
-                OnCostUpdatedRequest?.Invoke(startTime,
-                                             this,
-                                             Request);
+                OnDataTransferRequest?.Invoke(startTime,
+                                              this,
+                                              Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnCostUpdatedRequest));
+                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnDataTransferRequest));
             }
 
             #endregion
 
 
-            CostUpdatedResponse? response = null;
+            DataTransferResponse? response = null;
 
             try
             {
@@ -95,7 +93,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                                                  Request.RequestId,
                                                  Request.Action,
                                                  Request.ToJSON(
-                                                     CustomCostUpdatedRequestSerializer,
+                                                     CustomDataTransferRequestSerializer,
                                                      CustomSignatureSerializer,
                                                      CustomCustomDataSerializer
                                                  ),
@@ -106,33 +104,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                     sendRequestState.JSONResponse is not null)
                 {
 
-                    if (CostUpdatedResponse.TryParse(Request,
-                                                     sendRequestState.JSONResponse.Payload,
-                                                     out var costUpdatedResponse,
-                                                     out var errorResponse,
-                                                     CustomCostUpdatedResponseParser) &&
-                        costUpdatedResponse is not null)
+                    if (DataTransferResponse.TryParse(Request,
+                                                      sendRequestState.JSONResponse.Payload,
+                                                      out var dataTransferResponse,
+                                                      out var errorResponse,
+                                                      CustomDataTransferResponseParser) &&
+                        dataTransferResponse is not null)
                     {
-                        response = costUpdatedResponse;
+                        response = dataTransferResponse;
                     }
 
-                    response ??= new CostUpdatedResponse(
-                                     Request,
-                                     Result.Format(errorResponse)
-                                 );
+                    response ??= new DataTransferResponse(
+                                         Request,
+                                         Result.Format(errorResponse)
+                                     );
 
                 }
 
-                response ??= new CostUpdatedResponse(
-                                 Request,
-                                 Result.FromSendRequestState(sendRequestState)
-                             );
+                response ??= new DataTransferResponse(
+                                     Request,
+                                     Result.FromSendRequestState(sendRequestState)
+                                 );
 
             }
             catch (Exception e)
             {
 
-                response = new CostUpdatedResponse(
+                response = new DataTransferResponse(
                                Request,
                                Result.FromException(e)
                            );
@@ -140,23 +138,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
             }
 
 
-            #region Send OnCostUpdatedResponse event
+            #region Send OnDataTransferResponse event
 
             var endTime = Timestamp.Now;
 
             try
             {
 
-                OnCostUpdatedResponse?.Invoke(endTime,
-                                              this,
-                                              Request,
-                                              response,
-                                              endTime - startTime);
+                OnDataTransferResponse?.Invoke(endTime,
+                                               this,
+                                               Request,
+                                               response,
+                                               endTime - startTime);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnCostUpdatedResponse));
+                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnDataTransferResponse));
             }
 
             #endregion

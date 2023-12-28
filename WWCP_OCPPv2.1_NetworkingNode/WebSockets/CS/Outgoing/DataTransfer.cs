@@ -34,7 +34,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     public partial class NetworkingNodeWSClient : AOCPPWebSocketClient,
                                                   INetworkingNodeWebSocketClient,
                                                   INetworkingNodeIncomingMessages,
-                                                  INetworkingNodeOutgoingMessagesEvents
+                                                  INetworkingNodeOutgoingMessageEvents
     {
 
         #region Custom JSON serializer delegates
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         #endregion
 
 
-        #region TransferData(Request)
+        #region DataTransfer(Request)
 
         /// <summary>
         /// Send vendor-specific data.

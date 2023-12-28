@@ -27,7 +27,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
     /// <summary>
     /// The common interface of all CSMS clients.
     /// </summary>
-    public interface INetworkingNodeOutgoingMessagesEvents : OCPP.INNOutgoingMessagesEvents
+    public interface INetworkingNodeOutgoingMessageEvents : OCPP.NN.CSMS.INetworkingNodeOutgoingMessageEvents
     {
 
         #region Reset                          (Request/-Response)
@@ -265,20 +265,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// An event fired whenever a response to a TriggerMessage request was received.
         /// </summary>
         event OnTriggerMessageResponseDelegate?  OnTriggerMessageResponse;
-
-        #endregion
-
-        #region DataTransfer
-
-        /// <summary>
-        /// An event fired whenever a DataTransfer request will be sent to the CSMS.
-        /// </summary>
-        event OnDataTransferRequestDelegate?   OnDataTransferRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a DataTransfer request was received.
-        /// </summary>
-        event OnDataTransferResponseDelegate?  OnDataTransferResponse;
 
         #endregion
 

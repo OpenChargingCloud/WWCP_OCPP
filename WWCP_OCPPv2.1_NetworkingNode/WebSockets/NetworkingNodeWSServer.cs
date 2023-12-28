@@ -41,8 +41,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
     /// The NetworkingNode HTTP/WebSocket/JSON server.
     /// </summary>
     public partial class NetworkingNodeWSServer : AOCPPWebSocketServer,
-                                                  INetworkingNodeWebsocketsChannel,
-                                                  IEventSender
+                                                  INetworkingNodeWebsocketsChannel
     {
 
         #region Data
@@ -73,11 +72,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #region Properties
 
-        /// <summary>
-        /// The sender identification.
-        /// </summary>
-        String IEventSender.Id
-            => HTTPServiceName;
+        ///// <summary>
+        ///// The sender identification.
+        ///// </summary>
+        //String IEventSender.Id
+        //    => HTTPServiceName;
 
         /// <summary>
         /// Logins and passwords for HTTP Basic Authentication.

@@ -33,6 +33,7 @@ using cloud.charging.open.protocols.OCPP.NN;
 using cloud.charging.open.protocols.OCPP.CSMS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
 using cloud.charging.open.protocols.OCPPv2_1.NN;
+using Newtonsoft.Json.Linq;
 
 #endregion
 
@@ -194,6 +195,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Properties
 
         /// <summary>
+        /// The sender identification.
+        /// </summary>
+        String IEventSender.Id
+            => this.Id.ToString();
+
+        /// <summary>
         /// The unique identification of this networking node.
         /// </summary>
         public NetworkingNode_Id        Id                          { get; }
@@ -272,6 +279,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public Boolean                  DisableSendHeartbeats       { get; set; }
 
+        public DNSClient                DNSClient                   { get; }
+
 
         #region ToDo's
 
@@ -341,15 +350,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public CS.INetworkingNodeOutgoingMessages? CSClient
             => AsCS.CSClient;
-
-
-        /// <summary>
-        /// The sender identification.
-        /// </summary>
-        String IEventSender.Id
-            => this.Id.ToString();
-
-        public DNSClient  DNSClient                 { get; }
 
         #endregion
 
@@ -887,7 +887,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
-        public Boolean LookupNetworkingNode(NetworkingNode_Id NetworkingNodeId, out ICommunicationChannel? CommunicationChannel)
+        public Boolean LookupNetworkingNode(NetworkingNode_Id NetworkingNodeId, out INetworkingNodeChannel? NetworkingNodeChannel)
         {
 
             //var lookUpNetworkingNodeId = NetworkingNodeId;
@@ -902,7 +902,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             //    return true;
             //}
 
-            CommunicationChannel = null;
+            NetworkingNodeChannel = null;
             return false;
 
         }
@@ -932,7 +932,89 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             // Bidirectional
 
-            #region OnReset
+            #region OnIncomingDataTransfer
+
+            IN.OnIncomingDataTransfer += async (timestamp,
+                                                sender,
+                                                connection,
+                                                request,
+                                                cancellationToken) => {
+
+                // VendorId
+                // MessageId
+                // Data
+
+                DebugX.Log("OnIncomingDataTransfer: " + request.VendorId  + ", " +
+                                                        request.MessageId + ", " +
+                                                        request.Data);
+
+
+                var responseData = request.Data;
+
+                if (request.Data is not null)
+                {
+
+                    if      (request.Data.Type == JTokenType.String)
+                        responseData = request.Data.ToString().Reverse();
+
+                    else if (request.Data.Type == JTokenType.Object) {
+
+                        var responseObject = new JObject();
+
+                        foreach (var property in (request.Data as JObject)!)
+                        {
+                            if (property.Value?.Type == JTokenType.String)
+                                responseObject.Add(property.Key,
+                                                    property.Value.ToString().Reverse());
+                        }
+
+                        responseData = responseObject;
+
+                    }
+
+                    else if (request.Data.Type == JTokenType.Array) {
+
+                        var responseArray = new JArray();
+
+                        foreach (var element in (request.Data as JArray)!)
+                        {
+                            if (element?.Type == JTokenType.String)
+                                responseArray.Add(element.ToString().Reverse());
+                        }
+
+                        responseData = responseArray;
+
+                    }
+
+                }
+
+
+                var response =  request.VendorId == Vendor_Id.GraphDefined
+
+                                            ? new DataTransferResponse(
+                                                Request:      request,
+                                                Status:       DataTransferStatus.Accepted,
+                                                Data:         responseData,
+                                                StatusInfo:   null,
+                                                CustomData:   null
+                                            )
+
+                                            : new DataTransferResponse(
+                                                Request:      request,
+                                                Status:       DataTransferStatus.Rejected,
+                                                Data:         null,
+                                                StatusInfo:   null,
+                                                CustomData:   null
+                                            );
+
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnIncomingBinaryDataTransfer
 
             IN.OnIncomingBinaryDataTransfer += async (timestamp,
                                                       sender,
@@ -974,6 +1056,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             };
 
             #endregion
+
 
             FORWARD.OnBinaryDataTransfer += (timestamp,
                                              sender,
@@ -1050,6 +1133,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         ForwardingResult.FORWARD
                     )
                 );
+
+
+
+
 
 
 
