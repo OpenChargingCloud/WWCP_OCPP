@@ -37,7 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnAuthorizeRequestDelegate(DateTime                    Timestamp,
                                    IEventSender                Sender,
-                                   WebSocketServerConnection   Connection,
+                                   IWebSocketConnection   Connection,
                                    AuthorizeRequest            Request);
 
 
@@ -52,7 +52,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnAuthorizeDelegate(DateTime                    Timestamp,
                             IEventSender                Sender,
-                            WebSocketServerConnection   Connection,
+                            IWebSocketConnection   Connection,
                             AuthorizeRequest            Request,
                             CancellationToken           CancellationToken);
 
@@ -69,7 +69,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnAuthorizeResponseDelegate(DateTime                    Timestamp,
                                     IEventSender                Sender,
-                                    WebSocketServerConnection   Connection,
+                                    IWebSocketConnection   Connection,
                                     AuthorizeRequest            Request,
                                     AuthorizeResponse           Response,
                                     TimeSpan                    Runtime);

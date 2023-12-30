@@ -39,7 +39,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnPublishFirmwareStatusNotificationRequestDelegate(DateTime                                   Timestamp,
                                                            IEventSender                               Sender,
-                                                           WebSocketServerConnection                  Connection,
+                                                           IWebSocketConnection                  Connection,
                                                            PublishFirmwareStatusNotificationRequest   Request);
 
 
@@ -55,7 +55,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnPublishFirmwareStatusNotificationDelegate(DateTime                                   Timestamp,
                                                     IEventSender                               Sender,
-                                                    WebSocketServerConnection                  Connection,
+                                                    IWebSocketConnection                  Connection,
                                                     PublishFirmwareStatusNotificationRequest   Request,
                                                     CancellationToken                          CancellationToken);
 
@@ -73,7 +73,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnPublishFirmwareStatusNotificationResponseDelegate(DateTime                                    Timestamp,
                                                             IEventSender                                Sender,
-                                                            WebSocketServerConnection                   Connection,
+                                                            IWebSocketConnection                   Connection,
                                                             PublishFirmwareStatusNotificationRequest    Request,
                                                             PublishFirmwareStatusNotificationResponse   Response,
                                                             TimeSpan                                    Runtime);

@@ -39,7 +39,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnFirmwareStatusNotificationRequestDelegate(DateTime                            Timestamp,
                                                     IEventSender                        Sender,
-                                                    WebSocketServerConnection           Connection,
+                                                    IWebSocketConnection           Connection,
                                                     FirmwareStatusNotificationRequest   Request);
 
 
@@ -55,7 +55,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnFirmwareStatusNotificationDelegate(DateTime                            Timestamp,
                                              IEventSender                        Sender,
-                                             WebSocketServerConnection           Connection,
+                                             IWebSocketConnection           Connection,
                                              FirmwareStatusNotificationRequest   Request,
                                              CancellationToken                   CancellationToken);
 
@@ -73,7 +73,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnFirmwareStatusNotificationResponseDelegate(DateTime                             Timestamp,
                                                      IEventSender                         Sender,
-                                                     WebSocketServerConnection            Connection,
+                                                     IWebSocketConnection            Connection,
                                                      FirmwareStatusNotificationRequest    Request,
                                                      FirmwareStatusNotificationResponse   Response,
                                                      TimeSpan                             Runtime);

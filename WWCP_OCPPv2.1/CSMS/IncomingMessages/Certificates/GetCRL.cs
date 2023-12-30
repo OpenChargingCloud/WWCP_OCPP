@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnGetCRLRequestDelegate(DateTime                    Timestamp,
                                 IEventSender                Sender,
-                                WebSocketServerConnection   Connection,
+                                IWebSocketConnection   Connection,
                                 GetCRLRequest               Request);
 
 
@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnGetCRLDelegate(DateTime                    Timestamp,
                          IEventSender                Sender,
-                         WebSocketServerConnection   Connection,
+                         IWebSocketConnection   Connection,
                          GetCRLRequest               Request,
                          CancellationToken           CancellationToken);
 
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnGetCRLResponseDelegate(DateTime                    Timestamp,
                                  IEventSender                Sender,
-                                 WebSocketServerConnection   Connection,
+                                 IWebSocketConnection   Connection,
                                  GetCRLRequest               Request,
                                  GetCRLResponse              Response,
                                  TimeSpan                    Runtime);

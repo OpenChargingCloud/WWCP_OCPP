@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnMeterValuesRequestDelegate(DateTime                    Timestamp,
                                      IEventSender                Sender,
-                                     WebSocketServerConnection   Connection,
+                                     IWebSocketConnection   Connection,
                                      MeterValuesRequest          Request);
 
 
@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnMeterValuesDelegate(DateTime                    Timestamp,
                               IEventSender                Sender,
-                              WebSocketServerConnection   Connection,
+                              IWebSocketConnection   Connection,
                               MeterValuesRequest          Request,
                               CancellationToken           CancellationToken);
 
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnMeterValuesResponseDelegate(DateTime                    Timestamp,
                                       IEventSender                Sender,
-                                      WebSocketServerConnection   Connection,
+                                      IWebSocketConnection   Connection,
                                       MeterValuesRequest          Request,
                                       MeterValuesResponse         Response,
                                       TimeSpan                    Runtime);

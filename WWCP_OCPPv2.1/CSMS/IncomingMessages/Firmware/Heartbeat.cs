@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnHeartbeatRequestDelegate(DateTime                    Timestamp,
                                    IEventSender                Sender,
-                                   WebSocketServerConnection   Connection,
+                                   IWebSocketConnection   Connection,
                                    HeartbeatRequest            Request);
 
 
@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnHeartbeatDelegate(DateTime                    Timestamp,
                             IEventSender                Sender,
-                            WebSocketServerConnection   Connection,
+                            IWebSocketConnection   Connection,
                             HeartbeatRequest            Request,
                             CancellationToken           CancellationToken);
 
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnHeartbeatResponseDelegate(DateTime                    Timestamp,
                                     IEventSender                Sender,
-                                    WebSocketServerConnection   Connection,
+                                    IWebSocketConnection   Connection,
                                     HeartbeatRequest            Request,
                                     HeartbeatResponse           Response,
                                     TimeSpan                    Runtime);

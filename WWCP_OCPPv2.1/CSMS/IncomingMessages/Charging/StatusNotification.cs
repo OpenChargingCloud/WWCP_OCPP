@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnStatusNotificationRequestDelegate(DateTime                    Timestamp,
                                             IEventSender                Sender,
-                                            WebSocketServerConnection   Connection,
+                                            IWebSocketConnection   Connection,
                                             StatusNotificationRequest   Request);
 
 
@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnStatusNotificationDelegate(DateTime                    Timestamp,
                                      IEventSender                Sender,
-                                     WebSocketServerConnection   Connection,
+                                     IWebSocketConnection   Connection,
                                      StatusNotificationRequest   Request,
                                      CancellationToken           CancellationToken);
 
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnStatusNotificationResponseDelegate(DateTime                     Timestamp,
                                              IEventSender                 Sender,
-                                             WebSocketServerConnection    Connection,
+                                             IWebSocketConnection    Connection,
                                              StatusNotificationRequest    Request,
                                              StatusNotificationResponse   Response,
                                              TimeSpan                     Runtime);

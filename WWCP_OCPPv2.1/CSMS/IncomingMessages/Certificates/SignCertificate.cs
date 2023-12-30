@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnSignCertificateRequestDelegate(DateTime                    Timestamp,
                                          IEventSender                Sender,
-                                         WebSocketServerConnection   Connection,
+                                         IWebSocketConnection   Connection,
                                          SignCertificateRequest      Request);
 
 
@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnSignCertificateDelegate(DateTime                    Timestamp,
                                   IEventSender                Sender,
-                                  WebSocketServerConnection   Connection,
+                                  IWebSocketConnection   Connection,
                                   SignCertificateRequest      Request,
                                   CancellationToken           CancellationToken);
 
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnSignCertificateResponseDelegate(DateTime                    Timestamp,
                                           IEventSender                Sender,
-                                          WebSocketServerConnection   Connection,
+                                          IWebSocketConnection   Connection,
                                           SignCertificateRequest      Request,
                                           SignCertificateResponse     Response,
                                           TimeSpan                    Runtime);

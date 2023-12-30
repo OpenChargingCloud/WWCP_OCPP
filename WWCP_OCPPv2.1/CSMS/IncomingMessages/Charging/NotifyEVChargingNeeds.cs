@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnNotifyEVChargingNeedsRequestDelegate(DateTime                       Timestamp,
                                                IEventSender                   Sender,
-                                               WebSocketServerConnection      Connection,
+                                               IWebSocketConnection      Connection,
                                                NotifyEVChargingNeedsRequest   Request);
 
 
@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnNotifyEVChargingNeedsDelegate(DateTime                       Timestamp,
                                         IEventSender                   Sender,
-                                        WebSocketServerConnection      Connection,
+                                        IWebSocketConnection      Connection,
                                         NotifyEVChargingNeedsRequest   Request,
                                         CancellationToken              CancellationToken);
 
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnNotifyEVChargingNeedsResponseDelegate(DateTime                        Timestamp,
                                                 IEventSender                    Sender,
-                                                WebSocketServerConnection       Connection,
+                                                IWebSocketConnection       Connection,
                                                 NotifyEVChargingNeedsRequest    Request,
                                                 NotifyEVChargingNeedsResponse   Response,
                                                 TimeSpan                        Runtime);

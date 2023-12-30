@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnNotifyPriorityChargingRequestDelegate(DateTime                        Timestamp,
                                                 IEventSender                    Sender,
-                                                WebSocketServerConnection       Connection,
+                                                IWebSocketConnection       Connection,
                                                 NotifyPriorityChargingRequest   Request);
 
 
@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnNotifyPriorityChargingDelegate(DateTime                        Timestamp,
                                          IEventSender                    Sender,
-                                         WebSocketServerConnection       Connection,
+                                         IWebSocketConnection       Connection,
                                          NotifyPriorityChargingRequest   Request,
                                          CancellationToken               CancellationToken);
 
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnNotifyPriorityChargingResponseDelegate(DateTime                         Timestamp,
                                                  IEventSender                     Sender,
-                                                 WebSocketServerConnection        Connection,
+                                                 IWebSocketConnection        Connection,
                                                  NotifyPriorityChargingRequest    Request,
                                                  NotifyPriorityChargingResponse   Response,
                                                  TimeSpan                         Runtime);

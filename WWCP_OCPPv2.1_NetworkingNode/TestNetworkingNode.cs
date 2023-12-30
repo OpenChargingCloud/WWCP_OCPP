@@ -19,6 +19,10 @@
 
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
+using System.Collections.Concurrent;
+
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
@@ -26,6 +30,9 @@ using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.Mail;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.Logging;
+using org.GraphDefined.Vanaheimr.Hermod.Sockets;
+using org.GraphDefined.Vanaheimr.Hermod.Sockets.TCP;
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.CS;
@@ -33,7 +40,6 @@ using cloud.charging.open.protocols.OCPP.NN;
 using cloud.charging.open.protocols.OCPP.CSMS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
 using cloud.charging.open.protocols.OCPPv2_1.NN;
-using Newtonsoft.Json.Linq;
 
 #endregion
 
@@ -185,10 +191,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Data
 
-        private          readonly  HashSet<SignaturePolicy>                                                                 signaturePolicies             = [];
-        private          readonly  HashSet<SignaturePolicy>                                                                 forwardingSignaturePolicies   = [];
+        /// <summary>
+        /// The default HTTP server name.
+        /// </summary>
+        public  const     String                                                       DefaultHTTPServiceName          = $"GraphDefined OCPP {Version.String} Networking Node HTTP/WebSocket/JSON API";
 
-        private                    Int64                                                                                    internalRequestId             = 800000;
+        private readonly  HashSet<OCPPWebSocketServer>                                 OCPPWebSocketServers            = [];
+        private readonly  ConcurrentDictionary<NetworkingNode_Id, List<Reachability>>  reachableNetworkingNodes        = [];
+        private readonly  ConcurrentDictionary<Request_Id, SendRequestState>           requests                        = [];
+
+        public  const     String                                                       NetworkingNodeId_WebSocketKey   = "networkingNodeId";
+        public  const     String                                                       NetworkingMode_WebSocketKey     = "networkingMode";
+
+        private readonly  HashSet<SignaturePolicy>                                     signaturePolicies               = [];
+        private readonly  HashSet<SignaturePolicy>                                     forwardingSignaturePolicies     = [];
+
+        private           Int64                                                        internalRequestId               = 800000;
 
         #endregion
 
@@ -348,8 +366,71 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public  FORWARD                  FORWARD                     { get; }
 
+        public OCPPWebSocketAdapterIN    ocppIN                      { get; }
+        public OCPPWebSocketAdapterOUT   ocppOUT                     { get; }
+
+
         public CS.INetworkingNodeOutgoingMessages? CSClient
             => AsCS.CSClient;
+
+        #endregion
+
+        #region Events
+
+        #region WebSocket connections
+
+        /// <summary>
+        /// An event sent whenever the HTTP web socket server started.
+        /// </summary>
+        public event OnServerStartedDelegate?                 OnServerStarted;
+
+        /// <summary>
+        /// An event sent whenever a new TCP connection was accepted.
+        /// </summary>
+        public event OnValidateTCPConnectionDelegate?         OnValidateTCPConnection;
+
+        /// <summary>
+        /// An event sent whenever a new TCP connection was accepted.
+        /// </summary>
+        public event OnNewTCPConnectionDelegate?              OnNewTCPConnection;
+
+        /// <summary>
+        /// An event sent whenever a HTTP request was received.
+        /// </summary>
+        public event HTTPRequestLogDelegate?                  OnHTTPRequest;
+
+        /// <summary>
+        /// An event sent whenever the HTTP headers of a new web socket connection
+        /// need to be validated or filtered by an upper layer application logic.
+        /// </summary>
+        public event OnValidateWebSocketConnectionDelegate?   OnValidateWebSocketConnection;
+
+        /// <summary>
+        /// An event sent whenever the HTTP connection switched successfully to web socket.
+        /// </summary>
+        public event OnCSMSNewWebSocketConnectionDelegate?    OnNewWebSocketConnection;
+
+        /// <summary>
+        /// An event sent whenever a reponse to a HTTP request was sent.
+        /// </summary>
+        public event HTTPResponseLogDelegate?                 OnHTTPResponse;
+
+        /// <summary>
+        /// An event sent whenever a web socket close frame was received.
+        /// </summary>
+        public event OnCSMSCloseMessageReceivedDelegate?      OnCloseMessageReceived;
+
+        /// <summary>
+        /// An event sent whenever a TCP connection was closed.
+        /// </summary>
+        public event OnCSMSTCPConnectionClosedDelegate?       OnTCPConnectionClosed;
+
+        /// <summary>
+        /// An event sent whenever the HTTP web socket server stopped.
+        /// </summary>
+        public event OnServerStoppedDelegate?                 OnServerStopped;
+
+        #endregion
 
         #endregion
 
@@ -799,6 +880,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             this.OUT      = new OUTPUT(this);
             this.FORWARD  = new FORWARD (this);
 
+            this.ocppIN   = new OCPPWebSocketAdapterIN (this);
+            this.ocppOUT  = new OCPPWebSocketAdapterOUT(this);
+
             Wire();
 
         }
@@ -871,41 +955,366 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
-        #region HandleErrors(Module, Caller, ExceptionOccured)
+        #region AttachWebSocketServer(...)
 
-        private Task HandleErrors(String     Module,
-                                  String     Caller,
-                                  Exception  ExceptionOccured)
+        /// <summary>
+        /// Create a new central system for testing using HTTP/WebSocket.
+        /// </summary>
+        /// <param name="HTTPServiceName">An optional identification string for the HTTP server.</param>
+        /// <param name="IPAddress">An IP address to listen on.</param>
+        /// <param name="TCPPort">An optional TCP port for the HTTP server.</param>
+        /// <param name="DNSClient">An optional DNS client to use.</param>
+        /// <param name="AutoStart">Start the server immediately.</param>
+        public OCPPWebSocketServer AttachWebSocketServer(String                               HTTPServiceName              = DefaultHTTPServiceName,
+                                                         IIPAddress?                          IPAddress                    = null,
+                                                         IPPort?                              TCPPort                      = null,
+
+                                                         Boolean                              RequireAuthentication        = true,
+                                                         Boolean                              DisableWebSocketPings        = false,
+                                                         TimeSpan?                            WebSocketPingEvery           = null,
+                                                         TimeSpan?                            SlowNetworkSimulationDelay   = null,
+
+                                                         ServerCertificateSelectorDelegate?   ServerCertificateSelector    = null,
+                                                         RemoteCertificateValidationHandler?  ClientCertificateValidator   = null,
+                                                         LocalCertificateSelectionHandler?    ClientCertificateSelector    = null,
+                                                         SslProtocols?                        AllowedTLSProtocols          = null,
+                                                         Boolean?                             ClientCertificateRequired    = null,
+                                                         Boolean?                             CheckCertificateRevocation   = null,
+
+                                                         ServerThreadNameCreatorDelegate?     ServerThreadNameCreator      = null,
+                                                         ServerThreadPriorityDelegate?        ServerThreadPrioritySetter   = null,
+                                                         Boolean?                             ServerThreadIsBackground     = null,
+                                                         ConnectionIdBuilder?                 ConnectionIdBuilder          = null,
+                                                         TimeSpan?                            ConnectionTimeout            = null,
+                                                         UInt32?                              MaxClientConnections         = null,
+
+                                                         DNSClient?                           DNSClient                    = null,
+                                                         Boolean                              AutoStart                    = false)
         {
 
-            DebugX.LogException(ExceptionOccured, $"{Module}.{Caller}");
+            var ocppWebSocketServer = new OCPPWebSocketServer(
+                                          this.ocppIN,
+                                          this.ocppOUT,
 
-            return Task.CompletedTask;
+                                          HTTPServiceName,
+                                          IPAddress,
+                                          TCPPort,
+
+                                          RequireAuthentication,
+                                          DisableWebSocketPings,
+                                          WebSocketPingEvery,
+                                          SlowNetworkSimulationDelay,
+
+                                          ServerCertificateSelector,
+                                          ClientCertificateValidator,
+                                          ClientCertificateSelector,
+                                          AllowedTLSProtocols,
+                                          ClientCertificateRequired,
+                                          CheckCertificateRevocation,
+
+                                          ServerThreadNameCreator,
+                                          ServerThreadPrioritySetter,
+                                          ServerThreadIsBackground,
+                                          ConnectionIdBuilder,
+                                          ConnectionTimeout,
+                                          MaxClientConnections,
+
+                                          DNSClient ?? this.DNSClient,
+                                          AutoStart: false
+                                      );
+
+            WireWebSocketServer(ocppWebSocketServer);
+
+            if (AutoStart)
+                ocppWebSocketServer.Start();
+
+            return ocppWebSocketServer;
 
         }
 
         #endregion
 
+        #region (private) WireWebSocketServer(WebSocketServer)
 
-        public Boolean LookupNetworkingNode(NetworkingNode_Id NetworkingNodeId, out INetworkingNodeChannel? NetworkingNodeChannel)
+        private void WireWebSocketServer(OCPPWebSocketServer WebSocketServer)
         {
 
-            //var lookUpNetworkingNodeId = NetworkingNodeId;
+            OCPPWebSocketServers.Add(WebSocketServer);
 
-            ////if (reachableViaNetworkingHubs.TryGetValue(lookUpNetworkingNodeId, out var networkingHubId))
-            ////    lookUpNetworkingNodeId = networkingHubId;
 
-            //if (reachableChargingStations.TryGetValue(lookUpNetworkingNodeId, out var networkingNodeChannel) &&
-            //    networkingNodeChannel?.Item1 is not null)
-            //{
-            //    NetworkingNodeChannel = networkingNodeChannel.Item1;
-            //    return true;
-            //}
+            #region WebSocket related
 
-            NetworkingNodeChannel = null;
-            return false;
+            #region OnServerStarted
+
+            WebSocketServer.OnServerStarted += async (timestamp,
+                                                      server,
+                                                      eventTrackingId,
+                                                      cancellationToken) => {
+
+                var onServerStarted = OnServerStarted;
+                if (onServerStarted is not null)
+                {
+                    try
+                    {
+
+                        await Task.WhenAll(onServerStarted.GetInvocationList().
+                                               OfType <OnServerStartedDelegate>().
+                                               Select (loggingDelegate => loggingDelegate.Invoke(
+                                                                              timestamp,
+                                                                              server,
+                                                                              eventTrackingId,
+                                                                              cancellationToken
+                                                                          )).
+                                               ToArray());
+
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestNetworkingNode),
+                                  nameof(OnServerStarted),
+                                  e
+                              );
+                    }
+                }
+
+            };
+
+            #endregion
+
+            #region OnNewTCPConnection
+
+            WebSocketServer.OnNewTCPConnection += async (timestamp,
+                                                         webSocketServer,
+                                                         newTCPConnection,
+                                                         eventTrackingId,
+                                                         cancellationToken) => {
+
+                var onNewTCPConnection = OnNewTCPConnection;
+                if (onNewTCPConnection is not null)
+                {
+                    try
+                    {
+
+                        await Task.WhenAll(onNewTCPConnection.GetInvocationList().
+                                               OfType <OnNewTCPConnectionDelegate>().
+                                               Select (loggingDelegate => loggingDelegate.Invoke(
+                                                                              timestamp,
+                                                                              webSocketServer,
+                                                                              newTCPConnection,
+                                                                              eventTrackingId,
+                                                                              cancellationToken
+                                                                          )).
+                                               ToArray());
+
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestNetworkingNode),
+                                  nameof(OnNewTCPConnection),
+                                  e
+                              );
+                    }
+                }
+
+            };
+
+            #endregion
+
+            // Failed (Charging Station) Authentication
+
+            #region OnNetworkingNodeNewWebSocketConnection
+
+            WebSocketServer.OnNetworkingNodeNewWebSocketConnection += async (timestamp,
+                                                                             ocppWebSocketServer,
+                                                                             newConnection,
+                                                                             networkingNodeId,
+                                                                             eventTrackingId,
+                                                                             sharedSubprotocols,
+                                                                             cancellationToken) => {
+
+                // A new connection from the same networking node/charging station will replace the older one!
+                AddStaticRouting(DestinationNodeId:  networkingNodeId,
+                                 WebSocketServer:    ocppWebSocketServer,
+                                 Priority:           0,
+                                 Timestamp:          timestamp);
+
+                #region Send OnNewWebSocketConnection
+
+                var logger = OnNewWebSocketConnection;
+                if (logger is not null)
+                {
+                    try
+                    {
+
+                        await Task.WhenAll(logger.GetInvocationList().
+                                               OfType <OnNetworkingNodeNewWebSocketConnectionDelegate>().
+                                               Select (loggingDelegate => loggingDelegate.Invoke(
+                                                                              timestamp,
+                                                                              ocppWebSocketServer,
+                                                                              newConnection,
+                                                                              networkingNodeId,
+                                                                              eventTrackingId,
+                                                                              sharedSubprotocols,
+                                                                              cancellationToken
+                                                                          )).
+                                               ToArray());
+
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestNetworkingNode),
+                                  nameof(OnNewWebSocketConnection),
+                                  e
+                              );
+                    }
+                }
+
+                #endregion
+
+            };
+
+            #endregion
+
+            #region OnNetworkingNodeCloseMessageReceived
+
+            WebSocketServer.OnNetworkingNodeCloseMessageReceived += async (timestamp,
+                                                             server,
+                                                             connection,
+                                                             networkingNodeId,
+                                                             eventTrackingId,
+                                                             statusCode,
+                                                             reason,
+                                                             cancellationToken) => {
+
+                var logger = OnCloseMessageReceived;
+                if (logger is not null)
+                {
+                    try
+                    {
+
+                        await Task.WhenAll(logger.GetInvocationList().
+                                               OfType <OnNetworkingNodeCloseMessageReceivedDelegate>().
+                                               Select (loggingDelegate => loggingDelegate.Invoke(
+                                                                              timestamp,
+                                                                              server,
+                                                                              connection,
+                                                                              networkingNodeId,
+                                                                              eventTrackingId,
+                                                                              statusCode,
+                                                                              reason,
+                                                                              cancellationToken
+                                                                          )).
+                                               ToArray());
+
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestNetworkingNode),
+                                  nameof(OnCloseMessageReceived),
+                                  e
+                              );
+                    }
+                }
+
+            };
+
+            #endregion
+
+            #region OnNetworkingNodeTCPConnectionClosed
+
+            WebSocketServer.OnNetworkingNodeTCPConnectionClosed += async (timestamp,
+                                                            server,
+                                                            connection,
+                                                            networkingNodeId,
+                                                            eventTrackingId,
+                                                            reason,
+                                                            cancellationToken) => {
+
+                var logger = OnTCPConnectionClosed;
+                if (logger is not null)
+                {
+                    try
+                    {
+
+                        await Task.WhenAll(logger.GetInvocationList().
+                                               OfType <OnNetworkingNodeTCPConnectionClosedDelegate>().
+                                               Select (loggingDelegate => loggingDelegate.Invoke(
+                                                                              timestamp,
+                                                                              server,
+                                                                              connection,
+                                                                              networkingNodeId,
+                                                                              eventTrackingId,
+                                                                              reason,
+                                                                              cancellationToken
+                                                                          )).
+                                               ToArray());
+
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestNetworkingNode),
+                                  nameof(OnTCPConnectionClosed),
+                                  e
+                              );
+                    }
+                }
+
+            };
+
+            #endregion
+
+            #region OnServerStopped
+
+            WebSocketServer.OnServerStopped += async (timestamp,
+                                                  server,
+                                                  eventTrackingId,
+                                                  reason,
+                                                  cancellationToken) => {
+
+                var logger = OnServerStopped;
+                if (logger is not null)
+                {
+                    try
+                    {
+
+                        await Task.WhenAll(logger.GetInvocationList().
+                                                 OfType <OnServerStoppedDelegate>().
+                                                 Select (loggingDelegate => loggingDelegate.Invoke(
+                                                                                timestamp,
+                                                                                server,
+                                                                                eventTrackingId,
+                                                                                reason,
+                                                                                cancellationToken
+                                                                            )).
+                                                 ToArray());
+
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestNetworkingNode),
+                                  nameof(OnServerStopped),
+                                  e
+                              );
+                    }
+                }
+
+            };
+
+            #endregion
+
+            // (Generic) Error Handling
+
+            #endregion
 
         }
+
+        #endregion
 
 
         #region NextRequestId
@@ -925,6 +1334,661 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public string? ClientCloseMessage => throw new NotImplementedException();
 
         #endregion
+
+
+        #region SendJSONRequest         (JSONRequestMessage)
+
+        public async Task<SendOCPPMessageResult> SendJSONRequest(OCPP_JSONRequestMessage JSONRequestMessage)
+        {
+
+            if (LookupNetworkingNode(JSONRequestMessage.DestinationNodeId, out var reachability) &&
+                reachability is not null)
+            {
+
+                //if (reachability.OCPPWebSocketClient is not null)
+                //    return await reachability.OCPPWebSocketClient.SendJSONRequest(JSONRequestMessage);
+
+                if (reachability.OCPPWebSocketServer is not null)
+                    return await reachability.OCPPWebSocketServer.SendJSONRequest(JSONRequestMessage);
+
+            }
+
+            return SendOCPPMessageResult.UnknownClient;
+
+        }
+
+        #endregion
+
+        #region SendJSONRequestAndWait  (JSONRequestMessage)
+
+        public async Task<SendRequestState> SendJSONRequestAndWait(OCPP_JSONRequestMessage JSONRequestMessage)
+        {
+
+            var sendOCPPMessageResult = await SendJSONRequest(JSONRequestMessage);
+
+            if (sendOCPPMessageResult == SendOCPPMessageResult.Success)
+            {
+
+                #region 1. Store 'in-flight' request...
+
+                requests.TryAdd(JSONRequestMessage.RequestId,
+                                SendRequestState.FromJSONRequest(
+                                    Timestamp.Now,
+                                    JSONRequestMessage.DestinationNodeId,
+                                    JSONRequestMessage.RequestTimeout,
+                                    JSONRequestMessage
+                                ));
+
+                #endregion
+
+                #region 2. Wait for response... or timeout!
+
+                do
+                {
+
+                    try
+                    {
+
+                        await Task.Delay(25, JSONRequestMessage.CancellationToken);
+
+                        if (requests.TryGetValue(JSONRequestMessage.RequestId, out var sendRequestState) &&
+                           (sendRequestState?.JSONResponse   is not null ||
+                            sendRequestState?.BinaryResponse is not null ||
+                            sendRequestState?.ErrorCode.HasValue == true))
+                        {
+
+                            requests.TryRemove(JSONRequestMessage.RequestId, out _);
+
+                            return sendRequestState;
+
+                        }
+
+                    }
+                    catch (Exception e)
+                    {
+                        DebugX.Log(String.Concat(nameof(OCPPWebSocketAdapterIN), ".", nameof(SendJSONRequestAndWait), " exception occured: ", e.Message));
+                    }
+
+                }
+                while (Timestamp.Now < JSONRequestMessage.RequestTimeout);
+
+                #endregion
+
+                #region 3. When timed out...
+
+                if (requests.TryGetValue(JSONRequestMessage.RequestId, out var sendRequestState2) &&
+                    sendRequestState2 is not null)
+                {
+                    sendRequestState2.ErrorCode = ResultCode.Timeout;
+                    requests.TryRemove(JSONRequestMessage.RequestId, out _);
+                    return sendRequestState2;
+                }
+
+                #endregion
+
+            }
+
+            // Just in case...
+            return SendRequestState.FromJSONRequest(
+                       RequestTimestamp:   JSONRequestMessage.RequestTimestamp,
+                       NetworkingNodeId:   JSONRequestMessage.DestinationNodeId,
+                       Timeout:            JSONRequestMessage.RequestTimeout,
+                       JSONRequest:        JSONRequestMessage,
+                       ResponseTimestamp:  Timestamp.Now,
+                       ErrorCode:          ResultCode.InternalError
+                   );
+
+        }
+
+        #endregion
+
+        #region SendBinaryRequest       (BinaryRequestMessage)
+
+        public async Task<SendOCPPMessageResult> SendBinaryRequest(OCPP_BinaryRequestMessage BinaryRequestMessage)
+        {
+
+            if (LookupNetworkingNode(BinaryRequestMessage.DestinationNodeId, out var reachability) &&
+                reachability is not null)
+            {
+
+                //if (reachability.OCPPWebSocketClient is not null)
+                //    return await reachability.OCPPWebSocketClient.SendBinaryRequest(BinaryRequestMessage);
+
+                if (reachability.OCPPWebSocketServer is not null)
+                    return await reachability.OCPPWebSocketServer.SendBinaryRequest(BinaryRequestMessage);
+
+            }
+
+            return SendOCPPMessageResult.UnknownClient;
+
+        }
+
+        #endregion
+
+        #region SendBinaryRequestAndWait(BinaryRequestMessage)
+
+        public async Task<SendRequestState> SendBinaryRequestAndWait(OCPP_BinaryRequestMessage BinaryRequestMessage)
+        {
+
+            var sendOCPPMessageResult = await SendBinaryRequest(BinaryRequestMessage);
+
+            if (sendOCPPMessageResult == SendOCPPMessageResult.Success)
+            {
+
+                #region 1. Store 'in-flight' request...
+
+                requests.TryAdd(BinaryRequestMessage.RequestId,
+                                SendRequestState.FromBinaryRequest(
+                                    Timestamp.Now,
+                                    BinaryRequestMessage.DestinationNodeId,
+                                    BinaryRequestMessage.RequestTimeout,
+                                    BinaryRequestMessage
+                                ));
+
+                #endregion
+
+                #region 2. Wait for response... or timeout!
+
+                do
+                {
+
+                    try
+                    {
+
+                        await Task.Delay(25, BinaryRequestMessage.CancellationToken);
+
+                        if (requests.TryGetValue(BinaryRequestMessage.RequestId, out var sendRequestState) &&
+                           (sendRequestState?.JSONResponse   is not null ||
+                            sendRequestState?.BinaryResponse is not null ||
+                            sendRequestState?.ErrorCode.HasValue == true))
+                        {
+
+                            requests.TryRemove(BinaryRequestMessage.RequestId, out _);
+
+                            return sendRequestState;
+
+                        }
+
+                    }
+                    catch (Exception e)
+                    {
+                        DebugX.Log(String.Concat(nameof(OCPPWebSocketAdapterIN), ".", nameof(SendJSONRequestAndWait), " exception occured: ", e.Message));
+                    }
+
+                }
+                while (Timestamp.Now < BinaryRequestMessage.RequestTimeout);
+
+                #endregion
+
+                #region 3. When timed out...
+
+                if (requests.TryGetValue(BinaryRequestMessage.RequestId, out var sendRequestState2) &&
+                    sendRequestState2 is not null)
+                {
+                    sendRequestState2.ErrorCode = ResultCode.Timeout;
+                    requests.TryRemove(BinaryRequestMessage.RequestId, out _);
+                    return sendRequestState2;
+                }
+
+                #endregion
+
+            }
+
+            // Just in case...
+            return SendRequestState.FromBinaryRequest(
+                       RequestTimestamp:   BinaryRequestMessage.RequestTimestamp,
+                       NetworkingNodeId:   BinaryRequestMessage.DestinationNodeId,
+                       Timeout:            BinaryRequestMessage.RequestTimeout,
+                       BinaryRequest:      BinaryRequestMessage,
+                       ResponseTimestamp:  Timestamp.Now,
+                       ErrorCode:          ResultCode.InternalError
+                   );
+
+        }
+
+        #endregion
+
+
+        #region ReceiveResponseMessage  (JSONResponseMessage)
+
+        public Boolean ReceiveResponseMessage(OCPP_JSONResponseMessage JSONResponseMessage)
+        {
+
+            if (requests.TryGetValue(JSONResponseMessage.RequestId, out var sendRequestState) &&
+                sendRequestState is not null)
+            {
+
+                sendRequestState.ResponseTimestamp  = Timestamp.Now;
+                sendRequestState.JSONResponse       = JSONResponseMessage;
+
+                #region OnJSONMessageResponseReceived
+
+                //var onJSONMessageResponseReceived = OnJSONMessageResponseReceived;
+                //if (onJSONMessageResponseReceived is not null)
+                //{
+                //    try
+                //    {
+
+                //        await Task.WhenAll(onJSONMessageResponseReceived.GetInvocationList().
+                //                               OfType <OnWebSocketJSONMessageResponseDelegate>().
+                //                               Select (loggingDelegate => loggingDelegate.Invoke(
+                //                                                              Timestamp.Now,
+                //                                                              this,
+                //                                                              Connection,
+                //                                                              jsonResponse.DestinationNodeId,
+                //                                                              jsonResponse.NetworkPath,
+                //                                                              EventTrackingId,
+                //                                                              sendRequestState.RequestTimestamp,
+                //                                                              sendRequestState.JSONRequest?.  ToJSON()      ?? [],
+                //                                                              sendRequestState.BinaryRequest?.ToByteArray() ?? [],
+                //                                                              Timestamp.Now,
+                //                                                              sendRequestState.JSONResponse.  ToJSON(),
+                //                                                              CancellationToken
+                //                                                          )).
+                //                               ToArray());
+
+                //    }
+                //    catch (Exception e)
+                //    {
+                //        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnJSONMessageResponseReceived));
+                //    }
+                //}
+
+                #endregion
+
+                return true;
+
+            }
+
+            DebugX.Log($"Received an unknown OCPP response with identificaiton '{JSONResponseMessage.RequestId}' within {nameof(TestNetworkingNode)}:{Environment.NewLine}'{JSONResponseMessage.Payload.ToString(Formatting.None)}'!");
+            return false;
+
+        }
+
+        #endregion
+
+        #region ReceiveResponseMessage  (BinaryResponseMessage)
+
+        public Boolean ReceiveResponseMessage(OCPP_BinaryResponseMessage BinaryResponseMessage)
+        {
+
+            if (requests.TryGetValue(BinaryResponseMessage.RequestId, out var sendRequestState) &&
+                sendRequestState is not null)
+            {
+
+                sendRequestState.ResponseTimestamp  = Timestamp.Now;
+                sendRequestState.BinaryResponse     = BinaryResponseMessage;
+
+                #region OnBinaryMessageResponseReceived
+
+                //var onBinaryMessageResponseReceived = OnBinaryMessageResponseReceived;
+                //if (onBinaryMessageResponseReceived is not null)
+                //{
+                //    try
+                //    {
+
+                //        await Task.WhenAll(onBinaryMessageResponseReceived.GetInvocationList().
+                //                               OfType <OnWebSocketBinaryMessageResponseDelegate>().
+                //                               Select (loggingDelegate => loggingDelegate.Invoke(
+                //                                                              Timestamp.Now,
+                //                                                              this,
+                //                                                              Connection,
+                //                                                              jsonResponse.DestinationNodeId,
+                //                                                              jsonResponse.NetworkPath,
+                //                                                              EventTrackingId,
+                //                                                              sendRequestState.RequestTimestamp,
+                //                                                              sendRequestState.BinaryRequest?.  ToBinary()      ?? [],
+                //                                                              sendRequestState.BinaryRequest?.ToByteArray() ?? [],
+                //                                                              Timestamp.Now,
+                //                                                              sendRequestState.BinaryResponse.  ToBinary(),
+                //                                                              CancellationToken
+                //                                                          )).
+                //                               ToArray());
+
+                //    }
+                //    catch (Exception e)
+                //    {
+                //        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnBinaryMessageResponseReceived));
+                //    }
+                //}
+
+                #endregion
+
+                return true;
+
+            }
+
+            DebugX.Log($"Received an unknown OCPP response with identificaiton '{BinaryResponseMessage.RequestId}' within {nameof(TestNetworkingNode)}:{Environment.NewLine}'{BinaryResponseMessage.Payload.ToBase64()}'!");
+            return false;
+
+        }
+
+        #endregion
+
+
+        #region ReceiveErrorMessage     (JSONErrorMessage)
+
+        public Boolean ReceiveErrorMessage(OCPP_JSONErrorMessage JSONErrorMessage)
+        {
+
+            if (requests.TryGetValue(JSONErrorMessage.RequestId, out var sendRequestState) &&
+                sendRequestState is not null)
+            {
+
+                sendRequestState.JSONResponse      = null;
+                sendRequestState.ErrorCode         = JSONErrorMessage.ErrorCode;
+                sendRequestState.ErrorDescription  = JSONErrorMessage.ErrorDescription;
+                sendRequestState.ErrorDetails      = JSONErrorMessage.ErrorDetails;
+
+                #region OnJSONErrorResponseReceived
+
+                //var onJSONErrorResponseReceived = OnJSONErrorResponseReceived;
+                //if (onJSONErrorResponseReceived is not null)
+                //{
+                //    try
+                //    {
+
+                //        await Task.WhenAll(onJSONErrorResponseReceived.GetInvocationList().
+                //                               OfType <OnWebSocketTextErrorResponseDelegate>().
+                //                               Select (loggingDelegate => loggingDelegate.Invoke(
+                //                                                              Timestamp.Now,
+                //                                                              this,
+                //                                                              Connection,
+                //                                                              EventTrackingId,
+                //                                                              sendRequestState.RequestTimestamp,
+                //                                                              sendRequestState.JSONRequest?.  ToJSON().ToString(JSONFormatting) ?? "",
+                //                                                              sendRequestState.BinaryRequest?.ToByteArray()                     ?? [],
+                //                                                              Timestamp.Now,
+                //                                                              sendRequestState.JSONResponse?. ToString() ?? "",
+                //                                                              CancellationToken
+                //                                                          )).
+                //                               ToArray());
+
+                //    }
+                //    catch (Exception e)
+                //    {
+                //        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnJSONErrorResponseReceived));
+                //    }
+                //}
+
+                #endregion
+
+                return true;
+
+            }
+
+            DebugX.Log($"Received an unknown OCPP error response with identificaiton '{JSONErrorMessage.RequestId}' within {nameof(TestNetworkingNode)}:{Environment.NewLine}'{JSONErrorMessage.ToJSON().ToString(Formatting.None)}'!");
+            return false;
+
+        }
+
+        #endregion
+
+
+
+        #region LookupNetworkingNode (DestinationNodeId, out Reachability)
+
+        public Boolean LookupNetworkingNode(NetworkingNode_Id DestinationNodeId, out Reachability? Reachability)
+        {
+
+            if (reachableNetworkingNodes.TryGetValue(DestinationNodeId, out var reachabilityList) &&
+                reachabilityList is not null &&
+                reachabilityList.Count > 0)
+            {
+
+                var reachability = reachabilityList.OrderBy(entry => entry.Priority).First();
+
+                if (reachability.NetworkingHub.HasValue)
+                {
+
+                    var visitedIds = new HashSet<NetworkingNode_Id>();
+
+                    do
+                    {
+
+                        if (reachability.NetworkingHub.HasValue)
+                        {
+
+                            visitedIds.Add(reachability.NetworkingHub.Value);
+
+                            if (reachableNetworkingNodes.TryGetValue(reachability.NetworkingHub.Value, out var reachability2List) &&
+                                reachability2List is not null &&
+                                reachability2List.Count > 0)
+                            {
+                                reachability = reachability2List.OrderBy(entry => entry.Priority).First();
+                            }
+
+                            // Loop detected!
+                            if (reachability.NetworkingHub.HasValue && visitedIds.Contains(reachability.NetworkingHub.Value))
+                                break;
+
+                        }
+
+                    } while (reachability.OCPPWebSocketClient is not null ||
+                             reachability.OCPPWebSocketServer is not null);
+
+                }
+
+                Reachability = reachability;
+                return true;
+
+            }
+
+            Reachability = null;
+            return false;
+
+        }
+
+        #endregion
+
+        #region AddStaticRouting     (DestinationNodeId, WebSocketClient,        Priority = 0, Timestamp = null, Timeout = null)
+
+        public void AddStaticRouting(NetworkingNode_Id    DestinationNodeId,
+                                     OCPPWebSocketClient  WebSocketClient,
+                                     Byte?                Priority    = 0,
+                                     DateTime?            Timestamp   = null,
+                                     DateTime?            Timeout     = null)
+        {
+
+            var reachability = new Reachability(
+                                   DestinationNodeId,
+                                   WebSocketClient,
+                                   Priority,
+                                   Timeout
+                               );
+
+            reachableNetworkingNodes.AddOrUpdate(
+
+                DestinationNodeId,
+
+                (id)                   => [reachability],
+
+                (id, reachabilityList) => {
+
+                    if (reachabilityList is null)
+                        return [reachability];
+
+                    else
+                    {
+
+                        // For thread-safety!
+                        var updatedReachabilityList = new List<Reachability>();
+                        updatedReachabilityList.AddRange(reachabilityList.Where(entry => entry.Priority != reachability.Priority));
+                        updatedReachabilityList.Add     (reachability);
+
+                        return updatedReachabilityList;
+
+                    }
+
+                }
+
+            );
+
+            //csmsChannel.Item1.AddStaticRouting(DestinationNodeId,
+            //                                   NetworkingHubId);
+
+        }
+
+        #endregion
+
+        #region AddStaticRouting     (DestinationNodeId, WebSocketServer,        Priority = 0, Timestamp = null, Timeout = null)
+
+        public void AddStaticRouting(NetworkingNode_Id    DestinationNodeId,
+                                     OCPPWebSocketServer  WebSocketServer,
+                                     Byte?                Priority    = 0,
+                                     DateTime?            Timestamp   = null,
+                                     DateTime?            Timeout     = null)
+        {
+
+            var reachability = new Reachability(
+                                   DestinationNodeId,
+                                   WebSocketServer,
+                                   Priority,
+                                   Timeout
+                               );
+
+            reachableNetworkingNodes.AddOrUpdate(
+
+                DestinationNodeId,
+
+                (id)                   => [reachability],
+
+                (id, reachabilityList) => {
+
+                    if (reachabilityList is null)
+                        return [reachability];
+
+                    else
+                    {
+
+                        // For thread-safety!
+                        var updatedReachabilityList = new List<Reachability>();
+                        updatedReachabilityList.AddRange(reachabilityList.Where(entry => entry.Priority != reachability.Priority));
+                        updatedReachabilityList.Add     (reachability);
+
+                        return updatedReachabilityList;
+
+                    }
+
+                }
+
+            );
+
+            //csmsChannel.Item1.AddStaticRouting(DestinationNodeId,
+            //                                   NetworkingHubId);
+
+        }
+
+        #endregion
+
+        #region AddStaticRouting     (DestinationNodeId, NetworkingHubId,        Priority = 0, Timestamp = null, Timeout = null)
+
+        public void AddStaticRouting(NetworkingNode_Id  DestinationNodeId,
+                                     NetworkingNode_Id  NetworkingHubId,
+                                     Byte?              Priority    = 0,
+                                     DateTime?          Timestamp   = null,
+                                     DateTime?          Timeout     = null)
+        {
+
+            var reachability = new Reachability(
+                                   DestinationNodeId,
+                                   NetworkingHubId,
+                                   Priority,
+                                   Timeout
+                               );
+
+            reachableNetworkingNodes.AddOrUpdate(
+
+                DestinationNodeId,
+
+                (id)                   => [reachability],
+
+                (id, reachabilityList) => {
+
+                    if (reachabilityList is null)
+                        return [reachability];
+
+                    else
+                    {
+
+                        // For thread-safety!
+                        var updatedReachabilityList = new List<Reachability>();
+                        updatedReachabilityList.AddRange(reachabilityList.Where(entry => entry.Priority != reachability.Priority));
+                        updatedReachabilityList.Add     (reachability);
+
+                        return updatedReachabilityList;
+
+                    }
+
+                }
+
+            );
+
+            //csmsChannel.Item1.AddStaticRouting(DestinationNodeId,
+            //                                   NetworkingHubId);
+
+        }
+
+        #endregion
+
+        #region RemoveStaticRouting  (DestinationNodeId, NetworkingHubId = null, Priority = 0)
+
+        public void RemoveStaticRouting(NetworkingNode_Id   DestinationNodeId,
+                                        NetworkingNode_Id?  NetworkingHubId   = null,
+                                        Byte?               Priority          = 0)
+        {
+
+            if (!NetworkingHubId.HasValue)
+            {
+                reachableNetworkingNodes.TryRemove(DestinationNodeId, out _);
+                return;
+            }
+
+            if (reachableNetworkingNodes.TryGetValue(DestinationNodeId, out var reachabilityList) &&
+                reachabilityList is not null &&
+                reachabilityList.Count > 0)
+            {
+
+                // For thread-safety!
+                var updatedReachabilityList = new List<Reachability>(reachabilityList.Where(entry => entry.NetworkingHub == NetworkingHubId && (!Priority.HasValue || entry.Priority != (Priority ?? 0))));
+
+                if (updatedReachabilityList.Count > 0)
+                    reachableNetworkingNodes.TryUpdate(
+                        DestinationNodeId,
+                        updatedReachabilityList,
+                        reachabilityList
+                    );
+
+                else
+                    reachableNetworkingNodes.TryRemove(DestinationNodeId, out _);
+
+            }
+
+            //csmsChannel.Item1.RemoveStaticRouting(DestinationNodeId,
+            //                                      NetworkingHubId);
+
+        }
+
+        #endregion
+
+
+
+        #region HandleErrors(Module, Caller, ExceptionOccured)
+
+        private Task HandleErrors(String     Module,
+                                  String     Caller,
+                                  Exception  ExceptionOccured)
+        {
+
+            DebugX.LogException(ExceptionOccured, $"{Module}.{Caller}");
+
+            return Task.CompletedTask;
+
+        }
+
+        #endregion
+
+
 
 
         public void Wire()

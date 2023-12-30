@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     ///// <param name="CancellationToken">A token to cancel the processing.</param>
     //public delegate Task OnCSMSNewWebSocketConnectionDelegate        (DateTime                           Timestamp,
     //                                                                  ICSMSChannel                       CSMSChannel,
-    //                                                                  WebSocketServerConnection          NewConnection,
+    //                                                                  IWebSocketConnection          NewConnection,
     //                                                                  NetworkingNode_Id                  NetworkingNodeId,
     //                                                                  EventTracking_Id                   EventTrackingId,
     //                                                                  IEnumerable<String>                SharedSubprotocols,
@@ -62,7 +62,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     ///// <param name="CancellationToken">A token to cancel the processing.</param>
     //public delegate Task OnCSMSCloseMessageReceivedDelegate          (DateTime                           Timestamp,
     //                                                                  ICSMSChannel                       CSMSChannel,
-    //                                                                  WebSocketServerConnection          Connection,
+    //                                                                  IWebSocketConnection          Connection,
     //                                                                  NetworkingNode_Id                  NetworkingNodeId,
     //                                                                  EventTracking_Id                   EventTrackingId,
     //                                                                  WebSocketFrame.ClosingStatusCode   StatusCode,
@@ -81,7 +81,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     ///// <param name="CancellationToken">A token to cancel the processing.</param>
     //public delegate Task OnCSMSTCPConnectionClosedDelegate           (DateTime                           Timestamp,
     //                                                                  ICSMSChannel                       CSMSChannel,
-    //                                                                  WebSocketServerConnection          Connection,
+    //                                                                  IWebSocketConnection          Connection,
     //                                                                  NetworkingNode_Id                  NetworkingNodeId,
     //                                                                  EventTracking_Id                   EventTrackingId,
     //                                                                  String?                            Reason,
@@ -103,7 +103,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     ///// <param name="JSONRequest">The incoming OCPP JSON request.</param>
     //public delegate Task OnOCPPJSONRequestLogDelegate                (DateTime                    Timestamp,
     //                                                                  ICSMSChannel                CSMSChannel,
-    //                                                                  WebSocketServerConnection   Connection,
+    //                                                                  IWebSocketConnection   Connection,
     //                                                                  NetworkingNode_Id           NetworkingNodeId,
     //                                                                  EventTracking_Id            EventTrackingId,
     //                                                                  DateTime                    RequestTimestamp,
@@ -122,7 +122,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     ///// <param name="BinaryRequest">The incoming binary OCPP request.</param>
     //public delegate Task OnOCPPBinaryRequestLogDelegate              (DateTime                    Timestamp,
     //                                                                  ICSMSChannel                CSMSChannel,
-    //                                                                  WebSocketServerConnection   Connection,
+    //                                                                  IWebSocketConnection   Connection,
     //                                                                  NetworkingNode_Id           NetworkingNodeId,
     //                                                                  EventTracking_Id            EventTrackingId,
     //                                                                  DateTime                    RequestTimestamp,
@@ -149,7 +149,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     ///// <param name="Runtime">The overall runtime of the request.</param>
     //public delegate Task OnOCPPJSONRequestJSONResponseLogDelegate    (DateTime                    Timestamp,
     //                                                                  ICSMSChannel                CSMSChannel,
-    //                                                                  WebSocketServerConnection   Connection,
+    //                                                                  IWebSocketConnection   Connection,
     //                                                                  NetworkingNode_Id           NetworkingNodeId,
     //                                                                  EventTracking_Id            EventTrackingId,
     //                                                                  DateTime                    RequestTimestamp,
@@ -175,7 +175,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     ///// <param name="Runtime">The overall runtime of the request.</param>
     //public delegate Task OnOCPPJSONRequestBinaryResponseLogDelegate  (DateTime                    Timestamp,
     //                                                                  ICSMSChannel                CSMSChannel,
-    //                                                                  WebSocketServerConnection   Connection,
+    //                                                                  IWebSocketConnection   Connection,
     //                                                                  NetworkingNode_Id           NetworkingNodeId,
     //                                                                  EventTracking_Id            EventTrackingId,
     //                                                                  DateTime                    RequestTimestamp,
@@ -201,7 +201,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     ///// <param name="Runtime">The overall runtime of the request.</param>
     //public delegate Task OnOCPPBinaryRequestJSONResponseLogDelegate  (DateTime                    Timestamp,
     //                                                                  ICSMSChannel                CSMSChannel,
-    //                                                                  WebSocketServerConnection   Connection,
+    //                                                                  IWebSocketConnection   Connection,
     //                                                                  NetworkingNode_Id           NetworkingNodeId,
     //                                                                  EventTracking_Id            EventTrackingId,
     //                                                                  DateTime                    RequestTimestamp,
@@ -227,7 +227,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     ///// <param name="Runtime">The overall runtime of the request.</param>
     //public delegate Task OnOCPPBinaryRequestBinaryResponseLogDelegate(DateTime                    Timestamp,
     //                                                                  ICSMSChannel                CSMSChannel,
-    //                                                                  WebSocketServerConnection   Connection,
+    //                                                                  IWebSocketConnection   Connection,
     //                                                                  NetworkingNode_Id           NetworkingNodeId,
     //                                                                  EventTracking_Id            EventTrackingId,
     //                                                                  DateTime                    RequestTimestamp,
@@ -254,7 +254,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
     //public delegate Task OnWebSocketJSONMessageRequestDelegate   (DateTime                    Timestamp,
     //                                                              ICSMSChannel                Server,
-    //                                                              WebSocketServerConnection   Connection,
+    //                                                              IWebSocketConnection   Connection,
     //                                                              NetworkingNode_Id           NetworkingNodeId,
     //                                                              EventTracking_Id            EventTrackingId,
     //                                                              DateTime                    RequestTimestamp,
@@ -263,7 +263,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
     //public delegate Task OnWebSocketJSONMessageResponseDelegate  (DateTime                    Timestamp,
     //                                                              ICSMSChannel                Server,
-    //                                                              WebSocketServerConnection   Connection,
+    //                                                              IWebSocketConnection   Connection,
     //                                                              NetworkingNode_Id           NetworkingNodeId,
     //                                                              EventTracking_Id            EventTrackingId,
     //                                                              DateTime                    RequestTimestamp,
@@ -275,7 +275,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
     //public delegate Task OnWebSocketTextErrorResponseDelegate    (DateTime                    Timestamp,
     //                                                              ICSMSChannel                Server,
-    //                                                              WebSocketServerConnection   Connection,
+    //                                                              IWebSocketConnection   Connection,
     //                                                              EventTracking_Id            EventTrackingId,
     //                                                              DateTime                    RequestTimestamp,
     //                                                              String                      TextRequestMessage,
@@ -288,7 +288,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
     //public delegate Task OnWebSocketBinaryMessageRequestDelegate (DateTime                    Timestamp,
     //                                                              ICSMSChannel                Server,
-    //                                                              WebSocketServerConnection   Connection,
+    //                                                              IWebSocketConnection   Connection,
     //                                                              NetworkingNode_Id           NetworkingNodeId,
     //                                                              EventTracking_Id            EventTrackingId,
     //                                                              DateTime                    RequestTimestamp,
@@ -297,7 +297,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
     //public delegate Task OnWebSocketBinaryMessageResponseDelegate(DateTime                    Timestamp,
     //                                                              ICSMSChannel                Server,
-    //                                                              WebSocketServerConnection   Connection,
+    //                                                              IWebSocketConnection   Connection,
     //                                                              NetworkingNode_Id           NetworkingNodeId,
     //                                                              EventTracking_Id            EventTrackingId,
     //                                                              DateTime                    RequestTimestamp,
@@ -309,7 +309,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
     ////public delegate Task OnWebSocketBinaryErrorResponseDelegate  (DateTime                    Timestamp,
     ////                                                              CSMSWSServer                Server,
-    ////                                                              WebSocketServerConnection   Connection,
+    ////                                                              IWebSocketConnection   Connection,
     ////                                                              EventTracking_Id            EventTrackingId,
     ////                                                              DateTime                    RequestTimestamp,
     ////                                                              Byte[]                      RequestMessage,

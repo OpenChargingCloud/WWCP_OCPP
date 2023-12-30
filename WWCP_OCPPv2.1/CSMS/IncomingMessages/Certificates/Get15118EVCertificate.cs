@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnGet15118EVCertificateRequestDelegate(DateTime                       Timestamp,
                                                IEventSender                   Sender,
-                                               WebSocketServerConnection      Connection,
+                                               IWebSocketConnection      Connection,
                                                Get15118EVCertificateRequest   Request);
 
 
@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnGet15118EVCertificateDelegate(DateTime                       Timestamp,
                                         IEventSender                   Sender,
-                                        WebSocketServerConnection      Connection,
+                                        IWebSocketConnection      Connection,
                                         Get15118EVCertificateRequest   Request,
                                         CancellationToken              CancellationToken);
 
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnGet15118EVCertificateResponseDelegate(DateTime                        Timestamp,
                                                 IEventSender                    Sender,
-                                                WebSocketServerConnection       Connection,
+                                                IWebSocketConnection       Connection,
                                                 Get15118EVCertificateRequest    Request,
                                                 Get15118EVCertificateResponse   Response,
                                                 TimeSpan                        Runtime);

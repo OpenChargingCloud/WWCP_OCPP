@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnNotifyReportRequestDelegate(DateTime                    Timestamp,
                                       IEventSender                Sender,
-                                      WebSocketServerConnection   Connection,
+                                      IWebSocketConnection   Connection,
                                       NotifyReportRequest         Request);
 
 
@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnNotifyReportDelegate(DateTime                    Timestamp,
                                IEventSender                Sender,
-                               WebSocketServerConnection   Connection,
+                               IWebSocketConnection   Connection,
                                NotifyReportRequest         Request,
                                CancellationToken           CancellationToken);
 
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnNotifyReportResponseDelegate(DateTime                    Timestamp,
                                        IEventSender                Sender,
-                                       WebSocketServerConnection   Connection,
+                                       IWebSocketConnection   Connection,
                                        NotifyReportRequest         Request,
                                        NotifyReportResponse        Response,
                                        TimeSpan                    Runtime);

@@ -218,7 +218,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                              String             Password)
         {
 
-            ChargingBoxLogins.AddOrUpdate(NetworkingNodeId,
+            NetworkingNodeLogins.AddOrUpdate(NetworkingNodeId,
                                           Password,
                                           (chargingStationId, password) => Password);
 
@@ -235,8 +235,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public Boolean RemoveHTTPBasicAuth(NetworkingNode_Id NetworkingNodeId)
         {
 
-            if (ChargingBoxLogins.ContainsKey(NetworkingNodeId))
-                return ChargingBoxLogins.TryRemove(NetworkingNodeId, out _);
+            if (NetworkingNodeLogins.ContainsKey(NetworkingNodeId))
+                return NetworkingNodeLogins.TryRemove(NetworkingNodeId, out _);
 
             return true;
 

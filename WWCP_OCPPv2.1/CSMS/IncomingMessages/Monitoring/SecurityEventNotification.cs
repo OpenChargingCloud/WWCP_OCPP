@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnSecurityEventNotificationRequestDelegate(DateTime                           Timestamp,
                                                    IEventSender                       Sender,
-                                                   WebSocketServerConnection          Connection,
+                                                   IWebSocketConnection          Connection,
                                                    SecurityEventNotificationRequest   Request);
 
 
@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnSecurityEventNotificationDelegate(DateTime                           Timestamp,
                                             IEventSender                       Sender,
-                                            WebSocketServerConnection          Connection,
+                                            IWebSocketConnection          Connection,
                                             SecurityEventNotificationRequest   Request,
                                             CancellationToken                  CancellationToken);
 
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnSecurityEventNotificationResponseDelegate(DateTime                            Timestamp,
                                                     IEventSender                        Sender,
-                                                    WebSocketServerConnection           Connection,
+                                                    IWebSocketConnection           Connection,
                                                     SecurityEventNotificationRequest    Request,
                                                     SecurityEventNotificationResponse   Response,
                                                     TimeSpan                            Runtime);

@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnReservationStatusUpdateRequestDelegate(DateTime                         Timestamp,
                                                  IEventSender                     Sender,
-                                                 WebSocketServerConnection        Connection,
+                                                 IWebSocketConnection        Connection,
                                                  ReservationStatusUpdateRequest   Request);
 
 
@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnReservationStatusUpdateDelegate(DateTime                         Timestamp,
                                           IEventSender                     Sender,
-                                          WebSocketServerConnection        Connection,
+                                          IWebSocketConnection        Connection,
                                           ReservationStatusUpdateRequest   Request,
                                           CancellationToken                CancellationToken);
 
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnReservationStatusUpdateResponseDelegate(DateTime                          Timestamp,
                                                   IEventSender                      Sender,
-                                                  WebSocketServerConnection         Connection,
+                                                  IWebSocketConnection         Connection,
                                                   ReservationStatusUpdateRequest    Request,
                                                   ReservationStatusUpdateResponse   Response,
                                                   TimeSpan                          Runtime);

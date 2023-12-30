@@ -7669,17 +7669,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             else
             {
 
-                response = parentNetworkingNode.LookupNetworkingNode(Request.DestinationNodeId, out var communicationChannel) &&
-                                communicationChannel is not null
+                //response = parentNetworkingNode.LookupNetworkingNode(Request.DestinationNodeId, out var communicationChannel) &&
+                //                communicationChannel is not null
 
-                                // FUTURE!!!
+                //                // FUTURE!!!
 
-                                ? await communicationChannel.NotifyNetworkTopology(Request)
+                //                ? await communicationChannel.NotifyNetworkTopology(Request)
 
-                                : new NotifyNetworkTopologyResponse(
-                                        Request,
-                                        Result.UnknownOrUnreachable(Request.DestinationNodeId)
-                                    );
+                //                : new NotifyNetworkTopologyResponse(
+                //                        Request,
+                //                        Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                //                    );
 
             }
 

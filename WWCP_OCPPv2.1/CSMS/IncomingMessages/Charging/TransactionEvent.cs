@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnTransactionEventRequestDelegate(DateTime                    Timestamp,
                                           IEventSender                Sender,
-                                          WebSocketServerConnection   Connection,
+                                          IWebSocketConnection   Connection,
                                           TransactionEventRequest     Request);
 
 
@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnTransactionEventDelegate(DateTime                    Timestamp,
                                    IEventSender                Sender,
-                                   WebSocketServerConnection   Connection,
+                                   IWebSocketConnection   Connection,
                                    TransactionEventRequest     Request,
                                    CancellationToken           CancellationToken);
 
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnTransactionEventResponseDelegate(DateTime                    Timestamp,
                                            IEventSender                Sender,
-                                           WebSocketServerConnection   Connection,
+                                           IWebSocketConnection   Connection,
                                            TransactionEventRequest     Request,
                                            TransactionEventResponse    Response,
                                            TimeSpan                    Runtime);

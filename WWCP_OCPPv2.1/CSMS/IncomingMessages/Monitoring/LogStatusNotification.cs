@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnLogStatusNotificationRequestDelegate(DateTime                       Timestamp,
                                                IEventSender                   Sender,
-                                               WebSocketServerConnection      Connection,
+                                               IWebSocketConnection      Connection,
                                                LogStatusNotificationRequest   Request);
 
 
@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnLogStatusNotificationDelegate(DateTime                       Timestamp,
                                         IEventSender                   Sender,
-                                        WebSocketServerConnection      Connection,
+                                        IWebSocketConnection      Connection,
                                         LogStatusNotificationRequest   Request,
                                         CancellationToken              CancellationToken);
 
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnLogStatusNotificationResponseDelegate(DateTime                        Timestamp,
                                                 IEventSender                    Sender,
-                                                WebSocketServerConnection       Connection,
+                                                IWebSocketConnection       Connection,
                                                 LogStatusNotificationRequest    Request,
                                                 LogStatusNotificationResponse   Response,
                                                 TimeSpan                        Runtime);

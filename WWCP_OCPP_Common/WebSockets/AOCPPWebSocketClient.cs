@@ -104,10 +104,10 @@ namespace cloud.charging.open.protocols.OCPP.CS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new charging station websocket client running on a charging station
+        /// Create a new OCPP HTTP Web Socket client running, e.g on a charging station
         /// and connecting to a CSMS to invoke methods.
         /// </summary>
-        /// <param name="ChargingStationIdentity">The unique identification of this charging station.</param>
+        /// <param name="NetworkingNodeIdentity">The unique identification of this charging station.</param>
         /// 
         /// <param name="RemoteURL">The remote URL of the HTTP endpoint to connect to.</param>
         /// <param name="VirtualHostname">An optional HTTP virtual hostname.</param>
@@ -126,7 +126,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
         /// <param name="LogfileCreator">A delegate to create a log file from the given context and log file name.</param>
         /// <param name="HTTPLogger">A HTTP logger.</param>
         /// <param name="DNSClient">The DNS client to use.</param>
-        public AOCPPWebSocketClient(NetworkingNode_Id                    ChargingStationIdentity,
+        public AOCPPWebSocketClient(NetworkingNode_Id                    NetworkingNodeIdentity,
 
                                     URL                                  RemoteURL,
                                     HTTPHostname?                        VirtualHostname              = null,
@@ -191,7 +191,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
 
         {
 
-            this.Id              = ChargingStationIdentity;
+            this.Id              = NetworkingNodeIdentity;
             this.NetworkingMode  = NetworkingMode ?? WebSockets.NetworkingMode.Standard;
 
             //this.Logger          = new ChargePointwebsocketClient.CPClientLogger(this,
@@ -259,10 +259,14 @@ namespace cloud.charging.open.protocols.OCPP.CS
                             #region Send response...
 
                             if (OCPPJSONResponse is not null)
-                                await SendText(
-                                          OCPPJSONResponse.ToJSON().ToString(JSONFormatting),
-                                          CancellationToken
-                                      );
+                            {
+
+                                var sendStatus = await SendText(
+                                                           OCPPJSONResponse.ToJSON().ToString(JSONFormatting),
+                                                           CancellationToken
+                                                       );
+
+                            }
 
                             #endregion
 
@@ -308,9 +312,13 @@ namespace cloud.charging.open.protocols.OCPP.CS
                             #region Send response...
 
                             if (OCPPBinaryResponse is not null)
-                                await SendBinary(
-                                          OCPPBinaryResponse.ToByteArray()
-                                      );
+                            {
+
+                                var sendStatus = await SendBinary(
+                                                           OCPPBinaryResponse.ToByteArray()
+                                                       );
+
+                            }
 
                             #endregion
 
@@ -696,17 +704,23 @@ namespace cloud.charging.open.protocols.OCPP.CS
                                                  JSONMessage
                                              );
 
-                        await SendText(jsonRequestMessage.
-                                           ToJSON  ().
-                                           ToString(JSONFormatting));
+                        var sendStatus = await SendText(jsonRequestMessage.
+                                                            ToJSON  ().
+                                                            ToString(JSONFormatting));
 
-                        requests.TryAdd(RequestId,
-                                        SendRequestState.FromJSONRequest(
-                                            Timestamp.Now,
-                                            Id,
-                                            Timestamp.Now + RequestTimeout,
-                                            jsonRequestMessage
-                                        ));
+                        if (sendStatus == SendStatus.Success)
+                            requests.TryAdd(RequestId,
+                                            SendRequestState.FromJSONRequest(
+                                                Timestamp.Now,
+                                                Id,
+                                                Timestamp.Now + RequestTimeout,
+                                                jsonRequestMessage
+                                            ));
+
+                        else
+                        {
+                            //ToDo: Retry to send text message!
+                        }
 
                     }
                     else
@@ -815,15 +829,21 @@ namespace cloud.charging.open.protocols.OCPP.CS
                                                    BinaryMessage
                                                );
 
-                        await SendBinary(binaryRequestMessage.ToByteArray());
+                        var sendStatus = await SendBinary(binaryRequestMessage.ToByteArray());
 
-                        requests.TryAdd(RequestId,
-                                        SendRequestState.FromBinaryRequest(
-                                            Timestamp.Now,
-                                            Id,
-                                            Timestamp.Now + RequestTimeout,
-                                            binaryRequestMessage
-                                        ));
+                        if (sendStatus == SendStatus.Success)
+                            requests.TryAdd(RequestId,
+                                            SendRequestState.FromBinaryRequest(
+                                                Timestamp.Now,
+                                                Id,
+                                                Timestamp.Now + RequestTimeout,
+                                                binaryRequestMessage
+                                            ));
+
+                        else
+                        {
+                            //ToDo: Retry to send binary message!
+                        }
 
                     }
                     else

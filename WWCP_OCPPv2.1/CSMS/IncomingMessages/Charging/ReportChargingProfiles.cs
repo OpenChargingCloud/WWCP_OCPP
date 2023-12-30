@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnReportChargingProfilesRequestDelegate(DateTime                        Timestamp,
                                                 IEventSender                    Sender,
-                                                WebSocketServerConnection       Connection,
+                                                IWebSocketConnection       Connection,
                                                 ReportChargingProfilesRequest   Request);
 
 
@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnReportChargingProfilesDelegate(DateTime                        Timestamp,
                                          IEventSender                    Sender,
-                                         WebSocketServerConnection       Connection,
+                                         IWebSocketConnection       Connection,
                                          ReportChargingProfilesRequest   Request,
                                          CancellationToken               CancellationToken);
 
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnReportChargingProfilesResponseDelegate(DateTime                         Timestamp,
                                                  IEventSender                     Sender,
-                                                 WebSocketServerConnection        Connection,
+                                                 IWebSocketConnection        Connection,
                                                  ReportChargingProfilesRequest    Request,
                                                  ReportChargingProfilesResponse   Response,
                                                  TimeSpan                         Runtime);

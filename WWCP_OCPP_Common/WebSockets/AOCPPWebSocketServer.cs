@@ -105,7 +105,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         /// <summary>
         /// Logins and passwords for HTTP Basic Authentication.
         /// </summary>
-        public ConcurrentDictionary<NetworkingNode_Id, String?>   ChargingBoxLogins        { get; }
+        public ConcurrentDictionary<NetworkingNode_Id, String?>   NetworkingNodeLogins     { get; }
             = new();
 
         /// <summary>
@@ -238,31 +238,31 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         /// <param name="DNSClient">An optional DNS client to use.</param>
         /// <param name="AutoStart">Start the server immediately.</param>
         public AOCPPWebSocketServer(IEnumerable<String>                  SupportedOCPPWebSocketSubprotocols,
-                             String                               HTTPServiceName              = DefaultHTTPServiceName,
-                             IIPAddress?                          IPAddress                    = null,
-                             IPPort?                              TCPPort                      = null,
+                                    String                               HTTPServiceName              = DefaultHTTPServiceName,
+                                    IIPAddress?                          IPAddress                    = null,
+                                    IPPort?                              TCPPort                      = null,
 
-                             Boolean                              RequireAuthentication        = true,
-                             Boolean                              DisableWebSocketPings        = false,
-                             TimeSpan?                            WebSocketPingEvery           = null,
-                             TimeSpan?                            SlowNetworkSimulationDelay   = null,
+                                    Boolean                              RequireAuthentication        = true,
+                                    Boolean                              DisableWebSocketPings        = false,
+                                    TimeSpan?                            WebSocketPingEvery           = null,
+                                    TimeSpan?                            SlowNetworkSimulationDelay   = null,
 
-                             ServerCertificateSelectorDelegate?   ServerCertificateSelector    = null,
-                             RemoteCertificateValidationHandler?  ClientCertificateValidator   = null,
-                             LocalCertificateSelectionHandler?    ClientCertificateSelector    = null,
-                             SslProtocols?                        AllowedTLSProtocols          = null,
-                             Boolean?                             ClientCertificateRequired    = null,
-                             Boolean?                             CheckCertificateRevocation   = null,
+                                    ServerCertificateSelectorDelegate?   ServerCertificateSelector    = null,
+                                    RemoteCertificateValidationHandler?  ClientCertificateValidator   = null,
+                                    LocalCertificateSelectionHandler?    ClientCertificateSelector    = null,
+                                    SslProtocols?                        AllowedTLSProtocols          = null,
+                                    Boolean?                             ClientCertificateRequired    = null,
+                                    Boolean?                             CheckCertificateRevocation   = null,
 
-                             ServerThreadNameCreatorDelegate?     ServerThreadNameCreator      = null,
-                             ServerThreadPriorityDelegate?        ServerThreadPrioritySetter   = null,
-                             Boolean?                             ServerThreadIsBackground     = null,
-                             ConnectionIdBuilder?                 ConnectionIdBuilder          = null,
-                             TimeSpan?                            ConnectionTimeout            = null,
-                             UInt32?                              MaxClientConnections         = null,
+                                    ServerThreadNameCreatorDelegate?     ServerThreadNameCreator      = null,
+                                    ServerThreadPriorityDelegate?        ServerThreadPrioritySetter   = null,
+                                    Boolean?                             ServerThreadIsBackground     = null,
+                                    ConnectionIdBuilder?                 ConnectionIdBuilder          = null,
+                                    TimeSpan?                            ConnectionTimeout            = null,
+                                    UInt32?                              MaxClientConnections         = null,
 
-                             DNSClient?                           DNSClient                    = null,
-                             Boolean                              AutoStart                    = false)
+                                    DNSClient?                           DNSClient                    = null,
+                                    Boolean                              AutoStart                    = false)
 
             : base(IPAddress,
                    TCPPort ?? IPPort.Parse(8000),
@@ -318,9 +318,9 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                                              String             Password)
         {
 
-            ChargingBoxLogins.AddOrUpdate(NetworkingNodeId,
-                                          Password,
-                                          (chargingStationId, password) => Password);
+            NetworkingNodeLogins.AddOrUpdate(NetworkingNodeId,
+                                             Password,
+                                             (chargingStationId, password) => Password);
 
         }
 
@@ -335,8 +335,8 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         public Boolean RemoveHTTPBasicAuth(NetworkingNode_Id NetworkingNodeId)
         {
 
-            if (ChargingBoxLogins.ContainsKey(NetworkingNodeId))
-                return ChargingBoxLogins.TryRemove(NetworkingNodeId, out _);
+            if (NetworkingNodeLogins.ContainsKey(NetworkingNodeId))
+                return NetworkingNodeLogins.TryRemove(NetworkingNodeId, out _);
 
             return true;
 
@@ -345,7 +345,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         #endregion
 
 
-        // Receive data...
+        // Connection management...
 
         #region (protected) ValidateTCPConnection        (LogTimestamp, Server, Connection, EventTrackingId, CancellationToken)
 
@@ -427,7 +427,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                 if (Connection.HTTPRequest?.Authorization is HTTPBasicAuthentication basicAuthentication)
                 {
 
-                    if (ChargingBoxLogins.TryGetValue(NetworkingNode_Id.Parse(basicAuthentication.Username), out var password) &&
+                    if (NetworkingNodeLogins.TryGetValue(NetworkingNode_Id.Parse(basicAuthentication.Username), out var password) &&
                         basicAuthentication.Password == password)
                     {
                         DebugX.Log(nameof(AOCPPWebSocketServer), " connection from " + Connection.RemoteSocket + " using authorization: " + basicAuthentication.Username + "/" + basicAuthentication.Password);
@@ -653,6 +653,8 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         #endregion
 
 
+        // Receive data...
+
         #region (protected) ProcessTextMessage           (RequestTimestamp, Connection, TextMessage,   EventTrackingId, CancellationToken)
 
         /// <summary>
@@ -856,6 +858,9 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                         #endregion
 
                     }
+
+                    else
+                        DebugX.Log($"Received an unknown OCPP response with identificaiton '{jsonResponse.RequestId}' within {nameof(AOCPPWebSocketServer)}:{Environment.NewLine}'{TextMessage}'!");
 
                     // No response to the charging station!
 
@@ -1236,7 +1241,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         }
 
         public void AddStaticRouting(NetworkingNode_Id DestinationNodeId,
-                                NetworkingNode_Id NetworkingHubId)
+                                     NetworkingNode_Id NetworkingHubId)
         {
 
             reachableViaNetworkingHubs.TryAdd(DestinationNodeId,
@@ -1245,7 +1250,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         }
 
         public void RemoveStaticRouting(NetworkingNode_Id DestinationNodeId,
-                                   NetworkingNode_Id NetworkingHubId)
+                                        NetworkingNode_Id NetworkingHubId)
         {
 
             reachableViaNetworkingHubs.TryRemove(new KeyValuePair<NetworkingNode_Id, NetworkingNode_Id>(DestinationNodeId, NetworkingHubId));
@@ -1268,7 +1273,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         /// <param name="Action">An OCPP action.</param>
         /// <param name="JSONData">The JSON payload.</param>
         /// <param name="RequestTimeout">A request timeout.</param>
-        public async Task<SendOCPPMessageResults> SendJSONData(EventTracking_Id   EventTrackingId,
+        public async Task<SendOCPPMessageResult> SendJSONData(EventTracking_Id   EventTrackingId,
                                                                NetworkingNode_Id  DestinationNodeId,
                                                                NetworkPath        NetworkPath,
                                                                Request_Id         RequestId,
@@ -1321,7 +1326,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                                                 jsonRequestMessage
                                             ));
 
-                            #region OnTextMessageRequestSent
+                            #region OnJSONMessageRequestSent
 
                             var onJSONMessageRequestSent = OnJSONMessageRequestSent;
                             if (onJSONMessageRequestSent is not null)
@@ -1358,16 +1363,16 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
 
                     }
 
-                    return SendOCPPMessageResults.Success;
+                    return SendOCPPMessageResult.Success;
 
                 }
                 else
-                    return SendOCPPMessageResults.UnknownClient;
+                    return SendOCPPMessageResult.UnknownClient;
 
             }
             catch (Exception)
             {
-                return SendOCPPMessageResults.TransmissionFailed;
+                return SendOCPPMessageResult.TransmissionFailed;
             }
 
         }
@@ -1386,7 +1391,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         /// <param name="Action">An OCPP action.</param>
         /// <param name="BinaryData">The binary payload.</param>
         /// <param name="RequestTimeout">A request timeout.</param>
-        public async Task<SendOCPPMessageResults> SendBinaryData(EventTracking_Id   EventTrackingId,
+        public async Task<SendOCPPMessageResult> SendBinaryData(EventTracking_Id   EventTrackingId,
                                                                  NetworkingNode_Id  DestinationNodeId,
                                                                  NetworkPath        NetworkPath,
                                                                  Request_Id         RequestId,
@@ -1475,16 +1480,16 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
 
                     }
 
-                    return SendOCPPMessageResults.Success;
+                    return SendOCPPMessageResult.Success;
 
                 }
                 else
-                    return SendOCPPMessageResults.UnknownClient;
+                    return SendOCPPMessageResult.UnknownClient;
 
             }
             catch (Exception)
             {
-                return SendOCPPMessageResults.TransmissionFailed;
+                return SendOCPPMessageResult.TransmissionFailed;
             }
 
         }
@@ -1517,7 +1522,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                                             CancellationToken
                                         );
 
-            if (sendJSONResult == SendOCPPMessageResults.Success) {
+            if (sendJSONResult == SendOCPPMessageResult.Success) {
 
                 #region Wait for a response... till timeout
 
@@ -1635,7 +1640,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                                             CancellationToken
                                         );
 
-            if (sendJSONResult == SendOCPPMessageResults.Success) {
+            if (sendJSONResult == SendOCPPMessageResult.Success) {
 
                 #region Wait for a response... till timeout
 

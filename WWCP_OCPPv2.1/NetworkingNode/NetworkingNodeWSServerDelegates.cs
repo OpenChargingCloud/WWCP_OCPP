@@ -41,7 +41,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
     /// <param name="CancellationToken">A token to cancel the processing.</param>
     public delegate Task OnNetworkingNodeNewWebSocketConnectionDelegate(DateTime                           Timestamp,
                                                                         INetworkingNodeWebsocketsChannel   NetworkingNodeChannel,
-                                                                        WebSocketServerConnection          NewConnection,
+                                                                        IWebSocketConnection          NewConnection,
                                                                         NetworkingNode_Id                  NetworkingNodeId,
                                                                         EventTracking_Id                   EventTrackingId,
                                                                         IEnumerable<String>                SharedSubprotocols,
@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
     /// <param name="CancellationToken">A token to cancel the processing.</param>
     public delegate Task OnNetworkingNodeCloseMessageReceivedDelegate(DateTime                           Timestamp,
                                                                       INetworkingNodeWebsocketsChannel   NetworkingNodeChannel,
-                                                                      WebSocketServerConnection          Connection,
+                                                                      IWebSocketConnection          Connection,
                                                                       NetworkingNode_Id                  NetworkingNodeId,
                                                                       EventTracking_Id                   EventTrackingId,
                                                                       WebSocketFrame.ClosingStatusCode   StatusCode,
@@ -79,7 +79,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
     /// <param name="CancellationToken">A token to cancel the processing.</param>
     public delegate Task OnNetworkingNodeTCPConnectionClosedDelegate(DateTime                           Timestamp,
                                                                      INetworkingNodeWebsocketsChannel   NetworkingNodeChannel,
-                                                                     WebSocketServerConnection          Connection,
+                                                                     IWebSocketConnection          Connection,
                                                                      NetworkingNode_Id                  NetworkingNodeId,
                                                                      EventTracking_Id                   EventTrackingId,
                                                                      String?                            Reason,

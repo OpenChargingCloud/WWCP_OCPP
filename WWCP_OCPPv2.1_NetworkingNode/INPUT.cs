@@ -52,22 +52,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Events
 
-        public event NetworkingNode.CSMS.OnNetworkingNodeNewWebSocketConnectionDelegate? OnNetworkingNodeNewWebSocketConnection;
-        public event NetworkingNode.CSMS.OnNetworkingNodeCloseMessageReceivedDelegate? OnNetworkingNodeCloseMessageReceived;
-        public event NetworkingNode.CSMS.OnNetworkingNodeTCPConnectionClosedDelegate? OnNetworkingNodeTCPConnectionClosed;
+        public event CSMS.OnNetworkingNodeNewWebSocketConnectionDelegate?  OnNetworkingNodeNewWebSocketConnection;
+        public event CSMS.OnNetworkingNodeCloseMessageReceivedDelegate?    OnNetworkingNodeCloseMessageReceived;
+        public event CSMS.OnNetworkingNodeTCPConnectionClosedDelegate?     OnNetworkingNodeTCPConnectionClosed;
 
+        public event OnWebSocketJSONMessageRequestDelegate?                OnJSONMessageRequestReceived;
+        public event OnWebSocketJSONMessageResponseDelegate?               OnJSONMessageResponseSent;
+        public event OnWebSocketTextErrorResponseDelegate?                 OnJSONErrorResponseSent;
+        public event OnWebSocketJSONMessageRequestDelegate?                OnJSONMessageRequestSent;
+        public event OnWebSocketJSONMessageResponseDelegate?               OnJSONMessageResponseReceived;
+        public event OnWebSocketTextErrorResponseDelegate?                 OnJSONErrorResponseReceived;
 
-        public event OCPP.OnWebSocketJSONMessageRequestDelegate? OnJSONMessageRequestReceived;
-        public event OCPP.OnWebSocketJSONMessageResponseDelegate? OnJSONMessageResponseSent;
-        public event OCPP.OnWebSocketTextErrorResponseDelegate? OnJSONErrorResponseSent;
-        public event OCPP.OnWebSocketJSONMessageRequestDelegate? OnJSONMessageRequestSent;
-        public event OCPP.OnWebSocketJSONMessageResponseDelegate? OnJSONMessageResponseReceived;
-        public event OCPP.OnWebSocketTextErrorResponseDelegate? OnJSONErrorResponseReceived;
-
-        public event OCPP.OnWebSocketBinaryMessageRequestDelegate? OnBinaryMessageRequestReceived;
-        public event OCPP.OnWebSocketBinaryMessageResponseDelegate? OnBinaryMessageResponseSent;
-        public event OCPP.OnWebSocketBinaryMessageRequestDelegate? OnBinaryMessageRequestSent;
-        public event OCPP.OnWebSocketBinaryMessageResponseDelegate? OnBinaryMessageResponseReceived;
+        public event OnWebSocketBinaryMessageRequestDelegate?              OnBinaryMessageRequestReceived;
+        public event OnWebSocketBinaryMessageResponseDelegate?             OnBinaryMessageResponseSent;
+        public event OnWebSocketBinaryMessageRequestDelegate?              OnBinaryMessageRequestSent;
+        public event OnWebSocketBinaryMessageResponseDelegate?             OnBinaryMessageResponseReceived;
 
 
         // Binary Data Streams Extensions

@@ -18,7 +18,7 @@
 namespace cloud.charging.open.protocols.OCPP
 {
 
-    public enum SendOCPPMessageResults
+    public enum SendOCPPMessageResult
     {
         Success,
         UnknownClient,

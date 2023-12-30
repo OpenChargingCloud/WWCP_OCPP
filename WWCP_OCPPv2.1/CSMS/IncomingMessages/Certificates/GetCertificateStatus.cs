@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnGetCertificateStatusRequestDelegate(DateTime                      Timestamp,
                                               IEventSender                  Sender,
-                                              WebSocketServerConnection     Connection,
+                                              IWebSocketConnection     Connection,
                                               GetCertificateStatusRequest   Request);
 
 
@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnGetCertificateStatusDelegate(DateTime                      Timestamp,
                                        IEventSender                  Sender,
-                                       WebSocketServerConnection     Connection,
+                                       IWebSocketConnection     Connection,
                                        GetCertificateStatusRequest   Request,
                                        CancellationToken             CancellationToken);
 
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnGetCertificateStatusResponseDelegate(DateTime                       Timestamp,
                                                IEventSender                   Sender,
-                                               WebSocketServerConnection      Connection,
+                                               IWebSocketConnection      Connection,
                                                GetCertificateStatusRequest    Request,
                                                GetCertificateStatusResponse   Response,
                                                TimeSpan                       Runtime);

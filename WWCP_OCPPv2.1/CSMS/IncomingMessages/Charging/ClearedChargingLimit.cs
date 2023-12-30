@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnClearedChargingLimitRequestDelegate(DateTime                      Timestamp,
                                               IEventSender                  Sender,
-                                              WebSocketServerConnection     Connection,
+                                              IWebSocketConnection     Connection,
                                               ClearedChargingLimitRequest   Request);
 
 
@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnClearedChargingLimitDelegate(DateTime                      Timestamp,
                                        IEventSender                  Sender,
-                                       WebSocketServerConnection     Connection,
+                                       IWebSocketConnection     Connection,
                                        ClearedChargingLimitRequest   Request,
                                        CancellationToken             CancellationToken);
 
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnClearedChargingLimitResponseDelegate(DateTime                       Timestamp,
                                                IEventSender                   Sender,
-                                               WebSocketServerConnection      Connection,
+                                               IWebSocketConnection      Connection,
                                                ClearedChargingLimitRequest    Request,
                                                ClearedChargingLimitResponse   Response,
                                                TimeSpan                       Runtime);

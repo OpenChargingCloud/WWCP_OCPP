@@ -29,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 {
 
     /// <summary>
-    /// An OCPP HTTP Web Socket JSON request message.
+    /// An OCPP JSON request message transport container.
     /// </summary>
     /// <param name="NetworkingMode">The networking mode.</param>
     /// <param name="DestinationNodeId">The networking node identification of the message destination.</param>
@@ -46,51 +46,60 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                                          Request_Id         RequestId,
                                          String             Action,
                                          JObject            Payload,
+                                         DateTime?          RequestTimeout      = null,
                                          String?            ErrorMessage        = null,
                                          CancellationToken  CancellationToken   = default)
     {
 
+        #region Data
+
+        public static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(30);
+
+        #endregion
+
         #region Properties
 
-        public DateTime           RequestTimestamp     { get; } = RequestTimestamp;
-        public EventTracking_Id   EventTrackingId      { get; } = EventTrackingId;
+        public DateTime           RequestTimestamp     { get; }      = RequestTimestamp;
+        public EventTracking_Id   EventTrackingId      { get; }      = EventTrackingId;
 
         /// <summary>
         /// The OCPP networking mode to use.
         /// </summary>
-        public NetworkingMode     NetworkingMode       { get; } = NetworkingMode;
+        public NetworkingMode     NetworkingMode       { get; set; } = NetworkingMode;
 
         /// <summary>
         /// The networking node identification of the message destination.
         /// </summary>
-        public NetworkingNode_Id  DestinationNodeId    { get; } = DestinationNodeId;
+        public NetworkingNode_Id  DestinationNodeId    { get; }      = DestinationNodeId;
 
         /// <summary>
         /// The (recorded) path of the request through the overlay network.
         /// </summary>
-        public NetworkPath        NetworkPath          { get; } = NetworkPath;
+        public NetworkPath        NetworkPath          { get; }      = NetworkPath;
 
         /// <summary>
         /// The unique request identification.
         /// </summary>
-        public Request_Id         RequestId            { get; } = RequestId;
+        public Request_Id         RequestId            { get; }      = RequestId;
 
         /// <summary>
         /// An OCPP action/method name.
         /// </summary>
-        public String             Action               { get; } = Action;
+        public String             Action               { get; }      = Action;
 
         /// <summary>
         /// The JSON request message payload.
         /// </summary>
-        public JObject            Payload              { get; } = Payload;
+        public JObject            Payload              { get; }      = Payload;
+
+        public DateTime           RequestTimeout       { get; set; } = RequestTimeout ?? (RequestTimestamp + DefaultTimeout);
 
         /// <summary>
         /// The optional error message, e.g. during sending of the message.
         /// </summary>
-        public String?            ErrorMessage         { get; } = ErrorMessage;
+        public String?            ErrorMessage         { get; }      = ErrorMessage;
 
-        public CancellationToken  CancellationToken    { get; } = CancellationToken;
+        public CancellationToken  CancellationToken    { get; }      = CancellationToken;
 
 
         public Boolean            NoErrors
@@ -98,6 +107,31 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
         public Boolean            HasErrors
             => ErrorMessage is not null;
+
+        #endregion
+
+
+        #region (static) FromRequest(Request, SerializedRequest)
+
+        /// <summary>
+        /// Create a new OCPP JSON request message transport container based on the given JSON request.
+        /// </summary>
+        /// <param name="Request">A request message.</param>
+        /// <param name="SerializedRequest">The serialized request message.</param>
+        public static OCPP_JSONRequestMessage FromRequest(IRequest  Request,
+                                                          JObject   SerializedRequest)
+
+            => new (Timestamp.Now,
+                    Request.EventTrackingId,
+                    NetworkingMode.Unknown,
+                    Request.DestinationNodeId,
+                    Request.NetworkPath,
+                    Request.RequestId,
+                    Request.Action,
+                    SerializedRequest,
+                    Timestamp.Now + Request.RequestTimeout,
+                    null,
+                    Request.CancellationToken);
 
         #endregion
 
@@ -173,6 +207,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                                          action,
                                          payload,
                                          null,
+                                         null,
                                          CancellationToken
                                      );
 
@@ -245,6 +280,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                                          requestId,
                                          action,
                                          payload,
+                                         null,
                                          null,
                                          CancellationToken
                                      );
