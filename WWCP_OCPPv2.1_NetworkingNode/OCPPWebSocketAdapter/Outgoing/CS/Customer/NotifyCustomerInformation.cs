@@ -21,9 +21,9 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPP.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
 
@@ -89,7 +89,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnNotifyCustomerInformationRequest?.Invoke(startTime,
-                                                           this,
+                                                           parentNetworkingNode,
                                                            Request);
 
             }
@@ -106,54 +106,41 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                var requestMessage = await SendRequest(
-                                         Request.DestinationNodeId,
-                                         Request.NetworkPath,
-                                         Request.Action,
-                                         Request.RequestId,
-                                         Request.ToJSON(
-                                             CustomNotifyCustomerInformationRequestSerializer,
-                                             CustomSignatureSerializer,
-                                             CustomCustomDataSerializer
-                                         )
-                                     );
+                var sendRequestState = await SendJSONRequestAndWait(
+                                                 OCPP_JSONRequestMessage.FromRequest(
+                                                     Request,
+                                                     Request.ToJSON(
+                                                         CustomNotifyCustomerInformationRequestSerializer,
+                                                         parentNetworkingNode.CustomSignatureSerializer,
+                                                         parentNetworkingNode.CustomCustomDataSerializer
+                                                     )
+                                                 )
+                                             );
 
-                if (requestMessage.NoErrors)
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.JSONResponse is not null)
                 {
 
-                    var sendRequestState = await WaitForResponse(requestMessage);
-
-                    if (sendRequestState.NoErrors &&
-                        sendRequestState.JSONResponse is not null)
+                    if (NotifyCustomerInformationResponse.TryParse(Request,
+                                                                   sendRequestState.JSONResponse.Payload,
+                                                                   out var notifyCustomerInformationResponse,
+                                                                   out var errorResponse,
+                                                                   CustomNotifyCustomerInformationResponseParser) &&
+                        notifyCustomerInformationResponse is not null)
                     {
-
-                        if (NotifyCustomerInformationResponse.TryParse(Request,
-                                                                       sendRequestState.JSONResponse.Payload,
-                                                                       out var notifyCustomerInformationResponse,
-                                                                       out var errorResponse,
-                                                                       CustomNotifyCustomerInformationResponseParser) &&
-                            notifyCustomerInformationResponse is not null)
-                        {
-                            response = notifyCustomerInformationResponse;
-                        }
-
-                        response ??= new NotifyCustomerInformationResponse(
-                                         Request,
-                                         Result.Format(errorResponse)
-                                     );
-
+                        response = notifyCustomerInformationResponse;
                     }
 
                     response ??= new NotifyCustomerInformationResponse(
                                      Request,
-                                     Result.FromSendRequestState(sendRequestState)
+                                     Result.Format(errorResponse)
                                  );
 
                 }
 
                 response ??= new NotifyCustomerInformationResponse(
                                  Request,
-                                 Result.GenericError(requestMessage.ErrorMessage)
+                                 Result.FromSendRequestState(sendRequestState)
                              );
 
             }
@@ -176,7 +163,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnNotifyCustomerInformationResponse?.Invoke(endTime,
-                                                            this,
+                                                            parentNetworkingNode,
                                                             Request,
                                                             response,
                                                             endTime - startTime);

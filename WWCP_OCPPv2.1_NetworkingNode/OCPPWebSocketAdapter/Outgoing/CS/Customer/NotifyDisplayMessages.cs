@@ -21,9 +21,9 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPP.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
 
@@ -89,7 +89,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnNotifyDisplayMessagesRequest?.Invoke(startTime,
-                                                       this,
+                                                       parentNetworkingNode,
                                                        Request);
 
             }
@@ -106,58 +106,45 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                var requestMessage = await SendRequest(
-                                         Request.DestinationNodeId,
-                                         Request.NetworkPath,
-                                         Request.Action,
-                                         Request.RequestId,
-                                         Request.ToJSON(
-                                             CustomNotifyDisplayMessagesRequestSerializer,
-                                             CustomMessageInfoSerializer,
-                                             CustomMessageContentSerializer,
-                                             CustomComponentSerializer,
-                                             CustomEVSESerializer,
-                                             CustomSignatureSerializer,
-                                             CustomCustomDataSerializer
-                                         )
-                                     );
+                var sendRequestState = await SendJSONRequestAndWait(
+                                                 OCPP_JSONRequestMessage.FromRequest(
+                                                     Request,
+                                                     Request.ToJSON(
+                                                         CustomNotifyDisplayMessagesRequestSerializer,
+                                                         parentNetworkingNode.CustomMessageInfoSerializer,
+                                                         parentNetworkingNode.CustomMessageContentSerializer,
+                                                         parentNetworkingNode.CustomComponentSerializer,
+                                                         parentNetworkingNode.CustomEVSESerializer,
+                                                         parentNetworkingNode.CustomSignatureSerializer,
+                                                         parentNetworkingNode.CustomCustomDataSerializer
+                                                     )
+                                                 )
+                                             );
 
-                if (requestMessage.NoErrors)
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.JSONResponse is not null)
                 {
 
-                    var sendRequestState = await WaitForResponse(requestMessage);
-
-                    if (sendRequestState.NoErrors &&
-                        sendRequestState.JSONResponse is not null)
+                    if (NotifyDisplayMessagesResponse.TryParse(Request,
+                                                               sendRequestState.JSONResponse.Payload,
+                                                               out var notifyDisplayMessagesResponse,
+                                                               out var errorResponse,
+                                                               CustomNotifyDisplayMessagesResponseParser) &&
+                        notifyDisplayMessagesResponse is not null)
                     {
-
-                        if (NotifyDisplayMessagesResponse.TryParse(Request,
-                                                                   sendRequestState.JSONResponse.Payload,
-                                                                   out var notifyDisplayMessagesResponse,
-                                                                   out var errorResponse,
-                                                                   CustomNotifyDisplayMessagesResponseParser) &&
-                            notifyDisplayMessagesResponse is not null)
-                        {
-                            response = notifyDisplayMessagesResponse;
-                        }
-
-                        response ??= new NotifyDisplayMessagesResponse(
-                                         Request,
-                                         Result.Format(errorResponse)
-                                     );
-
+                        response = notifyDisplayMessagesResponse;
                     }
 
                     response ??= new NotifyDisplayMessagesResponse(
                                      Request,
-                                     Result.FromSendRequestState(sendRequestState)
+                                     Result.Format(errorResponse)
                                  );
 
                 }
 
                 response ??= new NotifyDisplayMessagesResponse(
                                  Request,
-                                 Result.GenericError(requestMessage.ErrorMessage)
+                                 Result.FromSendRequestState(sendRequestState)
                              );
 
             }
@@ -180,7 +167,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnNotifyDisplayMessagesResponse?.Invoke(endTime,
-                                                        this,
+                                                        parentNetworkingNode,
                                                         Request,
                                                         response,
                                                         endTime - startTime);

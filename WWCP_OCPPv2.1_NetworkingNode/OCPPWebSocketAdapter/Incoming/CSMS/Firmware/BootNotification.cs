@@ -101,7 +101,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnBootNotificationWSRequest?.Invoke(startTime,
-                                                    this,
+                                                    parentNetworkingNode,
                                                     WebSocketConnection,
                                                     DestinationNodeId,
                                                     NetworkPath,
@@ -138,7 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         OnBootNotificationRequest?.Invoke(Timestamp.Now,
-                                                          this,
+                                                          parentNetworkingNode,
                                                           WebSocketConnection,
                                                           request);
 
@@ -157,7 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     var responseTasks = OnBootNotification?.
                                             GetInvocationList()?.
                                             SafeSelect(subscriber => (subscriber as OnBootNotificationDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                        this,
+                                                                                                                        parentNetworkingNode,
                                                                                                                         WebSocketConnection,
                                                                                                                         request,
                                                                                                                         CancellationToken)).
@@ -179,7 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         OnBootNotificationResponse?.Invoke(Timestamp.Now,
-                                                           this,
+                                                           parentNetworkingNode,
                                                            WebSocketConnection,
                                                            request,
                                                            response,
@@ -237,7 +237,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 var endTime = Timestamp.Now;
 
                 OnBootNotificationWSResponse?.Invoke(endTime,
-                                                     this,
+                                                     parentNetworkingNode,
                                                      WebSocketConnection,
                                                      DestinationNodeId,
                                                      NetworkPath,

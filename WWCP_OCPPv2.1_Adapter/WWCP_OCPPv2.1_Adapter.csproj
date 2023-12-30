@@ -18,7 +18,6 @@
 
   <ItemGroup>
     <Folder Include="WebSockets\NN\" />
-    <Folder Include="WebSockets\Outgoing\CS\BinaryDataStreamsExtensions\" />
   </ItemGroup>
 
 </Project>

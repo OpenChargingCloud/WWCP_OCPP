@@ -102,7 +102,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnDeleteCertificateWSRequest?.Invoke(startTime,
-                                                     this,
+                                                     parentNetworkingNode,
                                                      WebSocketConnection,
                                                      DestinationNodeId,
                                                      NetworkPath,
@@ -138,7 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         OnDeleteCertificateRequest?.Invoke(Timestamp.Now,
-                                                           this,
+                                                           parentNetworkingNode,
                                                            WebSocketConnection,
                                                            request);
 
@@ -157,7 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     var results = OnDeleteCertificate?.
                                       GetInvocationList()?.
                                       SafeSelect(subscriber => (subscriber as OnDeleteCertificateDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                   this,
+                                                                                                                   parentNetworkingNode,
                                                                                                                    WebSocketConnection,
                                                                                                                    request,
                                                                                                                    CancellationToken)).
@@ -182,7 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         OnDeleteCertificateResponse?.Invoke(Timestamp.Now,
-                                                            this,
+                                                            parentNetworkingNode,
                                                             WebSocketConnection,
                                                             request,
                                                             response,
@@ -237,7 +237,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 var endTime = Timestamp.Now;
 
                 OnDeleteCertificateWSResponse?.Invoke(endTime,
-                                                      this,
+                                                      parentNetworkingNode,
                                                       WebSocketConnection,
                                                       DestinationNodeId,
                                                       NetworkPath,

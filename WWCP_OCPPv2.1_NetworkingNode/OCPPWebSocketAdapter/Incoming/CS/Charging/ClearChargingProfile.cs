@@ -103,7 +103,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnClearChargingProfileWSRequest?.Invoke(startTime,
-                                                        this,
+                                                        parentNetworkingNode,
                                                         WebSocketConnection,
                                                         DestinationNodeId,
                                                         NetworkPath,
@@ -139,7 +139,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         OnClearChargingProfileRequest?.Invoke(Timestamp.Now,
-                                                              this,
+                                                              parentNetworkingNode,
                                                               WebSocketConnection,
                                                               request);
 
@@ -158,7 +158,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     var results = OnClearChargingProfile?.
                                       GetInvocationList()?.
                                       SafeSelect(subscriber => (subscriber as OnClearChargingProfileDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                      this,
+                                                                                                                      parentNetworkingNode,
                                                                                                                       WebSocketConnection,
                                                                                                                       request,
                                                                                                                       CancellationToken)).
@@ -183,7 +183,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         OnClearChargingProfileResponse?.Invoke(Timestamp.Now,
-                                                               this,
+                                                               parentNetworkingNode,
                                                                WebSocketConnection,
                                                                request,
                                                                response,
@@ -238,7 +238,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 var endTime = Timestamp.Now;
 
                 OnClearChargingProfileWSResponse?.Invoke(endTime,
-                                                         this,
+                                                         parentNetworkingNode,
                                                          WebSocketConnection,
                                                          DestinationNodeId,
                                                          NetworkPath,

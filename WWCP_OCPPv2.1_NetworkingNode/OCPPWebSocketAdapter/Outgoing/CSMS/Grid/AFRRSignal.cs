@@ -20,9 +20,9 @@
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPP.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
 
@@ -71,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnAFRRSignalRequest?.Invoke(startTime,
-                                            this,
+                                            parentNetworkingNode,
                                             Request);
             }
             catch (Exception e)
@@ -87,18 +87,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                var sendRequestState = await SendJSONAndWait(
-                                                 Request.EventTrackingId,
-                                                 Request.DestinationNodeId,
-                                                 Request.NetworkPath,
-                                                 Request.RequestId,
-                                                 Request.Action,
-                                                 Request.ToJSON(
-                                                     CustomAFRRSignalRequestSerializer,
-                                                     CustomSignatureSerializer,
-                                                     CustomCustomDataSerializer
-                                                 ),
-                                                 Request.RequestTimeout
+                var sendRequestState = await SendJSONRequestAndWait(
+                                                 OCPP_JSONRequestMessage.FromRequest(
+                                                     Request,
+                                                     Request.ToJSON(
+                                                         CustomAFRRSignalRequestSerializer,
+                                                         parentNetworkingNode.CustomSignatureSerializer,
+                                                         parentNetworkingNode.CustomCustomDataSerializer
+                                                     )
+                                                 )
                                              );
 
                 if (sendRequestState.NoErrors &&
@@ -145,7 +142,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnAFRRSignalResponse?.Invoke(endTime,
-                                             this,
+                                             parentNetworkingNode,
                                              Request,
                                              response,
                                              endTime - startTime);

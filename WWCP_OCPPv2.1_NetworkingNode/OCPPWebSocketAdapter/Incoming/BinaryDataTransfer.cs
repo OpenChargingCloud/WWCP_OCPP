@@ -97,7 +97,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnIncomingBinaryDataTransferWSRequest?.Invoke(startTime,
-                                                              this,
+                                                              parentNetworkingNode,
                                                               WebSocketConnection,
                                                               DestinationNodeId,
                                                               NetworkPath,
@@ -133,7 +133,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         OnIncomingBinaryDataTransferRequest?.Invoke(Timestamp.Now,
-                                                                    this,
+                                                                    parentNetworkingNode,
                                                                     WebSocketConnection,
                                                                     request);
 
@@ -152,7 +152,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     var results = OnIncomingBinaryDataTransfer?.
                                       GetInvocationList()?.
                                       SafeSelect(subscriber => (subscriber as OnIncomingBinaryDataTransferDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                            this,
+                                                                                                                            parentNetworkingNode,
                                                                                                                             WebSocketConnection,
                                                                                                                             request,
                                                                                                                             CancellationToken)).
@@ -177,7 +177,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         OnIncomingBinaryDataTransferResponse?.Invoke(Timestamp.Now,
-                                                                     this,
+                                                                     parentNetworkingNode,
                                                                      WebSocketConnection,
                                                                      request,
                                                                      response,
@@ -232,7 +232,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 var endTime = Timestamp.Now;
 
                 OnIncomingBinaryDataTransferWSResponse?.Invoke(endTime,
-                                                               this,
+                                                               parentNetworkingNode,
                                                                WebSocketConnection,
                                                                DestinationNodeId,
                                                                NetworkPath,

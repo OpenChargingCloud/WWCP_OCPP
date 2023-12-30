@@ -101,7 +101,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnCancelReservationWSRequest?.Invoke(startTime,
-                                                     this,
+                                                     parentNetworkingNode,
                                                      WebSocketConnection,
                                                      DestinationNodeId,
                                                      NetworkPath,
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         OnCancelReservationRequest?.Invoke(Timestamp.Now,
-                                                           this,
+                                                           parentNetworkingNode,
                                                            WebSocketConnection,
                                                            request);
 
@@ -156,7 +156,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     var results = OnCancelReservation?.
                                       GetInvocationList()?.
                                       SafeSelect(subscriber => (subscriber as OnCancelReservationDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                   this,
+                                                                                                                   parentNetworkingNode,
                                                                                                                    WebSocketConnection,
                                                                                                                    request,
                                                                                                                    CancellationToken)).
@@ -181,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         OnCancelReservationResponse?.Invoke(Timestamp.Now,
-                                                            this,
+                                                            parentNetworkingNode,
                                                             WebSocketConnection,
                                                             request,
                                                             response,
@@ -236,7 +236,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 var endTime = Timestamp.Now;
 
                 OnCancelReservationWSResponse?.Invoke(endTime,
-                                                      this,
+                                                      parentNetworkingNode,
                                                       WebSocketConnection,
                                                       DestinationNodeId,
                                                       NetworkPath,

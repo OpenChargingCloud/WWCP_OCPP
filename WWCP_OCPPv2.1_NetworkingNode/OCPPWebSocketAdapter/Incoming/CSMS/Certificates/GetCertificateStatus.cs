@@ -101,13 +101,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnGetCertificateStatusWSRequest?.Invoke(startTime,
-                                           this,
-                                           WebSocketConnection,
-                                           DestinationNodeId,
-                                           NetworkPath,
-                                           EventTrackingId,
-                                           RequestTimestamp,
-                                                        JSONRequest);
+                                                        parentNetworkingNode,
+                                                        WebSocketConnection,
+                                                        DestinationNodeId,
+                                                        NetworkPath,
+                                                        EventTrackingId,
+                                                        RequestTimestamp,
+                                                                     JSONRequest);
 
             }
             catch (Exception e)
@@ -138,7 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         OnGetCertificateStatusRequest?.Invoke(Timestamp.Now,
-                                                              this,
+                                                              parentNetworkingNode,
                                                               WebSocketConnection,
                                                               request);
 
@@ -157,7 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     var responseTasks = OnGetCertificateStatus?.
                                             GetInvocationList()?.
                                             SafeSelect(subscriber => (subscriber as OnGetCertificateStatusDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                            this,
+                                                                                                                            parentNetworkingNode,
                                                                                                                             WebSocketConnection,
                                                                                                                             request,
                                                                                                                             CancellationToken)).
@@ -179,7 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         OnGetCertificateStatusResponse?.Invoke(Timestamp.Now,
-                                                               this,
+                                                               parentNetworkingNode,
                                                                WebSocketConnection,
                                                                request,
                                                                response,
@@ -237,7 +237,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 var endTime = Timestamp.Now;
 
                 OnGetCertificateStatusWSResponse?.Invoke(endTime,
-                                                         this,
+                                                         parentNetworkingNode,
                                                          WebSocketConnection,
                                                          DestinationNodeId,
                                                          NetworkPath,

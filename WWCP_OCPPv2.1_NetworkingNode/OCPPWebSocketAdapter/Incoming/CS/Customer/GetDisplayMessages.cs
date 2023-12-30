@@ -102,12 +102,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnGetDisplayMessagesWSRequest?.Invoke(startTime,
-                                           this,
-                                           WebSocketConnection,
-                                           DestinationNodeId,
-                                           NetworkPath,
-                                           EventTrackingId,
-                                           RequestTimestamp,
+                                                      parentNetworkingNode,
+                                                      WebSocketConnection,
+                                                      DestinationNodeId,
+                                                      NetworkPath,
+                                                      EventTrackingId,
+                                                      RequestTimestamp,
                                                       RequestJSON);
 
             }
@@ -138,7 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         OnGetDisplayMessagesRequest?.Invoke(Timestamp.Now,
-                                                            this,
+                                                            parentNetworkingNode,
                                                             WebSocketConnection,
                                                             request);
 
@@ -157,7 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     var results = OnGetDisplayMessages?.
                                       GetInvocationList()?.
                                       SafeSelect(subscriber => (subscriber as OnGetDisplayMessagesDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                    this,
+                                                                                                                    parentNetworkingNode,
                                                                                                                     WebSocketConnection,
                                                                                                                     request,
                                                                                                                     CancellationToken)).
@@ -182,7 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         OnGetDisplayMessagesResponse?.Invoke(Timestamp.Now,
-                                                             this,
+                                                             parentNetworkingNode,
                                                              WebSocketConnection,
                                                              request,
                                                              response,
@@ -237,12 +237,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 var endTime = Timestamp.Now;
 
                 OnGetDisplayMessagesWSResponse?.Invoke(endTime,
-                                             this,
-                                             WebSocketConnection,
-                                             DestinationNodeId,
-                                             NetworkPath,
-                                             EventTrackingId,
-                                             RequestTimestamp,
+                                                       parentNetworkingNode,
+                                                       WebSocketConnection,
+                                                       DestinationNodeId,
+                                                       NetworkPath,
+                                                       EventTrackingId,
+                                                       RequestTimestamp,
                                                        RequestJSON,
                                                        OCPPResponse?.Payload,
                                                        OCPPErrorResponse?.ToJSON(),

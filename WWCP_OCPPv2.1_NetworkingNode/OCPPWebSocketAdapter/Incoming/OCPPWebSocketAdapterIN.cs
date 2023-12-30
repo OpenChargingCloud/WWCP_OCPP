@@ -67,8 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// The networking node HTTP WebSocket client runs on a networking node
     /// and connects to a CSMS to invoke methods.
     /// </summary>
-    public partial class OCPPWebSocketAdapterIN : IEventSender,
-                                                  IOCPPWebSocketAdapterIN
+    public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
     {
 
         #region Data
@@ -118,13 +117,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         //public event OnBinaryErrorResponseReceivedDelegate?      OnBinaryErrorResponseReceived;
 
         #endregion
-
-        #endregion
-
-        #region Properties
-
-        public String Id
-            => nameof(OCPPWebSocketAdapterOUT);
 
         #endregion
 

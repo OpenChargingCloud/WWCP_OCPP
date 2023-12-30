@@ -100,12 +100,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnIncomingDataTransferWSRequest?.Invoke(startTime,
-                                           this,
-                                           WebSocketConnection,
-                                           DestinationNodeId,
-                                           NetworkPath,
-                                           EventTrackingId,
-                                           RequestTimestamp,
+                                                        parentNetworkingNode,
+                                                        WebSocketConnection,
+                                                        DestinationNodeId,
+                                                        NetworkPath,
+                                                        EventTrackingId,
+                                                        RequestTimestamp,
                                                         RequestJSON);
 
             }
@@ -136,7 +136,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         OnIncomingDataTransferRequest?.Invoke(Timestamp.Now,
-                                                              this,
+                                                              parentNetworkingNode,
                                                               WebSocketConnection,
                                                               request);
 
@@ -155,10 +155,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     var results = OnIncomingDataTransfer?.
                                       GetInvocationList()?.
                                       SafeSelect(subscriber => (subscriber as OnIncomingDataTransferDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                     this,
-                                                                                                                     WebSocketConnection,
-                                                                                                                     request,
-                                                                                                                     CancellationToken)).
+                                                                                                                      parentNetworkingNode,
+                                                                                                                      WebSocketConnection,
+                                                                                                                      request,
+                                                                                                                      CancellationToken)).
                                       ToArray();
 
                     if (results?.Length > 0)
@@ -180,7 +180,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         OnIncomingDataTransferResponse?.Invoke(Timestamp.Now,
-                                                               this,
+                                                               parentNetworkingNode,
                                                                WebSocketConnection,
                                                                request,
                                                                response,
@@ -235,12 +235,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 var endTime = Timestamp.Now;
 
                 OnIncomingDataTransferWSResponse?.Invoke(endTime,
-                                             this,
-                                             WebSocketConnection,
-                                             DestinationNodeId,
-                                             NetworkPath,
-                                             EventTrackingId,
-                                             RequestTimestamp,
+                                                         parentNetworkingNode,
+                                                         WebSocketConnection,
+                                                         DestinationNodeId,
+                                                         NetworkPath,
+                                                         EventTrackingId,
+                                                         RequestTimestamp,
                                                          RequestJSON,
                                                          OCPPResponse?.Payload,
                                                          OCPPErrorResponse?.ToJSON(),

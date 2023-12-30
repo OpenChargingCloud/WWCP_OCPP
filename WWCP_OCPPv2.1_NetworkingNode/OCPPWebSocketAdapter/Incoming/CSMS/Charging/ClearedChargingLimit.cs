@@ -101,12 +101,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnClearedChargingLimitWSRequest?.Invoke(startTime,
-                                           this,
-                                           WebSocketConnection,
-                                           DestinationNodeId,
-                                           NetworkPath,
-                                           EventTrackingId,
-                                           RequestTimestamp,
+                                                        parentNetworkingNode,
+                                                        WebSocketConnection,
+                                                        DestinationNodeId,
+                                                        NetworkPath,
+                                                        EventTrackingId,
+                                                        RequestTimestamp,
                                                         JSONRequest);
 
             }
@@ -138,7 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         OnClearedChargingLimitRequest?.Invoke(Timestamp.Now,
-                                                              this,
+                                                              parentNetworkingNode,
                                                               WebSocketConnection,
                                                               request);
 
@@ -157,7 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     var responseTasks = OnClearedChargingLimit?.
                                             GetInvocationList()?.
                                             SafeSelect(subscriber => (subscriber as OnClearedChargingLimitDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                            this,
+                                                                                                                            parentNetworkingNode,
                                                                                                                             WebSocketConnection,
                                                                                                                             request,
                                                                                                                             CancellationToken)).
@@ -179,7 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         OnClearedChargingLimitResponse?.Invoke(Timestamp.Now,
-                                                               this,
+                                                               parentNetworkingNode,
                                                                WebSocketConnection,
                                                                request,
                                                                response,
@@ -236,7 +236,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 var endTime = Timestamp.Now;
 
                 OnClearedChargingLimitWSResponse?.Invoke(endTime,
-                                                         this,
+                                                         parentNetworkingNode,
                                                          WebSocketConnection,
                                                          DestinationNodeId,
                                                          NetworkPath,

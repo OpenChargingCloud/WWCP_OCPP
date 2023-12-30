@@ -101,7 +101,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnListDirectoryWSRequest?.Invoke(startTime,
-                                                 this,
+                                                 parentNetworkingNode,
                                                  WebSocketConnection,
                                                  DestinationNodeId,
                                                  NetworkPath,
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         OnListDirectoryRequest?.Invoke(Timestamp.Now,
-                                                       this,
+                                                       parentNetworkingNode,
                                                        WebSocketConnection,
                                                        request);
 
@@ -156,7 +156,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     var results = OnListDirectory?.
                                       GetInvocationList()?.
                                       SafeSelect(subscriber => (subscriber as OnListDirectoryDelegate)?.Invoke(Timestamp.Now,
-                                                                                                               this,
+                                                                                                               parentNetworkingNode,
                                                                                                                WebSocketConnection,
                                                                                                                request,
                                                                                                                CancellationToken)).
@@ -181,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         OnListDirectoryResponse?.Invoke(Timestamp.Now,
-                                                        this,
+                                                        parentNetworkingNode,
                                                         WebSocketConnection,
                                                         request,
                                                         response,
@@ -236,7 +236,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 var endTime = Timestamp.Now;
 
                 OnListDirectoryWSResponse?.Invoke(endTime,
-                                                  this,
+                                                  parentNetworkingNode,
                                                   WebSocketConnection,
                                                   DestinationNodeId,
                                                   NetworkPath,

@@ -99,12 +99,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnAddUserRoleWSRequest?.Invoke(startTime,
-                                           this,
-                                           WebSocketConnection,
-                                           DestinationNodeId,
-                                           NetworkPath,
-                                           EventTrackingId,
-                                           RequestTimestamp,
+                                               parentNetworkingNode,
+                                               WebSocketConnection,
+                                               DestinationNodeId,
+                                               NetworkPath,
+                                               EventTrackingId,
+                                               RequestTimestamp,
                                                RequestJSON);
 
             }
@@ -135,7 +135,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         OnAddUserRoleRequest?.Invoke(Timestamp.Now,
-                                                     this,
+                                                     parentNetworkingNode,
                                                      WebSocketConnection,
                                                      request);
 
@@ -154,7 +154,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     var results = OnAddUserRole?.
                                       GetInvocationList()?.
                                       SafeSelect(subscriber => (subscriber as OnAddUserRoleDelegate)?.Invoke(Timestamp.Now,
-                                                                                                             this,
+                                                                                                             parentNetworkingNode,
                                                                                                              WebSocketConnection,
                                                                                                              request,
                                                                                                              CancellationToken)).
@@ -179,7 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         OnAddUserRoleResponse?.Invoke(Timestamp.Now,
-                                                      this,
+                                                      parentNetworkingNode,
                                                       WebSocketConnection,
                                                       request,
                                                       response,
@@ -229,12 +229,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 var endTime = Timestamp.Now;
 
                 OnAddUserRoleWSResponse?.Invoke(endTime,
-                                             this,
-                                             WebSocketConnection,
-                                             DestinationNodeId,
-                                             NetworkPath,
-                                             EventTrackingId,
-                                             RequestTimestamp,
+                                                parentNetworkingNode,
+                                                WebSocketConnection,
+                                                DestinationNodeId,
+                                                NetworkPath,
+                                                EventTrackingId,
+                                                RequestTimestamp,
                                                 RequestJSON,
                                                 OCPPResponse?.Payload,
                                                 OCPPErrorResponse?.ToJSON(),

@@ -22,6 +22,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.CS;
 using cloud.charging.open.protocols.OCPP.CSMS;
+using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
 
@@ -70,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnSendFileRequest?.Invoke(startTime,
-                                          this,
+                                          parentNetworkingNode,
                                           Request);
             }
             catch (Exception e)
@@ -86,18 +87,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                var sendRequestState = await SendBinaryAndWait(
-                                                 Request.EventTrackingId,
-                                                 Request.DestinationNodeId,
-                                                 Request.NetworkPath,
-                                                 Request.RequestId,
-                                                 Request.Action,
-                                                 Request.ToBinary(
-                                                     CustomSendFileRequestSerializer,
-                                                     CustomBinarySignatureSerializer,
-                                                     IncludeSignatures: true
-                                                 ),
-                                                 Request.RequestTimeout
+                var sendRequestState = await SendBinaryRequestAndWait(
+                                                 OCPP_BinaryRequestMessage.FromRequest(
+                                                     Request,
+                                                     Request.ToBinary(
+                                                         CustomSendFileRequestSerializer,
+                                                         parentNetworkingNode.CustomBinarySignatureSerializer,
+                                                         IncludeSignatures: true
+                                                     )
+                                                 )
                                              );
 
                 if (sendRequestState.NoErrors &&
@@ -147,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnSendFileResponse?.Invoke(endTime,
-                                           this,
+                                           parentNetworkingNode,
                                            Request,
                                            response,
                                            endTime - startTime);

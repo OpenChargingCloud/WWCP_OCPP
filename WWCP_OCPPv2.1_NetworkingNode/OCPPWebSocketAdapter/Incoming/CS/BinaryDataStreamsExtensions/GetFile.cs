@@ -102,7 +102,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnGetFileWSRequest?.Invoke(startTime,
-                                           this,
+                                           parentNetworkingNode,
                                            WebSocketConnection,
                                            DestinationNodeId,
                                            NetworkPath,
@@ -138,7 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         OnGetFileRequest?.Invoke(Timestamp.Now,
-                                                 this,
+                                                 parentNetworkingNode,
                                                  WebSocketConnection,
                                                  request);
 
@@ -157,7 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     var results = OnGetFile?.
                                       GetInvocationList()?.
                                       SafeSelect(subscriber => (subscriber as OnGetFileDelegate)?.Invoke(Timestamp.Now,
-                                                                                                         this,
+                                                                                                         parentNetworkingNode,
                                                                                                          WebSocketConnection,
                                                                                                          request,
                                                                                                          CancellationToken)).
@@ -182,7 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         OnGetFileResponse?.Invoke(Timestamp.Now,
-                                                  this,
+                                                  parentNetworkingNode,
                                                   WebSocketConnection,
                                                   request,
                                                   response,
@@ -238,7 +238,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 var endTime = Timestamp.Now;
 
                 OnGetFileWSResponse?.Invoke(endTime,
-                                            this,
+                                            parentNetworkingNode,
                                             WebSocketConnection,
                                             DestinationNodeId,
                                             NetworkPath,

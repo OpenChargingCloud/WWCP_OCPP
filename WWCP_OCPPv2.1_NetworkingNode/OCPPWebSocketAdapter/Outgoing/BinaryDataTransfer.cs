@@ -138,8 +138,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 response ??= new BinaryDataTransferResponse(
                                  Request,
-                                 BinaryDataTransferStatus.Rejected
-                             );// Result.FromSendRequestState(sendRequestState));
+                                 Result.FromSendRequestState(sendRequestState)
+                             );
 
             }
             catch (Exception e)

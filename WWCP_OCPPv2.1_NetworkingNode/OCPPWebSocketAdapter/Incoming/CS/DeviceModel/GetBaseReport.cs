@@ -102,12 +102,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnGetBaseReportWSRequest?.Invoke(startTime,
-                                           this,
-                                           WebSocketConnection,
-                                           DestinationNodeId,
-                                           NetworkPath,
-                                           EventTrackingId,
-                                           RequestTimestamp,
+                                                 parentNetworkingNode,
+                                                 WebSocketConnection,
+                                                 DestinationNodeId,
+                                                 NetworkPath,
+                                                 EventTrackingId,
+                                                 RequestTimestamp,
                                                  RequestJSON);
 
             }
@@ -138,7 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         OnGetBaseReportRequest?.Invoke(Timestamp.Now,
-                                                       this,
+                                                       parentNetworkingNode,
                                                        WebSocketConnection,
                                                        request);
 
@@ -157,7 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     var results = OnGetBaseReport?.
                                       GetInvocationList()?.
                                       SafeSelect(subscriber => (subscriber as OnGetBaseReportDelegate)?.Invoke(Timestamp.Now,
-                                                                                                               this,
+                                                                                                               parentNetworkingNode,
                                                                                                                WebSocketConnection,
                                                                                                                request,
                                                                                                                CancellationToken)).
@@ -182,7 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         OnGetBaseReportResponse?.Invoke(Timestamp.Now,
-                                                        this,
+                                                        parentNetworkingNode,
                                                         WebSocketConnection,
                                                         request,
                                                         response,
@@ -237,12 +237,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 var endTime = Timestamp.Now;
 
                 OnGetBaseReportWSResponse?.Invoke(endTime,
-                                             this,
-                                             WebSocketConnection,
-                                             DestinationNodeId,
-                                             NetworkPath,
-                                             EventTrackingId,
-                                             RequestTimestamp,
+                                                  parentNetworkingNode,
+                                                  WebSocketConnection,
+                                                  DestinationNodeId,
+                                                  NetworkPath,
+                                                  EventTrackingId,
+                                                  RequestTimestamp,
                                                   RequestJSON,
                                                   OCPPResponse?.Payload,
                                                   OCPPErrorResponse?.ToJSON(),

@@ -101,7 +101,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 OnGet15118EVCertificateWSRequest?.Invoke(startTime,
-                                                         this,
+                                                         parentNetworkingNode,
                                                          WebSocketConnection,
                                                          DestinationNodeId,
                                                          NetworkPath,
@@ -138,7 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         OnGet15118EVCertificateRequest?.Invoke(Timestamp.Now,
-                                                               this,
+                                                               parentNetworkingNode,
                                                                WebSocketConnection,
                                                                request);
 
@@ -157,7 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     var responseTasks = OnGet15118EVCertificate?.
                                             GetInvocationList()?.
                                             SafeSelect(subscriber => (subscriber as OnGet15118EVCertificateDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                             this,
+                                                                                                                             parentNetworkingNode,
                                                                                                                              WebSocketConnection,
                                                                                                                              request,
                                                                                                                              CancellationToken)).
@@ -179,7 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         OnGet15118EVCertificateResponse?.Invoke(Timestamp.Now,
-                                                                this,
+                                                                parentNetworkingNode,
                                                                 WebSocketConnection,
                                                                 request,
                                                                 response,
@@ -237,7 +237,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 var endTime = Timestamp.Now;
 
                 OnGet15118EVCertificateWSResponse?.Invoke(endTime,
-                                                          this,
+                                                          parentNetworkingNode,
                                                           WebSocketConnection,
                                                           DestinationNodeId,
                                                           NetworkPath,
