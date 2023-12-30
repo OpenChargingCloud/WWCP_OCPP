@@ -47,13 +47,6 @@ using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    /// <summary>
-    /// A networking node for testing.
-    /// </summary>
-    public partial class TestNetworkingNode : INetworkingNode,
-                                              IEventSender
-    {
-
         public class ActingAsCS : IEventSender
         {
 
@@ -7723,7 +7716,5 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         }
 
-
-    }
 
 }

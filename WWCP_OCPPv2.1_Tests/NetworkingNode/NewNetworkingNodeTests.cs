@@ -33,6 +33,7 @@ using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using cloud.charging.open.protocols.OCPPv2_1.NN;
 
 #endregion
 
@@ -80,6 +81,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.New
             };
 
 
+
+
+            var testCSMS01               = new TestCSMS(
+                                               Id:                      NetworkingNode_Id.Parse("OCPPTest01"),
+                                               RequireAuthentication:   true,
+                                               HTTPUploadPort:          IPPort.Parse(3416)
+                                           );
+
+            var testBackendWebSockets01  = testCSMS01.AttachWebSocketService(
+                                               TCPPort:                 IPPort.Parse(3415),
+                                               DisableWebSocketPings:   true,
+                                               AutoStart:               true
+                                           );
+
+            testCSMS01.AddOrUpdateHTTPBasicAuth(tn01.Id, "1234abcd");
+
+
+            var xxx = await tn01.ConnectWebSocketClient(
+                                NetworkingNodeId:        NetworkingNode_Id.CSMS,
+                                RemoteURL:               URL.Parse("http://127.0.0.1:" + testBackendWebSockets01.IPPort.ToString() + "/" + tn01.Id),
+                                HTTPAuthentication:      HTTPBasicAuthentication.Create(tn01.Id.ToString(), "1234abcd"),
+                                DisableWebSocketPings:   true,
+                                NetworkingMode:          OCPP.WebSockets.NetworkingMode.NetworkingExtensions
+                            );
 
 
             //var tn02     = new TestNetworkingNode(
@@ -160,6 +185,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.New
             Assert.That(response2.Status,              Is.EqualTo(DataTransferStatus.Accepted));
 
             Assert.That(response2.Data?.ToString(),    Is.EqualTo("Hello World!".Reverse()));
+
+
+            await Task.Delay(500);
+
+
+            var response3 = await tn01.SendBootNotification(
+                                      BootReason.PowerUp
+                                  );
+
+            Assert.That(response3.Result.ResultCode,   Is.EqualTo(ResultCode.OK));
+            Assert.That(response3.Status,              Is.EqualTo(RegistrationStatus.Accepted));
+
+
+
+
+
 
             //var r2 = await tn01.OUT.Reset(
             //                            new ResetRequest(

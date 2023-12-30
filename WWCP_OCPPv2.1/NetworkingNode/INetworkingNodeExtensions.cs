@@ -71,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
                                  CancellationToken             CancellationToken    = default)
 
 
-                => NetworkingNode.OUT.BootNotification(
+                => NetworkingNode.ocppOUT.BootNotification(
                        new BootNotificationRequest(
 
                            DestinationNodeId ?? NetworkingNode_Id.CSMS,

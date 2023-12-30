@@ -277,7 +277,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// The default request timeout for all requests.
         /// </summary>
-        public TimeSpan                 DefaultRequestTimeout       { get; }
+        public TimeSpan                 DefaultRequestTimeout       { get; } = TimeSpan.FromSeconds(30);
 
 
 
@@ -366,8 +366,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public  FORWARD                  FORWARD                     { get; }
 
-        public OCPPWebSocketAdapterIN    ocppIN                      { get; }
-        public OCPPWebSocketAdapterOUT   ocppOUT                     { get; }
+        public IOCPPWebSocketAdapterIN   ocppIN                      { get; }
+        public IOCPPWebSocketAdapterOUT  ocppOUT                     { get; }
 
 
         public CS.INetworkingNodeOutgoingMessages? CSClient
@@ -631,6 +631,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
         #region CSMS Response Messages
+
         public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.BootNotificationResponse>?                       CustomBootNotificationResponseSerializer                     { get; set; }
         public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.FirmwareStatusNotificationResponse>?             CustomFirmwareStatusNotificationResponseSerializer           { get; set; }
         public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.PublishFirmwareStatusNotificationResponse>?      CustomPublishFirmwareStatusNotificationResponseSerializer    { get; set; }
@@ -786,6 +787,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public CustomJObjectSerializerDelegate<NetworkTopologyInformation>?                          CustomNetworkTopologyInformationSerializer             { get; set; }
 
         #endregion
+
+        #endregion
+
+        #region Custom JSON parser delegates
+
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.BootNotificationResponse>?   CustomBootNotificationResponseParser          { get; set; }
 
         #endregion
 
@@ -951,6 +958,95 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      LogfileCreator,
                                      HTTPLogger,
                                      DNSClient);
+
+        #endregion
+
+
+        #region ConnectWebSocketClient(...)
+
+        public async Task<HTTPResponse?> ConnectWebSocketClient(NetworkingNode_Id                    NetworkingNodeId,
+                                                                URL                                  RemoteURL,
+                                                                HTTPHostname?                        VirtualHostname              = null,
+                                                                String?                              Description                  = null,
+                                                                Boolean?                             PreferIPv4                   = null,
+                                                                RemoteCertificateValidationHandler?  RemoteCertificateValidator   = null,
+                                                                LocalCertificateSelectionHandler?    ClientCertificateSelector    = null,
+                                                                X509Certificate?                     ClientCert                   = null,
+                                                                SslProtocols?                        TLSProtocol                  = null,
+                                                                String?                              HTTPUserAgent                = null,
+                                                                IHTTPAuthentication?                 HTTPAuthentication           = null,
+                                                                TimeSpan?                            RequestTimeout               = null,
+                                                                TransmissionRetryDelayDelegate?      TransmissionRetryDelay       = null,
+                                                                UInt16?                              MaxNumberOfRetries           = 3,
+                                                                UInt32?                              InternalBufferSize           = null,
+
+                                                                IEnumerable<String>?                 SecWebSocketProtocols        = null,
+                                                                NetworkingMode?                      NetworkingMode               = null,
+
+                                                                Boolean                              DisableWebSocketPings        = false,
+                                                                TimeSpan?                            WebSocketPingEvery           = null,
+                                                                TimeSpan?                            SlowNetworkSimulationDelay   = null,
+
+                                                                Boolean                              DisableMaintenanceTasks      = false,
+                                                                TimeSpan?                            MaintenanceEvery             = null,
+
+                                                                String?                              LoggingPath                  = null,
+                                                                String                               LoggingContext               = null, //CPClientLogger.DefaultContext,
+                                                                LogfileCreatorDelegate?              LogfileCreator               = null,
+                                                                HTTPClientLogger?                    HTTPLogger                   = null,
+                                                                DNSClient?                           DNSClient                    = null)
+        {
+
+            var ocppWebSocketClient = new OCPPWebSocketClient(
+                                          Id,
+                                          this.ocppIN,
+                                          this.ocppOUT,
+
+                                          RemoteURL,
+                                          VirtualHostname,
+                                          Description,
+                                          PreferIPv4,
+                                          RemoteCertificateValidator,
+                                          ClientCertificateSelector,
+                                          ClientCert,
+                                          TLSProtocol,
+                                          HTTPUserAgent,
+                                          HTTPAuthentication,
+                                          RequestTimeout,
+                                          TransmissionRetryDelay,
+                                          MaxNumberOfRetries,
+                                          InternalBufferSize,
+
+                                          SecWebSocketProtocols ?? new[] {
+                                                                      "ocpp2.0.1",
+                                                                       Version.WebSocketSubProtocolId
+                                                                   },
+                                          NetworkingMode,
+
+                                          DisableWebSocketPings,
+                                          WebSocketPingEvery,
+                                          SlowNetworkSimulationDelay,
+
+                                          DisableMaintenanceTasks,
+                                          MaintenanceEvery,
+
+                                          LoggingPath,
+                                          LoggingContext,
+                                          LogfileCreator,
+                                          HTTPLogger,
+                                          DNSClient
+                                      );
+
+            var httpResponse = await ocppWebSocketClient.Connect();
+
+            AddStaticRouting(NetworkingNodeId,
+                             ocppWebSocketClient,
+                             0,
+                             Timestamp.Now);
+
+            return httpResponse;
+
+        }
 
         #endregion
 
@@ -1331,9 +1427,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
         }
 
+        #endregion
+
+
         public string? ClientCloseMessage => throw new NotImplementedException();
 
-        #endregion
+
+
 
 
         #region SendJSONRequest         (JSONRequestMessage)
@@ -1345,8 +1445,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 reachability is not null)
             {
 
-                //if (reachability.OCPPWebSocketClient is not null)
-                //    return await reachability.OCPPWebSocketClient.SendJSONRequest(JSONRequestMessage);
+                if (reachability.OCPPWebSocketClient is not null)
+                    return await reachability.OCPPWebSocketClient.SendJSONRequest(JSONRequestMessage);
 
                 if (reachability.OCPPWebSocketServer is not null)
                     return await reachability.OCPPWebSocketServer.SendJSONRequest(JSONRequestMessage);

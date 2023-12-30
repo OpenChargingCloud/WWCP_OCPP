@@ -261,8 +261,9 @@ namespace cloud.charging.open.protocols.OCPP.CS
                             if (OCPPJSONResponse is not null)
                             {
 
-                                var sendStatus = await SendText(
+                                var sendStatus = await SendTextMessage(
                                                            OCPPJSONResponse.ToJSON().ToString(JSONFormatting),
+                                                           EventTrackingId,
                                                            CancellationToken
                                                        );
 
@@ -314,7 +315,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
                             if (OCPPBinaryResponse is not null)
                             {
 
-                                var sendStatus = await SendBinary(
+                                var sendStatus = await SendBinaryMessage(
                                                            OCPPBinaryResponse.ToByteArray()
                                                        );
 
@@ -493,8 +494,9 @@ namespace cloud.charging.open.protocols.OCPP.CS
                             #region Send response...
 
                             if (OCPPJSONResponse is not null)
-                                await SendText(
+                                await SendTextMessage(
                                           OCPPJSONResponse.ToJSON().ToString(JSONFormatting),
+                                          EventTrackingId,
                                           CancellationToken
                                       );
 
@@ -542,8 +544,9 @@ namespace cloud.charging.open.protocols.OCPP.CS
                             #region Send response...
 
                             if (OCPPBinaryResponse is not null)
-                                await SendBinary(
+                                await SendBinaryMessage(
                                           OCPPBinaryResponse.ToByteArray(),
+                                          EventTrackingId,
                                           CancellationToken
                                       );
 
@@ -704,7 +707,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
                                                  JSONMessage
                                              );
 
-                        var sendStatus = await SendText(jsonRequestMessage.
+                        var sendStatus = await SendTextMessage(jsonRequestMessage.
                                                             ToJSON  ().
                                                             ToString(JSONFormatting));
 
@@ -829,7 +832,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
                                                    BinaryMessage
                                                );
 
-                        var sendStatus = await SendBinary(binaryRequestMessage.ToByteArray());
+                        var sendStatus = await SendBinaryMessage(binaryRequestMessage.ToByteArray());
 
                         if (sendStatus == SendStatus.Success)
                             requests.TryAdd(RequestId,

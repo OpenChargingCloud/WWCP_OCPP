@@ -27,6 +27,7 @@ using cloud.charging.open.protocols.OCPP.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.NN;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
 
@@ -7789,14 +7790,43 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             else if (Request.DestinationNodeId == NetworkingNode_Id.CSMS)
             {
 
-                response  = parentNetworkingNode.AsCS.CSClient is not null
+                var sendRequestState = await parentNetworkingNode.SendJSONRequestAndWait(
+                                                 OCPP_JSONRequestMessage.FromRequest(
+                                                     Request,
+                                                     Request.ToJSON(
+                                                         parentNetworkingNode.CustomBootNotificationRequestSerializer,
+                                                         parentNetworkingNode.CustomChargingStationSerializer,
+                                                         parentNetworkingNode.CustomSignatureSerializer,
+                                                         parentNetworkingNode.CustomCustomDataSerializer
+                                                     )
+                                                 )
+                                             );
 
-                                ? await parentNetworkingNode.AsCS.CSClient.BootNotification(Request)
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.JSONResponse is not null)
+                {
 
-                                : new OCPPv2_1.CSMS.BootNotificationResponse(
-                                        Request,
-                                        Result.UnknownOrUnreachable(Request.DestinationNodeId)
-                                    );
+                    if (BootNotificationResponse.TryParse(Request,
+                                                          sendRequestState.JSONResponse.Payload,
+                                                          out var bootNotificationResponse,
+                                                          out errorResponse,
+                                                          parentNetworkingNode.CustomBootNotificationResponseParser) &&
+                        bootNotificationResponse is not null)
+                    {
+                        response = bootNotificationResponse;
+                    }
+
+                    response ??= new BootNotificationResponse(
+                                     Request,
+                                     Result.Format(errorResponse)
+                                 );
+
+                }
+
+                response ??= new BootNotificationResponse(
+                                 Request,
+                                 Result.FromSendRequestState(sendRequestState)
+                             );
 
             }
 

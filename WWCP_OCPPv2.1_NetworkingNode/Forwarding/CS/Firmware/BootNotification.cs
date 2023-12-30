@@ -323,7 +323,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public void WireBootNotification(NetworkingNode.CS.  INetworkingNodeIncomingMessages IncomingMessages)
         {
-            IncomingMessages.OnBootNotification += ProcessIT;
+            //IncomingMessages.OnBootNotification += ProcessIT;
         }
 
         // MAIN!!!

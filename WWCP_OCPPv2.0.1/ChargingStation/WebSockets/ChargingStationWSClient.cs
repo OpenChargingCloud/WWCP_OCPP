@@ -7555,7 +7555,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
                 if (OCPPResponseJSON is not null)
                 {
 
-                    await SendText(new OCPP_WebSocket_ResponseMessage(
+                    await SendTextMessage(new OCPP_WebSocket_ResponseMessage(
                                        requestMessage.RequestId,
                                        OCPPResponseJSON).
                                        ToJSON().
@@ -7668,7 +7668,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
                                                Message
                                            );
 
-                        await SendText(wsRequestMessage.
+                        await SendTextMessage(wsRequestMessage.
                                        ToJSON().
                                        ToString(JSONFormatting));
 

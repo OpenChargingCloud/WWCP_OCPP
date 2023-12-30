@@ -32,8 +32,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     public interface INetworkingNodeIncomingMessages : OCPP.NN.CS.INetworkingNodeIncomingMessages
     {
 
-        // CS
-
         #region OnReset
 
         /// <summary>
@@ -552,19 +550,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
         #endregion
 
-
-
-
-        // CSMS
-
-        #region OnBootNotification
-
-        /// <summary>
-        /// An event sent whenever a boot notification was received.
-        /// </summary>
-        event OnBootNotificationDelegate           OnBootNotification;
-
-        #endregion
 
     }
 

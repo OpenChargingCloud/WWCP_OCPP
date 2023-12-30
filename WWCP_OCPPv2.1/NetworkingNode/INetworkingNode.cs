@@ -27,6 +27,8 @@ using cloud.charging.open.protocols.OCPP.CS;
 using cloud.charging.open.protocols.OCPP.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
+using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
 
@@ -2292,6 +2294,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
 
         INetworkingNodeIN  IN                       { get; }
         INetworkingNodeOUT OUT                      { get; }
+
+
+        IOCPPWebSocketAdapterIN  ocppIN  { get; }
+        IOCPPWebSocketAdapterOUT ocppOUT { get; }
 
 
         NetworkingNode_Id  Id                       { get; }
