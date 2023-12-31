@@ -17,16 +17,44 @@
 
 #region Usings
 
-using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS;
 using Newtonsoft.Json.Linq;
-using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+
+using cloud.charging.open.protocols.OCPP.WebSockets;
+using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
+
+    public delegate Task OnJSONMessageRequestReceivedDelegate   (DateTime                    Timestamp,
+                                                                 IOCPPWebSocketAdapterIN     Server,
+                                                                 OCPP_JSONRequestMessage     JSONRequestMessage);
+
+    public delegate Task OnJSONMessageResponseReceivedDelegate  (DateTime                    Timestamp,
+                                                                 IOCPPWebSocketAdapterIN     Server,
+                                                                 OCPP_JSONResponseMessage    JSONResponseMessage);
+
+    public delegate Task OnJSONErrorResponseReceivedDelegate    (DateTime                    Timestamp,
+                                                                 IOCPPWebSocketAdapterIN     Server,
+                                                                 OCPP_JSONErrorMessage       JSONErrorMessage);
+
+
+    public delegate Task OnBinaryMessageRequestReceivedDelegate (DateTime                    Timestamp,
+                                                                 IOCPPWebSocketAdapterIN     Server,
+                                                                 OCPP_BinaryRequestMessage   BinaryRequestMessage);
+
+    public delegate Task OnBinaryMessageResponseReceivedDelegate(DateTime                    Timestamp,
+                                                                 IOCPPWebSocketAdapterIN     Server,
+                                                                 OCPP_BinaryResponseMessage  BinaryResponseMessage);
+
+    //public delegate Task OnBinaryErrorResponseReceivedDelegate  (DateTime                    Timestamp,
+    //                                                             IOCPPWebSocketAdapterIN     Server,
+    //                                                             OCPP_BinaryErrorMessage     BinaryErrorMessage);
+
 
     /// <summary>
     /// The common interface of all central systems channels.
@@ -42,6 +70,46 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                CSMS.INetworkingNodeIncomingMessageEvents
 
     {
+
+
+        #region Generic Text Messages
+
+        /// <summary>
+        /// An event sent whenever a JSON request was received.
+        /// </summary>
+        event OnJSONMessageRequestReceivedDelegate?     OnJSONMessageRequestReceived;
+
+        /// <summary>
+        /// An event sent whenever a JSON response was received.
+        /// </summary>
+        event OnJSONMessageResponseReceivedDelegate?    OnJSONMessageResponseReceived;
+
+        /// <summary>
+        /// An event sent whenever a JSON error response was received.
+        /// </summary>
+        event OnJSONErrorResponseReceivedDelegate?      OnJSONErrorResponseReceived;
+
+        #endregion
+
+        #region Generic Binary Messages
+
+        /// <summary>
+        /// An event sent whenever a binary request was received.
+        /// </summary>
+        event OnBinaryMessageRequestReceivedDelegate?     OnBinaryMessageRequestReceived;
+
+        /// <summary>
+        /// An event sent whenever a binary response was received.
+        /// </summary>
+        event OnBinaryMessageResponseReceivedDelegate?    OnBinaryMessageResponseReceived;
+
+        ///// <summary>
+        ///// An event sent whenever a binary error response was received.
+        ///// </summary>
+        //event OnBinaryErrorResponseReceivedDelegate?      OnBinaryErrorResponseReceived;
+
+        #endregion
+
 
         #region HTTP Web Socket connection management
 
@@ -61,6 +129,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         //event OnNetworkingNodeTCPConnectionClosedDelegate?       OnNetworkingNodeTCPConnectionClosed;
 
         #endregion
+
+
+        Task RaiseOnBootNotificationResponseIN(DateTime                   Timestamp,
+                                               IEventSender               Sender,
+                                               OCPPv2_1.CS.BootNotificationRequest    Request,
+                                               OCPPv2_1.CSMS.BootNotificationResponse   Response,
+                                               TimeSpan                   Runtime);
 
 
 

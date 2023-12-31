@@ -17,7 +17,7 @@
 
 #region
 
-using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+//using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
 
@@ -35,12 +35,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever a BootNotification request will be sent to the CSMS.
         /// </summary>
-        event OnBootNotificationRequestDelegate?     OnBootNotificationRequest;
+        event OCPPv2_1.CS.OnBootNotificationRequestDelegate?     OnBootNotificationRequest;
 
         /// <summary>
         /// An event fired whenever a response to a BootNotification request was received.
         /// </summary>
-        event OnBootNotificationResponseDelegate?    OnBootNotificationResponse;
+        event OCPPv2_1.CS.OnBootNotificationResponseDelegate?    OnBootNotificationResponse;
 
         #endregion
 

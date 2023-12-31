@@ -40,6 +40,7 @@ using cloud.charging.open.protocols.OCPP.NN;
 using cloud.charging.open.protocols.OCPP.CSMS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
 using cloud.charging.open.protocols.OCPPv2_1.NN;
+using org.GraphDefined.Vanaheimr.Hermod.SMTP;
 
 #endregion
 
@@ -208,6 +209,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         private           Int64                                                        internalRequestId               = 800000;
 
+        private readonly  List<OCPPWebSocketClient>                                    ocppWebSocketClients            = [];
+
         #endregion
 
         #region Properties
@@ -355,14 +358,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             => forwardingSignaturePolicies.First();
 
 
-        public  ActingAsCS               AsCS                        { get; }
+        //public  ActingAsCS               AsCS                        { get; }
 
-        public  ActingAsCSMS             AsCSMS                      { get; }
+        //public  ActingAsCSMS             AsCSMS                      { get; }
 
 
-        public  INetworkingNodeIN        IN                          { get; }
+        //public  INetworkingNodeIN        IN                          { get; }
 
-        public  INetworkingNodeOUT       OUT                         { get; }
+        //public  INetworkingNodeOUT       OUT                         { get; }
 
         public  FORWARD                  FORWARD                     { get; }
 
@@ -370,8 +373,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public IOCPPWebSocketAdapterOUT  ocppOUT                     { get; }
 
 
+        public IEnumerable<OCPPWebSocketClient> OCPPWebSocketClients
+            => OCPPWebSocketClients;
+
+
         public CS.INetworkingNodeOutgoingMessages? CSClient
-            => AsCS.CSClient;
+            => null; //AsCS.CSClient;
 
         #endregion
 
@@ -853,42 +860,85 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
          //   this.EnqueuedRequests         = [];
 
 
-            this.AsCSMS                   = new ActingAsCSMS(
+            //this.AsCSMS                   = new ActingAsCSMS(
 
-                                                NetworkingNode:            this,
-                                                RequireAuthentication:     false,
-                                                DefaultRequestTimeout:     this.DefaultRequestTimeout,
-                                                HTTPUploadPort:            null,
-                                                DNSClient:                 this.DNSClient,
+            //                                    NetworkingNode:            this,
+            //                                    RequireAuthentication:     false,
+            //                                    DefaultRequestTimeout:     this.DefaultRequestTimeout,
+            //                                    HTTPUploadPort:            null,
+            //                                    DNSClient:                 this.DNSClient,
 
-                                                SignaturePolicy:           this.SignaturePolicy
+            //                                    SignaturePolicy:           this.SignaturePolicy
 
-                                            );
+            //                                );
 
-            this.AsCS                     = new ActingAsCS(
+            //this.AsCS                     = new ActingAsCS(
 
-                                                NetworkingNode:            this,
+            //                                    NetworkingNode:            this,
 
-                                                DisableSendHeartbeats:     this.DisableSendHeartbeats,
-                                                SendHeartbeatEvery:        this.SendHeartbeatEvery,
+            //                                    DisableSendHeartbeats:     this.DisableSendHeartbeats,
+            //                                    SendHeartbeatEvery:        this.SendHeartbeatEvery,
 
-                                                DisableMaintenanceTasks:   this.DisableMaintenanceTasks,
-                                                MaintenanceEvery:          this.MaintenanceEvery,
+            //                                    DisableMaintenanceTasks:   this.DisableMaintenanceTasks,
+            //                                    MaintenanceEvery:          this.MaintenanceEvery,
 
-                                                DefaultRequestTimeout:     this.DefaultRequestTimeout,
-                                                HTTPAuthentication:        null,
-                                                DNSClient:                 this.DNSClient,
+            //                                    DefaultRequestTimeout:     this.DefaultRequestTimeout,
+            //                                    HTTPAuthentication:        null,
+            //                                    DNSClient:                 this.DNSClient,
 
-                                                SignaturePolicy:           this.SignaturePolicy
+            //                                    SignaturePolicy:           this.SignaturePolicy
 
-                                            );
+            //                                );
 
-            this.IN       = new INPUT (this);
-            this.OUT      = new OUTPUT(this);
+            //this.IN       = new INPUT (this);
+            //this.OUT      = new OUTPUT(this);
             this.FORWARD  = new FORWARD (this);
 
             this.ocppIN   = new OCPPWebSocketAdapterIN (this);
             this.ocppOUT  = new OCPPWebSocketAdapterOUT(this);
+
+
+            //this.TestAPI                 = new HTTPExtAPI(
+            //                                   HTTPServerPort:         IPPort.Parse(3502),
+            //                                   HTTPServerName:         "GraphDefined OCPP Test Central System",
+            //                                   HTTPServiceName:        "GraphDefined OCPP Test Central System Service",
+            //                                   APIRobotEMailAddress:   EMailAddress.Parse("GraphDefined OCPP Test Central System Robot <robot@charging.cloud>"),
+            //                                   APIRobotGPGPassphrase:  "test123",
+            //                                   SMTPClient:             new NullMailer(),
+            //                                   DNSClient:              DNSClient,
+            //                                   AutoStart:              true
+            //                               );
+
+            //this.TestAPI.HTTPServer.AddAuth(request => {
+
+            //    #region Allow some URLs for anonymous access...
+
+            //    if (request.Path.StartsWith(TestAPI.URLPathPrefix + "/webapi"))
+            //    {
+            //        return HTTPExtAPI.Anonymous;
+            //    }
+
+            //    #endregion
+
+            //    return null;
+
+            //});
+
+
+            //this.HTTPUploadAPI           = new CSMS.NetworkingNodeUploadAPI(
+            //                                   this,
+            //                                   new HTTPServer(
+            //                                       this.HTTPUploadPort,
+            //                                       "Open Charging Cloud OCPP Upload Server",
+            //                                       "Open Charging Cloud OCPP Upload Service"
+            //                                   )
+            //                               );
+
+            //this.WebAPI                  = new NetworkingNodeWebAPI(
+            //                                   TestAPI
+            //                               );
+            //this.WebAPI.AttachCSMS(this);
+
 
             Wire();
 
@@ -899,65 +949,65 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region ConnectWebSocket(...)
 
-        public Task<HTTPResponse?> ConnectWebSocket(URL                                  RemoteURL,
-                                                    HTTPHostname?                        VirtualHostname              = null,
-                                                    String?                              Description                  = null,
-                                                    RemoteCertificateValidationHandler?  RemoteCertificateValidator   = null,
-                                                    LocalCertificateSelectionHandler?    ClientCertificateSelector    = null,
-                                                    X509Certificate?                     ClientCert                   = null,
-                                                    SslProtocols?                        TLSProtocol                  = null,
-                                                    Boolean?                             PreferIPv4                   = null,
-                                                    String?                              HTTPUserAgent                = null,
-                                                    IHTTPAuthentication?                 HTTPAuthentication           = null,
-                                                    TimeSpan?                            RequestTimeout               = null,
-                                                    TransmissionRetryDelayDelegate?      TransmissionRetryDelay       = null,
-                                                    UInt16?                              MaxNumberOfRetries           = null,
-                                                    UInt32?                              InternalBufferSize           = null,
+        //public Task<HTTPResponse?> ConnectWebSocket(URL                                  RemoteURL,
+        //                                            HTTPHostname?                        VirtualHostname              = null,
+        //                                            String?                              Description                  = null,
+        //                                            RemoteCertificateValidationHandler?  RemoteCertificateValidator   = null,
+        //                                            LocalCertificateSelectionHandler?    ClientCertificateSelector    = null,
+        //                                            X509Certificate?                     ClientCert                   = null,
+        //                                            SslProtocols?                        TLSProtocol                  = null,
+        //                                            Boolean?                             PreferIPv4                   = null,
+        //                                            String?                              HTTPUserAgent                = null,
+        //                                            IHTTPAuthentication?                 HTTPAuthentication           = null,
+        //                                            TimeSpan?                            RequestTimeout               = null,
+        //                                            TransmissionRetryDelayDelegate?      TransmissionRetryDelay       = null,
+        //                                            UInt16?                              MaxNumberOfRetries           = null,
+        //                                            UInt32?                              InternalBufferSize           = null,
 
-                                                    IEnumerable<String>?                 SecWebSocketProtocols        = null,
-                                                    NetworkingMode?                      NetworkingMode               = null,
+        //                                            IEnumerable<String>?                 SecWebSocketProtocols        = null,
+        //                                            NetworkingMode?                      NetworkingMode               = null,
 
-                                                    Boolean                              DisableMaintenanceTasks      = false,
-                                                    TimeSpan?                            MaintenanceEvery             = null,
-                                                    Boolean                              DisableWebSocketPings        = false,
-                                                    TimeSpan?                            WebSocketPingEvery           = null,
-                                                    TimeSpan?                            SlowNetworkSimulationDelay   = null,
+        //                                            Boolean                              DisableMaintenanceTasks      = false,
+        //                                            TimeSpan?                            MaintenanceEvery             = null,
+        //                                            Boolean                              DisableWebSocketPings        = false,
+        //                                            TimeSpan?                            WebSocketPingEvery           = null,
+        //                                            TimeSpan?                            SlowNetworkSimulationDelay   = null,
 
-                                                    String?                              LoggingPath                  = null,
-                                                    String?                              LoggingContext               = null,
-                                                    LogfileCreatorDelegate?              LogfileCreator               = null,
-                                                    HTTPClientLogger?                    HTTPLogger                   = null,
-                                                    DNSClient?                           DNSClient                    = null)
+        //                                            String?                              LoggingPath                  = null,
+        //                                            String?                              LoggingContext               = null,
+        //                                            LogfileCreatorDelegate?              LogfileCreator               = null,
+        //                                            HTTPClientLogger?                    HTTPLogger                   = null,
+        //                                            DNSClient?                           DNSClient                    = null)
 
-            => AsCS.ConnectWebSocket(RemoteURL,
-                                     VirtualHostname,
-                                     Description,
-                                     RemoteCertificateValidator,
-                                     ClientCertificateSelector,
-                                     ClientCert,
-                                     TLSProtocol,
-                                     PreferIPv4,
-                                     HTTPUserAgent,
-                                     HTTPAuthentication,
-                                     RequestTimeout,
-                                     TransmissionRetryDelay,
-                                     MaxNumberOfRetries,
-                                     InternalBufferSize,
+        //    => AsCS.ConnectWebSocket(RemoteURL,
+        //                             VirtualHostname,
+        //                             Description,
+        //                             RemoteCertificateValidator,
+        //                             ClientCertificateSelector,
+        //                             ClientCert,
+        //                             TLSProtocol,
+        //                             PreferIPv4,
+        //                             HTTPUserAgent,
+        //                             HTTPAuthentication,
+        //                             RequestTimeout,
+        //                             TransmissionRetryDelay,
+        //                             MaxNumberOfRetries,
+        //                             InternalBufferSize,
 
-                                     SecWebSocketProtocols,
-                                     NetworkingMode,
+        //                             SecWebSocketProtocols,
+        //                             NetworkingMode,
 
-                                     DisableMaintenanceTasks,
-                                     MaintenanceEvery,
-                                     DisableWebSocketPings,
-                                     WebSocketPingEvery,
-                                     SlowNetworkSimulationDelay,
+        //                             DisableMaintenanceTasks,
+        //                             MaintenanceEvery,
+        //                             DisableWebSocketPings,
+        //                             WebSocketPingEvery,
+        //                             SlowNetworkSimulationDelay,
 
-                                     LoggingPath,
-                                     LoggingContext,
-                                     LogfileCreator,
-                                     HTTPLogger,
-                                     DNSClient);
+        //                             LoggingPath,
+        //                             LoggingContext,
+        //                             LogfileCreator,
+        //                             HTTPLogger,
+        //                             DNSClient);
 
         #endregion
 
@@ -1036,6 +1086,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           HTTPLogger,
                                           DNSClient
                                       );
+
+            ocppWebSocketClients.Add(ocppWebSocketClient);
 
             var httpResponse = await ocppWebSocketClient.Connect();
 
@@ -1661,41 +1713,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 sendRequestState.ResponseTimestamp  = Timestamp.Now;
                 sendRequestState.JSONResponse       = JSONResponseMessage;
 
-                #region OnJSONMessageResponseReceived
-
-                //var onJSONMessageResponseReceived = OnJSONMessageResponseReceived;
-                //if (onJSONMessageResponseReceived is not null)
-                //{
-                //    try
-                //    {
-
-                //        await Task.WhenAll(onJSONMessageResponseReceived.GetInvocationList().
-                //                               OfType <OnWebSocketJSONMessageResponseDelegate>().
-                //                               Select (loggingDelegate => loggingDelegate.Invoke(
-                //                                                              Timestamp.Now,
-                //                                                              this,
-                //                                                              Connection,
-                //                                                              jsonResponse.DestinationNodeId,
-                //                                                              jsonResponse.NetworkPath,
-                //                                                              EventTrackingId,
-                //                                                              sendRequestState.RequestTimestamp,
-                //                                                              sendRequestState.JSONRequest?.  ToJSON()      ?? [],
-                //                                                              sendRequestState.BinaryRequest?.ToByteArray() ?? [],
-                //                                                              Timestamp.Now,
-                //                                                              sendRequestState.JSONResponse.  ToJSON(),
-                //                                                              CancellationToken
-                //                                                          )).
-                //                               ToArray());
-
-                //    }
-                //    catch (Exception e)
-                //    {
-                //        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnJSONMessageResponseReceived));
-                //    }
-                //}
-
-                #endregion
-
                 return true;
 
             }
@@ -2075,9 +2092,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region HandleErrors(Module, Caller, ExceptionOccured)
 
-        private Task HandleErrors(String     Module,
-                                  String     Caller,
-                                  Exception  ExceptionOccured)
+        public Task HandleErrors(String     Module,
+                                 String     Caller,
+                                 Exception  ExceptionOccured)
         {
 
             DebugX.LogException(ExceptionOccured, $"{Module}.{Caller}");
@@ -2098,126 +2115,126 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnIncomingDataTransfer
 
-            IN.OnIncomingDataTransfer += async (timestamp,
-                                                sender,
-                                                connection,
-                                                request,
-                                                cancellationToken) => {
+            //IN.OnIncomingDataTransfer += async (timestamp,
+            //                                    sender,
+            //                                    connection,
+            //                                    request,
+            //                                    cancellationToken) => {
 
-                // VendorId
-                // MessageId
-                // Data
+            //    // VendorId
+            //    // MessageId
+            //    // Data
 
-                DebugX.Log("OnIncomingDataTransfer: " + request.VendorId  + ", " +
-                                                        request.MessageId + ", " +
-                                                        request.Data);
-
-
-                var responseData = request.Data;
-
-                if (request.Data is not null)
-                {
-
-                    if      (request.Data.Type == JTokenType.String)
-                        responseData = request.Data.ToString().Reverse();
-
-                    else if (request.Data.Type == JTokenType.Object) {
-
-                        var responseObject = new JObject();
-
-                        foreach (var property in (request.Data as JObject)!)
-                        {
-                            if (property.Value?.Type == JTokenType.String)
-                                responseObject.Add(property.Key,
-                                                    property.Value.ToString().Reverse());
-                        }
-
-                        responseData = responseObject;
-
-                    }
-
-                    else if (request.Data.Type == JTokenType.Array) {
-
-                        var responseArray = new JArray();
-
-                        foreach (var element in (request.Data as JArray)!)
-                        {
-                            if (element?.Type == JTokenType.String)
-                                responseArray.Add(element.ToString().Reverse());
-                        }
-
-                        responseData = responseArray;
-
-                    }
-
-                }
+            //    DebugX.Log("OnIncomingDataTransfer: " + request.VendorId  + ", " +
+            //                                            request.MessageId + ", " +
+            //                                            request.Data);
 
 
-                var response =  request.VendorId == Vendor_Id.GraphDefined
+            //    var responseData = request.Data;
 
-                                            ? new DataTransferResponse(
-                                                Request:      request,
-                                                Status:       DataTransferStatus.Accepted,
-                                                Data:         responseData,
-                                                StatusInfo:   null,
-                                                CustomData:   null
-                                            )
+            //    if (request.Data is not null)
+            //    {
 
-                                            : new DataTransferResponse(
-                                                Request:      request,
-                                                Status:       DataTransferStatus.Rejected,
-                                                Data:         null,
-                                                StatusInfo:   null,
-                                                CustomData:   null
-                                            );
+            //        if      (request.Data.Type == JTokenType.String)
+            //            responseData = request.Data.ToString().Reverse();
+
+            //        else if (request.Data.Type == JTokenType.Object) {
+
+            //            var responseObject = new JObject();
+
+            //            foreach (var property in (request.Data as JObject)!)
+            //            {
+            //                if (property.Value?.Type == JTokenType.String)
+            //                    responseObject.Add(property.Key,
+            //                                        property.Value.ToString().Reverse());
+            //            }
+
+            //            responseData = responseObject;
+
+            //        }
+
+            //        else if (request.Data.Type == JTokenType.Array) {
+
+            //            var responseArray = new JArray();
+
+            //            foreach (var element in (request.Data as JArray)!)
+            //            {
+            //                if (element?.Type == JTokenType.String)
+            //                    responseArray.Add(element.ToString().Reverse());
+            //            }
+
+            //            responseData = responseArray;
+
+            //        }
+
+            //    }
 
 
-                return response;
+            //    var response =  request.VendorId == Vendor_Id.GraphDefined
 
-            };
+            //                                ? new DataTransferResponse(
+            //                                    Request:      request,
+            //                                    Status:       DataTransferStatus.Accepted,
+            //                                    Data:         responseData,
+            //                                    StatusInfo:   null,
+            //                                    CustomData:   null
+            //                                )
+
+            //                                : new DataTransferResponse(
+            //                                    Request:      request,
+            //                                    Status:       DataTransferStatus.Rejected,
+            //                                    Data:         null,
+            //                                    StatusInfo:   null,
+            //                                    CustomData:   null
+            //                                );
+
+
+            //    return response;
+
+            //};
 
             #endregion
 
             #region OnIncomingBinaryDataTransfer
 
-            IN.OnIncomingBinaryDataTransfer += async (timestamp,
-                                                      sender,
-                                                      connection,
-                                                      request,
-                                                      cancellationToken) => {
+            //IN.OnIncomingBinaryDataTransfer += async (timestamp,
+            //                                          sender,
+            //                                          connection,
+            //                                          request,
+            //                                          cancellationToken) => {
 
-                BinaryDataTransferResponse? response = null;
+            //    BinaryDataTransferResponse? response = null;
 
-                DebugX.Log($"Charging Station '{Id}': Incoming BinaryDataTransfer request: {request.VendorId}.{request.MessageId?.ToString() ?? "-"}: {request.Data?.ToHexString() ?? "-"}!");
+            //    DebugX.Log($"Charging Station '{Id}': Incoming BinaryDataTransfer request: {request.VendorId}.{request.MessageId?.ToString() ?? "-"}: {request.Data?.ToHexString() ?? "-"}!");
 
-                // VendorId
-                // MessageId
-                // Data
+            //    // VendorId
+            //    // MessageId
+            //    // Data
 
-                var responseBinaryData = request.Data;
+            //    var responseBinaryData = request.Data;
 
-                if (request.Data is not null)
-                    responseBinaryData = request.Data.Reverse();
+            //    if (request.Data is not null)
+            //        responseBinaryData = request.Data.Reverse();
 
-                response = request.VendorId == Vendor_Id.GraphDefined
+            //    response = request.VendorId == Vendor_Id.GraphDefined
 
-                                ? new BinaryDataTransferResponse(
-                                        Request:                request,
-                                        Status:                 BinaryDataTransferStatus.Accepted,
-                                        AdditionalStatusInfo:   null,
-                                        Data:                   responseBinaryData
-                                    )
+            //                    ? new BinaryDataTransferResponse(
+            //                            Request:                request,
+            //                            Status:                 BinaryDataTransferStatus.Accepted,
+            //                            AdditionalStatusInfo:   null,
+            //                            Data:                   responseBinaryData
+            //                        )
 
-                                : new BinaryDataTransferResponse(
-                                        Request:                request,
-                                        Status:                 BinaryDataTransferStatus.Rejected,
-                                        AdditionalStatusInfo:   null,
-                                        Data:                   responseBinaryData
-                                    );
+            //                    : new BinaryDataTransferResponse(
+            //                            Request:                request,
+            //                            Status:                 BinaryDataTransferStatus.Rejected,
+            //                            AdditionalStatusInfo:   null,
+            //                            Data:                   responseBinaryData
+            //                        );
 
-                return response;
+            //    return response;
 
-            };
+            //};
 
             #endregion
 
@@ -2241,47 +2258,47 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnReset
 
-            IN.OnReset += async (timestamp,
-                                 sender,
-                                 connection,
-                                 request,
-                                 cancellationToken) => {
+            //IN.OnReset += async (timestamp,
+            //                     sender,
+            //                     connection,
+            //                     request,
+            //                     cancellationToken) => {
 
-                OCPPv2_1.CS.ResetResponse? response = null;
+            //    OCPPv2_1.CS.ResetResponse? response = null;
 
-                DebugX.Log($"Charging Station '{Id}': Incoming '{request.ResetType}' reset request{(request.EVSEId.HasValue ? $" for EVSE '{request.EVSEId}" : "")}'!");
+            //    DebugX.Log($"Charging Station '{Id}': Incoming '{request.ResetType}' reset request{(request.EVSEId.HasValue ? $" for EVSE '{request.EVSEId}" : "")}'!");
 
-                // ResetType
+            //    // ResetType
 
-                // Reset entire charging station
-                if (!request.EVSEId.HasValue)
-                {
+            //    // Reset entire charging station
+            //    if (!request.EVSEId.HasValue)
+            //    {
 
-                    response = new OCPPv2_1.CS.ResetResponse(
-                                    Request:      request,
-                                    Status:       ResetStatus.Accepted,
-                                    StatusInfo:   null,
-                                    CustomData:   null
-                                );
+            //        response = new OCPPv2_1.CS.ResetResponse(
+            //                        Request:      request,
+            //                        Status:       ResetStatus.Accepted,
+            //                        StatusInfo:   null,
+            //                        CustomData:   null
+            //                    );
 
-                }
+            //    }
 
-                // Unknown EVSE
-                else
-                {
+            //    // Unknown EVSE
+            //    else
+            //    {
 
-                    response = new OCPPv2_1.CS.ResetResponse(
-                                    Request:      request,
-                                    Status:       ResetStatus.Rejected,
-                                    StatusInfo:   null,
-                                    CustomData:   null
-                                );
+            //        response = new OCPPv2_1.CS.ResetResponse(
+            //                        Request:      request,
+            //                        Status:       ResetStatus.Rejected,
+            //                        StatusInfo:   null,
+            //                        CustomData:   null
+            //                    );
 
-                }
+            //    }
 
-                return response;
+            //    return response;
 
-            };
+            //};
 
             #endregion
 

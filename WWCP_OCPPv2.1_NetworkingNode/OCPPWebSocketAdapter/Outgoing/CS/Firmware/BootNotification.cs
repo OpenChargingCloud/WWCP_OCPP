@@ -62,6 +62,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event ClientResponseLogHandler?                          OnBootNotificationWSResponse;
 
+        // Should not be here!
         /// <summary>
         /// An event fired whenever a response to a boot notification request was received.
         /// </summary>
@@ -163,6 +164,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             try
             {
+
+                await parentNetworkingNode.ocppIN.RaiseOnBootNotificationResponseIN(endTime,
+                                                                                    parentNetworkingNode,
+                                                                                    Request,
+                                                                                    response,
+                                                                                    endTime - startTime);
+
 
                 OnBootNotificationResponse?.Invoke(endTime,
                                                    parentNetworkingNode,

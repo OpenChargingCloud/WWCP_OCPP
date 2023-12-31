@@ -78,20 +78,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
                     return Task.CompletedTask;
                 };
 
-                networkingNode1.IN.     OnResetRequest += (timestamp, sender, connection, resetRequest) => {
-                    nnResetRequestsIN.TryAdd(resetRequest);
-                    return Task.CompletedTask;
-                };
+                //networkingNode1.IN.     OnResetRequest += (timestamp, sender, connection, resetRequest) => {
+                //    nnResetRequestsIN.TryAdd(resetRequest);
+                //    return Task.CompletedTask;
+                //};
 
                 networkingNode1.FORWARD.OnResetLogging += (timestamp, sender, connection, resetRequest, forwardingDecision) => {
                     nnResetRequestsFWD.TryAdd(new Tuple<ResetRequest, ForwardingDecision<ResetRequest, ResetResponse>>(resetRequest, forwardingDecision));
                     return Task.CompletedTask;
                 };
 
-                networkingNode1.OUT.    OnResetRequest += (timestamp, sender,             resetRequest) => {
-                    nnResetRequestsOUT.TryAdd(resetRequest);
-                    return Task.CompletedTask;
-                };
+                //networkingNode1.OUT.    OnResetRequest += (timestamp, sender,             resetRequest) => {
+                //    nnResetRequestsOUT.TryAdd(resetRequest);
+                //    return Task.CompletedTask;
+                //};
 
                 chargingStation1.       OnResetRequest += (timestamp, sender, connection, resetRequest) => {
                     csResetRequests.TryAdd(resetRequest);
@@ -162,7 +162,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
                 Assert.That(testCSMS01,                       Is.Not.Null);
                 Assert.That(testBackendWebSockets01,          Is.Not.Null);
                 Assert.That(networkingNode1,                  Is.Not.Null);
-                Assert.That(testNetworkingNodeWebSockets01,   Is.Not.Null);
+                Assert.That(nnOCPPWebSocketServer01,   Is.Not.Null);
                 Assert.That(chargingStation1,                 Is.Not.Null);
                 Assert.That(chargingStation2,                 Is.Not.Null);
                 Assert.That(chargingStation3,                 Is.Not.Null);
@@ -171,7 +171,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
             if (testCSMS01                     is not null &&
                 testBackendWebSockets01        is not null &&
                 networkingNode1                is not null &&
-                testNetworkingNodeWebSockets01 is not null &&
+                nnOCPPWebSocketServer01 is not null &&
                 chargingStation1               is not null &&
                 chargingStation2               is not null &&
                 chargingStation3               is not null)
@@ -188,20 +188,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
                     return Task.CompletedTask;
                 };
 
-                networkingNode1.IN.     OnIncomingDataTransferRequest += (timestamp, sender, connection, incomingDataTransferRequest) => {
-                    nnDataTransferRequestsIN.      TryAdd(incomingDataTransferRequest);
-                    return Task.CompletedTask;
-                };
+                //networkingNode1.IN.     OnIncomingDataTransferRequest += (timestamp, sender, connection, incomingDataTransferRequest) => {
+                //    nnDataTransferRequestsIN.      TryAdd(incomingDataTransferRequest);
+                //    return Task.CompletedTask;
+                //};
 
                 networkingNode1.FORWARD.OnDataTransferLogging         += (timestamp, sender, connection, binaryDataTransferRequest, forwardingDecision) => {
                     nnDataTransferRequestsFWD.TryAdd(new Tuple<DataTransferRequest, ForwardingDecision<DataTransferRequest, DataTransferResponse>>(binaryDataTransferRequest, forwardingDecision));
                     return Task.CompletedTask;
                 };
 
-                networkingNode1.OUT.    OnDataTransferRequest         += (timestamp, sender,             binaryDataTransferRequest) => {
-                    nnDataTransferRequestsOUT.     TryAdd(binaryDataTransferRequest);
-                    return Task.CompletedTask;
-                };
+                //networkingNode1.OUT.    OnDataTransferRequest         += (timestamp, sender,             binaryDataTransferRequest) => {
+                //    nnDataTransferRequestsOUT.     TryAdd(binaryDataTransferRequest);
+                //    return Task.CompletedTask;
+                //};
 
                 chargingStation1.       OnIncomingDataTransferRequest += (timestamp, sender, connection, incomingDataTransferRequest) => {
                     csIncomingDataTransferRequests.TryAdd(incomingDataTransferRequest);
@@ -282,7 +282,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
                 Assert.That(testCSMS01,                       Is.Not.Null);
                 Assert.That(testBackendWebSockets01,          Is.Not.Null);
                 Assert.That(networkingNode1,                  Is.Not.Null);
-                Assert.That(testNetworkingNodeWebSockets01,   Is.Not.Null);
+                Assert.That(nnOCPPWebSocketServer01,   Is.Not.Null);
                 Assert.That(chargingStation1,                 Is.Not.Null);
                 Assert.That(chargingStation2,                 Is.Not.Null);
                 Assert.That(chargingStation3,                 Is.Not.Null);
@@ -291,7 +291,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
             if (testCSMS01                     is not null &&
                 testBackendWebSockets01        is not null &&
                 networkingNode1                is not null &&
-                testNetworkingNodeWebSockets01 is not null &&
+                nnOCPPWebSocketServer01 is not null &&
                 chargingStation1               is not null &&
                 chargingStation2               is not null &&
                 chargingStation3               is not null)
@@ -308,20 +308,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
                     return Task.CompletedTask;
                 };
 
-                networkingNode1.IN.     OnIncomingBinaryDataTransferRequest += (timestamp, sender, connection, incomingBinaryDataTransferRequest) => {
-                    nnBinaryDataTransferRequestsIN.      TryAdd(incomingBinaryDataTransferRequest);
-                    return Task.CompletedTask;
-                };
+                //networkingNode1.IN.     OnIncomingBinaryDataTransferRequest += (timestamp, sender, connection, incomingBinaryDataTransferRequest) => {
+                //    nnBinaryDataTransferRequestsIN.      TryAdd(incomingBinaryDataTransferRequest);
+                //    return Task.CompletedTask;
+                //};
 
                 networkingNode1.FORWARD.OnBinaryDataTransferLogging         += (timestamp, sender, connection, binaryDataTransferRequest, forwardingDecision) => {
                     nnBinaryDataTransferRequestsFWD.TryAdd(new Tuple<BinaryDataTransferRequest, ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>>(binaryDataTransferRequest, forwardingDecision));
                     return Task.CompletedTask;
                 };
 
-                networkingNode1.OUT.    OnBinaryDataTransferRequest         += (timestamp, sender,             binaryDataTransferRequest) => {
-                    nnBinaryDataTransferRequestsOUT.     TryAdd(binaryDataTransferRequest);
-                    return Task.CompletedTask;
-                };
+                //networkingNode1.OUT.    OnBinaryDataTransferRequest         += (timestamp, sender,             binaryDataTransferRequest) => {
+                //    nnBinaryDataTransferRequestsOUT.     TryAdd(binaryDataTransferRequest);
+                //    return Task.CompletedTask;
+                //};
 
                 chargingStation1.       OnIncomingBinaryDataTransferRequest += (timestamp, sender, connection, incomingBinaryDataTransferRequest) => {
                     csIncomingBinaryDataTransferRequests.TryAdd(incomingBinaryDataTransferRequest);

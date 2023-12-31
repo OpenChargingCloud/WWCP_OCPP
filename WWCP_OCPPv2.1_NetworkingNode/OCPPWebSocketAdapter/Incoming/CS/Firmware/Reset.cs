@@ -58,17 +58,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnResetRequestDelegate?           OnResetRequest;
+        public event OCPPv2_1.CS.OnResetRequestDelegate?            OnResetRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnResetDelegate?                  OnReset;
+        public event OCPPv2_1.CS.OnResetDelegate?                   OnReset;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnResetResponseDelegate?          OnResetResponse;
+        public event OCPPv2_1.CS.OnResetResponseDelegate?           OnResetResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a reset request was sent.
@@ -83,14 +83,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task<Tuple<OCPP_JSONResponseMessage?,
                                 OCPP_JSONErrorMessage?>>
 
-            Receive_Reset(DateTime                   RequestTimestamp,
+            Receive_Reset(DateTime              RequestTimestamp,
                           IWebSocketConnection  WebSocketConnection,
-                          NetworkingNode_Id          DestinationNodeId,
-                          NetworkPath                NetworkPath,
-                          EventTracking_Id           EventTrackingId,
-                          Request_Id                 RequestId,
-                          JObject                    RequestJSON,
-                          CancellationToken          CancellationToken)
+                          NetworkingNode_Id     DestinationNodeId,
+                          NetworkPath           NetworkPath,
+                          EventTracking_Id      EventTrackingId,
+                          Request_Id            RequestId,
+                          JObject               RequestJSON,
+                          CancellationToken     CancellationToken)
 
         {
 

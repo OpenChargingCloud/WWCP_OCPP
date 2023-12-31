@@ -27,7 +27,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// A delegate called whenever a BootNotification request will be sent to the CSMS.
+    /// A delegate called whenever a BootNotification request will be sent (to the CSMS).
     /// </summary>
     /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>

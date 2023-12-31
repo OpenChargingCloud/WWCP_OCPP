@@ -27,34 +27,6 @@ using cloud.charging.open.protocols.OCPP.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    public delegate Task OnJSONMessageRequestSentDelegate   (DateTime                    Timestamp,
-                                                             OCPPWebSocketAdapterOUT     Server,
-                                                             OCPP_JSONRequestMessage     JSONRequestMessage);
-
-    public delegate Task OnJSONMessageResponseSentDelegate  (DateTime                    Timestamp,
-                                                             OCPPWebSocketAdapterOUT     Server,
-                                                             OCPP_JSONResponseMessage    JSONResponseMessage);
-
-    public delegate Task OnJSONErrorMessageSentDelegate     (DateTime                    Timestamp,
-                                                             OCPPWebSocketAdapterOUT     Server,
-                                                             OCPP_JSONErrorMessage       JSONErrorMessage);
-
-
-
-    public delegate Task OnBinaryMessageRequestSentDelegate (DateTime                    Timestamp,
-                                                             OCPPWebSocketAdapterOUT     Server,
-                                                             OCPP_BinaryRequestMessage   BinaryRequestMessage);
-
-    public delegate Task OnBinaryMessageResponseSentDelegate(DateTime                    Timestamp,
-                                                             OCPPWebSocketAdapterOUT     Server,
-                                                             OCPP_BinaryResponseMessage  BinaryResponseMessage);
-
-    //public delegate Task OnBinaryErrorMessageSentDelegate   (DateTime                    Timestamp,
-    //                                                         OCPPWebSocketAdapterOUT     Server,
-    //                                                         OCPP_BinaryErrorMessage     BinaryErrorMessage);
-
-
-
     /// <summary>
     /// An OCPP HTTP Web Socket adapter.
     /// </remarks>

@@ -39,7 +39,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         #region SendBootNotification                  (BootReason, ...)
 
         /// <summary>
-        /// Send a boot notification.
+        /// Send a boot notification to the given networking node (default: CSMS).
         /// </summary>
         /// <param name="BootReason">The the reason for sending this boot notification to the CSMS.</param>
         /// 
@@ -140,7 +140,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
                                            CancellationToken             CancellationToken         = default)
 
 
-                => NetworkingNode.OUT.FirmwareStatusNotification(
+                => NetworkingNode.ocppOUT.FirmwareStatusNotification(
                        new FirmwareStatusNotificationRequest(
 
                            DestinationNodeId ?? NetworkingNode_Id.CSMS,
@@ -204,7 +204,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
                                                   CancellationToken             CancellationToken   = default)
 
 
-                => NetworkingNode.OUT.PublishFirmwareStatusNotification(
+                => NetworkingNode.ocppOUT.PublishFirmwareStatusNotification(
                        new PublishFirmwareStatusNotificationRequest(
 
                            DestinationNodeId ?? NetworkingNode_Id.CSMS,
@@ -262,7 +262,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
                           CancellationToken             CancellationToken   = default)
 
 
-                => NetworkingNode.OUT.Heartbeat(
+                => NetworkingNode.ocppOUT.Heartbeat(
                        new HeartbeatRequest(
 
                            DestinationNodeId ?? NetworkingNode_Id.CSMS,
@@ -325,7 +325,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
                         CancellationToken             CancellationToken   = default)
 
 
-                => NetworkingNode.OUT.NotifyEvent(
+                => NetworkingNode.ocppOUT.NotifyEvent(
                        new NotifyEventRequest(
 
                            DestinationNodeId ?? NetworkingNode_Id.CSMS,
@@ -391,7 +391,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
                                           CancellationToken             CancellationToken   = default)
 
 
-                => NetworkingNode.OUT.SecurityEventNotification(
+                => NetworkingNode.ocppOUT.SecurityEventNotification(
                        new SecurityEventNotificationRequest(
 
                            DestinationNodeId ?? NetworkingNode_Id.CSMS,
@@ -460,7 +460,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
                          CancellationToken             CancellationToken   = default)
 
 
-                => NetworkingNode.OUT.NotifyReport(
+                => NetworkingNode.ocppOUT.NotifyReport(
                        new NotifyReportRequest(
 
                            DestinationNodeId ?? NetworkingNode_Id.CSMS,
@@ -531,7 +531,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
                                    CancellationToken             CancellationToken   = default)
 
 
-                => NetworkingNode.OUT.NotifyMonitoringReport(
+                => NetworkingNode.ocppOUT.NotifyMonitoringReport(
                        new NotifyMonitoringReportRequest(
 
                            DestinationNodeId ?? NetworkingNode_Id.CSMS,
@@ -596,7 +596,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
                                       CancellationToken             CancellationToken   = default)
 
 
-                => NetworkingNode.OUT.LogStatusNotification(
+                => NetworkingNode.ocppOUT.LogStatusNotification(
                        new LogStatusNotificationRequest(
 
                            DestinationNodeId ?? NetworkingNode_Id.CSMS,
@@ -660,7 +660,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
                          CancellationToken             CancellationToken   = default)
 
 
-                => NetworkingNode.OUT.DataTransfer(
+                => NetworkingNode.ocppOUT.DataTransfer(
                        new DataTransferRequest(
 
                            DestinationNodeId ?? NetworkingNode_Id.CSMS,
@@ -726,7 +726,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
                                           CancellationToken             CancellationToken   = default)
 
 
-                => NetworkingNode.OUT.SignCertificate(
+                => NetworkingNode.ocppOUT.SignCertificate(
                        new SignCertificateRequest(
 
                            DestinationNodeId ?? NetworkingNode_Id.CSMS,
@@ -795,7 +795,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
                                   CancellationToken             CancellationToken                  = default)
 
 
-                => NetworkingNode.OUT.Get15118EVCertificate(
+                => NetworkingNode.ocppOUT.Get15118EVCertificate(
                        new Get15118EVCertificateRequest(
 
                            DestinationNodeId ?? NetworkingNode_Id.CSMS,
@@ -858,7 +858,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
                                  CancellationToken             CancellationToken   = default)
 
 
-                => NetworkingNode.OUT.GetCertificateStatus(
+                => NetworkingNode.ocppOUT.GetCertificateStatus(
                        new GetCertificateStatusRequest(
 
                            DestinationNodeId ?? NetworkingNode_Id.CSMS,
@@ -920,7 +920,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
                           CancellationToken             CancellationToken   = default)
 
 
-                => NetworkingNode.OUT.GetCRL(
+                => NetworkingNode.ocppOUT.GetCRL(
                        new GetCRLRequest(
 
                            DestinationNodeId ?? NetworkingNode_Id.CSMS,
@@ -983,7 +983,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
                                         CancellationToken             CancellationToken   = default)
 
 
-                => NetworkingNode.OUT.ReservationStatusUpdate(
+                => NetworkingNode.ocppOUT.ReservationStatusUpdate(
                        new ReservationStatusUpdateRequest(
 
                            DestinationNodeId ?? NetworkingNode_Id.CSMS,
@@ -1047,7 +1047,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
                       CancellationToken              CancellationToken             = default)
 
 
-                => NetworkingNode.OUT.Authorize(
+                => NetworkingNode.ocppOUT.Authorize(
                        new AuthorizeRequest(
 
                            DestinationNodeId ?? NetworkingNode_Id.CSMS,
@@ -1114,7 +1114,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
                                   CancellationToken             CancellationToken   = default)
 
 
-                => NetworkingNode.OUT.NotifyEVChargingNeeds(
+                => NetworkingNode.ocppOUT.NotifyEVChargingNeeds(
                        new NotifyEVChargingNeedsRequest(
 
                            DestinationNodeId ?? NetworkingNode_Id.CSMS,
@@ -1202,7 +1202,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
                                  CancellationToken             CancellationToken       = default)
 
 
-                => NetworkingNode.OUT.TransactionEvent(
+                => NetworkingNode.ocppOUT.TransactionEvent(
                        new TransactionEventRequest(
 
                            DestinationNodeId ?? NetworkingNode_Id.CSMS,
@@ -1280,7 +1280,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
                                    CancellationToken             CancellationToken   = default)
 
 
-                => NetworkingNode.OUT.StatusNotification(
+                => NetworkingNode.ocppOUT.StatusNotification(
                        new StatusNotificationRequest(
 
                            DestinationNodeId ?? NetworkingNode_Id.CSMS,
@@ -1344,7 +1344,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
                             CancellationToken             CancellationToken   = default)
 
 
-                => NetworkingNode.OUT.MeterValues(
+                => NetworkingNode.ocppOUT.MeterValues(
                        new MeterValuesRequest(
 
                            DestinationNodeId ?? NetworkingNode_Id.CSMS,
@@ -1408,7 +1408,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
                                 CancellationToken              CancellationToken   = default)
 
 
-                => NetworkingNode.OUT.NotifyChargingLimit(
+                => NetworkingNode.ocppOUT.NotifyChargingLimit(
                        new NotifyChargingLimitRequest(
 
                            DestinationNodeId ?? NetworkingNode_Id.CSMS,
@@ -1471,7 +1471,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
                                      CancellationToken             CancellationToken   = default)
 
 
-                => NetworkingNode.OUT.ClearedChargingLimit(
+                => NetworkingNode.ocppOUT.ClearedChargingLimit(
                        new ClearedChargingLimitRequest(
 
                            DestinationNodeId ?? NetworkingNode_Id.CSMS,
@@ -1539,7 +1539,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
                                    CancellationToken             CancellationToken   = default)
 
 
-                => NetworkingNode.OUT.ReportChargingProfiles(
+                => NetworkingNode.ocppOUT.ReportChargingProfiles(
                        new ReportChargingProfilesRequest(
 
                            DestinationNodeId ?? NetworkingNode_Id.CSMS,
@@ -1610,7 +1610,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
                                      CancellationToken             CancellationToken          = default)
 
 
-                => NetworkingNode.OUT.NotifyEVChargingSchedule(
+                => NetworkingNode.ocppOUT.NotifyEVChargingSchedule(
                        new NotifyEVChargingScheduleRequest(
 
                            DestinationNodeId ?? NetworkingNode_Id.CSMS,
@@ -1675,7 +1675,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
                                    CancellationToken             CancellationToken   = default)
 
 
-                => NetworkingNode.OUT.NotifyPriorityCharging(
+                => NetworkingNode.ocppOUT.NotifyPriorityCharging(
                        new NotifyPriorityChargingRequest(
 
                            DestinationNodeId ?? NetworkingNode_Id.CSMS,
@@ -1735,7 +1735,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
                                       CancellationToken             CancellationToken   = default)
 
 
-                => NetworkingNode.OUT.PullDynamicScheduleUpdate(
+                => NetworkingNode.ocppOUT.PullDynamicScheduleUpdate(
                        new PullDynamicScheduleUpdateRequest(
 
                            DestinationNodeId ?? NetworkingNode_Id.CSMS,
@@ -1799,7 +1799,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
                                   CancellationToken             CancellationToken   = default)
 
 
-                => NetworkingNode.OUT.NotifyDisplayMessages(
+                => NetworkingNode.ocppOUT.NotifyDisplayMessages(
                        new NotifyDisplayMessagesRequest(
 
                            DestinationNodeId ?? NetworkingNode_Id.CSMS,
@@ -1868,7 +1868,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
                                       CancellationToken             CancellationToken   = default)
 
 
-                => NetworkingNode.OUT.NotifyCustomerInformation(
+                => NetworkingNode.ocppOUT.NotifyCustomerInformation(
                        new NotifyCustomerInformationRequest(
 
                            DestinationNodeId ?? NetworkingNode_Id.CSMS,
@@ -1938,7 +1938,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
                                CancellationToken             CancellationToken   = default)
 
 
-                => NetworkingNode.OUT.BinaryDataTransfer(
+                => NetworkingNode.ocppOUT.BinaryDataTransfer(
                        new BinaryDataTransferRequest(
 
                            DestinationNodeId ?? NetworkingNode_Id.CSMS,
@@ -2004,7 +2004,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
                                   CancellationToken             CancellationToken   = default)
 
 
-                => NetworkingNode.OUT.NotifyNetworkTopology(
+                => NetworkingNode.ocppOUT.NotifyNetworkTopology(
                        new OCPP.NN.NotifyNetworkTopologyRequest(
 
                            DestinationNodeId ?? NetworkingNode_Id.CSMS,
@@ -2065,7 +2065,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         //                          CancellationToken             CancellationToken   = default)
 
 
-        //        => NetworkingNode.OUT.NotifyNetworkTopology(
+        //        => NetworkingNode.ocppOUT.NotifyNetworkTopology(
         //               new OCPP.NN.NotifyNetworkTopologyRequest(
 
         //                   DestinationNodeId,

@@ -30,8 +30,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     public interface INetworkingNodeIncomingMessageEvents : OCPP.NN.CS.INetworkingNodeIncomingMessageEvents
     {
 
-        // CS
-
         #region OnReset                         (Request/-Response)
 
         /// <summary>
@@ -652,6 +650,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         event OnCustomerInformationResponseDelegate   OnCustomerInformationResponse;
 
         #endregion
+
+
+        // Incoming responses!!!
+
+        event OCPPv2_1.CS.OnBootNotificationResponseDelegate? OnBootNotificationResponseIN;
 
 
     }

@@ -94,7 +94,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         public HTTPEventSource<JObject>?                    EventLog            { get; }
 
 
-        public ActingAsCSMS                                 NetworkingNode      { get; }
+    //    public ActingAsCSMS                                 NetworkingNode      { get; }
 
         #endregion
 
@@ -107,7 +107,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <param name="URLPathPrefix">An optional prefix for the HTTP URLs.</param>
         /// <param name="HTTPRealm">The HTTP realm, if HTTP Basic Authentication is used.</param>
         /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
-        public NetworkingNodeUploadAPI(ActingAsCSMS                                TestNetworkingNode,
+        public NetworkingNodeUploadAPI(//ActingAsCSMS                                TestNetworkingNode,
                                        HTTPServer                                  HTTPServer,
                                        HTTPPath?                                   URLPathPrefix    = null,
                                        HTTPPath?                                   BasePath         = null,
@@ -143,7 +143,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         {
 
-            this.NetworkingNode  = TestNetworkingNode;
+           // this.NetworkingNode  = TestNetworkingNode;
 
             this.HTTPRealm      = HTTPRealm.IsNotNullOrEmpty() ? HTTPRealm : DefaultHTTPRealm;
             this.HTTPLogins     = HTTPLogins ?? Array.Empty<KeyValuePair<string, string>>();

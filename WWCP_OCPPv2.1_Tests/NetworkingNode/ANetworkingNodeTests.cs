@@ -17,8 +17,6 @@
 
 #region Usings
 
-using Newtonsoft.Json.Linq;
-
 using NUnit.Framework;
 using NUnit.Framework.Legacy;
 
@@ -49,9 +47,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode
         protected TestNetworkingNode?           networkingNode2;
         protected TestNetworkingNode?           networkingNode3;
 
-        protected NetworkingNodeWSServer?       testNetworkingNodeWebSockets01;
-        protected NetworkingNodeWSServer?       testNetworkingNodeWebSockets02;
-        protected NetworkingNodeWSServer?       testNetworkingNodeWebSockets03;
+        protected OCPPWebSocketServer?          nnOCPPWebSocketServer01;
+        protected OCPPWebSocketServer?          nnOCPPWebSocketServer02;
+        protected OCPPWebSocketServer?          nnOCPPWebSocketServer03;
 
 
         protected List<LogJSONRequest>?         networkingNode1WebSocketJSONMessagesReceived;
@@ -136,13 +134,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode
                 ClassicAssert.IsNotNull(networkingNode1);
 
 
-                testNetworkingNodeWebSockets01 = networkingNode1.AsCSMS.CreateWebSocketService(
+                nnOCPPWebSocketServer01 = networkingNode1.AttachWebSocketServer(
                                                      TCPPort:                 IPPort.Parse(9103),
                                                      DisableWebSocketPings:   true,
                                                      AutoStart:               true
                                                  );
 
-                ClassicAssert.IsNotNull(testNetworkingNodeWebSockets01);
+                ClassicAssert.IsNotNull(nnOCPPWebSocketServer01);
 
 
                 if (testBackendWebSockets01 is not null)
@@ -150,7 +148,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode
 
                     testCSMS01.AddOrUpdateHTTPBasicAuth(networkingNode1Id, "1234abcd");
 
-                    var response = networkingNode1.ConnectWebSocket(
+                    var response = networkingNode1.ConnectWebSocketClient(
+                                       NetworkingNodeId:        NetworkingNode_Id.CSMS,
                                        RemoteURL:               URL.Parse("http://127.0.0.1:" + testBackendWebSockets01.IPPort.ToString() + "/" + networkingNode1.Id),
                                        HTTPAuthentication:      HTTPBasicAuthentication.Create(networkingNode1Id.ToString(), "1234abcd"),
                                        DisableWebSocketPings:   true,
@@ -180,29 +179,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode
                     }
 
 
-                    var networkingNode1WebSocketClient = networkingNode1.CSClient as NetworkingNodeWSClient;
-                    ClassicAssert.IsNotNull(networkingNode1WebSocketClient);
+                    //var networkingNode1WebSocketClient = networkingNode1.CSClient as NetworkingNodeWSClient;
+                    //ClassicAssert.IsNotNull(networkingNode1WebSocketClient);
 
-                    if (networkingNode1WebSocketClient is not null)
-                    {
+                    //if (networkingNode1WebSocketClient is not null)
+                    //{
 
-                        networkingNode1WebSocketClient.OnTextMessageReceived         += async (timestamp, webSocketServer, webSocketConnection, webSocketFrame, eventTrackingId, message, cancellationToken) => {
-                            networkingNode1WebSocketJSONMessagesReceived.        Add(new LogJSONRequest(timestamp, JArray.Parse(message)));
-                        };
+                    //    networkingNode1WebSocketClient.OnTextMessageReceived         += async (timestamp, webSocketServer, webSocketConnection, webSocketFrame, eventTrackingId, message, cancellationToken) => {
+                    //        networkingNode1WebSocketJSONMessagesReceived.        Add(new LogJSONRequest(timestamp, JArray.Parse(message)));
+                    //    };
 
-                        networkingNode1WebSocketClient.OnJSONMessageResponseSent     += async (timestamp, client, eventTrackingId, requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage) => {
-                            networkingNode1WebSocketJSONMessageResponsesSent.    Add(new LogDataJSONResponse(requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage));
-                        };
+                    //    networkingNode1WebSocketClient.OnJSONMessageResponseSent     += async (timestamp, client, eventTrackingId, requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage) => {
+                    //        networkingNode1WebSocketJSONMessageResponsesSent.    Add(new LogDataJSONResponse(requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage));
+                    //    };
 
-                        networkingNode1WebSocketClient.OnTextMessageSent             += async (timestamp, webSocketServer, webSocketConnection, webSocketFrame, eventTrackingId, message, cancellationToken) => {
-                            networkingNode1WebSocketJSONMessagesSent.            Add(new LogJSONRequest(timestamp, JArray.Parse(message)));
-                        };
+                    //    networkingNode1WebSocketClient.OnTextMessageSent             += async (timestamp, webSocketServer, webSocketConnection, webSocketFrame, eventTrackingId, message, cancellationToken) => {
+                    //        networkingNode1WebSocketJSONMessagesSent.            Add(new LogJSONRequest(timestamp, JArray.Parse(message)));
+                    //    };
 
-                        networkingNode1WebSocketClient.OnJSONMessageResponseReceived += async (timestamp, client, eventTrackingId, requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage) => {
-                            networkingNode1WebSocketJSONMessageResponsesReceived.Add(new LogDataJSONResponse(requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage));
-                        };
+                    //    networkingNode1WebSocketClient.OnJSONMessageResponseReceived += async (timestamp, client, eventTrackingId, requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage) => {
+                    //        networkingNode1WebSocketJSONMessageResponsesReceived.Add(new LogDataJSONResponse(requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage));
+                    //    };
 
-                    }
+                    //}
 
                 }
 

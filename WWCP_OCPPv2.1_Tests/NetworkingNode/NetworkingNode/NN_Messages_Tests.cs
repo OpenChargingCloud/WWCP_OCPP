@@ -23,8 +23,10 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.NN;
+using cloud.charging.open.protocols.OCPP.WebSockets;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.NN;
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
 
@@ -83,73 +85,116 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
             InitNetworkingNode1 = true;
 
             Assert.Multiple(() => {
-                Assert.That(testCSMS01,                       Is.Not.Null);
-                Assert.That(testBackendWebSockets01,          Is.Not.Null);
-                Assert.That(networkingNode1,                  Is.Not.Null);
-                Assert.That(testNetworkingNodeWebSockets01,   Is.Not.Null);
-                Assert.That(chargingStation1,                 Is.Not.Null);
-                Assert.That(chargingStation2,                 Is.Not.Null);
-                Assert.That(chargingStation3,                 Is.Not.Null);
+                Assert.That(networkingNode1,           Is.Not.Null);
+                Assert.That(nnOCPPWebSocketServer01,   Is.Not.Null);
+                Assert.That(testCSMS01,                Is.Not.Null);
             });
 
-            if (testCSMS01                     is not null &&
-                testBackendWebSockets01        is not null &&
-                networkingNode1                is not null &&
-                testNetworkingNodeWebSockets01 is not null &&
-                chargingStation1               is not null &&
-                chargingStation2               is not null &&
-                chargingStation3               is not null)
+            if (networkingNode1          is not null &&
+                nnOCPPWebSocketServer01  is not null &&
+                testCSMS01               is not null)
             {
 
-                var csmsBootNotificationRequests  = new ConcurrentList<BootNotificationRequest>();
+                var nnBootNotificationRequestsSent       = new ConcurrentList<BootNotificationRequest>();
+                var nnJSONMessageRequestsSent            = new ConcurrentList<OCPP_JSONRequestMessage>();
+                var csmsBootNotificationRequests         = new ConcurrentList<BootNotificationRequest>();
+                var nnJSONResponseMessagesReceived       = new ConcurrentList<OCPP_JSONResponseMessage>();
+                var nnBootNotificationResponsesReceived  = new ConcurrentList<BootNotificationResponse>();
 
-                testCSMS01.OnBootNotificationRequest += (timestamp, sender, connection, bootNotificationRequest) => {
-                    csmsBootNotificationRequests.TryAdd(bootNotificationRequest);
+                networkingNode1.ocppOUT.OnBootNotificationRequest     += (timestamp, sender,             bootNotificationRequest) => {
+                    nnBootNotificationRequestsSent.TryAdd(bootNotificationRequest);
+                    return Task.CompletedTask;
+                };
+
+                networkingNode1.ocppOUT.OnJSONMessageRequestSent      += (timestamp, sender, jsonRequestMessage) => {
+                    nnJSONMessageRequestsSent.     TryAdd(jsonRequestMessage);
+                    return Task.CompletedTask;
+                };
+
+                testCSMS01.             OnBootNotificationRequest     += (timestamp, sender, connection, bootNotificationRequest) => {
+                    csmsBootNotificationRequests.  TryAdd(bootNotificationRequest);
+                    return Task.CompletedTask;
+                };
+
+                networkingNode1.ocppIN. OnJSONMessageResponseReceived += (timestamp, sender, jsonResponseMessage) => {
+                    nnJSONResponseMessagesReceived.TryAdd(jsonResponseMessage);
+                    return Task.CompletedTask;
+                };
+
+                //networkingNode1.ocppOUT.OnBootNotificationResponse    += (timestamp, sender,             bootNotificationRequest, bootNotificationResponse, runtime) => {
+                //    nnBootNotificationResponses. TryAdd(bootNotificationResponse);
+                //    return Task.CompletedTask;
+                //};
+
+                networkingNode1.ocppIN. OnBootNotificationResponseIN  += (timestamp, sender,             bootNotificationRequest, bootNotificationResponse, runtime) => {
+                    nnBootNotificationResponsesReceived.   TryAdd(bootNotificationResponse);
                     return Task.CompletedTask;
                 };
 
 
                 var reason    = BootReason.PowerUp;
                 var response  = await networkingNode1.SendBootNotification(
-                                          BootReason:         reason,
-                                          DestinationNodeId:  NetworkingNode_Id.CSMS
+                                          BootReason:  reason
                                       );
 
 
                 Assert.Multiple(() => {
 
-                    Assert.That(response.Result.ResultCode,                                Is.EqualTo(ResultCode.OK));
-                    Assert.That(response.Status,                                           Is.EqualTo(RegistrationStatus.Accepted));
+                    // Networking Node Request OUT
+                    Assert.That(nnBootNotificationRequestsSent.    Count,                         Is.EqualTo(1), "The BootNotification request did not leave the networking node!");
+                    var nnBootNotificationRequest = nnBootNotificationRequestsSent.First();
+                    Assert.That(nnBootNotificationRequest.DestinationNodeId,                  Is.EqualTo(NetworkingNode_Id.CSMS));
+                    //Assert.That(nnBootNotificationRequest.NetworkPath.Length,                 Is.EqualTo(1));
+                    //Assert.That(nnBootNotificationRequest.NetworkPath.Source,                 Is.EqualTo(networkingNode1.Id));
+                    //Assert.That(nnBootNotificationRequest.NetworkPath.Last,                   Is.EqualTo(networkingNode1.Id));
+                    Assert.That(nnBootNotificationRequest.Reason,                             Is.EqualTo(reason));
 
-                    Assert.That(csmsBootNotificationRequests.Count,                        Is.EqualTo(1), "The BootNotification did not reach the CSMS!");
-                    //Assert.That(csmsBootNotificationRequests.First().DestinationNodeId,    Is.EqualTo(NetworkingNode_Id.CSMS));
-                    Assert.That(csmsBootNotificationRequests.First().NetworkPath.Length,   Is.EqualTo(1));
-                    Assert.That(csmsBootNotificationRequests.First().NetworkPath.Source,   Is.EqualTo(networkingNode1.Id));
-                    Assert.That(csmsBootNotificationRequests.First().NetworkPath.Last,     Is.EqualTo(networkingNode1.Id));
-                    Assert.That(csmsBootNotificationRequests.First().Reason,               Is.EqualTo(reason));
+                    Assert.That(nnJSONMessageRequestsSent.     Count,                         Is.EqualTo(1), "The BootNotification JSON request did not leave the networking node!");
 
-                    Assert.That(csmsBootNotificationRequests.First().ChargingStation,      Is.Not.Null);
+                    // CSMS Request IN
+                    Assert.That(csmsBootNotificationRequests.  Count,                         Is.EqualTo(1), "The BootNotification request did not reach the CSMS!");
+                    var csmsBootNotificationRequest = csmsBootNotificationRequests.First();
+                    Assert.That(csmsBootNotificationRequest.DestinationNodeId,                Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(csmsBootNotificationRequest.NetworkPath.Length,               Is.EqualTo(1));
+                    Assert.That(csmsBootNotificationRequest.NetworkPath.Source,               Is.EqualTo(networkingNode1.Id));
+                    Assert.That(csmsBootNotificationRequest.NetworkPath.Last,                 Is.EqualTo(networkingNode1.Id));
+                    Assert.That(csmsBootNotificationRequest.Reason,                           Is.EqualTo(reason));
 
-                });
-
-                var chargingStation = csmsBootNotificationRequests.First().ChargingStation;
-                if (chargingStation is not null)
-                {
-
-                    Assert.That(chargingStation.Model,             Is.EqualTo(networkingNode1.Model));
-                    Assert.That(chargingStation.VendorName,        Is.EqualTo(networkingNode1.VendorName));
-                    Assert.That(chargingStation.SerialNumber,      Is.EqualTo(networkingNode1.SerialNumber));
-                    Assert.That(chargingStation.FirmwareVersion,   Is.EqualTo(networkingNode1.FirmwareVersion));
-                    Assert.That(chargingStation.Modem,             Is.Not.Null);
-
-                    if (chargingStation. Modem is not null &&
-                        chargingStation1.Modem is not null)
+                    Assert.That(csmsBootNotificationRequest.ChargingStation,                  Is.Not.Null);
+                    var chargingStation = csmsBootNotificationRequests.First().ChargingStation;
+                    if (chargingStation is not null)
                     {
-                        Assert.That(chargingStation.Modem.ICCID,   Is.EqualTo(networkingNode1.Modem.ICCID));
-                        Assert.That(chargingStation.Modem.IMSI,    Is.EqualTo(networkingNode1.Modem.IMSI));
+
+                        Assert.That(chargingStation.Model,             Is.EqualTo(networkingNode1.Model));
+                        Assert.That(chargingStation.VendorName,        Is.EqualTo(networkingNode1.VendorName));
+                        Assert.That(chargingStation.SerialNumber,      Is.EqualTo(networkingNode1.SerialNumber));
+                        Assert.That(chargingStation.FirmwareVersion,   Is.EqualTo(networkingNode1.FirmwareVersion));
+                        Assert.That(chargingStation.Modem,             Is.Not.Null);
+
+                        if (chargingStation.Modem is not null &&
+                            networkingNode1.Modem is not null)
+                        {
+                            Assert.That(chargingStation.Modem.ICCID,   Is.EqualTo(networkingNode1.Modem.ICCID));
+                            Assert.That(chargingStation.Modem.IMSI,    Is.EqualTo(networkingNode1.Modem.IMSI));
+                        }
+
                     }
 
-                }
+
+                    Assert.That(nnJSONResponseMessagesReceived.Count,                         Is.EqualTo(1), "The BootNotification JSON request did not leave the networking node!");
+
+
+                    // Networking Node Response IN
+                    Assert.That(nnBootNotificationResponsesReceived.   Count,                         Is.EqualTo(1), "The BootNotification response did not reach the networking node!");
+                    var nnBootNotificationResponse = nnBootNotificationResponsesReceived.First();
+                    Assert.That(nnBootNotificationResponse.Request.RequestId,                 Is.EqualTo(nnBootNotificationRequest.RequestId));
+
+
+                    // Result
+                    Assert.That(response.Result.ResultCode,                                   Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                                              Is.EqualTo(RegistrationStatus.Accepted));
+
+                });
 
             }
 
@@ -173,7 +218,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
                 Assert.That(testCSMS01,                       Is.Not.Null);
                 Assert.That(testBackendWebSockets01,          Is.Not.Null);
                 Assert.That(networkingNode1,                  Is.Not.Null);
-                Assert.That(testNetworkingNodeWebSockets01,   Is.Not.Null);
+                Assert.That(nnOCPPWebSocketServer01,   Is.Not.Null);
                 Assert.That(chargingStation1,                 Is.Not.Null);
                 Assert.That(chargingStation2,                 Is.Not.Null);
                 Assert.That(chargingStation3,                 Is.Not.Null);
@@ -182,7 +227,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
             if (testCSMS01                     is not null &&
                 testBackendWebSockets01        is not null &&
                 networkingNode1                is not null &&
-                testNetworkingNodeWebSockets01 is not null &&
+                nnOCPPWebSocketServer01 is not null &&
                 chargingStation1               is not null &&
                 chargingStation2               is not null &&
                 chargingStation3               is not null)
@@ -197,7 +242,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
 
 
                 var reason    = BootReason.PowerUp;
-                var response  = await networkingNode1.OUT.NotifyNetworkTopology(
+                var response  = await networkingNode1.ocppOUT.NotifyNetworkTopology(
                                     new NotifyNetworkTopologyRequest(
                                         NetworkingNode_Id.CSMS,
                                         new NetworkTopologyInformation(
@@ -294,7 +339,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
                 Assert.That(testCSMS01,                       Is.Not.Null);
                 Assert.That(testBackendWebSockets01,          Is.Not.Null);
                 Assert.That(networkingNode1,                  Is.Not.Null);
-                Assert.That(testNetworkingNodeWebSockets01,   Is.Not.Null);
+                Assert.That(nnOCPPWebSocketServer01,   Is.Not.Null);
                 Assert.That(chargingStation1,                 Is.Not.Null);
                 Assert.That(chargingStation2,                 Is.Not.Null);
                 Assert.That(chargingStation3,                 Is.Not.Null);
@@ -303,7 +348,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
             if (testCSMS01                     is not null &&
                 testBackendWebSockets01        is not null &&
                 networkingNode1                is not null &&
-                testNetworkingNodeWebSockets01 is not null &&
+                nnOCPPWebSocketServer01 is not null &&
                 chargingStation1               is not null &&
                 chargingStation2               is not null &&
                 chargingStation3               is not null)

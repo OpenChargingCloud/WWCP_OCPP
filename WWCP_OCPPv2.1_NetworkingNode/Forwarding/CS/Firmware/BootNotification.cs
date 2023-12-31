@@ -65,274 +65,274 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                            ForwardingDecision<BootNotificationRequest, BootNotificationResponse>   ForwardingDecision);
 
 
-    public partial class INPUT : INetworkingNodeIN
-    {
+    //public partial class INPUT : INetworkingNodeIN
+    //{
 
-        #region Events
+    //    #region Events
 
-        /// <summary>
-        /// An event fired whenever a BootNotification request was received from the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CSMS.OnBootNotificationRequestDelegate?   OnBootNotificationRequest;
+    //    /// <summary>
+    //    /// An event fired whenever a BootNotification request was received from the CSMS.
+    //    /// </summary>
+    //    public event OCPPv2_1.CSMS.OnBootNotificationRequestDelegate?   OnBootNotificationRequest;
 
-        /// <summary>
-        /// An event sent whenever a reset request was received.
-        /// </summary>
-        public event OCPPv2_1.CSMS.OnBootNotificationDelegate?          OnBootNotification;
+    //    /// <summary>
+    //    /// An event sent whenever a reset request was received.
+    //    /// </summary>
+    //    public event OCPPv2_1.CSMS.OnBootNotificationDelegate?          OnBootNotification;
 
-        /// <summary>
-        /// An event fired whenever a response to a BootNotification request was sent.
-        /// </summary>
-        public event OCPPv2_1.CSMS.OnBootNotificationResponseDelegate?  OnBootNotificationResponse;
+    //    /// <summary>
+    //    /// An event fired whenever a response to a BootNotification request was sent.
+    //    /// </summary>
+    //    public event OCPPv2_1.CSMS.OnBootNotificationResponseDelegate?  OnBootNotificationResponse;
 
-        #endregion
+    //    #endregion
 
 
-        private async Task<BootNotificationResponse>
+    //    private async Task<BootNotificationResponse>
 
-            ProcessIT(DateTime                 timestamp,
-                      IEventSender             sender,
-                      IWebSocketConnection     connection,
-                      BootNotificationRequest  request,
-                      CancellationToken        cancellationToken)
+    //        ProcessIT(DateTime                 timestamp,
+    //                  IEventSender             sender,
+    //                  IWebSocketConnection     connection,
+    //                  BootNotificationRequest  request,
+    //                  CancellationToken        cancellationToken)
 
-        {
+    //    {
 
-            #region Send OnBootNotificationRequest event
+    //        #region Send OnBootNotificationRequest event
 
-            var startTime = Timestamp.Now;
+    //        var startTime = Timestamp.Now;
 
-            var requestLogger = OnBootNotificationRequest;
-            if (requestLogger is not null)
-            {
-                try
-                {
+    //        var requestLogger = OnBootNotificationRequest;
+    //        if (requestLogger is not null)
+    //        {
+    //            try
+    //            {
 
-                    await Task.WhenAll(requestLogger.GetInvocationList().
-                                                        OfType <OCPPv2_1.CSMS.OnBootNotificationRequestDelegate>().
-                                                        Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
-                                                                                                        sender,
-                                                                                                        connection,
-                                                                                                        request)).
-                                                        ToArray());
+    //                await Task.WhenAll(requestLogger.GetInvocationList().
+    //                                                    OfType <OCPPv2_1.CSMS.OnBootNotificationRequestDelegate>().
+    //                                                    Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
+    //                                                                                                    sender,
+    //                                                                                                    connection,
+    //                                                                                                    request)).
+    //                                                    ToArray());
 
-                }
-                catch (Exception e)
-                {
-                    await HandleErrors(
-                                nameof(TestNetworkingNode),
-                                nameof(OnBootNotificationRequest),
-                                e
-                            );
-                }
+    //            }
+    //            catch (Exception e)
+    //            {
+    //                await HandleErrors(
+    //                            nameof(TestNetworkingNode),
+    //                            nameof(OnBootNotificationRequest),
+    //                            e
+    //                        );
+    //            }
 
-            }
+    //        }
 
-            #endregion
+    //        #endregion
 
 
-            #region Forwarding of the request...
+    //        #region Forwarding of the request...
 
-            BootNotificationResponse? response = null;
+    //        BootNotificationResponse? response = null;
 
-            if (request.DestinationNodeId != parentNetworkingNode.Id)
-            {
+    //        if (request.DestinationNodeId != parentNetworkingNode.Id)
+    //        {
 
-                #region Check request signature(s)
+    //            #region Check request signature(s)
 
-                if (!parentNetworkingNode.ForwardingSignaturePolicy.VerifyRequestMessage(
-                        request,
-                        request.ToJSON(
-                            parentNetworkingNode.CustomBootNotificationRequestSerializer,
-                            parentNetworkingNode.CustomChargingStationSerializer,
-                            parentNetworkingNode.CustomSignatureSerializer,
-                            parentNetworkingNode.CustomCustomDataSerializer
-                        ),
-                        out var errorResponse
-                    ))
-                {
+    //            if (!parentNetworkingNode.ForwardingSignaturePolicy.VerifyRequestMessage(
+    //                    request,
+    //                    request.ToJSON(
+    //                        parentNetworkingNode.CustomBootNotificationRequestSerializer,
+    //                        parentNetworkingNode.CustomChargingStationSerializer,
+    //                        parentNetworkingNode.CustomSignatureSerializer,
+    //                        parentNetworkingNode.CustomCustomDataSerializer
+    //                    ),
+    //                    out var errorResponse
+    //                ))
+    //            {
 
-                    response = new BootNotificationResponse(
-                                    Request:  request,
-                                    Result:   Result.SignatureError(
-                                                    $"Invalid signature: {errorResponse}"
-                                                )
-                                );
+    //                response = new BootNotificationResponse(
+    //                                Request:  request,
+    //                                Result:   Result.SignatureError(
+    //                                                $"Invalid signature: {errorResponse}"
+    //                                            )
+    //                            );
 
-                }
+    //            }
 
-                #endregion
+    //            #endregion
 
-                else
-                {
+    //            else
+    //            {
 
-                    DebugX.Log($"Forwarding incoming BootNotification request to '{request.DestinationNodeId}'!");
+    //                DebugX.Log($"Forwarding incoming BootNotification request to '{request.DestinationNodeId}'!");
 
-                    var filterResult  = await parentNetworkingNode.FORWARD.ProcessBootNotification(request,
-                                                                                                    connection,
-                                                                                                    cancellationToken);
+    //                var filterResult  = await parentNetworkingNode.FORWARD.ProcessBootNotification(request,
+    //                                                                                                connection,
+    //                                                                                                cancellationToken);
 
-                    switch (filterResult.Result)
-                    {
-
-                        case ForwardingResult.FORWARD:
-                            response = await parentNetworkingNode.OUT.BootNotification(request);
-                            break;
-
-                        case ForwardingResult.DROP:
-                            response = filterResult.DropResponse;
-                            break;
+    //                switch (filterResult.Result)
+    //                {
+
+    //                    case ForwardingResult.FORWARD:
+    //                        response = await parentNetworkingNode.OUT.BootNotification(request);
+    //                        break;
+
+    //                    case ForwardingResult.DROP:
+    //                        response = filterResult.DropResponse;
+    //                        break;
 
-                    }
+    //                }
 
-                }
+    //            }
 
-            }
+    //        }
 
-            #endregion
+    //        #endregion
 
-            else
-            {
+    //        else
+    //        {
 
-                #region Check request signature(s)
+    //            #region Check request signature(s)
 
-                if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
-                        request,
-                        request.ToJSON(
-                            parentNetworkingNode.CustomBootNotificationRequestSerializer,
-                            parentNetworkingNode.CustomChargingStationSerializer,
-                            parentNetworkingNode.CustomSignatureSerializer,
-                            parentNetworkingNode.CustomCustomDataSerializer
-                        ),
-                        out var errorResponse
-                    ))
-                {
-
-                    response = new BootNotificationResponse(
-                                    Request:  request,
-                                    Result:   Result.SignatureError(
-                                                    $"Invalid signature: {errorResponse}"
-                                                )
-                                );
-
-                }
-
-                #endregion
-
-                else
-                {
+    //            if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
+    //                    request,
+    //                    request.ToJSON(
+    //                        parentNetworkingNode.CustomBootNotificationRequestSerializer,
+    //                        parentNetworkingNode.CustomChargingStationSerializer,
+    //                        parentNetworkingNode.CustomSignatureSerializer,
+    //                        parentNetworkingNode.CustomCustomDataSerializer
+    //                    ),
+    //                    out var errorResponse
+    //                ))
+    //            {
+
+    //                response = new BootNotificationResponse(
+    //                                Request:  request,
+    //                                Result:   Result.SignatureError(
+    //                                                $"Invalid signature: {errorResponse}"
+    //                                            )
+    //                            );
+
+    //            }
+
+    //            #endregion
+
+    //            else
+    //            {
 
-                    var requestHandler = OnBootNotification;
-                    if (requestHandler is not null)
-                    {
-                        try
-                        {
+    //                var requestHandler = OnBootNotification;
+    //                if (requestHandler is not null)
+    //                {
+    //                    try
+    //                    {
 
-                            response = (await Task.WhenAll(
-                                                    requestHandler.GetInvocationList().
-                                                                    OfType <OnBootNotificationDelegate>().
-                                                                    Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
-                                                                                                                        sender,
-                                                                                                                        connection,
-                                                                                                                        request,
-                                                                                                                        cancellationToken)).
-                                                                    ToArray())).First();
+    //                        response = (await Task.WhenAll(
+    //                                                requestHandler.GetInvocationList().
+    //                                                                OfType <OnBootNotificationDelegate>().
+    //                                                                Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
+    //                                                                                                                    sender,
+    //                                                                                                                    connection,
+    //                                                                                                                    request,
+    //                                                                                                                    cancellationToken)).
+    //                                                                ToArray())).First();
 
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                        nameof(TestNetworkingNode),
-                                        nameof(OnBootNotificationRequest),
-                                        e
-                                    );
-                        }
+    //                    }
+    //                    catch (Exception e)
+    //                    {
+    //                        await HandleErrors(
+    //                                    nameof(TestNetworkingNode),
+    //                                    nameof(OnBootNotificationRequest),
+    //                                    e
+    //                                );
+    //                    }
 
-                    }
+    //                }
 
-                }
+    //            }
 
-            }
+    //        }
 
-            #region Default response
+    //        #region Default response
 
-            response ??= new BootNotificationResponse(
-                                Request:       request,
-                                Status:        RegistrationStatus.Rejected,
-                                CurrentTime:   Timestamp.Now,
-                                Interval:      TimeSpan.FromMinutes(5),
-                                StatusInfo:    null,
-                                CustomData:    null
-                            );
+    //        response ??= new BootNotificationResponse(
+    //                            Request:       request,
+    //                            Status:        RegistrationStatus.Rejected,
+    //                            CurrentTime:   Timestamp.Now,
+    //                            Interval:      TimeSpan.FromMinutes(5),
+    //                            StatusInfo:    null,
+    //                            CustomData:    null
+    //                        );
 
-            #endregion
+    //        #endregion
 
-            #region Sign response message
+    //        #region Sign response message
 
-            parentNetworkingNode.SignaturePolicy.SignResponseMessage(
-                response,
-                response.ToJSON(
-                    parentNetworkingNode.CustomBootNotificationResponseSerializer,
-                    parentNetworkingNode.CustomStatusInfoSerializer,
-                    parentNetworkingNode.CustomSignatureSerializer,
-                    parentNetworkingNode.CustomCustomDataSerializer
-                ),
-                out var errorResponse2);
+    //        parentNetworkingNode.SignaturePolicy.SignResponseMessage(
+    //            response,
+    //            response.ToJSON(
+    //                parentNetworkingNode.CustomBootNotificationResponseSerializer,
+    //                parentNetworkingNode.CustomStatusInfoSerializer,
+    //                parentNetworkingNode.CustomSignatureSerializer,
+    //                parentNetworkingNode.CustomCustomDataSerializer
+    //            ),
+    //            out var errorResponse2);
 
-            #endregion
+    //        #endregion
 
 
-            #region Send OnBootNotificationResponse event
+    //        #region Send OnBootNotificationResponse event
 
-            var endTime = Timestamp.Now;
+    //        var endTime = Timestamp.Now;
 
-            var responseLogger = OnBootNotificationResponse;
-            if (responseLogger is not null)
-            {
-                try
-                {
+    //        var responseLogger = OnBootNotificationResponse;
+    //        if (responseLogger is not null)
+    //        {
+    //            try
+    //            {
 
-                    await Task.WhenAll(responseLogger.GetInvocationList().
-                                                        OfType <OCPPv2_1.CSMS.OnBootNotificationResponseDelegate>().
-                                                        Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
-                                                                                                            sender,
-                                                                                                            connection,
-                                                                                                            request,
-                                                                                                            response,
-                                                                                                            endTime - startTime)).
-                                                        ToArray());
+    //                await Task.WhenAll(responseLogger.GetInvocationList().
+    //                                                    OfType <OCPPv2_1.CSMS.OnBootNotificationResponseDelegate>().
+    //                                                    Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
+    //                                                                                                        sender,
+    //                                                                                                        connection,
+    //                                                                                                        request,
+    //                                                                                                        response,
+    //                                                                                                        endTime - startTime)).
+    //                                                    ToArray());
 
-                }
-                catch (Exception e)
-                {
-                    await HandleErrors(
-                                nameof(TestNetworkingNode),
-                                nameof(OnBootNotificationRequest),
-                                e
-                            );
-                }
+    //            }
+    //            catch (Exception e)
+    //            {
+    //                await HandleErrors(
+    //                            nameof(TestNetworkingNode),
+    //                            nameof(OnBootNotificationRequest),
+    //                            e
+    //                        );
+    //            }
 
-            }
+    //        }
 
-            #endregion
+    //        #endregion
 
-            return response;
+    //        return response;
 
-        }
+    //    }
 
 
-        public void WireBootNotification(NetworkingNode.CS.  INetworkingNodeIncomingMessages IncomingMessages)
-        {
-            //IncomingMessages.OnBootNotification += ProcessIT;
-        }
+    //    public void WireBootNotification(NetworkingNode.CS.  INetworkingNodeIncomingMessages IncomingMessages)
+    //    {
+    //        //IncomingMessages.OnBootNotification += ProcessIT;
+    //    }
 
-        // MAIN!!!
-        public void WireBootNotification(NetworkingNode.CSMS.INetworkingNodeIncomingMessages IncomingMessages)
-        {
-            IncomingMessages.OnBootNotification += ProcessIT;
-        }
+    //    // MAIN!!!
+    //    public void WireBootNotification(NetworkingNode.CSMS.INetworkingNodeIncomingMessages IncomingMessages)
+    //    {
+    //        IncomingMessages.OnBootNotification += ProcessIT;
+    //    }
 
-    }
+    //}
 
 
     public partial class FORWARD

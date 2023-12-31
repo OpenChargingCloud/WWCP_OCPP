@@ -2292,8 +2292,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
 
 
 
-        INetworkingNodeIN  IN                       { get; }
-        INetworkingNodeOUT OUT                      { get; }
+        //INetworkingNodeIN  IN                       { get; }
+        //INetworkingNodeOUT OUT                      { get; }
 
 
         IOCPPWebSocketAdapterIN  ocppIN  { get; }

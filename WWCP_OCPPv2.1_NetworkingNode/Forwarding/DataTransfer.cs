@@ -65,270 +65,270 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                        ForwardingDecision<DataTransferRequest, DataTransferResponse>   ForwardingDecision);
 
 
-    public partial class INPUT : INetworkingNodeIN
-    {
+    //public partial class INPUT : INetworkingNodeIN
+    //{
 
-        #region Events
+    //    #region Events
 
-        /// <summary>
-        /// An event fired whenever a DataTransfer request was received from the CSMS.
-        /// </summary>
-        public event OnIncomingDataTransferRequestDelegate?     OnIncomingDataTransferRequest;
+    //    /// <summary>
+    //    /// An event fired whenever a DataTransfer request was received from the CSMS.
+    //    /// </summary>
+    //    public event OnIncomingDataTransferRequestDelegate?     OnIncomingDataTransferRequest;
 
-        /// <summary>
-        /// An event sent whenever a reset request was received.
-        /// </summary>
-        public event OnIncomingDataTransferDelegate?            OnIncomingDataTransfer;
+    //    /// <summary>
+    //    /// An event sent whenever a reset request was received.
+    //    /// </summary>
+    //    public event OnIncomingDataTransferDelegate?            OnIncomingDataTransfer;
 
-        /// <summary>
-        /// An event fired whenever a response to a DataTransfer request was sent.
-        /// </summary>
-        public event OnIncomingDataTransferResponseDelegate?    OnIncomingDataTransferResponse;
+    //    /// <summary>
+    //    /// An event fired whenever a response to a DataTransfer request was sent.
+    //    /// </summary>
+    //    public event OnIncomingDataTransferResponseDelegate?    OnIncomingDataTransferResponse;
 
-        #endregion
+    //    #endregion
 
 
-        private async Task<DataTransferResponse>
+    //    private async Task<DataTransferResponse>
 
-            ProcessIT(DateTime               timestamp,
-                      IEventSender           sender,
-                      IWebSocketConnection   connection,
-                      DataTransferRequest    request,
-                      CancellationToken      cancellationToken)
+    //        ProcessIT(DateTime               timestamp,
+    //                  IEventSender           sender,
+    //                  IWebSocketConnection   connection,
+    //                  DataTransferRequest    request,
+    //                  CancellationToken      cancellationToken)
 
-        {
+    //    {
 
-            #region Send OnDataTransferRequest event
+    //        #region Send OnDataTransferRequest event
 
-            var startTime = Timestamp.Now;
+    //        var startTime = Timestamp.Now;
 
-            var requestLogger = OnIncomingDataTransferRequest;
-            if (requestLogger is not null)
-            {
-                try
-                {
+    //        var requestLogger = OnIncomingDataTransferRequest;
+    //        if (requestLogger is not null)
+    //        {
+    //            try
+    //            {
 
-                    await Task.WhenAll(requestLogger.GetInvocationList().
-                                                     OfType <OnIncomingDataTransferRequestDelegate>().
-                                                     Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
-                                                                                                       sender,
-                                                                                                       connection,
-                                                                                                       request)).
-                                                     ToArray());
+    //                await Task.WhenAll(requestLogger.GetInvocationList().
+    //                                                 OfType <OnIncomingDataTransferRequestDelegate>().
+    //                                                 Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
+    //                                                                                                   sender,
+    //                                                                                                   connection,
+    //                                                                                                   request)).
+    //                                                 ToArray());
 
-                }
-                catch (Exception e)
-                {
-                    await HandleErrors(
-                                nameof(TestNetworkingNode),
-                                nameof(OnIncomingDataTransferRequest),
-                                e
-                            );
-                }
+    //            }
+    //            catch (Exception e)
+    //            {
+    //                await HandleErrors(
+    //                            nameof(TestNetworkingNode),
+    //                            nameof(OnIncomingDataTransferRequest),
+    //                            e
+    //                        );
+    //            }
 
-            }
+    //        }
 
-            #endregion
+    //        #endregion
 
 
-            #region Forwarding of the request...
+    //        #region Forwarding of the request...
 
-            DataTransferResponse? response = null;
+    //        DataTransferResponse? response = null;
 
-            if (request.DestinationNodeId != parentNetworkingNode.Id)
-            {
+    //        if (request.DestinationNodeId != parentNetworkingNode.Id)
+    //        {
 
-                #region Check request signature(s)
+    //            #region Check request signature(s)
 
-                if (!parentNetworkingNode.ForwardingSignaturePolicy.VerifyRequestMessage(
-                        request,
-                        request.ToJSON(
-                            parentNetworkingNode.CustomDataTransferRequestSerializer,
-                            parentNetworkingNode.CustomSignatureSerializer,
-                            parentNetworkingNode.CustomCustomDataSerializer
-                        ),
-                        out var errorResponse
-                    ))
-                {
+    //            if (!parentNetworkingNode.ForwardingSignaturePolicy.VerifyRequestMessage(
+    //                    request,
+    //                    request.ToJSON(
+    //                        parentNetworkingNode.CustomDataTransferRequestSerializer,
+    //                        parentNetworkingNode.CustomSignatureSerializer,
+    //                        parentNetworkingNode.CustomCustomDataSerializer
+    //                    ),
+    //                    out var errorResponse
+    //                ))
+    //            {
 
-                    response = new DataTransferResponse(
-                                    Request:  request,
-                                    Result:   Result.SignatureError(
-                                                    $"Invalid signature: {errorResponse}"
-                                                )
-                                );
+    //                response = new DataTransferResponse(
+    //                                Request:  request,
+    //                                Result:   Result.SignatureError(
+    //                                                $"Invalid signature: {errorResponse}"
+    //                                            )
+    //                            );
 
-                }
+    //            }
 
-                #endregion
+    //            #endregion
 
-                else
-                {
+    //            else
+    //            {
 
-                    DebugX.Log($"Forwarding incoming DataTransfer request to '{request.DestinationNodeId}'!");
+    //                DebugX.Log($"Forwarding incoming DataTransfer request to '{request.DestinationNodeId}'!");
 
-                    var filterResult  = await parentNetworkingNode.FORWARD.ProcessDataTransfer(request,
-                                                                                                     connection,
-                                                                                                     cancellationToken);
-
-                    switch (filterResult.Result)
-                    {
-
-                        case ForwardingResult.FORWARD:
-                            response = await parentNetworkingNode.OUT.DataTransfer(request);
-                            break;
+    //                var filterResult  = await parentNetworkingNode.FORWARD.ProcessDataTransfer(request,
+    //                                                                                                 connection,
+    //                                                                                                 cancellationToken);
+
+    //                switch (filterResult.Result)
+    //                {
+
+    //                    case ForwardingResult.FORWARD:
+    //                        response = await parentNetworkingNode.OUT.DataTransfer(request);
+    //                        break;
 
-                        case ForwardingResult.DROP:
-                            response = filterResult.DropResponse;
-                            break;
+    //                    case ForwardingResult.DROP:
+    //                        response = filterResult.DropResponse;
+    //                        break;
 
-                    }
+    //                }
 
-                }
+    //            }
 
-            }
+    //        }
 
-            #endregion
+    //        #endregion
 
-            else
-            {
+    //        else
+    //        {
 
-                #region Check request signature(s)
-
-                if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
-                        request,
-                        request.ToJSON(
-                            parentNetworkingNode.CustomDataTransferRequestSerializer,
-                            parentNetworkingNode.CustomSignatureSerializer,
-                            parentNetworkingNode.CustomCustomDataSerializer
-                        ),
-                        out var errorResponse
-                    ))
-                {
-
-                    response = new DataTransferResponse(
-                                    Request:  request,
-                                    Result:   Result.SignatureError(
-                                                    $"Invalid signature: {errorResponse}"
-                                                )
-                                );
-
-                }
-
-                #endregion
+    //            #region Check request signature(s)
+
+    //            if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
+    //                    request,
+    //                    request.ToJSON(
+    //                        parentNetworkingNode.CustomDataTransferRequestSerializer,
+    //                        parentNetworkingNode.CustomSignatureSerializer,
+    //                        parentNetworkingNode.CustomCustomDataSerializer
+    //                    ),
+    //                    out var errorResponse
+    //                ))
+    //            {
+
+    //                response = new DataTransferResponse(
+    //                                Request:  request,
+    //                                Result:   Result.SignatureError(
+    //                                                $"Invalid signature: {errorResponse}"
+    //                                            )
+    //                            );
+
+    //            }
+
+    //            #endregion
 
-                else
-                {
+    //            else
+    //            {
 
-                    var requestHandler = OnIncomingDataTransfer;
-                    if (requestHandler is not null)
-                    {
-                        try
-                        {
+    //                var requestHandler = OnIncomingDataTransfer;
+    //                if (requestHandler is not null)
+    //                {
+    //                    try
+    //                    {
 
-                            response = (await Task.WhenAll(
-                                                    requestHandler.GetInvocationList().
-                                                                   OfType <OnIncomingDataTransferDelegate>().
-                                                                   Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
-                                                                                                                     sender,
-                                                                                                                     connection,
-                                                                                                                     request,
-                                                                                                                     cancellationToken)).
-                                                                   ToArray())).First();
+    //                        response = (await Task.WhenAll(
+    //                                                requestHandler.GetInvocationList().
+    //                                                               OfType <OnIncomingDataTransferDelegate>().
+    //                                                               Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
+    //                                                                                                                 sender,
+    //                                                                                                                 connection,
+    //                                                                                                                 request,
+    //                                                                                                                 cancellationToken)).
+    //                                                               ToArray())).First();
 
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnIncomingDataTransfer),
-                                      e
-                                  );
-                        }
+    //                    }
+    //                    catch (Exception e)
+    //                    {
+    //                        await HandleErrors(
+    //                                  nameof(TestNetworkingNode),
+    //                                  nameof(OnIncomingDataTransfer),
+    //                                  e
+    //                              );
+    //                    }
 
-                    }
+    //                }
 
-                }
+    //            }
 
-            }
+    //        }
 
-            #region Default response
+    //        #region Default response
 
-            response ??= new DataTransferResponse(
-                             Request:      request,
-                             Status:       DataTransferStatus.Rejected,
-                             StatusInfo:   null,
-                             Data:         null
-                         );
+    //        response ??= new DataTransferResponse(
+    //                         Request:      request,
+    //                         Status:       DataTransferStatus.Rejected,
+    //                         StatusInfo:   null,
+    //                         Data:         null
+    //                     );
 
-            #endregion
+    //        #endregion
 
-            #region Sign response message
+    //        #region Sign response message
 
-            parentNetworkingNode.SignaturePolicy.SignResponseMessage(
-                response,
-                response.ToJSON(
-                    parentNetworkingNode.CustomDataTransferResponseSerializer,
-                    parentNetworkingNode.CustomStatusInfoSerializer,
-                    parentNetworkingNode.CustomSignatureSerializer,
-                    parentNetworkingNode.CustomCustomDataSerializer
-                ),
-                out var errorResponse2);
+    //        parentNetworkingNode.SignaturePolicy.SignResponseMessage(
+    //            response,
+    //            response.ToJSON(
+    //                parentNetworkingNode.CustomDataTransferResponseSerializer,
+    //                parentNetworkingNode.CustomStatusInfoSerializer,
+    //                parentNetworkingNode.CustomSignatureSerializer,
+    //                parentNetworkingNode.CustomCustomDataSerializer
+    //            ),
+    //            out var errorResponse2);
 
-            #endregion
+    //        #endregion
 
 
-            #region Send OnDataTransferResponse event
+    //        #region Send OnDataTransferResponse event
 
-            var endTime = Timestamp.Now;
+    //        var endTime = Timestamp.Now;
 
-            var responseLogger = OnIncomingDataTransferResponse;
-            if (responseLogger is not null)
-            {
-                try
-                {
+    //        var responseLogger = OnIncomingDataTransferResponse;
+    //        if (responseLogger is not null)
+    //        {
+    //            try
+    //            {
 
-                    await Task.WhenAll(responseLogger.GetInvocationList().
-                                                      OfType <OnIncomingDataTransferResponseDelegate>().
-                                                      Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
-                                                                                                        sender,
-                                                                                                        connection,
-                                                                                                        request,
-                                                                                                        response,
-                                                                                                        endTime - startTime)).
-                                                      ToArray());
+    //                await Task.WhenAll(responseLogger.GetInvocationList().
+    //                                                  OfType <OnIncomingDataTransferResponseDelegate>().
+    //                                                  Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
+    //                                                                                                    sender,
+    //                                                                                                    connection,
+    //                                                                                                    request,
+    //                                                                                                    response,
+    //                                                                                                    endTime - startTime)).
+    //                                                  ToArray());
 
-                }
-                catch (Exception e)
-                {
-                    await HandleErrors(
-                                nameof(TestNetworkingNode),
-                                nameof(OnIncomingDataTransferResponse),
-                                e
-                            );
-                }
+    //            }
+    //            catch (Exception e)
+    //            {
+    //                await HandleErrors(
+    //                            nameof(TestNetworkingNode),
+    //                            nameof(OnIncomingDataTransferResponse),
+    //                            e
+    //                        );
+    //            }
 
-            }
+    //        }
 
-            #endregion
+    //        #endregion
 
-            return response;
+    //        return response;
 
-        }
+    //    }
 
 
-        //public void WireDataTransfer(CS.  INetworkingNodeIncomingMessages IncomingMessages)
-        //{
-        //    IncomingMessages.OnIncomingDataTransfer += ProcessIT;
-        //}
+    //    //public void WireDataTransfer(CS.  INetworkingNodeIncomingMessages IncomingMessages)
+    //    //{
+    //    //    IncomingMessages.OnIncomingDataTransfer += ProcessIT;
+    //    //}
 
-        // MAIN!!!
-        public void WireDataTransfer(INetworkingNodeIncomingMessages IncomingMessages)
-        {
-            IncomingMessages.OnIncomingDataTransfer += ProcessIT;
-        }
+    //    // MAIN!!!
+    //    public void WireDataTransfer(INetworkingNodeIncomingMessages IncomingMessages)
+    //    {
+    //        IncomingMessages.OnIncomingDataTransfer += ProcessIT;
+    //    }
 
-    }
+    //}
 
 
     public partial class FORWARD
@@ -445,115 +445,115 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     }
 
 
-    public partial class OUTPUT
-    {
+    //public partial class OUTPUT
+    //{
 
-        #region Events
+    //    #region Events
 
-        /// <summary>
-        /// An event fired whenever a DataTransfer request will be sent.
-        /// </summary>
-        public event OnDataTransferRequestDelegate?   OnDataTransferRequest;
+    //    /// <summary>
+    //    /// An event fired whenever a DataTransfer request will be sent.
+    //    /// </summary>
+    //    public event OnDataTransferRequestDelegate?   OnDataTransferRequest;
 
-        /// <summary>
-        /// An event fired whenever a response to a DataTransfer request was received.
-        /// </summary>
-        public event OnDataTransferResponseDelegate?  OnDataTransferResponse;
+    //    /// <summary>
+    //    /// An event fired whenever a response to a DataTransfer request was received.
+    //    /// </summary>
+    //    public event OnDataTransferResponseDelegate?  OnDataTransferResponse;
 
-        #endregion
-
-
-        /// <summary>
-        /// Send the given vendor-specific binary data.
-        /// </summary>
-        /// <param name="Request">A DataTransfer request.</param>
-        public async Task<DataTransferResponse> DataTransfer(DataTransferRequest Request)
-        {
-
-            #region Send OnDataTransferRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnDataTransferRequest?.Invoke(startTime,
-                                              parentNetworkingNode,
-                                              Request);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnDataTransferRequest));
-            }
-
-            #endregion
+    //    #endregion
 
 
-            var response = LookupNetworkingNode(Request.DestinationNodeId, out var channel) &&
-                                channel is not null
+    //    /// <summary>
+    //    /// Send the given vendor-specific binary data.
+    //    /// </summary>
+    //    /// <param name="Request">A DataTransfer request.</param>
+    //    public async Task<DataTransferResponse> DataTransfer(DataTransferRequest Request)
+    //    {
 
-                                ? parentNetworkingNode.SignaturePolicy.SignRequestMessage(
-                                      Request,
-                                      Request.ToJSON(
-                                          parentNetworkingNode.CustomDataTransferRequestSerializer,
-                                          parentNetworkingNode.CustomSignatureSerializer,
-                                          parentNetworkingNode.CustomCustomDataSerializer
-                                      ),
-                                      out var errorResponse
-                                  )
+    //        #region Send OnDataTransferRequest event
 
-                                      ? await channel.DataTransfer(Request)
+    //        var startTime = Timestamp.Now;
 
-                                      : new DataTransferResponse(
-                                            Request,
-                                            Result.SignatureError(errorResponse)
-                                        )
+    //        try
+    //        {
 
-                                : new DataTransferResponse(
-                                      Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
-                                  );
+    //            OnDataTransferRequest?.Invoke(startTime,
+    //                                          parentNetworkingNode,
+    //                                          Request);
 
+    //        }
+    //        catch (Exception e)
+    //        {
+    //            DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnDataTransferRequest));
+    //        }
 
-            parentNetworkingNode.SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    parentNetworkingNode.CustomDataTransferResponseSerializer,
-                    parentNetworkingNode.CustomStatusInfoSerializer,
-                    parentNetworkingNode.CustomSignatureSerializer,
-                    parentNetworkingNode.CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
+    //        #endregion
 
 
-            #region Send OnDataTransferResponse event
+    //        var response = LookupNetworkingNode(Request.DestinationNodeId, out var channel) &&
+    //                            channel is not null
 
-            var endTime = Timestamp.Now;
+    //                            ? parentNetworkingNode.SignaturePolicy.SignRequestMessage(
+    //                                  Request,
+    //                                  Request.ToJSON(
+    //                                      parentNetworkingNode.CustomDataTransferRequestSerializer,
+    //                                      parentNetworkingNode.CustomSignatureSerializer,
+    //                                      parentNetworkingNode.CustomCustomDataSerializer
+    //                                  ),
+    //                                  out var errorResponse
+    //                              )
 
-            try
-            {
+    //                                  ? await channel.DataTransfer(Request)
 
-                OnDataTransferResponse?.Invoke(endTime,
-                                               parentNetworkingNode,
-                                               Request,
-                                               response,
-                                               endTime - startTime);
+    //                                  : new DataTransferResponse(
+    //                                        Request,
+    //                                        Result.SignatureError(errorResponse)
+    //                                    )
 
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnDataTransferResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
+    //                            : new DataTransferResponse(
+    //                                  Request,
+    //                                  Result.UnknownOrUnreachable(Request.DestinationNodeId)
+    //                              );
 
 
-    }
+    //        parentNetworkingNode.SignaturePolicy.VerifyResponseMessage(
+    //            response,
+    //            response.ToJSON(
+    //                parentNetworkingNode.CustomDataTransferResponseSerializer,
+    //                parentNetworkingNode.CustomStatusInfoSerializer,
+    //                parentNetworkingNode.CustomSignatureSerializer,
+    //                parentNetworkingNode.CustomCustomDataSerializer
+    //            ),
+    //            out errorResponse
+    //        );
+
+
+    //        #region Send OnDataTransferResponse event
+
+    //        var endTime = Timestamp.Now;
+
+    //        try
+    //        {
+
+    //            OnDataTransferResponse?.Invoke(endTime,
+    //                                           parentNetworkingNode,
+    //                                           Request,
+    //                                           response,
+    //                                           endTime - startTime);
+
+    //        }
+    //        catch (Exception e)
+    //        {
+    //            DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnDataTransferResponse));
+    //        }
+
+    //        #endregion
+
+    //        return response;
+
+    //    }
+
+
+    //}
 
 }

@@ -36,33 +36,6 @@ using cloud.charging.open.protocols.OCPP.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    public delegate Task OnJSONMessageRequestReceivedDelegate   (DateTime                    Timestamp,
-                                                                 OCPPWebSocketAdapterIN      Server,
-                                                                 OCPP_JSONRequestMessage     JSONRequestMessage);
-
-    public delegate Task OnJSONMessageResponseReceivedDelegate  (DateTime                    Timestamp,
-                                                                 OCPPWebSocketAdapterIN      Server,
-                                                                 OCPP_JSONResponseMessage    JSONResponseMessage);
-
-    public delegate Task OnJSONErrorResponseReceivedDelegate    (DateTime                    Timestamp,
-                                                                 OCPPWebSocketAdapterIN      Server,
-                                                                 OCPP_JSONErrorMessage       JSONErrorMessage);
-
-
-    public delegate Task OnBinaryMessageRequestReceivedDelegate (DateTime                    Timestamp,
-                                                                 OCPPWebSocketAdapterIN      Server,
-                                                                 OCPP_BinaryRequestMessage   BinaryRequestMessage);
-
-    public delegate Task OnBinaryMessageResponseReceivedDelegate(DateTime                    Timestamp,
-                                                                 OCPPWebSocketAdapterIN      Server,
-                                                                 OCPP_BinaryResponseMessage  BinaryResponseMessage);
-
-    //public delegate Task OnBinaryErrorResponseReceivedDelegate  (DateTime                    Timestamp,
-    //                                                             OCPPWebSocketAdapterIN      Server,
-    //                                                             OCPP_BinaryErrorMessage     BinaryErrorMessage);
-
-
-
     /// <summary>
     /// The networking node HTTP WebSocket client runs on a networking node
     /// and connects to a CSMS to invoke methods.
@@ -208,6 +181,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                             DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnJSONMessageRequestReceived));
                         }
                     }
+
+                    #endregion
+
+                    #region Try to call the matching 'forwarding message processor'...
+
+                    // ToDo: ...
 
                     #endregion
 

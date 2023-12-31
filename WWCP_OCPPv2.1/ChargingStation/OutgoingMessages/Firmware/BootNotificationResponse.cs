@@ -103,19 +103,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
         /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public BootNotificationResponse(CS.BootNotificationRequest  Request,
-                                        RegistrationStatus          Status,
-                                        DateTime                    CurrentTime,
-                                        TimeSpan                    Interval,
-                                        StatusInfo?                 StatusInfo          = null,
+        public BootNotificationResponse(CS.BootNotificationRequest    Request,
+                                        RegistrationStatus            Status,
+                                        DateTime                      CurrentTime,
+                                        TimeSpan                      Interval,
+                                        StatusInfo?                   StatusInfo          = null,
 
-                                        DateTime?                   ResponseTimestamp   = null,
+                                        DateTime?                     ResponseTimestamp   = null,
 
-                                        IEnumerable<KeyPair>?       SignKeys            = null,
-                                        IEnumerable<SignInfo>?      SignInfos           = null,
-                                        IEnumerable<OCPP.Signature>?Signatures          = null,
+                                        IEnumerable<KeyPair>?         SignKeys            = null,
+                                        IEnumerable<SignInfo>?        SignInfos           = null,
+                                        IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                                        CustomData?                 CustomData          = null)
+                                        CustomData?                   CustomData          = null)
 
             : base(Request,
                    Result.OK(),

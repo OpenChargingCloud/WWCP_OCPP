@@ -65,271 +65,271 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                              ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>   ForwardingDecision);
 
 
-    public partial class INPUT : INetworkingNodeIN
-    {
+    //public partial class INPUT : INetworkingNodeIN
+    //{
 
-        #region Events
+    //    #region Events
 
-        /// <summary>
-        /// An event fired whenever a BinaryDataTransfer request was received from the CSMS.
-        /// </summary>
-        public event OnIncomingBinaryDataTransferRequestDelegate?     OnIncomingBinaryDataTransferRequest;
+    //    /// <summary>
+    //    /// An event fired whenever a BinaryDataTransfer request was received from the CSMS.
+    //    /// </summary>
+    //    public event OnIncomingBinaryDataTransferRequestDelegate?     OnIncomingBinaryDataTransferRequest;
 
-        /// <summary>
-        /// An event sent whenever a reset request was received.
-        /// </summary>
-        public event OnIncomingBinaryDataTransferDelegate?            OnIncomingBinaryDataTransfer;
+    //    /// <summary>
+    //    /// An event sent whenever a reset request was received.
+    //    /// </summary>
+    //    public event OnIncomingBinaryDataTransferDelegate?            OnIncomingBinaryDataTransfer;
 
-        /// <summary>
-        /// An event fired whenever a response to a BinaryDataTransfer request was sent.
-        /// </summary>
-        public event OnIncomingBinaryDataTransferResponseDelegate?    OnIncomingBinaryDataTransferResponse;
+    //    /// <summary>
+    //    /// An event fired whenever a response to a BinaryDataTransfer request was sent.
+    //    /// </summary>
+    //    public event OnIncomingBinaryDataTransferResponseDelegate?    OnIncomingBinaryDataTransferResponse;
 
-        #endregion
+    //    #endregion
 
 
-        private async Task<BinaryDataTransferResponse>
+    //    private async Task<BinaryDataTransferResponse>
 
-            ProcessIT(DateTime                   timestamp,
-                      IEventSender               sender,
-                      IWebSocketConnection       connection,
-                      BinaryDataTransferRequest  request,
-                      CancellationToken          cancellationToken)
+    //        ProcessIT(DateTime                   timestamp,
+    //                  IEventSender               sender,
+    //                  IWebSocketConnection       connection,
+    //                  BinaryDataTransferRequest  request,
+    //                  CancellationToken          cancellationToken)
 
-        {
+    //    {
 
-            #region Send OnBinaryDataTransferRequest event
+    //        #region Send OnBinaryDataTransferRequest event
 
-            var startTime = Timestamp.Now;
+    //        var startTime = Timestamp.Now;
 
-            var requestLogger = OnIncomingBinaryDataTransferRequest;
-            if (requestLogger is not null)
-            {
-                try
-                {
+    //        var requestLogger = OnIncomingBinaryDataTransferRequest;
+    //        if (requestLogger is not null)
+    //        {
+    //            try
+    //            {
 
-                    await Task.WhenAll(requestLogger.GetInvocationList().
-                                                     OfType <OnIncomingBinaryDataTransferRequestDelegate>().
-                                                     Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
-                                                                                                       sender,
-                                                                                                       connection,
-                                                                                                       request)).
-                                                     ToArray());
+    //                await Task.WhenAll(requestLogger.GetInvocationList().
+    //                                                 OfType <OnIncomingBinaryDataTransferRequestDelegate>().
+    //                                                 Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
+    //                                                                                                   sender,
+    //                                                                                                   connection,
+    //                                                                                                   request)).
+    //                                                 ToArray());
 
-                }
-                catch (Exception e)
-                {
-                    await HandleErrors(
-                                nameof(TestNetworkingNode),
-                                nameof(OnIncomingBinaryDataTransferRequest),
-                                e
-                            );
-                }
+    //            }
+    //            catch (Exception e)
+    //            {
+    //                await HandleErrors(
+    //                            nameof(TestNetworkingNode),
+    //                            nameof(OnIncomingBinaryDataTransferRequest),
+    //                            e
+    //                        );
+    //            }
 
-            }
+    //        }
 
-            #endregion
+    //        #endregion
 
 
-            #region Forwarding of the request...
+    //        #region Forwarding of the request...
 
-            BinaryDataTransferResponse? response = null;
+    //        BinaryDataTransferResponse? response = null;
 
-            if (request.DestinationNodeId != parentNetworkingNode.Id)
-            {
+    //        if (request.DestinationNodeId != parentNetworkingNode.Id)
+    //        {
 
-                #region Check request signature(s)
+    //            #region Check request signature(s)
 
-                if (!parentNetworkingNode.ForwardingSignaturePolicy.VerifyRequestMessage(
-                        request,
-                        request.ToBinary(
-                            parentNetworkingNode.CustomBinaryDataTransferRequestSerializer,
-                            parentNetworkingNode.CustomBinarySignatureSerializer,
-                            IncludeSignatures: false
-                        ),
-                        out var errorResponse
-                    ))
-                {
+    //            if (!parentNetworkingNode.ForwardingSignaturePolicy.VerifyRequestMessage(
+    //                    request,
+    //                    request.ToBinary(
+    //                        parentNetworkingNode.CustomBinaryDataTransferRequestSerializer,
+    //                        parentNetworkingNode.CustomBinarySignatureSerializer,
+    //                        IncludeSignatures: false
+    //                    ),
+    //                    out var errorResponse
+    //                ))
+    //            {
 
-                    response = new BinaryDataTransferResponse(
-                                    Request:  request,
-                                    Result:   Result.SignatureError(
-                                                    $"Invalid signature: {errorResponse}"
-                                                )
-                                );
+    //                response = new BinaryDataTransferResponse(
+    //                                Request:  request,
+    //                                Result:   Result.SignatureError(
+    //                                                $"Invalid signature: {errorResponse}"
+    //                                            )
+    //                            );
 
-                }
+    //            }
 
-                #endregion
+    //            #endregion
 
-                else
-                {
+    //            else
+    //            {
 
-                    DebugX.Log($"Forwarding incoming BinaryDataTransfer request to '{request.DestinationNodeId}'!");
+    //                DebugX.Log($"Forwarding incoming BinaryDataTransfer request to '{request.DestinationNodeId}'!");
 
-                    var filterResult  = await parentNetworkingNode.FORWARD.ProcessBinaryDataTransfer(request,
-                                                                                                     connection,
-                                                                                                     cancellationToken);
-
-                    switch (filterResult.Result)
-                    {
-
-                        case ForwardingResult.FORWARD:
-                            response = await parentNetworkingNode.OUT.BinaryDataTransfer(request);
-                            break;
-
-                        case ForwardingResult.DROP:
-                            response = filterResult.DropResponse;
-                            break;
+    //                var filterResult  = await parentNetworkingNode.FORWARD.ProcessBinaryDataTransfer(request,
+    //                                                                                                 connection,
+    //                                                                                                 cancellationToken);
+
+    //                switch (filterResult.Result)
+    //                {
+
+    //                    case ForwardingResult.FORWARD:
+    //                        response = await parentNetworkingNode.OUT.BinaryDataTransfer(request);
+    //                        break;
+
+    //                    case ForwardingResult.DROP:
+    //                        response = filterResult.DropResponse;
+    //                        break;
 
-                    }
+    //                }
 
-                }
+    //            }
 
-            }
+    //        }
 
-            #endregion
+    //        #endregion
 
-            else
-            {
+    //        else
+    //        {
 
-                #region Check request signature(s)
-
-                if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
-                        request,
-                        request.ToBinary(
-                            parentNetworkingNode.CustomBinaryDataTransferRequestSerializer,
-                            parentNetworkingNode.CustomBinarySignatureSerializer,
-                            IncludeSignatures: false
-                        ),
-                        out var errorResponse
-                    ))
-                {
-
-                    response = new BinaryDataTransferResponse(
-                                    Request:  request,
-                                    Result:   Result.SignatureError(
-                                                    $"Invalid signature: {errorResponse}"
-                                                )
-                                );
-
-                }
-
-                #endregion
-
-                else
-                {
+    //            #region Check request signature(s)
+
+    //            if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
+    //                    request,
+    //                    request.ToBinary(
+    //                        parentNetworkingNode.CustomBinaryDataTransferRequestSerializer,
+    //                        parentNetworkingNode.CustomBinarySignatureSerializer,
+    //                        IncludeSignatures: false
+    //                    ),
+    //                    out var errorResponse
+    //                ))
+    //            {
+
+    //                response = new BinaryDataTransferResponse(
+    //                                Request:  request,
+    //                                Result:   Result.SignatureError(
+    //                                                $"Invalid signature: {errorResponse}"
+    //                                            )
+    //                            );
+
+    //            }
+
+    //            #endregion
+
+    //            else
+    //            {
 
-                    var requestHandler = OnIncomingBinaryDataTransfer;
-                    if (requestHandler is not null)
-                    {
-                        try
-                        {
+    //                var requestHandler = OnIncomingBinaryDataTransfer;
+    //                if (requestHandler is not null)
+    //                {
+    //                    try
+    //                    {
 
-                            response = (await Task.WhenAll(
-                                                    requestHandler.GetInvocationList().
-                                                                   OfType <OnIncomingBinaryDataTransferDelegate>().
-                                                                   Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
-                                                                                                                     sender,
-                                                                                                                     connection,
-                                                                                                                     request,
-                                                                                                                     cancellationToken)).
-                                                                   ToArray())).First();
-
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                      nameof(TestNetworkingNode),
-                                      nameof(OnIncomingBinaryDataTransfer),
-                                      e
-                                  );
-                        }
-
-                    }
-
-                }
-
-            }
-
-            #region Default response
-
-            response ??= new BinaryDataTransferResponse(
-                             Request:                request,
-                             Status:                 BinaryDataTransferStatus.Rejected,
-                             AdditionalStatusInfo:   null,
-                             Data:                   null,
-                             Format:                 request.Format
-                         );
-
-            #endregion
-
-            #region Sign response message
-
-            parentNetworkingNode.SignaturePolicy.SignResponseMessage(
-                response,
-                response.ToBinary(
-                    parentNetworkingNode.CustomBinaryDataTransferResponseSerializer,
-                    parentNetworkingNode.CustomStatusInfoSerializer,
-                    parentNetworkingNode.CustomBinarySignatureSerializer,
-                    IncludeSignatures: true
-                ),
-                out var errorResponse2);
-
-            #endregion
-
-
-            #region Send OnBinaryDataTransferResponse event
-
-            var endTime = Timestamp.Now;
-
-            var responseLogger = OnIncomingBinaryDataTransferResponse;
-            if (responseLogger is not null)
-            {
-                try
-                {
-
-                    await Task.WhenAll(responseLogger.GetInvocationList().
-                                                      OfType <OnIncomingBinaryDataTransferResponseDelegate>().
-                                                      Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
-                                                                                                        sender,
-                                                                                                        connection,
-                                                                                                        request,
-                                                                                                        response,
-                                                                                                        endTime - startTime)).
-                                                      ToArray());
-
-                }
-                catch (Exception e)
-                {
-                    await HandleErrors(
-                                nameof(TestNetworkingNode),
-                                nameof(OnIncomingBinaryDataTransferResponse),
-                                e
-                            );
-                }
-
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-
-        public void WireBinaryDataTransfer(CS.  INetworkingNodeIncomingMessages IncomingMessages)
-        {
-            IncomingMessages.OnIncomingBinaryDataTransfer += ProcessIT;
-        }
-
-        // MAIN!!!
-        public void WireBinaryDataTransfer(CSMS.INetworkingNodeIncomingMessages IncomingMessages)
-        {
-            IncomingMessages.OnIncomingBinaryDataTransfer += ProcessIT;
-        }
-
-    }
+    //                        response = (await Task.WhenAll(
+    //                                                requestHandler.GetInvocationList().
+    //                                                               OfType <OnIncomingBinaryDataTransferDelegate>().
+    //                                                               Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
+    //                                                                                                                 sender,
+    //                                                                                                                 connection,
+    //                                                                                                                 request,
+    //                                                                                                                 cancellationToken)).
+    //                                                               ToArray())).First();
+
+    //                    }
+    //                    catch (Exception e)
+    //                    {
+    //                        await HandleErrors(
+    //                                  nameof(TestNetworkingNode),
+    //                                  nameof(OnIncomingBinaryDataTransfer),
+    //                                  e
+    //                              );
+    //                    }
+
+    //                }
+
+    //            }
+
+    //        }
+
+    //        #region Default response
+
+    //        response ??= new BinaryDataTransferResponse(
+    //                         Request:                request,
+    //                         Status:                 BinaryDataTransferStatus.Rejected,
+    //                         AdditionalStatusInfo:   null,
+    //                         Data:                   null,
+    //                         Format:                 request.Format
+    //                     );
+
+    //        #endregion
+
+    //        #region Sign response message
+
+    //        parentNetworkingNode.SignaturePolicy.SignResponseMessage(
+    //            response,
+    //            response.ToBinary(
+    //                parentNetworkingNode.CustomBinaryDataTransferResponseSerializer,
+    //                parentNetworkingNode.CustomStatusInfoSerializer,
+    //                parentNetworkingNode.CustomBinarySignatureSerializer,
+    //                IncludeSignatures: true
+    //            ),
+    //            out var errorResponse2);
+
+    //        #endregion
+
+
+    //        #region Send OnBinaryDataTransferResponse event
+
+    //        var endTime = Timestamp.Now;
+
+    //        var responseLogger = OnIncomingBinaryDataTransferResponse;
+    //        if (responseLogger is not null)
+    //        {
+    //            try
+    //            {
+
+    //                await Task.WhenAll(responseLogger.GetInvocationList().
+    //                                                  OfType <OnIncomingBinaryDataTransferResponseDelegate>().
+    //                                                  Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
+    //                                                                                                    sender,
+    //                                                                                                    connection,
+    //                                                                                                    request,
+    //                                                                                                    response,
+    //                                                                                                    endTime - startTime)).
+    //                                                  ToArray());
+
+    //            }
+    //            catch (Exception e)
+    //            {
+    //                await HandleErrors(
+    //                            nameof(TestNetworkingNode),
+    //                            nameof(OnIncomingBinaryDataTransferResponse),
+    //                            e
+    //                        );
+    //            }
+
+    //        }
+
+    //        #endregion
+
+    //        return response;
+
+    //    }
+
+
+    //    public void WireBinaryDataTransfer(CS.  INetworkingNodeIncomingMessages IncomingMessages)
+    //    {
+    //        IncomingMessages.OnIncomingBinaryDataTransfer += ProcessIT;
+    //    }
+
+    //    // MAIN!!!
+    //    public void WireBinaryDataTransfer(CSMS.INetworkingNodeIncomingMessages IncomingMessages)
+    //    {
+    //        IncomingMessages.OnIncomingBinaryDataTransfer += ProcessIT;
+    //    }
+
+    //}
 
 
     public partial class FORWARD
@@ -446,115 +446,115 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     }
 
 
-    public partial class OUTPUT
-    {
+    //public partial class OUTPUT
+    //{
 
-        #region Events
+    //    #region Events
 
-        /// <summary>
-        /// An event fired whenever a BinaryDataTransfer request will be sent.
-        /// </summary>
-        public event OnBinaryDataTransferRequestDelegate?   OnBinaryDataTransferRequest;
+    //    /// <summary>
+    //    /// An event fired whenever a BinaryDataTransfer request will be sent.
+    //    /// </summary>
+    //    public event OnBinaryDataTransferRequestDelegate?   OnBinaryDataTransferRequest;
 
-        /// <summary>
-        /// An event fired whenever a response to a BinaryDataTransfer request was received.
-        /// </summary>
-        public event OnBinaryDataTransferResponseDelegate?  OnBinaryDataTransferResponse;
+    //    /// <summary>
+    //    /// An event fired whenever a response to a BinaryDataTransfer request was received.
+    //    /// </summary>
+    //    public event OnBinaryDataTransferResponseDelegate?  OnBinaryDataTransferResponse;
 
-        #endregion
-
-
-        /// <summary>
-        /// Send the given vendor-specific binary data.
-        /// </summary>
-        /// <param name="Request">A BinaryDataTransfer request.</param>
-        public async Task<BinaryDataTransferResponse> BinaryDataTransfer(BinaryDataTransferRequest Request)
-        {
-
-            #region Send OnBinaryDataTransferRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnBinaryDataTransferRequest?.Invoke(startTime,
-                                                    parentNetworkingNode,
-                                                    Request);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnBinaryDataTransferRequest));
-            }
-
-            #endregion
+    //    #endregion
 
 
-            var response = LookupNetworkingNode(Request.DestinationNodeId, out var channel) &&
-                                channel is not null
+    //    /// <summary>
+    //    /// Send the given vendor-specific binary data.
+    //    /// </summary>
+    //    /// <param name="Request">A BinaryDataTransfer request.</param>
+    //    public async Task<BinaryDataTransferResponse> BinaryDataTransfer(BinaryDataTransferRequest Request)
+    //    {
 
-                                ? parentNetworkingNode.SignaturePolicy.SignRequestMessage(
-                                      Request,
-                                      Request.ToBinary(
-                                          parentNetworkingNode.CustomBinaryDataTransferRequestSerializer,
-                                          parentNetworkingNode.CustomBinarySignatureSerializer,
-                                          IncludeSignatures: false
-                                      ),
-                                      out var errorResponse
-                                  )
+    //        #region Send OnBinaryDataTransferRequest event
 
-                                      ? await channel.BinaryDataTransfer(Request)
+    //        var startTime = Timestamp.Now;
 
-                                      : new BinaryDataTransferResponse(
-                                            Request,
-                                            Result.SignatureError(errorResponse)
-                                        )
+    //        try
+    //        {
 
-                                : new BinaryDataTransferResponse(
-                                      Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
-                                  );
+    //            OnBinaryDataTransferRequest?.Invoke(startTime,
+    //                                                parentNetworkingNode,
+    //                                                Request);
 
+    //        }
+    //        catch (Exception e)
+    //        {
+    //            DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnBinaryDataTransferRequest));
+    //        }
 
-            parentNetworkingNode.SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToBinary(
-                    parentNetworkingNode.CustomBinaryDataTransferResponseSerializer,
-                    null, //parentNetworkingNode.CustomStatusInfoSerializer,
-                    parentNetworkingNode.CustomBinarySignatureSerializer,
-                    IncludeSignatures: false
-                ),
-                out errorResponse
-            );
+    //        #endregion
 
 
-            #region Send OnBinaryDataTransferResponse event
+    //        var response = LookupNetworkingNode(Request.DestinationNodeId, out var channel) &&
+    //                            channel is not null
 
-            var endTime = Timestamp.Now;
+    //                            ? parentNetworkingNode.SignaturePolicy.SignRequestMessage(
+    //                                  Request,
+    //                                  Request.ToBinary(
+    //                                      parentNetworkingNode.CustomBinaryDataTransferRequestSerializer,
+    //                                      parentNetworkingNode.CustomBinarySignatureSerializer,
+    //                                      IncludeSignatures: false
+    //                                  ),
+    //                                  out var errorResponse
+    //                              )
 
-            try
-            {
+    //                                  ? await channel.BinaryDataTransfer(Request)
 
-                OnBinaryDataTransferResponse?.Invoke(endTime,
-                                                        parentNetworkingNode,
-                                                        Request,
-                                                        response,
-                                                        endTime - startTime);
+    //                                  : new BinaryDataTransferResponse(
+    //                                        Request,
+    //                                        Result.SignatureError(errorResponse)
+    //                                    )
 
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnBinaryDataTransferResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
+    //                            : new BinaryDataTransferResponse(
+    //                                  Request,
+    //                                  Result.UnknownOrUnreachable(Request.DestinationNodeId)
+    //                              );
 
 
-    }
+    //        parentNetworkingNode.SignaturePolicy.VerifyResponseMessage(
+    //            response,
+    //            response.ToBinary(
+    //                parentNetworkingNode.CustomBinaryDataTransferResponseSerializer,
+    //                null, //parentNetworkingNode.CustomStatusInfoSerializer,
+    //                parentNetworkingNode.CustomBinarySignatureSerializer,
+    //                IncludeSignatures: false
+    //            ),
+    //            out errorResponse
+    //        );
+
+
+    //        #region Send OnBinaryDataTransferResponse event
+
+    //        var endTime = Timestamp.Now;
+
+    //        try
+    //        {
+
+    //            OnBinaryDataTransferResponse?.Invoke(endTime,
+    //                                                    parentNetworkingNode,
+    //                                                    Request,
+    //                                                    response,
+    //                                                    endTime - startTime);
+
+    //        }
+    //        catch (Exception e)
+    //        {
+    //            DebugX.Log(e, nameof(TestNetworkingNode) + "." + nameof(OnBinaryDataTransferResponse));
+    //        }
+
+    //        #endregion
+
+    //        return response;
+
+    //    }
+
+
+    //}
 
 }

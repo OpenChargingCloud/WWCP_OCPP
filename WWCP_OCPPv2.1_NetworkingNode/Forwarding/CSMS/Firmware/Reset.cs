@@ -67,271 +67,271 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                 ForwardingDecision<ResetRequest, ResetResponse>   ForwardingDecision);
 
 
-    public partial class INPUT : INetworkingNodeIN
-    {
+    //public partial class INPUT : INetworkingNodeIN
+    //{
 
-        #region Events
+    //    #region Events
 
-        /// <summary>
-        /// An event fired whenever a Reset request was received from the CSMS.
-        /// </summary>
-        public event OCPPv2_1.CS.OnResetRequestDelegate?     OnResetRequest;
+    //    /// <summary>
+    //    /// An event fired whenever a Reset request was received from the CSMS.
+    //    /// </summary>
+    //    public event OCPPv2_1.CS.OnResetRequestDelegate?     OnResetRequest;
 
-        /// <summary>
-        /// An event sent whenever a reset request was received.
-        /// </summary>
-        public event OCPPv2_1.CS.OnResetDelegate?            OnReset;
+    //    /// <summary>
+    //    /// An event sent whenever a reset request was received.
+    //    /// </summary>
+    //    public event OCPPv2_1.CS.OnResetDelegate?            OnReset;
 
-        /// <summary>
-        /// An event fired whenever a response to a Reset request was sent.
-        /// </summary>
-        public event OCPPv2_1.CS.OnResetResponseDelegate?    OnResetResponse;
+    //    /// <summary>
+    //    /// An event fired whenever a response to a Reset request was sent.
+    //    /// </summary>
+    //    public event OCPPv2_1.CS.OnResetResponseDelegate?    OnResetResponse;
 
-        #endregion
+    //    #endregion
 
 
-        private async Task<ResetResponse>
+    //    private async Task<ResetResponse>
 
-            ProcessIT(DateTime              timestamp,
-                      IEventSender          sender,
-                      IWebSocketConnection  connection,
-                      ResetRequest          request,
-                      CancellationToken     cancellationToken)
+    //        ProcessIT(DateTime              timestamp,
+    //                  IEventSender          sender,
+    //                  IWebSocketConnection  connection,
+    //                  ResetRequest          request,
+    //                  CancellationToken     cancellationToken)
 
-        {
+    //    {
 
-            #region Send OnResetRequest event
+    //        #region Send OnResetRequest event
 
-            var startTime = Timestamp.Now;
+    //        var startTime = Timestamp.Now;
 
-            var requestLogger = OnResetRequest;
-            if (requestLogger is not null)
-            {
-                try
-                {
+    //        var requestLogger = OnResetRequest;
+    //        if (requestLogger is not null)
+    //        {
+    //            try
+    //            {
 
-                    await Task.WhenAll(requestLogger.GetInvocationList().
-                                                        OfType <OCPPv2_1.CS.OnResetRequestDelegate>().
-                                                        Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
-                                                                                                        sender,
-                                                                                                        connection,
-                                                                                                        request)).
-                                                        ToArray());
+    //                await Task.WhenAll(requestLogger.GetInvocationList().
+    //                                                    OfType <OCPPv2_1.CS.OnResetRequestDelegate>().
+    //                                                    Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
+    //                                                                                                    sender,
+    //                                                                                                    connection,
+    //                                                                                                    request)).
+    //                                                    ToArray());
 
-                }
-                catch (Exception e)
-                {
-                    await HandleErrors(
-                                nameof(TestNetworkingNode),
-                                nameof(OnResetRequest),
-                                e
-                            );
-                }
+    //            }
+    //            catch (Exception e)
+    //            {
+    //                await HandleErrors(
+    //                            nameof(TestNetworkingNode),
+    //                            nameof(OnResetRequest),
+    //                            e
+    //                        );
+    //            }
 
-            }
+    //        }
 
-            #endregion
+    //        #endregion
 
 
-            #region Forwarding of the request...
+    //        #region Forwarding of the request...
 
-            ResetResponse? response = null;
+    //        ResetResponse? response = null;
 
-            if (request.DestinationNodeId != parentNetworkingNode.Id)
-            {
+    //        if (request.DestinationNodeId != parentNetworkingNode.Id)
+    //        {
 
-                #region Check request signature(s)
+    //            #region Check request signature(s)
 
-                if (!parentNetworkingNode.ForwardingSignaturePolicy.VerifyRequestMessage(
-                        request,
-                        request.ToJSON(
-                            parentNetworkingNode.CustomResetRequestSerializer,
-                            parentNetworkingNode.CustomSignatureSerializer,
-                            parentNetworkingNode.CustomCustomDataSerializer
-                        ),
-                        out var errorResponse
-                    ))
-                {
+    //            if (!parentNetworkingNode.ForwardingSignaturePolicy.VerifyRequestMessage(
+    //                    request,
+    //                    request.ToJSON(
+    //                        parentNetworkingNode.CustomResetRequestSerializer,
+    //                        parentNetworkingNode.CustomSignatureSerializer,
+    //                        parentNetworkingNode.CustomCustomDataSerializer
+    //                    ),
+    //                    out var errorResponse
+    //                ))
+    //            {
 
-                    response = new ResetResponse(
-                                    Request:  request,
-                                    Result:   Result.SignatureError(
-                                                    $"Invalid signature: {errorResponse}"
-                                                )
-                                );
+    //                response = new ResetResponse(
+    //                                Request:  request,
+    //                                Result:   Result.SignatureError(
+    //                                                $"Invalid signature: {errorResponse}"
+    //                                            )
+    //                            );
 
-                }
+    //            }
 
-                #endregion
+    //            #endregion
 
-                else
-                {
+    //            else
+    //            {
 
-                    DebugX.Log($"Forwarding incoming '{request.ResetType}' reset request to '{request.DestinationNodeId}'!");
+    //                DebugX.Log($"Forwarding incoming '{request.ResetType}' reset request to '{request.DestinationNodeId}'!");
 
-                    var filterResult  = await parentNetworkingNode.FORWARD.ProcessReset(request,
-                                                                                        connection,
-                                                                                        cancellationToken);
-
-                    switch (filterResult.Result)
-                    {
-
-                        case ForwardingResult.FORWARD:
-                            response = await parentNetworkingNode.OUT.Reset(request);
-                            break;
+    //                var filterResult  = await parentNetworkingNode.FORWARD.ProcessReset(request,
+    //                                                                                    connection,
+    //                                                                                    cancellationToken);
+
+    //                switch (filterResult.Result)
+    //                {
+
+    //                    case ForwardingResult.FORWARD:
+    //                        response = await parentNetworkingNode.OUT.Reset(request);
+    //                        break;
 
-                        case ForwardingResult.DROP:
-                            response = filterResult.DropResponse;
-                            break;
+    //                    case ForwardingResult.DROP:
+    //                        response = filterResult.DropResponse;
+    //                        break;
 
-                    }
+    //                }
 
-                }
+    //            }
 
-            }
+    //        }
 
-            #endregion
+    //        #endregion
 
-            else
-            {
+    //        else
+    //        {
 
-                #region Check request signature(s)
-
-                if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
-                        request,
-                        request.ToJSON(
-                            parentNetworkingNode.CustomResetRequestSerializer,
-                            parentNetworkingNode.CustomSignatureSerializer,
-                            parentNetworkingNode.CustomCustomDataSerializer
-                        ),
-                        out var errorResponse
-                    ))
-                {
-
-                    response = new ResetResponse(
-                                    Request:  request,
-                                    Result:   Result.SignatureError(
-                                                    $"Invalid signature: {errorResponse}"
-                                                )
-                                );
-
-                }
-
-                #endregion
+    //            #region Check request signature(s)
+
+    //            if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
+    //                    request,
+    //                    request.ToJSON(
+    //                        parentNetworkingNode.CustomResetRequestSerializer,
+    //                        parentNetworkingNode.CustomSignatureSerializer,
+    //                        parentNetworkingNode.CustomCustomDataSerializer
+    //                    ),
+    //                    out var errorResponse
+    //                ))
+    //            {
+
+    //                response = new ResetResponse(
+    //                                Request:  request,
+    //                                Result:   Result.SignatureError(
+    //                                                $"Invalid signature: {errorResponse}"
+    //                                            )
+    //                            );
+
+    //            }
+
+    //            #endregion
 
-                else
-                {
+    //            else
+    //            {
 
-                    var requestHandler = OnReset;
-                    if (requestHandler is not null)
-                    {
-                        try
-                        {
+    //                var requestHandler = OnReset;
+    //                if (requestHandler is not null)
+    //                {
+    //                    try
+    //                    {
 
-                            response = (await Task.WhenAll(
-                                                    requestHandler.GetInvocationList().
-                                                                    OfType <OnResetDelegate>().
-                                                                    Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
-                                                                                                                        sender,
-                                                                                                                        connection,
-                                                                                                                        request,
-                                                                                                                        cancellationToken)).
-                                                                    ToArray())).First();
+    //                        response = (await Task.WhenAll(
+    //                                                requestHandler.GetInvocationList().
+    //                                                                OfType <OnResetDelegate>().
+    //                                                                Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
+    //                                                                                                                    sender,
+    //                                                                                                                    connection,
+    //                                                                                                                    request,
+    //                                                                                                                    cancellationToken)).
+    //                                                                ToArray())).First();
 
-                        }
-                        catch (Exception e)
-                        {
-                            await HandleErrors(
-                                        nameof(TestNetworkingNode),
-                                        nameof(OnResetRequest),
-                                        e
-                                    );
-                        }
+    //                    }
+    //                    catch (Exception e)
+    //                    {
+    //                        await HandleErrors(
+    //                                    nameof(TestNetworkingNode),
+    //                                    nameof(OnResetRequest),
+    //                                    e
+    //                                );
+    //                    }
 
-                    }
+    //                }
 
-                }
+    //            }
 
-            }
+    //        }
 
-            #region Default response
+    //        #region Default response
 
-            response ??= new ResetResponse(
-                                Request:      request,
-                                Status:       ResetStatus.Rejected,
-                                StatusInfo:   null,
-                                CustomData:   null
-                            );
+    //        response ??= new ResetResponse(
+    //                            Request:      request,
+    //                            Status:       ResetStatus.Rejected,
+    //                            StatusInfo:   null,
+    //                            CustomData:   null
+    //                        );
 
-            #endregion
+    //        #endregion
 
-            #region Sign response message
+    //        #region Sign response message
 
-            parentNetworkingNode.SignaturePolicy.SignResponseMessage(
-                response,
-                response.ToJSON(
-                    parentNetworkingNode.CustomResetResponseSerializer,
-                    parentNetworkingNode.CustomStatusInfoSerializer,
-                    parentNetworkingNode.CustomSignatureSerializer,
-                    parentNetworkingNode.CustomCustomDataSerializer
-                ),
-                out var errorResponse2);
+    //        parentNetworkingNode.SignaturePolicy.SignResponseMessage(
+    //            response,
+    //            response.ToJSON(
+    //                parentNetworkingNode.CustomResetResponseSerializer,
+    //                parentNetworkingNode.CustomStatusInfoSerializer,
+    //                parentNetworkingNode.CustomSignatureSerializer,
+    //                parentNetworkingNode.CustomCustomDataSerializer
+    //            ),
+    //            out var errorResponse2);
 
-            #endregion
+    //        #endregion
 
 
-            #region Send OnResetResponse event
+    //        #region Send OnResetResponse event
 
-            var endTime = Timestamp.Now;
+    //        var endTime = Timestamp.Now;
 
-            var responseLogger = OnResetResponse;
-            if (responseLogger is not null)
-            {
-                try
-                {
+    //        var responseLogger = OnResetResponse;
+    //        if (responseLogger is not null)
+    //        {
+    //            try
+    //            {
 
-                    await Task.WhenAll(responseLogger.GetInvocationList().
-                                                        OfType <OCPPv2_1.CS.OnResetResponseDelegate>().
-                                                        Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
-                                                                                                            sender,
-                                                                                                            connection,
-                                                                                                            request,
-                                                                                                            response,
-                                                                                                            endTime - startTime)).
-                                                        ToArray());
+    //                await Task.WhenAll(responseLogger.GetInvocationList().
+    //                                                    OfType <OCPPv2_1.CS.OnResetResponseDelegate>().
+    //                                                    Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
+    //                                                                                                        sender,
+    //                                                                                                        connection,
+    //                                                                                                        request,
+    //                                                                                                        response,
+    //                                                                                                        endTime - startTime)).
+    //                                                    ToArray());
 
-                }
-                catch (Exception e)
-                {
-                    await HandleErrors(
-                                nameof(TestNetworkingNode),
-                                nameof(OnResetRequest),
-                                e
-                            );
-                }
+    //            }
+    //            catch (Exception e)
+    //            {
+    //                await HandleErrors(
+    //                            nameof(TestNetworkingNode),
+    //                            nameof(OnResetRequest),
+    //                            e
+    //                        );
+    //            }
 
-            }
+    //        }
 
-            #endregion
+    //        #endregion
 
-            return response;
+    //        return response;
 
-        }
+    //    }
 
 
-        // MAIN!!!
-        public void WireReset(CS.  INetworkingNodeIncomingMessages IncomingMessages)
-        {
-            IncomingMessages.OnReset += ProcessIT;
-        }
+    //    // MAIN!!!
+    //    public void WireReset(CS.  INetworkingNodeIncomingMessages IncomingMessages)
+    //    {
+    //        IncomingMessages.OnReset += ProcessIT;
+    //    }
 
-        public void WireReset(CSMS.INetworkingNodeIncomingMessages IncomingMessages)
-        {
-            //IncomingMessages.OnReset += ProcessIT;
-        }
+    //    public void WireReset(CSMS.INetworkingNodeIncomingMessages IncomingMessages)
+    //    {
+    //        //IncomingMessages.OnReset += ProcessIT;
+    //    }
 
 
-    }
+    //}
 
 
     public partial class FORWARD
@@ -448,140 +448,140 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     }
 
 
-    public partial class OUTPUT
-    {
+    //public partial class OUTPUT
+    //{
 
-        #region Events
+    //    #region Events
 
-        /// <summary>
-        /// An event fired whenever a Reset request will be sent.
-        /// </summary>
-        public event OCPPv2_1.CSMS.OnResetRequestDelegate?   OnResetRequest;
+    //    /// <summary>
+    //    /// An event fired whenever a Reset request will be sent.
+    //    /// </summary>
+    //    public event OCPPv2_1.CSMS.OnResetRequestDelegate?   OnResetRequest;
 
-        /// <summary>
-        /// An event fired whenever a response to a Reset request was received.
-        /// </summary>
-        public event OCPPv2_1.CSMS.OnResetResponseDelegate?  OnResetResponse;
+    //    /// <summary>
+    //    /// An event fired whenever a response to a Reset request was received.
+    //    /// </summary>
+    //    public event OCPPv2_1.CSMS.OnResetResponseDelegate?  OnResetResponse;
 
-        #endregion
-
-
-        /// <summary>
-        /// Send a Reset request.
-        /// </summary>
-        /// <param name="Request">A Reset request.</param>
-        public async Task<ResetResponse> Reset(ResetRequest Request)
-        {
-
-            #region Send OnResetRequest event
-
-            var startTime = Timestamp.Now;
-
-            var requestLogger = OnResetRequest;
-            if (requestLogger is not null)
-            {
-                try
-                {
-
-                    await Task.WhenAll(requestLogger.GetInvocationList().
-                                                     OfType <OCPPv2_1.CSMS.OnResetRequestDelegate>().
-                                                     Select (loggingDelegate => loggingDelegate.Invoke(startTime,
-                                                                                                       parentNetworkingNode,
-                                                                                                       Request)).
-                                                     ToArray());
-
-                }
-                catch (Exception e)
-                {
-                    await HandleErrors(
-                              nameof(TestNetworkingNode),
-                              nameof(OnResetRequest),
-                              e
-                          );
-                }
-
-            }
-
-            #endregion
+    //    #endregion
 
 
-            var response = LookupNetworkingNode(Request.DestinationNodeId, out var channel) &&
-                                channel is not null
+    //    /// <summary>
+    //    /// Send a Reset request.
+    //    /// </summary>
+    //    /// <param name="Request">A Reset request.</param>
+    //    public async Task<ResetResponse> Reset(ResetRequest Request)
+    //    {
 
-                                ? parentNetworkingNode.SignaturePolicy.SignRequestMessage(
-                                      Request,
-                                      Request.ToJSON(
-                                          parentNetworkingNode.CustomResetRequestSerializer,
-                                          parentNetworkingNode.CustomSignatureSerializer,
-                                          parentNetworkingNode.CustomCustomDataSerializer
-                                      ),
-                                      out var errorResponse
-                                  )
+    //        #region Send OnResetRequest event
 
-                                      ? await channel.Reset(Request)
+    //        var startTime = Timestamp.Now;
 
-                                      : new ResetResponse(
-                                            Request,
-                                            Result.SignatureError(errorResponse)
-                                        )
+    //        var requestLogger = OnResetRequest;
+    //        if (requestLogger is not null)
+    //        {
+    //            try
+    //            {
 
-                                : new ResetResponse(
-                                      Request,
-                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
-                                  );
+    //                await Task.WhenAll(requestLogger.GetInvocationList().
+    //                                                 OfType <OCPPv2_1.CSMS.OnResetRequestDelegate>().
+    //                                                 Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+    //                                                                                                   parentNetworkingNode,
+    //                                                                                                   Request)).
+    //                                                 ToArray());
 
+    //            }
+    //            catch (Exception e)
+    //            {
+    //                await HandleErrors(
+    //                          nameof(TestNetworkingNode),
+    //                          nameof(OnResetRequest),
+    //                          e
+    //                      );
+    //            }
 
-            parentNetworkingNode.SignaturePolicy.VerifyResponseMessage(
-                response,
-                response.ToJSON(
-                    parentNetworkingNode.CustomResetResponseSerializer,
-                    parentNetworkingNode.CustomStatusInfoSerializer,
-                    parentNetworkingNode.CustomSignatureSerializer,
-                    parentNetworkingNode.CustomCustomDataSerializer
-                ),
-                out errorResponse
-            );
+    //        }
 
-
-            #region Send OnResetResponse event
-
-            var endTime = Timestamp.Now;
-
-            var responseLogger = OnResetResponse;
-            if (responseLogger is not null)
-            {
-                try
-                {
-
-                    await Task.WhenAll(responseLogger.GetInvocationList().
-                                                      OfType <OCPPv2_1.CSMS.OnResetResponseDelegate>().
-                                                      Select (loggingDelegate => loggingDelegate.Invoke(endTime,
-                                                                                                        parentNetworkingNode,
-                                                                                                        Request,
-                                                                                                        response,
-                                                                                                        endTime - startTime)).
-                                                      ToArray());
-
-                }
-                catch (Exception e)
-                {
-                    await HandleErrors(
-                              nameof(TestNetworkingNode),
-                              nameof(OnResetRequest),
-                              e
-                          );
-                }
-
-            }
-
-            #endregion
-
-            return response;
-
-        }
+    //        #endregion
 
 
+    //        var response = LookupNetworkingNode(Request.DestinationNodeId, out var channel) &&
+    //                            channel is not null
 
-    }
+    //                            ? parentNetworkingNode.SignaturePolicy.SignRequestMessage(
+    //                                  Request,
+    //                                  Request.ToJSON(
+    //                                      parentNetworkingNode.CustomResetRequestSerializer,
+    //                                      parentNetworkingNode.CustomSignatureSerializer,
+    //                                      parentNetworkingNode.CustomCustomDataSerializer
+    //                                  ),
+    //                                  out var errorResponse
+    //                              )
+
+    //                                  ? await channel.Reset(Request)
+
+    //                                  : new ResetResponse(
+    //                                        Request,
+    //                                        Result.SignatureError(errorResponse)
+    //                                    )
+
+    //                            : new ResetResponse(
+    //                                  Request,
+    //                                  Result.UnknownOrUnreachable(Request.DestinationNodeId)
+    //                              );
+
+
+    //        parentNetworkingNode.SignaturePolicy.VerifyResponseMessage(
+    //            response,
+    //            response.ToJSON(
+    //                parentNetworkingNode.CustomResetResponseSerializer,
+    //                parentNetworkingNode.CustomStatusInfoSerializer,
+    //                parentNetworkingNode.CustomSignatureSerializer,
+    //                parentNetworkingNode.CustomCustomDataSerializer
+    //            ),
+    //            out errorResponse
+    //        );
+
+
+    //        #region Send OnResetResponse event
+
+    //        var endTime = Timestamp.Now;
+
+    //        var responseLogger = OnResetResponse;
+    //        if (responseLogger is not null)
+    //        {
+    //            try
+    //            {
+
+    //                await Task.WhenAll(responseLogger.GetInvocationList().
+    //                                                  OfType <OCPPv2_1.CSMS.OnResetResponseDelegate>().
+    //                                                  Select (loggingDelegate => loggingDelegate.Invoke(endTime,
+    //                                                                                                    parentNetworkingNode,
+    //                                                                                                    Request,
+    //                                                                                                    response,
+    //                                                                                                    endTime - startTime)).
+    //                                                  ToArray());
+
+    //            }
+    //            catch (Exception e)
+    //            {
+    //                await HandleErrors(
+    //                          nameof(TestNetworkingNode),
+    //                          nameof(OnResetRequest),
+    //                          e
+    //                      );
+    //            }
+
+    //        }
+
+    //        #endregion
+
+    //        return response;
+
+    //    }
+
+
+
+    //}
 
 }

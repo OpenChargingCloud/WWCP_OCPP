@@ -139,14 +139,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
             ClassicAssert.IsNotNull(chargingStation1);
 
 
-            if (testBackendWebSockets01        is not null ||
-                testNetworkingNodeWebSockets01 is not null)
+            if (testBackendWebSockets01 is not null ||
+                nnOCPPWebSocketServer01 is not null)
             {
 
-                testCSMS01.AddOrUpdateHTTPBasicAuth(chargingStation1Id, "1234abcd");
+                testCSMS01.              AddOrUpdateHTTPBasicAuth(chargingStation1Id, "1234abcd");
+                nnOCPPWebSocketServer01?.AddOrUpdateHTTPBasicAuth(chargingStation1Id, "1234abcd");
 
                 var response = chargingStation1.ConnectWebSocket(
-                                   RemoteURL:               URL.Parse("http://127.0.0.1:" + (testNetworkingNodeWebSockets01?.IPPort ?? testBackendWebSockets01?.IPPort).ToString() + "/" + chargingStation1.Id),
+                                   RemoteURL:               URL.Parse("http://127.0.0.1:" + (nnOCPPWebSocketServer01?.IPPort ?? testBackendWebSockets01?.IPPort).ToString() + "/" + chargingStation1.Id),
                                    HTTPAuthentication:      HTTPBasicAuthentication.Create(chargingStation1Id.ToString(), "1234abcd"),
                                    DisableWebSocketPings:   true
                                ).Result;
@@ -165,17 +166,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                     // Sec-WebSocket-Protocol:  ocpp2.0.1
                     // Sec-WebSocket-Version:   13
 
-                    ClassicAssert.AreEqual(HTTPStatusCode.SwitchingProtocols,                                                  response.HTTPStatusCode);
+                    ClassicAssert.AreEqual(HTTPStatusCode.SwitchingProtocols,                                                   response.HTTPStatusCode);
 
-                    if (testNetworkingNodeWebSockets01 is not null)
-                        ClassicAssert.AreEqual($"GraphDefined OCPP {Version.String} HTTP/WebSocket/JSON NetworkingNode API",   response.Server);
+                    if (nnOCPPWebSocketServer01 is not null)
+                        ClassicAssert.AreEqual($"GraphDefined OCPP {Version.String} Networking Node HTTP/WebSocket/JSON API",   response.Server);
                     else
-                        ClassicAssert.AreEqual($"GraphDefined OCPP {Version.String} HTTP/WebSocket/JSON CSMS API",             response.Server);
+                        ClassicAssert.AreEqual($"GraphDefined OCPP {Version.String} HTTP/WebSocket/JSON CSMS API",              response.Server);
 
-                    ClassicAssert.AreEqual("Upgrade",                                                                          response.Connection);
-                    ClassicAssert.AreEqual("websocket",                                                                        response.Upgrade);
+                    ClassicAssert.AreEqual("Upgrade",                                                                           response.Connection);
+                    ClassicAssert.AreEqual("websocket",                                                                         response.Upgrade);
                     ClassicAssert.IsTrue  (response.SecWebSocketProtocol.Contains(Version.WebSocketSubProtocolId));
-                    ClassicAssert.AreEqual("13",                                                                               response.SecWebSocketVersion);
+                    ClassicAssert.AreEqual("13",                                                                                response.SecWebSocketVersion);
 
                 }
 
