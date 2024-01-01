@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a TransactionEvent request was received.
         /// </summary>
-        public event OnTransactionEventRequestDelegate?           OnTransactionEventRequest;
+        public event OnTransactionEventRequestReceivedDelegate?           OnTransactionEventRequest;
 
         /// <summary>
         /// An event sent whenever a TransactionEvent request was received.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a TransactionEvent response was sent.
         /// </summary>
-        public event OnTransactionEventResponseDelegate?          OnTransactionEventResponse;
+        public event OnTransactionEventResponseSentDelegate?          OnTransactionEventResponse;
 
         /// <summary>
         /// An event sent whenever a TransactionEvent WebSocket response was sent.

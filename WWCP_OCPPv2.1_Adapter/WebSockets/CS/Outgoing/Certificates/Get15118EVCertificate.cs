@@ -52,7 +52,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever a get 15118 EV certificate request will be sent to the CSMS.
         /// </summary>
-        public event OCPPv2_1.CS.OnGet15118EVCertificateRequestDelegate?     OnGet15118EVCertificateRequest;
+        public event OCPPv2_1.CS.OnGet15118EVCertificateRequestSentDelegate?     OnGet15118EVCertificateRequestSent;
 
         /// <summary>
         /// An event fired whenever a get 15118 EV certificate request will be sent to the CSMS.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever a response to a get 15118 EV certificate request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnGet15118EVCertificateResponseDelegate?    OnGet15118EVCertificateResponse;
+        public event OCPPv2_1.CS.OnGet15118EVCertificateResponseReceivedDelegate?    OnGet15118EVCertificateResponse;
 
         #endregion
 
@@ -91,14 +91,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
             try
             {
 
-                OnGet15118EVCertificateRequest?.Invoke(startTime,
+                OnGet15118EVCertificateRequestSent?.Invoke(startTime,
                                                        this,
                                                        Request);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnGet15118EVCertificateRequest));
+                DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnGet15118EVCertificateRequestSent));
             }
 
             #endregion

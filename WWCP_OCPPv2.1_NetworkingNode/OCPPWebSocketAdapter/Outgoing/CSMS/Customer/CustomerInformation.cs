@@ -49,12 +49,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a CustomerInformation request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnCustomerInformationRequestDelegate?     OnCustomerInformationRequest;
+        public event OCPPv2_1.CSMS.OnCustomerInformationRequestSentDelegate?     OnCustomerInformationRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a CustomerInformation request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnCustomerInformationResponseDelegate?    OnCustomerInformationResponse;
+        public event OCPPv2_1.CSMS.OnCustomerInformationResponseReceivedDelegate?    OnCustomerInformationResponseReceived;
 
         #endregion
 
@@ -71,13 +71,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnCustomerInformationRequest?.Invoke(startTime,
+                OnCustomerInformationRequestSent?.Invoke(startTime,
                                                      parentNetworkingNode,
                                                      Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnCustomerInformationRequest));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnCustomerInformationRequestSent));
             }
 
             #endregion
@@ -147,7 +147,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnCustomerInformationResponse?.Invoke(endTime,
+                OnCustomerInformationResponseReceived?.Invoke(endTime,
                                                       parentNetworkingNode,
                                                       Request,
                                                       response,
@@ -156,7 +156,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnCustomerInformationResponse));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnCustomerInformationResponseReceived));
             }
 
             #endregion
@@ -167,6 +167,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
+    {
+
+        /// <summary>
+        /// An event sent whenever a response to a CustomerInformation request was sent.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnCustomerInformationResponseReceivedDelegate? OnCustomerInformationResponseReceived;
 
     }
 

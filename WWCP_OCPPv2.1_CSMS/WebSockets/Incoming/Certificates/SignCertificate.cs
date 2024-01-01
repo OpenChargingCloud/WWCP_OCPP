@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a SignCertificate request was received.
         /// </summary>
-        public event OnSignCertificateRequestDelegate?            OnSignCertificateRequest;
+        public event OnSignCertificateRequestReceivedDelegate?            OnSignCertificateRequest;
 
         /// <summary>
         /// An event sent whenever a SignCertificate request was received.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a response to a SignCertificate request was sent.
         /// </summary>
-        public event OnSignCertificateResponseDelegate?           OnSignCertificateResponse;
+        public event OnSignCertificateResponseSentDelegate?           OnSignCertificateResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a SignCertificate request was sent.

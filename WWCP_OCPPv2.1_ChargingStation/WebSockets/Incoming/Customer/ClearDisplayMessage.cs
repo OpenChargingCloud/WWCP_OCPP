@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a ClearDisplayMessage request was received.
         /// </summary>
-        public event OnClearDisplayMessageRequestDelegate?         OnClearDisplayMessageRequest;
+        public event OnClearDisplayMessageRequestReceivedDelegate?         OnClearDisplayMessageRequest;
 
         /// <summary>
         /// An event sent whenever a ClearDisplayMessage request was received.
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a response to a ClearDisplayMessage request was sent.
         /// </summary>
-        public event OnClearDisplayMessageResponseDelegate?        OnClearDisplayMessageResponse;
+        public event OnClearDisplayMessageResponseSentDelegate?        OnClearDisplayMessageResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a ClearDisplayMessage request was sent.

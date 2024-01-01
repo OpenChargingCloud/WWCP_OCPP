@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a PublishFirmware request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnPublishFirmwareRequestDelegate?     OnPublishFirmwareRequest;
+        public event OCPPv2_1.CSMS.OnPublishFirmwareRequestSentDelegate?     OnPublishFirmwareRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a PublishFirmware request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnPublishFirmwareResponseDelegate?    OnPublishFirmwareResponse;
+        public event OCPPv2_1.CSMS.OnPublishFirmwareResponseReceivedDelegate?    OnPublishFirmwareResponseReceived;
 
         #endregion
 
@@ -70,13 +70,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnPublishFirmwareRequest?.Invoke(startTime,
+                OnPublishFirmwareRequestSent?.Invoke(startTime,
                                                  parentNetworkingNode,
                                                  Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnPublishFirmwareRequest));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnPublishFirmwareRequestSent));
             }
 
             #endregion
@@ -143,7 +143,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnPublishFirmwareResponse?.Invoke(endTime,
+                OnPublishFirmwareResponseReceived?.Invoke(endTime,
                                                   parentNetworkingNode,
                                                   Request,
                                                   response,
@@ -152,7 +152,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnPublishFirmwareResponse));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnPublishFirmwareResponseReceived));
             }
 
             #endregion
@@ -163,6 +163,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
+    {
+
+        /// <summary>
+        /// An event sent whenever a response to a PublishFirmware request was sent.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnPublishFirmwareResponseReceivedDelegate? OnPublishFirmwareResponseReceived;
 
     }
 

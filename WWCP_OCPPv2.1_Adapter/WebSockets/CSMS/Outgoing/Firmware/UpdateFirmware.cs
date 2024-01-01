@@ -49,12 +49,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever an UpdateFirmware request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnUpdateFirmwareRequestDelegate?     OnUpdateFirmwareRequest;
+        public event OCPPv2_1.CSMS.OnUpdateFirmwareRequestSentDelegate?     OnUpdateFirmwareRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to an UpdateFirmware request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnUpdateFirmwareResponseDelegate?    OnUpdateFirmwareResponse;
+        public event OCPPv2_1.CSMS.OnUpdateFirmwareResponseReceivedDelegate?    OnUpdateFirmwareResponse;
 
         #endregion
 
@@ -71,13 +71,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
             try
             {
 
-                OnUpdateFirmwareRequest?.Invoke(startTime,
+                OnUpdateFirmwareRequestSent?.Invoke(startTime,
                                                 this,
                                                 Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnUpdateFirmwareRequest));
+                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnUpdateFirmwareRequestSent));
             }
 
             #endregion

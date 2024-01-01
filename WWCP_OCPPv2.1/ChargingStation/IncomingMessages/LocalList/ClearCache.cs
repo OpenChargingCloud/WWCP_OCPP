@@ -36,10 +36,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnClearCacheRequestDelegate(DateTime               Timestamp,
-                                    IEventSender           Sender,
-                                    IWebSocketConnection   Connection,
-                                    ClearCacheRequest      Request);
+        OnClearCacheRequestReceivedDelegate(DateTime               Timestamp,
+                                            IEventSender           Sender,
+                                            IWebSocketConnection   Connection,
+                                            ClearCacheRequest      Request);
 
 
     /// <summary>
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnClearCacheResponseDelegate(DateTime               Timestamp,
+        OnClearCacheResponseSentDelegate(DateTime               Timestamp,
                                      IEventSender           Sender,
                                      IWebSocketConnection   Connection,
                                      ClearCacheRequest      Request,

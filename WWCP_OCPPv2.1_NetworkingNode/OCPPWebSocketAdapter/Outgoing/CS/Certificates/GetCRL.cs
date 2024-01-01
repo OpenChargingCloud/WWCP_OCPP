@@ -50,7 +50,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a get certificate revocation list request will be sent to the CSMS.
         /// </summary>
-        public event OCPPv2_1.CS.OnGetCRLRequestDelegate?     OnGetCRLRequest;
+        public event OCPPv2_1.CS.OnGetCRLRequestSentDelegate?     OnGetCRLRequestSent;
 
         /// <summary>
         /// An event fired whenever a get certificate revocation list request will be sent to the CSMS.
@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a response to a get certificate revocation list request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnGetCRLResponseDelegate?    OnGetCRLResponse;
+        public event OCPPv2_1.CS.OnGetCRLResponseReceivedDelegate?    OnGetCRLResponseReceived;
 
         #endregion
 
@@ -89,14 +89,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnGetCRLRequest?.Invoke(startTime,
+                OnGetCRLRequestSent?.Invoke(startTime,
                                         parentNetworkingNode,
                                         Request);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnGetCRLRequest));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnGetCRLRequestSent));
             }
 
             #endregion
@@ -164,7 +164,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnGetCRLResponse?.Invoke(endTime,
+                OnGetCRLResponseReceived?.Invoke(endTime,
                                          parentNetworkingNode,
                                          Request,
                                          response,
@@ -173,7 +173,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnGetCRLResponse));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnGetCRLResponseReceived));
             }
 
             #endregion
@@ -184,6 +184,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
+    {
+
+        /// <summary>
+        /// An event fired whenever a response to a get certificate revocation list request was received.
+        /// </summary>
+        public event OCPPv2_1.CS.OnGetCRLResponseReceivedDelegate? OnGetCRLResponseReceived;
 
     }
 

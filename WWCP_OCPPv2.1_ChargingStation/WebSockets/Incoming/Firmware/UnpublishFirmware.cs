@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever an UnpublishFirmware request was received.
         /// </summary>
-        public event OnUnpublishFirmwareRequestDelegate?           OnUnpublishFirmwareRequest;
+        public event OnUnpublishFirmwareRequestReceivedDelegate?           OnUnpublishFirmwareRequest;
 
         /// <summary>
         /// An event sent whenever an UnpublishFirmware request was received.
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a response to an UnpublishFirmware request was sent.
         /// </summary>
-        public event OnUnpublishFirmwareResponseDelegate?          OnUnpublishFirmwareResponse;
+        public event OnUnpublishFirmwareResponseSentDelegate?          OnUnpublishFirmwareResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to an UnpublishFirmware request was sent.

@@ -52,7 +52,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever a get certificate revocation list request will be sent to the CSMS.
         /// </summary>
-        public event OCPPv2_1.CS.OnGetCRLRequestDelegate?     OnGetCRLRequest;
+        public event OCPPv2_1.CS.OnGetCRLRequestSentDelegate?     OnGetCRLRequestSent;
 
         /// <summary>
         /// An event fired whenever a get certificate revocation list request will be sent to the CSMS.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever a response to a get certificate revocation list request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnGetCRLResponseDelegate?    OnGetCRLResponse;
+        public event OCPPv2_1.CS.OnGetCRLResponseReceivedDelegate?    OnGetCRLResponse;
 
         #endregion
 
@@ -91,14 +91,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
             try
             {
 
-                OnGetCRLRequest?.Invoke(startTime,
+                OnGetCRLRequestSent?.Invoke(startTime,
                                         this,
                                         Request);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnGetCRLRequest));
+                DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnGetCRLRequestSent));
             }
 
             #endregion

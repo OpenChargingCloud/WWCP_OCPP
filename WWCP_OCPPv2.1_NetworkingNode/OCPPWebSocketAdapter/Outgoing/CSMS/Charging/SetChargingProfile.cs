@@ -49,12 +49,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a SetChargingProfile request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnSetChargingProfileRequestDelegate?     OnSetChargingProfileRequest;
+        public event OCPPv2_1.CSMS.OnSetChargingProfileRequestSentDelegate?     OnSetChargingProfileRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a SetChargingProfile request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnSetChargingProfileResponseDelegate?    OnSetChargingProfileResponse;
+        public event OCPPv2_1.CSMS.OnSetChargingProfileResponseReceivedDelegate?    OnSetChargingProfileResponseReceived;
 
         #endregion
 
@@ -71,13 +71,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnSetChargingProfileRequest?.Invoke(startTime,
+                OnSetChargingProfileRequestSent?.Invoke(startTime,
                                                     parentNetworkingNode,
                                                     Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnSetChargingProfileRequest));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnSetChargingProfileRequestSent));
             }
 
             #endregion
@@ -169,7 +169,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnSetChargingProfileResponse?.Invoke(endTime,
+                OnSetChargingProfileResponseReceived?.Invoke(endTime,
                                                      parentNetworkingNode,
                                                      Request,
                                                      response,
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnSetChargingProfileResponse));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnSetChargingProfileResponseReceived));
             }
 
             #endregion
@@ -189,6 +189,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
+    {
+
+        /// <summary>
+        /// An event sent whenever a response to a SetChargingProfile request was sent.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnSetChargingProfileResponseReceivedDelegate? OnSetChargingProfileResponseReceived;
 
     }
 

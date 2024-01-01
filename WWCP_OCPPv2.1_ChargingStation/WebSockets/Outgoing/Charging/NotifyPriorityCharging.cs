@@ -51,7 +51,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event fired whenever a NotifyPriorityCharging request will be sent to the CSMS.
         /// </summary>
-        public event OnNotifyPriorityChargingRequestDelegate?     OnNotifyPriorityChargingRequest;
+        public event OnNotifyPriorityChargingRequestSentDelegate?     OnNotifyPriorityChargingRequest;
 
         /// <summary>
         /// An event fired whenever a NotifyPriorityCharging request will be sent to the CSMS.
@@ -66,7 +66,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event fired whenever a response to a NotifyPriorityCharging request was received.
         /// </summary>
-        public event OnNotifyPriorityChargingResponseDelegate?    OnNotifyPriorityChargingResponse;
+        public event OnNotifyPriorityChargingResponseReceivedDelegate?    OnNotifyPriorityChargingResponse;
 
         #endregion
 

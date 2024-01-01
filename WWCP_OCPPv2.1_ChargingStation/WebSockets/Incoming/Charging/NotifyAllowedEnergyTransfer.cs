@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a NotifyAllowedEnergyTransfer request was received.
         /// </summary>
-        public event OnNotifyAllowedEnergyTransferRequestDelegate?     OnNotifyAllowedEnergyTransferRequest;
+        public event OnNotifyAllowedEnergyTransferRequestReceivedDelegate?     OnNotifyAllowedEnergyTransferRequest;
 
         /// <summary>
         /// An event sent whenever a NotifyAllowedEnergyTransfer request was received.
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a response to a NotifyAllowedEnergyTransfer request was sent.
         /// </summary>
-        public event OnNotifyAllowedEnergyTransferResponseDelegate?    OnNotifyAllowedEnergyTransferResponse;
+        public event OnNotifyAllowedEnergyTransferResponseSentDelegate?    OnNotifyAllowedEnergyTransferResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a NotifyAllowedEnergyTransfer request was sent.

@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnSetVariablesRequestDelegate(DateTime               Timestamp,
+        OnSetVariablesRequestReceivedDelegate(DateTime               Timestamp,
                                       IEventSender           Sender,
                                       IWebSocketConnection   Connection,
                                       SetVariablesRequest    Request);
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnSetVariablesResponseDelegate(DateTime               Timestamp,
+        OnSetVariablesResponseSentDelegate(DateTime               Timestamp,
                                        IEventSender           Sender,
                                        IWebSocketConnection   Connection,
                                        SetVariablesRequest    Request,

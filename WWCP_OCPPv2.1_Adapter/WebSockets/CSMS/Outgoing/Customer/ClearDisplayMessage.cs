@@ -50,12 +50,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a ClearDisplayMessage request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnClearDisplayMessageRequestDelegate?     OnClearDisplayMessageRequest;
+        public event OCPPv2_1.CSMS.OnClearDisplayMessageRequestSentDelegate?     OnClearDisplayMessageRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a ClearDisplayMessage request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnClearDisplayMessageResponseDelegate?    OnClearDisplayMessageResponse;
+        public event OCPPv2_1.CSMS.OnClearDisplayMessageResponseReceivedDelegate?    OnClearDisplayMessageResponse;
 
         #endregion
 
@@ -72,13 +72,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
             try
             {
 
-                OnClearDisplayMessageRequest?.Invoke(startTime,
+                OnClearDisplayMessageRequestSent?.Invoke(startTime,
                                                      this,
                                                      Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnClearDisplayMessageRequest));
+                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnClearDisplayMessageRequestSent));
             }
 
             #endregion

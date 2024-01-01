@@ -35,7 +35,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Request">The authorize request.</param>
     public delegate Task
 
-        OnAuthorizeRequestDelegate(DateTime                    Timestamp,
+        OnAuthorizeRequestReceivedDelegate(DateTime                    Timestamp,
                                    IEventSender                Sender,
                                    IWebSocketConnection   Connection,
                                    AuthorizeRequest            Request);
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Runtime">The runtime of the authorize response.</param>
     public delegate Task
 
-        OnAuthorizeResponseDelegate(DateTime                    Timestamp,
+        OnAuthorizeResponseSentDelegate(DateTime                    Timestamp,
                                     IEventSender                Sender,
                                     IWebSocketConnection   Connection,
                                     AuthorizeRequest            Request,

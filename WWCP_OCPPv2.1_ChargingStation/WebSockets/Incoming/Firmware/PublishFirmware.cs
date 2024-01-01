@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a PublishFirmware request was received.
         /// </summary>
-        public event OnPublishFirmwareRequestDelegate?             OnPublishFirmwareRequest;
+        public event OnPublishFirmwareRequestReceivedDelegate?             OnPublishFirmwareRequest;
 
         /// <summary>
         /// An event sent whenever a PublishFirmware request was received.
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a response to a PublishFirmware request was sent.
         /// </summary>
-        public event OnPublishFirmwareResponseDelegate?            OnPublishFirmwareResponse;
+        public event OnPublishFirmwareResponseSentDelegate?            OnPublishFirmwareResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a PublishFirmware request was sent.

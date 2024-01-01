@@ -51,7 +51,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event fired whenever a NotifyReport request will be sent to the CSMS.
         /// </summary>
-        public event OnNotifyReportRequestDelegate?     OnNotifyReportRequest;
+        public event OnNotifyReportRequestSentDelegate?     OnNotifyReportRequest;
 
         /// <summary>
         /// An event fired whenever a NotifyReport request will be sent to the CSMS.
@@ -66,7 +66,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event fired whenever a response to a NotifyReport request was received.
         /// </summary>
-        public event OnNotifyReportResponseDelegate?    OnNotifyReportResponse;
+        public event OnNotifyReportResponseReceivedDelegate?    OnNotifyReportResponse;
 
         #endregion
 

@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a set monitoring level request was received.
         /// </summary>
-        public event OnSetMonitoringLevelRequestDelegate?          OnSetMonitoringLevelRequest;
+        public event OnSetMonitoringLevelRequestReceivedDelegate?          OnSetMonitoringLevelRequest;
 
         /// <summary>
         /// An event sent whenever a set monitoring level request was received.
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a response to a set monitoring level request was sent.
         /// </summary>
-        public event OnSetMonitoringLevelResponseDelegate?         OnSetMonitoringLevelResponse;
+        public event OnSetMonitoringLevelResponseSentDelegate?         OnSetMonitoringLevelResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a set monitoring level request was sent.

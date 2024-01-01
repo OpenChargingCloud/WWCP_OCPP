@@ -51,7 +51,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event fired whenever a MeterValues request will be sent to the CSMS.
         /// </summary>
-        public event OnMeterValuesRequestDelegate?     OnMeterValuesRequest;
+        public event OnMeterValuesRequestSentDelegate?     OnMeterValuesRequest;
 
         /// <summary>
         /// An event fired whenever a MeterValues request will be sent to the CSMS.
@@ -66,7 +66,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event fired whenever a response to a MeterValues request was received.
         /// </summary>
-        public event OnMeterValuesResponseDelegate?    OnMeterValuesResponse;
+        public event OnMeterValuesResponseReceivedDelegate?    OnMeterValuesResponse;
 
         #endregion
 

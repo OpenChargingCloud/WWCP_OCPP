@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnGetLocalListVersionRequestDelegate?     OnGetLocalListVersionRequest;
+        public event OCPPv2_1.CS.OnGetLocalListVersionRequestReceivedDelegate?     OnGetLocalListVersionRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
@@ -71,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnGetLocalListVersionResponseDelegate?    OnGetLocalListVersionResponse;
+        public event OCPPv2_1.CS.OnGetLocalListVersionResponseSentDelegate?    OnGetLocalListVersionResponseSent;
 
         /// <summary>
         /// An event sent whenever a websocket response to a reset request was sent.
@@ -182,7 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
                     try
                     {
 
-                        OnGetLocalListVersionResponse?.Invoke(Timestamp.Now,
+                        OnGetLocalListVersionResponseSent?.Invoke(Timestamp.Now,
                                                               this,
                                                               WebSocketConnection,
                                                               request,
@@ -192,7 +192,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnGetLocalListVersionResponse));
+                        DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnGetLocalListVersionResponseSent));
                     }
 
                     #endregion

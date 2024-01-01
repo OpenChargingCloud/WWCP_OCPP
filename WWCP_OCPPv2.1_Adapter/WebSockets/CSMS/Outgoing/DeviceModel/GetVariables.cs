@@ -49,12 +49,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a GetVariables request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnGetVariablesRequestDelegate?     OnGetVariablesRequest;
+        public event OCPPv2_1.CSMS.OnGetVariablesRequestSentDelegate?     OnGetVariablesRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a GetVariables request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnGetVariablesResponseDelegate?    OnGetVariablesResponse;
+        public event OCPPv2_1.CSMS.OnGetVariablesResponseReceivedDelegate?    OnGetVariablesResponse;
 
         #endregion
 
@@ -71,13 +71,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
             try
             {
 
-                OnGetVariablesRequest?.Invoke(startTime,
+                OnGetVariablesRequestSent?.Invoke(startTime,
                                               this,
                                               Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnGetVariablesRequest));
+                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnGetVariablesRequestSent));
             }
 
             #endregion

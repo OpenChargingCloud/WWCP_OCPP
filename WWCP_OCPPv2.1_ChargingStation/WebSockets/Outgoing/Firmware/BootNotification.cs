@@ -51,7 +51,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event fired whenever a BootNotification request will be sent to the CSMS.
         /// </summary>
-        public event OnBootNotificationRequestDelegate?     OnBootNotificationRequest;
+        public event OnBootNotificationRequestSentDelegate?     OnBootNotificationRequest;
 
         /// <summary>
         /// An event fired whenever a BootNotification request will be sent to the CSMS.
@@ -66,7 +66,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event fired whenever a response to a BootNotification request was received.
         /// </summary>
-        public event OnBootNotificationResponseDelegate?    OnBootNotificationResponse;
+        public event OnBootNotificationResponseReceivedDelegate?    OnBootNotificationResponse;
 
         #endregion
 

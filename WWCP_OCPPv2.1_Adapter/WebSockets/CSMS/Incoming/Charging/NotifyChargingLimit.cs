@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a NotifyChargingLimit request was received.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnNotifyChargingLimitRequestDelegate?     OnNotifyChargingLimitRequest;
+        public event OCPPv2_1.CSMS.OnNotifyChargingLimitRequestReceivedDelegate?     OnNotifyChargingLimitRequest;
 
         /// <summary>
         /// An event sent whenever a NotifyChargingLimit was received.
@@ -68,7 +68,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a response to a NotifyChargingLimit was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnNotifyChargingLimitResponseDelegate?    OnNotifyChargingLimitResponse;
+        public event OCPPv2_1.CSMS.OnNotifyChargingLimitResponseSentDelegate?    OnNotifyChargingLimitResponseSent;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a NotifyChargingLimit was sent.
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                     try
                     {
 
-                        OnNotifyChargingLimitResponse?.Invoke(Timestamp.Now,
+                        OnNotifyChargingLimitResponseSent?.Invoke(Timestamp.Now,
                                                               this,
                                                               Connection,
                                                               request,
@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnNotifyChargingLimitResponse));
+                        DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnNotifyChargingLimitResponseSent));
                     }
 
                     #endregion

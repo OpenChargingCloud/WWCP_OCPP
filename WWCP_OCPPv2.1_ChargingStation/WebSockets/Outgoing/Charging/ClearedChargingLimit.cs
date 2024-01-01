@@ -51,7 +51,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event fired whenever a ClearedChargingLimit request will be sent to the CSMS.
         /// </summary>
-        public event OnClearedChargingLimitRequestDelegate?     OnClearedChargingLimitRequest;
+        public event OnClearedChargingLimitRequestSentDelegate?     OnClearedChargingLimitRequest;
 
         /// <summary>
         /// An event fired whenever a ClearedChargingLimit request will be sent to the CSMS.
@@ -66,7 +66,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event fired whenever a response to a ClearedChargingLimit request was received.
         /// </summary>
-        public event OnClearedChargingLimitResponseDelegate?    OnClearedChargingLimitResponse;
+        public event OnClearedChargingLimitResponseReceivedDelegate?    OnClearedChargingLimitResponse;
 
         #endregion
 

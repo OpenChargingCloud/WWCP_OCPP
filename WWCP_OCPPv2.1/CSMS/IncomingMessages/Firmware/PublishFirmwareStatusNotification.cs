@@ -37,7 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
     public delegate Task
 
-        OnPublishFirmwareStatusNotificationRequestDelegate(DateTime                                   Timestamp,
+        OnPublishFirmwareStatusNotificationRequestReceivedDelegate(DateTime                                   Timestamp,
                                                            IEventSender                               Sender,
                                                            IWebSocketConnection                  Connection,
                                                            PublishFirmwareStatusNotificationRequest   Request);
@@ -71,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task
 
-        OnPublishFirmwareStatusNotificationResponseDelegate(DateTime                                    Timestamp,
+        OnPublishFirmwareStatusNotificationResponseSentDelegate(DateTime                                    Timestamp,
                                                             IEventSender                                Sender,
                                                             IWebSocketConnection                   Connection,
                                                             PublishFirmwareStatusNotificationRequest    Request,

@@ -52,7 +52,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever a cleared charging limit request will be sent to the CSMS.
         /// </summary>
-        public event OCPPv2_1.CS.OnClearedChargingLimitRequestDelegate?     OnClearedChargingLimitRequest;
+        public event OCPPv2_1.CS.OnClearedChargingLimitRequestSentDelegate?     OnClearedChargingLimitRequestSent;
 
         /// <summary>
         /// An event fired whenever a cleared charging limit request will be sent to the CSMS.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever a response to a cleared charging limit request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnClearedChargingLimitResponseDelegate?    OnClearedChargingLimitResponse;
+        public event OCPPv2_1.CS.OnClearedChargingLimitResponseReceivedDelegate?    OnClearedChargingLimitResponse;
 
         #endregion
 
@@ -91,14 +91,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
             try
             {
 
-                OnClearedChargingLimitRequest?.Invoke(startTime,
+                OnClearedChargingLimitRequestSent?.Invoke(startTime,
                                                       this,
                                                       Request);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnClearedChargingLimitRequest));
+                DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnClearedChargingLimitRequestSent));
             }
 
             #endregion

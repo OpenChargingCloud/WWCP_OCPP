@@ -49,12 +49,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a UpdateDynamicSchedule request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnUpdateDynamicScheduleRequestDelegate?     OnUpdateDynamicScheduleRequest;
+        public event OCPPv2_1.CSMS.OnUpdateDynamicScheduleRequestSentDelegate?     OnUpdateDynamicScheduleRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a UpdateDynamicSchedule request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnUpdateDynamicScheduleResponseDelegate?    OnUpdateDynamicScheduleResponse;
+        public event OCPPv2_1.CSMS.OnUpdateDynamicScheduleResponseReceivedDelegate?    OnUpdateDynamicScheduleResponse;
 
         #endregion
 
@@ -72,13 +72,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
             try
             {
 
-                OnUpdateDynamicScheduleRequest?.Invoke(startTime,
+                OnUpdateDynamicScheduleRequestSent?.Invoke(startTime,
                                                        this,
                                                        Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnUpdateDynamicScheduleRequest));
+                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnUpdateDynamicScheduleRequestSent));
             }
 
             #endregion

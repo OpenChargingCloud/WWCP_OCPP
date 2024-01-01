@@ -49,12 +49,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a SendLocalList request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnSendLocalListRequestDelegate?     OnSendLocalListRequest;
+        public event OCPPv2_1.CSMS.OnSendLocalListRequestSentDelegate?     OnSendLocalListRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a SendLocalList request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnSendLocalListResponseDelegate?    OnSendLocalListResponse;
+        public event OCPPv2_1.CSMS.OnSendLocalListResponseReceivedDelegate?    OnSendLocalListResponse;
 
         #endregion
 
@@ -71,13 +71,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
             try
             {
 
-                OnSendLocalListRequest?.Invoke(startTime,
+                OnSendLocalListRequestSent?.Invoke(startTime,
                                                this,
                                                Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnSendLocalListRequest));
+                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnSendLocalListRequestSent));
             }
 
             #endregion

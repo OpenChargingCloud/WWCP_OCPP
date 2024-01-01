@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a ClearCache request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnClearCacheRequestDelegate?     OnClearCacheRequest;
+        public event OCPPv2_1.CSMS.OnClearCacheRequestSentDelegate?     OnClearCacheRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a ClearCache request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnClearCacheResponseDelegate?    OnClearCacheResponse;
+        public event OCPPv2_1.CSMS.OnClearCacheResponseReceivedDelegate?    OnClearCacheResponseReceived;
 
         #endregion
 
@@ -70,13 +70,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnClearCacheRequest?.Invoke(startTime,
+                OnClearCacheRequestSent?.Invoke(startTime,
                                             parentNetworkingNode,
                                             Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnClearCacheRequest));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnClearCacheRequestSent));
             }
 
             #endregion
@@ -143,7 +143,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnClearCacheResponse?.Invoke(endTime,
+                OnClearCacheResponseReceived?.Invoke(endTime,
                                              parentNetworkingNode,
                                              Request,
                                              response,
@@ -152,7 +152,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnClearCacheResponse));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnClearCacheResponseReceived));
             }
 
             #endregion
@@ -163,6 +163,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
+    {
+
+        /// <summary>
+        /// An event sent whenever a response to a ClearCache request was sent.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnClearCacheResponseReceivedDelegate? OnClearCacheResponseReceived;
 
     }
 

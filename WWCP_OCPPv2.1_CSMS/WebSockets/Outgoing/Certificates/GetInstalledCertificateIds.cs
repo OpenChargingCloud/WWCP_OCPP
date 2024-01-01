@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a GetInstalledCertificateIds request was sent.
         /// </summary>
-        public event OnGetInstalledCertificateIdsRequestDelegate?     OnGetInstalledCertificateIdsRequest;
+        public event OnGetInstalledCertificateIdsRequestSentDelegate?     OnGetInstalledCertificateIdsRequest;
 
         /// <summary>
         /// An event sent whenever a response to a GetInstalledCertificateIds request was sent.
         /// </summary>
-        public event OnGetInstalledCertificateIdsResponseDelegate?    OnGetInstalledCertificateIdsResponse;
+        public event OnGetInstalledCertificateIdsResponseReceivedDelegate?    OnGetInstalledCertificateIdsResponse;
 
         #endregion
 

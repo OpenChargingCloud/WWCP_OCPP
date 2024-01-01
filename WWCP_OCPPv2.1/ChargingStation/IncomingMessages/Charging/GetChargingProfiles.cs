@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnGetChargingProfilesRequestDelegate(DateTime                     Timestamp,
+        OnGetChargingProfilesRequestReceivedDelegate(DateTime                     Timestamp,
                                              IEventSender                 Sender,
                                              IWebSocketConnection         Connection,
                                              GetChargingProfilesRequest   Request);
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnGetChargingProfilesResponseDelegate(DateTime                      Timestamp,
+        OnGetChargingProfilesResponseSentDelegate(DateTime                      Timestamp,
                                               IEventSender                  Sender,
                                               IWebSocketConnection          Connection,
                                               GetChargingProfilesRequest    Request,

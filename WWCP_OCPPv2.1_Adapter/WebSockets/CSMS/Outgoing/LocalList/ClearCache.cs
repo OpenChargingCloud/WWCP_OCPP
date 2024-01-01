@@ -49,12 +49,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a ClearCache request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnClearCacheRequestDelegate?     OnClearCacheRequest;
+        public event OCPPv2_1.CSMS.OnClearCacheRequestSentDelegate?     OnClearCacheRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a ClearCache request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnClearCacheResponseDelegate?    OnClearCacheResponse;
+        public event OCPPv2_1.CSMS.OnClearCacheResponseReceivedDelegate?    OnClearCacheResponse;
 
         #endregion
 
@@ -71,13 +71,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
             try
             {
 
-                OnClearCacheRequest?.Invoke(startTime,
+                OnClearCacheRequestSent?.Invoke(startTime,
                                             this,
                                             Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnClearCacheRequest));
+                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnClearCacheRequestSent));
             }
 
             #endregion

@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnReserveNowRequestDelegate(DateTime               Timestamp,
+        OnReserveNowRequestReceivedDelegate(DateTime               Timestamp,
                                     IEventSender           Sender,
                                     IWebSocketConnection   Connection,
                                     ReserveNowRequest      Request);
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnReserveNowResponseDelegate(DateTime               Timestamp,
+        OnReserveNowResponseSentDelegate(DateTime               Timestamp,
                                      IEventSender           Sender,
                                      IWebSocketConnection   Connection,
                                      ReserveNowRequest      Request,

@@ -52,7 +52,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever a reservation status update request will be sent to the CSMS.
         /// </summary>
-        public event OCPPv2_1.CS.OnReservationStatusUpdateRequestDelegate?     OnReservationStatusUpdateRequest;
+        public event OCPPv2_1.CS.OnReservationStatusUpdateRequestSentDelegate?     OnReservationStatusUpdateRequestSent;
 
         /// <summary>
         /// An event fired whenever a reservation status update request will be sent to the CSMS.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever a response to a reservation status update request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnReservationStatusUpdateResponseDelegate?    OnReservationStatusUpdateResponse;
+        public event OCPPv2_1.CS.OnReservationStatusUpdateResponseReceivedDelegate?    OnReservationStatusUpdateResponse;
 
         #endregion
 
@@ -91,14 +91,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
             try
             {
 
-                OnReservationStatusUpdateRequest?.Invoke(startTime,
+                OnReservationStatusUpdateRequestSent?.Invoke(startTime,
                                                          this,
                                                          Request);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnReservationStatusUpdateRequest));
+                DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnReservationStatusUpdateRequestSent));
             }
 
             #endregion

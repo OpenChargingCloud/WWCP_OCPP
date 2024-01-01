@@ -127,7 +127,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CS
                 //    return Task.CompletedTask;
                 //};
 
-                testCSMS01.        OnBootNotificationRequest      += (timestamp, sender, connection, bootNotificationRequest) => {
+                testCSMS01.        OnBootNotificationRequestReceived      += (timestamp, sender, connection, bootNotificationRequest) => {
                     csmsBootNotificationRequests. TryAdd(bootNotificationRequest);
                     return Task.CompletedTask;
                 };

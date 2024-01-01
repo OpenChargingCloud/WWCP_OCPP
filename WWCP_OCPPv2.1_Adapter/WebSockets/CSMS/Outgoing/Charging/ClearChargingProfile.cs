@@ -49,12 +49,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a ClearChargingProfile request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnClearChargingProfileRequestDelegate?     OnClearChargingProfileRequest;
+        public event OCPPv2_1.CSMS.OnClearChargingProfileRequestSentDelegate?     OnClearChargingProfileRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a ClearChargingProfile request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnClearChargingProfileResponseDelegate?    OnClearChargingProfileResponse;
+        public event OCPPv2_1.CSMS.OnClearChargingProfileResponseReceivedDelegate?    OnClearChargingProfileResponse;
 
         #endregion
 
@@ -71,13 +71,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
             try
             {
 
-                OnClearChargingProfileRequest?.Invoke(startTime,
+                OnClearChargingProfileRequestSent?.Invoke(startTime,
                                                       this,
                                                       Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnClearChargingProfileRequest));
+                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnClearChargingProfileRequestSent));
             }
 
             #endregion

@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a SetMonitoringBase request was received.
         /// </summary>
-        public event OnSetMonitoringBaseRequestDelegate?           OnSetMonitoringBaseRequest;
+        public event OnSetMonitoringBaseRequestReceivedDelegate?           OnSetMonitoringBaseRequest;
 
         /// <summary>
         /// An event sent whenever a SetMonitoringBase request was received.
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a response to a SetMonitoringBase request was sent.
         /// </summary>
-        public event OnSetMonitoringBaseResponseDelegate?          OnSetMonitoringBaseResponse;
+        public event OnSetMonitoringBaseResponseSentDelegate?          OnSetMonitoringBaseResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a SetMonitoringBase request was sent.

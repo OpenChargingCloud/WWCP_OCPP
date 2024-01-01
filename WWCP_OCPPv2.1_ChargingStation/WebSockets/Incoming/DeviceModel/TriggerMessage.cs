@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a TriggerMessage request was received.
         /// </summary>
-        public event OnTriggerMessageRequestDelegate?              OnTriggerMessageRequest;
+        public event OnTriggerMessageRequestReceivedDelegate?              OnTriggerMessageRequest;
 
         /// <summary>
         /// An event sent whenever a TriggerMessage request was received.
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a response to a TriggerMessage request was sent.
         /// </summary>
-        public event OnTriggerMessageResponseDelegate?             OnTriggerMessageResponse;
+        public event OnTriggerMessageResponseSentDelegate?             OnTriggerMessageResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a TriggerMessage request was sent.

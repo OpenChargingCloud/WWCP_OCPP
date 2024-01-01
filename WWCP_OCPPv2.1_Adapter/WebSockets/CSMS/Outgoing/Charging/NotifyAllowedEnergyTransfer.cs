@@ -49,12 +49,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a NotifyAllowedEnergyTransfer request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnNotifyAllowedEnergyTransferRequestDelegate?     OnNotifyAllowedEnergyTransferRequest;
+        public event OCPPv2_1.CSMS.OnNotifyAllowedEnergyTransferRequestSentDelegate?     OnNotifyAllowedEnergyTransferRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a NotifyAllowedEnergyTransfer request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnNotifyAllowedEnergyTransferResponseDelegate?    OnNotifyAllowedEnergyTransferResponse;
+        public event OCPPv2_1.CSMS.OnNotifyAllowedEnergyTransferResponseReceivedDelegate?    OnNotifyAllowedEnergyTransferResponse;
 
         #endregion
 
@@ -72,13 +72,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
             try
             {
 
-                OnNotifyAllowedEnergyTransferRequest?.Invoke(startTime,
+                OnNotifyAllowedEnergyTransferRequestSent?.Invoke(startTime,
                                                              this,
                                                              Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnNotifyAllowedEnergyTransferRequest));
+                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnNotifyAllowedEnergyTransferRequestSent));
             }
 
             #endregion

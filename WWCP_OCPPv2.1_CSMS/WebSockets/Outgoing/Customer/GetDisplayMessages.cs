@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a GetDisplayMessages request was sent.
         /// </summary>
-        public event OnGetDisplayMessagesRequestDelegate?     OnGetDisplayMessagesRequest;
+        public event OnGetDisplayMessagesRequestSentDelegate?     OnGetDisplayMessagesRequest;
 
         /// <summary>
         /// An event sent whenever a response to a GetDisplayMessages request was sent.
         /// </summary>
-        public event OnGetDisplayMessagesResponseDelegate?    OnGetDisplayMessagesResponse;
+        public event OnGetDisplayMessagesResponseReceivedDelegate?    OnGetDisplayMessagesResponse;
 
         #endregion
 

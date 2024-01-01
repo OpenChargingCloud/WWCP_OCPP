@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a StatusNotification request was received.
         /// </summary>
-        public event OnStatusNotificationRequestDelegate?         OnStatusNotificationRequest;
+        public event OnStatusNotificationRequestReceivedDelegate?         OnStatusNotificationRequest;
 
         /// <summary>
         /// An event sent whenever a StatusNotification request was received.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a response to a StatusNotification request was sent.
         /// </summary>
-        public event OnStatusNotificationResponseDelegate?        OnStatusNotificationResponse;
+        public event OnStatusNotificationResponseSentDelegate?        OnStatusNotificationResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a StatusNotification request was sent.

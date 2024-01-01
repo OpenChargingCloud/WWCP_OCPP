@@ -49,12 +49,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a UsePriorityCharging request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnUsePriorityChargingRequestDelegate?     OnUsePriorityChargingRequest;
+        public event OCPPv2_1.CSMS.OnUsePriorityChargingRequestSentDelegate?     OnUsePriorityChargingRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a UsePriorityCharging request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnUsePriorityChargingResponseDelegate?    OnUsePriorityChargingResponse;
+        public event OCPPv2_1.CSMS.OnUsePriorityChargingResponseReceivedDelegate?    OnUsePriorityChargingResponse;
 
         #endregion
 
@@ -72,13 +72,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
             try
             {
 
-                OnUsePriorityChargingRequest?.Invoke(startTime,
+                OnUsePriorityChargingRequestSent?.Invoke(startTime,
                                                      this,
                                                      Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnUsePriorityChargingRequest));
+                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnUsePriorityChargingRequestSent));
             }
 
             #endregion

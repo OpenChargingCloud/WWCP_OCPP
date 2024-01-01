@@ -52,7 +52,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever a NotifyPriorityCharging request will be sent to the CSMS.
         /// </summary>
-        public event OCPPv2_1.CS.OnNotifyPriorityChargingRequestDelegate?     OnNotifyPriorityChargingRequest;
+        public event OCPPv2_1.CS.OnNotifyPriorityChargingRequestSentDelegate?     OnNotifyPriorityChargingRequestSent;
 
         /// <summary>
         /// An event fired whenever a NotifyPriorityCharging request will be sent to the CSMS.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever a response to a NotifyPriorityCharging request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnNotifyPriorityChargingResponseDelegate?    OnNotifyPriorityChargingResponse;
+        public event OCPPv2_1.CS.OnNotifyPriorityChargingResponseReceivedDelegate?    OnNotifyPriorityChargingResponse;
 
         #endregion
 
@@ -91,14 +91,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
             try
             {
 
-                OnNotifyPriorityChargingRequest?.Invoke(startTime,
+                OnNotifyPriorityChargingRequestSent?.Invoke(startTime,
                                                         this,
                                                         Request);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnNotifyPriorityChargingRequest));
+                DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnNotifyPriorityChargingRequestSent));
             }
 
             #endregion

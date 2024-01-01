@@ -49,12 +49,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a GetTransactionStatus request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnGetTransactionStatusRequestDelegate?     OnGetTransactionStatusRequest;
+        public event OCPPv2_1.CSMS.OnGetTransactionStatusRequestSentDelegate?     OnGetTransactionStatusRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a GetTransactionStatus request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnGetTransactionStatusResponseDelegate?    OnGetTransactionStatusResponse;
+        public event OCPPv2_1.CSMS.OnGetTransactionStatusResponseReceivedDelegate?    OnGetTransactionStatusResponseReceived;
 
         #endregion
 
@@ -71,13 +71,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnGetTransactionStatusRequest?.Invoke(startTime,
+                OnGetTransactionStatusRequestSent?.Invoke(startTime,
                                                       parentNetworkingNode,
                                                       Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnGetTransactionStatusRequest));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnGetTransactionStatusRequestSent));
             }
 
             #endregion
@@ -144,7 +144,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnGetTransactionStatusResponse?.Invoke(endTime,
+                OnGetTransactionStatusResponseReceived?.Invoke(endTime,
                                                        parentNetworkingNode,
                                                        Request,
                                                        response,
@@ -153,7 +153,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnGetTransactionStatusResponse));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnGetTransactionStatusResponseReceived));
             }
 
             #endregion
@@ -164,6 +164,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
+    {
+
+        /// <summary>
+        /// An event sent whenever a response to a GetTransactionStatus request was sent.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnGetTransactionStatusResponseReceivedDelegate? OnGetTransactionStatusResponseReceived;
 
     }
 

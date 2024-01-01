@@ -49,12 +49,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever an UpdateFirmware request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnUpdateFirmwareRequestDelegate?     OnUpdateFirmwareRequest;
+        public event OCPPv2_1.CSMS.OnUpdateFirmwareRequestSentDelegate?     OnUpdateFirmwareRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to an UpdateFirmware request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnUpdateFirmwareResponseDelegate?    OnUpdateFirmwareResponse;
+        public event OCPPv2_1.CSMS.OnUpdateFirmwareResponseReceivedDelegate?    OnUpdateFirmwareResponseReceived;
 
         #endregion
 
@@ -71,13 +71,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnUpdateFirmwareRequest?.Invoke(startTime,
+                OnUpdateFirmwareRequestSent?.Invoke(startTime,
                                                 parentNetworkingNode,
                                                 Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnUpdateFirmwareRequest));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnUpdateFirmwareRequestSent));
             }
 
             #endregion
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnUpdateFirmwareResponse?.Invoke(endTime,
+                OnUpdateFirmwareResponseReceived?.Invoke(endTime,
                                                  parentNetworkingNode,
                                                  Request,
                                                  response,
@@ -154,7 +154,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnUpdateFirmwareResponse));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnUpdateFirmwareResponseReceived));
             }
 
             #endregion
@@ -165,6 +165,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
+    {
+
+        /// <summary>
+        /// An event sent whenever a response to an UpdateFirmware request was sent.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnUpdateFirmwareResponseReceivedDelegate? OnUpdateFirmwareResponseReceived;
 
     }
 

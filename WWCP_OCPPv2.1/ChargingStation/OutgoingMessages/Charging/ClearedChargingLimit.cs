@@ -32,7 +32,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
-    public delegate Task OnClearedChargingLimitRequestDelegate(DateTime                      Timestamp,
+    public delegate Task OnClearedChargingLimitRequestSentDelegate(DateTime                      Timestamp,
                                                                IEventSender                  Sender,
                                                                ClearedChargingLimitRequest   Request);
 
@@ -44,7 +44,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Request">The request.</param>
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate Task OnClearedChargingLimitResponseDelegate(DateTime                       Timestamp,
+    public delegate Task OnClearedChargingLimitResponseReceivedDelegate(DateTime                       Timestamp,
                                                                 IEventSender                   Sender,
                                                                 ClearedChargingLimitRequest    Request,
                                                                 ClearedChargingLimitResponse   Response,

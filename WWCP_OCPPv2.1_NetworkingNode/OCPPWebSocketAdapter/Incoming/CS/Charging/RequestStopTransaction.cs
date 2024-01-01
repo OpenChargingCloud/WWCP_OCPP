@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a request stop transaction request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnRequestStopTransactionRequestDelegate?     OnRequestStopTransactionRequest;
+        public event OCPPv2_1.CS.OnRequestStopTransactionRequestReceivedDelegate?     OnRequestStopTransactionRequestReceived;
 
         /// <summary>
         /// An event sent whenever a request stop transaction request was received.
@@ -68,7 +68,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a response to a request stop transaction request was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnRequestStopTransactionResponseDelegate?    OnRequestStopTransactionResponse;
+        public event OCPPv2_1.CS.OnRequestStopTransactionResponseSentDelegate?    OnRequestStopTransactionResponseSent;
 
         /// <summary>
         /// An event sent whenever a websocket response to a request stop transaction request was sent.
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     try
                     {
 
-                        OnRequestStopTransactionRequest?.Invoke(Timestamp.Now,
+                        OnRequestStopTransactionRequestReceived?.Invoke(Timestamp.Now,
                                                                 parentNetworkingNode,
                                                                 WebSocketConnection,
                                                                 request);
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnRequestStopTransactionRequest));
+                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnRequestStopTransactionRequestReceived));
                     }
 
                     #endregion
@@ -181,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     try
                     {
 
-                        OnRequestStopTransactionResponse?.Invoke(Timestamp.Now,
+                        OnRequestStopTransactionResponseSent?.Invoke(Timestamp.Now,
                                                                  parentNetworkingNode,
                                                                  WebSocketConnection,
                                                                  request,
@@ -191,7 +191,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnRequestStopTransactionResponse));
+                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnRequestStopTransactionResponseSent));
                     }
 
                     #endregion
@@ -264,6 +264,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
+    {
+
+        /// <summary>
+        /// An event sent whenever a response to a request stop transaction request was sent.
+        /// </summary>
+        public event OCPPv2_1.CS.OnRequestStopTransactionResponseSentDelegate? OnRequestStopTransactionResponseSent;
 
     }
 

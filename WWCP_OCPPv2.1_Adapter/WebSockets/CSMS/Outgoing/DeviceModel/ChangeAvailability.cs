@@ -49,12 +49,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a ChangeAvailability request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnChangeAvailabilityRequestDelegate?     OnChangeAvailabilityRequest;
+        public event OCPPv2_1.CSMS.OnChangeAvailabilityRequestSentDelegate?     OnChangeAvailabilityRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a ChangeAvailability request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnChangeAvailabilityResponseDelegate?    OnChangeAvailabilityResponse;
+        public event OCPPv2_1.CSMS.OnChangeAvailabilityResponseReceivedDelegate?    OnChangeAvailabilityResponse;
 
         #endregion
 
@@ -71,13 +71,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
             try
             {
 
-                OnChangeAvailabilityRequest?.Invoke(startTime,
+                OnChangeAvailabilityRequestSent?.Invoke(startTime,
                                                     this,
                                                     Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnChangeAvailabilityRequest));
+                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnChangeAvailabilityRequestSent));
             }
 
             #endregion

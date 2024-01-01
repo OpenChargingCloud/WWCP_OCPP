@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a GetMonitoringReport request was received.
         /// </summary>
-        public event OnGetMonitoringReportRequestDelegate?         OnGetMonitoringReportRequest;
+        public event OnGetMonitoringReportRequestReceivedDelegate?         OnGetMonitoringReportRequest;
 
         /// <summary>
         /// An event sent whenever a GetMonitoringReport request was received.
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a response to a GetMonitoringReport request was sent.
         /// </summary>
-        public event OnGetMonitoringReportResponseDelegate?        OnGetMonitoringReportResponse;
+        public event OnGetMonitoringReportResponseSentDelegate?        OnGetMonitoringReportResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a GetMonitoringReport request was sent.

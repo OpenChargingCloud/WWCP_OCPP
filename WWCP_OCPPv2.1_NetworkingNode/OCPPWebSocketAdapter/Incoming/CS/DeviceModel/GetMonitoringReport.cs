@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a get monitoring report request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnGetMonitoringReportRequestDelegate?     OnGetMonitoringReportRequest;
+        public event OCPPv2_1.CS.OnGetMonitoringReportRequestReceivedDelegate?     OnGetMonitoringReportRequestReceived;
 
         /// <summary>
         /// An event sent whenever a get monitoring report request was received.
@@ -68,7 +68,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a response to a get monitoring report request was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnGetMonitoringReportResponseDelegate?    OnGetMonitoringReportResponse;
+        public event OCPPv2_1.CS.OnGetMonitoringReportResponseSentDelegate?    OnGetMonitoringReportResponseSent;
 
         /// <summary>
         /// An event sent whenever a websocket response to a get monitoring report request was sent.
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     try
                     {
 
-                        OnGetMonitoringReportRequest?.Invoke(Timestamp.Now,
+                        OnGetMonitoringReportRequestReceived?.Invoke(Timestamp.Now,
                                                              parentNetworkingNode,
                                                              WebSocketConnection,
                                                              request);
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnGetMonitoringReportRequest));
+                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnGetMonitoringReportRequestReceived));
                     }
 
                     #endregion
@@ -181,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     try
                     {
 
-                        OnGetMonitoringReportResponse?.Invoke(Timestamp.Now,
+                        OnGetMonitoringReportResponseSent?.Invoke(Timestamp.Now,
                                                               parentNetworkingNode,
                                                               WebSocketConnection,
                                                               request,
@@ -191,7 +191,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnGetMonitoringReportResponse));
+                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnGetMonitoringReportResponseSent));
                     }
 
                     #endregion
@@ -264,6 +264,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
+    {
+
+        /// <summary>
+        /// An event sent whenever a response to a get monitoring report request was sent.
+        /// </summary>
+        public event OCPPv2_1.CS.OnGetMonitoringReportResponseSentDelegate? OnGetMonitoringReportResponseSent;
 
     }
 

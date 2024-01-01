@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever an UpdateDynamicSchedule request was sent.
         /// </summary>
-        public event OnUpdateDynamicScheduleRequestDelegate?     OnUpdateDynamicScheduleRequest;
+        public event OnUpdateDynamicScheduleRequestSentDelegate?     OnUpdateDynamicScheduleRequest;
 
         /// <summary>
         /// An event sent whenever a response to an UpdateDynamicSchedule request was sent.
         /// </summary>
-        public event OnUpdateDynamicScheduleResponseDelegate?    OnUpdateDynamicScheduleResponse;
+        public event OnUpdateDynamicScheduleResponseReceivedDelegate?    OnUpdateDynamicScheduleResponse;
 
         #endregion
 

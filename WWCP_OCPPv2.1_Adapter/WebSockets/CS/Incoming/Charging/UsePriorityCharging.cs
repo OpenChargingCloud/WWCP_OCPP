@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever an UsePriorityCharging request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnUsePriorityChargingRequestDelegate?     OnUsePriorityChargingRequest;
+        public event OCPPv2_1.CS.OnUsePriorityChargingRequestReceivedDelegate?     OnUsePriorityChargingRequest;
 
         /// <summary>
         /// An event sent whenever an UsePriorityCharging request was received.
@@ -71,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a response to an UsePriorityCharging request was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnUsePriorityChargingResponseDelegate?    OnUsePriorityChargingResponse;
+        public event OCPPv2_1.CS.OnUsePriorityChargingResponseSentDelegate?    OnUsePriorityChargingResponseSent;
 
         /// <summary>
         /// An event sent whenever a websocket response to an UsePriorityCharging request was sent.
@@ -182,7 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
                     try
                     {
 
-                        OnUsePriorityChargingResponse?.Invoke(Timestamp.Now,
+                        OnUsePriorityChargingResponseSent?.Invoke(Timestamp.Now,
                                                               this,
                                                               WebSocketConnection,
                                                               request,
@@ -192,7 +192,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnUsePriorityChargingResponse));
+                        DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnUsePriorityChargingResponseSent));
                     }
 
                     #endregion

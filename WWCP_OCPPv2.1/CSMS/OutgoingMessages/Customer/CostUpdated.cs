@@ -32,7 +32,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
-    public delegate Task OnCostUpdatedRequestDelegate(DateTime             Timestamp,
+    public delegate Task OnCostUpdatedRequestSentDelegate(DateTime             Timestamp,
                                                       IEventSender         Sender,
                                                       CostUpdatedRequest   Request);
 
@@ -44,7 +44,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Request">The request.</param>
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate Task OnCostUpdatedResponseDelegate(DateTime              Timestamp,
+    public delegate Task OnCostUpdatedResponseReceivedDelegate(DateTime              Timestamp,
                                                        IEventSender          Sender,
                                                        CostUpdatedRequest    Request,
                                                        CostUpdatedResponse   Response,

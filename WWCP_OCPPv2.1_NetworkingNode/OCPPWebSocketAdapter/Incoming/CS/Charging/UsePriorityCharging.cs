@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever an UsePriorityCharging request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnUsePriorityChargingRequestDelegate?     OnUsePriorityChargingRequest;
+        public event OCPPv2_1.CS.OnUsePriorityChargingRequestReceivedDelegate?     OnUsePriorityChargingRequestReceived;
 
         /// <summary>
         /// An event sent whenever an UsePriorityCharging request was received.
@@ -68,7 +68,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a response to an UsePriorityCharging request was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnUsePriorityChargingResponseDelegate?    OnUsePriorityChargingResponse;
+        public event OCPPv2_1.CS.OnUsePriorityChargingResponseSentDelegate?    OnUsePriorityChargingResponseSent;
 
         /// <summary>
         /// An event sent whenever a websocket response to an UsePriorityCharging request was sent.
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     try
                     {
 
-                        OnUsePriorityChargingRequest?.Invoke(Timestamp.Now,
+                        OnUsePriorityChargingRequestReceived?.Invoke(Timestamp.Now,
                                                              parentNetworkingNode,
                                                              WebSocketConnection,
                                                              request);
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnUsePriorityChargingRequest));
+                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnUsePriorityChargingRequestReceived));
                     }
 
                     #endregion
@@ -181,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     try
                     {
 
-                        OnUsePriorityChargingResponse?.Invoke(Timestamp.Now,
+                        OnUsePriorityChargingResponseSent?.Invoke(Timestamp.Now,
                                                               parentNetworkingNode,
                                                               WebSocketConnection,
                                                               request,
@@ -191,7 +191,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnUsePriorityChargingResponse));
+                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnUsePriorityChargingResponseSent));
                     }
 
                     #endregion
@@ -264,6 +264,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
+    {
+
+        /// <summary>
+        /// An event sent whenever a response to an UsePriorityCharging request was sent.
+        /// </summary>
+        public event OCPPv2_1.CS.OnUsePriorityChargingResponseSentDelegate? OnUsePriorityChargingResponseSent;
 
     }
 

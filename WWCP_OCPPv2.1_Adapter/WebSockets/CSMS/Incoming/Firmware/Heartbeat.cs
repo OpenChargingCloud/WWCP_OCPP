@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a Heartbeat request was received.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnHeartbeatRequestDelegate?     OnHeartbeatRequest;
+        public event OCPPv2_1.CSMS.OnHeartbeatRequestReceivedDelegate?     OnHeartbeatRequest;
 
         /// <summary>
         /// An event sent whenever a Heartbeat was received.
@@ -68,7 +68,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a response to a Heartbeat was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnHeartbeatResponseDelegate?    OnHeartbeatResponse;
+        public event OCPPv2_1.CSMS.OnHeartbeatResponseSentDelegate?    OnHeartbeatResponseSent;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a Heartbeat was sent.
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                     try
                     {
 
-                        OnHeartbeatResponse?.Invoke(Timestamp.Now,
+                        OnHeartbeatResponseSent?.Invoke(Timestamp.Now,
                                                     this,
                                                     Connection,
                                                     request,
@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnHeartbeatResponse));
+                        DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnHeartbeatResponseSent));
                     }
 
                     #endregion

@@ -32,7 +32,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
-    public delegate Task OnGetChargingProfilesRequestDelegate(DateTime                     Timestamp,
+    public delegate Task OnGetChargingProfilesRequestSentDelegate(DateTime                     Timestamp,
                                                               IEventSender                 Sender,
                                                               GetChargingProfilesRequest   Request);
 
@@ -44,7 +44,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Request">The request.</param>
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate Task OnGetChargingProfilesResponseDelegate(DateTime                      Timestamp,
+    public delegate Task OnGetChargingProfilesResponseReceivedDelegate(DateTime                      Timestamp,
                                                                IEventSender                  Sender,
                                                                GetChargingProfilesRequest    Request,
                                                                GetChargingProfilesResponse   Response,

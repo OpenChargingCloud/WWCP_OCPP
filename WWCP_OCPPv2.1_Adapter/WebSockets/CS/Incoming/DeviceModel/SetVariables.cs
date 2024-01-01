@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a set variables request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnSetVariablesRequestDelegate?     OnSetVariablesRequest;
+        public event OCPPv2_1.CS.OnSetVariablesRequestReceivedDelegate?     OnSetVariablesRequest;
 
         /// <summary>
         /// An event sent whenever a set variables request was received.
@@ -71,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a response to a set variables request was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnSetVariablesResponseDelegate?    OnSetVariablesResponse;
+        public event OCPPv2_1.CS.OnSetVariablesResponseSentDelegate?    OnSetVariablesResponseSent;
 
         /// <summary>
         /// An event sent whenever a websocket response to a set variables request was sent.
@@ -182,7 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
                     try
                     {
 
-                        OnSetVariablesResponse?.Invoke(Timestamp.Now,
+                        OnSetVariablesResponseSent?.Invoke(Timestamp.Now,
                                                        this,
                                                        WebSocketConnection,
                                                        request,
@@ -192,7 +192,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnSetVariablesResponse));
+                        DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnSetVariablesResponseSent));
                     }
 
                     #endregion

@@ -49,12 +49,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a SetNetworkProfile request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnSetNetworkProfileRequestDelegate?     OnSetNetworkProfileRequest;
+        public event OCPPv2_1.CSMS.OnSetNetworkProfileRequestSentDelegate?     OnSetNetworkProfileRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a SetNetworkProfile request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnSetNetworkProfileResponseDelegate?    OnSetNetworkProfileResponse;
+        public event OCPPv2_1.CSMS.OnSetNetworkProfileResponseReceivedDelegate?    OnSetNetworkProfileResponse;
 
         #endregion
 
@@ -71,13 +71,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
             try
             {
 
-                OnSetNetworkProfileRequest?.Invoke(startTime,
+                OnSetNetworkProfileRequestSent?.Invoke(startTime,
                                                    this,
                                                    Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnSetNetworkProfileRequest));
+                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnSetNetworkProfileRequestSent));
             }
 
             #endregion

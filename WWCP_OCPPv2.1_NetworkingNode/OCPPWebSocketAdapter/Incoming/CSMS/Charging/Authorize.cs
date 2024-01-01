@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever an Authorize request was received.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnAuthorizeRequestDelegate?     OnAuthorizeRequest;
+        public event OCPPv2_1.CSMS.OnAuthorizeRequestReceivedDelegate?     OnAuthorizeRequest;
 
         /// <summary>
         /// An event sent whenever an Authorize request was received.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever an Authorize response was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnAuthorizeResponseDelegate?    OnAuthorizeResponse;
+        public event OCPPv2_1.CSMS.OnAuthorizeResponseSentDelegate?    OnAuthorizeResponseSent;
 
         /// <summary>
         /// An event sent whenever an Authorize WebSocket response was sent.
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     try
                     {
 
-                        OnAuthorizeResponse?.Invoke(Timestamp.Now,
+                        OnAuthorizeResponseSent?.Invoke(Timestamp.Now,
                                                     parentNetworkingNode,
                                                     WebSocketConnection,
                                                     request,
@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnAuthorizeResponse));
+                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnAuthorizeResponseSent));
                     }
 
                     #endregion
@@ -268,6 +268,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
+    {
+
+        /// <summary>
+        /// An event sent whenever an Authorize response was sent.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnAuthorizeResponseSentDelegate? OnAuthorizeResponseSent;
 
     }
 

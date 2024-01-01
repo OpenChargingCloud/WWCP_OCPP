@@ -49,12 +49,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a GetCompositeSchedule request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnGetCompositeScheduleRequestDelegate?     OnGetCompositeScheduleRequest;
+        public event OCPPv2_1.CSMS.OnGetCompositeScheduleRequestSentDelegate?     OnGetCompositeScheduleRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a GetCompositeSchedule request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnGetCompositeScheduleResponseDelegate?    OnGetCompositeScheduleResponse;
+        public event OCPPv2_1.CSMS.OnGetCompositeScheduleResponseReceivedDelegate?    OnGetCompositeScheduleResponseReceived;
 
         #endregion
 
@@ -72,13 +72,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnGetCompositeScheduleRequest?.Invoke(startTime,
+                OnGetCompositeScheduleRequestSent?.Invoke(startTime,
                                                       parentNetworkingNode,
                                                       Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnGetCompositeScheduleRequest));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnGetCompositeScheduleRequestSent));
             }
 
             #endregion
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnGetCompositeScheduleResponse?.Invoke(endTime,
+                OnGetCompositeScheduleResponseReceived?.Invoke(endTime,
                                                        parentNetworkingNode,
                                                        Request,
                                                        response,
@@ -154,7 +154,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnGetCompositeScheduleResponse));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnGetCompositeScheduleResponseReceived));
             }
 
             #endregion
@@ -165,6 +165,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
+    {
+
+        /// <summary>
+        /// An event sent whenever a response to a GetCompositeSchedule request was sent.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnGetCompositeScheduleResponseReceivedDelegate? OnGetCompositeScheduleResponseReceived;
 
     }
 

@@ -51,7 +51,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event fired whenever a ReservationStatusUpdate request will be sent to the CSMS.
         /// </summary>
-        public event OnReservationStatusUpdateRequestDelegate?     OnReservationStatusUpdateRequest;
+        public event OnReservationStatusUpdateRequestSentDelegate?     OnReservationStatusUpdateRequest;
 
         /// <summary>
         /// An event fired whenever a ReservationStatusUpdate request will be sent to the CSMS.
@@ -66,7 +66,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event fired whenever a response to a ReservationStatusUpdate request was received.
         /// </summary>
-        public event OnReservationStatusUpdateResponseDelegate?    OnReservationStatusUpdateResponse;
+        public event OnReservationStatusUpdateResponseReceivedDelegate?    OnReservationStatusUpdateResponse;
 
         #endregion
 

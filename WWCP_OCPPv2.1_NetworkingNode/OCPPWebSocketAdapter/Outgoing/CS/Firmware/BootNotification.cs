@@ -25,6 +25,7 @@ using cloud.charging.open.protocols.OCPP.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
+using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
@@ -50,7 +51,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a boot notification request will be sent to the CSMS.
         /// </summary>
-        public event OCPPv2_1.CS.OnBootNotificationRequestDelegate?     OnBootNotificationRequest;
+        public event OCPPv2_1.CS.OnBootNotificationRequestSentDelegate?     OnBootNotificationRequestSent;
 
         /// <summary>
         /// An event fired whenever a boot notification request will be sent to the CSMS.
@@ -66,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a response to a boot notification request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnBootNotificationResponseDelegate?    OnBootNotificationResponse;
+        public event OCPPv2_1.CS.OnBootNotificationResponseReceivedDelegate?    OnBootNotificationResponseReceived;
 
         #endregion
 
@@ -90,14 +91,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnBootNotificationRequest?.Invoke(startTime,
+                OnBootNotificationRequestSent?.Invoke(startTime,
                                                   parentNetworkingNode,
                                                   Request);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnBootNotificationRequest));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnBootNotificationRequestSent));
             }
 
             #endregion
@@ -172,7 +173,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                                     endTime - startTime);
 
 
-                OnBootNotificationResponse?.Invoke(endTime,
+                OnBootNotificationResponseReceived?.Invoke(endTime,
                                                    parentNetworkingNode,
                                                    Request,
                                                    response,
@@ -181,7 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnBootNotificationResponse));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnBootNotificationResponseReceived));
             }
 
             #endregion
@@ -191,6 +192,54 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         }
 
         #endregion
+
+
+    }
+
+    public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
+    {
+
+        /// <summary>
+        /// An event fired whenever a response to a boot notification request was received.
+        /// </summary>
+        public event OCPPv2_1.CS.OnBootNotificationResponseReceivedDelegate? OnBootNotificationResponseReceived;
+
+        public async Task RaiseOnBootNotificationResponseIN(DateTime                   Timestamp,
+                                                            IEventSender               Sender,
+                                                            BootNotificationRequest    Request,
+                                                            BootNotificationResponse   Response,
+                                                            TimeSpan                   Runtime)
+        {
+
+            var requestLogger = OnBootNotificationResponseReceived;
+            if (requestLogger is not null)
+            {
+
+                try
+                {
+                    await Task.WhenAll(
+                              requestLogger.GetInvocationList().
+                                            OfType <OCPPv2_1.CS.OnBootNotificationResponseReceivedDelegate>().
+                                            Select (loggingDelegate => loggingDelegate.Invoke(Timestamp,
+                                                                                              Sender,
+                                                                                              Request,
+                                                                                              Response,
+                                                                                              Runtime)).
+                                            ToArray()
+                          );
+                }
+                catch (Exception e)
+                {
+                    await parentNetworkingNode.HandleErrors(
+                              nameof(OCPPWebSocketAdapterIN),
+                              nameof(OnBootNotificationResponseReceived),
+                              e
+                          );
+                }
+
+            }
+
+        }
 
 
     }

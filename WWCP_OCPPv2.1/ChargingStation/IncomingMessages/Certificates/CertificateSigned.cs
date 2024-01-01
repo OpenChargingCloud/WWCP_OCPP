@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnCertificateSignedRequestDelegate(DateTime                   Timestamp,
+        OnCertificateSignedRequestReceivedDelegate(DateTime                   Timestamp,
                                            IEventSender               Sender,
                                            IWebSocketConnection       Connection,
                                            CertificateSignedRequest   Request);
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnCertificateSignedResponseDelegate(DateTime                    Timestamp,
+        OnCertificateSignedResponseSentDelegate(DateTime                    Timestamp,
                                             IEventSender                Sender,
                                             IWebSocketConnection        Connection,
                                             CertificateSignedRequest    Request,

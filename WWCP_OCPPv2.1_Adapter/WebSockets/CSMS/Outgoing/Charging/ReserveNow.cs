@@ -49,12 +49,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a ReserveNow request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnReserveNowRequestDelegate?     OnReserveNowRequest;
+        public event OCPPv2_1.CSMS.OnReserveNowRequestSentDelegate?     OnReserveNowRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a ReserveNow request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnReserveNowResponseDelegate?    OnReserveNowResponse;
+        public event OCPPv2_1.CSMS.OnReserveNowResponseReceivedDelegate?    OnReserveNowResponse;
 
         #endregion
 
@@ -71,13 +71,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
             try
             {
 
-                OnReserveNowRequest?.Invoke(startTime,
+                OnReserveNowRequestSent?.Invoke(startTime,
                                             this,
                                             Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnReserveNowRequest));
+                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnReserveNowRequestSent));
             }
 
             #endregion

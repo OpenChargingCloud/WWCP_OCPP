@@ -50,7 +50,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event fired whenever a DataTransfer request will be sent to the CSMS.
         /// </summary>
-        public event OnDataTransferRequestDelegate?     OnDataTransferRequest;
+        public event OnDataTransferRequestSentDelegate?     OnDataTransferRequest;
 
         /// <summary>
         /// An event fired whenever a DataTransfer request will be sent to the CSMS.
@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event fired whenever a response to a DataTransfer request was received.
         /// </summary>
-        public event OnDataTransferResponseDelegate?    OnDataTransferResponse;
+        public event OnDataTransferResponseReceivedDelegate?    OnDataTransferResponse;
 
         #endregion
 

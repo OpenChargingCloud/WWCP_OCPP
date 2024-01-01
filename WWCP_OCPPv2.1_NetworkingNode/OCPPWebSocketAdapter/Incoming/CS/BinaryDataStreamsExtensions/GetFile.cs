@@ -68,7 +68,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a response to a GetFile request was sent.
         /// </summary>
-        public event OCPP.CS.OnGetFileResponseDelegate?               OnGetFileResponse;
+        public event OCPP.CS.OnGetFileResponseDelegate?               OnGetFileResponseSent;
 
         /// <summary>
         /// An event sent whenever a websocket response to a GetFile request was sent.
@@ -181,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     try
                     {
 
-                        OnGetFileResponse?.Invoke(Timestamp.Now,
+                        OnGetFileResponseSent?.Invoke(Timestamp.Now,
                                                   parentNetworkingNode,
                                                   WebSocketConnection,
                                                   request,
@@ -191,7 +191,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnGetFileResponse));
+                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnGetFileResponseSent));
                     }
 
                     #endregion
@@ -265,6 +265,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
+    {
+
+        /// <summary>
+        /// An event sent whenever a response to a GetFile request was sent.
+        /// </summary>
+        public event OCPP.CS.OnGetFileResponseDelegate? OnGetFileResponseSent;
 
     }
 

@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a ClearChargingProfile request was sent.
         /// </summary>
-        public event OnClearChargingProfileRequestDelegate?     OnClearChargingProfileRequest;
+        public event OnClearChargingProfileRequestSentDelegate?     OnClearChargingProfileRequest;
 
         /// <summary>
         /// An event sent whenever a response to a ClearChargingProfile request was sent.
         /// </summary>
-        public event OnClearChargingProfileResponseDelegate?    OnClearChargingProfileResponse;
+        public event OnClearChargingProfileResponseReceivedDelegate?    OnClearChargingProfileResponse;
 
         #endregion
 

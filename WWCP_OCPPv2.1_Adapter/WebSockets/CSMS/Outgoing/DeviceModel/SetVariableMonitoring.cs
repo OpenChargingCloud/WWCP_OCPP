@@ -49,12 +49,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a SetVariableMonitoring request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnSetVariableMonitoringRequestDelegate?     OnSetVariableMonitoringRequest;
+        public event OCPPv2_1.CSMS.OnSetVariableMonitoringRequestSentDelegate?     OnSetVariableMonitoringRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a SetVariableMonitoring request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnSetVariableMonitoringResponseDelegate?    OnSetVariableMonitoringResponse;
+        public event OCPPv2_1.CSMS.OnSetVariableMonitoringResponseReceivedDelegate?    OnSetVariableMonitoringResponse;
 
         #endregion
 
@@ -71,13 +71,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
             try
             {
 
-                OnSetVariableMonitoringRequest?.Invoke(startTime,
+                OnSetVariableMonitoringRequestSent?.Invoke(startTime,
                                                        this,
                                                        Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnSetVariableMonitoringRequest));
+                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnSetVariableMonitoringRequestSent));
             }
 
             #endregion

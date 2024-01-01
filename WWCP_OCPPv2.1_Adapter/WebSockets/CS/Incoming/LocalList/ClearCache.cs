@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnClearCacheRequestDelegate?      OnClearCacheRequest;
+        public event OCPPv2_1.CS.OnClearCacheRequestReceivedDelegate?      OnClearCacheRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
@@ -71,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnClearCacheResponseDelegate?     OnClearCacheResponse;
+        public event OCPPv2_1.CS.OnClearCacheResponseSentDelegate?     OnClearCacheResponseSent;
 
         /// <summary>
         /// An event sent whenever a websocket response to a reset request was sent.
@@ -182,7 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
                     try
                     {
 
-                        OnClearCacheResponse?.Invoke(Timestamp.Now,
+                        OnClearCacheResponseSent?.Invoke(Timestamp.Now,
                                                      this,
                                                      WebSocketConnection,
                                                      request,
@@ -192,7 +192,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnClearCacheResponse));
+                        DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnClearCacheResponseSent));
                     }
 
                     #endregion

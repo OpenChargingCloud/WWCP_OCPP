@@ -49,12 +49,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a GetMonitoringReport request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnGetMonitoringReportRequestDelegate?     OnGetMonitoringReportRequest;
+        public event OCPPv2_1.CSMS.OnGetMonitoringReportRequestSentDelegate?     OnGetMonitoringReportRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a GetMonitoringReport request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnGetMonitoringReportResponseDelegate?    OnGetMonitoringReportResponse;
+        public event OCPPv2_1.CSMS.OnGetMonitoringReportResponseReceivedDelegate?    OnGetMonitoringReportResponse;
 
         #endregion
 
@@ -71,13 +71,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
             try
             {
 
-                OnGetMonitoringReportRequest?.Invoke(startTime,
+                OnGetMonitoringReportRequestSent?.Invoke(startTime,
                                                      this,
                                                      Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnGetMonitoringReportRequest));
+                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnGetMonitoringReportRequestSent));
             }
 
             #endregion

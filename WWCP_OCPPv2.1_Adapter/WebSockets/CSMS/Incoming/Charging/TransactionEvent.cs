@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a TransactionEvent request was received.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnTransactionEventRequestDelegate?     OnTransactionEventRequest;
+        public event OCPPv2_1.CSMS.OnTransactionEventRequestReceivedDelegate?     OnTransactionEventRequest;
 
         /// <summary>
         /// An event sent whenever a TransactionEvent request was received.
@@ -68,7 +68,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a TransactionEvent response was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnTransactionEventResponseDelegate?    OnTransactionEventResponse;
+        public event OCPPv2_1.CSMS.OnTransactionEventResponseSentDelegate?    OnTransactionEventResponseSent;
 
         /// <summary>
         /// An event sent whenever a TransactionEvent WebSocket response was sent.
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                     try
                     {
 
-                        OnTransactionEventResponse?.Invoke(Timestamp.Now,
+                        OnTransactionEventResponseSent?.Invoke(Timestamp.Now,
                                                            this,
                                                            Connection,
                                                            request,
@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnTransactionEventResponse));
+                        DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnTransactionEventResponseSent));
                     }
 
                     #endregion

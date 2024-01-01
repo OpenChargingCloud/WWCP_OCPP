@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnClearDisplayMessageRequestDelegate(DateTime                     Timestamp,
+        OnClearDisplayMessageRequestReceivedDelegate(DateTime                     Timestamp,
                                              IEventSender                 Sender,
                                              IWebSocketConnection         Connection,
                                              ClearDisplayMessageRequest   Request);
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnClearDisplayMessageResponseDelegate(DateTime                      Timestamp,
+        OnClearDisplayMessageResponseSentDelegate(DateTime                      Timestamp,
                                               IEventSender                  Sender,
                                               IWebSocketConnection          Connection,
                                               ClearDisplayMessageRequest    Request,

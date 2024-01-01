@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Request">The status notification request.</param>
     public delegate Task
 
-        OnStatusNotificationRequestDelegate(DateTime                    Timestamp,
+        OnStatusNotificationRequestReceivedDelegate(DateTime                    Timestamp,
                                             IEventSender                Sender,
                                             IWebSocketConnection   Connection,
                                             StatusNotificationRequest   Request);
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task
 
-        OnStatusNotificationResponseDelegate(DateTime                     Timestamp,
+        OnStatusNotificationResponseSentDelegate(DateTime                     Timestamp,
                                              IEventSender                 Sender,
                                              IWebSocketConnection    Connection,
                                              StatusNotificationRequest    Request,

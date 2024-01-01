@@ -17,7 +17,6 @@
 
 #region Usings
 
-using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
@@ -31,398 +30,416 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
     public interface INetworkingNodeIncomingMessageEvents : OCPP.NN.CSMS.INetworkingNodeIncomingMessageEvents
     {
 
-        #region OnBootNotification                     (Request/-Response)
+        // Incoming requests
+
+        #region Certificates
 
         /// <summary>
-        /// An event sent whenever a boot notification request was received.
+        /// An event sent whenever a Get15118EVCertificate request was received.
         /// </summary>
-        event OnBootNotificationRequestDelegate    OnBootNotificationRequest;
+        event OnGet15118EVCertificateRequestReceivedDelegate                OnGet15118EVCertificateRequestReceived;
 
         /// <summary>
-        /// An event sent whenever a response to a boot notification request was sent.
+        /// An event sent whenever a GetCertificateStatus request was received.
         /// </summary>
-        event OnBootNotificationResponseDelegate   OnBootNotificationResponse;
+        event OnGetCertificateStatusRequestReceivedDelegate                 OnGetCertificateStatusRequestReceived;
+
+        /// <summary>
+        /// An event sent whenever a GetCRL request was received.
+        /// </summary>
+        event OnGetCRLRequestReceivedDelegate                               OnGetCRLRequestReceived;
+
+        /// <summary>
+        /// An event sent whenever a SignCertificate request was received.
+        /// </summary>
+        event OnSignCertificateRequestReceivedDelegate                      OnSignCertificateRequestReceived;
 
         #endregion
 
-        #region OnFirmwareStatusNotification           (Request/-Response)
+        #region Charging
 
         /// <summary>
-        /// An event sent whenever a firmware status notification request was received.
+        /// An event sent whenever an Authorize request was received.
         /// </summary>
-        event OnFirmwareStatusNotificationRequestDelegate    OnFirmwareStatusNotificationRequest;
+        event OnAuthorizeRequestReceivedDelegate                            OnAuthorizeRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a firmware status notification request was sent.
+        /// An event sent whenever a ClearedChargingLimit request was received.
         /// </summary>
-        event OnFirmwareStatusNotificationResponseDelegate   OnFirmwareStatusNotificationResponse;
+        event OnClearedChargingLimitRequestReceivedDelegate                 OnClearedChargingLimitRequestReceived;
+
+        /// <summary>
+        /// An event sent whenever a MeterValues request was received.
+        /// </summary>
+        event OnMeterValuesRequestReceivedDelegate                          OnMeterValuesRequestReceived;
+
+        /// <summary>
+        /// An event sent whenever a NotifyChargingLimit request was received.
+        /// </summary>
+        event OnNotifyChargingLimitRequestReceivedDelegate                  OnNotifyChargingLimitRequestReceived;
+
+        /// <summary>
+        /// An event sent whenever a NotifyEVChargingNeeds request was received.
+        /// </summary>
+        event OnNotifyEVChargingNeedsRequestReceivedDelegate                OnNotifyEVChargingNeedsRequestReceived;
+
+        /// <summary>
+        /// An event sent whenever a NotifyEVChargingSchedule request was received.
+        /// </summary>
+        event OnNotifyEVChargingScheduleRequestReceivedDelegate             OnNotifyEVChargingScheduleRequestReceived;
+
+        /// <summary>
+        /// An event sent whenever a NotifyPriorityCharging request was received.
+        /// </summary>
+        event OnNotifyPriorityChargingRequestReceivedDelegate               OnNotifyPriorityChargingRequestReceived;
+
+        /// <summary>
+        /// An event sent whenever a PullDynamicScheduleUpdate request was received.
+        /// </summary>
+        event OnPullDynamicScheduleUpdateRequestReceivedDelegate            OnPullDynamicScheduleUpdateRequestReceived;
+
+        /// <summary>
+        /// An event sent whenever a ReportChargingProfiles request was received.
+        /// </summary>
+        event OnReportChargingProfilesRequestReceivedDelegate               OnReportChargingProfilesRequestReceived;
+
+        /// <summary>
+        /// An event sent whenever a ReservationStatusUpdate request was received.
+        /// </summary>
+        event OnReservationStatusUpdateRequestReceivedDelegate              OnReservationStatusUpdateReceivedRequest;
+
+        /// <summary>
+        /// An event sent whenever a StatusNotification request was received.
+        /// </summary>
+        event OnStatusNotificationRequestReceivedDelegate                   OnStatusNotificationRequestReceived;
+
+        /// <summary>
+        /// An event sent whenever a TransactionEvent request was received.
+        /// </summary>
+        event OnTransactionEventRequestReceivedDelegate                     OnTransactionEventRequestReceived;
 
         #endregion
 
-        #region OnPublishFirmwareStatusNotification    (Request/-Response)
+        #region Customer
 
         /// <summary>
-        /// An event sent whenever a publish firmware status notification request was received.
+        /// An event sent whenever a NotifyCustomerInformation request was received.
         /// </summary>
-        event OnPublishFirmwareStatusNotificationRequestDelegate    OnPublishFirmwareStatusNotificationRequest;
+        event OnNotifyCustomerInformationRequestReceivedDelegate            OnNotifyCustomerInformationRequestReceived;
 
         /// <summary>
-        /// An event sent whenever a publish firmware to a firmware status notification request was sent.
+        /// An event sent whenever a NotifyDisplayMessages request was received.
         /// </summary>
-        event OnPublishFirmwareStatusNotificationResponseDelegate   OnPublishFirmwareStatusNotificationResponse;
+        event OnNotifyDisplayMessagesRequestReceivedDelegate                OnNotifyDisplayMessagesRequestReceived;
 
         #endregion
 
-        #region OnHeartbeat                            (Request/-Response)
+        #region Firmware
 
         /// <summary>
-        /// An event sent whenever a heartbeat request was received.
+        /// An event sent whenever a BootNotification request was received.
         /// </summary>
-        event OnHeartbeatRequestDelegate    OnHeartbeatRequest;
+        event OnBootNotificationRequestReceivedDelegate                     OnBootNotificationRequestReceived;
 
         /// <summary>
-        /// An event sent whenever a response to a heartbeat was sent.
+        /// An event sent whenever a FirmwareStatusNotification request was received.
         /// </summary>
-        event OnHeartbeatResponseDelegate   OnHeartbeatResponse;
+        event OnFirmwareStatusNotificationRequestReceivedDelegate           OnFirmwareStatusNotificationRequestReceived;
+
+        /// <summary>
+        /// An event sent whenever a Heartbeat request was received.
+        /// </summary>
+        event OnHeartbeatRequestReceivedDelegate                            OnHeartbeatRequestReceived;
+
+        /// <summary>
+        /// An event sent whenever a PublishFirmwareStatusNotification request was received.
+        /// </summary>
+        event OnPublishFirmwareStatusNotificationRequestReceivedDelegate    OnPublishFirmwareStatusNotificationRequestReceived;
 
         #endregion
 
-        #region OnNotifyEvent                          (Request/-Response)
-
-        /// <summary>
-        /// An event sent whenever a notify event request was received.
-        /// </summary>
-        event OnNotifyEventRequestDelegate    OnNotifyEventRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a notify event was sent.
-        /// </summary>
-        event OnNotifyEventResponseDelegate   OnNotifyEventResponse;
-
-        #endregion
-
-        #region OnSecurityEventNotification            (Request/-Response)
-
-        /// <summary>
-        /// An event sent whenever a security event notification request was received.
-        /// </summary>
-        event OnSecurityEventNotificationRequestDelegate    OnSecurityEventNotificationRequest;
-
-        /// <summary>
-        /// An event sent whenever a security event notification to a heartbeat was sent.
-        /// </summary>
-        event OnSecurityEventNotificationResponseDelegate   OnSecurityEventNotificationResponse;
-
-        #endregion
-
-        #region OnNotifyReport                         (Request/-Response)
-
-        /// <summary>
-        /// An event sent whenever a notify report request was received.
-        /// </summary>
-        event OnNotifyReportRequestDelegate    OnNotifyReportRequest;
-
-        /// <summary>
-        /// An event sent whenever a notify report to a heartbeat was sent.
-        /// </summary>
-        event OnNotifyReportResponseDelegate   OnNotifyReportResponse;
-
-        #endregion
-
-        #region OnNotifyMonitoringReport               (Request/-Response)
-
-        /// <summary>
-        /// An event sent whenever a notify monitoring report request was received.
-        /// </summary>
-        event OnNotifyMonitoringReportRequestDelegate    OnNotifyMonitoringReportRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a notify monitoring report was sent.
-        /// </summary>
-        event OnNotifyMonitoringReportResponseDelegate   OnNotifyMonitoringReportResponse;
-
-        #endregion
-
-        #region OnLogStatusNotification                (Request/-Response)
+        #region Monitoring
 
         /// <summary>
         /// An event sent whenever a log status notification request was received.
         /// </summary>
-        event OnLogStatusNotificationRequestDelegate    OnLogStatusNotificationRequest;
+        event OnLogStatusNotificationRequestReceivedDelegate                OnLogStatusNotificationRequestReceived;
 
         /// <summary>
-        /// An event sent whenever a response to a log status notification was sent.
+        /// An event sent whenever a notify event request was received.
         /// </summary>
-        event OnLogStatusNotificationResponseDelegate   OnLogStatusNotificationResponse;
+        event OnNotifyEventRequestReceivedDelegate                          OnNotifyEventRequestReceived;
+
+        /// <summary>
+        /// An event sent whenever a notify monitoring report request was received.
+        /// </summary>
+        event OnNotifyMonitoringReportRequestReceivedDelegate               OnNotifyMonitoringReportRequestReceived;
+
+        /// <summary>
+        /// An event sent whenever a notify report request was received.
+        /// </summary>
+        event OnNotifyReportRequestReceivedDelegate                         OnNotifyReportRequestReceived;
+
+        /// <summary>
+        /// An event sent whenever a security event notification request was received.
+        /// </summary>
+        event OnSecurityEventNotificationRequestReceivedDelegate            OnSecurityEventNotificationRequestReceived;
 
         #endregion
-
-        #region OnDataTransfer                         (Request/-Response)
 
         ///// <summary>
         ///// An event sent whenever a data transfer request was received.
         ///// </summary>
         //event OnIncomingDataTransferRequestDelegate     OnIncomingDataTransferRequest;
 
-        ///// <summary>
-        ///// An event sent whenever a response to a data transfer request was sent.
-        ///// </summary>
-        //event OnIncomingDataTransferResponseDelegate    OnIncomingDataTransferResponse;
+
+        // Incoming responses
+
+        #region Certificates
+
+        /// <summary>
+        /// An event fired whenever a response to a SignedCertificate request was received.
+        /// </summary>
+        event OnCertificateSignedResponseReceivedDelegate?              OnCertificateSignedResponseReceived;
+
+        /// <summary>
+        /// An event fired whenever a response to a DeleteCertificate request was received.
+        /// </summary>
+        event OnDeleteCertificateResponseReceivedDelegate?              OnDeleteCertificateResponseReceived;
+
+        /// <summary>
+        /// An event fired whenever a response to a GetInstalledCertificateIds request was received.
+        /// </summary>
+        event OnGetInstalledCertificateIdsResponseReceivedDelegate?     OnGetInstalledCertificateIdsResponseReceived;
+
+        /// <summary>
+        /// An event fired whenever a response to an InstallCertificate request was received.
+        /// </summary>
+        event OnInstallCertificateResponseReceivedDelegate?             OnInstallCertificateResponseReceived;
+
+        /// <summary>
+        /// An event fired whenever a response to a NotifyCRL request was received.
+        /// </summary>
+        event OnNotifyCRLResponseReceivedDelegate?                      OnNotifyCRLResponseReceived;
 
         #endregion
 
-
-        #region OnSignCertificate                      (Request/-Response)
-
-        /// <summary>
-        /// An event sent whenever a sign certificate request was received.
-        /// </summary>
-        event OnSignCertificateRequestDelegate    OnSignCertificateRequest;
+        #region Charging
 
         /// <summary>
-        /// An event sent whenever a sign certificate to a heartbeat was sent.
+        /// An event fired whenever a response to a CancelReservation request was received.
         /// </summary>
-        event OnSignCertificateResponseDelegate   OnSignCertificateResponse;
+        event OnCancelReservationResponseReceivedDelegate?              OnCancelReservationResponseReceived;
+
+        /// <summary>
+        /// An event fired whenever a response to a ClearChargingProfile request was received.
+        /// </summary>
+        event OnClearChargingProfileResponseReceivedDelegate?           OnClearChargingProfileResponseReceived;
+
+        /// <summary>
+        /// An event fired whenever a response to a GetChargingProfiles request was received.
+        /// </summary>
+        event OnGetChargingProfilesResponseReceivedDelegate?            OnGetChargingProfilesResponseReceived;
+
+        /// <summary>
+        /// An event fired whenever a response to a GetCompositeSchedule request was received.
+        /// </summary>
+        event OnGetCompositeScheduleResponseReceivedDelegate?           OnGetCompositeScheduleResponseReceived;
+
+        /// <summary>
+        /// An event fired whenever a response to a GetTransactionStatus request was received.
+        /// </summary>
+        event OnGetTransactionStatusResponseReceivedDelegate?           OnGetTransactionStatusResponseReceived;
+
+        /// <summary>
+        /// An event fired whenever a response to a NotifyAllowedEnergyTransfer request was received.
+        /// </summary>
+        event OnNotifyAllowedEnergyTransferResponseReceivedDelegate?    OnNotifyAllowedEnergyTransferResponseReceived;
+
+        /// <summary>
+        /// An event fired whenever a response to a RequestStartTransaction request was received.
+        /// </summary>
+        event OnRequestStartTransactionResponseReceivedDelegate?        OnRequestStartTransactionResponseReceived;
+
+        /// <summary>
+        /// An event fired whenever a response to a RequestStopTransaction request was received.
+        /// </summary>
+        event OnRequestStopTransactionResponseReceivedDelegate?         OnRequestStopTransactionResponseReceived;
+
+        /// <summary>
+        /// An event fired whenever a response to a ReserveNow request was received.
+        /// </summary>
+        event OnReserveNowResponseReceivedDelegate?                     OnReserveNowResponseReceived;
+
+        /// <summary>
+        /// An event fired whenever a response to a SetChargingProfile request was received.
+        /// </summary>
+        event OnSetChargingProfileResponseReceivedDelegate?             OnSetChargingProfileResponseReceived;
+
+        /// <summary>
+        /// An event fired whenever a response to an UnlockConnector request was received.
+        /// </summary>
+        event OnUnlockConnectorResponseReceivedDelegate?                OnUnlockConnectorResponseReceived;
+
+        /// <summary>
+        /// An event fired whenever a response to a UpdateDynamicSchedule request was received.
+        /// </summary>
+        event OnUpdateDynamicScheduleResponseReceivedDelegate?          OnUpdateDynamicScheduleResponseReceived;
+
+        /// <summary>
+        /// An event fired whenever a response to a UsePriorityCharging request was received.
+        /// </summary>
+        event OnUsePriorityChargingResponseReceivedDelegate?            OnUsePriorityChargingResponseReceived;
 
         #endregion
 
-        #region OnGet15118EVCertificate                (Request/-Response)
+        #region Customer
 
         /// <summary>
-        /// An event sent whenever a get 15118 EV certificate request was received.
+        /// An event fired whenever a response to a ClearDisplayMessage request was received.
         /// </summary>
-        event OnGet15118EVCertificateRequestDelegate    OnGet15118EVCertificateRequest;
+        event OnClearDisplayMessageResponseReceivedDelegate?            OnClearDisplayMessageResponseReceived;
 
         /// <summary>
-        /// An event sent whenever a response to a get 15118 EV certificate was sent.
+        /// An event fired whenever a response to a CostUpdated request was received.
         /// </summary>
-        event OnGet15118EVCertificateResponseDelegate   OnGet15118EVCertificateResponse;
+        event OnCostUpdatedResponseReceivedDelegate?                    OnCostUpdatedResponseReceived;
+
+        /// <summary>
+        /// An event fired whenever a response to a CustomerInformation request was received.
+        /// </summary>
+        event OnCustomerInformationResponseReceivedDelegate?            OnCustomerInformationResponseReceived;
+
+        /// <summary>
+        /// An event fired whenever a response to a GetDisplayMessages request was received.
+        /// </summary>
+        event OnGetDisplayMessagesResponseReceivedDelegate?             OnGetDisplayMessagesResponseReceived;
+
+        /// <summary>
+        /// An event fired whenever a response to a SetDisplayMessage request was received.
+        /// </summary>
+        event OnSetDisplayMessageResponseReceivedDelegate?              OnSetDisplayMessageResponseReceived;
 
         #endregion
 
-        #region OnGetCertificateStatus                 (Request/-Response)
+        #region DeviceModel
 
         /// <summary>
-        /// An event sent whenever a get certificate status request was received.
+        /// An event fired whenever a response to a ChangeAvailability request was received.
         /// </summary>
-        event OnGetCertificateStatusRequestDelegate    OnGetCertificateStatusRequest;
+        event OnChangeAvailabilityResponseReceivedDelegate?             OnChangeAvailabilityResponseReceived;
 
         /// <summary>
-        /// An event sent whenever a response to a get certificate status was sent.
+        /// An event fired whenever a response to a ClearVariableMonitoring request was received.
         /// </summary>
-        event OnGetCertificateStatusResponseDelegate   OnGetCertificateStatusResponse;
+        event OnClearVariableMonitoringResponseReceivedDelegate?        OnClearVariableMonitoringResponseReceived;
+
+        /// <summary>
+        /// An event fired whenever a response to a GetBaseReport request was received.
+        /// </summary>
+        event OnGetBaseReportResponseReceivedDelegate?                  OnGetBaseReportResponseReceived;
+
+        /// <summary>
+        /// An event fired whenever a response to a GetLog request was received.
+        /// </summary>
+        event OnGetLogResponseReceivedDelegate?                         OnGetLogResponseReceived;
+
+        /// <summary>
+        /// An event fired whenever a response to a GetMonitoringReport request was received.
+        /// </summary>
+        event OnGetMonitoringReportResponseReceivedDelegate?            OnGetMonitoringReportResponseReceived;
+
+        /// <summary>
+        /// An event fired whenever a response to a GetReport request was received.
+        /// </summary>
+        event OnGetReportResponseReceivedDelegate?                      OnGetReportResponseReceived;
+
+        /// <summary>
+        /// An event fired whenever a response to a GetVariables request was received.
+        /// </summary>
+        event OnGetVariablesResponseReceivedDelegate?                   OnGetVariablesResponseReceived;
+
+        /// <summary>
+        /// An event fired whenever a response to a SetMonitoringBase request was received.
+        /// </summary>
+        event OnSetMonitoringBaseResponseReceivedDelegate?              OnSetMonitoringBaseResponseReceived;
+
+        /// <summary>
+        /// An event fired whenever a response to a SetMonitoringLevel request was received.
+        /// </summary>
+        event OnSetMonitoringLevelResponseReceivedDelegate?             OnSetMonitoringLevelResponseReceived;
+
+        /// <summary>
+        /// An event fired whenever a response to a SetNetworkProfile request was received.
+        /// </summary>
+        event OnSetNetworkProfileResponseReceivedDelegate?              OnSetNetworkProfileResponseReceived;
+
+        /// <summary>
+        /// An event fired whenever a response to a SetVariableMonitoring request was received.
+        /// </summary>
+        event OnSetVariableMonitoringResponseReceivedDelegate?          OnSetVariableMonitoringResponseReceived;
+
+        /// <summary>
+        /// An event fired whenever a response to a SetVariables request was received.
+        /// </summary>
+        event OnSetVariablesResponseReceivedDelegate?                   OnSetVariablesResponseReceived;
+
+        /// <summary>
+        /// An event fired whenever a response to a TriggerMessage request was received.
+        /// </summary>
+        event OnTriggerMessageResponseReceivedDelegate?                 OnTriggerMessageResponseReceived;
 
         #endregion
 
-        #region OnGetCRL                               (Request/-Response)
+        #region Firmware
 
         /// <summary>
-        /// An event sent whenever a get certificate revocation list request was received.
+        /// An event fired whenever a response to a PublishFirmware request was received.
         /// </summary>
-        event OnGetCRLRequestDelegate    OnGetCRLRequest;
+        event OnPublishFirmwareResponseReceivedDelegate?                OnPublishFirmwareResponseReceived;
 
         /// <summary>
-        /// An event sent whenever a response to a get certificate revocation list was sent.
+        /// An event fired whenever a response to a Reset request was received.
         /// </summary>
-        event OnGetCRLResponseDelegate   OnGetCRLResponse;
+        event OnResetResponseReceivedDelegate?                          OnResetResponseReceived;
+
+        /// <summary>
+        /// An event fired whenever a response to an UnpublishFirmware request was received.
+        /// </summary>
+        event OnUnpublishFirmwareResponseReceivedDelegate?              OnUnpublishFirmwareResponseReceived;
+
+        /// <summary>
+        /// An event fired whenever a response to an UpdateFirmware request was received.
+        /// </summary>
+        event OnUpdateFirmwareResponseReceivedDelegate?                 OnUpdateFirmwareResponseReceived;
 
         #endregion
 
-
-        #region OnReservationStatusUpdate              (Request/-Response)
-
-        /// <summary>
-        /// An event sent whenever a reservation status update request was received.
-        /// </summary>
-        event OnReservationStatusUpdateRequestDelegate    OnReservationStatusUpdateRequest;
+        #region Grid
 
         /// <summary>
-        /// An event sent whenever a response to a reservation status update was sent.
+        /// An event fired whenever a response to an AFRR signal request was received.
         /// </summary>
-        event OnReservationStatusUpdateResponseDelegate   OnReservationStatusUpdateResponse;
+        event OnAFRRSignalResponseReceivedDelegate?                     OnAFRRSignalResponseReceived;
 
         #endregion
 
-        #region OnAuthorize                            (Request/-Response)
+        #region Local List
 
         /// <summary>
-        /// An event sent whenever an authorize request was received.
+        /// An event fired whenever a response to a ClearCache request was received.
         /// </summary>
-        event OnAuthorizeRequestDelegate    OnAuthorizeRequest;
+        event OnClearCacheResponseReceivedDelegate?                     OnClearCacheResponseReceived;
 
         /// <summary>
-        /// An event sent whenever an authorize response was sent.
+        /// An event fired whenever a response to a GetLocalListVersion request was received.
         /// </summary>
-        event OnAuthorizeResponseDelegate   OnAuthorizeResponse;
-
-        #endregion
-
-        #region OnNotifyEVChargingNeeds                (Request/-Response)
+        event OnGetLocalListVersionResponseReceivedDelegate?            OnGetLocalListVersionResponseReceived;
 
         /// <summary>
-        /// An event sent whenever a notify EV charging needs request was received.
+        /// An event fired whenever a response to a SendLocalList request was received.
         /// </summary>
-        event OnNotifyEVChargingNeedsRequestDelegate    OnNotifyEVChargingNeedsRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a notify EV charging needs was sent.
-        /// </summary>
-        event OnNotifyEVChargingNeedsResponseDelegate   OnNotifyEVChargingNeedsResponse;
-
-        #endregion
-
-        #region OnTransactionEvent                     (Request/-Response)
-
-        /// <summary>
-        /// An event sent whenever a transaction event request was received.
-        /// </summary>
-        event OnTransactionEventRequestDelegate    OnTransactionEventRequest;
-
-        /// <summary>
-        /// An event sent whenever a transaction event response was sent.
-        /// </summary>
-        event OnTransactionEventResponseDelegate   OnTransactionEventResponse;
-
-        #endregion
-
-        #region OnStatusNotification                   (Request/-Response)
-
-        /// <summary>
-        /// An event sent whenever a status notification request was received.
-        /// </summary>
-        event OnStatusNotificationRequestDelegate    OnStatusNotificationRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a status notification request was sent.
-        /// </summary>
-        event OnStatusNotificationResponseDelegate   OnStatusNotificationResponse;
-
-        #endregion
-
-        #region OnMeterValues                          (Request/-Response)
-
-        /// <summary>
-        /// An event sent whenever a meter values request was received.
-        /// </summary>
-        event OnMeterValuesRequestDelegate    OnMeterValuesRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a meter values request was sent.
-        /// </summary>
-        event OnMeterValuesResponseDelegate   OnMeterValuesResponse;
-
-        #endregion
-
-        #region OnNotifyChargingLimit                  (Request/-Response)
-
-        /// <summary>
-        /// An event sent whenever a notify charging limit request was received.
-        /// </summary>
-        event OnNotifyChargingLimitRequestDelegate    OnNotifyChargingLimitRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a notify charging limit was sent.
-        /// </summary>
-        event OnNotifyChargingLimitResponseDelegate   OnNotifyChargingLimitResponse;
-
-        #endregion
-
-        #region OnClearedChargingLimit                 (Request/-Response)
-
-        /// <summary>
-        /// An event sent whenever a cleared charging limit request was received.
-        /// </summary>
-        event OnClearedChargingLimitRequestDelegate    OnClearedChargingLimitRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a cleared charging limit was sent.
-        /// </summary>
-        event OnClearedChargingLimitResponseDelegate   OnClearedChargingLimitResponse;
-
-        #endregion
-
-        #region OnReportChargingProfiles               (Request/-Response)
-
-        /// <summary>
-        /// An event sent whenever a ReportChargingProfiles request was received.
-        /// </summary>
-        event OnReportChargingProfilesRequestDelegate    OnReportChargingProfilesRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a ReportChargingProfiles was sent.
-        /// </summary>
-        event OnReportChargingProfilesResponseDelegate   OnReportChargingProfilesResponse;
-
-        #endregion
-
-        #region OnNotifyEVChargingSchedule             (Request/-Response)
-
-        /// <summary>
-        /// An event sent whenever a NotifyEVChargingSchedule request was received.
-        /// </summary>
-        event OnNotifyEVChargingScheduleRequestDelegate    OnNotifyEVChargingScheduleRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a NotifyEVChargingSchedule was sent.
-        /// </summary>
-        event OnNotifyEVChargingScheduleResponseDelegate   OnNotifyEVChargingScheduleResponse;
-
-        #endregion
-
-        #region OnNotifyPriorityCharging               (Request/-Response)
-
-        /// <summary>
-        /// An event sent whenever a NotifyPriorityCharging request was received.
-        /// </summary>
-        event OnNotifyPriorityChargingRequestDelegate    OnNotifyPriorityChargingRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a NotifyPriorityCharging was sent.
-        /// </summary>
-        event OnNotifyPriorityChargingResponseDelegate   OnNotifyPriorityChargingResponse;
-
-        #endregion
-
-        #region OnPullDynamicScheduleUpdate            (Request/-Response)
-
-        /// <summary>
-        /// An event sent whenever a PullDynamicScheduleUpdate request was received.
-        /// </summary>
-        event OnPullDynamicScheduleUpdateRequestDelegate    OnPullDynamicScheduleUpdateRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a PullDynamicScheduleUpdate was sent.
-        /// </summary>
-        event OnPullDynamicScheduleUpdateResponseDelegate   OnPullDynamicScheduleUpdateResponse;
-
-        #endregion
-
-
-        #region OnNotifyDisplayMessages                (Request/-Response)
-
-        /// <summary>
-        /// An event sent whenever a notify display messages request was received.
-        /// </summary>
-        event OnNotifyDisplayMessagesRequestDelegate    OnNotifyDisplayMessagesRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a notify display messages was sent.
-        /// </summary>
-        event OnNotifyDisplayMessagesResponseDelegate   OnNotifyDisplayMessagesResponse;
-
-        #endregion
-
-        #region OnNotifyCustomerInformation            (Request/-Response)
-
-        /// <summary>
-        /// An event sent whenever a notify customer information request was received.
-        /// </summary>
-        event OnNotifyCustomerInformationRequestDelegate    OnNotifyCustomerInformationRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a notify customer information was sent.
-        /// </summary>
-        event OnNotifyCustomerInformationResponseDelegate   OnNotifyCustomerInformationResponse;
+        event OnSendLocalListResponseReceivedDelegate?                  OnSendLocalListResponseReceived;
 
         #endregion
 

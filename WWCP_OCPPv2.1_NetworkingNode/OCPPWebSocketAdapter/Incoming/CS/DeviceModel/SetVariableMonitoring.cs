@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a set variable monitoring request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnSetVariableMonitoringRequestDelegate?     OnSetVariableMonitoringRequest;
+        public event OCPPv2_1.CS.OnSetVariableMonitoringRequestReceivedDelegate?     OnSetVariableMonitoringRequestReceived;
 
         /// <summary>
         /// An event sent whenever a set variable monitoring request was received.
@@ -68,7 +68,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a response to a set variable monitoring request was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnSetVariableMonitoringResponseDelegate?    OnSetVariableMonitoringResponse;
+        public event OCPPv2_1.CS.OnSetVariableMonitoringResponseSentDelegate?    OnSetVariableMonitoringResponseSent;
 
         /// <summary>
         /// An event sent whenever a websocket response to a set variable monitoring request was sent.
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     try
                     {
 
-                        OnSetVariableMonitoringRequest?.Invoke(Timestamp.Now,
+                        OnSetVariableMonitoringRequestReceived?.Invoke(Timestamp.Now,
                                                                parentNetworkingNode,
                                                                WebSocketConnection,
                                                                request);
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnSetVariableMonitoringRequest));
+                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnSetVariableMonitoringRequestReceived));
                     }
 
                     #endregion
@@ -181,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     try
                     {
 
-                        OnSetVariableMonitoringResponse?.Invoke(Timestamp.Now,
+                        OnSetVariableMonitoringResponseSent?.Invoke(Timestamp.Now,
                                                                 parentNetworkingNode,
                                                                 WebSocketConnection,
                                                                 request,
@@ -191,7 +191,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnSetVariableMonitoringResponse));
+                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnSetVariableMonitoringResponseSent));
                     }
 
                     #endregion
@@ -268,6 +268,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
+    {
+
+        /// <summary>
+        /// An event sent whenever a response to a set variable monitoring request was sent.
+        /// </summary>
+        public event OCPPv2_1.CS.OnSetVariableMonitoringResponseSentDelegate? OnSetVariableMonitoringResponseSent;
 
     }
 

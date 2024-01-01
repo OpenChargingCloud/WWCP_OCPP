@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever an UsePriorityCharging request was received.
         /// </summary>
-        public event OnUsePriorityChargingRequestDelegate?         OnUsePriorityChargingRequest;
+        public event OnUsePriorityChargingRequestReceivedDelegate?         OnUsePriorityChargingRequest;
 
         /// <summary>
         /// An event sent whenever an UsePriorityCharging request was received.
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a response to an UsePriorityCharging request was sent.
         /// </summary>
-        public event OnUsePriorityChargingResponseDelegate?        OnUsePriorityChargingResponse;
+        public event OnUsePriorityChargingResponseSentDelegate?        OnUsePriorityChargingResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to an UsePriorityCharging request was sent.

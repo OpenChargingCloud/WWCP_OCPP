@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Request">The stop transaction request.</param>
     public delegate Task
 
-        OnNotifyChargingLimitRequestDelegate(DateTime                     Timestamp,
+        OnNotifyChargingLimitRequestReceivedDelegate(DateTime                     Timestamp,
                                              IEventSender                 Sender,
                                              IWebSocketConnection    Connection,
                                              NotifyChargingLimitRequest   Request);
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task
 
-        OnNotifyChargingLimitResponseDelegate(DateTime                      Timestamp,
+        OnNotifyChargingLimitResponseSentDelegate(DateTime                      Timestamp,
                                               IEventSender                  Sender,
                                               IWebSocketConnection     Connection,
                                               NotifyChargingLimitRequest    Request,

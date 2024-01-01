@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a Get15118EVCertificate request was received.
         /// </summary>
-        public event OnGet15118EVCertificateRequestDelegate?      OnGet15118EVCertificateRequest;
+        public event OnGet15118EVCertificateRequestReceivedDelegate?      OnGet15118EVCertificateRequest;
 
         /// <summary>
         /// An event sent whenever a Get15118EVCertificate was received.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a response to a Get15118EVCertificate was sent.
         /// </summary>
-        public event OnGet15118EVCertificateResponseDelegate?     OnGet15118EVCertificateResponse;
+        public event OnGet15118EVCertificateResponseSentDelegate?     OnGet15118EVCertificateResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a Get15118EVCertificate was sent.

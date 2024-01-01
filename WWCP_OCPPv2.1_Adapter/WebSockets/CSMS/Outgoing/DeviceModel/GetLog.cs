@@ -49,12 +49,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a GetLog request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnGetLogRequestDelegate?     OnGetLogRequest;
+        public event OCPPv2_1.CSMS.OnGetLogRequestSentDelegate?     OnGetLogRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a GetLog request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnGetLogResponseDelegate?    OnGetLogResponse;
+        public event OCPPv2_1.CSMS.OnGetLogResponseReceivedDelegate?    OnGetLogResponse;
 
         #endregion
 
@@ -75,13 +75,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
             try
             {
 
-                OnGetLogRequest?.Invoke(startTime,
+                OnGetLogRequestSent?.Invoke(startTime,
                                         this,
                                         Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnGetLogRequest));
+                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnGetLogRequestSent));
             }
 
             #endregion

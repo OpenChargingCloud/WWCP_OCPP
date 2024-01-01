@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a NotifyCRL request was sent.
         /// </summary>
-        public event OnNotifyCRLRequestDelegate?     OnNotifyCRLRequest;
+        public event OnNotifyCRLRequestSentDelegate?     OnNotifyCRLRequest;
 
         /// <summary>
         /// An event sent whenever a response to a NotifyCRL request was sent.
         /// </summary>
-        public event OnNotifyCRLResponseDelegate?    OnNotifyCRLResponse;
+        public event OnNotifyCRLResponseReceivedDelegate?    OnNotifyCRLResponse;
 
         #endregion
 

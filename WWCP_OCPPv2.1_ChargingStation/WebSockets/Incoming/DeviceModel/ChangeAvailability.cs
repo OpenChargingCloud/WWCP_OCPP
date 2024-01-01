@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a ChangeAvailability request was received.
         /// </summary>
-        public event OnChangeAvailabilityRequestDelegate?          OnChangeAvailabilityRequest;
+        public event OnChangeAvailabilityRequestReceivedDelegate?          OnChangeAvailabilityRequest;
 
         /// <summary>
         /// An event sent whenever a ChangeAvailability request was received.
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a response to a ChangeAvailability request was sent.
         /// </summary>
-        public event OnChangeAvailabilityResponseDelegate?         OnChangeAvailabilityResponse;
+        public event OnChangeAvailabilityResponseSentDelegate?         OnChangeAvailabilityResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a ChangeAvailability request was sent.

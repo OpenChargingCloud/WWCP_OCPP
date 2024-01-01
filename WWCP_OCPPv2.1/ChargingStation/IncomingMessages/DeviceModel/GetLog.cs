@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnGetLogRequestDelegate(DateTime               Timestamp,
+        OnGetLogRequestReceivedDelegate(DateTime               Timestamp,
                                 IEventSender           Sender,
                                 IWebSocketConnection   Connection,
                                 GetLogRequest          Request);
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnGetLogResponseDelegate(DateTime               Timestamp,
+        OnGetLogResponseSentDelegate(DateTime               Timestamp,
                                  IEventSender           Sender,
                                  IWebSocketConnection   Connection,
                                  GetLogRequest          Request,

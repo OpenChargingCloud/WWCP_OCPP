@@ -52,7 +52,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever a ReportChargingProfiles request will be sent to the CSMS.
         /// </summary>
-        public event OCPPv2_1.CS.OnReportChargingProfilesRequestDelegate?     OnReportChargingProfilesRequest;
+        public event OCPPv2_1.CS.OnReportChargingProfilesRequestSentDelegate?     OnReportChargingProfilesRequestSent;
 
         /// <summary>
         /// An event fired whenever a ReportChargingProfiles request will be sent to the CSMS.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever a response to a ReportChargingProfiles request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnReportChargingProfilesResponseDelegate?    OnReportChargingProfilesResponse;
+        public event OCPPv2_1.CS.OnReportChargingProfilesResponseReceivedDelegate?    OnReportChargingProfilesResponse;
 
         #endregion
 
@@ -91,14 +91,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
             try
             {
 
-                OnReportChargingProfilesRequest?.Invoke(startTime,
+                OnReportChargingProfilesRequestSent?.Invoke(startTime,
                                                         this,
                                                         Request);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnReportChargingProfilesRequest));
+                DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnReportChargingProfilesRequestSent));
             }
 
             #endregion

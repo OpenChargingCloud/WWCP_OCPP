@@ -32,7 +32,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The reserve now request.</param>
-    public delegate Task OnNotifyReportRequestDelegate(DateTime              Timestamp,
+    public delegate Task OnNotifyReportRequestSentDelegate(DateTime              Timestamp,
                                                        IEventSender          Sender,
                                                        NotifyReportRequest   Request);
 
@@ -44,7 +44,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Request">The request.</param>
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate Task OnNotifyReportResponseDelegate(DateTime               Timestamp,
+    public delegate Task OnNotifyReportResponseReceivedDelegate(DateTime               Timestamp,
                                                         IEventSender           Sender,
                                                         NotifyReportRequest    Request,
                                                         NotifyReportResponse   Response,

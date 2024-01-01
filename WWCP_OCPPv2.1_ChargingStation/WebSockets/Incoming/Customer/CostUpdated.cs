@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a CostUpdated request was received.
         /// </summary>
-        public event OnCostUpdatedRequestDelegate?                 OnCostUpdatedRequest;
+        public event OnCostUpdatedRequestReceivedDelegate?                 OnCostUpdatedRequest;
 
         /// <summary>
         /// An event sent whenever a CostUpdated request was received.
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a response to a CostUpdated request was sent.
         /// </summary>
-        public event OnCostUpdatedResponseDelegate?                OnCostUpdatedResponse;
+        public event OnCostUpdatedResponseSentDelegate?                OnCostUpdatedResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a CostUpdated request was sent.

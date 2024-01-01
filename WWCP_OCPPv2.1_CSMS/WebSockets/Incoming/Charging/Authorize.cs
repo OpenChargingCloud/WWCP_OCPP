@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever an Authorize request was received.
         /// </summary>
-        public event OnAuthorizeRequestDelegate?                  OnAuthorizeRequest;
+        public event OnAuthorizeRequestReceivedDelegate?                  OnAuthorizeRequest;
 
         /// <summary>
         /// An event sent whenever an Authorize request was received.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever an Authorize response was sent.
         /// </summary>
-        public event OnAuthorizeResponseDelegate?                 OnAuthorizeResponse;
+        public event OnAuthorizeResponseSentDelegate?                 OnAuthorizeResponse;
 
         /// <summary>
         /// An event sent whenever an Authorize WebSocket response was sent.

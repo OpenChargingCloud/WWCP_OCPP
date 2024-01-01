@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a LogStatusNotification request was received.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnLogStatusNotificationRequestDelegate?     OnLogStatusNotificationRequest;
+        public event OCPPv2_1.CSMS.OnLogStatusNotificationRequestReceivedDelegate?     OnLogStatusNotificationRequestReceived;
 
         /// <summary>
         /// An event sent whenever a LogStatusNotification request was received.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a response to a LogStatusNotification request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnLogStatusNotificationResponseDelegate?    OnLogStatusNotificationResponse;
+        public event OCPPv2_1.CSMS.OnLogStatusNotificationResponseSentDelegate?    OnLogStatusNotificationResponseSent;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a LogStatusNotification request was sent.
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     try
                     {
 
-                        OnLogStatusNotificationRequest?.Invoke(Timestamp.Now,
+                        OnLogStatusNotificationRequestReceived?.Invoke(Timestamp.Now,
                                                                parentNetworkingNode,
                                                                WebSocketConnection,
                                                                request);
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnLogStatusNotificationRequest));
+                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnLogStatusNotificationRequestReceived));
                     }
 
                     #endregion
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     try
                     {
 
-                        OnLogStatusNotificationResponse?.Invoke(Timestamp.Now,
+                        OnLogStatusNotificationResponseSent?.Invoke(Timestamp.Now,
                                                                 parentNetworkingNode,
                                                                 WebSocketConnection,
                                                                 request,
@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnLogStatusNotificationResponse));
+                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnLogStatusNotificationResponseSent));
                     }
 
                     #endregion
@@ -263,6 +263,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
+    {
+
+        /// <summary>
+        /// An event sent whenever a response to a LogStatusNotification request was sent.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnLogStatusNotificationResponseSentDelegate? OnLogStatusNotificationResponseSent;
 
     }
 

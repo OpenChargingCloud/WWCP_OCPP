@@ -59,7 +59,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a CancelReservation request was received.
         /// </summary>
-        public event OnCancelReservationRequestDelegate?           OnCancelReservationRequest;
+        public event OnCancelReservationRequestReceivedDelegate?           OnCancelReservationRequest;
 
         /// <summary>
         /// An event sent whenever a CancelReservation request was received.
@@ -69,7 +69,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a response to a CancelReservation request was sent.
         /// </summary>
-        public event OnCancelReservationResponseDelegate?          OnCancelReservationResponse;
+        public event OnCancelReservationResponseSentDelegate?          OnCancelReservationResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a CancelReservation request was sent.

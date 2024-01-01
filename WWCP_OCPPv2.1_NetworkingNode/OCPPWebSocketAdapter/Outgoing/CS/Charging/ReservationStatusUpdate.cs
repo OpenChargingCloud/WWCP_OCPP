@@ -50,7 +50,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a reservation status update request will be sent to the CSMS.
         /// </summary>
-        public event OCPPv2_1.CS.OnReservationStatusUpdateRequestDelegate?     OnReservationStatusUpdateRequest;
+        public event OCPPv2_1.CS.OnReservationStatusUpdateRequestSentDelegate?     OnReservationStatusUpdateRequestSent;
 
         /// <summary>
         /// An event fired whenever a reservation status update request will be sent to the CSMS.
@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a response to a reservation status update request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnReservationStatusUpdateResponseDelegate?    OnReservationStatusUpdateResponse;
+        public event OCPPv2_1.CS.OnReservationStatusUpdateResponseReceivedDelegate?    OnReservationStatusUpdateResponseReceived;
 
         #endregion
 
@@ -89,14 +89,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnReservationStatusUpdateRequest?.Invoke(startTime,
+                OnReservationStatusUpdateRequestSent?.Invoke(startTime,
                                                          parentNetworkingNode,
                                                          Request);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnReservationStatusUpdateRequest));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnReservationStatusUpdateRequestSent));
             }
 
             #endregion
@@ -163,7 +163,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnReservationStatusUpdateResponse?.Invoke(endTime,
+                OnReservationStatusUpdateResponseReceived?.Invoke(endTime,
                                                           parentNetworkingNode,
                                                           Request,
                                                           response,
@@ -172,7 +172,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnReservationStatusUpdateResponse));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnReservationStatusUpdateResponseReceived));
             }
 
             #endregion
@@ -183,6 +183,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
+    {
+
+        /// <summary>
+        /// An event fired whenever a response to a reservation status update request was received.
+        /// </summary>
+        public event OCPPv2_1.CS.OnReservationStatusUpdateResponseReceivedDelegate? OnReservationStatusUpdateResponseReceived;
 
     }
 

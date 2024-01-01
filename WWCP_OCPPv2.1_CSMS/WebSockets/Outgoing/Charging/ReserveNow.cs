@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a ReserveNow request was sent.
         /// </summary>
-        public event OnReserveNowRequestDelegate?     OnReserveNowRequest;
+        public event OnReserveNowRequestSentDelegate?     OnReserveNowRequest;
 
         /// <summary>
         /// An event sent whenever a response to a ReserveNow request was sent.
         /// </summary>
-        public event OnReserveNowResponseDelegate?    OnReserveNowResponse;
+        public event OnReserveNowResponseReceivedDelegate?    OnReserveNowResponse;
 
         #endregion
 

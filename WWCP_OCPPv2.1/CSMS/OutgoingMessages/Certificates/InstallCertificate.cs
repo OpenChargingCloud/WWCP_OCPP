@@ -32,7 +32,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
-    public delegate Task OnInstallCertificateRequestDelegate(DateTime                    Timestamp,
+    public delegate Task OnInstallCertificateRequestSentDelegate(DateTime                    Timestamp,
                                                              IEventSender                Sender,
                                                              InstallCertificateRequest   Request);
 
@@ -44,7 +44,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Request">The request.</param>
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate Task OnInstallCertificateResponseDelegate(DateTime                     Timestamp,
+    public delegate Task OnInstallCertificateResponseReceivedDelegate(DateTime                     Timestamp,
                                                               IEventSender                 Sender,
                                                               InstallCertificateRequest    Request,
                                                               InstallCertificateResponse   Response,

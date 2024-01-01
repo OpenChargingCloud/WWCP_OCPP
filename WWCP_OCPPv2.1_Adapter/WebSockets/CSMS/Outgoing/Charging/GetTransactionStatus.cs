@@ -49,12 +49,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a GetTransactionStatus request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnGetTransactionStatusRequestDelegate?     OnGetTransactionStatusRequest;
+        public event OCPPv2_1.CSMS.OnGetTransactionStatusRequestSentDelegate?     OnGetTransactionStatusRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a GetTransactionStatus request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnGetTransactionStatusResponseDelegate?    OnGetTransactionStatusResponse;
+        public event OCPPv2_1.CSMS.OnGetTransactionStatusResponseReceivedDelegate?    OnGetTransactionStatusResponse;
 
         #endregion
 
@@ -71,13 +71,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
             try
             {
 
-                OnGetTransactionStatusRequest?.Invoke(startTime,
+                OnGetTransactionStatusRequestSent?.Invoke(startTime,
                                                       this,
                                                       Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnGetTransactionStatusRequest));
+                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnGetTransactionStatusRequestSent));
             }
 
             #endregion

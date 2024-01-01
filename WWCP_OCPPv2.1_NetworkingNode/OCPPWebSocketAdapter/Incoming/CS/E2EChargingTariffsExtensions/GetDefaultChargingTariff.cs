@@ -66,7 +66,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a response to a GetDefaultChargingTariff request was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnGetDefaultChargingTariffResponseDelegate?    OnGetDefaultChargingTariffResponse;
+        public event OCPPv2_1.CS.OnGetDefaultChargingTariffResponseDelegate?    OnGetDefaultChargingTariffResponseSent;
 
         /// <summary>
         /// An event sent whenever a websocket response to a GetDefaultChargingTariff request was sent.
@@ -179,7 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     try
                     {
 
-                        OnGetDefaultChargingTariffResponse?.Invoke(Timestamp.Now,
+                        OnGetDefaultChargingTariffResponseSent?.Invoke(Timestamp.Now,
                                                                    parentNetworkingNode,
                                                                    WebSocketConnection,
                                                                    request,
@@ -189,7 +189,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnGetDefaultChargingTariffResponse));
+                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnGetDefaultChargingTariffResponseSent));
                     }
 
                     #endregion
@@ -257,6 +257,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
+    {
+
+        /// <summary>
+        /// An event sent whenever a response to a GetDefaultChargingTariff request was sent.
+        /// </summary>
+        public event OCPPv2_1.CS.OnGetDefaultChargingTariffResponseDelegate? OnGetDefaultChargingTariffResponseSent;
 
     }
 

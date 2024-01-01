@@ -33,7 +33,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Connection">The HTTP Web Socket server connection.</param>
     /// <param name="Request">The request.</param>
-    public delegate Task OnDataTransferRequestDelegate(DateTime               Timestamp,
+    public delegate Task OnDataTransferRequestSentDelegate(DateTime               Timestamp,
                                                        IEventSender           Sender,
                                                        //IWebSocketConnection   Connection,
                                                        DataTransferRequest    Request);
@@ -47,7 +47,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// <param name="Request">The request.</param>
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate Task OnDataTransferResponseDelegate(DateTime               Timestamp,
+    public delegate Task OnDataTransferResponseReceivedDelegate(DateTime               Timestamp,
                                                         IEventSender           Sender,
                                                         //IWebSocketConnection   Connection,
                                                         DataTransferRequest    Request,

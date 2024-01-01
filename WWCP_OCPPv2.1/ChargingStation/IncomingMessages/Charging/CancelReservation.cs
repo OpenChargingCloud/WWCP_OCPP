@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Request">The cancel reservation request.</param>
     public delegate Task
 
-        OnCancelReservationRequestDelegate(DateTime                   Timestamp,
+        OnCancelReservationRequestReceivedDelegate(DateTime                   Timestamp,
                                            IEventSender               Sender,
                                            IWebSocketConnection       Connection,
                                            CancelReservationRequest   Request);
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnCancelReservationResponseDelegate(DateTime                    Timestamp,
+        OnCancelReservationResponseSentDelegate(DateTime                    Timestamp,
                                             IEventSender                Sender,
                                             IWebSocketConnection        Connection,
                                             CancelReservationRequest    Request,

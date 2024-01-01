@@ -52,7 +52,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever a get certificate status request will be sent to the CSMS.
         /// </summary>
-        public event OCPPv2_1.CS.OnGetCertificateStatusRequestDelegate?     OnGetCertificateStatusRequest;
+        public event OCPPv2_1.CS.OnGetCertificateStatusRequestSentDelegate?     OnGetCertificateStatusRequestSent;
 
         /// <summary>
         /// An event fired whenever a get certificate status request will be sent to the CSMS.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever a response to a get certificate status request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnGetCertificateStatusResponseDelegate?    OnGetCertificateStatusResponse;
+        public event OCPPv2_1.CS.OnGetCertificateStatusResponseReceivedDelegate?    OnGetCertificateStatusResponse;
 
         #endregion
 
@@ -91,14 +91,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
             try
             {
 
-                OnGetCertificateStatusRequest?.Invoke(startTime,
+                OnGetCertificateStatusRequestSent?.Invoke(startTime,
                                                       this,
                                                       Request);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnGetCertificateStatusRequest));
+                DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnGetCertificateStatusRequestSent));
             }
 
             #endregion

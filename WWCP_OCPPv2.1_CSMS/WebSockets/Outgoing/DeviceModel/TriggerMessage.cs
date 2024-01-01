@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a TriggerMessage request was sent.
         /// </summary>
-        public event OnTriggerMessageRequestDelegate?     OnTriggerMessageRequest;
+        public event OnTriggerMessageRequestSentDelegate?     OnTriggerMessageRequest;
 
         /// <summary>
         /// An event sent whenever a response to a TriggerMessage request was sent.
         /// </summary>
-        public event OnTriggerMessageResponseDelegate?    OnTriggerMessageResponse;
+        public event OnTriggerMessageResponseReceivedDelegate?    OnTriggerMessageResponse;
 
         #endregion
 

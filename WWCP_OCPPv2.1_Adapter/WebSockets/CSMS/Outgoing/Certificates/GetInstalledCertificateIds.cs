@@ -49,12 +49,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a GetInstalledCertificateIds request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnGetInstalledCertificateIdsRequestDelegate?     OnGetInstalledCertificateIdsRequest;
+        public event OCPPv2_1.CSMS.OnGetInstalledCertificateIdsRequestSentDelegate?     OnGetInstalledCertificateIdsRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a GetInstalledCertificateIds request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnGetInstalledCertificateIdsResponseDelegate?    OnGetInstalledCertificateIdsResponse;
+        public event OCPPv2_1.CSMS.OnGetInstalledCertificateIdsResponseReceivedDelegate?    OnGetInstalledCertificateIdsResponse;
 
         #endregion
 
@@ -75,13 +75,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
             try
             {
 
-                OnGetInstalledCertificateIdsRequest?.Invoke(startTime,
+                OnGetInstalledCertificateIdsRequestSent?.Invoke(startTime,
                                                             this,
                                                             Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnGetInstalledCertificateIdsRequest));
+                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnGetInstalledCertificateIdsRequestSent));
             }
 
             #endregion

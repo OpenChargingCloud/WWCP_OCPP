@@ -49,12 +49,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a ClearVariableMonitoring request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnClearVariableMonitoringRequestDelegate?     OnClearVariableMonitoringRequest;
+        public event OCPPv2_1.CSMS.OnClearVariableMonitoringRequestSentDelegate?     OnClearVariableMonitoringRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a ClearVariableMonitoring request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnClearVariableMonitoringResponseDelegate?    OnClearVariableMonitoringResponse;
+        public event OCPPv2_1.CSMS.OnClearVariableMonitoringResponseReceivedDelegate?    OnClearVariableMonitoringResponse;
 
         #endregion
 
@@ -71,13 +71,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
             try
             {
 
-                OnClearVariableMonitoringRequest?.Invoke(startTime,
+                OnClearVariableMonitoringRequestSent?.Invoke(startTime,
                                                          this,
                                                          Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnClearVariableMonitoringRequest));
+                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnClearVariableMonitoringRequestSent));
             }
 
             #endregion

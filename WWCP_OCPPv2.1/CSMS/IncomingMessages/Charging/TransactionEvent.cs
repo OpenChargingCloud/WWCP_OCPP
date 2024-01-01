@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Request">The transaction event request.</param>
     public delegate Task
 
-        OnTransactionEventRequestDelegate(DateTime                    Timestamp,
+        OnTransactionEventRequestReceivedDelegate(DateTime                    Timestamp,
                                           IEventSender                Sender,
                                           IWebSocketConnection   Connection,
                                           TransactionEventRequest     Request);
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Runtime">The runtime of the transaction event response.</param>
     public delegate Task
 
-        OnTransactionEventResponseDelegate(DateTime                    Timestamp,
+        OnTransactionEventResponseSentDelegate(DateTime                    Timestamp,
                                            IEventSender                Sender,
                                            IWebSocketConnection   Connection,
                                            TransactionEventRequest     Request,

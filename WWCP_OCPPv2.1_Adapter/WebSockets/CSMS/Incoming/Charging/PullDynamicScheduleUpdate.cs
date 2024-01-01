@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a PullDynamicScheduleUpdate request was received.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnPullDynamicScheduleUpdateRequestDelegate?     OnPullDynamicScheduleUpdateRequest;
+        public event OCPPv2_1.CSMS.OnPullDynamicScheduleUpdateRequestReceivedDelegate?     OnPullDynamicScheduleUpdateRequest;
 
         /// <summary>
         /// An event sent whenever a PullDynamicScheduleUpdate was received.
@@ -68,7 +68,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a response to a PullDynamicScheduleUpdate was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnPullDynamicScheduleUpdateResponseDelegate?    OnPullDynamicScheduleUpdateResponse;
+        public event OCPPv2_1.CSMS.OnPullDynamicScheduleUpdateResponseSentDelegate?    OnPullDynamicScheduleUpdateResponseSent;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a PullDynamicScheduleUpdate was sent.
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                     try
                     {
 
-                        OnPullDynamicScheduleUpdateResponse?.Invoke(Timestamp.Now,
+                        OnPullDynamicScheduleUpdateResponseSent?.Invoke(Timestamp.Now,
                                                                     this,
                                                                     Connection,
                                                                     request,
@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnPullDynamicScheduleUpdateResponse));
+                        DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnPullDynamicScheduleUpdateResponseSent));
                     }
 
                     #endregion

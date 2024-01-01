@@ -52,7 +52,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever a firmware status notification request will be sent to the CSMS.
         /// </summary>
-        public event OCPPv2_1.CS.OnFirmwareStatusNotificationRequestDelegate?     OnFirmwareStatusNotificationRequest;
+        public event OCPPv2_1.CS.OnFirmwareStatusNotificationRequestSentDelegate?     OnFirmwareStatusNotificationRequestSent;
 
         /// <summary>
         /// An event fired whenever a firmware status notification request will be sent to the CSMS.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever a response to a firmware status notification request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnFirmwareStatusNotificationResponseDelegate?    OnFirmwareStatusNotificationResponse;
+        public event OCPPv2_1.CS.OnFirmwareStatusNotificationResponseReceivedDelegate?    OnFirmwareStatusNotificationResponse;
 
         #endregion
 
@@ -91,14 +91,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
             try
             {
 
-                OnFirmwareStatusNotificationRequest?.Invoke(startTime,
+                OnFirmwareStatusNotificationRequestSent?.Invoke(startTime,
                                                             this,
                                                             Request);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnFirmwareStatusNotificationRequest));
+                DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnFirmwareStatusNotificationRequestSent));
             }
 
             #endregion

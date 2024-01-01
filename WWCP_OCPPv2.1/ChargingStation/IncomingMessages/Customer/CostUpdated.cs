@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnCostUpdatedRequestDelegate(DateTime               Timestamp,
+        OnCostUpdatedRequestReceivedDelegate(DateTime               Timestamp,
                                      IEventSender           Sender,
                                      IWebSocketConnection   Connection,
                                      CostUpdatedRequest     Request);
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnCostUpdatedResponseDelegate(DateTime               Timestamp,
+        OnCostUpdatedResponseSentDelegate(DateTime               Timestamp,
                                       IEventSender           Sender,
                                       IWebSocketConnection   Connection,
                                       CostUpdatedRequest     Request,

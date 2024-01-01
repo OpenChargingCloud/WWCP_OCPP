@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a GetLog request was received.
         /// </summary>
-        public event OnGetLogRequestDelegate?                      OnGetLogRequest;
+        public event OnGetLogRequestReceivedDelegate?                      OnGetLogRequest;
 
         /// <summary>
         /// An event sent whenever a GetLog request was received.
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a response to a GetLog request was sent.
         /// </summary>
-        public event OnGetLogResponseDelegate?                     OnGetLogResponse;
+        public event OnGetLogResponseSentDelegate?                     OnGetLogResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a GetLog request was sent.

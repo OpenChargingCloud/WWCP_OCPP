@@ -50,7 +50,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever a data transfer request will be sent to the CSMS.
         /// </summary>
-        public event OnDataTransferRequestDelegate?     OnDataTransferRequest;
+        public event OnDataTransferRequestSentDelegate?     OnDataTransferRequestSent;
 
         /// <summary>
         /// An event fired whenever a data transfer request will be sent to the CSMS.
@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever a response to a data transfer request was received.
         /// </summary>
-        public event OnDataTransferResponseDelegate?    OnDataTransferResponse;
+        public event OnDataTransferResponseReceivedDelegate?    OnDataTransferResponse;
 
         #endregion
 
@@ -89,14 +89,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
             try
             {
 
-                OnDataTransferRequest?.Invoke(startTime,
+                OnDataTransferRequestSent?.Invoke(startTime,
                                               this,
                                               Request);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnDataTransferRequest));
+                DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnDataTransferRequestSent));
             }
 
             #endregion

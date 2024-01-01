@@ -51,7 +51,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event fired whenever a ReportChargingProfiles request will be sent to the CSMS.
         /// </summary>
-        public event OnReportChargingProfilesRequestDelegate?     OnReportChargingProfilesRequest;
+        public event OnReportChargingProfilesRequestSentDelegate?     OnReportChargingProfilesRequest;
 
         /// <summary>
         /// An event fired whenever a ReportChargingProfiles request will be sent to the CSMS.
@@ -66,7 +66,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event fired whenever a response to a ReportChargingProfiles request was received.
         /// </summary>
-        public event OnReportChargingProfilesResponseDelegate?    OnReportChargingProfilesResponse;
+        public event OnReportChargingProfilesResponseReceivedDelegate?    OnReportChargingProfilesResponse;
 
         #endregion
 

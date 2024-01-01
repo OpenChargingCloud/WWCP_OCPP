@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a cancel reservation request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnCancelReservationRequestDelegate?     OnCancelReservationRequest;
+        public event OCPPv2_1.CS.OnCancelReservationRequestReceivedDelegate?     OnCancelReservationRequestReceived;
 
         /// <summary>
         /// An event sent whenever a cancel reservation request was received.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a response to a cancel reservation request was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnCancelReservationResponseDelegate?    OnCancelReservationResponse;
+        public event OCPPv2_1.CS.OnCancelReservationResponseSentDelegate?    OnCancelReservationResponseSent;
 
         /// <summary>
         /// An event sent whenever a websocket response to a cancel reservation request was sent.
@@ -136,7 +136,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     try
                     {
 
-                        OnCancelReservationRequest?.Invoke(Timestamp.Now,
+                        OnCancelReservationRequestReceived?.Invoke(Timestamp.Now,
                                                            parentNetworkingNode,
                                                            WebSocketConnection,
                                                            request);
@@ -144,7 +144,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnCancelReservationRequest));
+                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnCancelReservationRequestReceived));
                     }
 
                     #endregion
@@ -180,7 +180,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     try
                     {
 
-                        OnCancelReservationResponse?.Invoke(Timestamp.Now,
+                        OnCancelReservationResponseSent?.Invoke(Timestamp.Now,
                                                             parentNetworkingNode,
                                                             WebSocketConnection,
                                                             request,
@@ -190,7 +190,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnCancelReservationResponse));
+                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnCancelReservationResponseSent));
                     }
 
                     #endregion
@@ -263,6 +263,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
+    {
+
+        /// <summary>
+        /// An event sent whenever a response to a cancel reservation request was sent.
+        /// </summary>
+        public event OCPPv2_1.CS.OnCancelReservationResponseSentDelegate? OnCancelReservationResponseSent;
 
     }
 

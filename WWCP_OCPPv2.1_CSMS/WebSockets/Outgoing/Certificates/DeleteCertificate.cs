@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a DeleteCertificate request was sent.
         /// </summary>
-        public event OnDeleteCertificateRequestDelegate?     OnDeleteCertificateRequest;
+        public event OnDeleteCertificateRequestSentDelegate?     OnDeleteCertificateRequest;
 
         /// <summary>
         /// An event sent whenever a response to a DeleteCertificate request was sent.
         /// </summary>
-        public event OnDeleteCertificateResponseDelegate?    OnDeleteCertificateResponse;
+        public event OnDeleteCertificateResponseReceivedDelegate?    OnDeleteCertificateResponse;
 
         #endregion
 

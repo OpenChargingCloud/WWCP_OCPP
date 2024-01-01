@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a MeterValues request was received.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnMeterValuesRequestDelegate?     OnMeterValuesRequest;
+        public event OCPPv2_1.CSMS.OnMeterValuesRequestReceivedDelegate?     OnMeterValuesRequestReceived;
 
         /// <summary>
         /// An event sent whenever a MeterValues request was received.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a response to a MeterValues request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnMeterValuesResponseDelegate?    OnMeterValuesResponse;
+        public event OCPPv2_1.CSMS.OnMeterValuesResponseSentDelegate?    OnMeterValuesResponseSent;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a MeterValues request was sent.
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     try
                     {
 
-                        OnMeterValuesRequest?.Invoke(Timestamp.Now,
+                        OnMeterValuesRequestReceived?.Invoke(Timestamp.Now,
                                                      parentNetworkingNode,
                                                      WebSocketConnection,
                                                      request);
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnMeterValuesRequest));
+                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnMeterValuesRequestReceived));
                     }
 
                     #endregion
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     try
                     {
 
-                        OnMeterValuesResponse?.Invoke(Timestamp.Now,
+                        OnMeterValuesResponseSent?.Invoke(Timestamp.Now,
                                                       parentNetworkingNode,
                                                       WebSocketConnection,
                                                       request,
@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnMeterValuesResponse));
+                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnMeterValuesResponseSent));
                     }
 
                     #endregion
@@ -263,6 +263,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
+    {
+
+        /// <summary>
+        /// An event sent whenever a response to a MeterValues request was sent.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnMeterValuesResponseSentDelegate? OnMeterValuesResponseSent;
 
     }
 

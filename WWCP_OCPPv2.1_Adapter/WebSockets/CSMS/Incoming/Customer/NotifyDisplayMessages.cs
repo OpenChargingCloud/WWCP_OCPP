@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a NotifyDisplayMessages request was received.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnNotifyDisplayMessagesRequestDelegate?     OnNotifyDisplayMessagesRequest;
+        public event OCPPv2_1.CSMS.OnNotifyDisplayMessagesRequestReceivedDelegate?     OnNotifyDisplayMessagesRequest;
 
         /// <summary>
         /// An event sent whenever a NotifyDisplayMessages was received.
@@ -68,7 +68,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a response to a NotifyDisplayMessages was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnNotifyDisplayMessagesResponseDelegate?    OnNotifyDisplayMessagesResponse;
+        public event OCPPv2_1.CSMS.OnNotifyDisplayMessagesResponseSentDelegate?    OnNotifyDisplayMessagesResponseSent;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a NotifyDisplayMessages was sent.
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                     try
                     {
 
-                        OnNotifyDisplayMessagesResponse?.Invoke(Timestamp.Now,
+                        OnNotifyDisplayMessagesResponseSent?.Invoke(Timestamp.Now,
                                                                 this,
                                                                 Connection,
                                                                 request,
@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnNotifyDisplayMessagesResponse));
+                        DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnNotifyDisplayMessagesResponseSent));
                     }
 
                     #endregion

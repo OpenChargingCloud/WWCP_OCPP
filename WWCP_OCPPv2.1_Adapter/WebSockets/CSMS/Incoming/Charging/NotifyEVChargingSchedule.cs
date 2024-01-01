@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a NotifyEVChargingSchedule request was received.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnNotifyEVChargingScheduleRequestDelegate?     OnNotifyEVChargingScheduleRequest;
+        public event OCPPv2_1.CSMS.OnNotifyEVChargingScheduleRequestReceivedDelegate?     OnNotifyEVChargingScheduleRequest;
 
         /// <summary>
         /// An event sent whenever a NotifyEVChargingSchedule was received.
@@ -68,7 +68,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a response to a NotifyEVChargingSchedule was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnNotifyEVChargingScheduleResponseDelegate?    OnNotifyEVChargingScheduleResponse;
+        public event OCPPv2_1.CSMS.OnNotifyEVChargingScheduleResponseSentDelegate?    OnNotifyEVChargingScheduleResponseSent;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a NotifyEVChargingSchedule was sent.
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                     try
                     {
 
-                        OnNotifyEVChargingScheduleResponse?.Invoke(Timestamp.Now,
+                        OnNotifyEVChargingScheduleResponseSent?.Invoke(Timestamp.Now,
                                                                    this,
                                                                    Connection,
                                                                    request,
@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnNotifyEVChargingScheduleResponse));
+                        DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnNotifyEVChargingScheduleResponseSent));
                     }
 
                     #endregion

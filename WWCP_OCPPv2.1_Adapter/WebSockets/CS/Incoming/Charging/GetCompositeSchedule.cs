@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a GetCompositeSchedule request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnGetCompositeScheduleRequestDelegate?     OnGetCompositeScheduleRequest;
+        public event OCPPv2_1.CS.OnGetCompositeScheduleRequestReceivedDelegate?     OnGetCompositeScheduleRequest;
 
         /// <summary>
         /// An event sent whenever a GetCompositeSchedule request was received.
@@ -71,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a response to a GetCompositeSchedule request was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnGetCompositeScheduleResponseDelegate?    OnGetCompositeScheduleResponse;
+        public event OCPPv2_1.CS.OnGetCompositeScheduleResponseSentDelegate?    OnGetCompositeScheduleResponseSent;
 
         /// <summary>
         /// An event sent whenever a websocket response to a GetCompositeSchedule request was sent.
@@ -182,7 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
                     try
                     {
 
-                        OnGetCompositeScheduleResponse?.Invoke(Timestamp.Now,
+                        OnGetCompositeScheduleResponseSent?.Invoke(Timestamp.Now,
                                                                this,
                                                                WebSocketConnection,
                                                                request,
@@ -192,7 +192,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnGetCompositeScheduleResponse));
+                        DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnGetCompositeScheduleResponseSent));
                     }
 
                     #endregion

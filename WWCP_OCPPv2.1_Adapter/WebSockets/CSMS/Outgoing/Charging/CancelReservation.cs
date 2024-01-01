@@ -49,12 +49,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a CancelReservation request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnCancelReservationRequestDelegate?     OnCancelReservationRequest;
+        public event OCPPv2_1.CSMS.OnCancelReservationRequestSentDelegate?     OnCancelReservationRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a CancelReservation request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnCancelReservationResponseDelegate?    OnCancelReservationResponse;
+        public event OCPPv2_1.CSMS.OnCancelReservationResponseReceivedDelegate?    OnCancelReservationResponse;
 
         #endregion
 
@@ -71,13 +71,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
             try
             {
 
-                OnCancelReservationRequest?.Invoke(startTime,
+                OnCancelReservationRequestSent?.Invoke(startTime,
                                                    this,
                                                    Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnCancelReservationRequest));
+                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnCancelReservationRequestSent));
             }
 
             #endregion

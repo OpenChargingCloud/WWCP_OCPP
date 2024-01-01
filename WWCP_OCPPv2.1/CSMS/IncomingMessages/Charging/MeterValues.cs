@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Request">The meter values request.</param>
     public delegate Task
 
-        OnMeterValuesRequestDelegate(DateTime                    Timestamp,
+        OnMeterValuesRequestReceivedDelegate(DateTime                    Timestamp,
                                      IEventSender                Sender,
                                      IWebSocketConnection   Connection,
                                      MeterValuesRequest          Request);
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task
 
-        OnMeterValuesResponseDelegate(DateTime                    Timestamp,
+        OnMeterValuesResponseSentDelegate(DateTime                    Timestamp,
                                       IEventSender                Sender,
                                       IWebSocketConnection   Connection,
                                       MeterValuesRequest          Request,

@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a SetNetworkProfile request was sent.
         /// </summary>
-        public event OnSetNetworkProfileRequestDelegate?     OnSetNetworkProfileRequest;
+        public event OnSetNetworkProfileRequestSentDelegate?     OnSetNetworkProfileRequest;
 
         /// <summary>
         /// An event sent whenever a response to a SetNetworkProfile request was sent.
         /// </summary>
-        public event OnSetNetworkProfileResponseDelegate?    OnSetNetworkProfileResponse;
+        public event OnSetNetworkProfileResponseReceivedDelegate?    OnSetNetworkProfileResponse;
 
         #endregion
 

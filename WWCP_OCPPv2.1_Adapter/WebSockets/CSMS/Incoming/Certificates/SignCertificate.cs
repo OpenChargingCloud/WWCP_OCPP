@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a SignCertificate request was received.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnSignCertificateRequestDelegate?     OnSignCertificateRequest;
+        public event OCPPv2_1.CSMS.OnSignCertificateRequestReceivedDelegate?     OnSignCertificateRequest;
 
         /// <summary>
         /// An event sent whenever a SignCertificate request was received.
@@ -68,7 +68,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a response to a SignCertificate request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnSignCertificateResponseDelegate?    OnSignCertificateResponse;
+        public event OCPPv2_1.CSMS.OnSignCertificateResponseSentDelegate?    OnSignCertificateResponseSent;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a SignCertificate request was sent.
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                     try
                     {
 
-                        OnSignCertificateResponse?.Invoke(Timestamp.Now,
+                        OnSignCertificateResponseSent?.Invoke(Timestamp.Now,
                                                           this,
                                                           Connection,
                                                           request,
@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnSignCertificateResponse));
+                        DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnSignCertificateResponseSent));
                     }
 
                     #endregion

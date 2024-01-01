@@ -52,7 +52,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever a notify monitoring report request will be sent to the CSMS.
         /// </summary>
-        public event OCPPv2_1.CS.OnNotifyMonitoringReportRequestDelegate?     OnNotifyMonitoringReportRequest;
+        public event OCPPv2_1.CS.OnNotifyMonitoringReportRequestSentDelegate?     OnNotifyMonitoringReportRequestSent;
 
         /// <summary>
         /// An event fired whenever a notify monitoring report request will be sent to the CSMS.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever a response to a notify monitoring report request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnNotifyMonitoringReportResponseDelegate?    OnNotifyMonitoringReportResponse;
+        public event OCPPv2_1.CS.OnNotifyMonitoringReportResponseReceivedDelegate?    OnNotifyMonitoringReportResponse;
 
         #endregion
 
@@ -91,14 +91,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
             try
             {
 
-                OnNotifyMonitoringReportRequest?.Invoke(startTime,
+                OnNotifyMonitoringReportRequestSent?.Invoke(startTime,
                                                         this,
                                                         Request);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnNotifyMonitoringReportRequest));
+                DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnNotifyMonitoringReportRequestSent));
             }
 
             #endregion

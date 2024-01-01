@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a set network profile request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnSetNetworkProfileRequestDelegate?     OnSetNetworkProfileRequest;
+        public event OCPPv2_1.CS.OnSetNetworkProfileRequestReceivedDelegate?     OnSetNetworkProfileRequest;
 
         /// <summary>
         /// An event sent whenever a set network profile request was received.
@@ -71,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a response to a set network profile request was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnSetNetworkProfileResponseDelegate?    OnSetNetworkProfileResponse;
+        public event OCPPv2_1.CS.OnSetNetworkProfileResponseSentDelegate?    OnSetNetworkProfileResponseSent;
 
         /// <summary>
         /// An event sent whenever a websocket response to a set network profile request was sent.
@@ -182,7 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
                     try
                     {
 
-                        OnSetNetworkProfileResponse?.Invoke(Timestamp.Now,
+                        OnSetNetworkProfileResponseSent?.Invoke(Timestamp.Now,
                                                             this,
                                                             WebSocketConnection,
                                                             request,
@@ -192,7 +192,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnSetNetworkProfileResponse));
+                        DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnSetNetworkProfileResponseSent));
                     }
 
                     #endregion

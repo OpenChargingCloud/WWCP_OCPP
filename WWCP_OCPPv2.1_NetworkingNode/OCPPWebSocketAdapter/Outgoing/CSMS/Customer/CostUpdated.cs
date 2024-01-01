@@ -49,12 +49,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a CostUpdated request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnCostUpdatedRequestDelegate?     OnCostUpdatedRequest;
+        public event OCPPv2_1.CSMS.OnCostUpdatedRequestSentDelegate?     OnCostUpdatedRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a CostUpdated request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnCostUpdatedResponseDelegate?    OnCostUpdatedResponse;
+        public event OCPPv2_1.CSMS.OnCostUpdatedResponseReceivedDelegate?    OnCostUpdatedResponseReceived;
 
         #endregion
 
@@ -71,13 +71,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnCostUpdatedRequest?.Invoke(startTime,
+                OnCostUpdatedRequestSent?.Invoke(startTime,
                                              parentNetworkingNode,
                                              Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnCostUpdatedRequest));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnCostUpdatedRequestSent));
             }
 
             #endregion
@@ -144,7 +144,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnCostUpdatedResponse?.Invoke(endTime,
+                OnCostUpdatedResponseReceived?.Invoke(endTime,
                                               parentNetworkingNode,
                                               Request,
                                               response,
@@ -153,7 +153,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnCostUpdatedResponse));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnCostUpdatedResponseReceived));
             }
 
             #endregion
@@ -164,6 +164,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
+    {
+
+        /// <summary>
+        /// An event sent whenever a response to a CostUpdated request was sent.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnCostUpdatedResponseReceivedDelegate? OnCostUpdatedResponseReceived;
 
     }
 

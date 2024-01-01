@@ -52,7 +52,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever a security event notification request will be sent to the CSMS.
         /// </summary>
-        public event OCPPv2_1.CS.OnSecurityEventNotificationRequestDelegate?     OnSecurityEventNotificationRequest;
+        public event OCPPv2_1.CS.OnSecurityEventNotificationRequestSentDelegate?     OnSecurityEventNotificationRequestSent;
 
         /// <summary>
         /// An event fired whenever a security event notification request will be sent to the CSMS.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever a response to a security event notification request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnSecurityEventNotificationResponseDelegate?    OnSecurityEventNotificationResponse;
+        public event OCPPv2_1.CS.OnSecurityEventNotificationResponseReceivedDelegate?    OnSecurityEventNotificationResponse;
 
         #endregion
 
@@ -91,14 +91,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
             try
             {
 
-                OnSecurityEventNotificationRequest?.Invoke(startTime,
+                OnSecurityEventNotificationRequestSent?.Invoke(startTime,
                                                            this,
                                                            Request);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnSecurityEventNotificationRequest));
+                DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnSecurityEventNotificationRequestSent));
             }
 
             #endregion

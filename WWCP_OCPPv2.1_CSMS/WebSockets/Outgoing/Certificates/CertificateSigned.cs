@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a CertificateSigned request was sent.
         /// </summary>
-        public event OnCertificateSignedRequestDelegate?     OnCertificateSignedRequest;
+        public event OnCertificateSignedRequestSentDelegate?     OnCertificateSignedRequest;
 
         /// <summary>
         /// An event sent whenever a response to a CertificateSigned request was sent.
         /// </summary>
-        public event OnCertificateSignedResponseDelegate?    OnCertificateSignedResponse;
+        public event OnCertificateSignedResponseReceivedDelegate?    OnCertificateSignedResponse;
 
         #endregion
 

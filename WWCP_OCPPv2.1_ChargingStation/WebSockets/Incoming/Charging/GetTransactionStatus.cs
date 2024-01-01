@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a GetTransactionStatus request was received.
         /// </summary>
-        public event OnGetTransactionStatusRequestDelegate?        OnGetTransactionStatusRequest;
+        public event OnGetTransactionStatusRequestReceivedDelegate?        OnGetTransactionStatusRequest;
 
         /// <summary>
         /// An event sent whenever a GetTransactionStatus request was received.
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a response to a GetTransactionStatus request was sent.
         /// </summary>
-        public event OnGetTransactionStatusResponseDelegate?       OnGetTransactionStatusResponse;
+        public event OnGetTransactionStatusResponseSentDelegate?       OnGetTransactionStatusResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a GetTransactionStatus request was sent.

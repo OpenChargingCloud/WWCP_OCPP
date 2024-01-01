@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a GetLog request was sent.
         /// </summary>
-        public event OnGetLogRequestDelegate?     OnGetLogRequest;
+        public event OnGetLogRequestSentDelegate?     OnGetLogRequest;
 
         /// <summary>
         /// An event sent whenever a response to a GetLog request was sent.
         /// </summary>
-        public event OnGetLogResponseDelegate?    OnGetLogResponse;
+        public event OnGetLogResponseReceivedDelegate?    OnGetLogResponse;
 
         #endregion
 

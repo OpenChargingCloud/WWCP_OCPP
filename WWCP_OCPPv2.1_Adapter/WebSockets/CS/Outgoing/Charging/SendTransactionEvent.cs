@@ -52,7 +52,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever an authorize request will be sent to the CSMS.
         /// </summary>
-        public event OCPPv2_1.CS.OnTransactionEventRequestDelegate?     OnTransactionEventRequest;
+        public event OCPPv2_1.CS.OnTransactionEventRequestSentDelegate?     OnTransactionEventRequestSent;
 
         /// <summary>
         /// An event fired whenever an authorize request will be sent to the CSMS.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever a response to an authorize request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnTransactionEventResponseDelegate?    OnTransactionEventResponse;
+        public event OCPPv2_1.CS.OnTransactionEventResponseReceivedDelegate?    OnTransactionEventResponse;
 
         #endregion
 
@@ -91,14 +91,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
             try
             {
 
-                OnTransactionEventRequest?.Invoke(startTime,
+                OnTransactionEventRequestSent?.Invoke(startTime,
                                                   this,
                                                   Request);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnTransactionEventRequest));
+                DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnTransactionEventRequestSent));
             }
 
             #endregion

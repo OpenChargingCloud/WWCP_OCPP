@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Request">The stop transaction request.</param>
     public delegate Task
 
-        OnSecurityEventNotificationRequestDelegate(DateTime                           Timestamp,
+        OnSecurityEventNotificationRequestReceivedDelegate(DateTime                           Timestamp,
                                                    IEventSender                       Sender,
                                                    IWebSocketConnection          Connection,
                                                    SecurityEventNotificationRequest   Request);
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task
 
-        OnSecurityEventNotificationResponseDelegate(DateTime                            Timestamp,
+        OnSecurityEventNotificationResponseSentDelegate(DateTime                            Timestamp,
                                                     IEventSender                        Sender,
                                                     IWebSocketConnection           Connection,
                                                     SecurityEventNotificationRequest    Request,

@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnUsePriorityChargingRequestDelegate(DateTime                     Timestamp,
+        OnUsePriorityChargingRequestReceivedDelegate(DateTime                     Timestamp,
                                              IEventSender                 Sender,
                                              IWebSocketConnection         Connection,
                                              UsePriorityChargingRequest   Request);
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnUsePriorityChargingResponseDelegate(DateTime                      Timestamp,
+        OnUsePriorityChargingResponseSentDelegate(DateTime                      Timestamp,
                                               IEventSender                  Sender,
                                               IWebSocketConnection          Connection,
                                               UsePriorityChargingRequest    Request,

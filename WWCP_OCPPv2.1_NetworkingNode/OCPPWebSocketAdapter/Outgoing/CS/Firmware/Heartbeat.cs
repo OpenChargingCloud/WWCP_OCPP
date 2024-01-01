@@ -50,7 +50,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a heartbeat request will be sent to the CSMS.
         /// </summary>
-        public event OCPPv2_1.CS.OnHeartbeatRequestDelegate?     OnHeartbeatRequest;
+        public event OCPPv2_1.CS.OnHeartbeatRequestSentDelegate?     OnHeartbeatRequestSent;
 
         /// <summary>
         /// An event fired whenever a heartbeat request will be sent to the CSMS.
@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a response to a heartbeat request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnHeartbeatResponseDelegate?    OnHeartbeatResponse;
+        public event OCPPv2_1.CS.OnHeartbeatResponseReceivedDelegate?    OnHeartbeatResponseReceived;
 
         #endregion
 
@@ -89,14 +89,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnHeartbeatRequest?.Invoke(startTime,
+                OnHeartbeatRequestSent?.Invoke(startTime,
                                            parentNetworkingNode,
                                            Request);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnHeartbeatRequest));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnHeartbeatRequestSent));
             }
 
             #endregion
@@ -163,7 +163,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnHeartbeatResponse?.Invoke(endTime,
+                OnHeartbeatResponseReceived?.Invoke(endTime,
                                             parentNetworkingNode,
                                             Request,
                                             response,
@@ -172,7 +172,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnHeartbeatResponse));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnHeartbeatResponseReceived));
             }
 
             #endregion
@@ -183,6 +183,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
+    {
+
+        /// <summary>
+        /// An event fired whenever a response to a heartbeat request was received.
+        /// </summary>
+        public event OCPPv2_1.CS.OnHeartbeatResponseReceivedDelegate? OnHeartbeatResponseReceived;
 
     }
 

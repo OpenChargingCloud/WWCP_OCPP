@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Request">The charging station heartbeat request.</param>
     public delegate Task
 
-        OnHeartbeatRequestDelegate(DateTime                    Timestamp,
+        OnHeartbeatRequestReceivedDelegate(DateTime                    Timestamp,
                                    IEventSender                Sender,
                                    IWebSocketConnection   Connection,
                                    HeartbeatRequest            Request);
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Runtime">The runtime of the charging station heartbeat response.</param>
     public delegate Task
 
-        OnHeartbeatResponseDelegate(DateTime                    Timestamp,
+        OnHeartbeatResponseSentDelegate(DateTime                    Timestamp,
                                     IEventSender                Sender,
                                     IWebSocketConnection   Connection,
                                     HeartbeatRequest            Request,

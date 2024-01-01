@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a SetVariables request was sent.
         /// </summary>
-        public event OnSetVariablesRequestDelegate?     OnSetVariablesRequest;
+        public event OnSetVariablesRequestSentDelegate?     OnSetVariablesRequest;
 
         /// <summary>
         /// An event sent whenever a response to a SetVariables request was sent.
         /// </summary>
-        public event OnSetVariablesResponseDelegate?    OnSetVariablesResponse;
+        public event OnSetVariablesResponseReceivedDelegate?    OnSetVariablesResponse;
 
         #endregion
 

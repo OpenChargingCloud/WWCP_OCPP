@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a GetVariables request was sent.
         /// </summary>
-        public event OnGetVariablesRequestDelegate?     OnGetVariablesRequest;
+        public event OnGetVariablesRequestSentDelegate?     OnGetVariablesRequest;
 
         /// <summary>
         /// An event sent whenever a response to a GetVariables request was sent.
         /// </summary>
-        public event OnGetVariablesResponseDelegate?    OnGetVariablesResponse;
+        public event OnGetVariablesResponseReceivedDelegate?    OnGetVariablesResponse;
 
         #endregion
 

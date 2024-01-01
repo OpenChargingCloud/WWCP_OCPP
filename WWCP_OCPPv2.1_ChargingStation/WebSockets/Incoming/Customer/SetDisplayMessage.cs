@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a SetDisplayMessage request was received.
         /// </summary>
-        public event OnSetDisplayMessageRequestDelegate?           OnSetDisplayMessageRequest;
+        public event OnSetDisplayMessageRequestReceivedDelegate?           OnSetDisplayMessageRequest;
 
         /// <summary>
         /// An event sent whenever a SetDisplayMessage request was received.
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a response to a SetDisplayMessage request was sent.
         /// </summary>
-        public event OnSetDisplayMessageResponseDelegate?          OnSetDisplayMessageResponse;
+        public event OnSetDisplayMessageResponseSentDelegate?          OnSetDisplayMessageResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a SetDisplayMessage request was sent.

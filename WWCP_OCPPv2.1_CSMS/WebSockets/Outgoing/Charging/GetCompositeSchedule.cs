@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a GetCompositeSchedule request was sent.
         /// </summary>
-        public event OnGetCompositeScheduleRequestDelegate?     OnGetCompositeScheduleRequest;
+        public event OnGetCompositeScheduleRequestSentDelegate?     OnGetCompositeScheduleRequest;
 
         /// <summary>
         /// An event sent whenever a response to a GetCompositeSchedule request was sent.
         /// </summary>
-        public event OnGetCompositeScheduleResponseDelegate?    OnGetCompositeScheduleResponse;
+        public event OnGetCompositeScheduleResponseReceivedDelegate?    OnGetCompositeScheduleResponse;
 
         #endregion
 

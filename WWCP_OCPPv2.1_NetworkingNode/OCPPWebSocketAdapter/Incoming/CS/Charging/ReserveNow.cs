@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a reserve now request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnReserveNowRequestDelegate?      OnReserveNowRequest;
+        public event OCPPv2_1.CS.OnReserveNowRequestReceivedDelegate?      OnReserveNowRequestReceived;
 
         /// <summary>
         /// An event sent whenever a reserve now request was received.
@@ -68,7 +68,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a response to a reserve now request was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnReserveNowResponseDelegate?     OnReserveNowResponse;
+        public event OCPPv2_1.CS.OnReserveNowResponseSentDelegate?     OnReserveNowResponseSent;
 
         /// <summary>
         /// An event sent whenever a websocket response to a reserve now request was sent.
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     try
                     {
 
-                        OnReserveNowRequest?.Invoke(Timestamp.Now,
+                        OnReserveNowRequestReceived?.Invoke(Timestamp.Now,
                                                     parentNetworkingNode,
                                                     WebSocketConnection,
                                                     request);
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnReserveNowRequest));
+                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnReserveNowRequestReceived));
                     }
 
                     #endregion
@@ -181,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     try
                     {
 
-                        OnReserveNowResponse?.Invoke(Timestamp.Now,
+                        OnReserveNowResponseSent?.Invoke(Timestamp.Now,
                                                      parentNetworkingNode,
                                                      WebSocketConnection,
                                                      request,
@@ -191,7 +191,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnReserveNowResponse));
+                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnReserveNowResponseSent));
                     }
 
                     #endregion
@@ -264,6 +264,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
+    {
+
+        /// <summary>
+        /// An event sent whenever a response to a reserve now request was sent.
+        /// </summary>
+        public event OCPPv2_1.CS.OnReserveNowResponseSentDelegate? OnReserveNowResponseSent;
 
     }
 

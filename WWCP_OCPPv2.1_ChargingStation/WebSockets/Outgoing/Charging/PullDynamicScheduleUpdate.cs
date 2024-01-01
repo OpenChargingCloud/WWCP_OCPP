@@ -51,7 +51,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event fired whenever a PullDynamicScheduleUpdate request will be sent to the CSMS.
         /// </summary>
-        public event OnPullDynamicScheduleUpdateRequestDelegate?     OnPullDynamicScheduleUpdateRequest;
+        public event OnPullDynamicScheduleUpdateRequestSentDelegate?     OnPullDynamicScheduleUpdateRequest;
 
         /// <summary>
         /// An event fired whenever a PullDynamicScheduleUpdate request will be sent to the CSMS.
@@ -66,7 +66,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event fired whenever a response to a PullDynamicScheduleUpdate request was received.
         /// </summary>
-        public event OnPullDynamicScheduleUpdateResponseDelegate?    OnPullDynamicScheduleUpdateResponse;
+        public event OnPullDynamicScheduleUpdateResponseReceivedDelegate?    OnPullDynamicScheduleUpdateResponse;
 
         #endregion
 

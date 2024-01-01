@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a change availability request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnChangeAvailabilityRequestDelegate?     OnChangeAvailabilityRequest;
+        public event OCPPv2_1.CS.OnChangeAvailabilityRequestReceivedDelegate?     OnChangeAvailabilityRequestReceived;
 
         /// <summary>
         /// An event sent whenever a change availability request was received.
@@ -68,7 +68,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a response to a change availability request was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnChangeAvailabilityResponseDelegate?    OnChangeAvailabilityResponse;
+        public event OCPPv2_1.CS.OnChangeAvailabilityResponseSentDelegate?    OnChangeAvailabilityResponseSent;
 
         /// <summary>
         /// An event sent whenever a websocket response to a change availability request was sent.
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     try
                     {
 
-                        OnChangeAvailabilityRequest?.Invoke(Timestamp.Now,
+                        OnChangeAvailabilityRequestReceived?.Invoke(Timestamp.Now,
                                                             parentNetworkingNode,
                                                             WebSocketConnection,
                                                             request);
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnChangeAvailabilityRequest));
+                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnChangeAvailabilityRequestReceived));
                     }
 
                     #endregion
@@ -181,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     try
                     {
 
-                        OnChangeAvailabilityResponse?.Invoke(Timestamp.Now,
+                        OnChangeAvailabilityResponseSent?.Invoke(Timestamp.Now,
                                                              parentNetworkingNode,
                                                              WebSocketConnection,
                                                              request,
@@ -191,7 +191,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnChangeAvailabilityResponse));
+                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnChangeAvailabilityResponseSent));
                     }
 
                     #endregion
@@ -264,6 +264,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
+    {
+
+        /// <summary>
+        /// An event sent whenever a response to a change availability request was sent.
+        /// </summary>
+        public event OCPPv2_1.CS.OnChangeAvailabilityResponseSentDelegate? OnChangeAvailabilityResponseSent;
 
     }
 

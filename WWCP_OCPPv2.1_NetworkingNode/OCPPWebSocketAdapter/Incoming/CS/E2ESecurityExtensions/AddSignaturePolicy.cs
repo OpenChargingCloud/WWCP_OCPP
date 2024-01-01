@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a response to an AddSignaturePolicy request was sent.
         /// </summary>
-        public event OCPP.CS.OnAddSignaturePolicyResponseDelegate?    OnAddSignaturePolicyResponse;
+        public event OCPP.CS.OnAddSignaturePolicyResponseDelegate?    OnAddSignaturePolicyResponseSent;
 
         /// <summary>
         /// An event sent whenever a websocket response to an AddSignaturePolicy request was sent.
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     try
                     {
 
-                        OnAddSignaturePolicyResponse?.Invoke(Timestamp.Now,
+                        OnAddSignaturePolicyResponseSent?.Invoke(Timestamp.Now,
                                                              parentNetworkingNode,
                                                              WebSocketConnection,
                                                              request,
@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnAddSignaturePolicyResponse));
+                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnAddSignaturePolicyResponseSent));
                     }
 
                     #endregion
@@ -256,6 +256,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
+    {
+
+        /// <summary>
+        /// An event sent whenever a response to an AddSignaturePolicy request was sent.
+        /// </summary>
+        public event OCPP.CS.OnAddSignaturePolicyResponseDelegate? OnAddSignaturePolicyResponseSent;
 
     }
 

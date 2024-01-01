@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever an UsePriorityCharging request was sent.
         /// </summary>
-        public event OnUsePriorityChargingRequestDelegate?     OnUsePriorityChargingRequest;
+        public event OnUsePriorityChargingRequestSentDelegate?     OnUsePriorityChargingRequest;
 
         /// <summary>
         /// An event sent whenever a response to an UsePriorityCharging request was sent.
         /// </summary>
-        public event OnUsePriorityChargingResponseDelegate?    OnUsePriorityChargingResponse;
+        public event OnUsePriorityChargingResponseReceivedDelegate?    OnUsePriorityChargingResponse;
 
         #endregion
 

@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnNotifyCRLRequestDelegate(DateTime               Timestamp,
+        OnNotifyCRLRequestReceivedDelegate(DateTime               Timestamp,
                                    IEventSender           Sender,
                                    IWebSocketConnection   Connection,
                                    NotifyCRLRequest       Request);
@@ -69,7 +69,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnNotifyCRLResponseDelegate(DateTime               Timestamp,
+        OnNotifyCRLResponseSentDelegate(DateTime               Timestamp,
                                     IEventSender           Sender,
                                     IWebSocketConnection   Connection,
                                     NotifyCRLRequest       Request,

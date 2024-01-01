@@ -144,7 +144,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnDataTransferRequest));
+                        DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnDataTransferRequestSent));
                     }
 
                     #endregion

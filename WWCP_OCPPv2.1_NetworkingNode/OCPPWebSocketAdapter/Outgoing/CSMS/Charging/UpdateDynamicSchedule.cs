@@ -49,12 +49,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a UpdateDynamicSchedule request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnUpdateDynamicScheduleRequestDelegate?     OnUpdateDynamicScheduleRequest;
+        public event OCPPv2_1.CSMS.OnUpdateDynamicScheduleRequestSentDelegate?     OnUpdateDynamicScheduleRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a UpdateDynamicSchedule request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnUpdateDynamicScheduleResponseDelegate?    OnUpdateDynamicScheduleResponse;
+        public event OCPPv2_1.CSMS.OnUpdateDynamicScheduleResponseReceivedDelegate?    OnUpdateDynamicScheduleResponseReceived;
 
         #endregion
 
@@ -72,13 +72,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnUpdateDynamicScheduleRequest?.Invoke(startTime,
+                OnUpdateDynamicScheduleRequestSent?.Invoke(startTime,
                                                        parentNetworkingNode,
                                                        Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnUpdateDynamicScheduleRequest));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnUpdateDynamicScheduleRequestSent));
             }
 
             #endregion
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnUpdateDynamicScheduleResponse?.Invoke(endTime,
+                OnUpdateDynamicScheduleResponseReceived?.Invoke(endTime,
                                                         parentNetworkingNode,
                                                         Request,
                                                         response,
@@ -154,7 +154,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnUpdateDynamicScheduleResponse));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnUpdateDynamicScheduleResponseReceived));
             }
 
             #endregion
@@ -165,6 +165,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
+    {
+
+        /// <summary>
+        /// An event sent whenever a response to a UpdateDynamicSchedule request was sent.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnUpdateDynamicScheduleResponseReceivedDelegate? OnUpdateDynamicScheduleResponseReceived;
 
     }
 

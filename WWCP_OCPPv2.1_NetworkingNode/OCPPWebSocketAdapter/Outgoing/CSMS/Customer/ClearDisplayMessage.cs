@@ -50,12 +50,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a ClearDisplayMessage request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnClearDisplayMessageRequestDelegate?     OnClearDisplayMessageRequest;
+        public event OCPPv2_1.CSMS.OnClearDisplayMessageRequestSentDelegate?     OnClearDisplayMessageRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a ClearDisplayMessage request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnClearDisplayMessageResponseDelegate?    OnClearDisplayMessageResponse;
+        public event OCPPv2_1.CSMS.OnClearDisplayMessageResponseReceivedDelegate?    OnClearDisplayMessageResponseReceived;
 
         #endregion
 
@@ -72,13 +72,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnClearDisplayMessageRequest?.Invoke(startTime,
+                OnClearDisplayMessageRequestSent?.Invoke(startTime,
                                                      parentNetworkingNode,
                                                      Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnClearDisplayMessageRequest));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnClearDisplayMessageRequestSent));
             }
 
             #endregion
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnClearDisplayMessageResponse?.Invoke(endTime,
+                OnClearDisplayMessageResponseReceived?.Invoke(endTime,
                                                       parentNetworkingNode,
                                                       Request,
                                                       response,
@@ -154,7 +154,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnClearDisplayMessageResponse));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnClearDisplayMessageResponseReceived));
             }
 
             #endregion
@@ -165,6 +165,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
+    {
+
+        /// <summary>
+        /// An event sent whenever a response to a ClearDisplayMessage request was sent.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnClearDisplayMessageResponseReceivedDelegate? OnClearDisplayMessageResponseReceived;
 
     }
 

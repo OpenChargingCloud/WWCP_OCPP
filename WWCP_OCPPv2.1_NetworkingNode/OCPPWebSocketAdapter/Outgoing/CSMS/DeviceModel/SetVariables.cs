@@ -49,12 +49,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a SetVariables request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnSetVariablesRequestDelegate?     OnSetVariablesRequest;
+        public event OCPPv2_1.CSMS.OnSetVariablesRequestSentDelegate?     OnSetVariablesRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a SetVariables request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnSetVariablesResponseDelegate?    OnSetVariablesResponse;
+        public event OCPPv2_1.CSMS.OnSetVariablesResponseReceivedDelegate?    OnSetVariablesResponseReceived;
 
         #endregion
 
@@ -71,13 +71,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnSetVariablesRequest?.Invoke(startTime,
+                OnSetVariablesRequestSent?.Invoke(startTime,
                                               parentNetworkingNode,
                                               Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnSetVariablesRequest));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnSetVariablesRequestSent));
             }
 
             #endregion
@@ -148,7 +148,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnSetVariablesResponse?.Invoke(endTime,
+                OnSetVariablesResponseReceived?.Invoke(endTime,
                                                parentNetworkingNode,
                                                Request,
                                                response,
@@ -157,7 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnSetVariablesResponse));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnSetVariablesResponseReceived));
             }
 
             #endregion
@@ -168,6 +168,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
+    {
+
+        /// <summary>
+        /// An event sent whenever a response to a SetVariables request was sent.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnSetVariablesResponseReceivedDelegate? OnSetVariablesResponseReceived;
 
     }
 

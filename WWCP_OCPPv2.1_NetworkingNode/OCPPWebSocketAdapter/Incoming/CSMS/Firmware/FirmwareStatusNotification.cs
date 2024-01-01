@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a FirmwareStatusNotification request was received.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnFirmwareStatusNotificationRequestDelegate?     OnFirmwareStatusNotificationRequest;
+        public event OCPPv2_1.CSMS.OnFirmwareStatusNotificationRequestReceivedDelegate?     OnFirmwareStatusNotificationRequestReceived;
 
         /// <summary>
         /// An event sent whenever a FirmwareStatusNotification request was received.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a response to a FirmwareStatusNotification request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnFirmwareStatusNotificationResponseDelegate?    OnFirmwareStatusNotificationResponse;
+        public event OCPPv2_1.CSMS.OnFirmwareStatusNotificationResponseSentDelegate?    OnFirmwareStatusNotificationResponseSent;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a FirmwareStatusNotification request was sent.
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     try
                     {
 
-                        OnFirmwareStatusNotificationRequest?.Invoke(Timestamp.Now,
+                        OnFirmwareStatusNotificationRequestReceived?.Invoke(Timestamp.Now,
                                                                     parentNetworkingNode,
                                                                     WebSocketConnection,
                                                                     request);
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnFirmwareStatusNotificationRequest));
+                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnFirmwareStatusNotificationRequestReceived));
                     }
 
                     #endregion
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     try
                     {
 
-                        OnFirmwareStatusNotificationResponse?.Invoke(Timestamp.Now,
+                        OnFirmwareStatusNotificationResponseSent?.Invoke(Timestamp.Now,
                                                                      parentNetworkingNode,
                                                                      WebSocketConnection,
                                                                      request,
@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnFirmwareStatusNotificationResponse));
+                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnFirmwareStatusNotificationResponseSent));
                     }
 
                     #endregion
@@ -263,6 +263,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
+    {
+
+        /// <summary>
+        /// An event sent whenever a response to a FirmwareStatusNotification request was sent.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnFirmwareStatusNotificationResponseSentDelegate? OnFirmwareStatusNotificationResponseSent;
 
     }
 

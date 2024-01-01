@@ -49,12 +49,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a NotifyCRL request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnNotifyCRLRequestDelegate?     OnNotifyCRLRequest;
+        public event OCPPv2_1.CSMS.OnNotifyCRLRequestSentDelegate?     OnNotifyCRLRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a NotifyCRL request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnNotifyCRLResponseDelegate?    OnNotifyCRLResponse;
+        public event OCPPv2_1.CSMS.OnNotifyCRLResponseReceivedDelegate?    OnNotifyCRLResponseReceived;
 
         #endregion
 
@@ -75,13 +75,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnNotifyCRLRequest?.Invoke(startTime,
+                OnNotifyCRLRequestSent?.Invoke(startTime,
                                            parentNetworkingNode,
                                            Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnNotifyCRLRequest));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnNotifyCRLRequestSent));
             }
 
             #endregion
@@ -148,7 +148,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnNotifyCRLResponse?.Invoke(endTime,
+                OnNotifyCRLResponseReceived?.Invoke(endTime,
                                             parentNetworkingNode,
                                             Request,
                                             response,
@@ -157,7 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnNotifyCRLResponse));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnNotifyCRLResponseReceived));
             }
 
             #endregion
@@ -168,6 +168,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
+    {
+
+        /// <summary>
+        /// An event sent whenever a response to a NotifyCRL request was sent.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnNotifyCRLResponseReceivedDelegate? OnNotifyCRLResponseReceived;
 
     }
 

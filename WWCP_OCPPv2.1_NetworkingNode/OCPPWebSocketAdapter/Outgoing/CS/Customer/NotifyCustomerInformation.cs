@@ -49,7 +49,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a notify customer information request will be sent to the CSMS.
         /// </summary>
-        public event OCPPv2_1.CS.OnNotifyCustomerInformationRequestDelegate?     OnNotifyCustomerInformationRequest;
+        public event OCPPv2_1.CS.OnNotifyCustomerInformationRequestSentDelegate?     OnNotifyCustomerInformationRequestSent;
 
         /// <summary>
         /// An event fired whenever a notify customer information request will be sent to the CSMS.
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a response to a notify customer information request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnNotifyCustomerInformationResponseDelegate?    OnNotifyCustomerInformationResponse;
+        public event OCPPv2_1.CS.OnNotifyCustomerInformationResponseReceivedDelegate?    OnNotifyCustomerInformationResponseReceived;
 
         #endregion
 
@@ -88,14 +88,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnNotifyCustomerInformationRequest?.Invoke(startTime,
+                OnNotifyCustomerInformationRequestSent?.Invoke(startTime,
                                                            parentNetworkingNode,
                                                            Request);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnNotifyCustomerInformationRequest));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnNotifyCustomerInformationRequestSent));
             }
 
             #endregion
@@ -162,7 +162,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnNotifyCustomerInformationResponse?.Invoke(endTime,
+                OnNotifyCustomerInformationResponseReceived?.Invoke(endTime,
                                                             parentNetworkingNode,
                                                             Request,
                                                             response,
@@ -171,7 +171,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnNotifyCustomerInformationResponse));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnNotifyCustomerInformationResponseReceived));
             }
 
             #endregion
@@ -182,6 +182,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
+    {
+
+        /// <summary>
+        /// An event fired whenever a response to a notify customer information request was received.
+        /// </summary>
+        public event OCPPv2_1.CS.OnNotifyCustomerInformationResponseReceivedDelegate? OnNotifyCustomerInformationResponseReceived;
 
     }
 

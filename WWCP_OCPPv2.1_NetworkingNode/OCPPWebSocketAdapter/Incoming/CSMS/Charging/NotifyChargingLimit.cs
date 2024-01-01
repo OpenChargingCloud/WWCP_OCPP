@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a NotifyChargingLimit request was received.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnNotifyChargingLimitRequestDelegate?     OnNotifyChargingLimitRequest;
+        public event OCPPv2_1.CSMS.OnNotifyChargingLimitRequestReceivedDelegate?     OnNotifyChargingLimitRequestReceived;
 
         /// <summary>
         /// An event sent whenever a NotifyChargingLimit was received.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a response to a NotifyChargingLimit was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnNotifyChargingLimitResponseDelegate?    OnNotifyChargingLimitResponse;
+        public event OCPPv2_1.CSMS.OnNotifyChargingLimitResponseSentDelegate?    OnNotifyChargingLimitResponseSent;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a NotifyChargingLimit was sent.
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     try
                     {
 
-                        OnNotifyChargingLimitRequest?.Invoke(Timestamp.Now,
+                        OnNotifyChargingLimitRequestReceived?.Invoke(Timestamp.Now,
                                                              parentNetworkingNode,
                                                              WebSocketConnection,
                                                              request);
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnNotifyChargingLimitRequest));
+                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnNotifyChargingLimitRequestReceived));
                     }
 
                     #endregion
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     try
                     {
 
-                        OnNotifyChargingLimitResponse?.Invoke(Timestamp.Now,
+                        OnNotifyChargingLimitResponseSent?.Invoke(Timestamp.Now,
                                                               parentNetworkingNode,
                                                               WebSocketConnection,
                                                               request,
@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnNotifyChargingLimitResponse));
+                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnNotifyChargingLimitResponseSent));
                     }
 
                     #endregion
@@ -263,6 +263,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
+    {
+
+        /// <summary>
+        /// An event sent whenever a response to a NotifyChargingLimit was sent.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnNotifyChargingLimitResponseSentDelegate? OnNotifyChargingLimitResponseSent;
 
     }
 

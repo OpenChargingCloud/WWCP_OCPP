@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a ClearedChargingLimit request was received.
         /// </summary>
-        public event OnClearedChargingLimitRequestDelegate?       OnClearedChargingLimitRequest;
+        public event OnClearedChargingLimitRequestReceivedDelegate?       OnClearedChargingLimitRequest;
 
         /// <summary>
         /// An event sent whenever a ClearedChargingLimit was received.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a response to a ClearedChargingLimit was sent.
         /// </summary>
-        public event OnClearedChargingLimitResponseDelegate?      OnClearedChargingLimitResponse;
+        public event OnClearedChargingLimitResponseSentDelegate?      OnClearedChargingLimitResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a ClearedChargingLimit was sent.

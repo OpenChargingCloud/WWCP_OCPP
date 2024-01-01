@@ -49,12 +49,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a NotifyCRL request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnNotifyCRLRequestDelegate?     OnNotifyCRLRequest;
+        public event OCPPv2_1.CSMS.OnNotifyCRLRequestSentDelegate?     OnNotifyCRLRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a NotifyCRL request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnNotifyCRLResponseDelegate?    OnNotifyCRLResponse;
+        public event OCPPv2_1.CSMS.OnNotifyCRLResponseReceivedDelegate?    OnNotifyCRLResponse;
 
         #endregion
 
@@ -75,13 +75,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
             try
             {
 
-                OnNotifyCRLRequest?.Invoke(startTime,
+                OnNotifyCRLRequestSent?.Invoke(startTime,
                                            this,
                                            Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnNotifyCRLRequest));
+                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnNotifyCRLRequestSent));
             }
 
             #endregion

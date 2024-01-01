@@ -51,7 +51,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event fired whenever a NotifyDisplayMessages request will be sent to the CSMS.
         /// </summary>
-        public event OnNotifyDisplayMessagesRequestDelegate?     OnNotifyDisplayMessagesRequest;
+        public event OnNotifyDisplayMessagesRequestSentDelegate?     OnNotifyDisplayMessagesRequest;
 
         /// <summary>
         /// An event fired whenever a NotifyDisplayMessages request will be sent to the CSMS.
@@ -66,7 +66,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event fired whenever a response to a NotifyDisplayMessages request was received.
         /// </summary>
-        public event OnNotifyDisplayMessagesResponseDelegate?    OnNotifyDisplayMessagesResponse;
+        public event OnNotifyDisplayMessagesResponseReceivedDelegate?    OnNotifyDisplayMessagesResponse;
 
         #endregion
 

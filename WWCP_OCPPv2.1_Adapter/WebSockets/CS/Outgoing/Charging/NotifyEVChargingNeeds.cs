@@ -52,7 +52,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever a notify EV charging needs request will be sent to the CSMS.
         /// </summary>
-        public event OCPPv2_1.CS.OnNotifyEVChargingNeedsRequestDelegate?     OnNotifyEVChargingNeedsRequest;
+        public event OCPPv2_1.CS.OnNotifyEVChargingNeedsRequestSentDelegate?     OnNotifyEVChargingNeedsRequestSent;
 
         /// <summary>
         /// An event fired whenever a notify EV charging needs request will be sent to the CSMS.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever a response to a notify EV charging needs request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnNotifyEVChargingNeedsResponseDelegate?    OnNotifyEVChargingNeedsResponse;
+        public event OCPPv2_1.CS.OnNotifyEVChargingNeedsResponseReceivedDelegate?    OnNotifyEVChargingNeedsResponse;
 
         #endregion
 
@@ -91,14 +91,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
             try
             {
 
-                OnNotifyEVChargingNeedsRequest?.Invoke(startTime,
+                OnNotifyEVChargingNeedsRequestSent?.Invoke(startTime,
                                                        this,
                                                        Request);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnNotifyEVChargingNeedsRequest));
+                DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnNotifyEVChargingNeedsRequestSent));
             }
 
             #endregion

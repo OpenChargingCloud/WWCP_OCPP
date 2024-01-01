@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a RequestStartTransaction request was sent.
         /// </summary>
-        public event OnRequestStartTransactionRequestDelegate?     OnRequestStartTransactionRequest;
+        public event OnRequestStartTransactionRequestSentDelegate?     OnRequestStartTransactionRequest;
 
         /// <summary>
         /// An event sent whenever a response to a RequestStartTransaction request was sent.
         /// </summary>
-        public event OnRequestStartTransactionResponseDelegate?    OnRequestStartTransactionResponse;
+        public event OnRequestStartTransactionResponseReceivedDelegate?    OnRequestStartTransactionResponse;
 
         #endregion
 

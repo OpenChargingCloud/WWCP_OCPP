@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a ReportChargingProfiles request was received.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnReportChargingProfilesRequestDelegate?     OnReportChargingProfilesRequest;
+        public event OCPPv2_1.CSMS.OnReportChargingProfilesRequestReceivedDelegate?     OnReportChargingProfilesRequestReceived;
 
         /// <summary>
         /// An event sent whenever a ReportChargingProfiles was received.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a response to a ReportChargingProfiles was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnReportChargingProfilesResponseDelegate?    OnReportChargingProfilesResponse;
+        public event OCPPv2_1.CSMS.OnReportChargingProfilesResponseSentDelegate?    OnReportChargingProfilesResponseSent;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a ReportChargingProfiles was sent.
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     try
                     {
 
-                        OnReportChargingProfilesRequest?.Invoke(Timestamp.Now,
+                        OnReportChargingProfilesRequestReceived?.Invoke(Timestamp.Now,
                                                                 parentNetworkingNode,
                                                                 WebSocketConnection,
                                                                 request);
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnReportChargingProfilesRequest));
+                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnReportChargingProfilesRequestReceived));
                     }
 
                     #endregion
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     try
                     {
 
-                        OnReportChargingProfilesResponse?.Invoke(Timestamp.Now,
+                        OnReportChargingProfilesResponseSent?.Invoke(Timestamp.Now,
                                                                  parentNetworkingNode,
                                                                  WebSocketConnection,
                                                                  request,
@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnReportChargingProfilesResponse));
+                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnReportChargingProfilesResponseSent));
                     }
 
                     #endregion
@@ -263,6 +263,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
+    {
+
+        /// <summary>
+        /// An event sent whenever a response to a ReportChargingProfiles was sent.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnReportChargingProfilesResponseSentDelegate? OnReportChargingProfilesResponseSent;
 
     }
 

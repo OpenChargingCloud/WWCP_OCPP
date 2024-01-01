@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a NotifyDisplayMessages request was received.
         /// </summary>
-        public event OnNotifyDisplayMessagesRequestDelegate?      OnNotifyDisplayMessagesRequest;
+        public event OnNotifyDisplayMessagesRequestReceivedDelegate?      OnNotifyDisplayMessagesRequest;
 
         /// <summary>
         /// An event sent whenever a NotifyDisplayMessages was received.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a response to a NotifyDisplayMessages was sent.
         /// </summary>
-        public event OnNotifyDisplayMessagesResponseDelegate?     OnNotifyDisplayMessagesResponse;
+        public event OnNotifyDisplayMessagesResponseSentDelegate?     OnNotifyDisplayMessagesResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a NotifyDisplayMessages was sent.

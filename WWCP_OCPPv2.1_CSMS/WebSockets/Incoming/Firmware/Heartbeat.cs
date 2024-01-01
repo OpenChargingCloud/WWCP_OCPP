@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a Heartbeat request was received.
         /// </summary>
-        public event OnHeartbeatRequestDelegate?                  OnHeartbeatRequest;
+        public event OnHeartbeatRequestReceivedDelegate?                  OnHeartbeatRequest;
 
         /// <summary>
         /// An event sent whenever a Heartbeat was received.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a response to a Heartbeat was sent.
         /// </summary>
-        public event OnHeartbeatResponseDelegate?                 OnHeartbeatResponse;
+        public event OnHeartbeatResponseSentDelegate?                 OnHeartbeatResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a Heartbeat was sent.

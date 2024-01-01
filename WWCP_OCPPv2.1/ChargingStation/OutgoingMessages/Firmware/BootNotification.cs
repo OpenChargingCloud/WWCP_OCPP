@@ -32,9 +32,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The reserve now request.</param>
-    public delegate Task OnBootNotificationRequestDelegate(DateTime                  Timestamp,
-                                                           IEventSender              Sender,
-                                                           BootNotificationRequest   Request);
+    public delegate Task OnBootNotificationRequestSentDelegate(DateTime                  Timestamp,
+                                                               IEventSender              Sender,
+                                                               BootNotificationRequest   Request);
 
     /// <summary>
     /// A delegate called whenever a response to a BootNotification request was received.
@@ -44,10 +44,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Request">The request.</param>
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate Task OnBootNotificationResponseDelegate(DateTime                   Timestamp,
-                                                            IEventSender               Sender,
-                                                            BootNotificationRequest    Request,
-                                                            BootNotificationResponse   Response,
-                                                            TimeSpan                   Runtime);
+    public delegate Task OnBootNotificationResponseReceivedDelegate(DateTime                   Timestamp,
+                                                                    IEventSender               Sender,
+                                                                    BootNotificationRequest    Request,
+                                                                    BootNotificationResponse   Response,
+                                                                    TimeSpan                   Runtime);
 
 }

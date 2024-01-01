@@ -49,12 +49,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever an AFRR signal request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnAFRRSignalRequestDelegate?     OnAFRRSignalRequest;
+        public event OCPPv2_1.CSMS.OnAFRRSignalRequestSentDelegate?     OnAFRRSignalRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to an AFRR signal request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnAFRRSignalResponseDelegate?    OnAFRRSignalResponse;
+        public event OCPPv2_1.CSMS.OnAFRRSignalResponseReceivedDelegate?    OnAFRRSignalResponse;
 
         #endregion
 
@@ -71,13 +71,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
             try
             {
 
-                OnAFRRSignalRequest?.Invoke(startTime,
+                OnAFRRSignalRequestSent?.Invoke(startTime,
                                             this,
                                             Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnAFRRSignalRequest));
+                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnAFRRSignalRequestSent));
             }
 
             #endregion

@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnPublishFirmwareRequestDelegate(DateTime                 Timestamp,
+        OnPublishFirmwareRequestReceivedDelegate(DateTime                 Timestamp,
                                          IEventSender             Sender,
                                          IWebSocketConnection     Connection,
                                          PublishFirmwareRequest   Request);
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnPublishFirmwareResponseDelegate(DateTime                  Timestamp,
+        OnPublishFirmwareResponseSentDelegate(DateTime                  Timestamp,
                                           IEventSender              Sender,
                                           IWebSocketConnection      Connection,
                                           PublishFirmwareRequest    Request,

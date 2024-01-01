@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a CostUpdated request was sent.
         /// </summary>
-        public event OnCostUpdatedRequestDelegate?     OnCostUpdatedRequest;
+        public event OnCostUpdatedRequestSentDelegate?     OnCostUpdatedRequest;
 
         /// <summary>
         /// An event sent whenever a response to a CostUpdated request was sent.
         /// </summary>
-        public event OnCostUpdatedResponseDelegate?    OnCostUpdatedResponse;
+        public event OnCostUpdatedResponseReceivedDelegate?    OnCostUpdatedResponse;
 
         #endregion
 

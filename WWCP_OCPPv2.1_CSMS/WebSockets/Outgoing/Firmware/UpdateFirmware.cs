@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever an UpdateFirmware request was sent.
         /// </summary>
-        public event OnUpdateFirmwareRequestDelegate?     OnUpdateFirmwareRequest;
+        public event OnUpdateFirmwareRequestSentDelegate?     OnUpdateFirmwareRequest;
 
         /// <summary>
         /// An event sent whenever a response to an UpdateFirmware request was sent.
         /// </summary>
-        public event OnUpdateFirmwareResponseDelegate?    OnUpdateFirmwareResponse;
+        public event OnUpdateFirmwareResponseReceivedDelegate?    OnUpdateFirmwareResponse;
 
         #endregion
 

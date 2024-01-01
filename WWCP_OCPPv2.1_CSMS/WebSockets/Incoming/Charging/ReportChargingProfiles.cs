@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a ReportChargingProfiles request was received.
         /// </summary>
-        public event OnReportChargingProfilesRequestDelegate?     OnReportChargingProfilesRequest;
+        public event OnReportChargingProfilesRequestReceivedDelegate?     OnReportChargingProfilesRequest;
 
         /// <summary>
         /// An event sent whenever a ReportChargingProfiles was received.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a response to a ReportChargingProfiles was sent.
         /// </summary>
-        public event OnReportChargingProfilesResponseDelegate?    OnReportChargingProfilesResponse;
+        public event OnReportChargingProfilesResponseSentDelegate?    OnReportChargingProfilesResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a ReportChargingProfiles was sent.

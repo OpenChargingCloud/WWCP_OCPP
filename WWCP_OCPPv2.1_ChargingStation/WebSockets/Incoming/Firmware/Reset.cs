@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a Reset request was received.
         /// </summary>
-        public event OnResetRequestDelegate?                       OnResetRequest;
+        public event OnResetRequestReceivedDelegate?                       OnResetRequest;
 
         /// <summary>
         /// An event sent whenever a Reset request was received.
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a response to a Reset request was sent.
         /// </summary>
-        public event OnResetResponseDelegate?                      OnResetResponse;
+        public event OnResetResponseSentDelegate?                      OnResetResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a Reset request was sent.

@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a NotifyEVChargingNeeds request was received.
         /// </summary>
-        public event OnNotifyEVChargingNeedsRequestDelegate?      OnNotifyEVChargingNeedsRequest;
+        public event OnNotifyEVChargingNeedsRequestReceivedDelegate?      OnNotifyEVChargingNeedsRequest;
 
         /// <summary>
         /// An event sent whenever a NotifyEVChargingNeeds was received.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a response to a NotifyEVChargingNeeds was sent.
         /// </summary>
-        public event OnNotifyEVChargingNeedsResponseDelegate?     OnNotifyEVChargingNeedsResponse;
+        public event OnNotifyEVChargingNeedsResponseSentDelegate?     OnNotifyEVChargingNeedsResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a NotifyEVChargingNeeds was sent.

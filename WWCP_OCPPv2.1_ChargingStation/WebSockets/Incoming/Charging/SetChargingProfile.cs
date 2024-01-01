@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a SetChargingProfile request was received.
         /// </summary>
-        public event OnSetChargingProfileRequestDelegate?          OnSetChargingProfileRequest;
+        public event OnSetChargingProfileRequestReceivedDelegate?          OnSetChargingProfileRequest;
 
         /// <summary>
         /// An event sent whenever a SetChargingProfile request was received.
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a response to a SetChargingProfile request was sent.
         /// </summary>
-        public event OnSetChargingProfileResponseDelegate?         OnSetChargingProfileResponse;
+        public event OnSetChargingProfileResponseSentDelegate?         OnSetChargingProfileResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a SetChargingProfile request was sent.

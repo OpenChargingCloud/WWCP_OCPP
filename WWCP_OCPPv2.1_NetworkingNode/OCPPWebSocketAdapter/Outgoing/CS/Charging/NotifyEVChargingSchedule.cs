@@ -50,7 +50,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a NotifyEVChargingSchedule request will be sent to the CSMS.
         /// </summary>
-        public event OCPPv2_1.CS.OnNotifyEVChargingScheduleRequestDelegate?     OnNotifyEVChargingScheduleRequest;
+        public event OCPPv2_1.CS.OnNotifyEVChargingScheduleRequestSentDelegate?     OnNotifyEVChargingScheduleRequestSent;
 
         /// <summary>
         /// An event fired whenever a NotifyEVChargingSchedule request will be sent to the CSMS.
@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a response to a NotifyEVChargingSchedule request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnNotifyEVChargingScheduleResponseDelegate?    OnNotifyEVChargingScheduleResponse;
+        public event OCPPv2_1.CS.OnNotifyEVChargingScheduleResponseReceivedDelegate?    OnNotifyEVChargingScheduleResponseReceived;
 
         #endregion
 
@@ -89,14 +89,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnNotifyEVChargingScheduleRequest?.Invoke(startTime,
+                OnNotifyEVChargingScheduleRequestSent?.Invoke(startTime,
                                                           parentNetworkingNode,
                                                           Request);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnNotifyEVChargingScheduleRequest));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnNotifyEVChargingScheduleRequestSent));
             }
 
             #endregion
@@ -185,7 +185,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnNotifyEVChargingScheduleResponse?.Invoke(endTime,
+                OnNotifyEVChargingScheduleResponseReceived?.Invoke(endTime,
                                                            parentNetworkingNode,
                                                            Request,
                                                            response,
@@ -194,7 +194,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnNotifyEVChargingScheduleResponse));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnNotifyEVChargingScheduleResponseReceived));
             }
 
             #endregion
@@ -205,6 +205,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
+    {
+
+        /// <summary>
+        /// An event fired whenever a response to a NotifyEVChargingSchedule request was received.
+        /// </summary>
+        public event OCPPv2_1.CS.OnNotifyEVChargingScheduleResponseReceivedDelegate? OnNotifyEVChargingScheduleResponseReceived;
 
     }
 

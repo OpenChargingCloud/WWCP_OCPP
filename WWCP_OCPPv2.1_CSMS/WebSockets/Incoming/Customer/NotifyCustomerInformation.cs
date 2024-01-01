@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a NotifyCustomerInformation request was received.
         /// </summary>
-        public event OnNotifyCustomerInformationRequestDelegate?     OnNotifyCustomerInformationRequest;
+        public event OnNotifyCustomerInformationRequestReceivedDelegate?     OnNotifyCustomerInformationRequest;
 
         /// <summary>
         /// An event sent whenever a NotifyCustomerInformation was received.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a response to a NotifyCustomerInformation was sent.
         /// </summary>
-        public event OnNotifyCustomerInformationResponseDelegate?    OnNotifyCustomerInformationResponse;
+        public event OnNotifyCustomerInformationResponseSentDelegate?    OnNotifyCustomerInformationResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a NotifyCustomerInformation was sent.

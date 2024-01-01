@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a GetVariables request was received.
         /// </summary>
-        public event OnGetVariablesRequestDelegate?                OnGetVariablesRequest;
+        public event OnGetVariablesRequestReceivedDelegate?                OnGetVariablesRequest;
 
         /// <summary>
         /// An event sent whenever a GetVariables request was received.
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a response to a GetVariables request was sent.
         /// </summary>
-        public event OnGetVariablesResponseDelegate?               OnGetVariablesResponse;
+        public event OnGetVariablesResponseSentDelegate?               OnGetVariablesResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a GetVariables request was sent.

@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a DeleteCertificate request was received.
         /// </summary>
-        public event OnDeleteCertificateRequestDelegate?           OnDeleteCertificateRequest;
+        public event OnDeleteCertificateRequestReceivedDelegate?           OnDeleteCertificateRequest;
 
         /// <summary>
         /// An event sent whenever a DeleteCertificate request was received.
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a response to a DeleteCertificate request was sent.
         /// </summary>
-        public event OnDeleteCertificateResponseDelegate?          OnDeleteCertificateResponse;
+        public event OnDeleteCertificateResponseSentDelegate?          OnDeleteCertificateResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a DeleteCertificate request was sent.

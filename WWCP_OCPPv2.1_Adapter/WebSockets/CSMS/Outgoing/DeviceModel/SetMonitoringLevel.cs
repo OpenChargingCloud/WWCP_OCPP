@@ -49,12 +49,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a SetMonitoringLevel request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnSetMonitoringLevelRequestDelegate?     OnSetMonitoringLevelRequest;
+        public event OCPPv2_1.CSMS.OnSetMonitoringLevelRequestSentDelegate?     OnSetMonitoringLevelRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a SetMonitoringLevel request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnSetMonitoringLevelResponseDelegate?    OnSetMonitoringLevelResponse;
+        public event OCPPv2_1.CSMS.OnSetMonitoringLevelResponseReceivedDelegate?    OnSetMonitoringLevelResponse;
 
         #endregion
 
@@ -71,13 +71,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
             try
             {
 
-                OnSetMonitoringLevelRequest?.Invoke(startTime,
+                OnSetMonitoringLevelRequestSent?.Invoke(startTime,
                                                     this,
                                                     Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnSetMonitoringLevelRequest));
+                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnSetMonitoringLevelRequestSent));
             }
 
             #endregion

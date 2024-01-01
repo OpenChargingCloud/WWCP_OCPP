@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a clear display message request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnClearDisplayMessageRequestDelegate?     OnClearDisplayMessageRequest;
+        public event OCPPv2_1.CS.OnClearDisplayMessageRequestReceivedDelegate?     OnClearDisplayMessageRequest;
 
         /// <summary>
         /// An event sent whenever a clear display message request was received.
@@ -71,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a response to a clear display message request was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnClearDisplayMessageResponseDelegate?    OnClearDisplayMessageResponse;
+        public event OCPPv2_1.CS.OnClearDisplayMessageResponseSentDelegate?    OnClearDisplayMessageResponseSent;
 
         /// <summary>
         /// An event sent whenever a websocket response to a clear display message request was sent.
@@ -182,7 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
                     try
                     {
 
-                        OnClearDisplayMessageResponse?.Invoke(Timestamp.Now,
+                        OnClearDisplayMessageResponseSent?.Invoke(Timestamp.Now,
                                                               this,
                                                               WebSocketConnection,
                                                               request,
@@ -192,7 +192,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnClearDisplayMessageResponse));
+                        DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnClearDisplayMessageResponseSent));
                     }
 
                     #endregion

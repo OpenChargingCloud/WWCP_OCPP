@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a clear variable monitoring request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnClearVariableMonitoringRequestDelegate?     OnClearVariableMonitoringRequest;
+        public event OCPPv2_1.CS.OnClearVariableMonitoringRequestReceivedDelegate?     OnClearVariableMonitoringRequest;
 
         /// <summary>
         /// An event sent whenever a clear variable monitoring request was received.
@@ -71,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a response to a clear variable monitoring request was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnClearVariableMonitoringResponseDelegate?    OnClearVariableMonitoringResponse;
+        public event OCPPv2_1.CS.OnClearVariableMonitoringResponseSentDelegate?    OnClearVariableMonitoringResponseSent;
 
         /// <summary>
         /// An event sent whenever a websocket response to a clear variable monitoring request was sent.
@@ -182,7 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
                     try
                     {
 
-                        OnClearVariableMonitoringResponse?.Invoke(Timestamp.Now,
+                        OnClearVariableMonitoringResponseSent?.Invoke(Timestamp.Now,
                                                                   this,
                                                                   WebSocketConnection,
                                                                   request,
@@ -192,7 +192,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnClearVariableMonitoringResponse));
+                        DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnClearVariableMonitoringResponseSent));
                     }
 
                     #endregion

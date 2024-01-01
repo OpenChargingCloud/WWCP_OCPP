@@ -52,7 +52,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever a heartbeat request will be sent to the CSMS.
         /// </summary>
-        public event OCPPv2_1.CS.OnHeartbeatRequestDelegate?     OnHeartbeatRequest;
+        public event OCPPv2_1.CS.OnHeartbeatRequestSentDelegate?     OnHeartbeatRequestSent;
 
         /// <summary>
         /// An event fired whenever a heartbeat request will be sent to the CSMS.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever a response to a heartbeat request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnHeartbeatResponseDelegate?    OnHeartbeatResponse;
+        public event OCPPv2_1.CS.OnHeartbeatResponseReceivedDelegate?    OnHeartbeatResponse;
 
         #endregion
 
@@ -91,14 +91,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
             try
             {
 
-                OnHeartbeatRequest?.Invoke(startTime,
+                OnHeartbeatRequestSent?.Invoke(startTime,
                                            this,
                                            Request);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnHeartbeatRequest));
+                DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnHeartbeatRequestSent));
             }
 
             #endregion

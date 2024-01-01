@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a CancelReservation request was sent.
         /// </summary>
-        public event OnCancelReservationRequestDelegate?     OnCancelReservationRequest;
+        public event OnCancelReservationRequestSentDelegate?     OnCancelReservationRequest;
 
         /// <summary>
         /// An event sent whenever a response to a CancelReservation request was sent.
         /// </summary>
-        public event OnCancelReservationResponseDelegate?    OnCancelReservationResponse;
+        public event OnCancelReservationResponseReceivedDelegate?    OnCancelReservationResponse;
 
         #endregion
 

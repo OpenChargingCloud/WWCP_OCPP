@@ -36,10 +36,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnAFRRSignalRequestDelegate(DateTime               Timestamp,
-                                    IEventSender           Sender,
-                                    IWebSocketConnection   Connection,
-                                    AFRRSignalRequest      Request);
+        OnAFRRSignalRequestReceivedDelegate(DateTime               Timestamp,
+                                            IEventSender           Sender,
+                                            IWebSocketConnection   Connection,
+                                            AFRRSignalRequest      Request);
 
 
     /// <summary>
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnAFRRSignalResponseDelegate(DateTime               Timestamp,
+        OnAFRRSignalResponseSentDelegate(DateTime               Timestamp,
                                      IEventSender           Sender,
                                      IWebSocketConnection   Connection,
                                      AFRRSignalRequest      Request,

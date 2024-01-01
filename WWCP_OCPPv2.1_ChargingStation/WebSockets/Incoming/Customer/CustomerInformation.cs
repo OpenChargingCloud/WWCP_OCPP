@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a CustomerInformation request was received.
         /// </summary>
-        public event OnCustomerInformationRequestDelegate?         OnCustomerInformationRequest;
+        public event OnCustomerInformationRequestReceivedDelegate?         OnCustomerInformationRequest;
 
         /// <summary>
         /// An event sent whenever a CustomerInformation request was received.
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a response to a CustomerInformation request was sent.
         /// </summary>
-        public event OnCustomerInformationResponseDelegate?        OnCustomerInformationResponse;
+        public event OnCustomerInformationResponseSentDelegate?        OnCustomerInformationResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a CustomerInformation request was sent.

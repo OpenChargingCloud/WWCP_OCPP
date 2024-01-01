@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a CustomerInformation request was sent.
         /// </summary>
-        public event OnCustomerInformationRequestDelegate?     OnCustomerInformationRequest;
+        public event OnCustomerInformationRequestSentDelegate?     OnCustomerInformationRequest;
 
         /// <summary>
         /// An event sent whenever a response to a CustomerInformation request was sent.
         /// </summary>
-        public event OnCustomerInformationResponseDelegate?    OnCustomerInformationResponse;
+        public event OnCustomerInformationResponseReceivedDelegate?    OnCustomerInformationResponse;
 
         #endregion
 

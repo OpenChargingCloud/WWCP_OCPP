@@ -36,10 +36,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnSendLocalListRequestDelegate(DateTime               Timestamp,
-                                       IEventSender           Sender,
-                                       IWebSocketConnection   Connection,
-                                       SendLocalListRequest   Request);
+        OnSendLocalListRequestReceivedDelegate(DateTime               Timestamp,
+                                               IEventSender           Sender,
+                                               IWebSocketConnection   Connection,
+                                               SendLocalListRequest   Request);
 
 
     /// <summary>
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnSendLocalListResponseDelegate(DateTime                Timestamp,
+        OnSendLocalListResponseSentDelegate(DateTime                Timestamp,
                                         IEventSender            Sender,
                                         IWebSocketConnection    Connection,
                                         SendLocalListRequest    Request,

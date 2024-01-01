@@ -51,7 +51,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event fired whenever a GetCertificateStatus request will be sent to the CSMS.
         /// </summary>
-        public event OnGetCertificateStatusRequestDelegate?     OnGetCertificateStatusRequest;
+        public event OnGetCertificateStatusRequestSentDelegate?     OnGetCertificateStatusRequest;
 
         /// <summary>
         /// An event fired whenever a GetCertificateStatus request will be sent to the CSMS.
@@ -66,7 +66,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event fired whenever a response to a GetCertificateStatus request was received.
         /// </summary>
-        public event OnGetCertificateStatusResponseDelegate?    OnGetCertificateStatusResponse;
+        public event OnGetCertificateStatusResponseReceivedDelegate?    OnGetCertificateStatusResponse;
 
         #endregion
 

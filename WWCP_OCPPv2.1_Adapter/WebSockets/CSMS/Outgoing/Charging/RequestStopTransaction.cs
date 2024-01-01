@@ -49,12 +49,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a RequestStopTransaction request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnRequestStopTransactionRequestDelegate?     OnRequestStopTransactionRequest;
+        public event OCPPv2_1.CSMS.OnRequestStopTransactionRequestSentDelegate?     OnRequestStopTransactionRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a RequestStopTransaction request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnRequestStopTransactionResponseDelegate?    OnRequestStopTransactionResponse;
+        public event OCPPv2_1.CSMS.OnRequestStopTransactionResponseReceivedDelegate?    OnRequestStopTransactionResponse;
 
         #endregion
 
@@ -71,13 +71,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
             try
             {
 
-                OnRequestStopTransactionRequest?.Invoke(startTime,
+                OnRequestStopTransactionRequestSent?.Invoke(startTime,
                                                         this,
                                                         Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnRequestStopTransactionRequest));
+                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnRequestStopTransactionRequestSent));
             }
 
             #endregion

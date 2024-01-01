@@ -50,7 +50,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a security event notification request will be sent to the CSMS.
         /// </summary>
-        public event OCPPv2_1.CS.OnSecurityEventNotificationRequestDelegate?     OnSecurityEventNotificationRequest;
+        public event OCPPv2_1.CS.OnSecurityEventNotificationRequestSentDelegate?     OnSecurityEventNotificationRequestSent;
 
         /// <summary>
         /// An event fired whenever a security event notification request will be sent to the CSMS.
@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a response to a security event notification request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnSecurityEventNotificationResponseDelegate?    OnSecurityEventNotificationResponse;
+        public event OCPPv2_1.CS.OnSecurityEventNotificationResponseReceivedDelegate?    OnSecurityEventNotificationResponseReceived;
 
         #endregion
 
@@ -89,14 +89,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnSecurityEventNotificationRequest?.Invoke(startTime,
+                OnSecurityEventNotificationRequestSent?.Invoke(startTime,
                                                            parentNetworkingNode,
                                                            Request);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnSecurityEventNotificationRequest));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnSecurityEventNotificationRequestSent));
             }
 
             #endregion
@@ -163,7 +163,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnSecurityEventNotificationResponse?.Invoke(endTime,
+                OnSecurityEventNotificationResponseReceived?.Invoke(endTime,
                                                             parentNetworkingNode,
                                                             Request,
                                                             response,
@@ -172,7 +172,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnSecurityEventNotificationResponse));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnSecurityEventNotificationResponseReceived));
             }
 
             #endregion
@@ -183,6 +183,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
+    {
+
+        /// <summary>
+        /// An event fired whenever a response to a security event notification request was received.
+        /// </summary>
+        public event OnSecurityEventNotificationResponseReceivedDelegate?    OnSecurityEventNotificationResponseReceived;
 
     }
 

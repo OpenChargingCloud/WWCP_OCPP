@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnResetRequestDelegate?            OnResetRequest;
+        public event OCPPv2_1.CS.OnResetRequestReceivedDelegate?            OnResetRequestReceived;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
@@ -68,7 +68,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnResetResponseDelegate?           OnResetResponse;
+        public event OCPPv2_1.CS.OnResetResponseSentDelegate?           OnResetResponseSent;
 
         /// <summary>
         /// An event sent whenever a websocket response to a reset request was sent.
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     try
                     {
 
-                        OnResetRequest?.Invoke(Timestamp.Now,
+                        OnResetRequestReceived?.Invoke(Timestamp.Now,
                                                parentNetworkingNode,
                                                WebSocketConnection,
                                                request);
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnResetRequest));
+                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnResetRequestReceived));
                     }
 
                     #endregion
@@ -181,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     try
                     {
 
-                        OnResetResponse?.Invoke(Timestamp.Now,
+                        OnResetResponseSent?.Invoke(Timestamp.Now,
                                                 parentNetworkingNode,
                                                 WebSocketConnection,
                                                 request,
@@ -191,7 +191,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnResetResponse));
+                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnResetResponseSent));
                     }
 
                     #endregion
@@ -264,6 +264,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
+    {
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event OCPPv2_1.CS.OnResetResponseSentDelegate? OnResetResponseSent;
 
     }
 

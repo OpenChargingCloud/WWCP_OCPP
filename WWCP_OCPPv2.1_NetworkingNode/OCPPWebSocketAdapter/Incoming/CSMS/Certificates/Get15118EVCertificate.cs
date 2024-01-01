@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a Get15118EVCertificate request was received.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnGet15118EVCertificateRequestDelegate?     OnGet15118EVCertificateRequest;
+        public event OCPPv2_1.CSMS.OnGet15118EVCertificateRequestReceivedDelegate?     OnGet15118EVCertificateRequestReceived;
 
         /// <summary>
         /// An event sent whenever a Get15118EVCertificate was received.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a response to a Get15118EVCertificate was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnGet15118EVCertificateResponseDelegate?    OnGet15118EVCertificateResponse;
+        public event OCPPv2_1.CSMS.OnGet15118EVCertificateResponseSentDelegate?    OnGet15118EVCertificateResponseSent;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a Get15118EVCertificate was sent.
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     try
                     {
 
-                        OnGet15118EVCertificateRequest?.Invoke(Timestamp.Now,
+                        OnGet15118EVCertificateRequestReceived?.Invoke(Timestamp.Now,
                                                                parentNetworkingNode,
                                                                WebSocketConnection,
                                                                request);
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnGet15118EVCertificateRequest));
+                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnGet15118EVCertificateRequestReceived));
                     }
 
                     #endregion
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     try
                     {
 
-                        OnGet15118EVCertificateResponse?.Invoke(Timestamp.Now,
+                        OnGet15118EVCertificateResponseSent?.Invoke(Timestamp.Now,
                                                                 parentNetworkingNode,
                                                                 WebSocketConnection,
                                                                 request,
@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnGet15118EVCertificateResponse));
+                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnGet15118EVCertificateResponseSent));
                     }
 
                     #endregion
@@ -264,6 +264,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
+    {
+
+        /// <summary>
+        /// An event sent whenever a response to a Get15118EVCertificate was sent.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnGet15118EVCertificateResponseSentDelegate? OnGet15118EVCertificateResponseSent;
 
     }
 

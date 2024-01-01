@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a get transaction status request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnGetTransactionStatusRequestDelegate?     OnGetTransactionStatusRequest;
+        public event OCPPv2_1.CS.OnGetTransactionStatusRequestReceivedDelegate?     OnGetTransactionStatusRequestReceived;
 
         /// <summary>
         /// An event sent whenever a get transaction status request was received.
@@ -68,7 +68,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a response to a get transaction status request was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnGetTransactionStatusResponseDelegate?    OnGetTransactionStatusResponse;
+        public event OCPPv2_1.CS.OnGetTransactionStatusResponseSentDelegate?    OnGetTransactionStatusResponseSent;
 
         /// <summary>
         /// An event sent whenever a websocket response to a get transaction status request was sent.
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     try
                     {
 
-                        OnGetTransactionStatusRequest?.Invoke(Timestamp.Now,
+                        OnGetTransactionStatusRequestReceived?.Invoke(Timestamp.Now,
                                                               parentNetworkingNode,
                                                               WebSocketConnection,
                                                               request);
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnGetTransactionStatusRequest));
+                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnGetTransactionStatusRequestReceived));
                     }
 
                     #endregion
@@ -181,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     try
                     {
 
-                        OnGetTransactionStatusResponse?.Invoke(Timestamp.Now,
+                        OnGetTransactionStatusResponseSent?.Invoke(Timestamp.Now,
                                                                parentNetworkingNode,
                                                                WebSocketConnection,
                                                                request,
@@ -191,7 +191,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnGetTransactionStatusResponse));
+                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnGetTransactionStatusResponseSent));
                     }
 
                     #endregion
@@ -263,6 +263,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
+    {
+
+        /// <summary>
+        /// An event sent whenever a response to a get transaction status request was sent.
+        /// </summary>
+        public event OCPPv2_1.CS.OnGetTransactionStatusResponseSentDelegate? OnGetTransactionStatusResponseSent;
 
     }
 

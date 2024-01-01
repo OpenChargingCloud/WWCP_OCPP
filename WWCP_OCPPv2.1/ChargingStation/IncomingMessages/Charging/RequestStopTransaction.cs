@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnRequestStopTransactionRequestDelegate(DateTime                        Timestamp,
+        OnRequestStopTransactionRequestReceivedDelegate(DateTime                        Timestamp,
                                                 IEventSender                    Sender,
                                                 IWebSocketConnection            Connection,
                                                 RequestStopTransactionRequest   Request);
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnRequestStopTransactionResponseDelegate(DateTime                         Timestamp,
+        OnRequestStopTransactionResponseSentDelegate(DateTime                         Timestamp,
                                                  IEventSender                     Sender,
                                                  IWebSocketConnection             Connection,
                                                  RequestStopTransactionRequest    Request,

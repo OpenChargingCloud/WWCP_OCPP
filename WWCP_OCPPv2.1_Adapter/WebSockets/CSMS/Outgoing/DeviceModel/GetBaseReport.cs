@@ -49,12 +49,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a GetBaseReport request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnGetBaseReportRequestDelegate?     OnGetBaseReportRequest;
+        public event OCPPv2_1.CSMS.OnGetBaseReportRequestSentDelegate?     OnGetBaseReportRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a GetBaseReport request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnGetBaseReportResponseDelegate?    OnGetBaseReportResponse;
+        public event OCPPv2_1.CSMS.OnGetBaseReportResponseReceivedDelegate?    OnGetBaseReportResponse;
 
         #endregion
 
@@ -71,13 +71,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
             try
             {
 
-                OnGetBaseReportRequest?.Invoke(startTime,
+                OnGetBaseReportRequestSent?.Invoke(startTime,
                                                this,
                                                Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnGetBaseReportRequest));
+                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnGetBaseReportRequestSent));
             }
 
             #endregion

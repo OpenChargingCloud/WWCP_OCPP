@@ -50,7 +50,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a NotifyPriorityCharging request will be sent to the CSMS.
         /// </summary>
-        public event OCPPv2_1.CS.OnNotifyPriorityChargingRequestDelegate?     OnNotifyPriorityChargingRequest;
+        public event OCPPv2_1.CS.OnNotifyPriorityChargingRequestSentDelegate?     OnNotifyPriorityChargingRequestSent;
 
         /// <summary>
         /// An event fired whenever a NotifyPriorityCharging request will be sent to the CSMS.
@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a response to a NotifyPriorityCharging request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnNotifyPriorityChargingResponseDelegate?    OnNotifyPriorityChargingResponse;
+        public event OCPPv2_1.CS.OnNotifyPriorityChargingResponseReceivedDelegate?    OnNotifyPriorityChargingResponseReceived;
 
         #endregion
 
@@ -89,14 +89,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnNotifyPriorityChargingRequest?.Invoke(startTime,
+                OnNotifyPriorityChargingRequestSent?.Invoke(startTime,
                                                         parentNetworkingNode,
                                                         Request);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnNotifyPriorityChargingRequest));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnNotifyPriorityChargingRequestSent));
             }
 
             #endregion
@@ -163,7 +163,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnNotifyPriorityChargingResponse?.Invoke(endTime,
+                OnNotifyPriorityChargingResponseReceived?.Invoke(endTime,
                                                          parentNetworkingNode,
                                                          Request,
                                                          response,
@@ -172,7 +172,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnNotifyPriorityChargingResponse));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnNotifyPriorityChargingResponseReceived));
             }
 
             #endregion
@@ -183,6 +183,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
+    {
+
+        /// <summary>
+        /// An event fired whenever a response to a NotifyPriorityCharging request was received.
+        /// </summary>
+        public event OCPPv2_1.CS.OnNotifyPriorityChargingResponseReceivedDelegate? OnNotifyPriorityChargingResponseReceived;
 
     }
 

@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnSetMonitoringBaseRequestDelegate(DateTime                   Timestamp,
+        OnSetMonitoringBaseRequestReceivedDelegate(DateTime                   Timestamp,
                                            IEventSender               Sender,
                                            IWebSocketConnection       Connection,
                                            SetMonitoringBaseRequest   Request);
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnSetMonitoringBaseResponseDelegate(DateTime                    Timestamp,
+        OnSetMonitoringBaseResponseSentDelegate(DateTime                    Timestamp,
                                             IEventSender                Sender,
                                             IWebSocketConnection        Connection,
                                             SetMonitoringBaseRequest    Request,

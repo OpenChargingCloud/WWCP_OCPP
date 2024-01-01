@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a set monitoring base request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnSetMonitoringBaseRequestDelegate?     OnSetMonitoringBaseRequest;
+        public event OCPPv2_1.CS.OnSetMonitoringBaseRequestReceivedDelegate?     OnSetMonitoringBaseRequestReceived;
 
         /// <summary>
         /// An event sent whenever a set monitoring base request was received.
@@ -68,7 +68,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a response to a set monitoring base request was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnSetMonitoringBaseResponseDelegate?    OnSetMonitoringBaseResponse;
+        public event OCPPv2_1.CS.OnSetMonitoringBaseResponseSentDelegate?    OnSetMonitoringBaseResponseSent;
 
         /// <summary>
         /// An event sent whenever a websocket response to a set monitoring base request was sent.
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     try
                     {
 
-                        OnSetMonitoringBaseRequest?.Invoke(Timestamp.Now,
+                        OnSetMonitoringBaseRequestReceived?.Invoke(Timestamp.Now,
                                                            parentNetworkingNode,
                                                            WebSocketConnection,
                                                            request);
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnSetMonitoringBaseRequest));
+                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnSetMonitoringBaseRequestReceived));
                     }
 
                     #endregion
@@ -181,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     try
                     {
 
-                        OnSetMonitoringBaseResponse?.Invoke(Timestamp.Now,
+                        OnSetMonitoringBaseResponseSent?.Invoke(Timestamp.Now,
                                                             parentNetworkingNode,
                                                             WebSocketConnection,
                                                             request,
@@ -191,7 +191,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnSetMonitoringBaseResponse));
+                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnSetMonitoringBaseResponseSent));
                     }
 
                     #endregion
@@ -264,6 +264,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
+    {
+
+        /// <summary>
+        /// An event sent whenever a response to a set monitoring base request was sent.
+        /// </summary>
+        public event OCPPv2_1.CS.OnSetMonitoringBaseResponseSentDelegate? OnSetMonitoringBaseResponseSent;
 
     }
 

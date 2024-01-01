@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a cancel reservation request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnCancelReservationRequestDelegate?     OnCancelReservationRequest;
+        public event OCPPv2_1.CS.OnCancelReservationRequestReceivedDelegate?     OnCancelReservationRequest;
 
         /// <summary>
         /// An event sent whenever a cancel reservation request was received.
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a response to a cancel reservation request was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnCancelReservationResponseDelegate?    OnCancelReservationResponse;
+        public event OCPPv2_1.CS.OnCancelReservationResponseSentDelegate?    OnCancelReservationResponseSent;
 
         /// <summary>
         /// An event sent whenever a websocket response to a cancel reservation request was sent.
@@ -181,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
                     try
                     {
 
-                        OnCancelReservationResponse?.Invoke(Timestamp.Now,
+                        OnCancelReservationResponseSent?.Invoke(Timestamp.Now,
                                                             this,
                                                             WebSocketConnection,
                                                             request,
@@ -191,7 +191,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnCancelReservationResponse));
+                        DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnCancelReservationResponseSent));
                     }
 
                     #endregion

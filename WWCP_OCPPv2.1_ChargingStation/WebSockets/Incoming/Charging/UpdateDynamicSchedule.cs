@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever an UpdateDynamicSchedule request was received.
         /// </summary>
-        public event OnUpdateDynamicScheduleRequestDelegate?       OnUpdateDynamicScheduleRequest;
+        public event OnUpdateDynamicScheduleRequestReceivedDelegate?       OnUpdateDynamicScheduleRequest;
 
         /// <summary>
         /// An event sent whenever an UpdateDynamicSchedule request was received.
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a response to an UpdateDynamicSchedule request was sent.
         /// </summary>
-        public event OnUpdateDynamicScheduleResponseDelegate?      OnUpdateDynamicScheduleResponse;
+        public event OnUpdateDynamicScheduleResponseSentDelegate?      OnUpdateDynamicScheduleResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to an UpdateDynamicSchedule request was sent.

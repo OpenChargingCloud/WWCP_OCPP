@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a GetCertificateStatus request was received.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnGetCertificateStatusRequestDelegate?     OnGetCertificateStatusRequest;
+        public event OCPPv2_1.CSMS.OnGetCertificateStatusRequestReceivedDelegate?     OnGetCertificateStatusRequest;
 
         /// <summary>
         /// An event sent whenever a GetCertificateStatus was received.
@@ -68,7 +68,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a response to a GetCertificateStatus was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnGetCertificateStatusResponseDelegate?    OnGetCertificateStatusResponse;
+        public event OCPPv2_1.CSMS.OnGetCertificateStatusResponseSentDelegate?    OnGetCertificateStatusResponseSent;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a GetCertificateStatus was sent.
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                     try
                     {
 
-                        OnGetCertificateStatusResponse?.Invoke(Timestamp.Now,
+                        OnGetCertificateStatusResponseSent?.Invoke(Timestamp.Now,
                                                                this,
                                                                Connection,
                                                                request,
@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnGetCertificateStatusResponse));
+                        DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnGetCertificateStatusResponseSent));
                     }
 
                     #endregion

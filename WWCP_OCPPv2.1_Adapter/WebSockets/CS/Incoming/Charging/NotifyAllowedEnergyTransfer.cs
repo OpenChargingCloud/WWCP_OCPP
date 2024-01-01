@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a NotifyAllowedEnergyTransfer request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnNotifyAllowedEnergyTransferRequestDelegate?     OnNotifyAllowedEnergyTransferRequest;
+        public event OCPPv2_1.CS.OnNotifyAllowedEnergyTransferRequestReceivedDelegate?     OnNotifyAllowedEnergyTransferRequest;
 
         /// <summary>
         /// An event sent whenever a NotifyAllowedEnergyTransfer request was received.
@@ -71,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a response to a NotifyAllowedEnergyTransfer request was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnNotifyAllowedEnergyTransferResponseDelegate?    OnNotifyAllowedEnergyTransferResponse;
+        public event OCPPv2_1.CS.OnNotifyAllowedEnergyTransferResponseSentDelegate?    OnNotifyAllowedEnergyTransferResponseSent;
 
         /// <summary>
         /// An event sent whenever a websocket response to a NotifyAllowedEnergyTransfer request was sent.
@@ -182,7 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
                     try
                     {
 
-                        OnNotifyAllowedEnergyTransferResponse?.Invoke(Timestamp.Now,
+                        OnNotifyAllowedEnergyTransferResponseSent?.Invoke(Timestamp.Now,
                                                                       this,
                                                                       WebSocketConnection,
                                                                       request,
@@ -192,7 +192,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnNotifyAllowedEnergyTransferResponse));
+                        DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnNotifyAllowedEnergyTransferResponseSent));
                     }
 
                     #endregion

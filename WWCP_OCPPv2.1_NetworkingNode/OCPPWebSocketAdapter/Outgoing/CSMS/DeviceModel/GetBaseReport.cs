@@ -49,12 +49,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a GetBaseReport request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnGetBaseReportRequestDelegate?     OnGetBaseReportRequest;
+        public event OCPPv2_1.CSMS.OnGetBaseReportRequestSentDelegate?     OnGetBaseReportRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a GetBaseReport request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnGetBaseReportResponseDelegate?    OnGetBaseReportResponse;
+        public event OCPPv2_1.CSMS.OnGetBaseReportResponseReceivedDelegate?    OnGetBaseReportResponseReceived;
 
         #endregion
 
@@ -71,13 +71,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnGetBaseReportRequest?.Invoke(startTime,
+                OnGetBaseReportRequestSent?.Invoke(startTime,
                                                parentNetworkingNode,
                                                Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnGetBaseReportRequest));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnGetBaseReportRequestSent));
             }
 
             #endregion
@@ -144,7 +144,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnGetBaseReportResponse?.Invoke(endTime,
+                OnGetBaseReportResponseReceived?.Invoke(endTime,
                                                 parentNetworkingNode,
                                                 Request,
                                                 response,
@@ -153,7 +153,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnGetBaseReportResponse));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnGetBaseReportResponseReceived));
             }
 
             #endregion
@@ -164,6 +164,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
+    {
+
+        /// <summary>
+        /// An event sent whenever a response to a GetBaseReport request was sent.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnGetBaseReportResponseReceivedDelegate? OnGetBaseReportResponseReceived;
 
     }
 

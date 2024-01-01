@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a SecurityEventNotification request was received.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnSecurityEventNotificationRequestDelegate?     OnSecurityEventNotificationRequest;
+        public event OCPPv2_1.CSMS.OnSecurityEventNotificationRequestReceivedDelegate?     OnSecurityEventNotificationRequest;
 
         /// <summary>
         /// An event sent whenever a SecurityEventNotification request was received.
@@ -68,7 +68,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a response to a SecurityEventNotification request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnSecurityEventNotificationResponseDelegate?    OnSecurityEventNotificationResponse;
+        public event OCPPv2_1.CSMS.OnSecurityEventNotificationResponseSentDelegate?    OnSecurityEventNotificationResponseSent;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a SecurityEventNotification request was sent.
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                     try
                     {
 
-                        OnSecurityEventNotificationResponse?.Invoke(Timestamp.Now,
+                        OnSecurityEventNotificationResponseSent?.Invoke(Timestamp.Now,
                                                                     this,
                                                                     Connection,
                                                                     request,
@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnSecurityEventNotificationResponse));
+                        DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnSecurityEventNotificationResponseSent));
                     }
 
                     #endregion

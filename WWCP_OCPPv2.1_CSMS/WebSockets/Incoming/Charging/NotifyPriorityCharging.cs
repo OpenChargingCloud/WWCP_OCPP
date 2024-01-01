@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a NotifyPriorityCharging request was received.
         /// </summary>
-        public event OnNotifyPriorityChargingRequestDelegate?     OnNotifyPriorityChargingRequest;
+        public event OnNotifyPriorityChargingRequestReceivedDelegate?     OnNotifyPriorityChargingRequest;
 
         /// <summary>
         /// An event sent whenever a NotifyPriorityCharging was received.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a response to a NotifyPriorityCharging was sent.
         /// </summary>
-        public event OnNotifyPriorityChargingResponseDelegate?    OnNotifyPriorityChargingResponse;
+        public event OnNotifyPriorityChargingResponseSentDelegate?    OnNotifyPriorityChargingResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a NotifyPriorityCharging was sent.

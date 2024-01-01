@@ -49,12 +49,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a SetChargingProfile request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnSetChargingProfileRequestDelegate?     OnSetChargingProfileRequest;
+        public event OCPPv2_1.CSMS.OnSetChargingProfileRequestSentDelegate?     OnSetChargingProfileRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a SetChargingProfile request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnSetChargingProfileResponseDelegate?    OnSetChargingProfileResponse;
+        public event OCPPv2_1.CSMS.OnSetChargingProfileResponseReceivedDelegate?    OnSetChargingProfileResponse;
 
         #endregion
 
@@ -71,13 +71,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
             try
             {
 
-                OnSetChargingProfileRequest?.Invoke(startTime,
+                OnSetChargingProfileRequestSent?.Invoke(startTime,
                                                     this,
                                                     Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnSetChargingProfileRequest));
+                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnSetChargingProfileRequestSent));
             }
 
             #endregion

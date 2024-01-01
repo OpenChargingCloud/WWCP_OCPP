@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a set variable monitoring request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnSetVariableMonitoringRequestDelegate?     OnSetVariableMonitoringRequest;
+        public event OCPPv2_1.CS.OnSetVariableMonitoringRequestReceivedDelegate?     OnSetVariableMonitoringRequest;
 
         /// <summary>
         /// An event sent whenever a set variable monitoring request was received.
@@ -71,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a response to a set variable monitoring request was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnSetVariableMonitoringResponseDelegate?    OnSetVariableMonitoringResponse;
+        public event OCPPv2_1.CS.OnSetVariableMonitoringResponseSentDelegate?    OnSetVariableMonitoringResponseSent;
 
         /// <summary>
         /// An event sent whenever a websocket response to a set variable monitoring request was sent.
@@ -182,7 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
                     try
                     {
 
-                        OnSetVariableMonitoringResponse?.Invoke(Timestamp.Now,
+                        OnSetVariableMonitoringResponseSent?.Invoke(Timestamp.Now,
                                                                 this,
                                                                 WebSocketConnection,
                                                                 request,
@@ -192,7 +192,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnSetVariableMonitoringResponse));
+                        DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnSetVariableMonitoringResponseSent));
                     }
 
                     #endregion

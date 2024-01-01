@@ -49,12 +49,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a SetMonitoringLevel request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnSetMonitoringLevelRequestDelegate?     OnSetMonitoringLevelRequest;
+        public event OCPPv2_1.CSMS.OnSetMonitoringLevelRequestSentDelegate?     OnSetMonitoringLevelRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a SetMonitoringLevel request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnSetMonitoringLevelResponseDelegate?    OnSetMonitoringLevelResponse;
+        public event OCPPv2_1.CSMS.OnSetMonitoringLevelResponseReceivedDelegate?    OnSetMonitoringLevelResponseReceived;
 
         #endregion
 
@@ -71,13 +71,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnSetMonitoringLevelRequest?.Invoke(startTime,
+                OnSetMonitoringLevelRequestSent?.Invoke(startTime,
                                                     parentNetworkingNode,
                                                     Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnSetMonitoringLevelRequest));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnSetMonitoringLevelRequestSent));
             }
 
             #endregion
@@ -144,7 +144,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnSetMonitoringLevelResponse?.Invoke(endTime,
+                OnSetMonitoringLevelResponseReceived?.Invoke(endTime,
                                                      parentNetworkingNode,
                                                      Request,
                                                      response,
@@ -153,7 +153,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnSetMonitoringLevelResponse));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnSetMonitoringLevelResponseReceived));
             }
 
             #endregion
@@ -164,6 +164,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
+    {
+
+        /// <summary>
+        /// An event sent whenever a response to a SetMonitoringLevel request was sent.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnSetMonitoringLevelResponseReceivedDelegate? OnSetMonitoringLevelResponseReceived;
 
     }
 

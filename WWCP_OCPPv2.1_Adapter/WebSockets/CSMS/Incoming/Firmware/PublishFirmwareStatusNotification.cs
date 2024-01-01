@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a PublishFirmwareStatusNotification request was received.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnPublishFirmwareStatusNotificationRequestDelegate?     OnPublishFirmwareStatusNotificationRequest;
+        public event OCPPv2_1.CSMS.OnPublishFirmwareStatusNotificationRequestReceivedDelegate?     OnPublishFirmwareStatusNotificationRequest;
 
         /// <summary>
         /// An event sent whenever a PublishFirmwareStatusNotification request was received.
@@ -68,7 +68,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a response to a PublishFirmwareStatusNotification request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnPublishFirmwareStatusNotificationResponseDelegate?    OnPublishFirmwareStatusNotificationResponse;
+        public event OCPPv2_1.CSMS.OnPublishFirmwareStatusNotificationResponseSentDelegate?    OnPublishFirmwareStatusNotificationResponseSent;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a PublishFirmwareStatusNotification request was sent.
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                     try
                     {
 
-                        OnPublishFirmwareStatusNotificationResponse?.Invoke(Timestamp.Now,
+                        OnPublishFirmwareStatusNotificationResponseSent?.Invoke(Timestamp.Now,
                                                                             this,
                                                                             Connection,
                                                                             request,
@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnPublishFirmwareStatusNotificationResponse));
+                        DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnPublishFirmwareStatusNotificationResponseSent));
                     }
 
                     #endregion

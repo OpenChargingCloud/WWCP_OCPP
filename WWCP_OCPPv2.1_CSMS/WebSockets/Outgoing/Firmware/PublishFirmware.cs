@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a PublishFirmware request was sent.
         /// </summary>
-        public event OnPublishFirmwareRequestDelegate?     OnPublishFirmwareRequest;
+        public event OnPublishFirmwareRequestSentDelegate?     OnPublishFirmwareRequest;
 
         /// <summary>
         /// An event sent whenever a response to a PublishFirmware request was sent.
         /// </summary>
-        public event OnPublishFirmwareResponseDelegate?    OnPublishFirmwareResponse;
+        public event OnPublishFirmwareResponseReceivedDelegate?    OnPublishFirmwareResponse;
 
         #endregion
 

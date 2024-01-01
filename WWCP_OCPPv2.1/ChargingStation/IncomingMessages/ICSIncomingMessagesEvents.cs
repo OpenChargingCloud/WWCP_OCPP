@@ -35,12 +35,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        event OnResetRequestDelegate    OnResetRequest;
+        event OnResetRequestReceivedDelegate    OnResetRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        event OnResetResponseDelegate   OnResetResponse;
+        event OnResetResponseSentDelegate   OnResetResponse;
 
         #endregion
 
@@ -49,12 +49,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever an update firmware request was received.
         /// </summary>
-        event OnUpdateFirmwareRequestDelegate    OnUpdateFirmwareRequest;
+        event OnUpdateFirmwareRequestReceivedDelegate    OnUpdateFirmwareRequest;
 
         /// <summary>
         /// An event sent whenever a response to an update firmware request was sent.
         /// </summary>
-        event OnUpdateFirmwareResponseDelegate   OnUpdateFirmwareResponse;
+        event OnUpdateFirmwareResponseSentDelegate   OnUpdateFirmwareResponse;
 
         #endregion
 
@@ -63,12 +63,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a publish firmware request was received.
         /// </summary>
-        event OnPublishFirmwareRequestDelegate    OnPublishFirmwareRequest;
+        event OnPublishFirmwareRequestReceivedDelegate    OnPublishFirmwareRequest;
 
         /// <summary>
         /// An event sent whenever a response to a publish firmware request was sent.
         /// </summary>
-        event OnPublishFirmwareResponseDelegate   OnPublishFirmwareResponse;
+        event OnPublishFirmwareResponseSentDelegate   OnPublishFirmwareResponse;
 
         #endregion
 
@@ -77,12 +77,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever an unpublish firmware request was received.
         /// </summary>
-        event OnUnpublishFirmwareRequestDelegate    OnUnpublishFirmwareRequest;
+        event OnUnpublishFirmwareRequestReceivedDelegate    OnUnpublishFirmwareRequest;
 
         /// <summary>
         /// An event sent whenever a response to an unpublish firmware request was sent.
         /// </summary>
-        event OnUnpublishFirmwareResponseDelegate   OnUnpublishFirmwareResponse;
+        event OnUnpublishFirmwareResponseSentDelegate   OnUnpublishFirmwareResponse;
 
         #endregion
 
@@ -91,12 +91,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a get base report request was received.
         /// </summary>
-        event OnGetBaseReportRequestDelegate    OnGetBaseReportRequest;
+        event OnGetBaseReportRequestReceivedDelegate    OnGetBaseReportRequest;
 
         /// <summary>
         /// An event sent whenever a response to a get base request was sent.
         /// </summary>
-        event OnGetBaseReportResponseDelegate   OnGetBaseReportResponse;
+        event OnGetBaseReportResponseSentDelegate   OnGetBaseReportResponse;
 
         #endregion
 
@@ -105,12 +105,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a get report request was received.
         /// </summary>
-        event OnGetReportRequestDelegate    OnGetReportRequest;
+        event OnGetReportRequestReceivedDelegate    OnGetReportRequest;
 
         /// <summary>
         /// An event sent whenever a response to a get report request was sent.
         /// </summary>
-        event OnGetReportResponseDelegate   OnGetReportResponse;
+        event OnGetReportResponseSentDelegate   OnGetReportResponse;
 
         #endregion
 
@@ -119,12 +119,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a get log request was received.
         /// </summary>
-        event OnGetLogRequestDelegate    OnGetLogRequest;
+        event OnGetLogRequestReceivedDelegate    OnGetLogRequest;
 
         /// <summary>
         /// An event sent whenever a response to a get log request was sent.
         /// </summary>
-        event OnGetLogResponseDelegate   OnGetLogResponse;
+        event OnGetLogResponseSentDelegate   OnGetLogResponse;
 
         #endregion
 
@@ -133,12 +133,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a set variables request was received.
         /// </summary>
-        event OnSetVariablesRequestDelegate    OnSetVariablesRequest;
+        event OnSetVariablesRequestReceivedDelegate    OnSetVariablesRequest;
 
         /// <summary>
         /// An event sent whenever a response to a set variables request was sent.
         /// </summary>
-        event OnSetVariablesResponseDelegate   OnSetVariablesResponse;
+        event OnSetVariablesResponseSentDelegate   OnSetVariablesResponse;
 
         #endregion
 
@@ -147,12 +147,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a get variables request was received.
         /// </summary>
-        event OnGetVariablesRequestDelegate    OnGetVariablesRequest;
+        event OnGetVariablesRequestReceivedDelegate    OnGetVariablesRequest;
 
         /// <summary>
         /// An event sent whenever a response to a get variables request was sent.
         /// </summary>
-        event OnGetVariablesResponseDelegate   OnGetVariablesResponse;
+        event OnGetVariablesResponseSentDelegate   OnGetVariablesResponse;
 
         #endregion
 
@@ -161,12 +161,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a set monitoring base request was received.
         /// </summary>
-        event OnSetMonitoringBaseRequestDelegate    OnSetMonitoringBaseRequest;
+        event OnSetMonitoringBaseRequestReceivedDelegate    OnSetMonitoringBaseRequest;
 
         /// <summary>
         /// An event sent whenever a response to a set monitoring base request was sent.
         /// </summary>
-        event OnSetMonitoringBaseResponseDelegate   OnSetMonitoringBaseResponse;
+        event OnSetMonitoringBaseResponseSentDelegate   OnSetMonitoringBaseResponse;
 
         #endregion
 
@@ -175,12 +175,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a get monitoring report request was received.
         /// </summary>
-        event OnGetMonitoringReportRequestDelegate    OnGetMonitoringReportRequest;
+        event OnGetMonitoringReportRequestReceivedDelegate    OnGetMonitoringReportRequest;
 
         /// <summary>
         /// An event sent whenever a response to a get monitoring report request was sent.
         /// </summary>
-        event OnGetMonitoringReportResponseDelegate   OnGetMonitoringReportResponse;
+        event OnGetMonitoringReportResponseSentDelegate   OnGetMonitoringReportResponse;
 
         #endregion
 
@@ -189,12 +189,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a set monitoring level request was received.
         /// </summary>
-        event OnSetMonitoringLevelRequestDelegate    OnSetMonitoringLevelRequest;
+        event OnSetMonitoringLevelRequestReceivedDelegate    OnSetMonitoringLevelRequest;
 
         /// <summary>
         /// An event sent whenever a response to a set monitoring level request was sent.
         /// </summary>
-        event OnSetMonitoringLevelResponseDelegate   OnSetMonitoringLevelResponse;
+        event OnSetMonitoringLevelResponseSentDelegate   OnSetMonitoringLevelResponse;
 
         #endregion
 
@@ -203,12 +203,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a set variable monitoring request was received.
         /// </summary>
-        event OnSetVariableMonitoringRequestDelegate    OnSetVariableMonitoringRequest;
+        event OnSetVariableMonitoringRequestReceivedDelegate    OnSetVariableMonitoringRequest;
 
         /// <summary>
         /// An event sent whenever a response to a set variable monitoring request was sent.
         /// </summary>
-        event OnSetVariableMonitoringResponseDelegate   OnSetVariableMonitoringResponse;
+        event OnSetVariableMonitoringResponseSentDelegate   OnSetVariableMonitoringResponse;
 
         #endregion
 
@@ -217,12 +217,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a clear variable monitoring request was received.
         /// </summary>
-        event OnClearVariableMonitoringRequestDelegate    OnClearVariableMonitoringRequest;
+        event OnClearVariableMonitoringRequestReceivedDelegate    OnClearVariableMonitoringRequest;
 
         /// <summary>
         /// An event sent whenever a response to a clear variable monitoring request was sent.
         /// </summary>
-        event OnClearVariableMonitoringResponseDelegate   OnClearVariableMonitoringResponse;
+        event OnClearVariableMonitoringResponseSentDelegate   OnClearVariableMonitoringResponse;
 
         #endregion
 
@@ -231,12 +231,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a set network profile request was received.
         /// </summary>
-        event OnSetNetworkProfileRequestDelegate    OnSetNetworkProfileRequest;
+        event OnSetNetworkProfileRequestReceivedDelegate    OnSetNetworkProfileRequest;
 
         /// <summary>
         /// An event sent whenever a response to a set network profile request was sent.
         /// </summary>
-        event OnSetNetworkProfileResponseDelegate   OnSetNetworkProfileResponse;
+        event OnSetNetworkProfileResponseSentDelegate   OnSetNetworkProfileResponse;
 
         #endregion
 
@@ -245,12 +245,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a change availability request was received.
         /// </summary>
-        event OnChangeAvailabilityRequestDelegate    OnChangeAvailabilityRequest;
+        event OnChangeAvailabilityRequestReceivedDelegate    OnChangeAvailabilityRequest;
 
         /// <summary>
         /// An event sent whenever a response to a change availability request was sent.
         /// </summary>
-        event OnChangeAvailabilityResponseDelegate   OnChangeAvailabilityResponse;
+        event OnChangeAvailabilityResponseSentDelegate   OnChangeAvailabilityResponse;
 
         #endregion
 
@@ -259,12 +259,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a trigger message request was received.
         /// </summary>
-        event OnTriggerMessageRequestDelegate    OnTriggerMessageRequest;
+        event OnTriggerMessageRequestReceivedDelegate    OnTriggerMessageRequest;
 
         /// <summary>
         /// An event sent whenever a response to a trigger message request was sent.
         /// </summary>
-        event OnTriggerMessageResponseDelegate   OnTriggerMessageResponse;
+        event OnTriggerMessageResponseSentDelegate   OnTriggerMessageResponse;
 
         #endregion
 
@@ -288,12 +288,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a certificate signed request was received.
         /// </summary>
-        event OnCertificateSignedRequestDelegate    OnCertificateSignedRequest;
+        event OnCertificateSignedRequestReceivedDelegate    OnCertificateSignedRequest;
 
         /// <summary>
         /// An event sent whenever a response to a certificate signed request was sent.
         /// </summary>
-        event OnCertificateSignedResponseDelegate   OnCertificateSignedResponse;
+        event OnCertificateSignedResponseSentDelegate   OnCertificateSignedResponse;
 
         #endregion
 
@@ -302,12 +302,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever an install certificate request was received.
         /// </summary>
-        event OnInstallCertificateRequestDelegate    OnInstallCertificateRequest;
+        event OnInstallCertificateRequestReceivedDelegate    OnInstallCertificateRequest;
 
         /// <summary>
         /// An event sent whenever a response to an install certificate request was sent.
         /// </summary>
-        event OnInstallCertificateResponseDelegate   OnInstallCertificateResponse;
+        event OnInstallCertificateResponseSentDelegate   OnInstallCertificateResponse;
 
         #endregion
 
@@ -316,12 +316,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a get installed certificate ids request was received.
         /// </summary>
-        event OnGetInstalledCertificateIdsRequestDelegate    OnGetInstalledCertificateIdsRequest;
+        event OnGetInstalledCertificateIdsRequestReceivedDelegate    OnGetInstalledCertificateIdsRequest;
 
         /// <summary>
         /// An event sent whenever a response to a get installed certificate ids request was sent.
         /// </summary>
-        event OnGetInstalledCertificateIdsResponseDelegate   OnGetInstalledCertificateIdsResponse;
+        event OnGetInstalledCertificateIdsResponseSentDelegate   OnGetInstalledCertificateIdsResponse;
 
         #endregion
 
@@ -330,12 +330,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a delete certificate request was received.
         /// </summary>
-        event OnDeleteCertificateRequestDelegate    OnDeleteCertificateRequest;
+        event OnDeleteCertificateRequestReceivedDelegate    OnDeleteCertificateRequest;
 
         /// <summary>
         /// An event sent whenever a response to a delete certificate request was sent.
         /// </summary>
-        event OnDeleteCertificateResponseDelegate   OnDeleteCertificateResponse;
+        event OnDeleteCertificateResponseSentDelegate   OnDeleteCertificateResponse;
 
         #endregion
 
@@ -344,12 +344,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a delete certificate request was received.
         /// </summary>
-        event OnNotifyCRLRequestDelegate    OnNotifyCRLRequest;
+        event OnNotifyCRLRequestReceivedDelegate    OnNotifyCRLRequest;
 
         /// <summary>
         /// An event sent whenever a response to a delete certificate request was sent.
         /// </summary>
-        event OnNotifyCRLResponseDelegate   OnNotifyCRLResponse;
+        event OnNotifyCRLResponseSentDelegate   OnNotifyCRLResponse;
 
         #endregion
 
@@ -359,12 +359,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a get local list version request was received.
         /// </summary>
-        event OnGetLocalListVersionRequestDelegate    OnGetLocalListVersionRequest;
+        event OnGetLocalListVersionRequestReceivedDelegate    OnGetLocalListVersionRequest;
 
         /// <summary>
         /// An event sent whenever a response to a get local list version request was sent.
         /// </summary>
-        event OnGetLocalListVersionResponseDelegate   OnGetLocalListVersionResponse;
+        event OnGetLocalListVersionResponseSentDelegate   OnGetLocalListVersionResponse;
 
         #endregion
 
@@ -373,12 +373,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a send local list request was received.
         /// </summary>
-        event OnSendLocalListRequestDelegate    OnSendLocalListRequest;
+        event OnSendLocalListRequestReceivedDelegate    OnSendLocalListRequest;
 
         /// <summary>
         /// An event sent whenever a response to a send local list request was sent.
         /// </summary>
-        event OnSendLocalListResponseDelegate   OnSendLocalListResponse;
+        event OnSendLocalListResponseSentDelegate   OnSendLocalListResponse;
 
         #endregion
 
@@ -387,12 +387,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a clear cache request was received.
         /// </summary>
-        event OnClearCacheRequestDelegate    OnClearCacheRequest;
+        event OnClearCacheRequestReceivedDelegate    OnClearCacheRequest;
 
         /// <summary>
         /// An event sent whenever a response to a clear cache request was sent.
         /// </summary>
-        event OnClearCacheResponseDelegate   OnClearCacheResponse;
+        event OnClearCacheResponseSentDelegate   OnClearCacheResponse;
 
         #endregion
 
@@ -402,12 +402,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a reserve now request was received.
         /// </summary>
-        event OnReserveNowRequestDelegate    OnReserveNowRequest;
+        event OnReserveNowRequestReceivedDelegate    OnReserveNowRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reserve now request was sent.
         /// </summary>
-        event OnReserveNowResponseDelegate   OnReserveNowResponse;
+        event OnReserveNowResponseSentDelegate   OnReserveNowResponse;
 
         #endregion
 
@@ -416,12 +416,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a cancel reservation request was received.
         /// </summary>
-        event OnCancelReservationRequestDelegate    OnCancelReservationRequest;
+        event OnCancelReservationRequestReceivedDelegate    OnCancelReservationRequest;
 
         /// <summary>
         /// An event sent whenever a response to a cancel reservation request was sent.
         /// </summary>
-        event OnCancelReservationResponseDelegate   OnCancelReservationResponse;
+        event OnCancelReservationResponseSentDelegate   OnCancelReservationResponse;
 
         #endregion
 
@@ -430,12 +430,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a request start transaction request was received.
         /// </summary>
-        event OnRequestStartTransactionRequestDelegate    OnRequestStartTransactionRequest;
+        event OnRequestStartTransactionRequestReceivedDelegate    OnRequestStartTransactionRequest;
 
         /// <summary>
         /// An event sent whenever a response to a request start transaction request was sent.
         /// </summary>
-        event OnRequestStartTransactionResponseDelegate   OnRequestStartTransactionResponse;
+        event OnRequestStartTransactionResponseSentDelegate   OnRequestStartTransactionResponse;
 
         #endregion
 
@@ -444,12 +444,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a request stop transaction request was received.
         /// </summary>
-        event OnRequestStopTransactionRequestDelegate    OnRequestStopTransactionRequest;
+        event OnRequestStopTransactionRequestReceivedDelegate    OnRequestStopTransactionRequest;
 
         /// <summary>
         /// An event sent whenever a response to a request stop transaction request was sent.
         /// </summary>
-        event OnRequestStopTransactionResponseDelegate   OnRequestStopTransactionResponse;
+        event OnRequestStopTransactionResponseSentDelegate   OnRequestStopTransactionResponse;
 
         #endregion
 
@@ -458,12 +458,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a get transaction status request was received.
         /// </summary>
-        event OnGetTransactionStatusRequestDelegate    OnGetTransactionStatusRequest;
+        event OnGetTransactionStatusRequestReceivedDelegate    OnGetTransactionStatusRequest;
 
         /// <summary>
         /// An event sent whenever a response to a get transaction status request was sent.
         /// </summary>
-        event OnGetTransactionStatusResponseDelegate   OnGetTransactionStatusResponse;
+        event OnGetTransactionStatusResponseSentDelegate   OnGetTransactionStatusResponse;
 
         #endregion
 
@@ -472,12 +472,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a set charging profile request was received.
         /// </summary>
-        event OnSetChargingProfileRequestDelegate    OnSetChargingProfileRequest;
+        event OnSetChargingProfileRequestReceivedDelegate    OnSetChargingProfileRequest;
 
         /// <summary>
         /// An event sent whenever a response to a set charging profile request was sent.
         /// </summary>
-        event OnSetChargingProfileResponseDelegate   OnSetChargingProfileResponse;
+        event OnSetChargingProfileResponseSentDelegate   OnSetChargingProfileResponse;
 
         #endregion
 
@@ -486,12 +486,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a get charging profiles request was received.
         /// </summary>
-        event OnGetChargingProfilesRequestDelegate    OnGetChargingProfilesRequest;
+        event OnGetChargingProfilesRequestReceivedDelegate    OnGetChargingProfilesRequest;
 
         /// <summary>
         /// An event sent whenever a response to a get charging profiles request was sent.
         /// </summary>
-        event OnGetChargingProfilesResponseDelegate   OnGetChargingProfilesResponse;
+        event OnGetChargingProfilesResponseSentDelegate   OnGetChargingProfilesResponse;
 
         #endregion
 
@@ -500,12 +500,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a clear charging profile request was received.
         /// </summary>
-        event OnClearChargingProfileRequestDelegate    OnClearChargingProfileRequest;
+        event OnClearChargingProfileRequestReceivedDelegate    OnClearChargingProfileRequest;
 
         /// <summary>
         /// An event sent whenever a response to a clear charging profile request was sent.
         /// </summary>
-        event OnClearChargingProfileResponseDelegate   OnClearChargingProfileResponse;
+        event OnClearChargingProfileResponseSentDelegate   OnClearChargingProfileResponse;
 
         #endregion
 
@@ -514,12 +514,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a GetCompositeSchedule request was received.
         /// </summary>
-        event OnGetCompositeScheduleRequestDelegate    OnGetCompositeScheduleRequest;
+        event OnGetCompositeScheduleRequestReceivedDelegate    OnGetCompositeScheduleRequest;
 
         /// <summary>
         /// An event sent whenever a response to a GetCompositeSchedule request was sent.
         /// </summary>
-        event OnGetCompositeScheduleResponseDelegate   OnGetCompositeScheduleResponse;
+        event OnGetCompositeScheduleResponseSentDelegate   OnGetCompositeScheduleResponse;
 
         #endregion
 
@@ -528,12 +528,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever an UpdateDynamicSchedule request was received.
         /// </summary>
-        event OnUpdateDynamicScheduleRequestDelegate    OnUpdateDynamicScheduleRequest;
+        event OnUpdateDynamicScheduleRequestReceivedDelegate    OnUpdateDynamicScheduleRequest;
 
         /// <summary>
         /// An event sent whenever an response to a UpdateDynamicSchedule request was sent.
         /// </summary>
-        event OnUpdateDynamicScheduleResponseDelegate   OnUpdateDynamicScheduleResponse;
+        event OnUpdateDynamicScheduleResponseSentDelegate   OnUpdateDynamicScheduleResponse;
 
         #endregion
 
@@ -542,12 +542,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a NotifyAllowedEnergyTransfer request was received.
         /// </summary>
-        event OnNotifyAllowedEnergyTransferRequestDelegate    OnNotifyAllowedEnergyTransferRequest;
+        event OnNotifyAllowedEnergyTransferRequestReceivedDelegate    OnNotifyAllowedEnergyTransferRequest;
 
         /// <summary>
         /// An event sent whenever a response to a NotifyAllowedEnergyTransfer request was sent.
         /// </summary>
-        event OnNotifyAllowedEnergyTransferResponseDelegate   OnNotifyAllowedEnergyTransferResponse;
+        event OnNotifyAllowedEnergyTransferResponseSentDelegate   OnNotifyAllowedEnergyTransferResponse;
 
         #endregion
 
@@ -556,12 +556,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever an UsePriorityCharging request was received.
         /// </summary>
-        event OnUsePriorityChargingRequestDelegate    OnUsePriorityChargingRequest;
+        event OnUsePriorityChargingRequestReceivedDelegate    OnUsePriorityChargingRequest;
 
         /// <summary>
         /// An event sent whenever a response to an UsePriorityCharging request was sent.
         /// </summary>
-        event OnUsePriorityChargingResponseDelegate   OnUsePriorityChargingResponse;
+        event OnUsePriorityChargingResponseSentDelegate   OnUsePriorityChargingResponse;
 
         #endregion
 
@@ -570,12 +570,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever an UnlockConnector request was received.
         /// </summary>
-        event OnUnlockConnectorRequestDelegate    OnUnlockConnectorRequest;
+        event OnUnlockConnectorRequestReceivedDelegate    OnUnlockConnectorRequest;
 
         /// <summary>
         /// An event sent whenever a response to an UnlockConnector request was sent.
         /// </summary>
-        event OnUnlockConnectorResponseDelegate   OnUnlockConnectorResponse;
+        event OnUnlockConnectorResponseSentDelegate   OnUnlockConnectorResponse;
 
         #endregion
 
@@ -585,12 +585,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever an AFRR signal request was received.
         /// </summary>
-        event OnAFRRSignalRequestDelegate    OnAFRRSignalRequest;
+        event OnAFRRSignalRequestReceivedDelegate    OnAFRRSignalRequest;
 
         /// <summary>
         /// An event sent whenever a response to an AFRR signal request was sent.
         /// </summary>
-        event OnAFRRSignalResponseDelegate   OnAFRRSignalResponse;
+        event OnAFRRSignalResponseSentDelegate   OnAFRRSignalResponse;
 
         #endregion
 
@@ -600,12 +600,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a set display message request was received.
         /// </summary>
-        event OnSetDisplayMessageRequestDelegate    OnSetDisplayMessageRequest;
+        event OnSetDisplayMessageRequestReceivedDelegate    OnSetDisplayMessageRequest;
 
         /// <summary>
         /// An event sent whenever a response to a set display message request was sent.
         /// </summary>
-        event OnSetDisplayMessageResponseDelegate   OnSetDisplayMessageResponse;
+        event OnSetDisplayMessageResponseSentDelegate   OnSetDisplayMessageResponse;
 
         #endregion
 
@@ -614,12 +614,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a get display messages request was received.
         /// </summary>
-        event OnGetDisplayMessagesRequestDelegate    OnGetDisplayMessagesRequest;
+        event OnGetDisplayMessagesRequestReceivedDelegate    OnGetDisplayMessagesRequest;
 
         /// <summary>
         /// An event sent whenever a response to a get display messages request was sent.
         /// </summary>
-        event OnGetDisplayMessagesResponseDelegate   OnGetDisplayMessagesResponse;
+        event OnGetDisplayMessagesResponseSentDelegate   OnGetDisplayMessagesResponse;
 
         #endregion
 
@@ -628,12 +628,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a clear display message request was received.
         /// </summary>
-        event OnClearDisplayMessageRequestDelegate    OnClearDisplayMessageRequest;
+        event OnClearDisplayMessageRequestReceivedDelegate    OnClearDisplayMessageRequest;
 
         /// <summary>
         /// An event sent whenever a response to a clear display message request was sent.
         /// </summary>
-        event OnClearDisplayMessageResponseDelegate   OnClearDisplayMessageResponse;
+        event OnClearDisplayMessageResponseSentDelegate   OnClearDisplayMessageResponse;
 
         #endregion
 
@@ -642,12 +642,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a cost updated request was received.
         /// </summary>
-        event OnCostUpdatedRequestDelegate    OnCostUpdatedRequest;
+        event OnCostUpdatedRequestReceivedDelegate    OnCostUpdatedRequest;
 
         /// <summary>
         /// An event sent whenever a response to a cost updated request was sent.
         /// </summary>
-        event OnCostUpdatedResponseDelegate   OnCostUpdatedResponse;
+        event OnCostUpdatedResponseSentDelegate   OnCostUpdatedResponse;
 
         #endregion
 
@@ -656,12 +656,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a customer information request was received.
         /// </summary>
-        event OnCustomerInformationRequestDelegate    OnCustomerInformationRequest;
+        event OnCustomerInformationRequestReceivedDelegate    OnCustomerInformationRequest;
 
         /// <summary>
         /// An event sent whenever a response to a customer information request was sent.
         /// </summary>
-        event OnCustomerInformationResponseDelegate   OnCustomerInformationResponse;
+        event OnCustomerInformationResponseSentDelegate   OnCustomerInformationResponse;
 
         #endregion
 

@@ -51,7 +51,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event fired whenever an Authorize request will be sent to the CSMS.
         /// </summary>
-        public event OnAuthorizeRequestDelegate?     OnAuthorizeRequest;
+        public event OnAuthorizeRequestSentDelegate?     OnAuthorizeRequest;
 
         /// <summary>
         /// An event fired whenever an Authorize request will be sent to the CSMS.
@@ -66,7 +66,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event fired whenever a response to an Authorize request was received.
         /// </summary>
-        public event OnAuthorizeResponseDelegate?    OnAuthorizeResponse;
+        public event OnAuthorizeResponseReceivedDelegate?    OnAuthorizeResponse;
 
         #endregion
 

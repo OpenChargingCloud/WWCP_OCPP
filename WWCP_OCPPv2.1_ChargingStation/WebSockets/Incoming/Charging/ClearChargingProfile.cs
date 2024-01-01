@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a ClearChargingProfile request was received.
         /// </summary>
-        public event OnClearChargingProfileRequestDelegate?        OnClearChargingProfileRequest;
+        public event OnClearChargingProfileRequestReceivedDelegate?        OnClearChargingProfileRequest;
 
         /// <summary>
         /// An event sent whenever a ClearChargingProfile request was received.
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a response to a ClearChargingProfile request was sent.
         /// </summary>
-        public event OnClearChargingProfileResponseDelegate?       OnClearChargingProfileResponse;
+        public event OnClearChargingProfileResponseSentDelegate?       OnClearChargingProfileResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a ClearChargingProfile request was sent.

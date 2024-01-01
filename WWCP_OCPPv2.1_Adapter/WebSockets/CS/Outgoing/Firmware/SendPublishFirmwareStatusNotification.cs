@@ -52,7 +52,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever a publish firmware status notification request will be sent to the CSMS.
         /// </summary>
-        public event OCPPv2_1.CS.OnPublishFirmwareStatusNotificationRequestDelegate?     OnPublishFirmwareStatusNotificationRequest;
+        public event OCPPv2_1.CS.OnPublishFirmwareStatusNotificationRequestSentDelegate?     OnPublishFirmwareStatusNotificationRequestSent;
 
         /// <summary>
         /// An event fired whenever a publish firmware status notification request will be sent to the CSMS.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever a response to a publish firmware status notification request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnPublishFirmwareStatusNotificationResponseDelegate?    OnPublishFirmwareStatusNotificationResponse;
+        public event OCPPv2_1.CS.OnPublishFirmwareStatusNotificationResponseReceivedDelegate?    OnPublishFirmwareStatusNotificationResponse;
 
         #endregion
 
@@ -91,14 +91,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
             try
             {
 
-                OnPublishFirmwareStatusNotificationRequest?.Invoke(startTime,
+                OnPublishFirmwareStatusNotificationRequestSent?.Invoke(startTime,
                                                                    this,
                                                                    Request);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnPublishFirmwareStatusNotificationRequest));
+                DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnPublishFirmwareStatusNotificationRequestSent));
             }
 
             #endregion

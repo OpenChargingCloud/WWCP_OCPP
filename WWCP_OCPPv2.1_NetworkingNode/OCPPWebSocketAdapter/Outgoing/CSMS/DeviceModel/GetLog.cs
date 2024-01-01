@@ -49,12 +49,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a GetLog request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnGetLogRequestDelegate?     OnGetLogRequest;
+        public event OCPPv2_1.CSMS.OnGetLogRequestSentDelegate?     OnGetLogRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a GetLog request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnGetLogResponseDelegate?    OnGetLogResponse;
+        public event OCPPv2_1.CSMS.OnGetLogResponseReceivedDelegate?    OnGetLogResponseReceived;
 
         #endregion
 
@@ -75,13 +75,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnGetLogRequest?.Invoke(startTime,
+                OnGetLogRequestSent?.Invoke(startTime,
                                         parentNetworkingNode,
                                         Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnGetLogRequest));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnGetLogRequestSent));
             }
 
             #endregion
@@ -149,7 +149,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnGetLogResponse?.Invoke(endTime,
+                OnGetLogResponseReceived?.Invoke(endTime,
                                          parentNetworkingNode,
                                          Request,
                                          response,
@@ -158,7 +158,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnGetLogResponse));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnGetLogResponseReceived));
             }
 
             #endregion
@@ -169,6 +169,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
+    {
+
+        /// <summary>
+        /// An event sent whenever a response to a GetLog request was sent.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnGetLogResponseReceivedDelegate? OnGetLogResponseReceived;
 
     }
 

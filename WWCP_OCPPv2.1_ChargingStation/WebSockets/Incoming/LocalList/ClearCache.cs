@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a ClearCache request was received.
         /// </summary>
-        public event OnClearCacheRequestDelegate?                  OnClearCacheRequest;
+        public event OnClearCacheRequestReceivedDelegate?                  OnClearCacheRequest;
 
         /// <summary>
         /// An event sent whenever a ClearCache request was received.
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a response to a ClearCache request was sent.
         /// </summary>
-        public event OnClearCacheResponseDelegate?                 OnClearCacheResponse;
+        public event OnClearCacheResponseSentDelegate?                 OnClearCacheResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a ClearCache request was sent.

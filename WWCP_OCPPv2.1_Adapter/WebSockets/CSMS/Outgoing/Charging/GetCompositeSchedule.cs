@@ -49,12 +49,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a GetCompositeSchedule request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnGetCompositeScheduleRequestDelegate?     OnGetCompositeScheduleRequest;
+        public event OCPPv2_1.CSMS.OnGetCompositeScheduleRequestSentDelegate?     OnGetCompositeScheduleRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a GetCompositeSchedule request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnGetCompositeScheduleResponseDelegate?    OnGetCompositeScheduleResponse;
+        public event OCPPv2_1.CSMS.OnGetCompositeScheduleResponseReceivedDelegate?    OnGetCompositeScheduleResponse;
 
         #endregion
 
@@ -72,13 +72,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
             try
             {
 
-                OnGetCompositeScheduleRequest?.Invoke(startTime,
+                OnGetCompositeScheduleRequestSent?.Invoke(startTime,
                                                       this,
                                                       Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnGetCompositeScheduleRequest));
+                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnGetCompositeScheduleRequestSent));
             }
 
             #endregion

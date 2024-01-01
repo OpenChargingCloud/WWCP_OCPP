@@ -52,7 +52,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever a log status notification request will be sent to the CSMS.
         /// </summary>
-        public event OCPPv2_1.CS.OnLogStatusNotificationRequestDelegate?     OnLogStatusNotificationRequest;
+        public event OCPPv2_1.CS.OnLogStatusNotificationRequestSentDelegate?     OnLogStatusNotificationRequestSent;
 
         /// <summary>
         /// An event fired whenever a log status notification request will be sent to the CSMS.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever a response to a log status notification request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnLogStatusNotificationResponseDelegate?    OnLogStatusNotificationResponse;
+        public event OCPPv2_1.CS.OnLogStatusNotificationResponseReceivedDelegate?    OnLogStatusNotificationResponse;
 
         #endregion
 
@@ -91,14 +91,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
             try
             {
 
-                OnLogStatusNotificationRequest?.Invoke(startTime,
+                OnLogStatusNotificationRequestSent?.Invoke(startTime,
                                                        this,
                                                        Request);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnLogStatusNotificationRequest));
+                DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnLogStatusNotificationRequestSent));
             }
 
             #endregion

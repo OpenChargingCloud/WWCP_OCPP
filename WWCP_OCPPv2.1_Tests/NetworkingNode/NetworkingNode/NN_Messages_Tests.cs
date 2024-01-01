@@ -101,22 +101,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
                 var nnJSONResponseMessagesReceived       = new ConcurrentList<OCPP_JSONResponseMessage>();
                 var nnBootNotificationResponsesReceived  = new ConcurrentList<BootNotificationResponse>();
 
-                networkingNode1.ocppOUT.OnBootNotificationRequest     += (timestamp, sender,             bootNotificationRequest) => {
+                networkingNode1.ocppOUT.OnBootNotificationRequestSent      += (timestamp, sender,             bootNotificationRequest) => {
                     nnBootNotificationRequestsSent.TryAdd(bootNotificationRequest);
                     return Task.CompletedTask;
                 };
 
-                networkingNode1.ocppOUT.OnJSONMessageRequestSent      += (timestamp, sender, jsonRequestMessage) => {
+                networkingNode1.ocppOUT.OnJSONMessageRequestSent           += (timestamp, sender, jsonRequestMessage) => {
                     nnJSONMessageRequestsSent.     TryAdd(jsonRequestMessage);
                     return Task.CompletedTask;
                 };
 
-                testCSMS01.             OnBootNotificationRequest     += (timestamp, sender, connection, bootNotificationRequest) => {
+                testCSMS01.             OnBootNotificationRequestReceived  += (timestamp, sender, connection, bootNotificationRequest) => {
                     csmsBootNotificationRequests.  TryAdd(bootNotificationRequest);
                     return Task.CompletedTask;
                 };
 
-                networkingNode1.ocppIN. OnJSONMessageResponseReceived += (timestamp, sender, jsonResponseMessage) => {
+                networkingNode1.ocppIN. OnJSONMessageResponseReceived      += (timestamp, sender, jsonResponseMessage) => {
                     nnJSONResponseMessagesReceived.TryAdd(jsonResponseMessage);
                     return Task.CompletedTask;
                 };
@@ -126,7 +126,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
                 //    return Task.CompletedTask;
                 //};
 
-                networkingNode1.ocppIN. OnBootNotificationResponseIN  += (timestamp, sender,             bootNotificationRequest, bootNotificationResponse, runtime) => {
+                networkingNode1.ocppIN. OnBootNotificationResponseReceived += (timestamp, sender,             bootNotificationRequest, bootNotificationResponse, runtime) => {
                     nnBootNotificationResponsesReceived.   TryAdd(bootNotificationResponse);
                     return Task.CompletedTask;
                 };

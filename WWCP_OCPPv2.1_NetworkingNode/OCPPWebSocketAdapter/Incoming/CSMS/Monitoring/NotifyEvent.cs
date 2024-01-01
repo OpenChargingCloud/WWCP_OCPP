@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a NotifyEvent request was received.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnNotifyEventRequestDelegate?     OnNotifyEventRequest;
+        public event OCPPv2_1.CSMS.OnNotifyEventRequestReceivedDelegate?     OnNotifyEventRequestReceived;
 
         /// <summary>
         /// An event sent whenever a NotifyEvent was received.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a response to a NotifyEvent was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnNotifyEventResponseDelegate?    OnNotifyEventResponse;
+        public event OCPPv2_1.CSMS.OnNotifyEventResponseSentDelegate?    OnNotifyEventResponseSent;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a NotifyEvent was sent.
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     try
                     {
 
-                        OnNotifyEventRequest?.Invoke(Timestamp.Now,
+                        OnNotifyEventRequestReceived?.Invoke(Timestamp.Now,
                                                      parentNetworkingNode,
                                                      WebSocketConnection,
                                                      request);
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnNotifyEventRequest));
+                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnNotifyEventRequestReceived));
                     }
 
                     #endregion
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     try
                     {
 
-                        OnNotifyEventResponse?.Invoke(Timestamp.Now,
+                        OnNotifyEventResponseSent?.Invoke(Timestamp.Now,
                                                       parentNetworkingNode,
                                                       WebSocketConnection,
                                                       request,
@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnNotifyEventResponse));
+                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnNotifyEventResponseSent));
                     }
 
                     #endregion
@@ -263,6 +263,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
+    {
+
+        /// <summary>
+        /// An event sent whenever a response to a NotifyEvent was sent.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnNotifyEventResponseSentDelegate? OnNotifyEventResponseSent;
 
     }
 

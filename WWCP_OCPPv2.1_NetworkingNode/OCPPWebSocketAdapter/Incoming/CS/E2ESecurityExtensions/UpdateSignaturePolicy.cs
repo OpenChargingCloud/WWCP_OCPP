@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a response to an UpdateSignaturePolicy request was sent.
         /// </summary>
-        public event OCPP.CS.OnUpdateSignaturePolicyResponseDelegate?    OnUpdateSignaturePolicyResponse;
+        public event OCPP.CS.OnUpdateSignaturePolicyResponseDelegate?    OnUpdateSignaturePolicyResponseSent;
 
         /// <summary>
         /// An event sent whenever a websocket response to an UpdateSignaturePolicy request was sent.
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     try
                     {
 
-                        OnUpdateSignaturePolicyResponse?.Invoke(Timestamp.Now,
+                        OnUpdateSignaturePolicyResponseSent?.Invoke(Timestamp.Now,
                                                                 parentNetworkingNode,
                                                                 WebSocketConnection,
                                                                 request,
@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnUpdateSignaturePolicyResponse));
+                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnUpdateSignaturePolicyResponseSent));
                     }
 
                     #endregion
@@ -256,6 +256,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
+    {
+
+        /// <summary>
+        /// An event sent whenever a response to an UpdateSignaturePolicy request was sent.
+        /// </summary>
+        public event OCPP.CS.OnUpdateSignaturePolicyResponseDelegate? OnUpdateSignaturePolicyResponseSent;
 
     }
 

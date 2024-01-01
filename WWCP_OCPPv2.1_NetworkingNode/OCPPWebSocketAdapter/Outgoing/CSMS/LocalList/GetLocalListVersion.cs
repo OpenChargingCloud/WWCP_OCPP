@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a GetLocalListVersion request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnGetLocalListVersionRequestDelegate?     OnGetLocalListVersionRequest;
+        public event OCPPv2_1.CSMS.OnGetLocalListVersionRequestSentDelegate?     OnGetLocalListVersionRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a GetLocalListVersion request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnGetLocalListVersionResponseDelegate?    OnGetLocalListVersionResponse;
+        public event OCPPv2_1.CSMS.OnGetLocalListVersionResponseReceivedDelegate?    OnGetLocalListVersionResponseReceived;
 
         #endregion
 
@@ -70,13 +70,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnGetLocalListVersionRequest?.Invoke(startTime,
+                OnGetLocalListVersionRequestSent?.Invoke(startTime,
                                                      parentNetworkingNode,
                                                      Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnGetLocalListVersionRequest));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnGetLocalListVersionRequestSent));
             }
 
             #endregion
@@ -143,7 +143,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnGetLocalListVersionResponse?.Invoke(endTime,
+                OnGetLocalListVersionResponseReceived?.Invoke(endTime,
                                                       parentNetworkingNode,
                                                       Request,
                                                       response,
@@ -152,7 +152,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnGetLocalListVersionResponse));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnGetLocalListVersionResponseReceived));
             }
 
             #endregion
@@ -163,6 +163,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
+    {
+
+        /// <summary>
+        /// An event sent whenever a response to a GetLocalListVersion request was sent.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnGetLocalListVersionResponseReceivedDelegate? OnGetLocalListVersionResponseReceived;
 
     }
 

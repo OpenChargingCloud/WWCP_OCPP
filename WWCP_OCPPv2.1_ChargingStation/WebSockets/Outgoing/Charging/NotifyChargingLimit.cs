@@ -51,7 +51,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event fired whenever a NotifyChargingLimit request will be sent to the CSMS.
         /// </summary>
-        public event OnNotifyChargingLimitRequestDelegate?     OnNotifyChargingLimitRequest;
+        public event OnNotifyChargingLimitRequestSentDelegate?     OnNotifyChargingLimitRequest;
 
         /// <summary>
         /// An event fired whenever a NotifyChargingLimit request will be sent to the CSMS.
@@ -66,7 +66,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event fired whenever a response to a NotifyChargingLimit request was received.
         /// </summary>
-        public event OnNotifyChargingLimitResponseDelegate?    OnNotifyChargingLimitResponse;
+        public event OnNotifyChargingLimitResponseReceivedDelegate?    OnNotifyChargingLimitResponse;
 
         #endregion
 

@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a NotifyCRL request was received.
         /// </summary>
-        public event OnNotifyCRLRequestDelegate?                   OnNotifyCRLRequest;
+        public event OnNotifyCRLRequestReceivedDelegate?                   OnNotifyCRLRequest;
 
         /// <summary>
         /// An event sent whenever a NotifyCRL request was received.
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a response to a NotifyCRL request was sent.
         /// </summary>
-        public event OnNotifyCRLResponseDelegate?                  OnNotifyCRLResponse;
+        public event OnNotifyCRLResponseSentDelegate?                  OnNotifyCRLResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a NotifyCRL request was sent.

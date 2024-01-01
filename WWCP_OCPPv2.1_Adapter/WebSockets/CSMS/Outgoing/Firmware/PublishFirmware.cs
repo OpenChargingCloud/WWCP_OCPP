@@ -49,12 +49,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a PublishFirmware request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnPublishFirmwareRequestDelegate?     OnPublishFirmwareRequest;
+        public event OCPPv2_1.CSMS.OnPublishFirmwareRequestSentDelegate?     OnPublishFirmwareRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a PublishFirmware request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnPublishFirmwareResponseDelegate?    OnPublishFirmwareResponse;
+        public event OCPPv2_1.CSMS.OnPublishFirmwareResponseReceivedDelegate?    OnPublishFirmwareResponse;
 
         #endregion
 
@@ -71,13 +71,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
             try
             {
 
-                OnPublishFirmwareRequest?.Invoke(startTime,
+                OnPublishFirmwareRequestSent?.Invoke(startTime,
                                                  this,
                                                  Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnPublishFirmwareRequest));
+                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnPublishFirmwareRequestSent));
             }
 
             #endregion

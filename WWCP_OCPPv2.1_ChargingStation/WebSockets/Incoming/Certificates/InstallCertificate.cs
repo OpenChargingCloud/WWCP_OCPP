@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever an InstallCertificate request was received.
         /// </summary>
-        public event OnInstallCertificateRequestDelegate?          OnInstallCertificateRequest;
+        public event OnInstallCertificateRequestReceivedDelegate?          OnInstallCertificateRequest;
 
         /// <summary>
         /// An event sent whenever an InstallCertificate request was received.
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a response to an InstallCertificate request was sent.
         /// </summary>
-        public event OnInstallCertificateResponseDelegate?         OnInstallCertificateResponse;
+        public event OnInstallCertificateResponseSentDelegate?         OnInstallCertificateResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to an InstallCertificate request was sent.

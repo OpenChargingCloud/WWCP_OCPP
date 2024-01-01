@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a get log request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnGetLogRequestDelegate?          OnGetLogRequest;
+        public event OCPPv2_1.CS.OnGetLogRequestReceivedDelegate?          OnGetLogRequest;
 
         /// <summary>
         /// An event sent whenever a get log request was received.
@@ -71,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a response to a get log request was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnGetLogResponseDelegate?         OnGetLogResponse;
+        public event OCPPv2_1.CS.OnGetLogResponseSentDelegate?         OnGetLogResponseSent;
 
         /// <summary>
         /// An event sent whenever a websocket response to a get log request was sent.
@@ -182,7 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
                     try
                     {
 
-                        OnGetLogResponse?.Invoke(Timestamp.Now,
+                        OnGetLogResponseSent?.Invoke(Timestamp.Now,
                                                  this,
                                                  WebSocketConnection,
                                                  request,
@@ -192,7 +192,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnGetLogResponse));
+                        DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnGetLogResponseSent));
                     }
 
                     #endregion

@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a GetBaseReport request was received.
         /// </summary>
-        public event OnGetBaseReportRequestDelegate?               OnGetBaseReportRequest;
+        public event OnGetBaseReportRequestReceivedDelegate?               OnGetBaseReportRequest;
 
         /// <summary>
         /// An event sent whenever a GetBaseReport request was received.
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a response to a GetBaseReport request was sent.
         /// </summary>
-        public event OnGetBaseReportResponseDelegate?              OnGetBaseReportResponse;
+        public event OnGetBaseReportResponseSentDelegate?              OnGetBaseReportResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a GetBaseReport request was sent.

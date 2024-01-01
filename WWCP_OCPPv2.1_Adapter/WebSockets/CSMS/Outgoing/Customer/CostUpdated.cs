@@ -49,12 +49,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a CostUpdated request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnCostUpdatedRequestDelegate?     OnCostUpdatedRequest;
+        public event OCPPv2_1.CSMS.OnCostUpdatedRequestSentDelegate?     OnCostUpdatedRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a CostUpdated request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnCostUpdatedResponseDelegate?    OnCostUpdatedResponse;
+        public event OCPPv2_1.CSMS.OnCostUpdatedResponseReceivedDelegate?    OnCostUpdatedResponse;
 
         #endregion
 
@@ -71,13 +71,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
             try
             {
 
-                OnCostUpdatedRequest?.Invoke(startTime,
+                OnCostUpdatedRequestSent?.Invoke(startTime,
                                              this,
                                              Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnCostUpdatedRequest));
+                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnCostUpdatedRequestSent));
             }
 
             #endregion

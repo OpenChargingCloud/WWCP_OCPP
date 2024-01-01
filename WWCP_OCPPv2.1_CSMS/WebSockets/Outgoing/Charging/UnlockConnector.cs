@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever an UnlockConnector request was sent.
         /// </summary>
-        public event OnUnlockConnectorRequestDelegate?     OnUnlockConnectorRequest;
+        public event OnUnlockConnectorRequestSentDelegate?     OnUnlockConnectorRequest;
 
         /// <summary>
         /// An event sent whenever a response to an UnlockConnector request was sent.
         /// </summary>
-        public event OnUnlockConnectorResponseDelegate?    OnUnlockConnectorResponse;
+        public event OnUnlockConnectorResponseReceivedDelegate?    OnUnlockConnectorResponse;
 
         #endregion
 

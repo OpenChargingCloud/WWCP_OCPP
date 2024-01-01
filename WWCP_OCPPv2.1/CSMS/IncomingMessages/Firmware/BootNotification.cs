@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Request">The boot notification request.</param>
     public delegate Task
 
-        OnBootNotificationRequestDelegate(DateTime                  Timestamp,
+        OnBootNotificationRequestReceivedDelegate(DateTime                  Timestamp,
                                           IEventSender              Sender,
                                           IWebSocketConnection      Connection,
                                           BootNotificationRequest   Request);
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Runtime">The runtime of the boot notification response.</param>
     public delegate Task
 
-        OnBootNotificationResponseDelegate(DateTime                   Timestamp,
+        OnBootNotificationResponseSentDelegate(DateTime                   Timestamp,
                                            IEventSender               Sender,
                                            IWebSocketConnection       Connection,
                                            BootNotificationRequest    Request,

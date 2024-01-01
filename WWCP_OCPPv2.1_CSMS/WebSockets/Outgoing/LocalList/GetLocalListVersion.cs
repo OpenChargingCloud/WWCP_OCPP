@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a GetLocalListVersion request was sent.
         /// </summary>
-        public event OnGetLocalListVersionRequestDelegate?     OnGetLocalListVersionRequest;
+        public event OnGetLocalListVersionRequestSentDelegate?     OnGetLocalListVersionRequest;
 
         /// <summary>
         /// An event sent whenever a response to a GetLocalListVersion request was sent.
         /// </summary>
-        public event OnGetLocalListVersionResponseDelegate?    OnGetLocalListVersionResponse;
+        public event OnGetLocalListVersionResponseReceivedDelegate?    OnGetLocalListVersionResponse;
 
         #endregion
 

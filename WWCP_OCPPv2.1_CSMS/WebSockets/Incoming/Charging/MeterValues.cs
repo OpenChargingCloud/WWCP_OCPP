@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a MeterValues request was received.
         /// </summary>
-        public event OnMeterValuesRequestDelegate?                OnMeterValuesRequest;
+        public event OnMeterValuesRequestReceivedDelegate?                OnMeterValuesRequest;
 
         /// <summary>
         /// An event sent whenever a MeterValues request was received.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a response to a MeterValues request was sent.
         /// </summary>
-        public event OnMeterValuesResponseDelegate?               OnMeterValuesResponse;
+        public event OnMeterValuesResponseSentDelegate?               OnMeterValuesResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a MeterValues request was sent.

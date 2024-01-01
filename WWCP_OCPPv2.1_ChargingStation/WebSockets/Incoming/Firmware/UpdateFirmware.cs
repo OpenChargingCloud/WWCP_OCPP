@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever an UpdateFirmware request was received.
         /// </summary>
-        public event OnUpdateFirmwareRequestDelegate?              OnUpdateFirmwareRequest;
+        public event OnUpdateFirmwareRequestReceivedDelegate?              OnUpdateFirmwareRequest;
 
         /// <summary>
         /// An event sent whenever an UpdateFirmware request was received.
@@ -71,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a response to an UpdateFirmware request was sent.
         /// </summary>
-        public event OnUpdateFirmwareResponseDelegate?             OnUpdateFirmwareResponse;
+        public event OnUpdateFirmwareResponseSentDelegate?             OnUpdateFirmwareResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to an UpdateFirmware request was sent.

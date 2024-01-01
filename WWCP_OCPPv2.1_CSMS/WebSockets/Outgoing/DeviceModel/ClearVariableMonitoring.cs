@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a ClearVariableMonitoring request was sent.
         /// </summary>
-        public event OnClearVariableMonitoringRequestDelegate?     OnClearVariableMonitoringRequest;
+        public event OnClearVariableMonitoringRequestSentDelegate?     OnClearVariableMonitoringRequest;
 
         /// <summary>
         /// An event sent whenever a response to a ClearVariableMonitoring request was sent.
         /// </summary>
-        public event OnClearVariableMonitoringResponseDelegate?    OnClearVariableMonitoringResponse;
+        public event OnClearVariableMonitoringResponseReceivedDelegate?    OnClearVariableMonitoringResponse;
 
         #endregion
 

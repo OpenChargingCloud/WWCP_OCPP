@@ -51,7 +51,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event fired whenever a GetCRL (certificate revocation list) request will be sent to the CSMS.
         /// </summary>
-        public event OnGetCRLRequestDelegate?     OnGetCRLRequest;
+        public event OnGetCRLRequestSentDelegate?     OnGetCRLRequest;
 
         /// <summary>
         /// An event fired whenever a GetCRL (certificate revocation list) request will be sent to the CSMS.
@@ -66,7 +66,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event fired whenever a response to a GetCRL (certificate revocation list) request was received.
         /// </summary>
-        public event OnGetCRLResponseDelegate?    OnGetCRLResponse;
+        public event OnGetCRLResponseReceivedDelegate?    OnGetCRLResponse;
 
         #endregion
 

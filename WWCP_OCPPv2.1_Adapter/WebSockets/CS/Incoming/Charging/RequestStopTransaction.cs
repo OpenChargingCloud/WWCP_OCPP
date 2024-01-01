@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a request stop transaction request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnRequestStopTransactionRequestDelegate?     OnRequestStopTransactionRequest;
+        public event OCPPv2_1.CS.OnRequestStopTransactionRequestReceivedDelegate?     OnRequestStopTransactionRequest;
 
         /// <summary>
         /// An event sent whenever a request stop transaction request was received.
@@ -71,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a response to a request stop transaction request was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnRequestStopTransactionResponseDelegate?    OnRequestStopTransactionResponse;
+        public event OCPPv2_1.CS.OnRequestStopTransactionResponseSentDelegate?    OnRequestStopTransactionResponseSent;
 
         /// <summary>
         /// An event sent whenever a websocket response to a request stop transaction request was sent.
@@ -182,7 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
                     try
                     {
 
-                        OnRequestStopTransactionResponse?.Invoke(Timestamp.Now,
+                        OnRequestStopTransactionResponseSent?.Invoke(Timestamp.Now,
                                                                  this,
                                                                  WebSocketConnection,
                                                                  request,
@@ -192,7 +192,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnRequestStopTransactionResponse));
+                        DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnRequestStopTransactionResponseSent));
                     }
 
                     #endregion

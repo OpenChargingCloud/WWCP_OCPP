@@ -52,7 +52,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever a notify display messages request will be sent to the CSMS.
         /// </summary>
-        public event OCPPv2_1.CS.OnNotifyDisplayMessagesRequestDelegate?     OnNotifyDisplayMessagesRequest;
+        public event OCPPv2_1.CS.OnNotifyDisplayMessagesRequestSentDelegate?     OnNotifyDisplayMessagesRequestSent;
 
         /// <summary>
         /// An event fired whenever a notify display messages request will be sent to the CSMS.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever a response to a notify display messages request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnNotifyDisplayMessagesResponseDelegate?    OnNotifyDisplayMessagesResponse;
+        public event OCPPv2_1.CS.OnNotifyDisplayMessagesResponseReceivedDelegate?    OnNotifyDisplayMessagesResponse;
 
         #endregion
 
@@ -91,14 +91,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
             try
             {
 
-                OnNotifyDisplayMessagesRequest?.Invoke(startTime,
+                OnNotifyDisplayMessagesRequestSent?.Invoke(startTime,
                                                        this,
                                                        Request);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnNotifyDisplayMessagesRequest));
+                DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnNotifyDisplayMessagesRequestSent));
             }
 
             #endregion

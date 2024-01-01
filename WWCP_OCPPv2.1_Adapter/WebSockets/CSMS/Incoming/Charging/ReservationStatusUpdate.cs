@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a ReservationStatusUpdate request was received.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnReservationStatusUpdateRequestDelegate?     OnReservationStatusUpdateRequest;
+        public event OCPPv2_1.CSMS.OnReservationStatusUpdateRequestReceivedDelegate?     OnReservationStatusUpdateRequest;
 
         /// <summary>
         /// An event sent whenever a ReservationStatusUpdate was received.
@@ -68,7 +68,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a response to a ReservationStatusUpdate was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnReservationStatusUpdateResponseDelegate?    OnReservationStatusUpdateResponse;
+        public event OCPPv2_1.CSMS.OnReservationStatusUpdateResponseSentDelegate?    OnReservationStatusUpdateResponseSent;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a ReservationStatusUpdate was sent.
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                     try
                     {
 
-                        OnReservationStatusUpdateResponse?.Invoke(Timestamp.Now,
+                        OnReservationStatusUpdateResponseSent?.Invoke(Timestamp.Now,
                                                                   this,
                                                                   Connection,
                                                                   request,
@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnReservationStatusUpdateResponse));
+                        DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnReservationStatusUpdateResponseSent));
                     }
 
                     #endregion

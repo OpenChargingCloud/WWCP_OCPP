@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnNotifyAllowedEnergyTransferRequestDelegate(DateTime                             Timestamp,
+        OnNotifyAllowedEnergyTransferRequestReceivedDelegate(DateTime                             Timestamp,
                                                      IEventSender                         Sender,
                                                      IWebSocketConnection                 Connection,
                                                      NotifyAllowedEnergyTransferRequest   Request);
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnNotifyAllowedEnergyTransferResponseDelegate(DateTime                              Timestamp,
+        OnNotifyAllowedEnergyTransferResponseSentDelegate(DateTime                              Timestamp,
                                                       IEventSender                          Sender,
                                                       IWebSocketConnection                  Connection,
                                                       NotifyAllowedEnergyTransferRequest    Request,

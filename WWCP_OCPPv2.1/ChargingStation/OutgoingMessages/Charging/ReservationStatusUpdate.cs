@@ -32,7 +32,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
-    public delegate Task OnReservationStatusUpdateRequestDelegate(DateTime                         Timestamp,
+    public delegate Task OnReservationStatusUpdateRequestSentDelegate(DateTime                         Timestamp,
                                                                   IEventSender                     Sender,
                                                                   ReservationStatusUpdateRequest   Request);
 
@@ -44,7 +44,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Request">The request.</param>
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate Task OnReservationStatusUpdateResponseDelegate(DateTime                          Timestamp,
+    public delegate Task OnReservationStatusUpdateResponseReceivedDelegate(DateTime                          Timestamp,
                                                                    IEventSender                      Sender,
                                                                    ReservationStatusUpdateRequest    Request,
                                                                    ReservationStatusUpdateResponse   Response,

@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a set monitoring level request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnSetMonitoringLevelRequestDelegate?     OnSetMonitoringLevelRequest;
+        public event OCPPv2_1.CS.OnSetMonitoringLevelRequestReceivedDelegate?     OnSetMonitoringLevelRequest;
 
         /// <summary>
         /// An event sent whenever a set monitoring level request was received.
@@ -71,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a response to a set monitoring level request was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnSetMonitoringLevelResponseDelegate?    OnSetMonitoringLevelResponse;
+        public event OCPPv2_1.CS.OnSetMonitoringLevelResponseSentDelegate?    OnSetMonitoringLevelResponseSent;
 
         /// <summary>
         /// An event sent whenever a websocket response to a set monitoring level request was sent.
@@ -182,7 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
                     try
                     {
 
-                        OnSetMonitoringLevelResponse?.Invoke(Timestamp.Now,
+                        OnSetMonitoringLevelResponseSent?.Invoke(Timestamp.Now,
                                                              this,
                                                              WebSocketConnection,
                                                              request,
@@ -192,7 +192,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnSetMonitoringLevelResponse));
+                        DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnSetMonitoringLevelResponseSent));
                     }
 
                     #endregion

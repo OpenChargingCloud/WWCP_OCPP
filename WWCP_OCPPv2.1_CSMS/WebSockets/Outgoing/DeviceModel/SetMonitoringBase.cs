@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a SetMonitoringBase request was sent.
         /// </summary>
-        public event OnSetMonitoringBaseRequestDelegate?     OnSetMonitoringBaseRequest;
+        public event OnSetMonitoringBaseRequestSentDelegate?     OnSetMonitoringBaseRequest;
 
         /// <summary>
         /// An event sent whenever a response to a SetMonitoringBase request was sent.
         /// </summary>
-        public event OnSetMonitoringBaseResponseDelegate?    OnSetMonitoringBaseResponse;
+        public event OnSetMonitoringBaseResponseReceivedDelegate?    OnSetMonitoringBaseResponse;
 
         #endregion
 

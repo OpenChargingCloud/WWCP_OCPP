@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a ReserveNow request was received.
         /// </summary>
-        public event OnReserveNowRequestDelegate?                  OnReserveNowRequest;
+        public event OnReserveNowRequestReceivedDelegate?                  OnReserveNowRequest;
 
         /// <summary>
         /// An event sent whenever a ReserveNow request was received.
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a response to a ReserveNow request was sent.
         /// </summary>
-        public event OnReserveNowResponseDelegate?                 OnReserveNowResponse;
+        public event OnReserveNowResponseSentDelegate?                 OnReserveNowResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a ReserveNow request was sent.

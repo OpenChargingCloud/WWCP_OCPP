@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Request">The stop transaction request.</param>
     public delegate Task
 
-        OnGet15118EVCertificateRequestDelegate(DateTime                       Timestamp,
+        OnGet15118EVCertificateRequestReceivedDelegate(DateTime                       Timestamp,
                                                IEventSender                   Sender,
                                                IWebSocketConnection      Connection,
                                                Get15118EVCertificateRequest   Request);
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task
 
-        OnGet15118EVCertificateResponseDelegate(DateTime                        Timestamp,
+        OnGet15118EVCertificateResponseSentDelegate(DateTime                        Timestamp,
                                                 IEventSender                    Sender,
                                                 IWebSocketConnection       Connection,
                                                 Get15118EVCertificateRequest    Request,

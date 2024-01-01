@@ -51,7 +51,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event fired whenever a SecurityEventNotification request will be sent to the CSMS.
         /// </summary>
-        public event OnSecurityEventNotificationRequestDelegate?     OnSecurityEventNotificationRequest;
+        public event OnSecurityEventNotificationRequestSentDelegate?     OnSecurityEventNotificationRequest;
 
         /// <summary>
         /// An event fired whenever a SecurityEventNotification request will be sent to the CSMS.
@@ -66,7 +66,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event fired whenever a response to a SecurityEventNotification request was received.
         /// </summary>
-        public event OnSecurityEventNotificationResponseDelegate?    OnSecurityEventNotificationResponse;
+        public event OnSecurityEventNotificationResponseReceivedDelegate?    OnSecurityEventNotificationResponse;
 
         #endregion
 

@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever an AFRR signal request was sent.
         /// </summary>
-        public event OnAFRRSignalRequestDelegate?     OnAFRRSignalRequest;
+        public event OnAFRRSignalRequestSentDelegate?     OnAFRRSignalRequest;
 
         /// <summary>
         /// An event sent whenever a response to an AFRR signal request was sent.
         /// </summary>
-        public event OnAFRRSignalResponseDelegate?    OnAFRRSignalResponse;
+        public event OnAFRRSignalResponseReceivedDelegate?    OnAFRRSignalResponse;
 
         #endregion
 

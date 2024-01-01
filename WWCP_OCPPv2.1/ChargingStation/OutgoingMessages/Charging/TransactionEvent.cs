@@ -32,7 +32,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Timestamp">The timestamp of the transaction event request.</param>
     /// <param name="Sender">The sender of the transaction event request.</param>
     /// <param name="Request">The transaction event request.</param>
-    public delegate Task OnTransactionEventRequestDelegate(DateTime                  Timestamp,
+    public delegate Task OnTransactionEventRequestSentDelegate(DateTime                  Timestamp,
                                                            IEventSender              Sender,
                                                            TransactionEventRequest   Request);
 
@@ -44,7 +44,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Request">The transaction event request.</param>
     /// <param name="Response">The transaction event response.</param>
     /// <param name="Runtime">The runtime of the transaction event request.</param>
-    public delegate Task OnTransactionEventResponseDelegate(DateTime                   Timestamp,
+    public delegate Task OnTransactionEventResponseReceivedDelegate(DateTime                   Timestamp,
                                                             IEventSender               Sender,
                                                             TransactionEventRequest    Request,
                                                             TransactionEventResponse   Response,

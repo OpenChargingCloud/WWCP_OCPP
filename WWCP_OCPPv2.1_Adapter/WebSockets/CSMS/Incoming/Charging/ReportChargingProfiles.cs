@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a ReportChargingProfiles request was received.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnReportChargingProfilesRequestDelegate?     OnReportChargingProfilesRequest;
+        public event OCPPv2_1.CSMS.OnReportChargingProfilesRequestReceivedDelegate?     OnReportChargingProfilesRequest;
 
         /// <summary>
         /// An event sent whenever a ReportChargingProfiles was received.
@@ -68,7 +68,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a response to a ReportChargingProfiles was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnReportChargingProfilesResponseDelegate?    OnReportChargingProfilesResponse;
+        public event OCPPv2_1.CSMS.OnReportChargingProfilesResponseSentDelegate?    OnReportChargingProfilesResponseSent;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a ReportChargingProfiles was sent.
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                     try
                     {
 
-                        OnReportChargingProfilesResponse?.Invoke(Timestamp.Now,
+                        OnReportChargingProfilesResponseSent?.Invoke(Timestamp.Now,
                                                                  this,
                                                                  Connection,
                                                                  request,
@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnReportChargingProfilesResponse));
+                        DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnReportChargingProfilesResponseSent));
                     }
 
                     #endregion

@@ -49,12 +49,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a CertificateSigned request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnCertificateSignedRequestDelegate?     OnCertificateSignedRequest;
+        public event OCPPv2_1.CSMS.OnCertificateSignedRequestSentDelegate?     OnCertificateSignedRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a CertificateSigned request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnCertificateSignedResponseDelegate?    OnCertificateSignedResponse;
+        public event OCPPv2_1.CSMS.OnCertificateSignedResponseReceivedDelegate?    OnCertificateSignedResponseReceived;
 
         #endregion
 
@@ -75,13 +75,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnCertificateSignedRequest?.Invoke(startTime,
+                OnCertificateSignedRequestSent?.Invoke(startTime,
                                                    parentNetworkingNode,
                                                    Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnCertificateSignedRequest));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnCertificateSignedRequestSent));
             }
 
             #endregion
@@ -148,7 +148,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnCertificateSignedResponse?.Invoke(endTime,
+                OnCertificateSignedResponseReceived?.Invoke(endTime,
                                                     parentNetworkingNode,
                                                     Request,
                                                     response,
@@ -157,7 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnCertificateSignedResponse));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnCertificateSignedResponseReceived));
             }
 
             #endregion
@@ -168,6 +168,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
+    {
+
+        /// <summary>
+        /// An event sent whenever a response to a CertificateSigned request was sent.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnCertificateSignedResponseReceivedDelegate? OnCertificateSignedResponseReceived;
 
     }
 

@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a delete certificate request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnDeleteCertificateRequestDelegate?     OnDeleteCertificateRequest;
+        public event OCPPv2_1.CS.OnDeleteCertificateRequestReceivedDelegate?     OnDeleteCertificateRequest;
 
         /// <summary>
         /// An event sent whenever a delete certificate request was received.
@@ -71,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a response to a delete certificate request was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnDeleteCertificateResponseDelegate?    OnDeleteCertificateResponse;
+        public event OCPPv2_1.CS.OnDeleteCertificateResponseSentDelegate?    OnDeleteCertificateResponseSent;
 
         /// <summary>
         /// An event sent whenever a websocket response to a delete certificate request was sent.
@@ -182,7 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
                     try
                     {
 
-                        OnDeleteCertificateResponse?.Invoke(Timestamp.Now,
+                        OnDeleteCertificateResponseSent?.Invoke(Timestamp.Now,
                                                             this,
                                                             WebSocketConnection,
                                                             request,
@@ -192,7 +192,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnDeleteCertificateResponse));
+                        DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnDeleteCertificateResponseSent));
                     }
 
                     #endregion

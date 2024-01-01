@@ -49,12 +49,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a TriggerMessage request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnTriggerMessageRequestDelegate?     OnTriggerMessageRequest;
+        public event OCPPv2_1.CSMS.OnTriggerMessageRequestSentDelegate?     OnTriggerMessageRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a TriggerMessage request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnTriggerMessageResponseDelegate?    OnTriggerMessageResponse;
+        public event OCPPv2_1.CSMS.OnTriggerMessageResponseReceivedDelegate?    OnTriggerMessageResponse;
 
         #endregion
 
@@ -71,13 +71,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
             try
             {
 
-                OnTriggerMessageRequest?.Invoke(startTime,
+                OnTriggerMessageRequestSent?.Invoke(startTime,
                                                 this,
                                                 Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnTriggerMessageRequest));
+                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnTriggerMessageRequestSent));
             }
 
             #endregion

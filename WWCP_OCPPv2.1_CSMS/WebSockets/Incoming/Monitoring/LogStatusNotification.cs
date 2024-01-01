@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a LogStatusNotification request was received.
         /// </summary>
-        public event OnLogStatusNotificationRequestDelegate?      OnLogStatusNotificationRequest;
+        public event OnLogStatusNotificationRequestReceivedDelegate?      OnLogStatusNotificationRequest;
 
         /// <summary>
         /// An event sent whenever a LogStatusNotification request was received.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a response to a LogStatusNotification request was sent.
         /// </summary>
-        public event OnLogStatusNotificationResponseDelegate?     OnLogStatusNotificationResponse;
+        public event OnLogStatusNotificationResponseSentDelegate?     OnLogStatusNotificationResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a LogStatusNotification request was sent.

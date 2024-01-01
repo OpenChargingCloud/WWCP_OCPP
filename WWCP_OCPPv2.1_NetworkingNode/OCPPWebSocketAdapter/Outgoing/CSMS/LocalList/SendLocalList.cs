@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a SendLocalList request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnSendLocalListRequestDelegate?     OnSendLocalListRequest;
+        public event OCPPv2_1.CSMS.OnSendLocalListRequestSentDelegate?     OnSendLocalListRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a SendLocalList request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnSendLocalListResponseDelegate?    OnSendLocalListResponse;
+        public event OCPPv2_1.CSMS.OnSendLocalListResponseReceivedDelegate?    OnSendLocalListResponseReceived;
 
         #endregion
 
@@ -70,13 +70,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnSendLocalListRequest?.Invoke(startTime,
+                OnSendLocalListRequestSent?.Invoke(startTime,
                                                parentNetworkingNode,
                                                Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnSendLocalListRequest));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnSendLocalListRequestSent));
             }
 
             #endregion
@@ -148,7 +148,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnSendLocalListResponse?.Invoke(endTime,
+                OnSendLocalListResponseReceived?.Invoke(endTime,
                                                 parentNetworkingNode,
                                                 Request,
                                                 response,
@@ -157,7 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnSendLocalListResponse));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnSendLocalListResponseReceived));
             }
 
             #endregion
@@ -168,6 +168,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
+    {
+
+        /// <summary>
+        /// An event sent whenever a response to a SendLocalList request was sent.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnSendLocalListResponseReceivedDelegate? OnSendLocalListResponseReceived;
 
     }
 

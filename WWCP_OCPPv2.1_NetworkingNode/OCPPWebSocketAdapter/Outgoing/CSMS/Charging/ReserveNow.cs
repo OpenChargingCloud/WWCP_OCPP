@@ -49,12 +49,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a ReserveNow request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnReserveNowRequestDelegate?     OnReserveNowRequest;
+        public event OCPPv2_1.CSMS.OnReserveNowRequestSentDelegate?     OnReserveNowRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a ReserveNow request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnReserveNowResponseDelegate?    OnReserveNowResponse;
+        public event OCPPv2_1.CSMS.OnReserveNowResponseReceivedDelegate?    OnReserveNowResponseReceived;
 
         #endregion
 
@@ -71,13 +71,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnReserveNowRequest?.Invoke(startTime,
+                OnReserveNowRequestSent?.Invoke(startTime,
                                             parentNetworkingNode,
                                             Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnReserveNowRequest));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnReserveNowRequestSent));
             }
 
             #endregion
@@ -146,7 +146,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnReserveNowResponse?.Invoke(endTime,
+                OnReserveNowResponseReceived?.Invoke(endTime,
                                              parentNetworkingNode,
                                              Request,
                                              response,
@@ -155,7 +155,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnReserveNowResponse));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnReserveNowResponseReceived));
             }
 
             #endregion
@@ -166,6 +166,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
+    {
+
+        /// <summary>
+        /// An event sent whenever a response to a ReserveNow request was sent.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnReserveNowResponseReceivedDelegate? OnReserveNowResponseReceived;
 
     }
 

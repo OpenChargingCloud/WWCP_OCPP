@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a publish firmware request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnPublishFirmwareRequestDelegate?     OnPublishFirmwareRequest;
+        public event OCPPv2_1.CS.OnPublishFirmwareRequestReceivedDelegate?     OnPublishFirmwareRequestReceived;
 
         /// <summary>
         /// An event sent whenever a publish firmware request was received.
@@ -68,7 +68,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a response to a publish firmware request was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnPublishFirmwareResponseDelegate?    OnPublishFirmwareResponse;
+        public event OCPPv2_1.CS.OnPublishFirmwareResponseSentDelegate?    OnPublishFirmwareResponseSent;
 
         /// <summary>
         /// An event sent whenever a websocket response to a publish firmware request was sent.
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     try
                     {
 
-                        OnPublishFirmwareRequest?.Invoke(Timestamp.Now,
+                        OnPublishFirmwareRequestReceived?.Invoke(Timestamp.Now,
                                                          parentNetworkingNode,
                                                          WebSocketConnection,
                                                          request);
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnPublishFirmwareRequest));
+                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnPublishFirmwareRequestReceived));
                     }
 
                     #endregion
@@ -181,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     try
                     {
 
-                        OnPublishFirmwareResponse?.Invoke(Timestamp.Now,
+                        OnPublishFirmwareResponseSent?.Invoke(Timestamp.Now,
                                                           parentNetworkingNode,
                                                           WebSocketConnection,
                                                           request,
@@ -191,7 +191,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnPublishFirmwareResponse));
+                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnPublishFirmwareResponseSent));
                     }
 
                     #endregion
@@ -264,6 +264,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
+    {
+
+        /// <summary>
+        /// An event sent whenever a response to a publish firmware request was sent.
+        /// </summary>
+        public event OCPPv2_1.CS.OnPublishFirmwareResponseSentDelegate? OnPublishFirmwareResponseSent;
 
     }
 

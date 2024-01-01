@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a GetCompositeSchedule request was received.
         /// </summary>
-        public event OnGetCompositeScheduleRequestDelegate?        OnGetCompositeScheduleRequest;
+        public event OnGetCompositeScheduleRequestReceivedDelegate?        OnGetCompositeScheduleRequest;
 
         /// <summary>
         /// An event sent whenever a GetCompositeSchedule request was received.
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a response to a GetCompositeSchedule request was sent.
         /// </summary>
-        public event OnGetCompositeScheduleResponseDelegate?       OnGetCompositeScheduleResponse;
+        public event OnGetCompositeScheduleResponseSentDelegate?       OnGetCompositeScheduleResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a GetCompositeSchedule request was sent.

@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever an UpdateDynamicSchedule request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnUpdateDynamicScheduleRequestDelegate?     OnUpdateDynamicScheduleRequest;
+        public event OCPPv2_1.CS.OnUpdateDynamicScheduleRequestReceivedDelegate?     OnUpdateDynamicScheduleRequest;
 
         /// <summary>
         /// An event sent whenever an UpdateDynamicSchedule request was received.
@@ -71,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a response to an UpdateDynamicSchedule request was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnUpdateDynamicScheduleResponseDelegate?    OnUpdateDynamicScheduleResponse;
+        public event OCPPv2_1.CS.OnUpdateDynamicScheduleResponseSentDelegate?    OnUpdateDynamicScheduleResponseSent;
 
         /// <summary>
         /// An event sent whenever a websocket response to an UpdateDynamicSchedule request was sent.
@@ -182,7 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
                     try
                     {
 
-                        OnUpdateDynamicScheduleResponse?.Invoke(Timestamp.Now,
+                        OnUpdateDynamicScheduleResponseSent?.Invoke(Timestamp.Now,
                                                                 this,
                                                                 WebSocketConnection,
                                                                 request,
@@ -192,7 +192,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnUpdateDynamicScheduleResponse));
+                        DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnUpdateDynamicScheduleResponseSent));
                     }
 
                     #endregion

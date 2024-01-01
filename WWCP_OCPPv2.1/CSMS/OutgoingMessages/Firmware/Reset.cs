@@ -32,9 +32,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
-    public delegate Task OnResetRequestDelegate(DateTime       Timestamp,
-                                                IEventSender   Sender,
-                                                ResetRequest   Request);
+    public delegate Task OnResetRequestSentDelegate(DateTime       Timestamp,
+                                                    IEventSender   Sender,
+                                                    ResetRequest   Request);
 
     /// <summary>
     /// A delegate called whenever a response to a Reset request was received.
@@ -44,7 +44,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Request">The request.</param>
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate Task OnResetResponseDelegate(DateTime        Timestamp,
+    public delegate Task OnResetResponseReceivedDelegate(DateTime        Timestamp,
                                                  IEventSender    Sender,
                                                  ResetRequest    Request,
                                                  ResetResponse   Response,

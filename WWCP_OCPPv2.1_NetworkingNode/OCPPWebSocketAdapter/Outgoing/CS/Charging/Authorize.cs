@@ -50,7 +50,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever an authorize request will be sent to the CSMS.
         /// </summary>
-        public event OCPPv2_1.CS.OnAuthorizeRequestDelegate?     OnAuthorizeRequest;
+        public event OCPPv2_1.CS.OnAuthorizeRequestSentDelegate?     OnAuthorizeRequestSent;
 
         /// <summary>
         /// An event fired whenever an authorize request will be sent to the CSMS.
@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a response to an authorize request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnAuthorizeResponseDelegate?    OnAuthorizeResponse;
+        public event OCPPv2_1.CS.OnAuthorizeResponseReceivedDelegate?    OnAuthorizeResponseReceived;
 
         #endregion
 
@@ -89,14 +89,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnAuthorizeRequest?.Invoke(startTime,
+                OnAuthorizeRequestSent?.Invoke(startTime,
                                            parentNetworkingNode,
                                            Request);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnAuthorizeRequest));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnAuthorizeRequestSent));
             }
 
             #endregion
@@ -166,7 +166,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnAuthorizeResponse?.Invoke(endTime,
+                OnAuthorizeResponseReceived?.Invoke(endTime,
                                             parentNetworkingNode,
                                             Request,
                                             response,
@@ -175,7 +175,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnAuthorizeResponse));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnAuthorizeResponseReceived));
             }
 
             #endregion
@@ -186,6 +186,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
+    {
+
+        /// <summary>
+        /// An event fired whenever a response to an authorize request was received.
+        /// </summary>
+        public event OCPPv2_1.CS.OnAuthorizeResponseReceivedDelegate? OnAuthorizeResponseReceived;
 
     }
 

@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a SendLocalList request was received.
         /// </summary>
-        public event OnSendLocalListRequestDelegate?               OnSendLocalListRequest;
+        public event OnSendLocalListRequestReceivedDelegate?               OnSendLocalListRequest;
 
         /// <summary>
         /// An event sent whenever a SendLocalList request was received.
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a response to a SendLocalList request was sent.
         /// </summary>
-        public event OnSendLocalListResponseDelegate?              OnSendLocalListResponse;
+        public event OnSendLocalListResponseSentDelegate?              OnSendLocalListResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a SendLocalList request was sent.

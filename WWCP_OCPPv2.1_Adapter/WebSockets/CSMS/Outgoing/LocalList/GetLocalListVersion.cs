@@ -49,12 +49,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a GetLocalListVersion request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnGetLocalListVersionRequestDelegate?     OnGetLocalListVersionRequest;
+        public event OCPPv2_1.CSMS.OnGetLocalListVersionRequestSentDelegate?     OnGetLocalListVersionRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a GetLocalListVersion request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnGetLocalListVersionResponseDelegate?    OnGetLocalListVersionResponse;
+        public event OCPPv2_1.CSMS.OnGetLocalListVersionResponseReceivedDelegate?    OnGetLocalListVersionResponse;
 
         #endregion
 
@@ -71,13 +71,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
             try
             {
 
-                OnGetLocalListVersionRequest?.Invoke(startTime,
+                OnGetLocalListVersionRequestSent?.Invoke(startTime,
                                                      this,
                                                      Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnGetLocalListVersionRequest));
+                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnGetLocalListVersionRequestSent));
             }
 
             #endregion

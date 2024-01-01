@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a ChangeAvailability request was sent.
         /// </summary>
-        public event OnChangeAvailabilityRequestDelegate?     OnChangeAvailabilityRequest;
+        public event OnChangeAvailabilityRequestSentDelegate?     OnChangeAvailabilityRequest;
 
         /// <summary>
         /// An event sent whenever a response to a ChangeAvailability request was sent.
         /// </summary>
-        public event OnChangeAvailabilityResponseDelegate?    OnChangeAvailabilityResponse;
+        public event OnChangeAvailabilityResponseReceivedDelegate?    OnChangeAvailabilityResponse;
 
         #endregion
 

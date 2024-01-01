@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever an update firmware request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnUpdateFirmwareRequestDelegate?     OnUpdateFirmwareRequest;
+        public event OCPPv2_1.CS.OnUpdateFirmwareRequestReceivedDelegate?     OnUpdateFirmwareRequestReceived;
 
         /// <summary>
         /// An event sent whenever an update firmware request was received.
@@ -68,7 +68,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a response to an update firmware request was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnUpdateFirmwareResponseDelegate?    OnUpdateFirmwareResponse;
+        public event OCPPv2_1.CS.OnUpdateFirmwareResponseSentDelegate?    OnUpdateFirmwareResponseSent;
 
         /// <summary>
         /// An event sent whenever a websocket response to an update firmware request was sent.
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     try
                     {
 
-                        OnUpdateFirmwareRequest?.Invoke(Timestamp.Now,
+                        OnUpdateFirmwareRequestReceived?.Invoke(Timestamp.Now,
                                                         parentNetworkingNode,
                                                         WebSocketConnection,
                                                         request);
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnUpdateFirmwareRequest));
+                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnUpdateFirmwareRequestReceived));
                     }
 
                     #endregion
@@ -181,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     try
                     {
 
-                        OnUpdateFirmwareResponse?.Invoke(Timestamp.Now,
+                        OnUpdateFirmwareResponseSent?.Invoke(Timestamp.Now,
                                                          parentNetworkingNode,
                                                          WebSocketConnection,
                                                          request,
@@ -191,7 +191,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnUpdateFirmwareResponse));
+                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnUpdateFirmwareResponseSent));
                     }
 
                     #endregion
@@ -264,6 +264,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
+    {
+
+        /// <summary>
+        /// An event sent whenever a response to an update firmware request was sent.
+        /// </summary>
+        public event OCPPv2_1.CS.OnUpdateFirmwareResponseSentDelegate? OnUpdateFirmwareResponseSent;
 
     }
 

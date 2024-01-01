@@ -49,12 +49,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a NotifyAllowedEnergyTransfer request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnNotifyAllowedEnergyTransferRequestDelegate?     OnNotifyAllowedEnergyTransferRequest;
+        public event OCPPv2_1.CSMS.OnNotifyAllowedEnergyTransferRequestSentDelegate?     OnNotifyAllowedEnergyTransferRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a NotifyAllowedEnergyTransfer request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnNotifyAllowedEnergyTransferResponseDelegate?    OnNotifyAllowedEnergyTransferResponse;
+        public event OCPPv2_1.CSMS.OnNotifyAllowedEnergyTransferResponseReceivedDelegate?    OnNotifyAllowedEnergyTransferResponseReceived;
 
         #endregion
 
@@ -72,13 +72,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnNotifyAllowedEnergyTransferRequest?.Invoke(startTime,
+                OnNotifyAllowedEnergyTransferRequestSent?.Invoke(startTime,
                                                              parentNetworkingNode,
                                                              Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnNotifyAllowedEnergyTransferRequest));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnNotifyAllowedEnergyTransferRequestSent));
             }
 
             #endregion
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnNotifyAllowedEnergyTransferResponse?.Invoke(endTime,
+                OnNotifyAllowedEnergyTransferResponseReceived?.Invoke(endTime,
                                                               parentNetworkingNode,
                                                               Request,
                                                               response,
@@ -154,7 +154,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnNotifyAllowedEnergyTransferResponse));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnNotifyAllowedEnergyTransferResponseReceived));
             }
 
             #endregion
@@ -165,6 +165,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
+    {
+
+        /// <summary>
+        /// An event sent whenever a response to a NotifyAllowedEnergyTransfer request was sent.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnNotifyAllowedEnergyTransferResponseReceivedDelegate? OnNotifyAllowedEnergyTransferResponseReceived;
 
     }
 

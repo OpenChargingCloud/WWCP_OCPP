@@ -49,12 +49,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a SetDisplayMessage request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnSetDisplayMessageRequestDelegate?     OnSetDisplayMessageRequest;
+        public event OCPPv2_1.CSMS.OnSetDisplayMessageRequestSentDelegate?     OnSetDisplayMessageRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a SetDisplayMessage request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnSetDisplayMessageResponseDelegate?    OnSetDisplayMessageResponse;
+        public event OCPPv2_1.CSMS.OnSetDisplayMessageResponseReceivedDelegate?    OnSetDisplayMessageResponseReceived;
 
         #endregion
 
@@ -71,13 +71,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnSetDisplayMessageRequest?.Invoke(startTime,
+                OnSetDisplayMessageRequestSent?.Invoke(startTime,
                                                    parentNetworkingNode,
                                                    Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnSetDisplayMessageRequest));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnSetDisplayMessageRequestSent));
             }
 
             #endregion
@@ -148,7 +148,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnSetDisplayMessageResponse?.Invoke(endTime,
+                OnSetDisplayMessageResponseReceived?.Invoke(endTime,
                                                     parentNetworkingNode,
                                                     Request,
                                                     response,
@@ -157,7 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnSetDisplayMessageResponse));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnSetDisplayMessageResponseReceived));
             }
 
             #endregion
@@ -168,6 +168,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
+    {
+
+        /// <summary>
+        /// An event sent whenever a response to a SetDisplayMessage request was sent.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnSetDisplayMessageResponseReceivedDelegate? OnSetDisplayMessageResponseReceived;
 
     }
 

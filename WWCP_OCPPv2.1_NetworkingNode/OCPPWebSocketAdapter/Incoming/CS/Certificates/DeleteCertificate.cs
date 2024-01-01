@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a delete certificate request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnDeleteCertificateRequestDelegate?     OnDeleteCertificateRequest;
+        public event OCPPv2_1.CS.OnDeleteCertificateRequestReceivedDelegate?     OnDeleteCertificateRequestReceived;
 
         /// <summary>
         /// An event sent whenever a delete certificate request was received.
@@ -68,7 +68,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a response to a delete certificate request was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnDeleteCertificateResponseDelegate?    OnDeleteCertificateResponse;
+        public event OCPPv2_1.CS.OnDeleteCertificateResponseSentDelegate?    OnDeleteCertificateResponseSent;
 
         /// <summary>
         /// An event sent whenever a websocket response to a delete certificate request was sent.
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     try
                     {
 
-                        OnDeleteCertificateRequest?.Invoke(Timestamp.Now,
+                        OnDeleteCertificateRequestReceived?.Invoke(Timestamp.Now,
                                                            parentNetworkingNode,
                                                            WebSocketConnection,
                                                            request);
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnDeleteCertificateRequest));
+                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnDeleteCertificateRequestReceived));
                     }
 
                     #endregion
@@ -181,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     try
                     {
 
-                        OnDeleteCertificateResponse?.Invoke(Timestamp.Now,
+                        OnDeleteCertificateResponseSent?.Invoke(Timestamp.Now,
                                                             parentNetworkingNode,
                                                             WebSocketConnection,
                                                             request,
@@ -191,7 +191,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnDeleteCertificateResponse));
+                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnDeleteCertificateResponseSent));
                     }
 
                     #endregion
@@ -264,6 +264,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
+    {
+
+        /// <summary>
+        /// An event sent whenever a response to a delete certificate request was sent.
+        /// </summary>
+        public event OCPPv2_1.CS.OnDeleteCertificateResponseSentDelegate? OnDeleteCertificateResponseSent;
 
     }
 

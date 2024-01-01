@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a response to a DeleteUserRole request was sent.
         /// </summary>
-        public event OCPP.CS.OnDeleteUserRoleResponseDelegate?     OnDeleteUserRoleResponse;
+        public event OCPP.CS.OnDeleteUserRoleResponseDelegate?     OnDeleteUserRoleResponseSent;
 
         /// <summary>
         /// An event sent whenever a websocket response to a DeleteUserRole request was sent.
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     try
                     {
 
-                        OnDeleteUserRoleResponse?.Invoke(Timestamp.Now,
+                        OnDeleteUserRoleResponseSent?.Invoke(Timestamp.Now,
                                                          parentNetworkingNode,
                                                          WebSocketConnection,
                                                          request,
@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnDeleteUserRoleResponse));
+                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnDeleteUserRoleResponseSent));
                     }
 
                     #endregion
@@ -256,6 +256,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
+    {
+
+        /// <summary>
+        /// An event sent whenever a response to a DeleteUserRole request was sent.
+        /// </summary>
+        public event OCPP.CS.OnDeleteUserRoleResponseDelegate? OnDeleteUserRoleResponseSent;
 
     }
 

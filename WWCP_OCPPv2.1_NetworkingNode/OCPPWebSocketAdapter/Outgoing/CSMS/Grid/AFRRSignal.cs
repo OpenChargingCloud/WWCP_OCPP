@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever an AFRR signal request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnAFRRSignalRequestDelegate?     OnAFRRSignalRequest;
+        public event OCPPv2_1.CSMS.OnAFRRSignalRequestSentDelegate?     OnAFRRSignalRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to an AFRR signal request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnAFRRSignalResponseDelegate?    OnAFRRSignalResponse;
+        public event OCPPv2_1.CSMS.OnAFRRSignalResponseReceivedDelegate?    OnAFRRSignalResponseReceived;
 
         #endregion
 
@@ -70,13 +70,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnAFRRSignalRequest?.Invoke(startTime,
+                OnAFRRSignalRequestSent?.Invoke(startTime,
                                             parentNetworkingNode,
                                             Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnAFRRSignalRequest));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnAFRRSignalRequestSent));
             }
 
             #endregion
@@ -141,7 +141,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnAFRRSignalResponse?.Invoke(endTime,
+                OnAFRRSignalResponseReceived?.Invoke(endTime,
                                              parentNetworkingNode,
                                              Request,
                                              response,
@@ -150,7 +150,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnAFRRSignalResponse));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnAFRRSignalResponseReceived));
             }
 
             #endregion
@@ -161,6 +161,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
+    {
+
+        /// <summary>
+        /// An event sent whenever a response to an AFRR signal request was sent.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnAFRRSignalResponseReceivedDelegate? OnAFRRSignalResponseReceived;
 
     }
 

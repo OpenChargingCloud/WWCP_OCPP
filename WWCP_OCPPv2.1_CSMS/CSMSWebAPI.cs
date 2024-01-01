@@ -874,7 +874,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnBootNotification                      (Request/-Response)
 
-            CSMS.OnBootNotificationRequest += async (logTimestamp, sender, connection, request) =>
+            CSMS.OnBootNotificationRequestReceived += async (logTimestamp, sender, connection, request) =>
                 await this.EventLog.SubmitEvent("OnBootNotificationRequest",
                                                 request.ToAbstractJSON(connection,
                                                                        request.ToJSON(CustomBootNotificationRequestSerializer,

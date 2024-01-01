@@ -32,7 +32,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
-    public delegate Task OnFirmwareStatusNotificationRequestDelegate(DateTime                            Timestamp,
+    public delegate Task OnFirmwareStatusNotificationRequestSentDelegate(DateTime                            Timestamp,
                                                                      IEventSender                        Sender,
                                                                      FirmwareStatusNotificationRequest   Request);
 
@@ -44,7 +44,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Request">The request.</param>
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate Task OnFirmwareStatusNotificationResponseDelegate(DateTime                             Timestamp,
+    public delegate Task OnFirmwareStatusNotificationResponseReceivedDelegate(DateTime                             Timestamp,
                                                                       IEventSender                         Sender,
                                                                       FirmwareStatusNotificationRequest    Request,
                                                                       FirmwareStatusNotificationResponse   Response,

@@ -49,12 +49,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a CancelReservation request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnCancelReservationRequestDelegate?     OnCancelReservationRequest;
+        public event OCPPv2_1.CSMS.OnCancelReservationRequestSentDelegate?     OnCancelReservationRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a CancelReservation request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnCancelReservationResponseDelegate?    OnCancelReservationResponse;
+        public event OCPPv2_1.CSMS.OnCancelReservationResponseReceivedDelegate?    OnCancelReservationResponseReceived;
 
         #endregion
 
@@ -71,13 +71,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnCancelReservationRequest?.Invoke(startTime,
+                OnCancelReservationRequestSent?.Invoke(startTime,
                                                    parentNetworkingNode,
                                                    Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnCancelReservationRequest));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnCancelReservationRequestSent));
             }
 
             #endregion
@@ -144,7 +144,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnCancelReservationResponse?.Invoke(endTime,
+                OnCancelReservationResponseReceived?.Invoke(endTime,
                                                     parentNetworkingNode,
                                                     Request,
                                                     response,
@@ -153,7 +153,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnCancelReservationResponse));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnCancelReservationResponseReceived));
             }
 
             #endregion
@@ -164,6 +164,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
+    {
+
+        /// <summary>
+        /// An event sent whenever a response to a CancelReservation request was sent.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnCancelReservationResponseReceivedDelegate? OnCancelReservationResponseReceived;
 
     }
 

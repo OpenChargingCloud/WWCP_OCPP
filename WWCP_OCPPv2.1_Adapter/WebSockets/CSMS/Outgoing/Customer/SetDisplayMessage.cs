@@ -49,12 +49,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a SetDisplayMessage request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnSetDisplayMessageRequestDelegate?     OnSetDisplayMessageRequest;
+        public event OCPPv2_1.CSMS.OnSetDisplayMessageRequestSentDelegate?     OnSetDisplayMessageRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a SetDisplayMessage request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnSetDisplayMessageResponseDelegate?    OnSetDisplayMessageResponse;
+        public event OCPPv2_1.CSMS.OnSetDisplayMessageResponseReceivedDelegate?    OnSetDisplayMessageResponse;
 
         #endregion
 
@@ -71,13 +71,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
             try
             {
 
-                OnSetDisplayMessageRequest?.Invoke(startTime,
+                OnSetDisplayMessageRequestSent?.Invoke(startTime,
                                                    this,
                                                    Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnSetDisplayMessageRequest));
+                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnSetDisplayMessageRequestSent));
             }
 
             #endregion

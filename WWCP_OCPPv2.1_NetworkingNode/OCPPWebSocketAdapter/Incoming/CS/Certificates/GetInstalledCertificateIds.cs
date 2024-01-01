@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a get installed certificate ids request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnGetInstalledCertificateIdsRequestDelegate?     OnGetInstalledCertificateIdsRequest;
+        public event OCPPv2_1.CS.OnGetInstalledCertificateIdsRequestReceivedDelegate?     OnGetInstalledCertificateIdsRequestReceived;
 
         /// <summary>
         /// An event sent whenever a get installed certificate ids request was received.
@@ -68,7 +68,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a response to a get installed certificate ids request was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnGetInstalledCertificateIdsResponseDelegate?    OnGetInstalledCertificateIdsResponse;
+        public event OCPPv2_1.CS.OnGetInstalledCertificateIdsResponseSentDelegate?    OnGetInstalledCertificateIdsResponseSent;
 
         /// <summary>
         /// An event sent whenever a websocket response to a get installed certificate ids request was sent.
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     try
                     {
 
-                        OnGetInstalledCertificateIdsRequest?.Invoke(Timestamp.Now,
+                        OnGetInstalledCertificateIdsRequestReceived?.Invoke(Timestamp.Now,
                                                                     parentNetworkingNode,
                                                                     WebSocketConnection,
                                                                     request);
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnGetInstalledCertificateIdsRequest));
+                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnGetInstalledCertificateIdsRequestReceived));
                     }
 
                     #endregion
@@ -181,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     try
                     {
 
-                        OnGetInstalledCertificateIdsResponse?.Invoke(Timestamp.Now,
+                        OnGetInstalledCertificateIdsResponseSent?.Invoke(Timestamp.Now,
                                                                      parentNetworkingNode,
                                                                      WebSocketConnection,
                                                                      request,
@@ -191,7 +191,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnGetInstalledCertificateIdsResponse));
+                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnGetInstalledCertificateIdsResponseSent));
                     }
 
                     #endregion
@@ -265,6 +265,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
+    {
+
+        /// <summary>
+        /// An event sent whenever a response to a get installed certificate ids request was sent.
+        /// </summary>
+        public event OCPPv2_1.CS.OnGetInstalledCertificateIdsResponseSentDelegate? OnGetInstalledCertificateIdsResponseSent;
 
     }
 

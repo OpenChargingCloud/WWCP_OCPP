@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever an AFRRSignal request was received.
         /// </summary>
-        public event OnAFRRSignalRequestDelegate?                  OnAFRRSignalRequest;
+        public event OnAFRRSignalRequestReceivedDelegate?                  OnAFRRSignalRequest;
 
         /// <summary>
         /// An event sent whenever an AFRRSignal request was received.
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a response to an AFRRSignal request was sent.
         /// </summary>
-        public event OnAFRRSignalResponseDelegate?                 OnAFRRSignalResponse;
+        public event OnAFRRSignalResponseSentDelegate?                 OnAFRRSignalResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to an AFRRSignal request was sent.

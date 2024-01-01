@@ -49,12 +49,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a CustomerInformation request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnCustomerInformationRequestDelegate?     OnCustomerInformationRequest;
+        public event OCPPv2_1.CSMS.OnCustomerInformationRequestSentDelegate?     OnCustomerInformationRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a CustomerInformation request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnCustomerInformationResponseDelegate?    OnCustomerInformationResponse;
+        public event OCPPv2_1.CSMS.OnCustomerInformationResponseReceivedDelegate?    OnCustomerInformationResponse;
 
         #endregion
 
@@ -71,13 +71,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
             try
             {
 
-                OnCustomerInformationRequest?.Invoke(startTime,
+                OnCustomerInformationRequestSent?.Invoke(startTime,
                                                      this,
                                                      Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnCustomerInformationRequest));
+                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnCustomerInformationRequestSent));
             }
 
             #endregion

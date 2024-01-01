@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a Reset request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnResetRequestDelegate?     OnResetRequest;
+        public event OCPPv2_1.CSMS.OnResetRequestSentDelegate?     OnResetRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a Reset request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnResetResponseDelegate?    OnResetResponse;
+        public event OCPPv2_1.CSMS.OnResetResponseReceivedDelegate?    OnResetResponseReceived;
 
         #endregion
 
@@ -70,13 +70,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnResetRequest?.Invoke(startTime,
+                OnResetRequestSent?.Invoke(startTime,
                                        parentNetworkingNode,
                                        Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnResetRequest));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnResetRequestSent));
             }
 
             #endregion
@@ -143,7 +143,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnResetResponse?.Invoke(endTime,
+                OnResetResponseReceived?.Invoke(endTime,
                                         parentNetworkingNode,
                                         Request,
                                         response,
@@ -152,7 +152,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnResetResponse));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnResetResponseReceived));
             }
 
             #endregion
@@ -163,6 +163,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
+    {
+
+        /// <summary>
+        /// An event sent whenever a response to a Reset request was sent.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnResetResponseReceivedDelegate? OnResetResponseReceived;
 
     }
 

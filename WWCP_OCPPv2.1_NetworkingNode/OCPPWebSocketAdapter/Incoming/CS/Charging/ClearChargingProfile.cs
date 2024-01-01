@@ -59,7 +59,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a clear charging profile request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnClearChargingProfileRequestDelegate?     OnClearChargingProfileRequest;
+        public event OCPPv2_1.CS.OnClearChargingProfileRequestReceivedDelegate?     OnClearChargingProfileRequestReceived;
 
         /// <summary>
         /// An event sent whenever a clear charging profile request was received.
@@ -69,7 +69,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a response to a clear charging profile request was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnClearChargingProfileResponseDelegate?    OnClearChargingProfileResponse;
+        public event OCPPv2_1.CS.OnClearChargingProfileResponseSentDelegate?    OnClearChargingProfileResponseSent;
 
         /// <summary>
         /// An event sent whenever a websocket response to a clear charging profile request was sent.
@@ -138,7 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     try
                     {
 
-                        OnClearChargingProfileRequest?.Invoke(Timestamp.Now,
+                        OnClearChargingProfileRequestReceived?.Invoke(Timestamp.Now,
                                                               parentNetworkingNode,
                                                               WebSocketConnection,
                                                               request);
@@ -146,7 +146,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnClearChargingProfileRequest));
+                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnClearChargingProfileRequestReceived));
                     }
 
                     #endregion
@@ -182,7 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     try
                     {
 
-                        OnClearChargingProfileResponse?.Invoke(Timestamp.Now,
+                        OnClearChargingProfileResponseSent?.Invoke(Timestamp.Now,
                                                                parentNetworkingNode,
                                                                WebSocketConnection,
                                                                request,
@@ -192,7 +192,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnClearChargingProfileResponse));
+                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnClearChargingProfileResponseSent));
                     }
 
                     #endregion
@@ -265,6 +265,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
+    {
+
+        /// <summary>
+        /// An event sent whenever a response to a clear charging profile request was sent.
+        /// </summary>
+        public event OCPPv2_1.CS.OnClearChargingProfileResponseSentDelegate? OnClearChargingProfileResponseSent;
 
     }
 

@@ -49,12 +49,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a DeleteCertificate request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnDeleteCertificateRequestDelegate?     OnDeleteCertificateRequest;
+        public event OCPPv2_1.CSMS.OnDeleteCertificateRequestSentDelegate?     OnDeleteCertificateRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a DeleteCertificate request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnDeleteCertificateResponseDelegate?    OnDeleteCertificateResponse;
+        public event OCPPv2_1.CSMS.OnDeleteCertificateResponseReceivedDelegate?    OnDeleteCertificateResponse;
 
         #endregion
 
@@ -75,13 +75,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
             try
             {
 
-                OnDeleteCertificateRequest?.Invoke(startTime,
+                OnDeleteCertificateRequestSent?.Invoke(startTime,
                                                    this,
                                                    Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnDeleteCertificateRequest));
+                DebugX.Log(e, nameof(NetworkingNodeWSServer) + "." + nameof(OnDeleteCertificateRequestSent));
             }
 
             #endregion

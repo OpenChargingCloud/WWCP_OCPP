@@ -49,12 +49,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a ClearVariableMonitoring request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnClearVariableMonitoringRequestDelegate?     OnClearVariableMonitoringRequest;
+        public event OCPPv2_1.CSMS.OnClearVariableMonitoringRequestSentDelegate?     OnClearVariableMonitoringRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a ClearVariableMonitoring request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnClearVariableMonitoringResponseDelegate?    OnClearVariableMonitoringResponse;
+        public event OCPPv2_1.CSMS.OnClearVariableMonitoringResponseReceivedDelegate?    OnClearVariableMonitoringResponseReceived;
 
         #endregion
 
@@ -71,13 +71,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnClearVariableMonitoringRequest?.Invoke(startTime,
+                OnClearVariableMonitoringRequestSent?.Invoke(startTime,
                                                          parentNetworkingNode,
                                                          Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnClearVariableMonitoringRequest));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnClearVariableMonitoringRequestSent));
             }
 
             #endregion
@@ -144,7 +144,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnClearVariableMonitoringResponse?.Invoke(endTime,
+                OnClearVariableMonitoringResponseReceived?.Invoke(endTime,
                                                           parentNetworkingNode,
                                                           Request,
                                                           response,
@@ -153,7 +153,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnClearVariableMonitoringResponse));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnClearVariableMonitoringResponseReceived));
             }
 
             #endregion
@@ -164,6 +164,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
+    {
+
+        /// <summary>
+        /// An event sent whenever a response to a ClearVariableMonitoring request was sent.
+        /// </summary>
+        public event OCPPv2_1.CSMS.OnClearVariableMonitoringResponseReceivedDelegate? OnClearVariableMonitoringResponseReceived;
 
     }
 

@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a Reset request was sent.
         /// </summary>
-        public event OnResetRequestDelegate?     OnResetRequest;
+        public event OnResetRequestSentDelegate?     OnResetRequest;
 
         /// <summary>
         /// An event sent whenever a response to a Reset request was sent.
         /// </summary>
-        public event OnResetResponseDelegate?    OnResetResponse;
+        public event OnResetResponseReceivedDelegate?    OnResetResponse;
 
         #endregion
 

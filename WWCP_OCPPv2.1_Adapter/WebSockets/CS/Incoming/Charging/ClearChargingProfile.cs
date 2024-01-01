@@ -62,7 +62,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a clear charging profile request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnClearChargingProfileRequestDelegate?     OnClearChargingProfileRequest;
+        public event OCPPv2_1.CS.OnClearChargingProfileRequestReceivedDelegate?     OnClearChargingProfileRequest;
 
         /// <summary>
         /// An event sent whenever a clear charging profile request was received.
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a response to a clear charging profile request was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnClearChargingProfileResponseDelegate?    OnClearChargingProfileResponse;
+        public event OCPPv2_1.CS.OnClearChargingProfileResponseSentDelegate?    OnClearChargingProfileResponseSent;
 
         /// <summary>
         /// An event sent whenever a websocket response to a clear charging profile request was sent.
@@ -183,7 +183,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
                     try
                     {
 
-                        OnClearChargingProfileResponse?.Invoke(Timestamp.Now,
+                        OnClearChargingProfileResponseSent?.Invoke(Timestamp.Now,
                                                                this,
                                                                WebSocketConnection,
                                                                request,
@@ -193,7 +193,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnClearChargingProfileResponse));
+                        DebugX.Log(e, nameof(NetworkingNodeWSClient) + "." + nameof(OnClearChargingProfileResponseSent));
                     }
 
                     #endregion
