@@ -22,12 +22,12 @@
     <None Remove="HTTPRoot\js\date.format.js" />
     <None Remove="HTTPRoot\template.html" />
     <None Remove="HTTPRoot\template.scss" />
-    <None Remove="OCPPWebSocketAdapter\Outgoing\CS\BinaryDataStreamsExtensions\.gitkeep" />
+    <None Remove="OCPPAdapter\Outgoing\CS\BinaryDataStreamsExtensions\.gitkeep" />
     <None Remove="TestNetworkingNode.cs~RF349fda6f.TMP" />
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="OCPPWebSocketAdapter\Outgoing\CS\BinaryDataStreamsExtensions\.gitkeep" />
+    <Compile Include="OCPPAdapter\Outgoing\CS\BinaryDataStreamsExtensions\.gitkeep" />
   </ItemGroup>
 
   <ItemGroup>
@@ -60,7 +60,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="OCPPWebSocketAdapter\Incoming\CSMS\BinaryDataStreamsExtensions\" />
+    <Folder Include="OCPPAdapter\Incoming\CSMS\BinaryDataStreamsExtensions\" />
   </ItemGroup>
 
 </Project>

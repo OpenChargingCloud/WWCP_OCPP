@@ -2258,56 +2258,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
     /// <summary>
     /// The common interface of all charging station.
     /// </summary>
-    public interface INetworkingNode // as CS
-                                     //  INetworkingNodeOutgoingMessages
-                                     //  INetworkingNodeOutgoingMessagesEvents,
-                                     //  //INetworkingNodeIncomingMessages,
-                                     //  INetworkingNodeIncomingMessagesEvents,
-                                     //
-                                     //  // as CSMS
-                                     //  cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS.INetworkingNodeOutgoingMessagesEvents
-                                     //  //NetworkingNode.CSMS.INetworkingNodeIncomingMessagesEvents
-
+    public interface INetworkingNode : IEventSender
     {
-
-
-        #region Custom JSON serializer delegates
-
-        #region Charging Station Messages
-
-        CustomJObjectSerializerDelegate<BootNotificationRequest>?  CustomBootNotificationRequestSerializer    { get; set; }
-
-
-        #endregion
-
-        #region Data Structures
-
-        CustomJObjectSerializerDelegate<ChargingStation>?          CustomChargingStationSerializer            { get; set; }
-        CustomJObjectSerializerDelegate<OCPP.Signature>?           CustomSignatureSerializer                  { get; set; }
-        CustomJObjectSerializerDelegate<CustomData>?               CustomCustomDataSerializer                 { get; set; }
-
-        #endregion
-
-        #endregion
-
-
-
-        //INetworkingNodeIN  IN                       { get; }
-        //INetworkingNodeOUT OUT                      { get; }
-
-
-        IOCPPWebSocketAdapterIN  ocppIN  { get; }
-        IOCPPWebSocketAdapterOUT ocppOUT { get; }
-
 
         NetworkingNode_Id  Id                       { get; }
 
-        TimeSpan           DefaultRequestTimeout    { get; }
-
-        Request_Id         NextRequestId            { get; }
-
-        SignaturePolicy?   SignaturePolicy          { get; }
-
+        IOCPPAdapter       OCPP                     { get; }
 
         String             Model                    { get; }
         String             VendorName               { get; }
@@ -2320,6 +2276,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
 
 
         String? ClientCloseMessage { get; }
+
+
+
+        Task HandleErrors(String     Module,
+                          String     Caller,
+                          Exception  ExceptionOccured);
 
 
     }

@@ -29,7 +29,10 @@ namespace cloud.charging.open.protocols.OCPP
     /// <summary>
     /// A custom data object to allow to store any kind of customer specific data.
     /// </summary>
-    public class CustomData : JObject
+    /// <param name="VendorId">The vendor identification.</param>
+    /// <param name="CustomData">The optional custom JSON data.</param>
+    public class CustomData(Vendor_Id  VendorId,
+                            JObject?   CustomData = null) : JObject(CustomData ?? new JObject())
     {
 
         #region Properties
@@ -37,27 +40,7 @@ namespace cloud.charging.open.protocols.OCPP
         /// <summary>
         /// The vendor identification.
         /// </summary>
-        public Vendor_Id  VendorId    { get; }
-
-        #endregion
-
-        #region Constructor(s)
-
-        /// <summary>
-        /// Create a new custom data object.
-        /// </summary>
-        /// <param name="VendorId">The vendor identification.</param>
-        /// <param name="CustomData">The custom JSON data.</param>
-        public CustomData(Vendor_Id  VendorId,
-                          JObject    CustomData)
-
-            : base(CustomData)
-
-        {
-
-            this.VendorId    = VendorId;
-
-        }
+        public Vendor_Id VendorId { get; } = VendorId;
 
         #endregion
 

@@ -145,9 +145,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     //            if (!parentNetworkingNode.ForwardingSignaturePolicy.VerifyRequestMessage(
     //                    request,
     //                    request.ToJSON(
-    //                        parentNetworkingNode.CustomResetRequestSerializer,
-    //                        parentNetworkingNode.CustomSignatureSerializer,
-    //                        parentNetworkingNode.CustomCustomDataSerializer
+    //                        parentNetworkingNode.OCPPAdapter.CustomResetRequestSerializer,
+    //                        parentNetworkingNode.OCPPAdapter.CustomSignatureSerializer,
+    //                        parentNetworkingNode.OCPPAdapter.CustomCustomDataSerializer
     //                    ),
     //                    out var errorResponse
     //                ))
@@ -200,9 +200,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     //            if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
     //                    request,
     //                    request.ToJSON(
-    //                        parentNetworkingNode.CustomResetRequestSerializer,
-    //                        parentNetworkingNode.CustomSignatureSerializer,
-    //                        parentNetworkingNode.CustomCustomDataSerializer
+    //                        parentNetworkingNode.OCPPAdapter.CustomResetRequestSerializer,
+    //                        parentNetworkingNode.OCPPAdapter.CustomSignatureSerializer,
+    //                        parentNetworkingNode.OCPPAdapter.CustomCustomDataSerializer
     //                    ),
     //                    out var errorResponse
     //                ))
@@ -270,10 +270,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     //        parentNetworkingNode.SignaturePolicy.SignResponseMessage(
     //            response,
     //            response.ToJSON(
-    //                parentNetworkingNode.CustomResetResponseSerializer,
-    //                parentNetworkingNode.CustomStatusInfoSerializer,
-    //                parentNetworkingNode.CustomSignatureSerializer,
-    //                parentNetworkingNode.CustomCustomDataSerializer
+    //                parentNetworkingNode.OCPPAdapter.CustomResetResponseSerializer,
+    //                parentNetworkingNode.OCPPAdapter.CustomStatusInfoSerializer,
+    //                parentNetworkingNode.OCPPAdapter.CustomSignatureSerializer,
+    //                parentNetworkingNode.OCPPAdapter.CustomCustomDataSerializer
     //            ),
     //            out var errorResponse2);
 
@@ -511,9 +511,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     //                            ? parentNetworkingNode.SignaturePolicy.SignRequestMessage(
     //                                  Request,
     //                                  Request.ToJSON(
-    //                                      parentNetworkingNode.CustomResetRequestSerializer,
-    //                                      parentNetworkingNode.CustomSignatureSerializer,
-    //                                      parentNetworkingNode.CustomCustomDataSerializer
+    //                                      parentNetworkingNode.OCPPAdapter.CustomResetRequestSerializer,
+    //                                      parentNetworkingNode.OCPPAdapter.CustomSignatureSerializer,
+    //                                      parentNetworkingNode.OCPPAdapter.CustomCustomDataSerializer
     //                                  ),
     //                                  out var errorResponse
     //                              )
@@ -534,10 +534,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     //        parentNetworkingNode.SignaturePolicy.VerifyResponseMessage(
     //            response,
     //            response.ToJSON(
-    //                parentNetworkingNode.CustomResetResponseSerializer,
-    //                parentNetworkingNode.CustomStatusInfoSerializer,
-    //                parentNetworkingNode.CustomSignatureSerializer,
-    //                parentNetworkingNode.CustomCustomDataSerializer
+    //                parentNetworkingNode.OCPPAdapter.CustomResetResponseSerializer,
+    //                parentNetworkingNode.OCPPAdapter.CustomStatusInfoSerializer,
+    //                parentNetworkingNode.OCPPAdapter.CustomSignatureSerializer,
+    //                parentNetworkingNode.OCPPAdapter.CustomCustomDataSerializer
     //            ),
     //            out errorResponse
     //        );

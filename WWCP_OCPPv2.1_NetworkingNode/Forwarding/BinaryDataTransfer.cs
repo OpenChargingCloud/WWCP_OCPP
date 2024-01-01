@@ -143,8 +143,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     //            if (!parentNetworkingNode.ForwardingSignaturePolicy.VerifyRequestMessage(
     //                    request,
     //                    request.ToBinary(
-    //                        parentNetworkingNode.CustomBinaryDataTransferRequestSerializer,
-    //                        parentNetworkingNode.CustomBinarySignatureSerializer,
+    //                        parentNetworkingNode.OCPPAdapter.CustomBinaryDataTransferRequestSerializer,
+    //                        parentNetworkingNode.OCPPAdapter.CustomBinarySignatureSerializer,
     //                        IncludeSignatures: false
     //                    ),
     //                    out var errorResponse
@@ -198,8 +198,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     //            if (!parentNetworkingNode.SignaturePolicy.VerifyRequestMessage(
     //                    request,
     //                    request.ToBinary(
-    //                        parentNetworkingNode.CustomBinaryDataTransferRequestSerializer,
-    //                        parentNetworkingNode.CustomBinarySignatureSerializer,
+    //                        parentNetworkingNode.OCPPAdapter.CustomBinaryDataTransferRequestSerializer,
+    //                        parentNetworkingNode.OCPPAdapter.CustomBinarySignatureSerializer,
     //                        IncludeSignatures: false
     //                    ),
     //                    out var errorResponse
@@ -269,9 +269,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     //        parentNetworkingNode.SignaturePolicy.SignResponseMessage(
     //            response,
     //            response.ToBinary(
-    //                parentNetworkingNode.CustomBinaryDataTransferResponseSerializer,
-    //                parentNetworkingNode.CustomStatusInfoSerializer,
-    //                parentNetworkingNode.CustomBinarySignatureSerializer,
+    //                parentNetworkingNode.OCPPAdapter.CustomBinaryDataTransferResponseSerializer,
+    //                parentNetworkingNode.OCPPAdapter.CustomStatusInfoSerializer,
+    //                parentNetworkingNode.OCPPAdapter.CustomBinarySignatureSerializer,
     //                IncludeSignatures: true
     //            ),
     //            out var errorResponse2);
@@ -497,8 +497,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     //                            ? parentNetworkingNode.SignaturePolicy.SignRequestMessage(
     //                                  Request,
     //                                  Request.ToBinary(
-    //                                      parentNetworkingNode.CustomBinaryDataTransferRequestSerializer,
-    //                                      parentNetworkingNode.CustomBinarySignatureSerializer,
+    //                                      parentNetworkingNode.OCPPAdapter.CustomBinaryDataTransferRequestSerializer,
+    //                                      parentNetworkingNode.OCPPAdapter.CustomBinarySignatureSerializer,
     //                                      IncludeSignatures: false
     //                                  ),
     //                                  out var errorResponse
@@ -520,9 +520,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     //        parentNetworkingNode.SignaturePolicy.VerifyResponseMessage(
     //            response,
     //            response.ToBinary(
-    //                parentNetworkingNode.CustomBinaryDataTransferResponseSerializer,
-    //                null, //parentNetworkingNode.CustomStatusInfoSerializer,
-    //                parentNetworkingNode.CustomBinarySignatureSerializer,
+    //                parentNetworkingNode.OCPPAdapter.CustomBinaryDataTransferResponseSerializer,
+    //                null, //parentNetworkingNode.OCPPAdapter.CustomStatusInfoSerializer,
+    //                parentNetworkingNode.OCPPAdapter.CustomBinarySignatureSerializer,
     //                IncludeSignatures: false
     //            ),
     //            out errorResponse

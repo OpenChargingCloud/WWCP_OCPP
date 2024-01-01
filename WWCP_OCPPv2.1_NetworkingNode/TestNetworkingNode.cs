@@ -19,10 +19,6 @@
 
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
-using System.Collections.Concurrent;
-
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
@@ -35,12 +31,8 @@ using org.GraphDefined.Vanaheimr.Hermod.Sockets.TCP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPP.CS;
-using cloud.charging.open.protocols.OCPP.NN;
-using cloud.charging.open.protocols.OCPP.CSMS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
 using cloud.charging.open.protocols.OCPPv2_1.NN;
-using org.GraphDefined.Vanaheimr.Hermod.SMTP;
 
 #endregion
 
@@ -186,30 +178,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <summary>
     /// A networking node for testing.
     /// </summary>
-    public partial class TestNetworkingNode : INetworkingNode,
-                                              IEventSender
+    public partial class TestNetworkingNode : INetworkingNode
     {
 
         #region Data
 
+        private readonly  HashSet<OCPPWebSocketServer>  OCPPWebSocketServers            = [];
+        private readonly  List<OCPPWebSocketClient>     ocppWebSocketClients            = [];
+
         /// <summary>
-        /// The default HTTP server name.
+        /// The default time span between maintenance tasks.
         /// </summary>
-        public  const     String                                                       DefaultHTTPServiceName          = $"GraphDefined OCPP {Version.String} Networking Node HTTP/WebSocket/JSON API";
-
-        private readonly  HashSet<OCPPWebSocketServer>                                 OCPPWebSocketServers            = [];
-        private readonly  ConcurrentDictionary<NetworkingNode_Id, List<Reachability>>  reachableNetworkingNodes        = [];
-        private readonly  ConcurrentDictionary<Request_Id, SendRequestState>           requests                        = [];
-
-        public  const     String                                                       NetworkingNodeId_WebSocketKey   = "networkingNodeId";
-        public  const     String                                                       NetworkingMode_WebSocketKey     = "networkingMode";
-
-        private readonly  HashSet<SignaturePolicy>                                     signaturePolicies               = [];
-        private readonly  HashSet<SignaturePolicy>                                     forwardingSignaturePolicies     = [];
-
-        private           Int64                                                        internalRequestId               = 800000;
-
-        private readonly  List<OCPPWebSocketClient>                                    ocppWebSocketClients            = [];
+        public static readonly  TimeSpan                DefaultMaintenanceEvery         = TimeSpan.FromMinutes(1);
 
         #endregion
 
@@ -219,166 +199,78 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// The sender identification.
         /// </summary>
         String IEventSender.Id
-            => this.Id.ToString();
+            => Id.ToString();
 
         /// <summary>
         /// The unique identification of this networking node.
         /// </summary>
-        public NetworkingNode_Id        Id                          { get; }
+        public NetworkingNode_Id        Id                         { get; }
 
         /// <summary>
         /// The networking node vendor identification.
         /// </summary>
         [Mandatory]
-        public String                   VendorName                  { get; }
+        public String                   VendorName                 { get; }
 
         /// <summary>
         ///  The networking node model identification.
         /// </summary>
         [Mandatory]
-        public String                   Model                       { get; }
+        public String                   Model                      { get; }
 
 
         /// <summary>
         /// The optional multi-language networking node description.
         /// </summary>
         [Optional]
-        public I18NString?              Description                 { get; }
+        public I18NString?              Description                { get; }
 
         /// <summary>
         /// The optional serial number of the networking node.
         /// </summary>
         [Optional]
-        public String?                  SerialNumber                { get; }
+        public String?                  SerialNumber               { get; }
 
         /// <summary>
         /// The optional firmware version of the networking node.
         /// </summary>
         [Optional]
-        public String?                  FirmwareVersion             { get; }
+        public String?                  FirmwareVersion            { get; }
 
         /// <summary>
         /// The modem of the networking node.
         /// </summary>
         [Optional]
-        public Modem?                   Modem                       { get; }
+        public Modem?                   Modem                      { get; }
 
 
-        public CustomData?              CustomData                  { get; set; }
+        public CustomData               CustomData                 { get; }
 
-
-        /// <summary>
-        /// The time span between heartbeat requests.
-        /// </summary>
-        public TimeSpan                 SendHeartbeatEvery          { get; set; }
 
         /// <summary>
         /// The time at the CSMS.
         /// </summary>
-        public DateTime?                CSMSTime                    { get; set; }
+        public DateTime?                CSMSTime                   { get; set; }
 
-        /// <summary>
-        /// The default request timeout for all requests.
-        /// </summary>
-        public TimeSpan                 DefaultRequestTimeout       { get; } = TimeSpan.FromSeconds(30);
-
-
-
-
-        /// <summary>
-        /// The maintenance interval.
-        /// </summary>
-        public TimeSpan                 MaintenanceEvery            { get; }
 
         /// <summary>
         /// Disable all maintenance tasks.
         /// </summary>
-        public Boolean                  DisableMaintenanceTasks     { get; set; }
+        public Boolean                  DisableMaintenanceTasks    { get; set; }
 
         /// <summary>
-        /// Disable all heartbeats.
+        /// The maintenance interval.
         /// </summary>
-        public Boolean                  DisableSendHeartbeats       { get; set; }
-
-        public DNSClient                DNSClient                   { get; }
+        public TimeSpan                 MaintenanceEvery           { get; }
 
 
-        #region ToDo's
-
-        public URL RemoteURL => throw new NotImplementedException();
-
-        public HTTPHostname? VirtualHostname => throw new NotImplementedException();
-
-        public RemoteCertificateValidationHandler? RemoteCertificateValidator => throw new NotImplementedException();
-
-        public X509Certificate? ClientCert => throw new NotImplementedException();
-
-        public SslProtocols TLSProtocol => throw new NotImplementedException();
-
-        public bool PreferIPv4 => throw new NotImplementedException();
-
-        public string HTTPUserAgent => throw new NotImplementedException();
-
-        public TimeSpan RequestTimeout { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-        public TransmissionRetryDelayDelegate TransmissionRetryDelay => throw new NotImplementedException();
-
-        public ushort MaxNumberOfRetries => throw new NotImplementedException();
-
-        public bool UseHTTPPipelining => throw new NotImplementedException();
-
-        public HTTPClientLogger? HTTPLogger => throw new NotImplementedException();
-
-        #endregion
-
-
-        /// <summary>
-        /// The enumeration of all signature policies.
-        /// </summary>
-        public IEnumerable<SignaturePolicy>  SignaturePolicies
-            => signaturePolicies;
-
-        /// <summary>
-        /// The currently active signature policy.
-        /// </summary>
-        public SignaturePolicy               SignaturePolicy
-            => signaturePolicies.First();
-
-
-        /// <summary>
-        /// The enumeration of all signature policies.
-        /// </summary>
-        public IEnumerable<SignaturePolicy>  ForwardingSignaturePolicies
-            => forwardingSignaturePolicies;
-
-        /// <summary>
-        /// The currently active signature policy.
-        /// </summary>
-        public SignaturePolicy               ForwardingSignaturePolicy
-            => forwardingSignaturePolicies.First();
-
-
-        //public  ActingAsCS               AsCS                        { get; }
-
-        //public  ActingAsCSMS             AsCSMS                      { get; }
-
-
-        //public  INetworkingNodeIN        IN                          { get; }
-
-        //public  INetworkingNodeOUT       OUT                         { get; }
-
-        public  FORWARD                  FORWARD                     { get; }
-
-        public IOCPPWebSocketAdapterIN   ocppIN                      { get; }
-        public IOCPPWebSocketAdapterOUT  ocppOUT                     { get; }
+        public DNSClient                DNSClient                  { get; }
+        public IOCPPAdapter             OCPP                       { get; }
+        public FORWARD                  FORWARD                    { get; }
 
 
         public IEnumerable<OCPPWebSocketClient> OCPPWebSocketClients
             => OCPPWebSocketClients;
-
-
-        public CS.INetworkingNodeOutgoingMessages? CSClient
-            => null; //AsCS.CSClient;
 
         #endregion
 
@@ -441,394 +333,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region Custom JSON serializer delegates
-
-        #region Charging Station Request  Messages
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.BootNotificationRequest>?                             CustomBootNotificationRequestSerializer                      { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.FirmwareStatusNotificationRequest>?                   CustomFirmwareStatusNotificationRequestSerializer            { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.PublishFirmwareStatusNotificationRequest>?            CustomPublishFirmwareStatusNotificationRequestSerializer     { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.HeartbeatRequest>?                                    CustomHeartbeatRequestSerializer                             { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyEventRequest>?                                  CustomNotifyEventRequestSerializer                           { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SecurityEventNotificationRequest>?                    CustomSecurityEventNotificationRequestSerializer             { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyReportRequest>?                                 CustomNotifyReportRequestSerializer                          { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyMonitoringReportRequest>?                       CustomNotifyMonitoringReportRequestSerializer                { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.LogStatusNotificationRequest>?                        CustomLogStatusNotificationRequestSerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<            DataTransferRequest>?                                 CustomDataTransferRequestSerializer                          { get; set; }
-
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SignCertificateRequest>?                              CustomSignCertificateRequestSerializer                       { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.Get15118EVCertificateRequest>?                        CustomGet15118EVCertificateRequestSerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetCertificateStatusRequest>?                         CustomGetCertificateStatusRequestSerializer                  { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetCRLRequest>?                                       CustomGetCRLRequestSerializer                                { get; set; }
-
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.ReservationStatusUpdateRequest>?                      CustomReservationStatusUpdateRequestSerializer               { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.AuthorizeRequest>?                                    CustomAuthorizeRequestSerializer                             { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyEVChargingNeedsRequest>?                        CustomNotifyEVChargingNeedsRequestSerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.TransactionEventRequest>?                             CustomTransactionEventRequestSerializer                      { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.StatusNotificationRequest>?                           CustomStatusNotificationRequestSerializer                    { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.MeterValuesRequest>?                                  CustomMeterValuesRequestSerializer                           { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyChargingLimitRequest>?                          CustomNotifyChargingLimitRequestSerializer                   { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.ClearedChargingLimitRequest>?                         CustomClearedChargingLimitRequestSerializer                  { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.ReportChargingProfilesRequest>?                       CustomReportChargingProfilesRequestSerializer                { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyEVChargingScheduleRequest>?                     CustomNotifyEVChargingScheduleRequestSerializer              { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyPriorityChargingRequest>?                       CustomNotifyPriorityChargingRequestSerializer                { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.PullDynamicScheduleUpdateRequest>?                    CustomPullDynamicScheduleUpdateRequestSerializer             { get; set; }
-
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyDisplayMessagesRequest>?                        CustomNotifyDisplayMessagesRequestSerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyCustomerInformationRequest>?                    CustomNotifyCustomerInformationRequestSerializer             { get; set; }
-
-
-        // Binary Data Streams Extensions
-        public CustomBinarySerializerDelegate <            BinaryDataTransferRequest>?                           CustomBinaryDataTransferRequestSerializer                    { get; set; }
-
-        #endregion
-
-        #region Charging Station Response Messages
-
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.ResetResponse>?                                       CustomResetResponseSerializer                                { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.UpdateFirmwareResponse>?                              CustomUpdateFirmwareResponseSerializer                       { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.PublishFirmwareResponse>?                             CustomPublishFirmwareResponseSerializer                      { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.UnpublishFirmwareResponse>?                           CustomUnpublishFirmwareResponseSerializer                    { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetBaseReportResponse>?                               CustomGetBaseReportResponseSerializer                        { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetReportResponse>?                                   CustomGetReportResponseSerializer                            { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetLogResponse>?                                      CustomGetLogResponseSerializer                               { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SetVariablesResponse>?                                CustomSetVariablesResponseSerializer                         { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetVariablesResponse>?                                CustomGetVariablesResponseSerializer                         { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SetMonitoringBaseResponse>?                           CustomSetMonitoringBaseResponseSerializer                    { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetMonitoringReportResponse>?                         CustomGetMonitoringReportResponseSerializer                  { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SetMonitoringLevelResponse>?                          CustomSetMonitoringLevelResponseSerializer                   { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SetVariableMonitoringResponse>?                       CustomSetVariableMonitoringResponseSerializer                { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.ClearVariableMonitoringResponse>?                     CustomClearVariableMonitoringResponseSerializer              { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SetNetworkProfileResponse>?                           CustomSetNetworkProfileResponseSerializer                    { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.ChangeAvailabilityResponse>?                          CustomChangeAvailabilityResponseSerializer                   { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.TriggerMessageResponse>?                              CustomTriggerMessageResponseSerializer                       { get; set; }
-        public CustomJObjectSerializerDelegate<            DataTransferResponse>?                                CustomIncomingDataTransferResponseSerializer                 { get; set; }
-
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.CertificateSignedResponse>?                           CustomCertificateSignedResponseSerializer                    { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.InstallCertificateResponse>?                          CustomInstallCertificateResponseSerializer                   { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetInstalledCertificateIdsResponse>?                  CustomGetInstalledCertificateIdsResponseSerializer           { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.DeleteCertificateResponse>?                           CustomDeleteCertificateResponseSerializer                    { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyCRLResponse>?                                   CustomNotifyCRLResponseSerializer                            { get; set; }
-
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetLocalListVersionResponse>?                         CustomGetLocalListVersionResponseSerializer                  { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SendLocalListResponse>?                               CustomSendLocalListResponseSerializer                        { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.ClearCacheResponse>?                                  CustomClearCacheResponseSerializer                           { get; set; }
-
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.ReserveNowResponse>?                                  CustomReserveNowResponseSerializer                           { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.CancelReservationResponse>?                           CustomCancelReservationResponseSerializer                    { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.RequestStartTransactionResponse>?                     CustomRequestStartTransactionResponseSerializer              { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.RequestStopTransactionResponse>?                      CustomRequestStopTransactionResponseSerializer               { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetTransactionStatusResponse>?                        CustomGetTransactionStatusResponseSerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SetChargingProfileResponse>?                          CustomSetChargingProfileResponseSerializer                   { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetChargingProfilesResponse>?                         CustomGetChargingProfilesResponseSerializer                  { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.ClearChargingProfileResponse>?                        CustomClearChargingProfileResponseSerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetCompositeScheduleResponse>?                        CustomGetCompositeScheduleResponseSerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.UpdateDynamicScheduleResponse>?                       CustomUpdateDynamicScheduleResponseSerializer                { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyAllowedEnergyTransferResponse>?                 CustomNotifyAllowedEnergyTransferResponseSerializer          { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.UsePriorityChargingResponse>?                         CustomUsePriorityChargingResponseSerializer                  { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.UnlockConnectorResponse>?                             CustomUnlockConnectorResponseSerializer                      { get; set; }
-
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.AFRRSignalResponse>?                                  CustomAFRRSignalResponseSerializer                           { get; set; }
-
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SetDisplayMessageResponse>?                           CustomSetDisplayMessageResponseSerializer                    { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetDisplayMessagesResponse>?                          CustomGetDisplayMessagesResponseSerializer                   { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.ClearDisplayMessageResponse>?                         CustomClearDisplayMessageResponseSerializer                  { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.CostUpdatedResponse>?                                 CustomCostUpdatedResponseSerializer                          { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.CustomerInformationResponse>?                         CustomCustomerInformationResponseSerializer                  { get; set; }
-
-
-        // Binary Data Streams Extensions
-        public CustomBinarySerializerDelegate <            BinaryDataTransferResponse>?                          CustomIncomingBinaryDataTransferResponseSerializer           { get; set; }
-        public CustomBinarySerializerDelegate <            GetFileResponse>?                                     CustomGetFileResponseSerializer                              { get; set; }
-        public CustomJObjectSerializerDelegate<            SendFileResponse>?                                    CustomSendFileResponseSerializer                             { get; set; }
-        public CustomJObjectSerializerDelegate<            DeleteFileResponse>?                                  CustomDeleteFileResponseSerializer                           { get; set; }
-
-
-        // E2E Security Extensions
-        public CustomJObjectSerializerDelegate<            AddSignaturePolicyResponse>?                          CustomAddSignaturePolicyResponseSerializer                   { get; set; }
-        public CustomJObjectSerializerDelegate<            UpdateSignaturePolicyResponse>?                       CustomUpdateSignaturePolicyResponseSerializer                { get; set; }
-        public CustomJObjectSerializerDelegate<            DeleteSignaturePolicyResponse>?                       CustomDeleteSignaturePolicyResponseSerializer                { get; set; }
-        public CustomJObjectSerializerDelegate<            AddUserRoleResponse>?                                 CustomAddUserRoleResponseSerializer                          { get; set; }
-        public CustomJObjectSerializerDelegate<            UpdateUserRoleResponse>?                              CustomUpdateUserRoleResponseSerializer                       { get; set; }
-        public CustomJObjectSerializerDelegate<            DeleteUserRoleResponse>?                              CustomDeleteUserRoleResponseSerializer                       { get; set; }
-
-
-        // E2E Charging Tariff Extensions
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SetDefaultChargingTariffResponse>?                    CustomSetDefaultChargingTariffResponseSerializer             { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetDefaultChargingTariffResponse>?                    CustomGetDefaultChargingTariffResponseSerializer             { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.RemoveDefaultChargingTariffResponse>?                 CustomRemoveDefaultChargingTariffResponseSerializer          { get; set; }
-
-        #endregion
-
-
-        #region CSMS Request  Messages
-
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.ResetRequest>?                                   CustomResetRequestSerializer                                 { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.UpdateFirmwareRequest>?                          CustomUpdateFirmwareRequestSerializer                        { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.PublishFirmwareRequest>?                         CustomPublishFirmwareRequestSerializer                       { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.UnpublishFirmwareRequest>?                       CustomUnpublishFirmwareRequestSerializer                     { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.GetBaseReportRequest>?                           CustomGetBaseReportRequestSerializer                         { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.GetReportRequest>?                               CustomGetReportRequestSerializer                             { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.GetLogRequest>?                                  CustomGetLogRequestSerializer                                { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.SetVariablesRequest>?                            CustomSetVariablesRequestSerializer                          { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.GetVariablesRequest>?                            CustomGetVariablesRequestSerializer                          { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.SetMonitoringBaseRequest>?                       CustomSetMonitoringBaseRequestSerializer                     { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.GetMonitoringReportRequest>?                     CustomGetMonitoringReportRequestSerializer                   { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.SetMonitoringLevelRequest>?                      CustomSetMonitoringLevelRequestSerializer                    { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.SetVariableMonitoringRequest>?                   CustomSetVariableMonitoringRequestSerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.ClearVariableMonitoringRequest>?                 CustomClearVariableMonitoringRequestSerializer               { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.SetNetworkProfileRequest>?                       CustomSetNetworkProfileRequestSerializer                     { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.ChangeAvailabilityRequest>?                      CustomChangeAvailabilityRequestSerializer                    { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.TriggerMessageRequest>?                          CustomTriggerMessageRequestSerializer                        { get; set; }
-        public CustomJObjectSerializerDelegate<              DataTransferRequest>?                            CustomIncomingDataTransferRequestSerializer                  { get; set; }
-
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.CertificateSignedRequest>?                       CustomCertificateSignedRequestSerializer                     { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.InstallCertificateRequest>?                      CustomInstallCertificateRequestSerializer                    { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.GetInstalledCertificateIdsRequest>?              CustomGetInstalledCertificateIdsRequestSerializer            { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.DeleteCertificateRequest>?                       CustomDeleteCertificateRequestSerializer                     { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.NotifyCRLRequest>?                               CustomNotifyCRLRequestSerializer                             { get; set; }
-
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.GetLocalListVersionRequest>?                     CustomGetLocalListVersionRequestSerializer                   { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.SendLocalListRequest>?                           CustomSendLocalListRequestSerializer                         { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.ClearCacheRequest>?                              CustomClearCacheRequestSerializer                            { get; set; }
-
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.ReserveNowRequest>?                              CustomReserveNowRequestSerializer                            { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.CancelReservationRequest>?                       CustomCancelReservationRequestSerializer                     { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.RequestStartTransactionRequest>?                 CustomRequestStartTransactionRequestSerializer               { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.RequestStopTransactionRequest>?                  CustomRequestStopTransactionRequestSerializer                { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.GetTransactionStatusRequest>?                    CustomGetTransactionStatusRequestSerializer                  { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.SetChargingProfileRequest>?                      CustomSetChargingProfileRequestSerializer                    { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.GetChargingProfilesRequest>?                     CustomGetChargingProfilesRequestSerializer                   { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.ClearChargingProfileRequest>?                    CustomClearChargingProfileRequestSerializer                  { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.GetCompositeScheduleRequest>?                    CustomGetCompositeScheduleRequestSerializer                  { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.UpdateDynamicScheduleRequest>?                   CustomUpdateDynamicScheduleRequestSerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.NotifyAllowedEnergyTransferRequest>?             CustomNotifyAllowedEnergyTransferRequestSerializer           { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.UsePriorityChargingRequest>?                     CustomUsePriorityChargingRequestSerializer                   { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.UnlockConnectorRequest>?                         CustomUnlockConnectorRequestSerializer                       { get; set; }
-
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.AFRRSignalRequest>?                              CustomAFRRSignalRequestSerializer                            { get; set; }
-
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.SetDisplayMessageRequest>?                       CustomSetDisplayMessageRequestSerializer                     { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.GetDisplayMessagesRequest>?                      CustomGetDisplayMessagesRequestSerializer                    { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.ClearDisplayMessageRequest>?                     CustomClearDisplayMessageRequestSerializer                   { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.CostUpdatedRequest>?                             CustomCostUpdatedRequestSerializer                           { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.CustomerInformationRequest>?                     CustomCustomerInformationRequestSerializer                   { get; set; }
-
-
-        // Binary Data Streams Extensions
-        public CustomBinarySerializerDelegate <              BinaryDataTransferRequest>?                      CustomIncomingBinaryDataTransferRequestSerializer            { get; set; }
-        public CustomJObjectSerializerDelegate<              GetFileRequest>?                                 CustomGetFileRequestSerializer                               { get; set; }
-        public CustomBinarySerializerDelegate <              SendFileRequest>?                                CustomSendFileRequestSerializer                              { get; set; }
-        public CustomJObjectSerializerDelegate<              DeleteFileRequest>?                              CustomDeleteFileRequestSerializer                            { get; set; }
-
-
-        // E2E Security Extensions
-        public CustomJObjectSerializerDelegate<              AddSignaturePolicyRequest>?                      CustomAddSignaturePolicyRequestSerializer                    { get; set; }
-        public CustomJObjectSerializerDelegate<              UpdateSignaturePolicyRequest>?                   CustomUpdateSignaturePolicyRequestSerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<              DeleteSignaturePolicyRequest>?                   CustomDeleteSignaturePolicyRequestSerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<              AddUserRoleRequest>?                             CustomAddUserRoleRequestSerializer                           { get; set; }
-        public CustomJObjectSerializerDelegate<              UpdateUserRoleRequest>?                          CustomUpdateUserRoleRequestSerializer                        { get; set; }
-        public CustomJObjectSerializerDelegate<              DeleteUserRoleRequest>?                          CustomDeleteUserRoleRequestSerializer                        { get; set; }
-
-
-        // E2E Charging Tariffs Extensions
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.SetDefaultChargingTariffRequest>?                CustomSetDefaultChargingTariffRequestSerializer              { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.GetDefaultChargingTariffRequest>?                CustomGetDefaultChargingTariffRequestSerializer              { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.RemoveDefaultChargingTariffRequest>?             CustomRemoveDefaultChargingTariffRequestSerializer           { get; set; }
-
-        #endregion
-
-        #region CSMS Response Messages
-
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.BootNotificationResponse>?                       CustomBootNotificationResponseSerializer                     { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.FirmwareStatusNotificationResponse>?             CustomFirmwareStatusNotificationResponseSerializer           { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.PublishFirmwareStatusNotificationResponse>?      CustomPublishFirmwareStatusNotificationResponseSerializer    { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.HeartbeatResponse>?                              CustomHeartbeatResponseSerializer                            { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.NotifyEventResponse>?                            CustomNotifyEventResponseSerializer                          { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.SecurityEventNotificationResponse>?              CustomSecurityEventNotificationResponseSerializer            { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.NotifyReportResponse>?                           CustomNotifyReportResponseSerializer                         { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.NotifyMonitoringReportResponse>?                 CustomNotifyMonitoringReportResponseSerializer               { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.LogStatusNotificationResponse>?                  CustomLogStatusNotificationResponseSerializer                { get; set; }
-        public CustomJObjectSerializerDelegate<              DataTransferResponse>?                           CustomDataTransferResponseSerializer                         { get; set; }
-
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.SignCertificateResponse>?                        CustomSignCertificateResponseSerializer                      { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.Get15118EVCertificateResponse>?                  CustomGet15118EVCertificateResponseSerializer                { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.GetCertificateStatusResponse>?                   CustomGetCertificateStatusResponseSerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.GetCRLResponse>?                                 CustomGetCRLResponseSerializer                               { get; set; }
-
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.ReservationStatusUpdateResponse>?                CustomReservationStatusUpdateResponseSerializer              { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.AuthorizeResponse>?                              CustomAuthorizeResponseSerializer                            { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.NotifyEVChargingNeedsResponse>?                  CustomNotifyEVChargingNeedsResponseSerializer                { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.TransactionEventResponse>?                       CustomTransactionEventResponseSerializer                     { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.StatusNotificationResponse>?                     CustomStatusNotificationResponseSerializer                   { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.MeterValuesResponse>?                            CustomMeterValuesResponseSerializer                          { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.NotifyChargingLimitResponse>?                    CustomNotifyChargingLimitResponseSerializer                  { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.ClearedChargingLimitResponse>?                   CustomClearedChargingLimitResponseSerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.ReportChargingProfilesResponse>?                 CustomReportChargingProfilesResponseSerializer               { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.NotifyEVChargingScheduleResponse>?               CustomNotifyEVChargingScheduleResponseSerializer             { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.NotifyPriorityChargingResponse>?                 CustomNotifyPriorityChargingResponseSerializer               { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.PullDynamicScheduleUpdateResponse>?              CustomPullDynamicScheduleUpdateResponseSerializer            { get; set; }
-
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.NotifyDisplayMessagesResponse>?                  CustomNotifyDisplayMessagesResponseSerializer                { get; set; }
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.NotifyCustomerInformationResponse>?              CustomNotifyCustomerInformationResponseSerializer            { get; set; }
-
-
-        // Binary Data Streams Extensions
-        public CustomBinarySerializerDelegate <              BinaryDataTransferResponse>?                     CustomBinaryDataTransferResponseSerializer                   { get; set; }
-
-        #endregion
-
-        public CustomJObjectSerializerDelegate<NotifyNetworkTopologyRequest>?   CustomNotifyNetworkTopologyRequestSerializer           { get; set; }
-        public CustomJObjectSerializerDelegate<NotifyNetworkTopologyResponse>?  CustomNotifyNetworkTopologyResponseSerializer          { get; set; }
-
-        #region Data Structures
-
-        public CustomJObjectSerializerDelegate<StatusInfo>?                                          CustomStatusInfoSerializer                                   { get; set; }
-        public CustomJObjectSerializerDelegate<EVSEStatusInfo<SetDefaultChargingTariffStatus>>?      CustomEVSEStatusInfoSerializer                               { get; set; }
-        public CustomJObjectSerializerDelegate<EVSEStatusInfo<RemoveDefaultChargingTariffStatus>>?   CustomEVSEStatusInfoSerializer2                              { get; set; }
-        public CustomJObjectSerializerDelegate<OCPP.Signature>?                                      CustomSignatureSerializer                                    { get; set; }
-        public CustomJObjectSerializerDelegate<CustomData>?                                          CustomCustomDataSerializer                                   { get; set; }
-        public CustomJObjectSerializerDelegate<Firmware>?                                            CustomFirmwareSerializer                                     { get; set; }
-        public CustomJObjectSerializerDelegate<ComponentVariable>?                                   CustomComponentVariableSerializer                            { get; set; }
-        public CustomJObjectSerializerDelegate<Component>?                                           CustomComponentSerializer                                    { get; set; }
-        public CustomJObjectSerializerDelegate<EVSE>?                                                CustomEVSESerializer                                         { get; set; }
-        public CustomJObjectSerializerDelegate<Variable>?                                            CustomVariableSerializer                                     { get; set; }
-        public CustomJObjectSerializerDelegate<PeriodicEventStreamParameters>?                       CustomPeriodicEventStreamParametersSerializer                { get; set; }
-        public CustomJObjectSerializerDelegate<LogParameters>?                                       CustomLogParametersSerializer                                { get; set; }
-        public CustomJObjectSerializerDelegate<SetVariableData>?                                     CustomSetVariableDataSerializer                              { get; set; }
-        public CustomJObjectSerializerDelegate<GetVariableData>?                                     CustomGetVariableDataSerializer                              { get; set; }
-        public CustomJObjectSerializerDelegate<SetMonitoringData>?                                   CustomSetMonitoringDataSerializer                            { get; set; }
-        public CustomJObjectSerializerDelegate<NetworkConnectionProfile>?                            CustomNetworkConnectionProfileSerializer                     { get; set; }
-        public CustomJObjectSerializerDelegate<VPNConfiguration>?                                    CustomVPNConfigurationSerializer                             { get; set; }
-        public CustomJObjectSerializerDelegate<APNConfiguration>?                                    CustomAPNConfigurationSerializer                             { get; set; }
-        public CustomJObjectSerializerDelegate<CertificateHashData>?                                 CustomCertificateHashDataSerializer                          { get; set; }
-        public CustomJObjectSerializerDelegate<AuthorizationData>?                                   CustomAuthorizationDataSerializer                            { get; set; }
-        public CustomJObjectSerializerDelegate<IdToken>?                                             CustomIdTokenSerializer                                      { get; set; }
-        public CustomJObjectSerializerDelegate<AdditionalInfo>?                                      CustomAdditionalInfoSerializer                               { get; set; }
-        public CustomJObjectSerializerDelegate<IdTokenInfo>?                                         CustomIdTokenInfoSerializer                                  { get; set; }
-        public CustomJObjectSerializerDelegate<MessageContent>?                                      CustomMessageContentSerializer                               { get; set; }
-        public CustomJObjectSerializerDelegate<ChargingProfile>?                                     CustomChargingProfileSerializer                              { get; set; }
-        public CustomJObjectSerializerDelegate<LimitBeyondSoC>?                                      CustomLimitBeyondSoCSerializer                               { get; set; }
-        public CustomJObjectSerializerDelegate<ChargingSchedule>?                                    CustomChargingScheduleSerializer                             { get; set; }
-        public CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?                              CustomChargingSchedulePeriodSerializer                       { get; set; }
-        public CustomJObjectSerializerDelegate<V2XFreqWattEntry>?                                    CustomV2XFreqWattEntrySerializer                             { get; set; }
-        public CustomJObjectSerializerDelegate<V2XSignalWattEntry>?                                  CustomV2XSignalWattEntrySerializer                           { get; set; }
-        public CustomJObjectSerializerDelegate<SalesTariff>?                                         CustomSalesTariffSerializer                                  { get; set; }
-        public CustomJObjectSerializerDelegate<SalesTariffEntry>?                                    CustomSalesTariffEntrySerializer                             { get; set; }
-        public CustomJObjectSerializerDelegate<RelativeTimeInterval>?                                CustomRelativeTimeIntervalSerializer                         { get; set; }
-        public CustomJObjectSerializerDelegate<ConsumptionCost>?                                     CustomConsumptionCostSerializer                              { get; set; }
-        public CustomJObjectSerializerDelegate<Cost>?                                                CustomCostSerializer                                         { get; set; }
-
-        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.AbsolutePriceSchedule>?    CustomAbsolutePriceScheduleSerializer                        { get; set; }
-        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceRuleStack>?           CustomPriceRuleStackSerializer                               { get; set; }
-        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceRule>?                CustomPriceRuleSerializer                                    { get; set; }
-        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.TaxRule>?                  CustomTaxRuleSerializer                                      { get; set; }
-        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.OverstayRuleList>?         CustomOverstayRuleListSerializer                             { get; set; }
-        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.OverstayRule>?             CustomOverstayRuleSerializer                                 { get; set; }
-        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.AdditionalService>?        CustomAdditionalServiceSerializer                            { get; set; }
-
-        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceLevelSchedule>?       CustomPriceLevelScheduleSerializer                           { get; set; }
-        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceLevelScheduleEntry>?  CustomPriceLevelScheduleEntrySerializer                      { get; set; }
-
-        public CustomJObjectSerializerDelegate<TransactionLimits>?                                   CustomTransactionLimitsSerializer                            { get; set; }
-
-        public CustomJObjectSerializerDelegate<ChargingProfileCriterion>?                            CustomChargingProfileCriterionSerializer                     { get; set; }
-        public CustomJObjectSerializerDelegate<ClearChargingProfile>?                                CustomClearChargingProfileSerializer                         { get; set; }
-        public CustomJObjectSerializerDelegate<MessageInfo>?                                         CustomMessageInfoSerializer                                  { get; set; }
-
-
-
-        public CustomJObjectSerializerDelegate<ChargingStation>?                                     CustomChargingStationSerializer                              { get; set; }
-        public CustomJObjectSerializerDelegate<EventData>?                                           CustomEventDataSerializer                                    { get; set; }
-        public CustomJObjectSerializerDelegate<ReportData>?                                          CustomReportDataSerializer                                   { get; set; }
-        public CustomJObjectSerializerDelegate<VariableAttribute>?                                   CustomVariableAttributeSerializer                            { get; set; }
-        public CustomJObjectSerializerDelegate<VariableCharacteristics>?                             CustomVariableCharacteristicsSerializer                      { get; set; }
-        public CustomJObjectSerializerDelegate<MonitoringData>?                                      CustomMonitoringDataSerializer                               { get; set; }
-        public CustomJObjectSerializerDelegate<VariableMonitoring>?                                  CustomVariableMonitoringSerializer                           { get; set; }
-        public CustomJObjectSerializerDelegate<OCSPRequestData>?                                     CustomOCSPRequestDataSerializer                              { get; set; }
-
-        public CustomJObjectSerializerDelegate<ChargingNeeds>?                                       CustomChargingNeedsSerializer                                { get; set; }
-        public CustomJObjectSerializerDelegate<ACChargingParameters>?                                CustomACChargingParametersSerializer                         { get; set; }
-        public CustomJObjectSerializerDelegate<DCChargingParameters>?                                CustomDCChargingParametersSerializer                         { get; set; }
-        public CustomJObjectSerializerDelegate<V2XChargingParameters>?                               CustomV2XChargingParametersSerializer                        { get; set; }
-        public CustomJObjectSerializerDelegate<EVEnergyOffer>?                                       CustomEVEnergyOfferSerializer                                { get; set; }
-        public CustomJObjectSerializerDelegate<EVPowerSchedule>?                                     CustomEVPowerScheduleSerializer                              { get; set; }
-        public CustomJObjectSerializerDelegate<EVPowerScheduleEntry>?                                CustomEVPowerScheduleEntrySerializer                         { get; set; }
-        public CustomJObjectSerializerDelegate<EVAbsolutePriceSchedule>?                             CustomEVAbsolutePriceScheduleSerializer                      { get; set; }
-        public CustomJObjectSerializerDelegate<EVAbsolutePriceScheduleEntry>?                        CustomEVAbsolutePriceScheduleEntrySerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<EVPriceRule>?                                         CustomEVPriceRuleSerializer                                  { get; set; }
-
-        public CustomJObjectSerializerDelegate<Transaction>?                                         CustomTransactionSerializer                                  { get; set; }
-        public CustomJObjectSerializerDelegate<MeterValue>?                                          CustomMeterValueSerializer                                   { get; set; }
-        public CustomJObjectSerializerDelegate<SampledValue>?                                        CustomSampledValueSerializer                                 { get; set; }
-        public CustomJObjectSerializerDelegate<SignedMeterValue>?                                    CustomSignedMeterValueSerializer                             { get; set; }
-        public CustomJObjectSerializerDelegate<UnitsOfMeasure>?                                      CustomUnitsOfMeasureSerializer                               { get; set; }
-
-        public CustomJObjectSerializerDelegate<SetVariableResult>?                                   CustomSetVariableResultSerializer                            { get; set; }
-        public CustomJObjectSerializerDelegate<GetVariableResult>?                                   CustomGetVariableResultSerializer                            { get; set; }
-        public CustomJObjectSerializerDelegate<SetMonitoringResult>?                                 CustomSetMonitoringResultSerializer                          { get; set; }
-        public CustomJObjectSerializerDelegate<ClearMonitoringResult>?                               CustomClearMonitoringResultSerializer                        { get; set; }
-        public CustomJObjectSerializerDelegate<CompositeSchedule>?                                   CustomCompositeScheduleSerializer                            { get; set; }
-
-
-        // Binary Data Streams Extensions
-        public CustomBinarySerializerDelegate<OCPP.Signature>?                                       CustomBinarySignatureSerializer                              { get; set; }
-
-
-        // E2E Security Extensions
-
-
-
-        // E2E Charging Tariff Extensions
-        public CustomJObjectSerializerDelegate<ChargingTariff>?                                      CustomChargingTariffSerializer                               { get; set; }
-        public CustomJObjectSerializerDelegate<Price>?                                               CustomPriceSerializer                                        { get; set; }
-        public CustomJObjectSerializerDelegate<TariffElement>?                                       CustomTariffElementSerializer                                { get; set; }
-        public CustomJObjectSerializerDelegate<PriceComponent>?                                      CustomPriceComponentSerializer                               { get; set; }
-        public CustomJObjectSerializerDelegate<TaxRate>?                                             CustomTaxRateSerializer                                      { get; set; }
-        public CustomJObjectSerializerDelegate<TariffRestrictions>?                                  CustomTariffRestrictionsSerializer                           { get; set; }
-        public CustomJObjectSerializerDelegate<EnergyMix>?                                           CustomEnergyMixSerializer                                    { get; set; }
-        public CustomJObjectSerializerDelegate<EnergySource>?                                        CustomEnergySourceSerializer                                 { get; set; }
-        public CustomJObjectSerializerDelegate<EnvironmentalImpact>?                                 CustomEnvironmentalImpactSerializer                          { get; set; }
-
-
-        // Overlay Networking Extensions
-        public CustomJObjectSerializerDelegate<NetworkTopologyInformation>?                          CustomNetworkTopologyInformationSerializer             { get; set; }
-
-        #endregion
-
-        #endregion
-
-        #region Custom JSON parser delegates
-
-        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.BootNotificationResponse>?   CustomBootNotificationResponseParser          { get; set; }
-
-        #endregion
-
         #region Constructor(s)
 
         /// <summary>
         /// Create a new networking node for testing.
         /// </summary>
         /// <param name="Id">The unique identification of this networking node.</param>
-        public TestNetworkingNode(NetworkingNode_Id     Id,
-                                  String                VendorName,
-                                  String                Model,
+        public TestNetworkingNode(NetworkingNode_Id  Id,
+                                  String             VendorName,
+                                  String             Model,
+                                  I18NString?        Description                 = null,
+                                  String?            SerialNumber                = null,
+                                  String?            FirmwareVersion             = null,
+                                  Modem?             Modem                       = null,
 
-                                  I18NString?           Description               = null,
-                                  String?               SerialNumber              = null,
-                                  String?               FirmwareVersion           = null,
-                                  Modem?                Modem                     = null,
+                                  SignaturePolicy?   SignaturePolicy             = null,
+                                  SignaturePolicy?   ForwardingSignaturePolicy   = null,
 
-                                  Boolean               DisableSendHeartbeats     = false,
-                                  TimeSpan?             SendHeartbeatEvery        = null,
+                                  Boolean            DisableSendHeartbeats       = false,
+                                  TimeSpan?          SendHeartbeatsEvery         = null,
+                                  TimeSpan?          DefaultRequestTimeout       = null,
 
-                                  Boolean               DisableMaintenanceTasks   = false,
-                                  TimeSpan?             MaintenanceEvery          = null,
-
-                                  TimeSpan?             DefaultRequestTimeout     = null,
-                                  IHTTPAuthentication?  HTTPAuthentication        = null,
-                                  DNSClient?            DNSClient                 = null,
-
-                                  SignaturePolicy?      SignaturePolicy           = null)
+                                  Boolean            DisableMaintenanceTasks     = false,
+                                  TimeSpan?          MaintenanceEvery            = null,
+                                  DNSClient?         DNSClient                   = null)
 
         {
 
@@ -848,55 +376,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             this.SerialNumber             = SerialNumber;
             this.FirmwareVersion          = FirmwareVersion;
             this.Modem                    = Modem;
+            this.CustomData               = CustomData       ?? new CustomData(Vendor_Id.GraphDefined);
+
+            this.DisableMaintenanceTasks  = DisableMaintenanceTasks;
+            this.MaintenanceEvery         = MaintenanceEvery ?? DefaultMaintenanceEvery;
+            this.DNSClient                = DNSClient        ?? new DNSClient(SearchForIPv6DNSServers: false);
+
+            this.OCPP                     = new OCPPAdapter(
+                                                this,
+                                                DisableSendHeartbeats,
+                                                SendHeartbeatsEvery,
+                                                DefaultRequestTimeout,
+                                                SignaturePolicy,
+                                                ForwardingSignaturePolicy
+                                            );
+
+            this.FORWARD                  = new FORWARD    (this);
 
 
-            Directory.CreateDirectory(Path.Combine(AppContext.BaseDirectory, "HTTPSSEs"));
-
-            this.DNSClient                = DNSClient ?? new DNSClient(SearchForIPv6DNSServers: false);
-
-            this.signaturePolicies.          Add(SignaturePolicy ?? new SignaturePolicy());
-            this.forwardingSignaturePolicies.Add(SignaturePolicy ?? new SignaturePolicy());
-
-         //   this.EnqueuedRequests         = [];
-
-
-            //this.AsCSMS                   = new ActingAsCSMS(
-
-            //                                    NetworkingNode:            this,
-            //                                    RequireAuthentication:     false,
-            //                                    DefaultRequestTimeout:     this.DefaultRequestTimeout,
-            //                                    HTTPUploadPort:            null,
-            //                                    DNSClient:                 this.DNSClient,
-
-            //                                    SignaturePolicy:           this.SignaturePolicy
-
-            //                                );
-
-            //this.AsCS                     = new ActingAsCS(
-
-            //                                    NetworkingNode:            this,
-
-            //                                    DisableSendHeartbeats:     this.DisableSendHeartbeats,
-            //                                    SendHeartbeatEvery:        this.SendHeartbeatEvery,
-
-            //                                    DisableMaintenanceTasks:   this.DisableMaintenanceTasks,
-            //                                    MaintenanceEvery:          this.MaintenanceEvery,
-
-            //                                    DefaultRequestTimeout:     this.DefaultRequestTimeout,
-            //                                    HTTPAuthentication:        null,
-            //                                    DNSClient:                 this.DNSClient,
-
-            //                                    SignaturePolicy:           this.SignaturePolicy
-
-            //                                );
-
-            //this.IN       = new INPUT (this);
-            //this.OUT      = new OUTPUT(this);
-            this.FORWARD  = new FORWARD (this);
-
-            this.ocppIN   = new OCPPWebSocketAdapterIN (this);
-            this.ocppOUT  = new OCPPWebSocketAdapterOUT(this);
-
+            //Directory.CreateDirectory(Path.Combine(AppContext.BaseDirectory, "HTTPSSEs"));
 
             //this.TestAPI                 = new HTTPExtAPI(
             //                                   HTTPServerPort:         IPPort.Parse(3502),
@@ -1048,9 +546,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         {
 
             var ocppWebSocketClient = new OCPPWebSocketClient(
-                                          Id,
-                                          this.ocppIN,
-                                          this.ocppOUT,
+
+                                          OCPP,
 
                                           RemoteURL,
                                           VirtualHostname,
@@ -1085,16 +582,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           LogfileCreator,
                                           HTTPLogger,
                                           DNSClient
+
                                       );
 
             ocppWebSocketClients.Add(ocppWebSocketClient);
 
             var httpResponse = await ocppWebSocketClient.Connect();
 
-            AddStaticRouting(NetworkingNodeId,
-                             ocppWebSocketClient,
-                             0,
-                             Timestamp.Now);
+            OCPP.AddStaticRouting(NetworkingNodeId,
+                                  ocppWebSocketClient,
+                                  0,
+                                  Timestamp.Now);
 
             return httpResponse;
 
@@ -1113,7 +611,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="TCPPort">An optional TCP port for the HTTP server.</param>
         /// <param name="DNSClient">An optional DNS client to use.</param>
         /// <param name="AutoStart">Start the server immediately.</param>
-        public OCPPWebSocketServer AttachWebSocketServer(String                               HTTPServiceName              = DefaultHTTPServiceName,
+        public OCPPWebSocketServer AttachWebSocketServer(String                               HTTPServiceName              = null,
                                                          IIPAddress?                          IPAddress                    = null,
                                                          IPPort?                              TCPPort                      = null,
 
@@ -1141,8 +639,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         {
 
             var ocppWebSocketServer = new OCPPWebSocketServer(
-                                          this.ocppIN,
-                                          this.ocppOUT,
+
+                                          OCPP,
 
                                           HTTPServiceName,
                                           IPAddress,
@@ -1169,6 +667,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                           DNSClient ?? this.DNSClient,
                                           AutoStart: false
+
                                       );
 
             WireWebSocketServer(ocppWebSocketServer);
@@ -1283,10 +782,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                              cancellationToken) => {
 
                 // A new connection from the same networking node/charging station will replace the older one!
-                AddStaticRouting(DestinationNodeId:  networkingNodeId,
-                                 WebSocketServer:    ocppWebSocketServer,
-                                 Priority:           0,
-                                 Timestamp:          timestamp);
+                OCPP.AddStaticRouting(DestinationNodeId:  networkingNodeId,
+                                      WebSocketServer:    ocppWebSocketServer,
+                                      Priority:           0,
+                                      Timestamp:          timestamp);
 
                 #region Send OnNewWebSocketConnection
 
@@ -1465,628 +964,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
-        #region NextRequestId
-
-        public Request_Id NextRequestId
-        {
-            get
-            {
-
-                Interlocked.Increment(ref internalRequestId);
-
-                return Request_Id.Parse(internalRequestId.ToString());
-
-            }
-        }
-
-        #endregion
-
-
         public string? ClientCloseMessage => throw new NotImplementedException();
 
 
 
 
-
-        #region SendJSONRequest         (JSONRequestMessage)
-
-        public async Task<SendOCPPMessageResult> SendJSONRequest(OCPP_JSONRequestMessage JSONRequestMessage)
-        {
-
-            if (LookupNetworkingNode(JSONRequestMessage.DestinationNodeId, out var reachability) &&
-                reachability is not null)
-            {
-
-                if (reachability.OCPPWebSocketClient is not null)
-                    return await reachability.OCPPWebSocketClient.SendJSONRequest(JSONRequestMessage);
-
-                if (reachability.OCPPWebSocketServer is not null)
-                    return await reachability.OCPPWebSocketServer.SendJSONRequest(JSONRequestMessage);
-
-            }
-
-            return SendOCPPMessageResult.UnknownClient;
-
-        }
-
-        #endregion
-
-        #region SendJSONRequestAndWait  (JSONRequestMessage)
-
-        public async Task<SendRequestState> SendJSONRequestAndWait(OCPP_JSONRequestMessage JSONRequestMessage)
-        {
-
-            var sendOCPPMessageResult = await SendJSONRequest(JSONRequestMessage);
-
-            if (sendOCPPMessageResult == SendOCPPMessageResult.Success)
-            {
-
-                #region 1. Store 'in-flight' request...
-
-                requests.TryAdd(JSONRequestMessage.RequestId,
-                                SendRequestState.FromJSONRequest(
-                                    Timestamp.Now,
-                                    JSONRequestMessage.DestinationNodeId,
-                                    JSONRequestMessage.RequestTimeout,
-                                    JSONRequestMessage
-                                ));
-
-                #endregion
-
-                #region 2. Wait for response... or timeout!
-
-                do
-                {
-
-                    try
-                    {
-
-                        await Task.Delay(25, JSONRequestMessage.CancellationToken);
-
-                        if (requests.TryGetValue(JSONRequestMessage.RequestId, out var sendRequestState) &&
-                           (sendRequestState?.JSONResponse   is not null ||
-                            sendRequestState?.BinaryResponse is not null ||
-                            sendRequestState?.ErrorCode.HasValue == true))
-                        {
-
-                            requests.TryRemove(JSONRequestMessage.RequestId, out _);
-
-                            return sendRequestState;
-
-                        }
-
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(String.Concat(nameof(OCPPWebSocketAdapterIN), ".", nameof(SendJSONRequestAndWait), " exception occured: ", e.Message));
-                    }
-
-                }
-                while (Timestamp.Now < JSONRequestMessage.RequestTimeout);
-
-                #endregion
-
-                #region 3. When timed out...
-
-                if (requests.TryGetValue(JSONRequestMessage.RequestId, out var sendRequestState2) &&
-                    sendRequestState2 is not null)
-                {
-                    sendRequestState2.ErrorCode = ResultCode.Timeout;
-                    requests.TryRemove(JSONRequestMessage.RequestId, out _);
-                    return sendRequestState2;
-                }
-
-                #endregion
-
-            }
-
-            // Just in case...
-            return SendRequestState.FromJSONRequest(
-                       RequestTimestamp:   JSONRequestMessage.RequestTimestamp,
-                       NetworkingNodeId:   JSONRequestMessage.DestinationNodeId,
-                       Timeout:            JSONRequestMessage.RequestTimeout,
-                       JSONRequest:        JSONRequestMessage,
-                       ResponseTimestamp:  Timestamp.Now,
-                       ErrorCode:          ResultCode.InternalError
-                   );
-
-        }
-
-        #endregion
-
-        #region SendBinaryRequest       (BinaryRequestMessage)
-
-        public async Task<SendOCPPMessageResult> SendBinaryRequest(OCPP_BinaryRequestMessage BinaryRequestMessage)
-        {
-
-            if (LookupNetworkingNode(BinaryRequestMessage.DestinationNodeId, out var reachability) &&
-                reachability is not null)
-            {
-
-                //if (reachability.OCPPWebSocketClient is not null)
-                //    return await reachability.OCPPWebSocketClient.SendBinaryRequest(BinaryRequestMessage);
-
-                if (reachability.OCPPWebSocketServer is not null)
-                    return await reachability.OCPPWebSocketServer.SendBinaryRequest(BinaryRequestMessage);
-
-            }
-
-            return SendOCPPMessageResult.UnknownClient;
-
-        }
-
-        #endregion
-
-        #region SendBinaryRequestAndWait(BinaryRequestMessage)
-
-        public async Task<SendRequestState> SendBinaryRequestAndWait(OCPP_BinaryRequestMessage BinaryRequestMessage)
-        {
-
-            var sendOCPPMessageResult = await SendBinaryRequest(BinaryRequestMessage);
-
-            if (sendOCPPMessageResult == SendOCPPMessageResult.Success)
-            {
-
-                #region 1. Store 'in-flight' request...
-
-                requests.TryAdd(BinaryRequestMessage.RequestId,
-                                SendRequestState.FromBinaryRequest(
-                                    Timestamp.Now,
-                                    BinaryRequestMessage.DestinationNodeId,
-                                    BinaryRequestMessage.RequestTimeout,
-                                    BinaryRequestMessage
-                                ));
-
-                #endregion
-
-                #region 2. Wait for response... or timeout!
-
-                do
-                {
-
-                    try
-                    {
-
-                        await Task.Delay(25, BinaryRequestMessage.CancellationToken);
-
-                        if (requests.TryGetValue(BinaryRequestMessage.RequestId, out var sendRequestState) &&
-                           (sendRequestState?.JSONResponse   is not null ||
-                            sendRequestState?.BinaryResponse is not null ||
-                            sendRequestState?.ErrorCode.HasValue == true))
-                        {
-
-                            requests.TryRemove(BinaryRequestMessage.RequestId, out _);
-
-                            return sendRequestState;
-
-                        }
-
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(String.Concat(nameof(OCPPWebSocketAdapterIN), ".", nameof(SendJSONRequestAndWait), " exception occured: ", e.Message));
-                    }
-
-                }
-                while (Timestamp.Now < BinaryRequestMessage.RequestTimeout);
-
-                #endregion
-
-                #region 3. When timed out...
-
-                if (requests.TryGetValue(BinaryRequestMessage.RequestId, out var sendRequestState2) &&
-                    sendRequestState2 is not null)
-                {
-                    sendRequestState2.ErrorCode = ResultCode.Timeout;
-                    requests.TryRemove(BinaryRequestMessage.RequestId, out _);
-                    return sendRequestState2;
-                }
-
-                #endregion
-
-            }
-
-            // Just in case...
-            return SendRequestState.FromBinaryRequest(
-                       RequestTimestamp:   BinaryRequestMessage.RequestTimestamp,
-                       NetworkingNodeId:   BinaryRequestMessage.DestinationNodeId,
-                       Timeout:            BinaryRequestMessage.RequestTimeout,
-                       BinaryRequest:      BinaryRequestMessage,
-                       ResponseTimestamp:  Timestamp.Now,
-                       ErrorCode:          ResultCode.InternalError
-                   );
-
-        }
-
-        #endregion
-
-
-        #region ReceiveResponseMessage  (JSONResponseMessage)
-
-        public Boolean ReceiveResponseMessage(OCPP_JSONResponseMessage JSONResponseMessage)
-        {
-
-            if (requests.TryGetValue(JSONResponseMessage.RequestId, out var sendRequestState) &&
-                sendRequestState is not null)
-            {
-
-                sendRequestState.ResponseTimestamp  = Timestamp.Now;
-                sendRequestState.JSONResponse       = JSONResponseMessage;
-
-                return true;
-
-            }
-
-            DebugX.Log($"Received an unknown OCPP response with identificaiton '{JSONResponseMessage.RequestId}' within {nameof(TestNetworkingNode)}:{Environment.NewLine}'{JSONResponseMessage.Payload.ToString(Formatting.None)}'!");
-            return false;
-
-        }
-
-        #endregion
-
-        #region ReceiveResponseMessage  (BinaryResponseMessage)
-
-        public Boolean ReceiveResponseMessage(OCPP_BinaryResponseMessage BinaryResponseMessage)
-        {
-
-            if (requests.TryGetValue(BinaryResponseMessage.RequestId, out var sendRequestState) &&
-                sendRequestState is not null)
-            {
-
-                sendRequestState.ResponseTimestamp  = Timestamp.Now;
-                sendRequestState.BinaryResponse     = BinaryResponseMessage;
-
-                #region OnBinaryMessageResponseReceived
-
-                //var onBinaryMessageResponseReceived = OnBinaryMessageResponseReceived;
-                //if (onBinaryMessageResponseReceived is not null)
-                //{
-                //    try
-                //    {
-
-                //        await Task.WhenAll(onBinaryMessageResponseReceived.GetInvocationList().
-                //                               OfType <OnWebSocketBinaryMessageResponseDelegate>().
-                //                               Select (loggingDelegate => loggingDelegate.Invoke(
-                //                                                              Timestamp.Now,
-                //                                                              this,
-                //                                                              Connection,
-                //                                                              jsonResponse.DestinationNodeId,
-                //                                                              jsonResponse.NetworkPath,
-                //                                                              EventTrackingId,
-                //                                                              sendRequestState.RequestTimestamp,
-                //                                                              sendRequestState.BinaryRequest?.  ToBinary()      ?? [],
-                //                                                              sendRequestState.BinaryRequest?.ToByteArray() ?? [],
-                //                                                              Timestamp.Now,
-                //                                                              sendRequestState.BinaryResponse.  ToBinary(),
-                //                                                              CancellationToken
-                //                                                          )).
-                //                               ToArray());
-
-                //    }
-                //    catch (Exception e)
-                //    {
-                //        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnBinaryMessageResponseReceived));
-                //    }
-                //}
-
-                #endregion
-
-                return true;
-
-            }
-
-            DebugX.Log($"Received an unknown OCPP response with identificaiton '{BinaryResponseMessage.RequestId}' within {nameof(TestNetworkingNode)}:{Environment.NewLine}'{BinaryResponseMessage.Payload.ToBase64()}'!");
-            return false;
-
-        }
-
-        #endregion
-
-
-        #region ReceiveErrorMessage     (JSONErrorMessage)
-
-        public Boolean ReceiveErrorMessage(OCPP_JSONErrorMessage JSONErrorMessage)
-        {
-
-            if (requests.TryGetValue(JSONErrorMessage.RequestId, out var sendRequestState) &&
-                sendRequestState is not null)
-            {
-
-                sendRequestState.JSONResponse      = null;
-                sendRequestState.ErrorCode         = JSONErrorMessage.ErrorCode;
-                sendRequestState.ErrorDescription  = JSONErrorMessage.ErrorDescription;
-                sendRequestState.ErrorDetails      = JSONErrorMessage.ErrorDetails;
-
-                #region OnJSONErrorResponseReceived
-
-                //var onJSONErrorResponseReceived = OnJSONErrorResponseReceived;
-                //if (onJSONErrorResponseReceived is not null)
-                //{
-                //    try
-                //    {
-
-                //        await Task.WhenAll(onJSONErrorResponseReceived.GetInvocationList().
-                //                               OfType <OnWebSocketTextErrorResponseDelegate>().
-                //                               Select (loggingDelegate => loggingDelegate.Invoke(
-                //                                                              Timestamp.Now,
-                //                                                              this,
-                //                                                              Connection,
-                //                                                              EventTrackingId,
-                //                                                              sendRequestState.RequestTimestamp,
-                //                                                              sendRequestState.JSONRequest?.  ToJSON().ToString(JSONFormatting) ?? "",
-                //                                                              sendRequestState.BinaryRequest?.ToByteArray()                     ?? [],
-                //                                                              Timestamp.Now,
-                //                                                              sendRequestState.JSONResponse?. ToString() ?? "",
-                //                                                              CancellationToken
-                //                                                          )).
-                //                               ToArray());
-
-                //    }
-                //    catch (Exception e)
-                //    {
-                //        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnJSONErrorResponseReceived));
-                //    }
-                //}
-
-                #endregion
-
-                return true;
-
-            }
-
-            DebugX.Log($"Received an unknown OCPP error response with identificaiton '{JSONErrorMessage.RequestId}' within {nameof(TestNetworkingNode)}:{Environment.NewLine}'{JSONErrorMessage.ToJSON().ToString(Formatting.None)}'!");
-            return false;
-
-        }
-
-        #endregion
-
-
-
-        #region LookupNetworkingNode (DestinationNodeId, out Reachability)
-
-        public Boolean LookupNetworkingNode(NetworkingNode_Id DestinationNodeId, out Reachability? Reachability)
-        {
-
-            if (reachableNetworkingNodes.TryGetValue(DestinationNodeId, out var reachabilityList) &&
-                reachabilityList is not null &&
-                reachabilityList.Count > 0)
-            {
-
-                var reachability = reachabilityList.OrderBy(entry => entry.Priority).First();
-
-                if (reachability.NetworkingHub.HasValue)
-                {
-
-                    var visitedIds = new HashSet<NetworkingNode_Id>();
-
-                    do
-                    {
-
-                        if (reachability.NetworkingHub.HasValue)
-                        {
-
-                            visitedIds.Add(reachability.NetworkingHub.Value);
-
-                            if (reachableNetworkingNodes.TryGetValue(reachability.NetworkingHub.Value, out var reachability2List) &&
-                                reachability2List is not null &&
-                                reachability2List.Count > 0)
-                            {
-                                reachability = reachability2List.OrderBy(entry => entry.Priority).First();
-                            }
-
-                            // Loop detected!
-                            if (reachability.NetworkingHub.HasValue && visitedIds.Contains(reachability.NetworkingHub.Value))
-                                break;
-
-                        }
-
-                    } while (reachability.OCPPWebSocketClient is not null ||
-                             reachability.OCPPWebSocketServer is not null);
-
-                }
-
-                Reachability = reachability;
-                return true;
-
-            }
-
-            Reachability = null;
-            return false;
-
-        }
-
-        #endregion
-
-        #region AddStaticRouting     (DestinationNodeId, WebSocketClient,        Priority = 0, Timestamp = null, Timeout = null)
-
-        public void AddStaticRouting(NetworkingNode_Id    DestinationNodeId,
-                                     OCPPWebSocketClient  WebSocketClient,
-                                     Byte?                Priority    = 0,
-                                     DateTime?            Timestamp   = null,
-                                     DateTime?            Timeout     = null)
-        {
-
-            var reachability = new Reachability(
-                                   DestinationNodeId,
-                                   WebSocketClient,
-                                   Priority,
-                                   Timeout
-                               );
-
-            reachableNetworkingNodes.AddOrUpdate(
-
-                DestinationNodeId,
-
-                (id)                   => [reachability],
-
-                (id, reachabilityList) => {
-
-                    if (reachabilityList is null)
-                        return [reachability];
-
-                    else
-                    {
-
-                        // For thread-safety!
-                        var updatedReachabilityList = new List<Reachability>();
-                        updatedReachabilityList.AddRange(reachabilityList.Where(entry => entry.Priority != reachability.Priority));
-                        updatedReachabilityList.Add     (reachability);
-
-                        return updatedReachabilityList;
-
-                    }
-
-                }
-
-            );
-
-            //csmsChannel.Item1.AddStaticRouting(DestinationNodeId,
-            //                                   NetworkingHubId);
-
-        }
-
-        #endregion
-
-        #region AddStaticRouting     (DestinationNodeId, WebSocketServer,        Priority = 0, Timestamp = null, Timeout = null)
-
-        public void AddStaticRouting(NetworkingNode_Id    DestinationNodeId,
-                                     OCPPWebSocketServer  WebSocketServer,
-                                     Byte?                Priority    = 0,
-                                     DateTime?            Timestamp   = null,
-                                     DateTime?            Timeout     = null)
-        {
-
-            var reachability = new Reachability(
-                                   DestinationNodeId,
-                                   WebSocketServer,
-                                   Priority,
-                                   Timeout
-                               );
-
-            reachableNetworkingNodes.AddOrUpdate(
-
-                DestinationNodeId,
-
-                (id)                   => [reachability],
-
-                (id, reachabilityList) => {
-
-                    if (reachabilityList is null)
-                        return [reachability];
-
-                    else
-                    {
-
-                        // For thread-safety!
-                        var updatedReachabilityList = new List<Reachability>();
-                        updatedReachabilityList.AddRange(reachabilityList.Where(entry => entry.Priority != reachability.Priority));
-                        updatedReachabilityList.Add     (reachability);
-
-                        return updatedReachabilityList;
-
-                    }
-
-                }
-
-            );
-
-            //csmsChannel.Item1.AddStaticRouting(DestinationNodeId,
-            //                                   NetworkingHubId);
-
-        }
-
-        #endregion
-
-        #region AddStaticRouting     (DestinationNodeId, NetworkingHubId,        Priority = 0, Timestamp = null, Timeout = null)
-
-        public void AddStaticRouting(NetworkingNode_Id  DestinationNodeId,
-                                     NetworkingNode_Id  NetworkingHubId,
-                                     Byte?              Priority    = 0,
-                                     DateTime?          Timestamp   = null,
-                                     DateTime?          Timeout     = null)
-        {
-
-            var reachability = new Reachability(
-                                   DestinationNodeId,
-                                   NetworkingHubId,
-                                   Priority,
-                                   Timeout
-                               );
-
-            reachableNetworkingNodes.AddOrUpdate(
-
-                DestinationNodeId,
-
-                (id)                   => [reachability],
-
-                (id, reachabilityList) => {
-
-                    if (reachabilityList is null)
-                        return [reachability];
-
-                    else
-                    {
-
-                        // For thread-safety!
-                        var updatedReachabilityList = new List<Reachability>();
-                        updatedReachabilityList.AddRange(reachabilityList.Where(entry => entry.Priority != reachability.Priority));
-                        updatedReachabilityList.Add     (reachability);
-
-                        return updatedReachabilityList;
-
-                    }
-
-                }
-
-            );
-
-            //csmsChannel.Item1.AddStaticRouting(DestinationNodeId,
-            //                                   NetworkingHubId);
-
-        }
-
-        #endregion
-
-        #region RemoveStaticRouting  (DestinationNodeId, NetworkingHubId = null, Priority = 0)
-
-        public void RemoveStaticRouting(NetworkingNode_Id   DestinationNodeId,
-                                        NetworkingNode_Id?  NetworkingHubId   = null,
-                                        Byte?               Priority          = 0)
-        {
-
-            if (!NetworkingHubId.HasValue)
-            {
-                reachableNetworkingNodes.TryRemove(DestinationNodeId, out _);
-                return;
-            }
-
-            if (reachableNetworkingNodes.TryGetValue(DestinationNodeId, out var reachabilityList) &&
-                reachabilityList is not null &&
-                reachabilityList.Count > 0)
-            {
-
-                // For thread-safety!
-                var updatedReachabilityList = new List<Reachability>(reachabilityList.Where(entry => entry.NetworkingHub == NetworkingHubId && (!Priority.HasValue || entry.Priority != (Priority ?? 0))));
-
-                if (updatedReachabilityList.Count > 0)
-                    reachableNetworkingNodes.TryUpdate(
-                        DestinationNodeId,
-                        updatedReachabilityList,
-                        reachabilityList
-                    );
-
-                else
-                    reachableNetworkingNodes.TryRemove(DestinationNodeId, out _);
-
-            }
-
-            //csmsChannel.Item1.RemoveStaticRouting(DestinationNodeId,
-            //                                      NetworkingHubId);
-
-        }
-
-        #endregion
 
 
 

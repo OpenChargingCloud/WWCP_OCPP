@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPP
         [Optional]
         public NetworkingNode_Id               Source
 
-            => networkingNodeIds.Count != 0
+            => networkingNodeIds.Count > 0
                    ? networkingNodeIds.First()
                    : NetworkingNode_Id.Zero;
 
@@ -81,7 +81,7 @@ namespace cloud.charging.open.protocols.OCPP
         [Optional]
         public NetworkingNode_Id               Last
 
-            => networkingNodeIds.Count != 0
+            => networkingNodeIds.Count > 0
                    ? networkingNodeIds.Last()
                    : NetworkingNode_Id.Zero;
 
@@ -91,20 +91,32 @@ namespace cloud.charging.open.protocols.OCPP
         /// </summary>
         public static NetworkPath               Empty    { get; }
 
-            = new (Array.Empty<NetworkingNode_Id>());
+            = new();
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new a network path.
+        /// Create a new a network path, based on the given enumeration of networking node identifications.
         /// </summary>
         /// <param name="NetworkingNodeIds">An optional ordered list of networking node identifications along the network path.</param>
         public NetworkPath(IEnumerable<NetworkingNode_Id>? NetworkingNodeIds = null)
         {
 
             if (NetworkingNodeIds is not null && NetworkingNodeIds.Any())
+                networkingNodeIds.AddRange(NetworkingNodeIds);
+
+        }
+
+        /// <summary>
+        /// Create a new a network path, based on the given array of networking node identifications.
+        /// </summary>
+        /// <param name="NetworkingNodeIds">An optional ordered list of networking node identifications along the network path.</param>
+        public NetworkPath(params NetworkingNode_Id[] NetworkingNodeIds)
+        {
+
+            if (NetworkingNodeIds is not null && NetworkingNodeIds.Length > 0)
                 networkingNodeIds.AddRange(NetworkingNodeIds);
 
         }
@@ -245,6 +257,17 @@ namespace cloud.charging.open.protocols.OCPP
 
         #endregion
 
+
+        #region (static) From(NetworkingNodeId)
+
+        /// <summary>
+        /// Create a new network path from the given networking node identification.
+        /// </summary>
+        /// <param name="NetworkingNodeId">A networking node identification.</param>
+        public static NetworkPath From(NetworkingNode_Id NetworkingNodeId)
+            => new (NetworkingNodeId);
+
+        #endregion
 
         #region Append(NetworkingNodeId)
 

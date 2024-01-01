@@ -69,7 +69,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.New
                             );
 
 
-            tn01.ocppIN.OnBootNotification += async (timestamp, sender, connection, request, cancellationToken) => {
+            tn01.OCPP.IN.OnBootNotification += async (timestamp, sender, connection, request, cancellationToken) => {
 
                 return new BootNotificationResponse(
                            request,
@@ -172,7 +172,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.New
             await Task.Delay(500);
 
 
-            var response2 = await tn01.ocppOUT.DataTransfer(
+            var response2 = await tn01.OCPP.OUT.DataTransfer(
                                       new DataTransferRequest(
                                           chargingStation1.Id,
                                           Vendor_Id.GraphDefined,

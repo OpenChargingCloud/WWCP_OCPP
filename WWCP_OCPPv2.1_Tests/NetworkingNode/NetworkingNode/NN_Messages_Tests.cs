@@ -101,12 +101,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
                 var nnJSONResponseMessagesReceived       = new ConcurrentList<OCPP_JSONResponseMessage>();
                 var nnBootNotificationResponsesReceived  = new ConcurrentList<BootNotificationResponse>();
 
-                networkingNode1.ocppOUT.OnBootNotificationRequestSent      += (timestamp, sender,             bootNotificationRequest) => {
+                networkingNode1.OCPP.OUT.OnBootNotificationRequestSent      += (timestamp, sender,             bootNotificationRequest) => {
                     nnBootNotificationRequestsSent.TryAdd(bootNotificationRequest);
                     return Task.CompletedTask;
                 };
 
-                networkingNode1.ocppOUT.OnJSONMessageRequestSent           += (timestamp, sender, jsonRequestMessage) => {
+                networkingNode1.OCPP.OUT.OnJSONMessageRequestSent           += (timestamp, sender, jsonRequestMessage) => {
                     nnJSONMessageRequestsSent.     TryAdd(jsonRequestMessage);
                     return Task.CompletedTask;
                 };
@@ -116,7 +116,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
                     return Task.CompletedTask;
                 };
 
-                networkingNode1.ocppIN. OnJSONMessageResponseReceived      += (timestamp, sender, jsonResponseMessage) => {
+                networkingNode1.OCPP.IN. OnJSONMessageResponseReceived      += (timestamp, sender, jsonResponseMessage) => {
                     nnJSONResponseMessagesReceived.TryAdd(jsonResponseMessage);
                     return Task.CompletedTask;
                 };
@@ -126,7 +126,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
                 //    return Task.CompletedTask;
                 //};
 
-                networkingNode1.ocppIN. OnBootNotificationResponseReceived += (timestamp, sender,             bootNotificationRequest, bootNotificationResponse, runtime) => {
+                networkingNode1.OCPP.IN. OnBootNotificationResponseReceived += (timestamp, sender,             bootNotificationRequest, bootNotificationResponse, runtime) => {
                     nnBootNotificationResponsesReceived.   TryAdd(bootNotificationResponse);
                     return Task.CompletedTask;
                 };
@@ -141,18 +141,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
                 Assert.Multiple(() => {
 
                     // Networking Node Request OUT
-                    Assert.That(nnBootNotificationRequestsSent.    Count,                         Is.EqualTo(1), "The BootNotification request did not leave the networking node!");
+                    Assert.That(nnBootNotificationRequestsSent.     Count,                    Is.EqualTo(1), "The BootNotification request did not leave the networking node!");
                     var nnBootNotificationRequest = nnBootNotificationRequestsSent.First();
                     Assert.That(nnBootNotificationRequest.DestinationNodeId,                  Is.EqualTo(NetworkingNode_Id.CSMS));
-                    //Assert.That(nnBootNotificationRequest.NetworkPath.Length,                 Is.EqualTo(1));
-                    //Assert.That(nnBootNotificationRequest.NetworkPath.Source,                 Is.EqualTo(networkingNode1.Id));
-                    //Assert.That(nnBootNotificationRequest.NetworkPath.Last,                   Is.EqualTo(networkingNode1.Id));
+                    Assert.That(nnBootNotificationRequest.NetworkPath.Length,                 Is.EqualTo(1));
+                    Assert.That(nnBootNotificationRequest.NetworkPath.Source,                 Is.EqualTo(networkingNode1.Id));
+                    Assert.That(nnBootNotificationRequest.NetworkPath.Last,                   Is.EqualTo(networkingNode1.Id));
                     Assert.That(nnBootNotificationRequest.Reason,                             Is.EqualTo(reason));
 
-                    Assert.That(nnJSONMessageRequestsSent.     Count,                         Is.EqualTo(1), "The BootNotification JSON request did not leave the networking node!");
+                    // Networking Node JSON Request OUT
+                    Assert.That(nnJSONMessageRequestsSent.          Count,                    Is.EqualTo(1), "The BootNotification JSON request did not leave the networking node!");
 
                     // CSMS Request IN
-                    Assert.That(csmsBootNotificationRequests.  Count,                         Is.EqualTo(1), "The BootNotification request did not reach the CSMS!");
+                    Assert.That(csmsBootNotificationRequests.       Count,                    Is.EqualTo(1), "The BootNotification request did not reach the CSMS!");
                     var csmsBootNotificationRequest = csmsBootNotificationRequests.First();
                     Assert.That(csmsBootNotificationRequest.DestinationNodeId,                Is.EqualTo(NetworkingNode_Id.CSMS));
                     Assert.That(csmsBootNotificationRequest.NetworkPath.Length,               Is.EqualTo(1));
@@ -181,11 +182,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
                     }
 
 
-                    Assert.That(nnJSONResponseMessagesReceived.Count,                         Is.EqualTo(1), "The BootNotification JSON request did not leave the networking node!");
+                    // Networking Node JSON Response IN
+                    Assert.That(nnJSONResponseMessagesReceived.     Count,                    Is.EqualTo(1), "The BootNotification JSON request did not leave the networking node!");
 
 
                     // Networking Node Response IN
-                    Assert.That(nnBootNotificationResponsesReceived.   Count,                         Is.EqualTo(1), "The BootNotification response did not reach the networking node!");
+                    Assert.That(nnBootNotificationResponsesReceived.Count,                    Is.EqualTo(1), "The BootNotification response did not reach the networking node!");
                     var nnBootNotificationResponse = nnBootNotificationResponsesReceived.First();
                     Assert.That(nnBootNotificationResponse.Request.RequestId,                 Is.EqualTo(nnBootNotificationRequest.RequestId));
 
@@ -242,7 +244,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
 
 
                 var reason    = BootReason.PowerUp;
-                var response  = await networkingNode1.ocppOUT.NotifyNetworkTopology(
+                var response  = await networkingNode1.OCPP.OUT.NotifyNetworkTopology(
                                     new NotifyNetworkTopologyRequest(
                                         NetworkingNode_Id.CSMS,
                                         new NetworkTopologyInformation(
