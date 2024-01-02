@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2023 GraphDefined GmbH
+ * Copyright (c) 2014-2024 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,14 +18,13 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPP.CS;
+using cloud.charging.open.protocols.OCPP.WebSockets;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
-using cloud.charging.open.protocols.OCPP.WebSockets;
-using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
@@ -51,23 +50,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a boot notification request will be sent to the CSMS.
         /// </summary>
-        public event OCPPv2_1.CS.OnBootNotificationRequestSentDelegate?     OnBootNotificationRequestSent;
+        public event OnBootNotificationRequestSentDelegate?    OnBootNotificationRequestSent;
 
         /// <summary>
         /// An event fired whenever a boot notification request will be sent to the CSMS.
         /// </summary>
-        public event ClientRequestLogHandler?                           OnBootNotificationWSRequest;
+        public event ClientRequestLogHandler?                  OnBootNotificationWSRequest;
 
         /// <summary>
         /// An event fired whenever a response to a boot notification request was received.
         /// </summary>
-        public event ClientResponseLogHandler?                          OnBootNotificationWSResponse;
-
-        // Should not be here!
-        /// <summary>
-        /// An event fired whenever a response to a boot notification request was received.
-        /// </summary>
-        public event OCPPv2_1.CS.OnBootNotificationResponseReceivedDelegate?    OnBootNotificationResponseReceived;
+        public event ClientResponseLogHandler?                 OnBootNotificationWSResponse;
 
         #endregion
 
@@ -166,23 +159,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                await parentNetworkingNode.OCPP.IN.RaiseOnBootNotificationResponseIN(endTime,
-                                                                                    parentNetworkingNode,
-                                                                                    Request,
-                                                                                    response,
-                                                                                    endTime - startTime);
-
-
-                OnBootNotificationResponseReceived?.Invoke(endTime,
-                                                   parentNetworkingNode,
-                                                   Request,
-                                                   response,
-                                                   endTime - startTime);
+                await parentNetworkingNode.OCPP.IN.RaiseOnBootNotificationResponseReceived(endTime,
+                                                                                           parentNetworkingNode,
+                                                                                           Request,
+                                                                                           response,
+                                                                                           endTime - startTime);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnBootNotificationResponseReceived));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(parentNetworkingNode.OCPP.IN.OnBootNotificationResponseReceived));
             }
 
             #endregion
@@ -202,13 +188,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a response to a boot notification request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnBootNotificationResponseReceivedDelegate? OnBootNotificationResponseReceived;
+        public event OnBootNotificationResponseReceivedDelegate? OnBootNotificationResponseReceived;
 
-        public async Task RaiseOnBootNotificationResponseIN(DateTime                   Timestamp,
-                                                            IEventSender               Sender,
-                                                            BootNotificationRequest    Request,
-                                                            BootNotificationResponse   Response,
-                                                            TimeSpan                   Runtime)
+        public async Task RaiseOnBootNotificationResponseReceived(DateTime                   Timestamp,
+                                                                  IEventSender               Sender,
+                                                                  BootNotificationRequest    Request,
+                                                                  BootNotificationResponse   Response,
+                                                                  TimeSpan                   Runtime)
         {
 
             var requestLogger = OnBootNotificationResponseReceived;
@@ -219,7 +205,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
                     await Task.WhenAll(
                               requestLogger.GetInvocationList().
-                                            OfType <OCPPv2_1.CS.OnBootNotificationResponseReceivedDelegate>().
+                                            OfType <OnBootNotificationResponseReceivedDelegate>().
                                             Select (loggingDelegate => loggingDelegate.Invoke(Timestamp,
                                                                                               Sender,
                                                                                               Request,

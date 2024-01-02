@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2023 GraphDefined GmbH
+ * Copyright (c) 2014-2024 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,11 +18,12 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 
 using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPP.WebSockets;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
-using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
 
@@ -48,12 +49,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a Reset request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnResetRequestSentDelegate?     OnResetRequestSent;
-
-        /// <summary>
-        /// An event sent whenever a response to a Reset request was sent.
-        /// </summary>
-        public event OCPPv2_1.CSMS.OnResetResponseReceivedDelegate?    OnResetResponseReceived;
+        public event OnResetRequestSentDelegate?    OnResetRequestSent;
 
         #endregion
 
@@ -143,16 +139,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnResetResponseReceived?.Invoke(endTime,
-                                        parentNetworkingNode,
-                                        Request,
-                                        response,
-                                        endTime - startTime);
+                await parentNetworkingNode.OCPP.IN.RaiseOnResetResponseReceived(endTime,
+                                                                                parentNetworkingNode,
+                                                                                Request,
+                                                                                response,
+                                                                                endTime - startTime);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnResetResponseReceived));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(parentNetworkingNode.OCPP.IN.OnResetResponseReceived));
             }
 
             #endregion
@@ -172,7 +168,44 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a response to a Reset request was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnResetResponseReceivedDelegate? OnResetResponseReceived;
+        public event OnResetResponseReceivedDelegate? OnResetResponseReceived;
+
+        public async Task RaiseOnResetResponseReceived(DateTime        Timestamp,
+                                                       IEventSender    Sender,
+                                                       ResetRequest    Request,
+                                                       ResetResponse   Response,
+                                                       TimeSpan        Runtime)
+        {
+
+            var requestLogger = OnResetResponseReceived;
+            if (requestLogger is not null)
+            {
+
+                try
+                {
+                    await Task.WhenAll(
+                              requestLogger.GetInvocationList().
+                                            OfType <OnResetResponseReceivedDelegate>().
+                                            Select (loggingDelegate => loggingDelegate.Invoke(Timestamp,
+                                                                                              Sender,
+                                                                                              Request,
+                                                                                              Response,
+                                                                                              Runtime)).
+                                            ToArray()
+                          );
+                }
+                catch (Exception e)
+                {
+                    await parentNetworkingNode.HandleErrors(
+                              nameof(OCPPWebSocketAdapterIN),
+                              nameof(OnResetResponseReceived),
+                              e
+                          );
+                }
+
+            }
+
+        }
 
     }
 

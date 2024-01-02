@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2023 GraphDefined GmbH
+ * Copyright (c) 2014-2024 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -72,6 +72,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
 
         #endregion
 
+
+        // to CSMS
 
         #region SendBootNotifications_Test()
 
@@ -203,6 +205,116 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
         }
 
         #endregion
+
+
+
+        // to Charging Station
+
+        #region SendChargingStationReset_Test()
+
+        /// <summary>
+        /// A test for resetting a charging station.
+        /// </summary>
+        [Test]
+        public async Task SendChargingStationReset_Test()
+        {
+
+            InitNetworkingNode1 = true;
+
+            Assert.Multiple(() => {
+                Assert.That(networkingNode1,           Is.Not.Null);
+                Assert.That(nnOCPPWebSocketServer01,   Is.Not.Null);
+                Assert.That(chargingStation1,          Is.Not.Null);
+            });
+
+            if (networkingNode1          is not null &&
+                nnOCPPWebSocketServer01  is not null &&
+                chargingStation1         is not null)
+            {
+
+                var nnResetRequestsSent             = new ConcurrentList<ResetRequest>();
+                var nnJSONMessageRequestsSent       = new ConcurrentList<OCPP_JSONRequestMessage>();
+                var csResetRequests                 = new ConcurrentList<ResetRequest>();
+                var nnJSONResponseMessagesReceived  = new ConcurrentList<OCPP_JSONResponseMessage>();
+                var nnResetResponsesReceived        = new ConcurrentList<ResetResponse>();
+
+                networkingNode1.OCPP.OUT.OnResetRequestSent             += (timestamp, sender, resetRequest) => {
+                    nnResetRequestsSent.TryAdd(resetRequest);
+                    return Task.CompletedTask;
+                };
+
+                networkingNode1.OCPP.OUT.OnJSONMessageRequestSent       += (timestamp, sender, jsonRequestMessage) => {
+                    nnJSONMessageRequestsSent.     TryAdd(jsonRequestMessage);
+                    return Task.CompletedTask;
+                };
+
+                chargingStation1.        OnResetRequest                 += (timestamp, sender, connection, resetRequest) => {
+                    csResetRequests.               TryAdd(resetRequest);
+                    return Task.CompletedTask;
+                };
+
+                networkingNode1.OCPP.IN. OnJSONMessageResponseReceived  += (timestamp, sender, jsonResponseMessage) => {
+                    nnJSONResponseMessagesReceived.TryAdd(jsonResponseMessage);
+                    return Task.CompletedTask;
+                };
+
+                networkingNode1.OCPP.IN. OnResetResponseReceived        += (timestamp, sender, resetRequest, resetResponse, runtime) => {
+                    nnResetResponsesReceived.      TryAdd(resetResponse);
+                    return Task.CompletedTask;
+                };
+
+
+                var resetType  = ResetType.Immediate;
+                var response   = await networkingNode1.Reset(
+                                           DestinationNodeId:  chargingStation1.Id,
+                                           ResetType:          resetType
+                                       );
+
+
+                Assert.Multiple(() => {
+
+                    // Networking Node Request OUT
+                    Assert.That(nnResetRequestsSent.           Count,   Is.EqualTo(1), "The Reset request did not leave the networking node!");
+                    var nnResetRequest = nnResetRequestsSent.First();
+                    Assert.That(nnResetRequest.DestinationNodeId,       Is.EqualTo(chargingStation1.Id));
+                    Assert.That(nnResetRequest.NetworkPath.Length,      Is.EqualTo(1));
+                    Assert.That(nnResetRequest.NetworkPath.Source,      Is.EqualTo(networkingNode1.Id));
+                    Assert.That(nnResetRequest.NetworkPath.Last,        Is.EqualTo(networkingNode1.Id));
+                    Assert.That(nnResetRequest.ResetType,               Is.EqualTo(resetType));
+
+                    // Networking Node JSON Request OUT
+                    Assert.That(nnJSONMessageRequestsSent.     Count,   Is.EqualTo(1), "The Reset JSON request did not leave the networking node!");
+
+                    // Charging Station Request IN
+                    Assert.That(csResetRequests.               Count,   Is.EqualTo(1), "The Reset request did not reach the charging station!");
+                    var csResetRequest = csResetRequests.First();
+                    //Assert.That(csResetRequest.DestinationNodeId,       Is.EqualTo(chargingStation1.Id));   // Because of "standard" networking mode!
+                    //Assert.That(csResetRequest.NetworkPath.Length,      Is.EqualTo(1));                     // Because of "standard" networking mode!
+                    //Assert.That(csResetRequest.NetworkPath.Source,      Is.EqualTo(networkingNode1.Id));    // Because of "standard" networking mode!
+                    //Assert.That(csResetRequest.NetworkPath.Last,        Is.EqualTo(networkingNode1.Id));    // Because of "standard" networking mode!
+                    Assert.That(csResetRequest.ResetType,               Is.EqualTo(resetType));
+
+                    // Networking Node JSON Response IN
+                    Assert.That(nnJSONResponseMessagesReceived.Count,   Is.EqualTo(1), "The Reset JSON request did not leave the networking node!");
+
+                    // Networking Node Response IN
+                    Assert.That(nnResetResponsesReceived.      Count,   Is.EqualTo(1), "The Reset response did not reach the networking node!");
+                    var nnResetResponse = nnResetResponsesReceived.First();
+                    Assert.That(nnResetResponse.Request.RequestId,      Is.EqualTo(nnResetRequest.RequestId));
+
+
+                    // Result
+                    Assert.That(response.Result.ResultCode,             Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                        Is.EqualTo(ResetStatus.Accepted));
+
+                });
+
+            }
+
+        }
+
+        #endregion
+
 
 
         #region NotifyNetworkTopology_Test1()

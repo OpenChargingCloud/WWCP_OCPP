@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2023 GraphDefined GmbH
+ * Copyright (c) 2014-2024 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -131,11 +131,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
-        Task RaiseOnBootNotificationResponseIN(DateTime                                 Timestamp,
-                                               IEventSender                             Sender,
-                                               OCPPv2_1.CS.  BootNotificationRequest    Request,
-                                               OCPPv2_1.CSMS.BootNotificationResponse   Response,
-                                               TimeSpan                                 Runtime);
+        // To CSMS
+        Task RaiseOnBootNotificationResponseReceived(DateTime                                 Timestamp,
+                                                     IEventSender                             Sender,
+                                                     OCPPv2_1.CS.  BootNotificationRequest    Request,
+                                                     OCPPv2_1.CSMS.BootNotificationResponse   Response,
+                                                     TimeSpan                                 Runtime);
+
+
+        // To Charging Station
+        Task RaiseOnResetResponseReceived           (DateTime                                 Timestamp,
+                                                     IEventSender                             Sender,
+                                                     OCPPv2_1.CSMS.ResetRequest               Request,
+                                                     OCPPv2_1.CS.  ResetResponse              Response,
+                                                     TimeSpan                                 Runtime);
 
 
 
