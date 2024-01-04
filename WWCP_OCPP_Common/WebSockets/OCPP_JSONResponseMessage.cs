@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -39,38 +41,44 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                                           NetworkingNode_Id  DestinationNodeId,
                                           NetworkPath        NetworkPath,
                                           Request_Id         RequestId,
-                                          JObject            Payload)
+                                          JObject            Payload,
+                                          CancellationToken  CancellationToken = default)
     {
 
         #region Properties
 
-        public DateTime           ResponseTimestamp    { get; } = ResponseTimestamp;
-        public EventTracking_Id   EventTrackingId      { get; } = EventTrackingId;
+        public DateTime           ResponseTimestamp    { get; }      = ResponseTimestamp;
+        public EventTracking_Id   EventTrackingId      { get; }      = EventTrackingId;
 
         /// <summary>
         /// The OCPP networking mode to use.
         /// </summary>
-        public NetworkingMode     NetworkingMode       { get; } = NetworkingMode;
+        public NetworkingMode     NetworkingMode       { get; set; } = NetworkingMode;
 
         /// <summary>
         /// The networking node identification of the message destination.
         /// </summary>
-        public NetworkingNode_Id  DestinationNodeId    { get; } = DestinationNodeId;
+        public NetworkingNode_Id  DestinationNodeId    { get; }      = DestinationNodeId;
 
         /// <summary>
         /// The (recorded) path of the request through the overlay network.
         /// </summary>
-        public NetworkPath        NetworkPath          { get; } = NetworkPath;
+        public NetworkPath        NetworkPath          { get; }      = NetworkPath;
 
         /// <summary>
         /// The unique request identification copied from the request.
         /// </summary>
-        public Request_Id         RequestId            { get; } = RequestId;
+        public Request_Id         RequestId            { get; }      = RequestId;
 
         /// <summary>
         /// The JSON response message payload.
         /// </summary>
-        public JObject            Payload              { get; } = Payload;
+        public JObject            Payload              { get; }      = Payload;
+
+        /// <summary>
+        /// The cancellation token.
+        /// </summary>
+        public CancellationToken  CancellationToken    { get; }      = CancellationToken;
 
         #endregion
 
@@ -84,10 +92,10 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         /// <param name="ResponseMessage">The parsed OCPP WebSocket response message.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="ImplicitSourceNodeId">An optional source networking node identification, e.g. from the HTTP Web Sockets connection.</param>
-        public static Boolean TryParse(JArray                         JSONArray,
-                                       out OCPP_JSONResponseMessage?  ResponseMessage,
-                                       out String?                    ErrorResponse,
-                                       NetworkingNode_Id?             ImplicitSourceNodeId   = null)
+        public static Boolean TryParse(JArray                                              JSONArray,
+                                       [NotNullWhen(true)]  out OCPP_JSONResponseMessage?  ResponseMessage,
+                                       [NotNullWhen(false)] out String?                    ErrorResponse,
+                                       NetworkingNode_Id?                                  ImplicitSourceNodeId   = null)
         {
 
             ResponseMessage  = null;
@@ -95,6 +103,8 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
             try
             {
+
+                #region OCPP standard mode
 
                 // [
                 //     3,                         // MessageType: CALLRESULT (Server-to-Client)
@@ -122,10 +132,16 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                     }
 
                     if (!Request_Id.TryParse(JSONArray[1]?.Value<String>() ?? "", out var requestId))
+                    {
+                        ErrorResponse = $"Could not parse the given request identification: {JSONArray[1]}";
                         return false;
+                    }
 
                     if (JSONArray[2] is not JObject payload)
+                    {
+                        ErrorResponse = $"Could not parse the given JSON payload: {JSONArray[2]}";
                         return false;
+                    }
 
                     ResponseMessage = new OCPP_JSONResponseMessage(
                                           Timestamp.Now,
@@ -141,6 +157,9 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
                 }
 
+                #endregion
+
+                #region OCPP Overlay Network mode
 
                 // [
                 //    3,                          // MessageType: CALLRESULT (Server-to-Client)
@@ -164,11 +183,17 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                 {
 
                     if (!NetworkingNode_Id.TryParse(JSONArray[1]?.Value<String>() ?? "", out var destinationNodeId))
+                    {
+                        ErrorResponse = $"Could not parse the given destination networking node identification: {JSONArray[1]}";
                         return false;
+                    }
 
                     if (JSONArray[2] is not JArray networkPathJSONArray ||
                         !NetworkPath.TryParse(networkPathJSONArray, out var networkPath, out _) || networkPath is null)
+                    {
+                        ErrorResponse = $"Could not parse the given network path: {JSONArray[2]}";
                         return false;
+                    }
 
                     if (ImplicitSourceNodeId.HasValue &&
                         ImplicitSourceNodeId.Value != NetworkingNode_Id.Zero)
@@ -186,15 +211,21 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                     }
 
                     if (!Request_Id.TryParse(JSONArray[3]?.Value<String>() ?? "", out var requestId))
+                    {
+                        ErrorResponse = $"Could not parse the given request identification: {JSONArray[3]}";
                         return false;
+                    }
 
                     if (JSONArray[4] is not JObject payload)
+                    {
+                        ErrorResponse = $"Could not parse the given JSON payload: {JSONArray[4]}";
                         return false;
+                    }
 
                     ResponseMessage = new OCPP_JSONResponseMessage(
                                           Timestamp.Now,
                                           EventTracking_Id.New,
-                                          NetworkingMode.NetworkingExtensions,
+                                          NetworkingMode.OverlayNetwork,
                                           destinationNodeId,
                                           networkPath,
                                           requestId,
@@ -205,10 +236,16 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
                 }
 
-            }
-            catch
-            { }
+                #endregion
 
+            }
+            catch (Exception e)
+            {
+                ErrorResponse = $"Could not parse the given JSON response message: {e.Message}";
+                return false;
+            }
+
+            ErrorResponse = $"Could not parse the given JSON response message: {JSONArray}";
             return false;
 
         }
@@ -223,9 +260,9 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         /// <param name="NetworkingMode">The networking mode to use.</param>
         public JArray ToJSON(NetworkingMode NetworkingMode = NetworkingMode.Standard)
 
-            => NetworkingMode == NetworkingMode.Standard
+            => NetworkingMode switch {
 
-                   // OCPP Standard:
+                   #region OCPP standard mode
 
                    // [
                    //     3,                         // MessageType: CALLRESULT (Server-to-Client)
@@ -236,13 +273,14 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                    //        "heartbeatInterval":  300
                    //    }
                    // ]
+                   NetworkingMode.Standard
+                       => new (3,
+                               RequestId.ToString(),
+                               Payload),
 
-                   ? new (3,
-                          RequestId.ToString(),
-                          Payload)
+                   #endregion
 
-
-                   // Networking Nodes Extensions:
+                   #region OCPP Overlay Network mode
 
                    // [
                    //     3,                         // MessageType: CALLRESULT (Server-to-Client)
@@ -256,11 +294,15 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                    //    }
                    // ]
 
-                   : new (3,
-                          DestinationNodeId.ToString(),
-                          NetworkPath.      ToJSON(),
-                          RequestId.        ToString(),
-                          Payload);
+                   _ => new (3,
+                             DestinationNodeId.ToString(),
+                             NetworkPath.      ToJSON(),
+                             RequestId.        ToString(),
+                             Payload)
+
+                   #endregion
+
+               };
 
         #endregion
 

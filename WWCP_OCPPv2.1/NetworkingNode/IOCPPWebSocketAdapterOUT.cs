@@ -17,7 +17,6 @@
 
 #region Usings
 
-using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion

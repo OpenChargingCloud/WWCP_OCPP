@@ -31,39 +31,6 @@ using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    /// <summary>
-    /// A DataTransfer request.
-    /// </summary>
-    /// <param name="Timestamp">The timestamp of the request.</param>
-    /// <param name="Sender">The sender of the request.</param>
-    /// <param name="Connection">The HTTP Web Socket client connection.</param>
-    /// <param name="Request">The request.</param>
-    /// <param name="CancellationToken">A token to cancel this request.</param>
-    public delegate Task<ForwardingDecision<DataTransferRequest, DataTransferResponse>>
-
-        OnDataTransferFilterDelegate(DateTime               Timestamp,
-                                     IEventSender           Sender,
-                                     IWebSocketConnection   Connection,
-                                     DataTransferRequest    Request,
-                                     CancellationToken      CancellationToken);
-
-
-    /// <summary>
-    /// A DataTransfer request.
-    /// </summary>
-    /// <param name="Timestamp">The timestamp of the request.</param>
-    /// <param name="Sender">The sender of the request.</param>
-    /// <param name="Connection">The HTTP Web Socket client connection.</param>
-    /// <param name="Request">The request.</param>
-    /// <param name="ForwardingDecision">The forwarding decision.</param>
-    public delegate Task
-
-        OnDataTransferFilteredDelegate(DateTime                                                        Timestamp,
-                                       IEventSender                                                    Sender,
-                                       IWebSocketConnection                                            Connection,
-                                       DataTransferRequest                                             Request,
-                                       ForwardingDecision<DataTransferRequest, DataTransferResponse>   ForwardingDecision);
-
 
     //public partial class INPUT : INetworkingNodeIN
     //{
@@ -331,14 +298,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     //}
 
 
-    public partial class FORWARD
+    public partial class OCPPWebSocketAdapterFORWARD
     {
 
         #region Events
 
-        public event OnDataTransferFilterDelegate?    OnDataTransfer;
+        public event OnDataTransferRequestFilterDelegate?    OnDataTransferRequest;
 
-        public event OnDataTransferFilteredDelegate?  OnDataTransferLogging;
+        public event OnDataTransferRequestFilteredDelegate?  OnDataTransferRequestLogging;
 
         #endregion
 
@@ -352,14 +319,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             ForwardingDecision<DataTransferRequest, DataTransferResponse>? forwardingDecision = null;
 
-            var requestFilter = OnDataTransfer;
+            var requestFilter = OnDataTransferRequest;
             if (requestFilter is not null)
             {
                 try
                 {
 
                     var results = await Task.WhenAll(requestFilter.GetInvocationList().
-                                                     OfType <OnDataTransferFilterDelegate>().
+                                                     OfType <OnDataTransferRequestFilterDelegate>().
                                                      Select (filterDelegate => filterDelegate.Invoke(Timestamp.Now,
                                                                                                      parentNetworkingNode,
                                                                                                      Connection,
@@ -386,7 +353,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
                     await HandleErrors(
                               nameof(TestNetworkingNode),
-                              nameof(OnDataTransfer),
+                              nameof(OnDataTransferRequest),
                               e
                           );
                 }
@@ -411,14 +378,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                          );
 
 
-            var resultLog = OnDataTransferLogging;
+            var resultLog = OnDataTransferRequestLogging;
             if (resultLog is not null)
             {
                 try
                 {
 
                     await Task.WhenAll(resultLog.GetInvocationList().
-                                       OfType <OnDataTransferFilteredDelegate>().
+                                       OfType <OnDataTransferRequestFilteredDelegate>().
                                        Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
                                                                                          parentNetworkingNode,
                                                                                          Connection,
@@ -431,7 +398,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
                     await HandleErrors(
                               nameof(TestNetworkingNode),
-                              nameof(OnDataTransferLogging),
+                              nameof(OnDataTransferRequestLogging),
                               e
                           );
                 }

@@ -31,39 +31,6 @@ using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    /// <summary>
-    /// A BinaryDataTransfer request.
-    /// </summary>
-    /// <param name="Timestamp">The timestamp of the request.</param>
-    /// <param name="Sender">The sender of the request.</param>
-    /// <param name="Connection">The HTTP Web Socket client connection.</param>
-    /// <param name="Request">The request.</param>
-    /// <param name="CancellationToken">A token to cancel this request.</param>
-    public delegate Task<ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>>
-
-        OnBinaryDataTransferFilterDelegate(DateTime                    Timestamp,
-                                           IEventSender                Sender,
-                                           IWebSocketConnection        Connection,
-                                           BinaryDataTransferRequest   Request,
-                                           CancellationToken           CancellationToken);
-
-
-    /// <summary>
-    /// A BinaryDataTransfer request.
-    /// </summary>
-    /// <param name="Timestamp">The timestamp of the request.</param>
-    /// <param name="Sender">The sender of the request.</param>
-    /// <param name="Connection">The HTTP Web Socket client connection.</param>
-    /// <param name="Request">The request.</param>
-    /// <param name="ForwardingDecision">The forwarding decision.</param>
-    public delegate Task
-
-        OnBinaryDataTransferFilteredDelegate(DateTime                                                                    Timestamp,
-                                             IEventSender                                                                Sender,
-                                             IWebSocketConnection                                                        Connection,
-                                             BinaryDataTransferRequest                                                   Request,
-                                             ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>   ForwardingDecision);
-
 
     //public partial class INPUT : INetworkingNodeIN
     //{
@@ -332,14 +299,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     //}
 
 
-    public partial class FORWARD
+    public partial class OCPPWebSocketAdapterFORWARD
     {
 
         #region Events
 
-        public event OnBinaryDataTransferFilterDelegate?    OnBinaryDataTransfer;
+        public event OnBinaryDataTransferRequestFilterDelegate?    OnBinaryDataTransferRequest;
 
-        public event OnBinaryDataTransferFilteredDelegate?  OnBinaryDataTransferLogging;
+        public event OnBinaryDataTransferRequestFilteredDelegate?  OnBinaryDataTransferRequestLogging;
 
         #endregion
 
@@ -353,14 +320,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>? forwardingDecision = null;
 
-            var requestFilter = OnBinaryDataTransfer;
+            var requestFilter = OnBinaryDataTransferRequest;
             if (requestFilter is not null)
             {
                 try
                 {
 
                     var results = await Task.WhenAll(requestFilter.GetInvocationList().
-                                                     OfType <OnBinaryDataTransferFilterDelegate>().
+                                                     OfType <OnBinaryDataTransferRequestFilterDelegate>().
                                                      Select (filterDelegate => filterDelegate.Invoke(Timestamp.Now,
                                                                                                      parentNetworkingNode,
                                                                                                      Connection,
@@ -387,7 +354,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
                     await HandleErrors(
                               nameof(TestNetworkingNode),
-                              nameof(OnBinaryDataTransfer),
+                              nameof(OnBinaryDataTransferRequest),
                               e
                           );
                 }
@@ -412,14 +379,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                          );
 
 
-            var resultLog = OnBinaryDataTransferLogging;
+            var resultLog = OnBinaryDataTransferRequestLogging;
             if (resultLog is not null)
             {
                 try
                 {
 
                     await Task.WhenAll(resultLog.GetInvocationList().
-                                       OfType <OnBinaryDataTransferFilteredDelegate>().
+                                       OfType <OnBinaryDataTransferRequestFilteredDelegate>().
                                        Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
                                                                                          parentNetworkingNode,
                                                                                          Connection,
@@ -432,7 +399,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
                     await HandleErrors(
                               nameof(TestNetworkingNode),
-                              nameof(OnBinaryDataTransferLogging),
+                              nameof(OnBinaryDataTransferRequestLogging),
                               e
                           );
                 }

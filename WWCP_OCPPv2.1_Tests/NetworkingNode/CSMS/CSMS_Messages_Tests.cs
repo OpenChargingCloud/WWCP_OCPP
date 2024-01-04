@@ -83,7 +83,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
                 //    return Task.CompletedTask;
                 //};
 
-                networkingNode1.FORWARD.OnResetLogging += (timestamp, sender, connection, resetRequest, forwardingDecision) => {
+                networkingNode1.OCPP.FORWARD.OnResetRequestLogging += (timestamp, sender, connection, resetRequest, forwardingDecision) => {
                     nnResetRequestsFWD.TryAdd(new Tuple<ResetRequest, ForwardingDecision<ResetRequest, ResetResponse>>(resetRequest, forwardingDecision));
                     return Task.CompletedTask;
                 };
@@ -193,7 +193,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
                 //    return Task.CompletedTask;
                 //};
 
-                networkingNode1.FORWARD.OnDataTransferLogging         += (timestamp, sender, connection, binaryDataTransferRequest, forwardingDecision) => {
+                networkingNode1.OCPP.FORWARD.OnDataTransferRequestLogging += (timestamp, sender, connection, binaryDataTransferRequest, forwardingDecision) => {
                     nnDataTransferRequestsFWD.TryAdd(new Tuple<DataTransferRequest, ForwardingDecision<DataTransferRequest, DataTransferResponse>>(binaryDataTransferRequest, forwardingDecision));
                     return Task.CompletedTask;
                 };
@@ -313,7 +313,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
                 //    return Task.CompletedTask;
                 //};
 
-                networkingNode1.FORWARD.OnBinaryDataTransferLogging         += (timestamp, sender, connection, binaryDataTransferRequest, forwardingDecision) => {
+                networkingNode1.OCPP.FORWARD.OnBinaryDataTransferRequestLogging += (timestamp, sender, connection, binaryDataTransferRequest, forwardingDecision) => {
                     nnBinaryDataTransferRequestsFWD.TryAdd(new Tuple<BinaryDataTransferRequest, ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>>(binaryDataTransferRequest, forwardingDecision));
                     return Task.CompletedTask;
                 };

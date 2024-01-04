@@ -25,6 +25,7 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.OCPP;
+using System.Diagnostics.CodeAnalysis;
 
 #endregion
 
@@ -305,9 +306,9 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         /// <param name="JSONArray">The JSON array to be parsed.</param>
         /// <param name="ErrorMessage">The parsed OCPP WebSocket error message.</param>
         /// <param name="ImplicitSourceNodeId">An optional source networking node identification, e.g. from the HTTP Web Sockets connection.</param>
-        public static Boolean TryParse(JArray                      JSONArray,
-                                       out OCPP_JSONErrorMessage?  ErrorMessage,
-                                       NetworkingNode_Id?          ImplicitSourceNodeId   = null)
+        public static Boolean TryParse(JArray                                          JSONArray,
+                                       [NotNullWhen(true)] out OCPP_JSONErrorMessage?  ErrorMessage,
+                                       NetworkingNode_Id?                              ImplicitSourceNodeId   = null)
         {
 
             ErrorMessage = null;
@@ -374,9 +375,19 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                 return true;
 
             }
-            catch
+            catch (Exception e)
             {
+
+                ErrorMessage = new OCPP_JSONErrorMessage(
+                                   Timestamp.Now,
+                                   EventTracking_Id.New,
+                                   Request_Id.Zero,
+                                   ResultCode.InternalError,
+                                   e.Message
+                               );
+
                 return false;
+
             }
 
         }

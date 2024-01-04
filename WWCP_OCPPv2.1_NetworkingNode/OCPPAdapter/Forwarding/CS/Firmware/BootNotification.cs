@@ -31,40 +31,6 @@ using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    /// <summary>
-    /// A BootNotification request.
-    /// </summary>
-    /// <param name="Timestamp">The timestamp of the request.</param>
-    /// <param name="Sender">The sender of the request.</param>
-    /// <param name="Connection">The HTTP Web Socket client connection.</param>
-    /// <param name="Request">The request.</param>
-    /// <param name="CancellationToken">A token to cancel this request.</param>
-    public delegate Task<ForwardingDecision<BootNotificationRequest, BootNotificationResponse>>
-
-        OnBootNotificationFilterDelegate(DateTime                  Timestamp,
-                                         IEventSender              Sender,
-                                         IWebSocketConnection      Connection,
-                                         BootNotificationRequest   Request,
-                                         CancellationToken         CancellationToken);
-
-
-    /// <summary>
-    /// A BootNotification request.
-    /// </summary>
-    /// <param name="Timestamp">The timestamp of the request.</param>
-    /// <param name="Sender">The sender of the request.</param>
-    /// <param name="Connection">The HTTP Web Socket client connection.</param>
-    /// <param name="Request">The request.</param>
-    /// <param name="ForwardingDecision">The forwarding decision.</param>
-    public delegate Task
-
-        OnBootNotificationFilteredDelegate(DateTime                                                                Timestamp,
-                                           IEventSender                                                            Sender,
-                                           IWebSocketConnection                                                    Connection,
-                                           BootNotificationRequest                                                 Request,
-                                           ForwardingDecision<BootNotificationRequest, BootNotificationResponse>   ForwardingDecision);
-
-
     //public partial class INPUT : INetworkingNodeIN
     //{
 
@@ -335,14 +301,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     //}
 
 
-    public partial class FORWARD
+    public partial class OCPPWebSocketAdapterFORWARD
     {
 
         #region Events
 
-        public event OnBootNotificationFilterDelegate?    OnBootNotification;
+        public event OnBootNotificationRequestFilterDelegate?    OnBootNotificationRequest;
 
-        public event OnBootNotificationFilteredDelegate?  OnBootNotificationLogging;
+        public event OnBootNotificationRequestFilteredDelegate?  OnBootNotificationRequestLogging;
 
         #endregion
 
@@ -356,14 +322,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             ForwardingDecision<BootNotificationRequest, BootNotificationResponse>? forwardingDecision = null;
 
-            var requestFilter = OnBootNotification;
+            var requestFilter = OnBootNotificationRequest;
             if (requestFilter is not null)
             {
                 try
                 {
 
                     var results = await Task.WhenAll(requestFilter.GetInvocationList().
-                                                     OfType <OnBootNotificationFilterDelegate>().
+                                                     OfType <OnBootNotificationRequestFilterDelegate>().
                                                      Select (filterDelegate => filterDelegate.Invoke(Timestamp.Now,
                                                                                                      parentNetworkingNode,
                                                                                                      Connection,
@@ -390,7 +356,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
                     await HandleErrors(
                               nameof(TestNetworkingNode),
-                              nameof(OnBootNotification),
+                              nameof(OnBootNotificationRequest),
                               e
                           );
                 }
@@ -415,14 +381,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                          );
 
 
-            var resultLog = OnBootNotificationLogging;
+            var resultLog = OnBootNotificationRequestLogging;
             if (resultLog is not null)
             {
                 try
                 {
 
                     await Task.WhenAll(resultLog.GetInvocationList().
-                                       OfType <OnBootNotificationFilteredDelegate>().
+                                       OfType <OnBootNotificationRequestFilteredDelegate>().
                                        Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
                                                                                          parentNetworkingNode,
                                                                                          Connection,
@@ -435,7 +401,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
                     await HandleErrors(
                               nameof(TestNetworkingNode),
-                              nameof(OnBootNotificationLogging),
+                              nameof(OnBootNotificationRequestLogging),
                               e
                           );
                 }

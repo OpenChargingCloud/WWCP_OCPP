@@ -103,7 +103,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.New
                                 RemoteURL:               URL.Parse("http://127.0.0.1:" + testBackendWebSockets01.IPPort.ToString() + "/" + tn01.Id),
                                 HTTPAuthentication:      HTTPBasicAuthentication.Create(tn01.Id.ToString(), "1234abcd"),
                                 DisableWebSocketPings:   true,
-                                NetworkingMode:          OCPP.WebSockets.NetworkingMode.NetworkingExtensions
+                                NetworkingMode:          OCPP.WebSockets.NetworkingMode.OverlayNetwork
                             );
 
 

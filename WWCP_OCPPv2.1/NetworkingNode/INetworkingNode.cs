@@ -2261,17 +2261,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
     public interface INetworkingNode : IEventSender
     {
 
-        NetworkingNode_Id  Id                       { get; }
+        NetworkingNode_Id           Id                       { get; }
 
-        IOCPPAdapter       OCPP                     { get; }
+        HashSet<NetworkingNode_Id>  AnycastIds               { get; }
 
-        String             Model                    { get; }
-        String             VendorName               { get; }
-        String?            SerialNumber             { get; }
-        Modem?             Modem                    { get; }
-        String?            FirmwareVersion          { get; }
 
-        CustomData         CustomData               { get; }
+        IOCPPAdapter                OCPP                     { get; }
+
+        String                      Model                    { get; }
+        String                      VendorName               { get; }
+        String?                     SerialNumber             { get; }
+        Modem?                      Modem                    { get; }
+        String?                     FirmwareVersion          { get; }
+
+        CustomData                  CustomData               { get; }
 
 
 

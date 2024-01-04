@@ -257,7 +257,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                                                    EventTrackingId  ?? EventTracking_Id.New,
                                                    destinationNodeIdLength == 0 && networkPathLength == 0
                                                        ? NetworkingMode.Standard
-                                                       : NetworkingMode.NetworkingExtensions,
+                                                       : NetworkingMode.OverlayNetwork,
                                                    destinationNodeId,
                                                    new NetworkPath(networkPath),
                                                    requestId,
@@ -301,7 +301,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                 // NetworkPath       length == 0x00
                 binaryStream.Write(new Byte[3]);
             }
-            else if (NetworkingMode == NetworkingMode.NetworkingExtensions)
+            else if (NetworkingMode == NetworkingMode.OverlayNetwork)
             {
 
                 var destinationNodeIdBytes = DestinationNodeId.ToString().ToUTF8Bytes();

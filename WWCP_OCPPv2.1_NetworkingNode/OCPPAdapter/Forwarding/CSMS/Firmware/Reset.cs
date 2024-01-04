@@ -33,40 +33,6 @@ using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    /// <summary>
-    /// A Reset request.
-    /// </summary>
-    /// <param name="Timestamp">The timestamp of the request.</param>
-    /// <param name="Sender">The sender of the request.</param>
-    /// <param name="Connection">The HTTP Web Socket client connection.</param>
-    /// <param name="Request">The request.</param>
-    /// <param name="CancellationToken">A token to cancel this request.</param>
-    public delegate Task<ForwardingDecision<ResetRequest, ResetResponse>>
-
-        OnResetFilterDelegate(DateTime               Timestamp,
-                              IEventSender           Sender,
-                              IWebSocketConnection   Connection,
-                              ResetRequest           Request,
-                              CancellationToken      CancellationToken);
-
-
-    /// <summary>
-    /// A Reset request.
-    /// </summary>
-    /// <param name="Timestamp">The timestamp of the request.</param>
-    /// <param name="Sender">The sender of the request.</param>
-    /// <param name="Connection">The HTTP Web Socket client connection.</param>
-    /// <param name="Request">The request.</param>
-    /// <param name="ForwardingDecision">The forwarding decision.</param>
-    public delegate Task
-
-        OnResetFilteredDelegate(DateTime                                          Timestamp,
-                                IEventSender                                      Sender,
-                                IWebSocketConnection                              Connection,
-                                ResetRequest                                      Request,
-                                ForwardingDecision<ResetRequest, ResetResponse>   ForwardingDecision);
-
-
     //public partial class INPUT : INetworkingNodeIN
     //{
 
@@ -334,14 +300,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     //}
 
 
-    public partial class FORWARD
+    public partial class OCPPWebSocketAdapterFORWARD
     {
 
         #region Events
 
-        public event OnResetFilterDelegate?    OnReset;
+        public event OnResetRequestFilterDelegate?    OnResetRequest;
 
-        public event OnResetFilteredDelegate?  OnResetLogging;
+        public event OnResetRequestFilteredDelegate?  OnResetRequestLogging;
 
         #endregion
 
@@ -355,14 +321,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             ForwardingDecision<ResetRequest, ResetResponse>? forwardingDecision = null;
 
-            var requestFilter = OnReset;
+            var requestFilter = OnResetRequest;
             if (requestFilter is not null)
             {
                 try
                 {
 
                     var results = await Task.WhenAll(requestFilter.GetInvocationList().
-                                                     OfType <OnResetFilterDelegate>().
+                                                     OfType <OnResetRequestFilterDelegate>().
                                                      Select (filterDelegate => filterDelegate.Invoke(Timestamp.Now,
                                                                                                      parentNetworkingNode,
                                                                                                      Connection,
@@ -389,7 +355,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
                     await HandleErrors(
                               nameof(TestNetworkingNode),
-                              nameof(OnReset),
+                              nameof(OnResetRequest),
                               e
                           );
                 }
@@ -414,14 +380,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                          );
 
 
-            var resultLog = OnResetLogging;
+            var resultLog = OnResetRequestLogging;
             if (resultLog is not null)
             {
                 try
                 {
 
                     await Task.WhenAll(resultLog.GetInvocationList().
-                                       OfType <OnResetFilteredDelegate>().
+                                       OfType <OnResetRequestFilteredDelegate>().
                                        Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
                                                                                          parentNetworkingNode,
                                                                                          Connection,
@@ -434,7 +400,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
                     await HandleErrors(
                               nameof(TestNetworkingNode),
-                              nameof(OnResetLogging),
+                              nameof(OnResetRequestLogging),
                               e
                           );
                 }

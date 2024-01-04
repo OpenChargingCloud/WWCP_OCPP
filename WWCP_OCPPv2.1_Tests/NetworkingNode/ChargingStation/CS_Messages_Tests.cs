@@ -117,7 +117,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CS
                 //    return Task.CompletedTask;
                 //};
 
-                networkingNode1.FORWARD.OnBootNotificationLogging += (timestamp, sender, connection, bootNotificationRequest, forwardingDecision) => {
+                networkingNode1.OCPP.FORWARD.OnBootNotificationRequestLogging += (timestamp, sender, connection, bootNotificationRequest, forwardingDecision) => {
                     nnBootNotificationRequestsFWD.TryAdd(new Tuple<BootNotificationRequest, ForwardingDecision<BootNotificationRequest, BootNotificationResponse>>(bootNotificationRequest, forwardingDecision));
                     return Task.CompletedTask;
                 };
@@ -132,7 +132,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CS
                     return Task.CompletedTask;
                 };
 
-                chargingStation1.NetworkingMode = OCPP.WebSockets.NetworkingMode.NetworkingExtensions;
+                chargingStation1.NetworkingMode = OCPP.WebSockets.NetworkingMode.OverlayNetwork;
 
 
                 var reason    = BootReason.PowerUp;
@@ -245,7 +245,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CS
                 //    return Task.CompletedTask;
                 //};
 
-                networkingNode1.FORWARD.OnBinaryDataTransferLogging         += (timestamp, sender, connection, binaryDataTransferRequest, forwardingDecision) => {
+                networkingNode1.OCPP.FORWARD.OnBinaryDataTransferRequestLogging += (timestamp, sender, connection, binaryDataTransferRequest, forwardingDecision) => {
                     nnBinaryDataTransferRequestsFWD.TryAdd(new Tuple<BinaryDataTransferRequest, ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>>(binaryDataTransferRequest, forwardingDecision));
                     return Task.CompletedTask;
                 };
@@ -260,7 +260,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CS
                     return Task.CompletedTask;
                 };
 
-                chargingStation1.NetworkingMode = OCPP.WebSockets.NetworkingMode.NetworkingExtensions;
+                chargingStation1.NetworkingMode = OCPP.WebSockets.NetworkingMode.OverlayNetwork;
 
 
                 var vendorId   = Vendor_Id. GraphDefined;

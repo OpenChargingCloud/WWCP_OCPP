@@ -19,28 +19,37 @@
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
+using cloud.charging.open.protocols.OCPPv2_1.NN;
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPP;
 
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    public partial class FORWARD(TestNetworkingNode  NetworkingNode,
-                                 ForwardingResult    DefaultResult   = ForwardingResult.DROP)
+    /// <summary>
+    /// The OCPP adapter for forwarding messages.
+    /// </summary>
+    public partial class OCPPWebSocketAdapterFORWARD : IOCPPWebSocketAdapterFORWARD
     {
 
         #region Data
 
-        private readonly TestNetworkingNode parentNetworkingNode = NetworkingNode;
+        private readonly INetworkingNode parentNetworkingNode;
 
         #endregion
 
         #region Properties
 
-        public ForwardingResult DefaultResult { get; set; } = DefaultResult;
+        public ForwardingResult                DefaultResult        { get; set; } = ForwardingResult.DROP;
+
+        public IEnumerable<NetworkingNode_Id>  AnycastIdsAllowed    { get; }      = [];
+
+        public IEnumerable<NetworkingNode_Id>  AnycastIdsDenied     { get; }      = [];
 
         #endregion
 
@@ -120,6 +129,76 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
         #endregion
+
+        #region Constructor(s)
+
+        /// <summary>
+        /// Create a new OCPP adapter for forwarding messages.
+        /// </summary>
+        /// <param name="NetworkingNode">The parent networking node.</param>
+        /// <param name="DefaultResult">The default forwarding result.</param>
+        public OCPPWebSocketAdapterFORWARD(INetworkingNode   NetworkingNode,
+                                           ForwardingResult  DefaultResult   = ForwardingResult.DROP)
+        {
+
+            this.parentNetworkingNode  = NetworkingNode;
+            this.DefaultResult         = DefaultResult;
+
+        }
+
+        #endregion
+
+
+
+        public async Task ProcessJSONRequestMessage(OCPP_JSONRequestMessage JSONRequestMessage)
+        {
+
+            if (AnycastIdsAllowed.Any() && !AnycastIdsAllowed.Contains(JSONRequestMessage.DestinationNodeId))
+                return;
+
+            if (AnycastIdsDenied. Any() &&  AnycastIdsDenied. Contains(JSONRequestMessage.DestinationNodeId))
+                return;
+
+
+
+        }
+
+        public async Task ProcessJSONResponseMessage(OCPP_JSONResponseMessage JSONResponseMessage)
+        {
+
+            
+
+        }
+
+        public async Task ProcessJSONErrorMessage(OCPP_JSONErrorMessage JSONErrorMessage)
+        {
+
+            
+
+        }
+
+
+
+        public async Task ProcessBinaryRequestMessage(OCPP_BinaryRequestMessage BinaryRequestMessage)
+        {
+
+            if (AnycastIdsAllowed.Any() && !AnycastIdsAllowed.Contains(BinaryRequestMessage.DestinationNodeId))
+                return;
+
+            if (AnycastIdsDenied. Any() &&  AnycastIdsDenied. Contains(BinaryRequestMessage.DestinationNodeId))
+                return;
+
+        }
+
+        public async Task ProcessBinaryResponseMessage(OCPP_BinaryResponseMessage BinaryResponseMessage)
+        {
+
+            
+
+        }
+
+
+
 
 
         #region HandleErrors(Module, Caller, ExceptionOccured)

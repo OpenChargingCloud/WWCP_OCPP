@@ -18,11 +18,27 @@
 namespace cloud.charging.open.protocols.OCPP.WebSockets
 {
 
+    /// <summary>
+    /// The OCPP networking mode.
+    /// </summary>
     public enum NetworkingMode
     {
+
+        /// <summary>
+        /// Unknown networking mode.
+        /// </summary>
         Unknown,
+
+        /// <summary>
+        /// Standard mode.
+        /// </summary>
         Standard,
-        NetworkingExtensions
+
+        /// <summary>
+        /// Overlay Network mode.
+        /// </summary>
+        OverlayNetwork
+
     }
 
 }

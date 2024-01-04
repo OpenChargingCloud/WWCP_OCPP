@@ -67,29 +67,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Properties
 
         /// <summary>
-        /// OCPP incoming messages.
+        /// Incoming OCPP messages.
         /// </summary>
-        public IOCPPWebSocketAdapterIN   IN                       { get; }
+        public IOCPPWebSocketAdapterIN       IN                       { get; }
 
         /// <summary>
-        /// OCPP outgoing messages.
+        /// Outgoing OCPP messages.
         /// </summary>
-        public IOCPPWebSocketAdapterOUT  OUT                      { get; }
+        public IOCPPWebSocketAdapterOUT      OUT                      { get; }
+
+        /// <summary>
+        /// Forwarded OCPP messages.
+        /// </summary>
+        public IOCPPWebSocketAdapterFORWARD  FORWARD                  { get; }
 
         /// <summary>
         /// Disable the sending of heartbeats.
         /// </summary>
-        public Boolean                   DisableSendHeartbeats    { get; set; }
+        public Boolean                       DisableSendHeartbeats    { get; set; }
 
         /// <summary>
         /// The time span between heartbeat requests.
         /// </summary>
-        public TimeSpan                  SendHeartbeatsEvery      { get; set; } = DefaultSendHeartbeatsEvery;
+        public TimeSpan                      SendHeartbeatsEvery      { get; set; } = DefaultSendHeartbeatsEvery;
 
         /// <summary>
         /// The default request timeout for all requests.
         /// </summary>
-        public TimeSpan                  DefaultRequestTimeout    { get; }      = DefaultRequestTimeoutDefault;
+        public TimeSpan                      DefaultRequestTimeout    { get; }      = DefaultRequestTimeoutDefault;
 
 
         #region NextRequestId
@@ -541,8 +546,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             this.signaturePolicies.          Add(SignaturePolicy           ?? new SignaturePolicy());
             this.forwardingSignaturePolicies.Add(ForwardingSignaturePolicy ?? new SignaturePolicy());
 
-            this.IN   = new OCPPWebSocketAdapterIN (NetworkingNode);
-            this.OUT  = new OCPPWebSocketAdapterOUT(NetworkingNode);
+            this.IN       = new OCPPWebSocketAdapterIN     (NetworkingNode);
+            this.OUT      = new OCPPWebSocketAdapterOUT    (NetworkingNode);
+            this.FORWARD  = new OCPPWebSocketAdapterFORWARD(NetworkingNode);
 
         }
 
@@ -550,7 +556,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
 
-        #region SendJSONRequest         (JSONRequestMessage)
+        #region SendJSONRequest          (JSONRequestMessage)
 
         public async Task<SendOCPPMessageResult> SendJSONRequest(OCPP_JSONRequestMessage JSONRequestMessage)
         {
@@ -573,7 +579,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region SendJSONRequestAndWait  (JSONRequestMessage)
+        #region SendJSONRequestAndWait   (JSONRequestMessage)
 
         public async Task<SendRequestState> SendJSONRequestAndWait(OCPP_JSONRequestMessage JSONRequestMessage)
         {
@@ -656,7 +662,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region SendBinaryRequest       (BinaryRequestMessage)
+        #region SendBinaryRequest        (BinaryRequestMessage)
 
         public async Task<SendOCPPMessageResult> SendBinaryRequest(OCPP_BinaryRequestMessage BinaryRequestMessage)
         {
@@ -679,7 +685,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region SendBinaryRequestAndWait(BinaryRequestMessage)
+        #region SendBinaryRequestAndWait (BinaryRequestMessage)
 
         public async Task<SendRequestState> SendBinaryRequestAndWait(OCPP_BinaryRequestMessage BinaryRequestMessage)
         {
@@ -763,7 +769,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
-        #region ReceiveResponseMessage  (JSONResponseMessage)
+        #region ReceiveResponseMessage   (JSONResponseMessage)
 
         public Boolean ReceiveResponseMessage(OCPP_JSONResponseMessage JSONResponseMessage)
         {
@@ -786,7 +792,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region ReceiveResponseMessage  (BinaryResponseMessage)
+        #region ReceiveResponseMessage   (BinaryResponseMessage)
 
         public Boolean ReceiveResponseMessage(OCPP_BinaryResponseMessage BinaryResponseMessage)
         {
@@ -845,7 +851,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
-        #region ReceiveErrorMessage     (JSONErrorMessage)
+        #region ReceiveErrorMessage      (JSONErrorMessage)
 
         public Boolean ReceiveErrorMessage(OCPP_JSONErrorMessage JSONErrorMessage)
         {
@@ -902,6 +908,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         }
 
         #endregion
+
+
+
+        #region SendJSONRequest          (JSONRequestMessage)
+
+        public async Task<SendOCPPMessageResult> SendJSONResponse(OCPP_JSONResponseMessage JSONResponseMessage)
+        {
+
+            if (LookupNetworkingNode(JSONResponseMessage.DestinationNodeId, out var reachability) &&
+                reachability is not null)
+            {
+
+                if (reachability.OCPPWebSocketClient is not null)
+                    return await reachability.OCPPWebSocketClient.SendJSONResponse(JSONResponseMessage);
+
+                if (reachability.OCPPWebSocketServer is not null)
+                    return await reachability.OCPPWebSocketServer.SendJSONResponse(JSONResponseMessage);
+
+            }
+
+            return SendOCPPMessageResult.UnknownClient;
+
+        }
+
+        #endregion
+
+
+
+
+
+
 
 
 
@@ -1149,7 +1186,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         }
 
         #endregion
-
 
 
     }

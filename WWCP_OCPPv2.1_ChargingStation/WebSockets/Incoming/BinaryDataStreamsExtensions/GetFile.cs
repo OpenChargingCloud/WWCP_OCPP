@@ -197,17 +197,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     #endregion
 
                     OCPPResponse  = OCPP_BinaryResponseMessage.From(
-                                       NetworkingMode.Standard,
-                                       NetworkPath.Source,
-                                       NetworkPath.Empty,
-                                       RequestId,
-                                       response.ToBinary(
-                                           CustomGetFileResponseSerializer,
-                                           null, //CustomCustomDataSerializer,
-                                           CustomBinarySignatureSerializer,
-                                           IncludeSignatures: true
-                                       )
-                                   );
+                                        NetworkingMode.Standard,
+                                        NetworkPath.Source,
+                                        NetworkPath.Empty,
+                                        RequestId,
+                                        response.ToBinary(
+                                            CustomGetFileResponseSerializer,
+                                            null, //CustomCustomDataSerializer,
+                                            CustomBinarySignatureSerializer,
+                                            IncludeSignatures: true
+                                        )
+                                    );
 
                 }
 

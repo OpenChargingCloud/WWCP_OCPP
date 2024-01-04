@@ -29,15 +29,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
     /// <summary>
-    /// An OCPP HTTP Web Socket adapter.
+    /// The OCPP adapter for sending outgoing messages.
     /// </remarks>
     /// <param name="NetworkingNode">The parent networking node.</param>
-    public partial class OCPPWebSocketAdapterOUT(INetworkingNode NetworkingNode) : IOCPPWebSocketAdapterOUT
+    public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
     {
 
         #region Data
 
-        private readonly INetworkingNode parentNetworkingNode = NetworkingNode;
+        private readonly INetworkingNode parentNetworkingNode;
 
         #endregion
 
@@ -80,6 +80,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         //public event OnWebSocketBinaryErrorResponseDelegate?    OnBinaryErrorResponseSent;
 
         #endregion
+
+        #endregion
+
+        #region Constructor(s)
+
+        /// <summary>
+        /// Create a new OCPP adapter for sending outgoing messages.
+        /// </summary>
+        /// <param name="NetworkingNode">The parent networking node.</param>
+        public OCPPWebSocketAdapterOUT(INetworkingNode NetworkingNode)
+        {
+
+            this.parentNetworkingNode = NetworkingNode;
+
+        }
 
         #endregion
 

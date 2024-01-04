@@ -1118,7 +1118,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
 
                         var lastHop            = Connection.TryGetCustomDataAs<NetworkingNode_Id>(networkingNodeId_WebSocketKey) ?? NetworkingNode_Id.Zero;
 
-                        if (binaryResponse.NetworkingMode == NetworkingMode.NetworkingExtensions &&
+                        if (binaryResponse.NetworkingMode == NetworkingMode.OverlayNetwork &&
                             binaryResponse.NetworkPath is not null &&
                             binaryResponse.NetworkPath.Last != NetworkingNode_Id.Zero)
                         {
@@ -1232,7 +1232,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
             {
                 lookUpNetworkingNodeId = networkingHubId;
                 return WebSocketConnections.Where(connection => connection.TryGetCustomDataAs<NetworkingNode_Id>(networkingNodeId_WebSocketKey) == lookUpNetworkingNodeId).
-                    Select(x => new Tuple<WebSocketServerConnection, NetworkingMode>(x, NetworkingMode.NetworkingExtensions));
+                    Select(x => new Tuple<WebSocketServerConnection, NetworkingMode>(x, NetworkingMode.OverlayNetwork));
             }
 
             return WebSocketConnections.Where (connection => connection.TryGetCustomDataAs<NetworkingNode_Id>(networkingNodeId_WebSocketKey) == lookUpNetworkingNodeId).

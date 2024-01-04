@@ -30,20 +30,28 @@ using cloud.charging.open.protocols.OCPP.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
+    /// <summary>
+    /// The common interface of all OCPP adapters.
+    /// </summary>
     public interface IOCPPAdapter
     {
 
         #region Properties
 
         /// <summary>
-        /// OCPP incoming messages.
+        /// Incoming OCPP messages.
         /// </summary>
         IOCPPWebSocketAdapterIN       IN                             { get; }
 
         /// <summary>
-        /// OCPP outgoing messages.
+        /// Outgoing OCPP messages.
         /// </summary>
         IOCPPWebSocketAdapterOUT      OUT                            { get; }
+
+        /// <summary>
+        /// Forwarded OCPP messages.
+        /// </summary>
+        IOCPPWebSocketAdapterFORWARD  FORWARD                        { get; }
 
         /// <summary>
         /// Disable all heartbeats.
@@ -494,6 +502,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         void RemoveStaticRouting(NetworkingNode_Id     DestinationNodeId,
                                  NetworkingNode_Id?    NetworkingHubId   = null,
                                  Byte?                 Priority          = 0);
+
 
     }
 

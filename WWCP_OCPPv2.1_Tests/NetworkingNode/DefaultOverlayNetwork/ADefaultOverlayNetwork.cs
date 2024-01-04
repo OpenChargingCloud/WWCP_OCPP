@@ -199,7 +199,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode
                                                       RemoteURL:               URL.Parse($"http://127.0.0.1:{csmsWSServer.IPPort}/{networkingNode.Id}"),
                                                       HTTPAuthentication:      HTTPBasicAuthentication.Create(networkingNode.Id.ToString(), "1234abcd"),
                                                       DisableWebSocketPings:   true,
-                                                      NetworkingMode:          OCPP.WebSockets.NetworkingMode.NetworkingExtensions
+                                                      NetworkingMode:          OCPP.WebSockets.NetworkingMode.OverlayNetwork
                                                   );
 
             Assert.That(connectionSetupResponse1, Is.Not.Null);

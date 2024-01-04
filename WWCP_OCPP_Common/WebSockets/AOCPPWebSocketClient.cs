@@ -316,7 +316,9 @@ namespace cloud.charging.open.protocols.OCPP.CS
                             {
 
                                 var sendStatus = await SendBinaryMessage(
-                                                           OCPPBinaryResponse.ToByteArray()
+                                                           OCPPBinaryResponse.ToByteArray(),
+                                                           EventTrackingId,
+                                                           CancellationToken
                                                        );
 
                             }

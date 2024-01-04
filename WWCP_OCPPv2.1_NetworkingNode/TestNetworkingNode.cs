@@ -204,69 +204,71 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// The unique identification of this networking node.
         /// </summary>
-        public NetworkingNode_Id        Id                         { get; }
+        public NetworkingNode_Id           Id                         { get; }
+
+        public HashSet<NetworkingNode_Id>  AnycastIds                 { get; }      = [];
+
 
         /// <summary>
         /// The networking node vendor identification.
         /// </summary>
         [Mandatory]
-        public String                   VendorName                 { get; }
+        public String                      VendorName                 { get; }      = "";
 
         /// <summary>
         ///  The networking node model identification.
         /// </summary>
         [Mandatory]
-        public String                   Model                      { get; }
-
+        public String                      Model                      { get; }      = "";
 
         /// <summary>
         /// The optional multi-language networking node description.
         /// </summary>
         [Optional]
-        public I18NString?              Description                { get; }
+        public I18NString?                 Description                { get; }
 
         /// <summary>
         /// The optional serial number of the networking node.
         /// </summary>
         [Optional]
-        public String?                  SerialNumber               { get; }
+        public String?                     SerialNumber               { get; }
 
         /// <summary>
         /// The optional firmware version of the networking node.
         /// </summary>
         [Optional]
-        public String?                  FirmwareVersion            { get; }
+        public String?                     FirmwareVersion            { get; }
 
         /// <summary>
         /// The modem of the networking node.
         /// </summary>
         [Optional]
-        public Modem?                   Modem                      { get; }
+        public Modem?                      Modem                      { get; }
 
 
-        public CustomData               CustomData                 { get; }
+        public CustomData                  CustomData                 { get; }
 
 
         /// <summary>
         /// The time at the CSMS.
         /// </summary>
-        public DateTime?                CSMSTime                   { get; set; }
+        public DateTime?                   CSMSTime                   { get; set; } = Timestamp.Now;
 
 
         /// <summary>
         /// Disable all maintenance tasks.
         /// </summary>
-        public Boolean                  DisableMaintenanceTasks    { get; set; }
+        public Boolean                     DisableMaintenanceTasks    { get; set; }
 
         /// <summary>
         /// The maintenance interval.
         /// </summary>
-        public TimeSpan                 MaintenanceEvery           { get; }
+        public TimeSpan                    MaintenanceEvery           { get; }      = DefaultMaintenanceEvery;
 
 
-        public DNSClient                DNSClient                  { get; }
-        public IOCPPAdapter             OCPP                       { get; }
-        public FORWARD                  FORWARD                    { get; }
+        public DNSClient                   DNSClient                  { get; }
+        public IOCPPAdapter                OCPP                       { get; }
+
 
 
         public IEnumerable<OCPPWebSocketClient> OCPPWebSocketClients
@@ -364,10 +366,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 throw new ArgumentNullException(nameof(Id),          "The given networking node identification must not be null or empty!");
 
             if (VendorName.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(VendorName),  "The given networking node vendor must not be null or empty!");
+                throw new ArgumentNullException(nameof(VendorName),  "The given vendor name must not be null or empty!");
 
             if (Model.     IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Model),       "The given networking node model must not be null or empty!");
+                throw new ArgumentNullException(nameof(Model),       "The given model must not be null or empty!");
 
             this.Id                       = Id;
             this.VendorName               = VendorName;
@@ -390,8 +392,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                 SignaturePolicy,
                                                 ForwardingSignaturePolicy
                                             );
-
-            this.FORWARD                  = new FORWARD    (this);
 
 
             //Directory.CreateDirectory(Path.Combine(AppContext.BaseDirectory, "HTTPSSEs"));
@@ -1121,11 +1121,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #endregion
 
 
-            FORWARD.OnBinaryDataTransfer += (timestamp,
-                                             sender,
-                                             connection,
-                                             request,
-                                             cancellationToken) =>
+            OCPP.FORWARD.OnBinaryDataTransferRequest += (timestamp,
+                                                         sender,
+                                                         connection,
+                                                         request,
+                                                         cancellationToken) =>
 
                 Task.FromResult(
                     new ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>(
@@ -1184,11 +1184,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
-            FORWARD.OnReset += (timestamp,
-                                sender,
-                                connection,
-                                request,
-                                cancellationToken) =>
+            OCPP.FORWARD.OnResetRequest += (timestamp,
+                                            sender,
+                                            connection,
+                                            request,
+                                            cancellationToken) =>
 
                 Task.FromResult(
                     new ForwardingDecision<OCPPv2_1.CSMS.ResetRequest, OCPPv2_1.CS.ResetResponse>(
@@ -1205,11 +1205,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             // CSMS
 
-            FORWARD.OnBootNotification += (timestamp,
-                                           sender,
-                                           connection,
-                                           request,
-                                           cancellationToken) =>
+            OCPP.FORWARD.OnBootNotificationRequest += (timestamp,
+                                                       sender,
+                                                       connection,
+                                                       request,
+                                                       cancellationToken) =>
 
                 Task.FromResult(
                     new ForwardingDecision<OCPPv2_1.CS.BootNotificationRequest, OCPPv2_1.CSMS.BootNotificationResponse>(
