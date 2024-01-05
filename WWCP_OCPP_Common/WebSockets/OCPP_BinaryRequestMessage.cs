@@ -29,13 +29,17 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
     /// <summary>
     /// An OCPP HTTP Web Socket binary request message.
     /// </summary>
-    /// <param name="NetworkingMode">The networking mode.</param>
+    /// <param name="RequestTimestamp">The request time stamp.</param>
+    /// <param name="EventTrackingId">The event tracking identification.</param>
+    /// <param name="NetworkingMode">The networking mode to use.</param>
     /// <param name="DestinationNodeId">The networking node identification of the message destination.</param>
     /// <param name="NetworkPath">The (recorded) path of the request through the overlay network.</param>
     /// <param name="RequestId">An unique request identification.</param>
     /// <param name="Action">An OCPP action/method name.</param>
     /// <param name="Payload">The binary request message payload.</param>
+    /// <param name="RequestTimeout">The request time out.</param>
     /// <param name="ErrorMessage">An optional error message, e.g. during sending of the message.</param>
+    /// <param name="CancellationToken">The cancellation token.</param>
     public class OCPP_BinaryRequestMessage(DateTime           RequestTimestamp,
                                            EventTracking_Id   EventTrackingId,
                                            NetworkingMode     NetworkingMode,
@@ -57,7 +61,14 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
         #region Properties
 
+        /// <summary>
+        /// The request time stamp.
+        /// </summary>
         public DateTime           RequestTimestamp     { get; }      = RequestTimestamp;
+
+        /// <summary>
+        /// The event tracking identification.
+        /// </summary>
         public EventTracking_Id   EventTrackingId      { get; }      = EventTrackingId;
 
         /// <summary>
@@ -97,12 +108,21 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         /// </summary>
         public String?            ErrorMessage         { get; }      = ErrorMessage;
 
+        /// <summary>
+        /// The cancellation token.
+        /// </summary>
         public CancellationToken  CancellationToken    { get; }      = CancellationToken;
 
 
+        /// <summary>
+        /// The request message has no errors.
+        /// </summary>
         public Boolean            NoErrors
             => ErrorMessage is null;
 
+        /// <summary>
+        /// The request message has errors.
+        /// </summary>
         public Boolean            HasErrors
             => ErrorMessage is not null;
 

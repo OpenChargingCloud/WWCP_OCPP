@@ -662,6 +662,53 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+        #region SendJSONResponse         (JSONRequestMessage)
+
+        public async Task<SendOCPPMessageResult> SendJSONResponse(OCPP_JSONResponseMessage JSONResponseMessage)
+        {
+
+            if (LookupNetworkingNode(JSONResponseMessage.DestinationNodeId, out var reachability) &&
+                reachability is not null)
+            {
+
+                if (reachability.OCPPWebSocketClient is not null)
+                    return await reachability.OCPPWebSocketClient.SendJSONResponse(JSONResponseMessage);
+
+                if (reachability.OCPPWebSocketServer is not null)
+                    return await reachability.OCPPWebSocketServer.SendJSONResponse(JSONResponseMessage);
+
+            }
+
+            return SendOCPPMessageResult.UnknownClient;
+
+        }
+
+        #endregion
+
+        #region SendJSONError            (JSONErrorMessage)
+
+        public async Task<SendOCPPMessageResult> SendJSONError(OCPP_JSONErrorMessage JSONErrorMessage)
+        {
+
+            if (LookupNetworkingNode(JSONErrorMessage.DestinationNodeId, out var reachability) &&
+                reachability is not null)
+            {
+
+                if (reachability.OCPPWebSocketClient is not null)
+                    return await reachability.OCPPWebSocketClient.SendJSONError(JSONErrorMessage);
+
+                if (reachability.OCPPWebSocketServer is not null)
+                    return await reachability.OCPPWebSocketServer.SendJSONError(JSONErrorMessage);
+
+            }
+
+            return SendOCPPMessageResult.UnknownClient;
+
+        }
+
+        #endregion
+
+
         #region SendBinaryRequest        (BinaryRequestMessage)
 
         public async Task<SendOCPPMessageResult> SendBinaryRequest(OCPP_BinaryRequestMessage BinaryRequestMessage)
@@ -671,8 +718,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 reachability is not null)
             {
 
-                //if (reachability.OCPPWebSocketClient is not null)
-                //    return await reachability.OCPPWebSocketClient.SendBinaryRequest(BinaryRequestMessage);
+                if (reachability.OCPPWebSocketClient is not null)
+                    return await reachability.OCPPWebSocketClient.SendBinaryRequest(BinaryRequestMessage);
 
                 if (reachability.OCPPWebSocketServer is not null)
                     return await reachability.OCPPWebSocketServer.SendBinaryRequest(BinaryRequestMessage);
@@ -763,6 +810,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                        ResponseTimestamp:  Timestamp.Now,
                        ErrorCode:          ResultCode.InternalError
                    );
+
+        }
+
+        #endregion
+
+        #region SendBinaryResponse       (BinaryResponseMessage)
+
+        public async Task<SendOCPPMessageResult> SendBinaryResponse(OCPP_BinaryResponseMessage BinaryResponseMessage)
+        {
+
+            if (LookupNetworkingNode(BinaryResponseMessage.DestinationNodeId, out var reachability) &&
+                reachability is not null)
+            {
+
+                if (reachability.OCPPWebSocketClient is not null)
+                    return await reachability.OCPPWebSocketClient.SendBinaryResponse(BinaryResponseMessage);
+
+                if (reachability.OCPPWebSocketServer is not null)
+                    return await reachability.OCPPWebSocketServer.SendBinaryResponse(BinaryResponseMessage);
+
+            }
+
+            return SendOCPPMessageResult.UnknownClient;
 
         }
 
@@ -908,37 +978,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         }
 
         #endregion
-
-
-
-        #region SendJSONRequest          (JSONRequestMessage)
-
-        public async Task<SendOCPPMessageResult> SendJSONResponse(OCPP_JSONResponseMessage JSONResponseMessage)
-        {
-
-            if (LookupNetworkingNode(JSONResponseMessage.DestinationNodeId, out var reachability) &&
-                reachability is not null)
-            {
-
-                if (reachability.OCPPWebSocketClient is not null)
-                    return await reachability.OCPPWebSocketClient.SendJSONResponse(JSONResponseMessage);
-
-                if (reachability.OCPPWebSocketServer is not null)
-                    return await reachability.OCPPWebSocketServer.SendJSONResponse(JSONResponseMessage);
-
-            }
-
-            return SendOCPPMessageResult.UnknownClient;
-
-        }
-
-        #endregion
-
-
-
-
-
-
 
 
 

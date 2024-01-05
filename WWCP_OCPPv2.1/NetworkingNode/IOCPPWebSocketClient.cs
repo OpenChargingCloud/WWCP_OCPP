@@ -56,9 +56,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         Task ProcessWebSocketTextFrame  (DateTime RequestTimestamp, WebSocketClientConnection ClientConnection, EventTracking_Id EventTrackingId, String TextMessage,   CancellationToken CancellationToken);
         Task ProcessWebSocketBinaryFrame(DateTime RequestTimestamp, WebSocketClientConnection ClientConnection, EventTracking_Id EventTrackingId, Byte[] BinaryMessage, CancellationToken CancellationToken);
 
-        Task<SendOCPPMessageResult> SendJSONRequest  (OCPP_JSONRequestMessage    RequestMessage);
-        Task<SendOCPPMessageResult> SendBinaryRequest(OCPP_BinaryRequestMessage  RequestMessage);
+        Task<SendOCPPMessageResult> SendJSONRequest   (OCPP_JSONRequestMessage    RequestMessage);
+        Task<SendOCPPMessageResult> SendJSONResponse  (OCPP_JSONResponseMessage   ResponseMessage);
+        Task<SendOCPPMessageResult> SendJSONError     (OCPP_JSONErrorMessage      ErrorMessage);
 
+
+        Task<SendOCPPMessageResult> SendBinaryRequest (OCPP_BinaryRequestMessage  RequestMessage);
+        Task<SendOCPPMessageResult> SendBinaryResponse(OCPP_BinaryResponseMessage ResponseMessage);
 
     }
 

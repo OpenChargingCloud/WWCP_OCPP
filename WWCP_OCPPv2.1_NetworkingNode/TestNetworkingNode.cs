@@ -33,6 +33,8 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.WebSockets;
 using cloud.charging.open.protocols.OCPPv2_1.NN;
+using cloud.charging.open.protocols.OCPP.CS;
+using System.Security.Cryptography;
 
 #endregion
 
@@ -587,14 +589,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             ocppWebSocketClients.Add(ocppWebSocketClient);
 
-            var httpResponse = await ocppWebSocketClient.Connect();
+            var connectResponse = await ocppWebSocketClient.Connect();
+
+            connectResponse.Item1.TryAddCustomData(OCPPAdapter.NetworkingNodeId_WebSocketKey,
+                                                   NetworkingNodeId);
 
             OCPP.AddStaticRouting(NetworkingNodeId,
                                   ocppWebSocketClient,
                                   0,
                                   Timestamp.Now);
 
-            return httpResponse;
+            return connectResponse.Item2;
 
         }
 
@@ -1198,9 +1203,43 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 );
 
 
+            OCPP.IN.OnGetFile += (timestamp,
+                                  sender,
+                                  connection,
+                                  request,
+                                  cancellationToken) => {
 
+                var fileContent = "Hello world!".ToUTF8Bytes();
 
+                return Task.FromResult(
+                           new GetFileResponse(
+                               request,
+                               request.FileName,
+                               GetFileStatus.Success,
+                               fileContent,
+                               ContentType.Text.Plain,
+                               SHA256.HashData(fileContent),
+                               SHA512.HashData(fileContent)
+                           )
+                       );
 
+            };
+
+            OCPP.IN.OnSendFile += (timestamp,
+                                   sender,
+                                   connection,
+                                   request,
+                                   cancellationToken) => {
+
+                return Task.FromResult(
+                           new SendFileResponse(
+                               request,
+                               request.FileName,
+                               SendFileStatus.Success
+                           )
+                       );
+
+            };
 
 
             // CSMS

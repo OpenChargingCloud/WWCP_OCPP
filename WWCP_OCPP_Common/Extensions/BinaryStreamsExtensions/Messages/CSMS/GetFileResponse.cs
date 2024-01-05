@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -231,8 +233,8 @@ namespace cloud.charging.open.protocols.OCPP.CS
         /// <param name="CustomGetFileResponseParser">A delegate to parse custom get file responses.</param>
         public static Boolean TryParse(CSMS.GetFileRequest                           Request,
                                        Byte[]                                        Binary,
-                                       out GetFileResponse?                          GetFileResponse,
-                                       out String?                                   ErrorResponse,
+                                       [NotNullWhen(true)]  out GetFileResponse?     GetFileResponse,
+                                       [NotNullWhen(false)] out String?              ErrorResponse,
                                        CustomBinaryParserDelegate<GetFileResponse>?  CustomGetFileResponseParser   = null)
         {
 

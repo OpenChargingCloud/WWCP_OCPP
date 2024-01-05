@@ -72,15 +72,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         void    RemoveStaticRouting     (NetworkingNode_Id DestinationNodeId, NetworkingNode_Id NetworkingHubId);
 
 
-   //     Task<SendOCPPMessageResult> SendJSONData(EventTracking_Id EventTrackingId, NetworkingNode_Id DestinationNodeId, NetworkPath NetworkPath, Request_Id RequestId, string Action, JObject JSONData, DateTime RequestTimeout, CancellationToken CancellationToken = default);
-        Task<SendOCPPMessageResult> SendJSONRequest (OCPP_JSONRequestMessage  RequestMessage);
-        Task<SendOCPPMessageResult> SendJSONResponse(OCPP_JSONResponseMessage ResponseMessage);
- //       Task<SendRequestState>      SendJSONAndWait(EventTracking_Id EventTrackingId, NetworkingNode_Id NetworkingNodeId, NetworkPath NetworkPath, Request_Id RequestId, string OCPPAction, JObject JSONPayload, TimeSpan? RequestTimeout, CancellationToken CancellationToken = default);
+        Task<SendOCPPMessageResult> SendJSONRequest   (OCPP_JSONRequestMessage    RequestMessage);
+        Task<SendOCPPMessageResult> SendJSONResponse  (OCPP_JSONResponseMessage   ResponseMessage);
+        Task<SendOCPPMessageResult> SendJSONError     (OCPP_JSONErrorMessage      ErrorMessage);
 
 
-        //     Task<SendOCPPMessageResult> SendBinaryData(EventTracking_Id EventTrackingId, NetworkingNode_Id DestinationNodeId, NetworkPath NetworkPath, Request_Id RequestId, string Action, byte[] BinaryData, DateTime RequestTimeout, CancellationToken CancellationToken = default);
-        Task<SendOCPPMessageResult> SendBinaryRequest(OCPP_BinaryRequestMessage RequestMessage);
-   //     Task<SendRequestState>      SendBinaryAndWait(EventTracking_Id EventTrackingId, NetworkingNode_Id NetworkingNodeId, NetworkPath NetworkPath, Request_Id RequestId, string OCPPAction, byte[] BinaryPayload, TimeSpan? RequestTimeout, CancellationToken CancellationToken = default);
+        Task<SendOCPPMessageResult> SendBinaryRequest (OCPP_BinaryRequestMessage  RequestMessage);
+        Task<SendOCPPMessageResult> SendBinaryResponse(OCPP_BinaryResponseMessage ResponseMessage);
 
 
     }

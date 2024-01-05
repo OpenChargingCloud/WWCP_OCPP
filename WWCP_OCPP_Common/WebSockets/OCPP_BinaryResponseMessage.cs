@@ -29,24 +29,35 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
     /// <summary>
     /// An OCPP HTTP Web Socket binary response message.
     /// </summary>
-    /// <param name="NetworkingMode">The networking mode.</param>
+    /// <param name="ResponseTimestamp">The response time stamp.</param>
+    /// <param name="EventTrackingId">The event tracking identification.</param>
+    /// <param name="NetworkingMode">The OCPP networking mode to use.</param>
     /// <param name="DestinationNodeId">The networking node identification of the message destination.</param>
     /// <param name="NetworkPath">The (recorded) path of the request through the overlay network.</param>
     /// <param name="RequestId">An unique request identification.</param>
     /// <param name="Payload">The binary response message payload.</param>
+    /// <param name="CancellationToken">The cancellation token.</param>
     public class OCPP_BinaryResponseMessage(DateTime           ResponseTimestamp,
                                             EventTracking_Id   EventTrackingId,
                                             NetworkingMode     NetworkingMode,
                                             NetworkingNode_Id  DestinationNodeId,
                                             NetworkPath        NetworkPath,
                                             Request_Id         RequestId,
-                                            Byte[]             Payload)
+                                            Byte[]             Payload,
+                                            CancellationToken  CancellationToken = default)
     {
 
         #region Properties
 
-        public DateTime           ResponseTimestamp    { get; } = ResponseTimestamp;
-        public EventTracking_Id   EventTrackingId      { get; } = EventTrackingId;
+        /// <summary>
+        /// The response time stamp.
+        /// </summary>
+        public DateTime           ResponseTimestamp    { get; }      = ResponseTimestamp;
+
+        /// <summary>
+        /// The event tracking identification.
+        /// </summary>
+        public EventTracking_Id   EventTrackingId      { get; }      = EventTrackingId;
 
         /// <summary>
         /// The OCPP networking mode to use.
@@ -56,22 +67,27 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         /// <summary>
         /// The networking node identification of the message destination.
         /// </summary>
-        public NetworkingNode_Id  DestinationNodeId    { get; } = DestinationNodeId;
+        public NetworkingNode_Id  DestinationNodeId    { get; }      = DestinationNodeId;
 
         /// <summary>
         /// The (recorded) path of the response through the overlay network.
         /// </summary>
-        public NetworkPath        NetworkPath          { get; } = NetworkPath;
+        public NetworkPath        NetworkPath          { get; }      = NetworkPath;
 
         /// <summary>
         /// The unique request identification.
         /// </summary>
-        public Request_Id         RequestId            { get; } = RequestId;
+        public Request_Id         RequestId            { get; }      = RequestId;
 
         /// <summary>
         /// The binary response message payload.
         /// </summary>
-        public Byte[]             Payload              { get; } = Payload;
+        public Byte[]             Payload              { get; }      = Payload;
+
+        /// <summary>
+        /// The cancellation token.
+        /// </summary>
+        public CancellationToken  CancellationToken    { get; }      = CancellationToken;
 
         #endregion
 

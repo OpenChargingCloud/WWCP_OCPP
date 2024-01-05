@@ -754,6 +754,9 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                         OCPPErrorResponse = new OCPP_JSONErrorMessage(
                                                 Timestamp.Now,
                                                 EventTracking_Id.New,
+                                                NetworkingMode.Unknown,
+                                                NetworkingNode_Id.Zero,
+                                                NetworkPath.Empty,
                                                 jsonRequest.RequestId,
                                                 ResultCode.ProtocolError,
                                                 $"The OCPP message '{jsonRequest.Action}' is unkown!",
@@ -1095,6 +1098,9 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                         OCPPErrorResponse = new OCPP_JSONErrorMessage(
                                                 Timestamp.Now,
                                                 EventTracking_Id.New,
+                                                NetworkingMode.Unknown,
+                                                NetworkingNode_Id.Zero,
+                                                NetworkPath.Empty,
                                                 binaryRequest.RequestId,
                                                 ResultCode.ProtocolError,
                                                 $"The OCPP message '{binaryRequest.Action}' is unkown!",

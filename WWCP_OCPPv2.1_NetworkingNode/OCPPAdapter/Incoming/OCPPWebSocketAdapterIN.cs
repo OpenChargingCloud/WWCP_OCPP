@@ -108,7 +108,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                        GetMethods(BindingFlags.Public | BindingFlags.Instance).
                                             Where(method            => method.Name.StartsWith("Receive_") &&
                                                  (method.ReturnType == typeof(Task<Tuple<OCPP_JSONResponseMessage?,   OCPP_JSONErrorMessage?>>) ||
-                                                  method.ReturnType == typeof(Task<Tuple<OCPP_BinaryResponseMessage?, OCPP_JSONErrorMessage?>>))))
+                                                  method.ReturnType == typeof(Task<Tuple<OCPP_BinaryResponseMessage?, OCPP_JSONErrorMessage?>>) ||
+                                                  method.ReturnType == typeof(Task<OCPP_Response>))))
             {
 
                 var processorName = method.Name[8..];
@@ -157,17 +158,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 if      (OCPP_JSONRequestMessage. TryParse(JSONMessage, out var jsonRequest,  out var requestParsingError,  RequestTimestamp, EventTrackingId, sourceNodeId, CancellationToken)) // && jsonRequest       is not null)
                 {
 
+                    #region Fix DestinationNodeId and network path for standard networking connections
+
                     if (jsonRequest.NetworkingMode    == NetworkingMode.Standard &&
-                        jsonRequest.DestinationNodeId == NetworkingNode_Id.Zero)
+                        jsonRequest.DestinationNodeId == NetworkingNode_Id.Zero  &&
+                        sourceNodeId.HasValue)
                     {
+                        switch (WebSocketConnection)
+                        {
 
-                        if (WebSocketConnection is WebSocketClientConnection)
-                            jsonRequest = jsonRequest.ChangeDestinationNodeId(parentNetworkingNode.Id);
+                            case WebSocketClientConnection:
+                                jsonRequest = jsonRequest.ChangeDestinationNodeId(
+                                                              parentNetworkingNode.Id,
+                                                              jsonRequest.NetworkPath.Append(sourceNodeId.Value)
+                                                          );
+                                break;
 
-                        if (WebSocketConnection is WebSocketServerConnection)
-                            jsonRequest = jsonRequest.ChangeDestinationNodeId(NetworkingNode_Id.CSMS);
+                            case WebSocketServerConnection:
+                                jsonRequest = jsonRequest.ChangeDestinationNodeId(
+                                                              NetworkingNode_Id.CSMS,
+                                                              jsonRequest.NetworkPath.Append(sourceNodeId.Value)
+                                                          );
+                                break;
 
+                        }
                     }
+
+                    #endregion
+
 
                     #region OnJSONMessageRequestReceived
 
@@ -225,12 +243,43 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                 (OCPPResponse, OCPPErrorResponse) = await textProcessor;
 
                                 if (OCPPResponse is not null)
-                                    parentNetworkingNode.OCPP.OUT.SendFile
+                                    await parentNetworkingNode.OCPP.SendJSONResponse(OCPPResponse);
+
+                                if (OCPPErrorResponse is not null)
+                                    await parentNetworkingNode.OCPP.SendJSONError   (OCPPErrorResponse);
 
                             }
 
                             else if (result is Task<Tuple<OCPP_BinaryResponseMessage?, OCPP_JSONErrorMessage?>> binaryProcessor) {
+
                                 (OCPPBinaryResponse, OCPPErrorResponse) = await binaryProcessor;
+
+                                if (OCPPBinaryResponse is not null)
+                                    await parentNetworkingNode.OCPP.SendBinaryResponse(OCPPBinaryResponse);
+
+                                if (OCPPErrorResponse is not null)
+                                    await parentNetworkingNode.OCPP.SendJSONError     (OCPPErrorResponse);
+
+                            }
+
+                            else if (result is Task<OCPP_Response> ocppProcessor)
+                            {
+
+                                var ocppReply = await ocppProcessor;
+
+                                OCPPResponse         = ocppReply.JSONResponseMessage;
+                                OCPPErrorResponse    = ocppReply.JSONErrorMessage;
+                                OCPPBinaryResponse   = ocppReply.BinaryResponseMessage;
+
+                                if (ocppReply.JSONResponseMessage is not null)
+                                    await parentNetworkingNode.OCPP.SendJSONResponse  (ocppReply.JSONResponseMessage);
+
+                                if (ocppReply.JSONErrorMessage is not null)
+                                    await parentNetworkingNode.OCPP.SendJSONError     (ocppReply.JSONErrorMessage);
+
+                                if (ocppReply.BinaryResponseMessage is not null)
+                                    await parentNetworkingNode.OCPP.SendBinaryResponse(ocppReply.BinaryResponseMessage);
+
                             }
 
                             else
@@ -250,6 +299,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                             OCPPErrorResponse = new OCPP_JSONErrorMessage(
                                                     Timestamp.Now,
                                                     EventTracking_Id.New,
+                                                    NetworkingMode.Unknown,
+                                                    NetworkingNode_Id.Zero,
+                                                    NetworkPath.Empty,
                                                     jsonRequest.RequestId,
                                                     ResultCode.ProtocolError,
                                                     $"The OCPP message '{jsonRequest.Action}' is unkown!",
@@ -510,6 +562,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         OCPPErrorResponse = new OCPP_JSONErrorMessage(
                                                 Timestamp.Now,
                                                 EventTracking_Id.New,
+                                                NetworkingMode.Unknown,
+                                                NetworkingNode_Id.Zero,
+                                                NetworkPath.Empty,
                                                 binaryRequest.RequestId,
                                                 ResultCode.ProtocolError,
                                                 $"The OCPP message '{binaryRequest.Action}' is unkown!",

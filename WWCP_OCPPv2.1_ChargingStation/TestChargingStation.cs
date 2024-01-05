@@ -2233,7 +2233,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var response = await chargingStationWSClient.Connect();
 
-            return response;
+            return response.Item2;
 
         }
 

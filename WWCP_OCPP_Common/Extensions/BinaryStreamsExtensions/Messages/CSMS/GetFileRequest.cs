@@ -17,11 +17,11 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-
-using cloud.charging.open.protocols.OCPP;
 
 #endregion
 
@@ -190,12 +190,12 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="GetFileRequest">The parsed GetFileRequest request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject              JSON,
-                                       Request_Id           RequestId,
-                                       NetworkingNode_Id    NetworkingNodeId,
-                                       NetworkPath          NetworkPath,
-                                       out GetFileRequest?  GetFileRequest,
-                                       out String?          ErrorResponse)
+        public static Boolean TryParse(JObject                                   JSON,
+                                       Request_Id                                RequestId,
+                                       NetworkingNode_Id                         NetworkingNodeId,
+                                       NetworkPath                               NetworkPath,
+                                       [NotNullWhen(true)]  out GetFileRequest?  GetFileRequest,
+                                       [NotNullWhen(false)] out String?          ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
@@ -220,8 +220,8 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                                        Request_Id                                    RequestId,
                                        NetworkingNode_Id                             NetworkingNodeId,
                                        NetworkPath                                   NetworkPath,
-                                       out GetFileRequest?                           GetFileRequest,
-                                       out String?                                   ErrorResponse,
+                                       [NotNullWhen(true)]  out GetFileRequest?      GetFileRequest,
+                                       [NotNullWhen(false)] out String?              ErrorResponse,
                                        CustomJObjectParserDelegate<GetFileRequest>?  CustomGetFileRequestParser)
         {
 

@@ -1462,7 +1462,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 
             var response = await WSClient.Connect();
 
-            return response;
+            return response.Item2;
 
         }
 

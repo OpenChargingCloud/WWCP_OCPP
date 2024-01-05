@@ -105,20 +105,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     sendRequestState.BinaryResponse is not null)
                 {
 
-                    if (GetFileResponse.TryParse(Request,
-                                                 sendRequestState.BinaryResponse.Payload,
-                                                 out var getFileResponse,
-                                                 out var errorResponse,
-                                                 CustomGetFileResponseParser) &&
-                        getFileResponse is not null)
+                    if (!GetFileResponse.TryParse(Request,
+                                                  sendRequestState.BinaryResponse.Payload,
+                                                  out response,
+                                                  out var errorResponse,
+                                                  CustomGetFileResponseParser))
                     {
-                        response = getFileResponse;
+                        response = new GetFileResponse(
+                                       Request,
+                                       Result.Format(errorResponse)
+                                   );
                     }
-
-                    response ??= new GetFileResponse(
-                                         Request,
-                                         Result.Format(errorResponse)
-                                     );
 
                 }
 

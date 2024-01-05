@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -205,8 +207,8 @@ namespace cloud.charging.open.protocols.OCPP.CS
         /// <param name="CustomSendFileResponseParser">A delegate to parse custom send file responses.</param>
         public static Boolean TryParse(CSMS.SendFileRequest                            Request,
                                        JObject                                         JSON,
-                                       out SendFileResponse?                           SendFileResponse,
-                                       out String?                                     ErrorResponse,
+                                       [NotNullWhen(true)]  out SendFileResponse?      SendFileResponse,
+                                       [NotNullWhen(false)] out String?                ErrorResponse,
                                        CustomJObjectParserDelegate<SendFileResponse>?  CustomSendFileResponseParser   = null)
         {
 

@@ -80,8 +80,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Receive message (wired via reflection!)
 
-        public async Task<Tuple<OCPP_BinaryResponseMessage?,
-                                OCPP_JSONErrorMessage?>>
+        public async Task<OCPP_Response>
 
             Receive_GetFile(DateTime              RequestTimestamp,
                             IWebSocketConnection  WebSocketConnection,
@@ -95,6 +94,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         {
 
             #region Send OnGetFileWSRequest event
+
+            OCPP_Response? ocppResponse = null;
 
             var startTime = Timestamp.Now;
 
@@ -118,9 +119,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
-            OCPP_BinaryResponseMessage?  OCPPResponse        = null;
-            OCPP_JSONErrorMessage?       OCPPErrorResponse   = null;
-
             try
             {
 
@@ -130,7 +128,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                             NetworkPath,
                                             out var request,
                                             out var errorResponse,
-                                            CustomGetFileRequestParser) && request is not null) {
+                                            CustomGetFileRequestParser)) {
 
                     #region Send OnGetFileRequest event
 
@@ -196,38 +194,41 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #endregion
 
-                    OCPPResponse  = OCPP_BinaryResponseMessage.From(
-                                       NetworkingMode.Standard,
+                    ocppResponse = OCPP_Response.BinaryResponse(
+                                       EventTrackingId,
                                        NetworkPath.Source,
-                                       NetworkPath.Empty,
+                                       NetworkPath.From(DestinationNodeId),
                                        RequestId,
                                        response.ToBinary(
                                            CustomGetFileResponseSerializer,
                                            null, //CustomCustomDataSerializer,
                                            parentNetworkingNode.OCPP.CustomBinarySignatureSerializer,
                                            IncludeSignatures: true
-                                       )
+                                       ),
+                                       CancellationToken
                                    );
 
                 }
 
                 else
-                    OCPPErrorResponse = OCPP_JSONErrorMessage.CouldNotParse(
-                                            RequestId,
-                                            nameof(Receive_GetFile)[8..],
-                                            RequestJSON,
-                                            errorResponse
-                                        );
+                    ocppResponse = OCPP_Response.CouldNotParse(
+                                       EventTrackingId,
+                                       RequestId,
+                                       nameof(Receive_GetFile)[8..],
+                                       RequestJSON,
+                                       errorResponse
+                                   );
 
             }
             catch (Exception e)
             {
-                OCPPErrorResponse = OCPP_JSONErrorMessage.FormationViolation(
-                                        RequestId,
-                                        nameof(Receive_GetFile)[8..],
-                                        RequestJSON,
-                                        e
-                                    );
+                ocppResponse = OCPP_Response.FormationViolation(
+                                   EventTrackingId,
+                                   RequestId,
+                                   nameof(Receive_GetFile)[8..],
+                                   RequestJSON,
+                                   e
+                               );
             }
 
             #region Send OnGetFileWSResponse event
@@ -245,8 +246,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                             EventTrackingId,
                                             RequestTimestamp,
                                             RequestJSON,
-                                            OCPPResponse?.Payload,
-                                            OCPPErrorResponse?.ToJSON(),
+                                            ocppResponse.BinaryResponseMessage?.Payload,
+                                            ocppResponse.JSONErrorMessage?.     ToJSON(),
                                             endTime - startTime);
 
             }
@@ -257,9 +258,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
-            return new Tuple<OCPP_BinaryResponseMessage?,
-                             OCPP_JSONErrorMessage?>(OCPPResponse,
-                                                     OCPPErrorResponse);
+            return ocppResponse;
 
         }
 

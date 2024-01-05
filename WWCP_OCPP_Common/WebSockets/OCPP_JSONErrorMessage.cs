@@ -17,15 +17,14 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using System.Text;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-
-using cloud.charging.open.protocols.OCPP;
-using System.Diagnostics.CodeAnalysis;
 
 #endregion
 
@@ -35,42 +34,79 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
     /// <summary>
     /// A OCPP WebSocket error message.
     /// </summary>
+    /// <param name="ResponseTimestamp">The response time stamp.</param>
+    /// <param name="EventTrackingId">The event tracking identification.</param>
+    /// <param name="NetworkingMode">The OCPP networking mode to use.</param>
+    /// <param name="DestinationNodeId">The networking node identification of the message destination.</param>
+    /// <param name="NetworkPath">The optional (recorded) path of the request through the overlay network.</param>
     /// <param name="RequestId">An unique request identification.</param>
     /// <param name="ErrorCode">An OCPP error code.</param>
     /// <param name="ErrorDescription">An optional error description.</param>
     /// <param name="ErrorDetails">Optional error details.</param>
-    public class OCPP_JSONErrorMessage(DateTime          ResponseTimestamp,
-                                       EventTracking_Id  EventTrackingId,
-                                       Request_Id        RequestId,
-                                       ResultCode        ErrorCode,
-                                       String?           ErrorDescription   = null,
-                                       JObject?          ErrorDetails       = null)
+    /// <param name="CancellationToken">The cancellation token.</param>
+    public class OCPP_JSONErrorMessage(DateTime           ResponseTimestamp,
+                                       EventTracking_Id   EventTrackingId,
+                                       NetworkingMode     NetworkingMode,
+                                       NetworkingNode_Id  DestinationNodeId,
+                                       NetworkPath        NetworkPath,
+                                       Request_Id         RequestId,
+                                       ResultCode         ErrorCode,
+                                       String?            ErrorDescription    = null,
+                                       JObject?           ErrorDetails        = null,
+                                       CancellationToken  CancellationToken   = default)
     {
 
         #region Properties
 
-        public DateTime          ResponseTimestamp    { get; } = ResponseTimestamp;
-        public EventTracking_Id  EventTrackingId      { get; } = EventTrackingId;
+        /// <summary>
+        /// The response time stamp.
+        /// </summary>
+        public DateTime           ResponseTimestamp    { get; }      = ResponseTimestamp;
+
+        /// <summary>
+        /// The event tracking identification.
+        /// </summary>
+        public EventTracking_Id   EventTrackingId      { get; }      = EventTrackingId;
+
+        /// <summary>
+        /// The OCPP networking mode to use.
+        /// </summary>
+        public NetworkingMode     NetworkingMode       { get; set; } = NetworkingMode;
+
+        /// <summary>
+        /// The networking node identification of the message destination.
+        /// </summary>
+        public NetworkingNode_Id  DestinationNodeId    { get; }      = DestinationNodeId;
+
+        /// <summary>
+        /// The (recorded) path of the request through the overlay network.
+        /// </summary>
+        public NetworkPath        NetworkPath          { get; }      = NetworkPath;
 
         /// <summary>
         /// The unique request identification.
         /// </summary>
-        public Request_Id        RequestId            { get; } = RequestId;
+        public Request_Id         RequestId            { get; }      = RequestId;
 
         /// <summary>
         /// The OCPP error code.
         /// </summary>
-        public ResultCode        ErrorCode            { get; } = ErrorCode;
+        public ResultCode         ErrorCode            { get; }      = ErrorCode;
 
         /// <summary>
         /// The optional error description.
         /// </summary>
-        public String            ErrorDescription     { get; } = ErrorDescription ?? "";
+        public String             ErrorDescription     { get; }      = ErrorDescription ?? "";
 
         /// <summary>
         /// Optional error details.
         /// </summary>
-        public JObject           ErrorDetails         { get; } = ErrorDetails     ?? [];
+        public JObject            ErrorDetails         { get; }      = ErrorDetails     ?? [];
+
+        /// <summary>
+        /// The cancellation token.
+        /// </summary>
+        public CancellationToken  CancellationToken    { get; }      = CancellationToken;
 
         #endregion
 
@@ -84,6 +120,33 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
             => new (Timestamp.Now,
                     EventTracking_Id.New,
+                    NetworkingMode.Standard,
+                    NetworkingNode_Id.Zero,
+                    NetworkPath.Empty,
+                    RequestId,
+                    ResultCode.FormationViolation,
+                    $"Processing the given '{Action}' request could not be parsed!",
+                    JSONObject.Create(
+
+                              new JProperty("request",   JSONObjectRequest),
+
+                        ErrorResponse is not null
+                            ? new JProperty("error",     ErrorResponse)
+                            : null
+
+                    ));
+
+        public static OCPP_JSONErrorMessage CouldNotParse(EventTracking_Id  EventTrackingId,
+                                                          Request_Id        RequestId,
+                                                          String            Action,
+                                                          JObject           JSONObjectRequest,
+                                                          String?           ErrorResponse   = null)
+
+            => new (Timestamp.Now,
+                    EventTrackingId,
+                    NetworkingMode.Standard,
+                    NetworkingNode_Id.Zero,
+                    NetworkPath.Empty,
                     RequestId,
                     ResultCode.FormationViolation,
                     $"Processing the given '{Action}' request could not be parsed!",
@@ -108,6 +171,9 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
             => new (Timestamp.Now,
                     EventTracking_Id.New,
+                    NetworkingMode.Standard,
+                    NetworkingNode_Id.Zero,
+                    NetworkPath.Empty,
                     RequestId,
                     ResultCode.FormationViolation,
                     $"Processing the given '{Action}' request could not be parsed!",
@@ -132,6 +198,34 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
             => new (Timestamp.Now,
                     EventTracking_Id.New,
+                    NetworkingMode.Standard,
+                    NetworkingNode_Id.Zero,
+                    NetworkPath.Empty,
+                    RequestId,
+                    ResultCode.FormationViolation,
+                    $"Processing the given '{Action}' request could not be parsed!",
+                    JSONObject.Create(
+
+                              new JProperty("request",   BinaryRequest.ToBase64()),
+
+                        ErrorResponse is not null
+                            ? new JProperty("error",     ErrorResponse)
+                            : null
+
+                    ));
+
+
+        public static OCPP_JSONErrorMessage CouldNotParse(EventTracking_Id  EventTrackingId,
+                                                          Request_Id        RequestId,
+                                                          String            Action,
+                                                          Byte[]            BinaryRequest,
+                                                          String?           ErrorResponse   = null)
+
+            => new (Timestamp.Now,
+                    EventTrackingId,
+                    NetworkingMode.Standard,
+                    NetworkingNode_Id.Zero,
+                    NetworkPath.Empty,
                     RequestId,
                     ResultCode.FormationViolation,
                     $"Processing the given '{Action}' request could not be parsed!",
@@ -157,6 +251,30 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
             => new (Timestamp.Now,
                     EventTracking_Id.New,
+                    NetworkingMode.Standard,
+                    NetworkingNode_Id.Zero,
+                    NetworkPath.Empty,
+                    RequestId,
+                    ResultCode.FormationViolation,
+                    $"Processing the given '{Action}' request led to an exception!",
+                    new JObject(
+                        new JProperty("request",      JSONObjectRequest),
+                        new JProperty("exception",    Exception.Message),
+                        new JProperty("stacktrace",   Exception.StackTrace)
+                    ));
+
+
+        public static OCPP_JSONErrorMessage FormationViolation(EventTracking_Id  EventTrackingId,
+                                                               Request_Id        RequestId,
+                                                               String            Action,
+                                                               JObject           JSONObjectRequest,
+                                                               Exception         Exception)
+
+            => new (Timestamp.Now,
+                    EventTrackingId,
+                    NetworkingMode.Standard,
+                    NetworkingNode_Id.Zero,
+                    NetworkPath.Empty,
                     RequestId,
                     ResultCode.FormationViolation,
                     $"Processing the given '{Action}' request led to an exception!",
@@ -177,6 +295,9 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
             => new (Timestamp.Now,
                     EventTracking_Id.New,
+                    NetworkingMode.Standard,
+                    NetworkingNode_Id.Zero,
+                    NetworkPath.Empty,
                     RequestId,
                     ResultCode.FormationViolation,
                     $"Processing the given '{Action}' request led to an exception!",
@@ -197,6 +318,30 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
             => new (Timestamp.Now,
                     EventTracking_Id.New,
+                    NetworkingMode.Standard,
+                    NetworkingNode_Id.Zero,
+                    NetworkPath.Empty,
+                    RequestId,
+                    ResultCode.FormationViolation,
+                    $"Processing the given '{Action}' request led to an exception!",
+                    new JObject(
+                        new JProperty("request",      BinaryRequest.ToBase64()),
+                        new JProperty("exception",    Exception.Message),
+                        new JProperty("stacktrace",   Exception.StackTrace)
+                    ));
+
+
+        public static OCPP_JSONErrorMessage FormationViolation(EventTracking_Id  EventTrackingId,
+                                                               Request_Id        RequestId,
+                                                               String            Action,
+                                                               Byte[]            BinaryRequest,
+                                                               Exception         Exception)
+
+            => new (Timestamp.Now,
+                    EventTrackingId,
+                    NetworkingMode.Standard,
+                    NetworkingNode_Id.Zero,
+                    NetworkPath.Empty,
                     RequestId,
                     ResultCode.FormationViolation,
                     $"Processing the given '{Action}' request led to an exception!",
@@ -219,6 +364,9 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
             => new (Timestamp.Now,
                     EventTracking_Id.New,
+                    NetworkingMode.Standard,
+                    NetworkingNode_Id.Zero,
+                    NetworkPath.Empty,
                     RequestId ?? Request_Id.Zero,
                     ResultCode.InternalError,
                     $"The OCPP message received in '{Sender}' led to an exception!",
@@ -241,6 +389,9 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
             => new (Timestamp.Now,
                     EventTracking_Id.New,
+                    NetworkingMode.Standard,
+                    NetworkingNode_Id.Zero,
+                    NetworkPath.Empty,
                     RequestId ?? Request_Id.Zero,
                     ResultCode.InternalError,
                     $"The OCPP message received in '{Sender}' led to an exception!",
@@ -263,6 +414,9 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
             => new (Timestamp.Now,
                     EventTracking_Id.New,
+                    NetworkingMode.Standard,
+                    NetworkingNode_Id.Zero,
+                    NetworkPath.Empty,
                     RequestId ?? Request_Id.Zero,
                     ResultCode.InternalError,
                     $"The OCPP message received in '{Sender}' led to an exception!",
@@ -285,6 +439,9 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
             => new (Timestamp.Now,
                     EventTracking_Id.New,
+                    NetworkingMode.Standard,
+                    NetworkingNode_Id.Zero,
+                    NetworkPath.Empty,
                     RequestId ?? Request_Id.Zero,
                     ResultCode.InternalError,
                     $"The OCPP message received in '{Sender}' led to an exception!",
@@ -366,6 +523,9 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                 ErrorMessage = new OCPP_JSONErrorMessage(
                                    Timestamp.Now,
                                    EventTracking_Id.New,
+                                   NetworkingMode.Standard,
+                                   NetworkingNode_Id.Zero,
+                                   NetworkPath.Empty,
                                    requestId,
                                    wsErrorCode,
                                    description,
@@ -381,6 +541,9 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                 ErrorMessage = new OCPP_JSONErrorMessage(
                                    Timestamp.Now,
                                    EventTracking_Id.New,
+                                   NetworkingMode.Standard,
+                                   NetworkingNode_Id.Zero,
+                                   NetworkPath.Empty,
                                    Request_Id.Zero,
                                    ResultCode.InternalError,
                                    e.Message

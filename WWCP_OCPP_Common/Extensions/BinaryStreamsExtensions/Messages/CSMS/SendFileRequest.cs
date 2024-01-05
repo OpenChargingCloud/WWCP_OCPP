@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.OCPP;
@@ -241,12 +243,12 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="SendFileRequest">The parsed SendFileRequest request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(Byte[]                Binary,
-                                       Request_Id            RequestId,
-                                       NetworkingNode_Id     NetworkingNodeId,
-                                       NetworkPath           NetworkPath,
-                                       out SendFileRequest?  SendFileRequest,
-                                       out String?           ErrorResponse)
+        public static Boolean TryParse(Byte[]                                     Binary,
+                                       Request_Id                                 RequestId,
+                                       NetworkingNode_Id                          NetworkingNodeId,
+                                       NetworkPath                                NetworkPath,
+                                       [NotNullWhen(true)]  out SendFileRequest?  SendFileRequest,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
 
             => TryParse(Binary,
                         RequestId,
@@ -271,8 +273,8 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                                        Request_Id                                    RequestId,
                                        NetworkingNode_Id                             NetworkingNodeId,
                                        NetworkPath                                   NetworkPath,
-                                       out SendFileRequest?                          SendFileRequest,
-                                       out String?                                   ErrorResponse,
+                                       [NotNullWhen(true)]  out SendFileRequest?     SendFileRequest,
+                                       [NotNullWhen(false)] out String?              ErrorResponse,
                                        CustomBinaryParserDelegate<SendFileRequest>?  CustomSendFileRequestParser)
         {
 

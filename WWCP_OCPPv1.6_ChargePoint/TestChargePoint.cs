@@ -1217,7 +1217,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             var response = await chargePointWSClient.Connect();
 
-            return response;
+            return response.Item2;
 
         }
 
