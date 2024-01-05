@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -281,8 +283,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          NetworkPath,
                          out var bootNotificationRequest,
                          out var errorResponse,
-                         CustomBootNotificationRequestParser) &&
-                bootNotificationRequest is not null)
+                         CustomBootNotificationRequestParser))
             {
                 return bootNotificationRequest;
             }
@@ -295,33 +296,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
         #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out BootNotificationRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
-
-        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
-
-        /// <summary>
-        /// Try to parse the given JSON representation of a boot notification request.
-        /// </summary>
-        /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="BootNotificationRequest">The parsed boot notification request.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                       JSON,
-                                       Request_Id                    RequestId,
-                                       NetworkingNode_Id             NetworkingNodeId,
-                                       NetworkPath                   NetworkPath,
-                                       out BootNotificationRequest?  BootNotificationRequest,
-                                       out String?                   ErrorResponse)
-
-            => TryParse(JSON,
-                        RequestId,
-                        NetworkingNodeId,
-                        NetworkPath,
-                        out BootNotificationRequest,
-                        out ErrorResponse,
-                        null);
-
 
         /// <summary>
         /// Try to parse the given JSON representation of a boot notification request.
@@ -337,9 +311,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                        Request_Id                                             RequestId,
                                        NetworkingNode_Id                                      NetworkingNodeId,
                                        NetworkPath                                            NetworkPath,
-                                       out BootNotificationRequest?                           BootNotificationRequest,
-                                       out String?                                            ErrorResponse,
-                                       CustomJObjectParserDelegate<BootNotificationRequest>?  CustomBootNotificationRequestParser)
+                                       [NotNullWhen(true)]  out BootNotificationRequest?      BootNotificationRequest,
+                                       [NotNullWhen(false)] out String?                       ErrorResponse,
+                                       CustomJObjectParserDelegate<BootNotificationRequest>?  CustomBootNotificationRequestParser   = null)
         {
 
             try

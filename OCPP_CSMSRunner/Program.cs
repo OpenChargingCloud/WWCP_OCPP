@@ -1488,7 +1488,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                     else
                                     {
 
-                                        var response = await testCSMSv2_1.TransferData(
+                                        var response = await testCSMSv2_1.DataTransfer(
                                                            new cloud.charging.open.protocols.OCPPv2_1.DataTransferRequest(
                                                                NetworkingNodeId:   NetworkingNode_Id.Parse(chargingStationId),
                                                                VendorId:           Vendor_Id.Parse(commandArray[1])
@@ -1527,7 +1527,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                     else
                                     {
 
-                                        var response = await testCSMSv2_1.TransferData(
+                                        var response = await testCSMSv2_1.DataTransfer(
                                                            new cloud.charging.open.protocols.OCPPv2_1.DataTransferRequest(
                                                                NetworkingNodeId:    NetworkingNode_Id.Parse(chargingStationId),
                                                                VendorId:            Vendor_Id.   Parse(commandArray[1]),
@@ -1568,7 +1568,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                     else
                                     {
 
-                                        var response = await testCSMSv2_1.TransferData(
+                                        var response = await testCSMSv2_1.DataTransfer(
                                                            new cloud.charging.open.protocols.OCPPv2_1.DataTransferRequest(
                                                                NetworkingNodeId:   NetworkingNode_Id.Parse(chargingStationId),
                                                                VendorId:           Vendor_Id. Parse(commandArray[1]),

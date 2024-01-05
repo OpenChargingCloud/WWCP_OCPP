@@ -164,8 +164,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                          NetworkPath,
                          out var getFileRequest,
                          out var errorResponse,
-                         CustomGetFileRequestParser) &&
-                getFileRequest is not null)
+                         CustomGetFileRequestParser))
             {
                 return getFileRequest;
             }
@@ -177,34 +176,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out getFileRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
-
-        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
-
-        /// <summary>
-        /// Try to parse the given JSON representation of a GetFile request.
-        /// </summary>
-        /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="GetFileRequest">The parsed GetFileRequest request.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                                   JSON,
-                                       Request_Id                                RequestId,
-                                       NetworkingNode_Id                         NetworkingNodeId,
-                                       NetworkPath                               NetworkPath,
-                                       [NotNullWhen(true)]  out GetFileRequest?  GetFileRequest,
-                                       [NotNullWhen(false)] out String?          ErrorResponse)
-
-            => TryParse(JSON,
-                        RequestId,
-                        NetworkingNodeId,
-                        NetworkPath,
-                        out GetFileRequest,
-                        out ErrorResponse,
-                        null);
-
+        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out getFileRequest, out ErrorResponse, CustomGetFileRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a GetFile request.
@@ -222,7 +194,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                                        NetworkPath                                   NetworkPath,
                                        [NotNullWhen(true)]  out GetFileRequest?      GetFileRequest,
                                        [NotNullWhen(false)] out String?              ErrorResponse,
-                                       CustomJObjectParserDelegate<GetFileRequest>?  CustomGetFileRequestParser)
+                                       CustomJObjectParserDelegate<GetFileRequest>?  CustomGetFileRequestParser   = null)
         {
 
             try

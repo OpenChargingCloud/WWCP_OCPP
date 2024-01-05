@@ -126,7 +126,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                              NetworkPath,
                                              out var request,
                                              out var errorResponse,
-                                             CustomSendFileRequestParser) && request is not null) {
+                                             CustomSendFileRequestParser)) {
 
                     #region Send OnSendFileRequest event
 

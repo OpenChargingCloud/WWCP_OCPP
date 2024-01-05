@@ -129,7 +129,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                  NetworkPath,
                                                  out var request,
                                                  out var errorResponse,
-                                                 CustomDataTransferRequestParser) && request is not null) {
+                                                 CustomDataTransferRequestParser)) {
 
                     #region Send OnIncomingDataTransferRequest event
 

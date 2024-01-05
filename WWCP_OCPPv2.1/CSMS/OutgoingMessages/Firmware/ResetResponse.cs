@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -228,8 +230,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var resetResponse,
                          out var errorResponse,
-                         CustomResetResponseParser) &&
-                resetResponse is not null)
+                         CustomResetResponseParser))
             {
                 return resetResponse;
             }
@@ -251,10 +252,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="ResetResponse">The parsed reset response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomResetResponseParser">A delegate to parse custom reset responses.</param>
-        public static Boolean TryParse(CSMS.ResetRequest                              Request,
+        public static Boolean TryParse(CSMS.ResetRequest                            Request,
                                        JObject                                      JSON,
-                                       out ResetResponse?                           ResetResponse,
-                                       out String?                                  ErrorResponse,
+                                       [NotNullWhen(true)]  out ResetResponse?      ResetResponse,
+                                       [NotNullWhen(false)] out String?             ErrorResponse,
                                        CustomJObjectParserDelegate<ResetResponse>?  CustomResetResponseParser   = null)
         {
 

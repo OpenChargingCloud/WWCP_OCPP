@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -260,8 +262,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                          JSON,
                          out var dataTransferResponse,
                          out var errorResponse,
-                         CustomDataTransferResponseParser) &&
-                dataTransferResponse is not null)
+                         CustomDataTransferResponseParser))
             {
                 return dataTransferResponse;
             }
@@ -285,8 +286,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CustomDataTransferResponseParser">A delegate to parse custom data transfer responses.</param>
         public static Boolean TryParse(DataTransferRequest                                 Request,
                                        JObject                                             JSON,
-                                       out DataTransferResponse?                           DataTransferResponse,
-                                       out String?                                         ErrorResponse,
+                                       [NotNullWhen(true)]  out DataTransferResponse?      DataTransferResponse,
+                                       [NotNullWhen(false)] out String?                    ErrorResponse,
                                        CustomJObjectParserDelegate<DataTransferResponse>?  CustomDataTransferResponseParser   = null)
         {
 

@@ -127,7 +127,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                        NetworkPath,
                                                        out var request,
                                                        out var errorResponse,
-                                                       CustomBinaryDataTransferRequestParser) && request is not null) {
+                                                       CustomBinaryDataTransferRequestParser)) {
 
                     #region Send OnIncomingBinaryDataTransferRequest event
 

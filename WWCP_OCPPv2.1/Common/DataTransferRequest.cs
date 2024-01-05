@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -242,8 +244,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                          NetworkPath,
                          out var dataTransferRequest,
                          out var errorResponse,
-                         CustomDataTransferRequestParser) &&
-                dataTransferRequest is not null)
+                         CustomDataTransferRequestParser))
             {
                 return dataTransferRequest;
             }
@@ -256,33 +257,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
         #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out DataTransferRequest, OnException = null)
-
-        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
-
-        /// <summary>
-        /// Try to parse the given JSON representation of a data transfer request.
-        /// </summary>
-        /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="DataTransferRequest">The parsed DataTransfer request.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                   JSON,
-                                       Request_Id                RequestId,
-                                       NetworkingNode_Id         NetworkingNodeId,
-                                       NetworkPath               NetworkPath,
-                                       out DataTransferRequest?  DataTransferRequest,
-                                       out String?               ErrorResponse)
-
-            => TryParse(JSON,
-                        RequestId,
-                        NetworkingNodeId,
-                        NetworkPath,
-                        out DataTransferRequest,
-                        out ErrorResponse,
-                        null);
-
 
         /// <summary>
         /// Try to parse the given JSON representation of a data transfer request.
@@ -298,8 +272,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                        Request_Id                                         RequestId,
                                        NetworkingNode_Id                                  NetworkingNodeId,
                                        NetworkPath                                        NetworkPath,
-                                       out DataTransferRequest?                           DataTransferRequest,
-                                       out String?                                        ErrorResponse,
+                                       [NotNullWhen(true)]  out DataTransferRequest?      DataTransferRequest,
+                                       [NotNullWhen(false)] out String?                   ErrorResponse,
                                        CustomJObjectParserDelegate<DataTransferRequest>?  CustomDataTransferRequestParser)
         {
 

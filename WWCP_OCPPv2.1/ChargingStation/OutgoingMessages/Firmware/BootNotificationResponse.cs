@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -270,8 +272,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          JSON,
                          out var bootNotificationResponse,
                          out var errorResponse,
-                         CustomBootNotificationResponseParser) &&
-                bootNotificationResponse is not null)
+                         CustomBootNotificationResponseParser))
             {
                 return bootNotificationResponse;
             }
@@ -295,8 +296,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomBootNotificationResponseParser">A delegate to parse custom boot notification responses.</param>
         public static Boolean TryParse(CS.BootNotificationRequest                              Request,
                                        JObject                                                 JSON,
-                                       out BootNotificationResponse?                           BootNotificationResponse,
-                                       out String?                                             ErrorResponse,
+                                       [NotNullWhen(true)]  out BootNotificationResponse?      BootNotificationResponse,
+                                       [NotNullWhen(false)] out String?                        ErrorResponse,
                                        CustomJObjectParserDelegate<BootNotificationResponse>?  CustomBootNotificationResponseParser   = null)
         {
 

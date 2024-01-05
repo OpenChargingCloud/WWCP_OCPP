@@ -102,20 +102,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     sendRequestState.JSONResponse is not null)
                 {
 
-                    if (ListDirectoryResponse.TryParse(Request,
-                                                       sendRequestState.JSONResponse.Payload,
-                                                       out var deleteFileResponse,
-                                                       out var errorResponse,
-                                                       CustomListDirectoryResponseParser) &&
-                        deleteFileResponse is not null)
+                    if (!ListDirectoryResponse.TryParse(Request,
+                                                        sendRequestState.JSONResponse.Payload,
+                                                        out response,
+                                                        out var errorResponse,
+                                                        CustomListDirectoryResponseParser))
                     {
-                        response = deleteFileResponse;
+                        response = new ListDirectoryResponse(
+                                       Request,
+                                       Result.Format(errorResponse)
+                                   );
                     }
-
-                    response ??= new ListDirectoryResponse(
-                                     Request,
-                                     Result.Format(errorResponse)
-                                 );
 
                 }
 

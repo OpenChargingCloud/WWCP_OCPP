@@ -102,20 +102,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     sendRequestState.JSONResponse is not null)
                 {
 
-                    if (SendFileResponse.TryParse(Request,
-                                                  sendRequestState.JSONResponse.Payload,
-                                                  out var getFileResponse,
-                                                  out var errorResponse,
-                                                  CustomSendFileResponseParser) &&
-                        getFileResponse is not null)
+                    if (!SendFileResponse.TryParse(Request,
+                                                   sendRequestState.JSONResponse.Payload,
+                                                   out response,
+                                                   out var errorResponse,
+                                                   CustomSendFileResponseParser))
                     {
-                        response = getFileResponse;
+                        response = new SendFileResponse(
+                                       Request,
+                                       Result.Format(errorResponse)
+                                   );
                     }
-
-                    response ??= new SendFileResponse(
-                                     Request,
-                                     Result.Format(errorResponse)
-                                 );
 
                 }
 

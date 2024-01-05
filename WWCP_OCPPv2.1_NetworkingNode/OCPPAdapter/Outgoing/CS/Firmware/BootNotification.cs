@@ -120,18 +120,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     if (BootNotificationResponse.TryParse(Request,
                                                           sendRequestState.JSONResponse.Payload,
-                                                          out var bootNotificationResponse,
+                                                          out response,
                                                           out var errorResponse,
-                                                          CustomBootNotificationResponseParser) &&
-                        bootNotificationResponse is not null)
+                                                          CustomBootNotificationResponseParser))
                     {
-                        response = bootNotificationResponse;
+                        response = new BootNotificationResponse(
+                                       Request,
+                                       Result.Format(errorResponse)
+                                   );
                     }
-
-                    response ??= new BootNotificationResponse(
-                                     Request,
-                                     Result.Format(errorResponse)
-                                 );
 
                 }
 

@@ -208,8 +208,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
                          Binary,
                          out var getFileResponse,
                          out var errorResponse,
-                         CustomGetFileResponseParser) &&
-                getFileResponse is not null)
+                         CustomGetFileResponseParser))
             {
                 return getFileResponse;
             }

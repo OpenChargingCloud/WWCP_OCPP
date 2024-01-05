@@ -35,6 +35,7 @@ using cloud.charging.open.protocols.OCPP.WebSockets;
 using cloud.charging.open.protocols.OCPPv2_1.NN;
 using cloud.charging.open.protocols.OCPP.CS;
 using System.Security.Cryptography;
+using cloud.charging.open.protocols.OCPP.CSMS;
 
 #endregion
 
@@ -1082,63 +1083,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
-            #region OnIncomingBinaryDataTransfer
-
-            //IN.OnIncomingBinaryDataTransfer += async (timestamp,
-            //                                          sender,
-            //                                          connection,
-            //                                          request,
-            //                                          cancellationToken) => {
-
-            //    BinaryDataTransferResponse? response = null;
-
-            //    DebugX.Log($"Charging Station '{Id}': Incoming BinaryDataTransfer request: {request.VendorId}.{request.MessageId?.ToString() ?? "-"}: {request.Data?.ToHexString() ?? "-"}!");
-
-            //    // VendorId
-            //    // MessageId
-            //    // Data
-
-            //    var responseBinaryData = request.Data;
-
-            //    if (request.Data is not null)
-            //        responseBinaryData = request.Data.Reverse();
-
-            //    response = request.VendorId == Vendor_Id.GraphDefined
-
-            //                    ? new BinaryDataTransferResponse(
-            //                            Request:                request,
-            //                            Status:                 BinaryDataTransferStatus.Accepted,
-            //                            AdditionalStatusInfo:   null,
-            //                            Data:                   responseBinaryData
-            //                        )
-
-            //                    : new BinaryDataTransferResponse(
-            //                            Request:                request,
-            //                            Status:                 BinaryDataTransferStatus.Rejected,
-            //                            AdditionalStatusInfo:   null,
-            //                            Data:                   responseBinaryData
-            //                        );
-
-            //    return response;
-
-            //};
-
-            #endregion
-
-
-            OCPP.FORWARD.OnBinaryDataTransferRequest += (timestamp,
-                                                         sender,
-                                                         connection,
-                                                         request,
-                                                         cancellationToken) =>
-
-                Task.FromResult(
-                    new ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>(
-                        request,
-                        ForwardingResult.FORWARD
-                    )
-                );
-
 
 
             // CS
@@ -1203,6 +1147,99 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 );
 
 
+            #region BinaryDataStreamsExtensions
+
+            #region OnIncomingBinaryDataTransfer
+
+            OCPP.IN.OnBinaryDataTransfer += (timestamp,
+                                             sender,
+                                             connection,
+                                             request,
+                                             cancellationToken) => {
+
+                DebugX.Log($"Charging Station '{Id}': Incoming BinaryDataTransfer request: {request.VendorId}.{request.MessageId?.ToString() ?? "-"}: {request.Data?.ToHexString() ?? "-"}!");
+
+                // VendorId
+                // MessageId
+                // Data
+
+                var responseBinaryData = request.Data;
+
+                if (request.Data is not null)
+                    responseBinaryData = request.Data.Reverse();
+
+                return Task.FromResult(
+                           request.VendorId == Vendor_Id.GraphDefined
+
+                               ? new BinaryDataTransferResponse(
+                                       Request:                request,
+                                       Status:                 BinaryDataTransferStatus.Accepted,
+                                       AdditionalStatusInfo:   null,
+                                       Data:                   responseBinaryData
+                                   )
+
+                               : new BinaryDataTransferResponse(
+                                       Request:                request,
+                                       Status:                 BinaryDataTransferStatus.Rejected,
+                                       AdditionalStatusInfo:   null,
+                                       Data:                   responseBinaryData
+                                   )
+                       );
+
+            };
+
+
+            OCPP.FORWARD.OnBinaryDataTransferRequest += (timestamp,
+                                                         sender,
+                                                         connection,
+                                                         request,
+                                                         cancellationToken) =>
+
+                Task.FromResult(
+                    new ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>(
+                        request,
+                        ForwardingResult.FORWARD
+                    )
+                );
+
+            #endregion
+
+            #region OnDeleteFile
+
+            OCPP.IN.OnDeleteFile += (timestamp,
+                                     sender,
+                                     connection,
+                                     request,
+                                     cancellationToken) => {
+
+                return Task.FromResult(
+                           new DeleteFileResponse(
+                               request,
+                               request.FileName,
+                               DeleteFileStatus.Success
+                           )
+                       );
+
+            };
+
+
+            OCPP.FORWARD.OnDeleteFileRequest += (timestamp,
+                                                 sender,
+                                                 connection,
+                                                 request,
+                                                 cancellationToken) =>
+
+                Task.FromResult(
+                    new ForwardingDecision<DeleteFileRequest, DeleteFileResponse>(
+                        request,
+                        ForwardingResult.FORWARD
+                    )
+                );
+
+            #endregion
+
+            #region OnGetFile
+
             OCPP.IN.OnGetFile += (timestamp,
                                   sender,
                                   connection,
@@ -1225,6 +1262,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             };
 
+            #endregion
+
+            #region OnListDirectory
+
+            OCPP.IN.OnListDirectory += (timestamp,
+                                        sender,
+                                        connection,
+                                        request,
+                                        cancellationToken) => {
+
+                return Task.FromResult(
+                           new ListDirectoryResponse(
+                               request,
+                               request.DirectoryPath,
+                               ListDirectoryStatus.Success,
+                               new DirectoryListing()
+                           )
+                       );
+
+            };
+
+            #endregion
+
+            #region OnSendFile
+
             OCPP.IN.OnSendFile += (timestamp,
                                    sender,
                                    connection,
@@ -1240,6 +1302,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                        );
 
             };
+
+            #endregion
+
+            #endregion
 
 
             // CSMS

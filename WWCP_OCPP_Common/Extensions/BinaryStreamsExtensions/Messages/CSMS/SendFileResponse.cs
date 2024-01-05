@@ -182,8 +182,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
                          JSON,
                          out var sendFileResponse,
                          out var errorResponse,
-                         CustomSendFileResponseParser) &&
-                sendFileResponse is not null)
+                         CustomSendFileResponseParser))
             {
                 return sendFileResponse;
             }

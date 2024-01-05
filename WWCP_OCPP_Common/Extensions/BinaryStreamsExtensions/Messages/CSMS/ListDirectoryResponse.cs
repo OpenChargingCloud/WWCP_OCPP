@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -180,8 +182,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
                          JSON,
                          out var listDirectoryResponse,
                          out var errorResponse,
-                         CustomListDirectoryResponseParser) &&
-                listDirectoryResponse is not null)
+                         CustomListDirectoryResponseParser))
             {
                 return listDirectoryResponse;
             }
@@ -205,8 +206,8 @@ namespace cloud.charging.open.protocols.OCPP.CS
         /// <param name="CustomListDirectoryResponseParser">A delegate to parse custom list directory responses.</param>
         public static Boolean TryParse(CSMS.ListDirectoryRequest                            Request,
                                        JObject                                              JSON,
-                                       out ListDirectoryResponse?                           ListDirectoryResponse,
-                                       out String?                                          ErrorResponse,
+                                       [NotNullWhen(true)]  out ListDirectoryResponse?      ListDirectoryResponse,
+                                       [NotNullWhen(false)] out String?                     ErrorResponse,
                                        CustomJObjectParserDelegate<ListDirectoryResponse>?  CustomListDirectoryResponseParser   = null)
         {
 

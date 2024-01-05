@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -177,8 +179,7 @@ namespace cloud.charging.open.protocols.OCPP
                          NetworkPath,
                          out var binaryDataTransferRequest,
                          out var errorResponse,
-                         CustomDataTransferRequestParser) &&
-                binaryDataTransferRequest is not null)
+                         CustomDataTransferRequestParser))
             {
                 return binaryDataTransferRequest;
             }
@@ -190,34 +191,7 @@ namespace cloud.charging.open.protocols.OCPP
 
         #endregion
 
-        #region (static) TryParse(Binary, RequestId, NetworkingNodeId, NetworkPath, out BinaryDataTransferRequest, OnException = null)
-
-        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
-
-        /// <summary>
-        /// Try to parse the given binary representation of a BinaryDataTransfer request.
-        /// </summary>
-        /// <param name="Binary">The binary data to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="BinaryDataTransferRequest">The parsed BinaryDataTransfer request.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(Byte[]                          Binary,
-                                       Request_Id                      RequestId,
-                                       NetworkingNode_Id               NetworkingNodeId,
-                                       NetworkPath                     NetworkPath,
-                                       out BinaryDataTransferRequest?  BinaryDataTransferRequest,
-                                       out String?                     ErrorResponse)
-
-            => TryParse(Binary,
-                        RequestId,
-                        NetworkingNodeId,
-                        NetworkPath,
-                        out BinaryDataTransferRequest,
-                        out ErrorResponse,
-                        null);
-
+        #region (static) TryParse(Binary, RequestId, NetworkingNodeId, NetworkPath, out BinaryDataTransferRequest, out ErrorResponse, CustomBinaryDataTransferRequestParser = null)
 
         /// <summary>
         /// Try to parse the given binary representation of a BinaryDataTransfer request.
@@ -233,9 +207,9 @@ namespace cloud.charging.open.protocols.OCPP
                                        Request_Id                                              RequestId,
                                        NetworkingNode_Id                                       NetworkingNodeId,
                                        NetworkPath                                             NetworkPath,
-                                       out BinaryDataTransferRequest?                          BinaryDataTransferRequest,
-                                       out String?                                             ErrorResponse,
-                                       CustomBinaryParserDelegate<BinaryDataTransferRequest>?  CustomBinaryDataTransferRequestParser)
+                                       [NotNullWhen(true)]  out BinaryDataTransferRequest?     BinaryDataTransferRequest,
+                                       [NotNullWhen(false)] out String?                        ErrorResponse,
+                                       CustomBinaryParserDelegate<BinaryDataTransferRequest>?  CustomBinaryDataTransferRequestParser   = null)
         {
 
             try

@@ -436,12 +436,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
         // Binary Data Streams Extensions
 
+        #region OnDeleteFile
+
+        /// <summary>
+        /// An event sent whenever a DeleteFile request was received.
+        /// </summary>
+        event OnDeleteFileDelegate                     OnDeleteFile;
+
+        #endregion
+
         #region OnGetFile
 
         /// <summary>
         /// An event sent whenever a GetFile request was received.
         /// </summary>
         event OnGetFileDelegate                      OnGetFile;
+
+        #endregion
+
+        #region OnListDirectory
+
+        /// <summary>
+        /// An event sent whenever a ListDirectory request was received.
+        /// </summary>
+        event OnListDirectoryDelegate                  OnListDirectory;
 
         #endregion
 
@@ -454,14 +472,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
         #endregion
 
-        #region OnDeleteFile
-
-        /// <summary>
-        /// An event sent whenever a DeleteFile request was received.
-        /// </summary>
-        event OnDeleteFileDelegate                     OnDeleteFile;
-
-        #endregion
 
 
         // E2E Security Extensions

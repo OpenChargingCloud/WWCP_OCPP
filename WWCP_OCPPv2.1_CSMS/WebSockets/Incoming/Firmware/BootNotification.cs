@@ -130,7 +130,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      NetworkPath,
                                                      out var request,
                                                      out var errorResponse,
-                                                     CustomBootNotificationRequestParser) && request is not null) {
+                                                     CustomBootNotificationRequestParser)) {
 
                     #region Send OnBootNotificationRequest event
 

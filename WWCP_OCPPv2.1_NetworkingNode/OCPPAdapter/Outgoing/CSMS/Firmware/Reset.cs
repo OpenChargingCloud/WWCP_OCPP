@@ -98,20 +98,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     sendRequestState.JSONResponse is not null)
                 {
 
-                    if (ResetResponse.TryParse(Request,
-                                               sendRequestState.JSONResponse.Payload,
-                                               out var resetResponse,
-                                               out var errorResponse,
-                                               CustomResetResponseParser) &&
-                        resetResponse is not null)
+                    if (!ResetResponse.TryParse(Request,
+                                                sendRequestState.JSONResponse.Payload,
+                                                out response,
+                                                out var errorResponse,
+                                                CustomResetResponseParser))
                     {
-                        response = resetResponse;
+                        response = new ResetResponse(
+                                       Request,
+                                       Result.Format(errorResponse)
+                                   );
                     }
-
-                    response ??= new ResetResponse(
-                                     Request,
-                                     Result.Format(errorResponse)
-                                 );
 
                 }
 

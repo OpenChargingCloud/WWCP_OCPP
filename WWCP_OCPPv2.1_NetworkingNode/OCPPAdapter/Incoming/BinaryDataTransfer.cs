@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a BinaryDataTransfer request was received.
         /// </summary>
-        public event OnIncomingBinaryDataTransferDelegate?              OnIncomingBinaryDataTransfer;
+        public event OnIncomingBinaryDataTransferDelegate?              OnBinaryDataTransfer;
 
         /// <summary>
         /// An event sent whenever a response to a BinaryDataTransfer request was sent.
@@ -125,7 +125,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                        NetworkPath,
                                                        out var request,
                                                        out var errorResponse,
-                                                       CustomBinaryDataTransferRequestParser) && request is not null) {
+                                                       CustomBinaryDataTransferRequestParser)) {
 
                     #region Send OnIncomingBinaryDataTransferRequest event
 
@@ -149,7 +149,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     BinaryDataTransferResponse? response = null;
 
-                    var results = OnIncomingBinaryDataTransfer?.
+                    var results = OnBinaryDataTransfer?.
                                       GetInvocationList()?.
                                       SafeSelect(subscriber => (subscriber as OnIncomingBinaryDataTransferDelegate)?.Invoke(Timestamp.Now,
                                                                                                                             parentNetworkingNode,

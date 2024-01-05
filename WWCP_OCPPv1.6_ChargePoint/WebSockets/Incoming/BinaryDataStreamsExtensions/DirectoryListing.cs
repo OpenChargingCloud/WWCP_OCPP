@@ -130,7 +130,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                   NetworkPath,
                                                   out var request,
                                                   out var errorResponse,
-                                                  CustomListDirectoryRequestParser) && request is not null) {
+                                                  CustomListDirectoryRequestParser)) {
 
                     #region Send OnListDirectoryRequest event
 

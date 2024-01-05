@@ -103,13 +103,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnCustomerInformationDelegate? OnCustomerInformation;
 
 
-        // Binary Data Streams Extensions
-
-        public event OnGetFileDelegate?                      OnGetFile;
-        public event OnSendFileDelegate?                     OnSendFile;
-        public event OnDeleteFileDelegate?                   OnDeleteFile;
-
-
         // E2E Security Extensions
 
         public event OnAddSignaturePolicyDelegate?           OnAddSignaturePolicy;

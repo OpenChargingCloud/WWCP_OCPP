@@ -106,20 +106,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     sendRequestState.JSONResponse is not null)
                 {
 
-                    if (ListDirectoryResponse.TryParse(Request,
-                                                       sendRequestState.JSONResponse.Payload,
-                                                       out var listDirectoryResponse,
-                                                       out var errorResponse,
-                                                       CustomListDirectoryResponseParser) &&
-                        listDirectoryResponse is not null)
+                    if (!ListDirectoryResponse.TryParse(Request,
+                                                        sendRequestState.JSONResponse.Payload,
+                                                        out response,
+                                                        out var errorResponse,
+                                                        CustomListDirectoryResponseParser))
                     {
-                        response = listDirectoryResponse;
+                        response = new ListDirectoryResponse(
+                                       Request,
+                                       Result.Format(errorResponse)
+                                   );
                     }
-
-                    response ??= new ListDirectoryResponse(
-                                         Request,
-                                         Result.Format(errorResponse)
-                                     );
 
                 }
 

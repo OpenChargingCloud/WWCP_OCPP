@@ -17,7 +17,7 @@
 
 #region Usings
 
-using Newtonsoft.Json.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
@@ -170,8 +170,7 @@ namespace cloud.charging.open.protocols.OCPP
                          Binary,
                          out var binaryDataTransferResponse,
                          out var errorResponse,
-                         CustomBinaryDataTransferResponseParser) &&
-                binaryDataTransferResponse is not null)
+                         CustomBinaryDataTransferResponseParser))
             {
                 return binaryDataTransferResponse;
             }
@@ -195,8 +194,8 @@ namespace cloud.charging.open.protocols.OCPP
         /// <param name="CustomBinaryDataTransferResponseParser">A delegate to parse custom binary data transfer responses.</param>
         public static Boolean TryParse(BinaryDataTransferRequest                                Request,
                                        Byte[]                                                   Binary,
-                                       out BinaryDataTransferResponse?                          BinaryDataTransferResponse,
-                                       out String?                                              ErrorResponse,
+                                       [NotNullWhen(true)]  out BinaryDataTransferResponse?     BinaryDataTransferResponse,
+                                       [NotNullWhen(false)] out String?                         ErrorResponse,
                                        CustomBinaryParserDelegate<BinaryDataTransferResponse>?  CustomBinaryDataTransferResponseParser   = null)
         {
 

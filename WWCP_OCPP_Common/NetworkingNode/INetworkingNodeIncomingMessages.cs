@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using cloud.charging.open.protocols.OCPP.CSMS;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPP.NN
 {
 
@@ -32,12 +26,12 @@ namespace cloud.charging.open.protocols.OCPP.NN
 
         // Binary Data Streams Extensions
 
-        #region OnIncomingBinaryDataTransfer
+        #region OnBinaryDataTransfer
 
         /// <summary>
-        /// An event sent whenever an incoming BinaryDataTransfer request was received.
+        /// An event sent whenever a BinaryDataTransfer request was received.
         /// </summary>
-        event OnIncomingBinaryDataTransferDelegate     OnIncomingBinaryDataTransfer;
+        event OnIncomingBinaryDataTransferDelegate     OnBinaryDataTransfer;
 
         #endregion
 

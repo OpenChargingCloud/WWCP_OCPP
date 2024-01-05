@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -171,8 +173,8 @@ namespace cloud.charging.open.protocols.OCPP.CS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomDeleteFileResponseParser">A delegate to parse custom delete file responses.</param>
         public static DeleteFileResponse Parse(CSMS.DeleteFileRequest                            Request,
-                                             JObject                                         JSON,
-                                             CustomJObjectParserDelegate<DeleteFileResponse>?  CustomDeleteFileResponseParser   = null)
+                                               JObject                                           JSON,
+                                               CustomJObjectParserDelegate<DeleteFileResponse>?  CustomDeleteFileResponseParser   = null)
         {
 
 
@@ -180,8 +182,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
                          JSON,
                          out var deleteFileResponse,
                          out var errorResponse,
-                         CustomDeleteFileResponseParser) &&
-                deleteFileResponse is not null)
+                         CustomDeleteFileResponseParser))
             {
                 return deleteFileResponse;
             }
@@ -204,9 +205,9 @@ namespace cloud.charging.open.protocols.OCPP.CS
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomDeleteFileResponseParser">A delegate to parse custom delete file responses.</param>
         public static Boolean TryParse(CSMS.DeleteFileRequest                            Request,
-                                       JObject                                         JSON,
-                                       out DeleteFileResponse?                           DeleteFileResponse,
-                                       out String?                                     ErrorResponse,
+                                       JObject                                           JSON,
+                                       [NotNullWhen(true)]  out DeleteFileResponse?      DeleteFileResponse,
+                                       [NotNullWhen(false)] out String?                  ErrorResponse,
                                        CustomJObjectParserDelegate<DeleteFileResponse>?  CustomDeleteFileResponseParser   = null)
         {
 
@@ -328,9 +329,9 @@ namespace cloud.charging.open.protocols.OCPP.CS
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<DeleteFileResponse>?  CustomDeleteFileResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<StatusInfo>?        CustomStatusInfoSerializer         = null,
-                              CustomJObjectSerializerDelegate<Signature>?         CustomSignatureSerializer          = null,
-                              CustomJObjectSerializerDelegate<CustomData>?        CustomCustomDataSerializer         = null)
+                              CustomJObjectSerializerDelegate<StatusInfo>?          CustomStatusInfoSerializer           = null,
+                              CustomJObjectSerializerDelegate<Signature>?           CustomSignatureSerializer            = null,
+                              CustomJObjectSerializerDelegate<CustomData>?          CustomCustomDataSerializer           = null)
         {
 
             var json = JSONObject.Create(

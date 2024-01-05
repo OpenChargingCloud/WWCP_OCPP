@@ -57,9 +57,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region TransferData(Request)
+        #region DataTransfer(Request)
 
-        public async Task<DataTransferResponse> TransferData(DataTransferRequest Request)
+        public async Task<DataTransferResponse> DataTransfer(DataTransferRequest Request)
         {
 
             #region Send OnDataTransferRequest event
@@ -104,20 +104,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     sendRequestState.JSONResponse is not null)
                 {
 
-                    if (DataTransferResponse.TryParse(Request,
-                                                      sendRequestState.JSONResponse.Payload,
-                                                      out var dataTransferResponse,
-                                                      out var errorResponse,
-                                                      CustomDataTransferResponseParser) &&
-                        dataTransferResponse is not null)
+                    if (!DataTransferResponse.TryParse(Request,
+                                                       sendRequestState.JSONResponse.Payload,
+                                                       out response,
+                                                       out var errorResponse,
+                                                       CustomDataTransferResponseParser))
                     {
-                        response = dataTransferResponse;
+                        response = new DataTransferResponse(
+                                           Request,
+                                           Result.Format(errorResponse)
+                                       );
                     }
-
-                    response ??= new DataTransferResponse(
-                                         Request,
-                                         Result.Format(errorResponse)
-                                     );
 
                 }
 

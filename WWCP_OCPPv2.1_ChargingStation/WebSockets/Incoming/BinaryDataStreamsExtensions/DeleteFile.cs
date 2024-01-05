@@ -130,8 +130,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                NetworkPath,
                                                out var request,
                                                out var errorResponse,
-                                               CustomDeleteFileRequestParser) &&
-                    request is not null) {
+                                               CustomDeleteFileRequestParser)) {
 
                     #region Send OnDeleteFileRequest event
 

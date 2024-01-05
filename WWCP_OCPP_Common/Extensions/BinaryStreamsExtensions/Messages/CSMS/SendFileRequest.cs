@@ -217,8 +217,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                          NetworkPath,
                          out var sendFileRequest,
                          out var errorResponse,
-                         CustomSendFileRequestParser) &&
-                sendFileRequest is not null)
+                         CustomSendFileRequestParser))
             {
                 return sendFileRequest;
             }
@@ -230,34 +229,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
 
         #endregion
 
-        #region (static) TryParse(Binary, RequestId, NetworkingNodeId, NetworkPath, out SendFileRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
-
-        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
-
-        /// <summary>
-        /// Try to parse the given JSON representation of a SendFile request.
-        /// </summary>
-        /// <param name="Binary">The binary to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="SendFileRequest">The parsed SendFileRequest request.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(Byte[]                                     Binary,
-                                       Request_Id                                 RequestId,
-                                       NetworkingNode_Id                          NetworkingNodeId,
-                                       NetworkPath                                NetworkPath,
-                                       [NotNullWhen(true)]  out SendFileRequest?  SendFileRequest,
-                                       [NotNullWhen(false)] out String?           ErrorResponse)
-
-            => TryParse(Binary,
-                        RequestId,
-                        NetworkingNodeId,
-                        NetworkPath,
-                        out SendFileRequest,
-                        out ErrorResponse,
-                        null);
-
+        #region (static) TryParse(Binary, RequestId, NetworkingNodeId, NetworkPath, out SendFileRequest, out ErrorResponse, CustomSendFileRequestParser = null)
 
         /// <summary>
         /// Try to parse the given binary representation of a SendFile request.
@@ -275,7 +247,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                                        NetworkPath                                   NetworkPath,
                                        [NotNullWhen(true)]  out SendFileRequest?     SendFileRequest,
                                        [NotNullWhen(false)] out String?              ErrorResponse,
-                                       CustomBinaryParserDelegate<SendFileRequest>?  CustomSendFileRequestParser)
+                                       CustomBinaryParserDelegate<SendFileRequest>?  CustomSendFileRequestParser   = null)
         {
 
             try

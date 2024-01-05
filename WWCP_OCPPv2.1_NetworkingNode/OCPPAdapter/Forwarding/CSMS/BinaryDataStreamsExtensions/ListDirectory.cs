@@ -18,15 +18,11 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.NN;
-using cloud.charging.open.protocols.OCPPv2_1.CS;
-using cloud.charging.open.protocols.OCPPv2_1.CSMS;
-using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS;
-using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS;
+using cloud.charging.open.protocols.OCPP.CS;
+using cloud.charging.open.protocols.OCPP.CSMS;
 
 #endregion
 
@@ -41,30 +37,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Events
 
-        public event OnResetRequestFilterDelegate?      OnResetRequest;
+        public event OnListDirectoryRequestFilterDelegate?      OnListDirectoryRequest;
 
-        public event OnResetRequestFilteredDelegate?    OnResetRequestLogging;
+        public event OnListDirectoryRequestFilteredDelegate?    OnListDirectoryRequestLogging;
 
         #endregion
 
-        public async Task<ForwardingDecision<ResetRequest, ResetResponse>>
+        public async Task<ForwardingDecision<ListDirectoryRequest, ListDirectoryResponse>>
 
-            ProcessReset(ResetRequest          Request,
-                         IWebSocketConnection  Connection,
-                         CancellationToken     CancellationToken   = default)
+            ProcessListDirectory(ListDirectoryRequest  Request,
+                                 IWebSocketConnection  Connection,
+                                 CancellationToken     CancellationToken   = default)
 
         {
 
-            ForwardingDecision<ResetRequest, ResetResponse>? forwardingDecision = null;
+            #region Send OnListDirectoryRequest event
 
-            var requestFilter = OnResetRequest;
+            ForwardingDecision<ListDirectoryRequest, ListDirectoryResponse>? forwardingDecision = null;
+
+            var requestFilter = OnListDirectoryRequest;
             if (requestFilter is not null)
             {
                 try
                 {
 
                     var results = await Task.WhenAll(requestFilter.GetInvocationList().
-                                                     OfType <OnResetRequestFilterDelegate>().
+                                                     OfType <OnListDirectoryRequestFilterDelegate>().
                                                      Select (filterDelegate => filterDelegate.Invoke(Timestamp.Now,
                                                                                                      parentNetworkingNode,
                                                                                                      Connection,
@@ -75,10 +73,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     var response = results.First();
 
                     forwardingDecision = response.Result == ForwardingResult.DROP && response.DropResponse is null
-                                             ? new ForwardingDecision<ResetRequest, ResetResponse>(
+                                             ? new ForwardingDecision<ListDirectoryRequest, ListDirectoryResponse>(
                                                    response.Request,
                                                    ForwardingResult.DROP,
-                                                   new ResetResponse(
+                                                   new ListDirectoryResponse(
                                                        Request,
                                                        Result.Filtered("Default handler")
                                                    ),
@@ -91,39 +89,47 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
                     await HandleErrors(
                               nameof(TestNetworkingNode),
-                              nameof(OnResetRequest),
+                              nameof(OnListDirectoryRequest),
                               e
                           );
                 }
 
             }
 
+            #endregion
+
+            #region Default result
+
             forwardingDecision ??= DefaultResult == ForwardingResult.FORWARD
 
-                                       ? new ForwardingDecision<ResetRequest, ResetResponse>(
+                                       ? new ForwardingDecision<ListDirectoryRequest, ListDirectoryResponse>(
                                              Request,
                                              ForwardingResult.FORWARD
                                          )
 
-                                       : new ForwardingDecision<ResetRequest, ResetResponse>(
+                                       : new ForwardingDecision<ListDirectoryRequest, ListDirectoryResponse>(
                                              Request,
                                              ForwardingResult.DROP,
-                                             new ResetResponse(
+                                             new ListDirectoryResponse(
                                                  Request,
                                                  Result.Filtered("Default handler")
                                              ),
                                              "Default handler"
                                          );
 
+            #endregion
 
-            var resultLog = OnResetRequestLogging;
+
+            #region Send OnListDirectoryRequestLogging event
+
+            var resultLog = OnListDirectoryRequestLogging;
             if (resultLog is not null)
             {
                 try
                 {
 
                     await Task.WhenAll(resultLog.GetInvocationList().
-                                       OfType <OnResetRequestFilteredDelegate>().
+                                       OfType <OnListDirectoryRequestFilteredDelegate>().
                                        Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
                                                                                          parentNetworkingNode,
                                                                                          Connection,
@@ -136,12 +142,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
                     await HandleErrors(
                               nameof(TestNetworkingNode),
-                              nameof(OnResetRequestLogging),
+                              nameof(OnListDirectoryRequestLogging),
                               e
                           );
                 }
 
             }
+
+            #endregion
 
             return forwardingDecision;
 

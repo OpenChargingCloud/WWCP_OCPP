@@ -21,7 +21,6 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPP.CS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
@@ -119,20 +118,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     sendRequestState.BinaryResponse is not null)
                 {
 
-                    if (BinaryDataTransferResponse.TryParse(Request,
-                                                            sendRequestState.BinaryResponse.Payload,
-                                                            out var binaryDataTransferResponse,
-                                                            out var errorResponse,
-                                                            CustomBinaryDataTransferResponseParser) &&
-                        binaryDataTransferResponse is not null)
+                    if (!BinaryDataTransferResponse.TryParse(Request,
+                                                             sendRequestState.BinaryResponse.Payload,
+                                                             out response,
+                                                             out var errorResponse,
+                                                             CustomBinaryDataTransferResponseParser))
                     {
-                        response = binaryDataTransferResponse;
+                        response = new BinaryDataTransferResponse(
+                                           Request,
+                                           Result.Format(errorResponse)
+                                       );
                     }
-
-                    response ??= new BinaryDataTransferResponse(
-                                         Request,
-                                         Result.Format(errorResponse)
-                                     );
 
                 }
 

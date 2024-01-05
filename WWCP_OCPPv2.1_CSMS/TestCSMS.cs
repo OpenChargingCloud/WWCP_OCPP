@@ -8359,7 +8359,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Transfer the given data to the given charging station.
         /// </summary>
         /// <param name="Request">A DataTransfer request.</param>
-        public async Task<DataTransferResponse> TransferData(DataTransferRequest Request)
+        public async Task<DataTransferResponse> DataTransfer(DataTransferRequest Request)
         {
 
             #region Send OnDataTransferRequest event
@@ -8394,7 +8394,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await csmsChannel.TransferData(Request)
+                                      ? await csmsChannel.DataTransfer(Request)
 
                                       : new DataTransferResponse(
                                             Request,

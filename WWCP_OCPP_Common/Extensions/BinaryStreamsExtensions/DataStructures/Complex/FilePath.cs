@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -154,7 +156,8 @@ namespace cloud.charging.open.protocols.OCPP
         /// </summary>
         /// <param name="Text">A text representation of a file path.</param>
         /// <param name="FilePath">The parsed file path.</param>
-        public static Boolean TryParse(String Text, out FilePath FilePath)
+        public static Boolean TryParse(String                            Text,
+                                       [NotNullWhen(true)] out FilePath  FilePath)
         {
 
             Text = Text.Trim();

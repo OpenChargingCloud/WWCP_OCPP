@@ -106,20 +106,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     sendRequestState.JSONResponse is not null)
                 {
 
-                    if (SendFileResponse.TryParse(Request,
-                                                  sendRequestState.JSONResponse.Payload,
-                                                  out var sendFileResponse,
-                                                  out var errorResponse,
-                                                  CustomSendFileResponseParser) &&
-                        sendFileResponse is not null)
+                    if (!SendFileResponse.TryParse(Request,
+                                                   sendRequestState.JSONResponse.Payload,
+                                                   out response,
+                                                   out var errorResponse,
+                                                   CustomSendFileResponseParser))
                     {
-                        response = sendFileResponse;
+                        response = new SendFileResponse(
+                                           Request,
+                                           Result.Format(errorResponse)
+                                       );
                     }
-
-                    response ??= new SendFileResponse(
-                                         Request,
-                                         Result.Format(errorResponse)
-                                     );
 
                 }
 

@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -210,8 +212,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          NetworkPath,
                          out var resetRequest,
                          out var errorResponse,
-                         CustomResetRequestParser) &&
-                resetRequest is not null)
+                         CustomResetRequestParser))
             {
                 return resetRequest;
             }
@@ -224,33 +225,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
         #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out ResetRequest, out ErrorResponse, CustomResetRequestParser = null)
-
-        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
-
-        /// <summary>
-        /// Try to parse the given JSON representation of a reset request.
-        /// </summary>
-        /// <param name="ResetRequestJSON">The JSON to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="ResetRequest">The parsed reset request.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject            ResetRequestJSON,
-                                       Request_Id         RequestId,
-                                       NetworkingNode_Id  NetworkingNodeId,
-                                       NetworkPath        NetworkPath,
-                                       out ResetRequest?  ResetRequest,
-                                       out String?        ErrorResponse)
-
-            => TryParse(ResetRequestJSON,
-                        RequestId,
-                        NetworkingNodeId,
-                        NetworkPath,
-                        out ResetRequest,
-                        out ErrorResponse,
-                        null);
-
 
         /// <summary>
         /// Try to parse the given JSON representation of a reset request.
@@ -266,9 +240,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                        Request_Id                                  RequestId,
                                        NetworkingNode_Id                           NetworkingNodeId,
                                        NetworkPath                                 NetworkPath,
-                                       out ResetRequest?                           ResetRequest,
-                                       out String?                                 ErrorResponse,
-                                       CustomJObjectParserDelegate<ResetRequest>?  CustomResetRequestParser)
+                                       [NotNullWhen(true)]  out ResetRequest?      ResetRequest,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomJObjectParserDelegate<ResetRequest>?  CustomResetRequestParser   = null)
         {
 
             try

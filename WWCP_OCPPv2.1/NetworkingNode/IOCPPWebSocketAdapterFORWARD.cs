@@ -25,11 +25,14 @@ using cloud.charging.open.protocols.OCPP.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPP.CSMS;
 
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
+
+    #region OnBinaryDataTransferRequestFilter(ed)Delegate
 
     /// <summary>
     /// A BinaryDataTransfer request.
@@ -63,6 +66,156 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                     IWebSocketConnection                                                        Connection,
                                                     BinaryDataTransferRequest                                                   Request,
                                                     ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>   ForwardingDecision);
+
+    #endregion
+
+    #region OnDeleteFileRequestFilter(ed)Delegate
+
+    /// <summary>
+    /// A DeleteFile request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
+    public delegate Task<ForwardingDecision<DeleteFileRequest, DeleteFileResponse>>
+
+        OnDeleteFileRequestFilterDelegate(DateTime               Timestamp,
+                                          IEventSender           Sender,
+                                          IWebSocketConnection   Connection,
+                                          DeleteFileRequest      Request,
+                                          CancellationToken      CancellationToken);
+
+
+    /// <summary>
+    /// A DeleteFile request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="ForwardingDecision">The forwarding decision.</param>
+    public delegate Task
+
+        OnDeleteFileRequestFilteredDelegate(DateTime                                                    Timestamp,
+                                            IEventSender                                                Sender,
+                                            IWebSocketConnection                                        Connection,
+                                            DeleteFileRequest                                           Request,
+                                            ForwardingDecision<DeleteFileRequest, DeleteFileResponse>   ForwardingDecision);
+
+    #endregion
+
+    #region OnGetFileRequestFilter(ed)Delegate
+
+    /// <summary>
+    /// A GetFile request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
+    public delegate Task<ForwardingDecision<GetFileRequest, GetFileResponse>>
+
+        OnGetFileRequestFilterDelegate(DateTime               Timestamp,
+                                          IEventSender           Sender,
+                                          IWebSocketConnection   Connection,
+                                          GetFileRequest      Request,
+                                          CancellationToken      CancellationToken);
+
+
+    /// <summary>
+    /// A GetFile request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="ForwardingDecision">The forwarding decision.</param>
+    public delegate Task
+
+        OnGetFileRequestFilteredDelegate(DateTime                                                    Timestamp,
+                                            IEventSender                                                Sender,
+                                            IWebSocketConnection                                        Connection,
+                                            GetFileRequest                                           Request,
+                                            ForwardingDecision<GetFileRequest, GetFileResponse>   ForwardingDecision);
+
+    #endregion
+
+    #region OnListDirectoryRequestFilter(ed)Delegate
+
+    /// <summary>
+    /// A ListDirectory request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
+    public delegate Task<ForwardingDecision<ListDirectoryRequest, ListDirectoryResponse>>
+
+        OnListDirectoryRequestFilterDelegate(DateTime               Timestamp,
+                                          IEventSender           Sender,
+                                          IWebSocketConnection   Connection,
+                                          ListDirectoryRequest      Request,
+                                          CancellationToken      CancellationToken);
+
+
+    /// <summary>
+    /// A ListDirectory request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="ForwardingDecision">The forwarding decision.</param>
+    public delegate Task
+
+        OnListDirectoryRequestFilteredDelegate(DateTime                                                    Timestamp,
+                                            IEventSender                                                Sender,
+                                            IWebSocketConnection                                        Connection,
+                                            ListDirectoryRequest                                           Request,
+                                            ForwardingDecision<ListDirectoryRequest, ListDirectoryResponse>   ForwardingDecision);
+
+    #endregion
+
+    #region OnSendFileRequestFilter(ed)Delegate
+
+    /// <summary>
+    /// A SendFile request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
+    public delegate Task<ForwardingDecision<SendFileRequest, SendFileResponse>>
+
+        OnSendFileRequestFilterDelegate(DateTime               Timestamp,
+                                          IEventSender           Sender,
+                                          IWebSocketConnection   Connection,
+                                          SendFileRequest      Request,
+                                          CancellationToken      CancellationToken);
+
+
+    /// <summary>
+    /// A SendFile request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="ForwardingDecision">The forwarding decision.</param>
+    public delegate Task
+
+        OnSendFileRequestFilteredDelegate(DateTime                                                    Timestamp,
+                                            IEventSender                                                Sender,
+                                            IWebSocketConnection                                        Connection,
+                                            SendFileRequest                                           Request,
+                                            ForwardingDecision<SendFileRequest, SendFileResponse>   ForwardingDecision);
+
+    #endregion
 
 
 
@@ -183,8 +336,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         event OnDataTransferRequestFilterDelegate?          OnDataTransferRequest;
         event OnDataTransferRequestFilteredDelegate?        OnDataTransferRequestLogging;
 
+        #region BinaryDataStreamsExtensions
+
         event OnBinaryDataTransferRequestFilterDelegate?    OnBinaryDataTransferRequest;
         event OnBinaryDataTransferRequestFilteredDelegate?  OnBinaryDataTransferRequestLogging;
+
+        event OnDeleteFileRequestFilterDelegate?            OnDeleteFileRequest;
+        event OnDeleteFileRequestFilteredDelegate?          OnDeleteFileRequestLogging;
+
+        event OnGetFileRequestFilterDelegate?               OnGetFileRequest;
+        event OnGetFileRequestFilteredDelegate?             OnGetFileRequestLogging;
+
+        event OnListDirectoryRequestFilterDelegate?         OnListDirectoryRequest;
+        event OnListDirectoryRequestFilteredDelegate?       OnListDirectoryRequestLogging;
+
+        event OnSendFileRequestFilterDelegate?              OnSendFileRequest;
+        event OnSendFileRequestFilteredDelegate?            OnSendFileRequestLogging;
+
+        #endregion
+
 
         event OnBootNotificationRequestFilterDelegate?      OnBootNotificationRequest;
         event OnBootNotificationRequestFilteredDelegate?    OnBootNotificationRequestLogging;
@@ -206,7 +376,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         event OnCostUpdatedDelegate? OnCostUpdated;
         event OnCustomerInformationDelegate? OnCustomerInformation;
         event OnDeleteCertificateDelegate? OnDeleteCertificate;
-        event OnDeleteFileDelegate? OnDeleteFile;
+        
         event OnDeleteSignaturePolicyDelegate? OnDeleteSignaturePolicy;
         event OnDeleteUserRoleDelegate? OnDeleteUserRole;
         event OnGetBaseReportDelegate? OnGetBaseReport;
@@ -214,7 +384,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         event OnGetCompositeScheduleDelegate? OnGetCompositeSchedule;
         event OnGetDefaultChargingTariffDelegate? OnGetDefaultChargingTariff;
         event OnGetDisplayMessagesDelegate? OnGetDisplayMessages;
-        event OnGetFileDelegate? OnGetFile;
         event OnGetInstalledCertificateIdsDelegate? OnGetInstalledCertificateIds;
         event OnGetLocalListVersionDelegate? OnGetLocalListVersion;
         event OnGetLogDelegate? OnGetLog;
@@ -231,7 +400,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         event OnRequestStartTransactionDelegate? OnRequestStartTransaction;
         event OnRequestStopTransactionDelegate? OnRequestStopTransaction;
         event OnReserveNowDelegate? OnReserveNow;
-        event OnSendFileDelegate? OnSendFile;
         event OnSendLocalListDelegate? OnSendLocalList;
         event OnSetChargingProfileDelegate? OnSetChargingProfile;
         event OnSetDefaultChargingTariffDelegate? OnSetDefaultChargingTariff;
