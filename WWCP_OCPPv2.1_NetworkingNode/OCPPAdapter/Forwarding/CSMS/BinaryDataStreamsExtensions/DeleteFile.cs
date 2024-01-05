@@ -45,7 +45,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public async Task<ForwardingDecision<DeleteFileRequest, DeleteFileResponse>>
 
-            ProcessDeleteFile(DeleteFileRequest     Request,
+            Forward_DeleteFile(DeleteFileRequest     Request,
                               IWebSocketConnection  Connection,
                               CancellationToken     CancellationToken   = default)
 

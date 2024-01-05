@@ -17,14 +17,14 @@
 
 #region Usings
 
+using System.Reflection;
+using System.Collections.Concurrent;
+
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP.CS;
-using cloud.charging.open.protocols.OCPPv2_1.CS;
-using cloud.charging.open.protocols.OCPPv2_1.NN;
-using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
-using cloud.charging.open.protocols.OCPP.WebSockets;
 using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.NN;
 
 #endregion
 
@@ -39,7 +39,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Data
 
-        private readonly INetworkingNode parentNetworkingNode;
+        private   readonly  INetworkingNode                                 parentNetworkingNode;
+
+        protected readonly  Dictionary<String, MethodInfo>                  forwardingMessageProcessorsLookup   = [];
+
+        protected readonly  ConcurrentDictionary<Request_Id, ResponseInfo>  expectedResponses                   = [];
 
         #endregion
 
@@ -50,76 +54,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public IEnumerable<NetworkingNode_Id>  AnycastIdsAllowed    { get; }      = [];
 
         public IEnumerable<NetworkingNode_Id>  AnycastIdsDenied     { get; }      = [];
-
-        #endregion
-
-        #region Events
-
-        #region Charging Station <- CSMS
-
-        public event OnUpdateFirmwareDelegate? OnUpdateFirmware;
-        public event OnPublishFirmwareDelegate? OnPublishFirmware;
-        public event OnUnpublishFirmwareDelegate? OnUnpublishFirmware;
-        public event OnGetBaseReportDelegate? OnGetBaseReport;
-        public event OnGetReportDelegate? OnGetReport;
-        public event OnGetLogDelegate? OnGetLog;
-        public event OnSetVariablesDelegate? OnSetVariables;
-        public event OnGetVariablesDelegate? OnGetVariables;
-        public event OnSetMonitoringBaseDelegate? OnSetMonitoringBase;
-        public event OnGetMonitoringReportDelegate? OnGetMonitoringReport;
-        public event OnSetMonitoringLevelDelegate? OnSetMonitoringLevel;
-        public event OnSetVariableMonitoringDelegate? OnSetVariableMonitoring;
-        public event OnClearVariableMonitoringDelegate? OnClearVariableMonitoring;
-        public event OnSetNetworkProfileDelegate? OnSetNetworkProfile;
-        public event OnChangeAvailabilityDelegate? OnChangeAvailability;
-        public event OnTriggerMessageDelegate? OnTriggerMessage;
-        public event OnIncomingDataTransferDelegate? OnIncomingDataTransfer;
-        public event OnCertificateSignedDelegate? OnCertificateSigned;
-        public event OnInstallCertificateDelegate? OnInstallCertificate;
-        public event OnGetInstalledCertificateIdsDelegate? OnGetInstalledCertificateIds;
-        public event OnDeleteCertificateDelegate? OnDeleteCertificate;
-        public event OnNotifyCRLDelegate? OnNotifyCRL;
-        public event OnGetLocalListVersionDelegate? OnGetLocalListVersion;
-        public event OnSendLocalListDelegate? OnSendLocalList;
-        public event OnClearCacheDelegate? OnClearCache;
-        public event OnReserveNowDelegate? OnReserveNow;
-        public event OnCancelReservationDelegate? OnCancelReservation;
-        public event OnRequestStartTransactionDelegate? OnRequestStartTransaction;
-        public event OnRequestStopTransactionDelegate? OnRequestStopTransaction;
-        public event OnGetTransactionStatusDelegate? OnGetTransactionStatus;
-        public event OnSetChargingProfileDelegate? OnSetChargingProfile;
-        public event OnGetChargingProfilesDelegate? OnGetChargingProfiles;
-        public event OnClearChargingProfileDelegate? OnClearChargingProfile;
-        public event OnGetCompositeScheduleDelegate? OnGetCompositeSchedule;
-        public event OnUpdateDynamicScheduleDelegate? OnUpdateDynamicSchedule;
-        public event OnNotifyAllowedEnergyTransferDelegate? OnNotifyAllowedEnergyTransfer;
-        public event OnUsePriorityChargingDelegate? OnUsePriorityCharging;
-        public event OnUnlockConnectorDelegate? OnUnlockConnector;
-        public event OnAFRRSignalDelegate? OnAFRRSignal;
-        public event OnSetDisplayMessageDelegate? OnSetDisplayMessage;
-        public event OnGetDisplayMessagesDelegate? OnGetDisplayMessages;
-        public event OnClearDisplayMessageDelegate? OnClearDisplayMessage;
-        public event OnCostUpdatedDelegate? OnCostUpdated;
-        public event OnCustomerInformationDelegate? OnCustomerInformation;
-
-
-        // E2E Security Extensions
-
-        public event OnAddSignaturePolicyDelegate?           OnAddSignaturePolicy;
-        public event OnUpdateSignaturePolicyDelegate?        OnUpdateSignaturePolicy;
-        public event OnDeleteSignaturePolicyDelegate?        OnDeleteSignaturePolicy;
-        public event OnAddUserRoleDelegate?                  OnAddUserRole;
-        public event OnUpdateUserRoleDelegate?               OnUpdateUserRole;
-        public event OnDeleteUserRoleDelegate?               OnDeleteUserRole;
-
-
-        // E2E Charging Tariffs Extensions
-
-        public event OnSetDefaultChargingTariffDelegate?     OnSetDefaultChargingTariff;
-        public event OnGetDefaultChargingTariffDelegate?     OnGetDefaultChargingTariff;
-        public event OnRemoveDefaultChargingTariffDelegate?  OnRemoveDefaultChargingTariff;
-
-        #endregion
 
         #endregion
 
@@ -137,11 +71,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             this.parentNetworkingNode  = NetworkingNode;
             this.DefaultResult         = DefaultResult;
 
+            #region Reflect "Forward_XXX" messages and wire them...
+
+            foreach (var method in typeof(OCPPWebSocketAdapterFORWARD).
+                                       GetMethods(BindingFlags.Public | BindingFlags.Instance).
+                                            Where(method => method.Name.StartsWith("Forward_")))
+            {
+
+                var processorName = method.Name[8..];
+
+                if (forwardingMessageProcessorsLookup.ContainsKey(processorName))
+                    throw new ArgumentException("Duplicate processor name: " + processorName);
+
+                forwardingMessageProcessorsLookup.Add(processorName,
+                                                      method);
+
+            }
+
+            #endregion
+
         }
 
         #endregion
 
 
+        #region ProcessJSONRequestMessage   (JSONRequestMessage)
 
         public async Task ProcessJSONRequestMessage(OCPP_JSONRequestMessage JSONRequestMessage)
         {
@@ -156,21 +110,60 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         }
 
+        #endregion
+
+        #region ProcessJSONResponseMessage  (JSONResponseMessage)
+
         public async Task ProcessJSONResponseMessage(OCPP_JSONResponseMessage JSONResponseMessage)
         {
 
-            
+            if (expectedResponses.TryRemove(JSONResponseMessage.RequestId, out var responseInfo))
+            {
+
+                if (responseInfo.Timeout <= Timestamp.Now)
+                    //responseInfo.Context == JSONResponseMessage.Context)
+                {
+
+
+                }
+                else
+                    DebugX.Log($"Received a response message too late for request identification: {JSONResponseMessage.RequestId}!");
+
+            }
+            else
+                DebugX.Log($"Received a response message for an unknown request identification: {JSONResponseMessage.RequestId}!");
 
         }
+
+        #endregion
+
+        #region ProcessJSONErrorMessage     (JSONErrorMessage)
 
         public async Task ProcessJSONErrorMessage(OCPP_JSONErrorMessage JSONErrorMessage)
         {
 
-            
+            if (expectedResponses.TryRemove(JSONErrorMessage.RequestId, out var responseInfo))
+            {
+
+                if (responseInfo.Timeout <= Timestamp.Now)
+                    //responseInfo.Context == JSONResponseMessage.Context)
+                {
+
+
+                }
+                else
+                    DebugX.Log($"Received an error message too late for request identification: {JSONErrorMessage.RequestId}!");
+
+            }
+            else
+                DebugX.Log($"Received an error message for an unknown request identification: {JSONErrorMessage.RequestId}!");
 
         }
 
+        #endregion
 
+
+        #region ProcessBinaryRequestMessage (BinaryRequestMessage)
 
         public async Task ProcessBinaryRequestMessage(OCPP_BinaryRequestMessage BinaryRequestMessage)
         {
@@ -183,15 +176,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         }
 
+        #endregion
+
+        #region ProcessBinaryResponseMessage(BinaryResponseMessage)
+
         public async Task ProcessBinaryResponseMessage(OCPP_BinaryResponseMessage BinaryResponseMessage)
         {
 
-            
+            if (expectedResponses.TryRemove(BinaryResponseMessage.RequestId, out var responseInfo))
+            {
+
+                if (responseInfo.Timeout <= Timestamp.Now)
+                //responseInfo.Context == JSONResponseMessage.Context)
+                {
+
+
+                }
+                else
+                    DebugX.Log($"Received a binary response message too late for request identification: {BinaryResponseMessage.RequestId}!");
+
+            }
+            else
+                DebugX.Log($"Received a binary response message for an unknown request identification: {BinaryResponseMessage.RequestId}!");
 
         }
 
-
-
+        #endregion
 
 
         #region HandleErrors(Module, Caller, ExceptionOccured)

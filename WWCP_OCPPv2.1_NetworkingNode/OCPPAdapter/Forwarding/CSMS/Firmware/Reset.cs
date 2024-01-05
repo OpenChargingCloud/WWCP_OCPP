@@ -18,15 +18,11 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.NN;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
-using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS;
-using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS;
 
 #endregion
 
@@ -49,11 +45,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public async Task<ForwardingDecision<ResetRequest, ResetResponse>>
 
-            ProcessReset(ResetRequest          Request,
+            Forward_Reset(ResetRequest          Request,
                          IWebSocketConnection  Connection,
                          CancellationToken     CancellationToken   = default)
 
         {
+
+            #region Send OnResetRequest event
 
             ForwardingDecision<ResetRequest, ResetResponse>? forwardingDecision = null;
 
@@ -98,6 +96,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             }
 
+            #endregion
+
+            #region Default result
+
             forwardingDecision ??= DefaultResult == ForwardingResult.FORWARD
 
                                        ? new ForwardingDecision<ResetRequest, ResetResponse>(
@@ -115,6 +117,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                              "Default handler"
                                          );
 
+            #endregion
+
+
+            #region Send OnGetFileRequestLogging event
 
             var resultLog = OnResetRequestLogging;
             if (resultLog is not null)
@@ -142,6 +148,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 }
 
             }
+
+            #endregion
 
             return forwardingDecision;
 

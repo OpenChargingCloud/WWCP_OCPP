@@ -18,11 +18,9 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.NN;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
@@ -47,11 +45,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public async Task<ForwardingDecision<BootNotificationRequest, BootNotificationResponse>>
 
-            ProcessBootNotification(BootNotificationRequest  Request,
+            Forward_BootNotification(BootNotificationRequest  Request,
                                     IWebSocketConnection     Connection,
                                     CancellationToken        CancellationToken   = default)
 
         {
+
+            #region Send OnBootNotificationRequest event
 
             ForwardingDecision<BootNotificationRequest, BootNotificationResponse>? forwardingDecision = null;
 
@@ -96,6 +96,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             }
 
+            #endregion
+
+            #region Default result
+
             forwardingDecision ??= DefaultResult == ForwardingResult.FORWARD
 
                                        ? new ForwardingDecision<BootNotificationRequest, BootNotificationResponse>(
@@ -113,6 +117,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                              "Default handler"
                                          );
 
+            #endregion
+
+
+            #region Send OnGetFileRequestLogging event
 
             var resultLog = OnBootNotificationRequestLogging;
             if (resultLog is not null)
@@ -141,13 +149,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             }
 
+            #endregion
+
             return forwardingDecision;
 
         }
 
     }
-
-
-
 
 }

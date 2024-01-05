@@ -18,6 +18,7 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
@@ -43,9 +44,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public async Task<ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>>
 
-            ProcessBinaryDataTransfer(BinaryDataTransferRequest  Request,
-                                      IWebSocketConnection       Connection,
-                                      CancellationToken          CancellationToken   = default)
+            Forward_BinaryDataTransfer(BinaryDataTransferRequest  Request,
+                                       IWebSocketConnection       Connection,
+                                       CancellationToken          CancellationToken   = default)
 
         {
 

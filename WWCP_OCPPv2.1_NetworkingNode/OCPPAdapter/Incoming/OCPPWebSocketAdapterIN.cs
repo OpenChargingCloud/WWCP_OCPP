@@ -44,8 +44,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         private   readonly  INetworkingNode                 parentNetworkingNode;
 
-        protected readonly  Dictionary<String, MethodInfo>  incomingMessageProcessorsLookup     = [];
-        protected readonly  Dictionary<String, MethodInfo>  forwardingMessageProcessorsLookup   = [];
+        protected readonly  Dictionary<String, MethodInfo>  incomingMessageProcessorsLookup   = [];
 
         #endregion
 
