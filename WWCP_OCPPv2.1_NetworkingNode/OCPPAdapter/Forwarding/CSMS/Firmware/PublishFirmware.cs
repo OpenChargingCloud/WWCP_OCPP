@@ -47,8 +47,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task<ForwardingDecision<PublishFirmwareRequest, PublishFirmwareResponse>>
 
             Forward_PublishFirmware(PublishFirmwareRequest  Request,
-                                   IWebSocketConnection    Connection,
-                                   CancellationToken       CancellationToken   = default)
+                                    IWebSocketConnection    Connection,
+                                    CancellationToken       CancellationToken   = default)
 
         {
 

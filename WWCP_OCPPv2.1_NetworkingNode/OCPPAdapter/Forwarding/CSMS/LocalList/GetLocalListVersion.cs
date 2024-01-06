@@ -46,8 +46,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task<ForwardingDecision<GetLocalListVersionRequest, GetLocalListVersionResponse>>
 
             Forward_GetLocalListVersion(GetLocalListVersionRequest  Request,
-                                       IWebSocketConnection        Connection,
-                                       CancellationToken           CancellationToken   = default)
+                                        IWebSocketConnection        Connection,
+                                        CancellationToken           CancellationToken   = default)
 
         {
 

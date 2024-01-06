@@ -46,8 +46,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task<ForwardingDecision<NotifyReportRequest, NotifyReportResponse>>
 
             Forward_NotifyReport(NotifyReportRequest   Request,
-                                IWebSocketConnection  Connection,
-                                CancellationToken     CancellationToken   = default)
+                                 IWebSocketConnection  Connection,
+                                 CancellationToken     CancellationToken   = default)
 
         {
 
