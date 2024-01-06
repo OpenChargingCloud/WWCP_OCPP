@@ -37,9 +37,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     public delegate Task
 
         OnStatusNotificationRequestReceivedDelegate(DateTime                    Timestamp,
-                                            IEventSender                Sender,
-                                            IWebSocketConnection   Connection,
-                                            StatusNotificationRequest   Request);
+                                                    IEventSender                Sender,
+                                                    IWebSocketConnection        Connection,
+                                                    StatusNotificationRequest   Request);
 
 
     /// <summary>
@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnStatusNotificationDelegate(DateTime                    Timestamp,
                                      IEventSender                Sender,
-                                     IWebSocketConnection   Connection,
+                                     IWebSocketConnection        Connection,
                                      StatusNotificationRequest   Request,
                                      CancellationToken           CancellationToken);
 
@@ -71,10 +71,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     public delegate Task
 
         OnStatusNotificationResponseSentDelegate(DateTime                     Timestamp,
-                                             IEventSender                 Sender,
-                                             IWebSocketConnection    Connection,
-                                             StatusNotificationRequest    Request,
-                                             StatusNotificationResponse   Response,
-                                             TimeSpan                     Runtime);
+                                                 IEventSender                 Sender,
+                                                 IWebSocketConnection         Connection,
+                                                 StatusNotificationRequest    Request,
+                                                 StatusNotificationResponse   Response,
+                                                 TimeSpan                     Runtime);
 
 }

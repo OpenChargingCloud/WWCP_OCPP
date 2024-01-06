@@ -33,8 +33,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The reserve now request.</param>
     public delegate Task OnNotifyMonitoringReportRequestSentDelegate(DateTime                        Timestamp,
-                                                                 IEventSender                    Sender,
-                                                                 NotifyMonitoringReportRequest   Request);
+                                                                     IEventSender                    Sender,
+                                                                     NotifyMonitoringReportRequest   Request);
 
     /// <summary>
     /// A delegate called whenever a response to a NotifyMonitoringReport request was received.
@@ -45,9 +45,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnNotifyMonitoringReportResponseReceivedDelegate(DateTime                         Timestamp,
-                                                                  IEventSender                     Sender,
-                                                                  NotifyMonitoringReportRequest    Request,
-                                                                  NotifyMonitoringReportResponse   Response,
-                                                                  TimeSpan                         Runtime);
+                                                                          IEventSender                     Sender,
+                                                                          NotifyMonitoringReportRequest    Request,
+                                                                          NotifyMonitoringReportResponse   Response,
+                                                                          TimeSpan                         Runtime);
 
 }

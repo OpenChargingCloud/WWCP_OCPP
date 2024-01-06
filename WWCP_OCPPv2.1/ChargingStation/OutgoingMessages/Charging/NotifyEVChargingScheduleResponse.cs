@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -159,8 +161,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          JSON,
                          out var notifyEVChargingScheduleResponse,
                          out var errorResponse,
-                         CustomNotifyEVChargingScheduleResponseParser) &&
-                notifyEVChargingScheduleResponse is not null)
+                         CustomNotifyEVChargingScheduleResponseParser))
             {
                 return notifyEVChargingScheduleResponse;
             }
@@ -184,8 +185,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomNotifyEVChargingScheduleResponseParser">A delegate to parse custom notify EV charging schedule responses.</param>
         public static Boolean TryParse(CS.NotifyEVChargingScheduleRequest                              Request,
                                        JObject                                                         JSON,
-                                       out NotifyEVChargingScheduleResponse?                           NotifyEVChargingScheduleResponse,
-                                       out String?                                                     ErrorResponse,
+                                       [NotNullWhen(true)]  out NotifyEVChargingScheduleResponse?      NotifyEVChargingScheduleResponse,
+                                       [NotNullWhen(false)] out String?                                ErrorResponse,
                                        CustomJObjectParserDelegate<NotifyEVChargingScheduleResponse>?  CustomNotifyEVChargingScheduleResponseParser   = null)
         {
 

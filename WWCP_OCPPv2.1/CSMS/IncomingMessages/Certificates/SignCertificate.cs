@@ -36,10 +36,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Request">The stop transaction request.</param>
     public delegate Task
 
-        OnSignCertificateRequestReceivedDelegate(DateTime                    Timestamp,
-                                         IEventSender                Sender,
-                                         IWebSocketConnection   Connection,
-                                         SignCertificateRequest      Request);
+        OnSignCertificateRequestReceivedDelegate(DateTime                 Timestamp,
+                                                 IEventSender             Sender,
+                                                 IWebSocketConnection     Connection,
+                                                 SignCertificateRequest   Request);
 
 
     /// <summary>
@@ -52,11 +52,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<SignCertificateResponse>
 
-        OnSignCertificateDelegate(DateTime                    Timestamp,
-                                  IEventSender                Sender,
-                                  IWebSocketConnection   Connection,
-                                  SignCertificateRequest      Request,
-                                  CancellationToken           CancellationToken);
+        OnSignCertificateDelegate(DateTime                 Timestamp,
+                                  IEventSender             Sender,
+                                  IWebSocketConnection     Connection,
+                                  SignCertificateRequest   Request,
+                                  CancellationToken        CancellationToken);
 
 
     /// <summary>
@@ -70,11 +70,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task
 
-        OnSignCertificateResponseSentDelegate(DateTime                    Timestamp,
-                                          IEventSender                Sender,
-                                          IWebSocketConnection   Connection,
-                                          SignCertificateRequest      Request,
-                                          SignCertificateResponse     Response,
-                                          TimeSpan                    Runtime);
+        OnSignCertificateResponseSentDelegate(DateTime                  Timestamp,
+                                              IEventSender              Sender,
+                                              IWebSocketConnection      Connection,
+                                              SignCertificateRequest    Request,
+                                              SignCertificateResponse   Response,
+                                              TimeSpan                  Runtime);
 
 }

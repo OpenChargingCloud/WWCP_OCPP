@@ -37,9 +37,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     public delegate Task
 
         OnNotifyEVChargingScheduleRequestReceivedDelegate(DateTime                          Timestamp,
-                                                  IEventSender                      Sender,
-                                                  IWebSocketConnection         Connection,
-                                                  NotifyEVChargingScheduleRequest   Request);
+                                                          IEventSender                      Sender,
+                                                          IWebSocketConnection              Connection,
+                                                          NotifyEVChargingScheduleRequest   Request);
 
 
     /// <summary>
@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnNotifyEVChargingScheduleDelegate(DateTime                          Timestamp,
                                            IEventSender                      Sender,
-                                           IWebSocketConnection         Connection,
+                                           IWebSocketConnection              Connection,
                                            NotifyEVChargingScheduleRequest   Request,
                                            CancellationToken                 CancellationToken);
 
@@ -71,10 +71,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     public delegate Task
 
         OnNotifyEVChargingScheduleResponseSentDelegate(DateTime                           Timestamp,
-                                                   IEventSender                       Sender,
-                                                   IWebSocketConnection          Connection,
-                                                   NotifyEVChargingScheduleRequest    Request,
-                                                   NotifyEVChargingScheduleResponse   Response,
-                                                   TimeSpan                           Runtime);
+                                                       IEventSender                       Sender,
+                                                       IWebSocketConnection               Connection,
+                                                       NotifyEVChargingScheduleRequest    Request,
+                                                       NotifyEVChargingScheduleResponse   Response,
+                                                       TimeSpan                           Runtime);
 
 }

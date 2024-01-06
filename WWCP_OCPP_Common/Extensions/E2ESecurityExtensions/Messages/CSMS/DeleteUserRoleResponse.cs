@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -262,8 +264,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
                          JSON,
                          out var deleteUserRoleResponse,
                          out var errorResponse,
-                         CustomDeleteUserRoleResponseParser) &&
-                deleteUserRoleResponse is not null)
+                         CustomDeleteUserRoleResponseParser))
             {
                 return deleteUserRoleResponse;
             }
@@ -287,8 +288,8 @@ namespace cloud.charging.open.protocols.OCPP.CS
         /// <param name="CustomDeleteUserRoleResponseParser">A delegate to parse custom boot notification responses.</param>
         public static Boolean TryParse(CSMS.DeleteUserRoleRequest                            Request,
                                        JObject                                               JSON,
-                                       out DeleteUserRoleResponse?                           DeleteUserRoleResponse,
-                                       out String?                                           ErrorResponse,
+                                       [NotNullWhen(true)]  out DeleteUserRoleResponse?      DeleteUserRoleResponse,
+                                       [NotNullWhen(false)] out String?                      ErrorResponse,
                                        CustomJObjectParserDelegate<DeleteUserRoleResponse>?  CustomDeleteUserRoleResponseParser   = null)
         {
 
@@ -396,7 +397,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
 
                 if (CustomDeleteUserRoleResponseParser is not null)
                     DeleteUserRoleResponse = CustomDeleteUserRoleResponseParser(JSON,
-                                                                                    DeleteUserRoleResponse);
+                                                                                DeleteUserRoleResponse);
 
                 return true;
 
@@ -404,7 +405,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
             catch (Exception e)
             {
                 DeleteUserRoleResponse  = null;
-                ErrorResponse             = "The given JSON representation of a boot notification response is invalid: " + e.Message;
+                ErrorResponse           = "The given JSON representation of a boot notification response is invalid: " + e.Message;
                 return false;
             }
 

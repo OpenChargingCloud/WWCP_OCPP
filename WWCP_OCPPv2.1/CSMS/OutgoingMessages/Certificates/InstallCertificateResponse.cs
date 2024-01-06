@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -228,8 +230,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var installCertificateResponse,
                          out var errorResponse,
-                         CustomInstallCertificateResponseParser) &&
-                installCertificateResponse is not null)
+                         CustomInstallCertificateResponseParser))
             {
                 return installCertificateResponse;
             }
@@ -253,8 +254,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomInstallCertificateResponseParser">A delegate to parse custom install certificate responses.</param>
         public static Boolean TryParse(CSMS.InstallCertificateRequest                            Request,
                                        JObject                                                   JSON,
-                                       out InstallCertificateResponse?                           InstallCertificateResponse,
-                                       out String?                                               ErrorResponse,
+                                       [NotNullWhen(true)]  out InstallCertificateResponse?      InstallCertificateResponse,
+                                       [NotNullWhen(false)] out String?                          ErrorResponse,
                                        CustomJObjectParserDelegate<InstallCertificateResponse>?  CustomInstallCertificateResponseParser   = null)
         {
 

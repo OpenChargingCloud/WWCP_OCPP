@@ -17,11 +17,11 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-
-using cloud.charging.open.protocols.OCPP;
 
 #endregion
 
@@ -154,8 +154,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                          NetworkPath,
                          out var deleteSignaturePolicyRequest,
                          out var errorResponse,
-                         CustomDeleteSignaturePolicyRequestParser) &&
-                deleteSignaturePolicyRequest is not null)
+                         CustomDeleteSignaturePolicyRequestParser))
             {
                 return deleteSignaturePolicyRequest;
             }
@@ -168,33 +167,6 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         #endregion
 
         #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out DeleteSignaturePolicyRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
-
-        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
-
-        /// <summary>
-        /// Try to parse the given JSON representation of a DeleteSignaturePolicy request.
-        /// </summary>
-        /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="DeleteSignaturePolicyRequest">The parsed DeleteSignaturePolicy request.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                            JSON,
-                                       Request_Id                         RequestId,
-                                       NetworkingNode_Id                  NetworkingNodeId,
-                                       NetworkPath                        NetworkPath,
-                                       out DeleteSignaturePolicyRequest?  DeleteSignaturePolicyRequest,
-                                       out String?                        ErrorResponse)
-
-            => TryParse(JSON,
-                        RequestId,
-                        NetworkingNodeId,
-                        NetworkPath,
-                        out DeleteSignaturePolicyRequest,
-                        out ErrorResponse,
-                        null);
-
 
         /// <summary>
         /// Try to parse the given JSON representation of a DeleteSignaturePolicy request.
@@ -210,8 +182,8 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                                        Request_Id                                                  RequestId,
                                        NetworkingNode_Id                                           NetworkingNodeId,
                                        NetworkPath                                                 NetworkPath,
-                                       out DeleteSignaturePolicyRequest?                           DeleteSignaturePolicyRequest,
-                                       out String?                                                 ErrorResponse,
+                                       [NotNullWhen(true)]  out DeleteSignaturePolicyRequest?      DeleteSignaturePolicyRequest,
+                                       [NotNullWhen(false)] out String?                            ErrorResponse,
                                        CustomJObjectParserDelegate<DeleteSignaturePolicyRequest>?  CustomDeleteSignaturePolicyRequestParser)
         {
 

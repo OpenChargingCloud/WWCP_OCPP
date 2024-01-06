@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -163,8 +165,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          JSON,
                          out var reservationStatusUpdateResponse,
                          out var errorResponse,
-                         CustomReservationStatusUpdateResponseParser) &&
-                reservationStatusUpdateResponse is not null)
+                         CustomReservationStatusUpdateResponseParser))
             {
                 return reservationStatusUpdateResponse;
             }
@@ -188,8 +189,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomReservationStatusUpdateResponseParser">A delegate to parse custom reservation status update responses.</param>
         public static Boolean TryParse(CS.ReservationStatusUpdateRequest                              Request,
                                        JObject                                                        JSON,
-                                       out ReservationStatusUpdateResponse?                           ReservationStatusUpdateResponse,
-                                       out String?                                                    ErrorResponse,
+                                       [NotNullWhen(true)]  out ReservationStatusUpdateResponse?      ReservationStatusUpdateResponse,
+                                       [NotNullWhen(false)] out String?                               ErrorResponse,
                                        CustomJObjectParserDelegate<ReservationStatusUpdateResponse>?  CustomReservationStatusUpdateResponseParser   = null)
         {
 

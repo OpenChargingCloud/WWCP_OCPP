@@ -33,8 +33,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     public delegate Task OnReservationStatusUpdateRequestSentDelegate(DateTime                         Timestamp,
-                                                                  IEventSender                     Sender,
-                                                                  ReservationStatusUpdateRequest   Request);
+                                                                      IEventSender                     Sender,
+                                                                      ReservationStatusUpdateRequest   Request);
 
     /// <summary>
     /// A delegate called whenever a response to a ReservationStatusUpdate request was received.
@@ -45,9 +45,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnReservationStatusUpdateResponseReceivedDelegate(DateTime                          Timestamp,
-                                                                   IEventSender                      Sender,
-                                                                   ReservationStatusUpdateRequest    Request,
-                                                                   ReservationStatusUpdateResponse   Response,
-                                                                   TimeSpan                          Runtime);
+                                                                           IEventSender                      Sender,
+                                                                           ReservationStatusUpdateRequest    Request,
+                                                                           ReservationStatusUpdateResponse   Response,
+                                                                           TimeSpan                          Runtime);
 
 }

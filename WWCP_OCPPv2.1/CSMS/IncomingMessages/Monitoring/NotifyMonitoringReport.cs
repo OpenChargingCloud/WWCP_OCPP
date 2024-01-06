@@ -37,9 +37,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     public delegate Task
 
         OnNotifyMonitoringReportRequestReceivedDelegate(DateTime                        Timestamp,
-                                                IEventSender                    Sender,
-                                                IWebSocketConnection       Connection,
-                                                NotifyMonitoringReportRequest   Request);
+                                                        IEventSender                    Sender,
+                                                        IWebSocketConnection            Connection,
+                                                        NotifyMonitoringReportRequest   Request);
 
 
     /// <summary>
@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnNotifyMonitoringReportDelegate(DateTime                        Timestamp,
                                          IEventSender                    Sender,
-                                         IWebSocketConnection       Connection,
+                                         IWebSocketConnection            Connection,
                                          NotifyMonitoringReportRequest   Request,
                                          CancellationToken               CancellationToken);
 
@@ -71,10 +71,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     public delegate Task
 
         OnNotifyMonitoringReportResponseSentDelegate(DateTime                         Timestamp,
-                                                 IEventSender                     Sender,
-                                                 IWebSocketConnection        Connection,
-                                                 NotifyMonitoringReportRequest    Request,
-                                                 NotifyMonitoringReportResponse   Response,
-                                                 TimeSpan                         Runtime);
+                                                     IEventSender                     Sender,
+                                                     IWebSocketConnection             Connection,
+                                                     NotifyMonitoringReportRequest    Request,
+                                                     NotifyMonitoringReportResponse   Response,
+                                                     TimeSpan                         Runtime);
 
 }

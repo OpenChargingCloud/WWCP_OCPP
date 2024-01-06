@@ -37,9 +37,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     public delegate Task
 
         OnGetCertificateStatusRequestReceivedDelegate(DateTime                      Timestamp,
-                                              IEventSender                  Sender,
-                                              IWebSocketConnection     Connection,
-                                              GetCertificateStatusRequest   Request);
+                                                      IEventSender                  Sender,
+                                                      IWebSocketConnection          Connection,
+                                                      GetCertificateStatusRequest   Request);
 
 
     /// <summary>
@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnGetCertificateStatusDelegate(DateTime                      Timestamp,
                                        IEventSender                  Sender,
-                                       IWebSocketConnection     Connection,
+                                       IWebSocketConnection          Connection,
                                        GetCertificateStatusRequest   Request,
                                        CancellationToken             CancellationToken);
 
@@ -71,10 +71,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     public delegate Task
 
         OnGetCertificateStatusResponseSentDelegate(DateTime                       Timestamp,
-                                               IEventSender                   Sender,
-                                               IWebSocketConnection      Connection,
-                                               GetCertificateStatusRequest    Request,
-                                               GetCertificateStatusResponse   Response,
-                                               TimeSpan                       Runtime);
+                                                   IEventSender                   Sender,
+                                                   IWebSocketConnection           Connection,
+                                                   GetCertificateStatusRequest    Request,
+                                                   GetCertificateStatusResponse   Response,
+                                                   TimeSpan                       Runtime);
 
 }

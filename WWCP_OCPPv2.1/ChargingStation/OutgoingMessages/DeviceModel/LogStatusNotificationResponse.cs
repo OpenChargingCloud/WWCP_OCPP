@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -163,8 +165,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          JSON,
                          out var logStatusNotificationResponse,
                          out var errorResponse,
-                         CustomLogStatusNotificationResponseParser) &&
-                logStatusNotificationResponse is not null)
+                         CustomLogStatusNotificationResponseParser))
             {
                 return logStatusNotificationResponse;
             }
@@ -188,8 +189,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomLogStatusNotificationResponseParser">A delegate to parse custom log status notification responses.</param>
         public static Boolean TryParse(CS.LogStatusNotificationRequest                              Request,
                                        JObject                                                      JSON,
-                                       out LogStatusNotificationResponse?                           LogStatusNotificationResponse,
-                                       out String?                                                  ErrorResponse,
+                                       [NotNullWhen(true)]  out LogStatusNotificationResponse?      LogStatusNotificationResponse,
+                                       [NotNullWhen(false)] out String?                             ErrorResponse,
                                        CustomJObjectParserDelegate<LogStatusNotificationResponse>?  CustomLogStatusNotificationResponseParser   = null)
         {
 

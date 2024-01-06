@@ -37,9 +37,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     public delegate Task
 
         OnCustomerInformationRequestReceivedDelegate(DateTime                     Timestamp,
-                                             IEventSender                 Sender,
-                                             IWebSocketConnection         Connection,
-                                             CustomerInformationRequest   Request);
+                                                     IEventSender                 Sender,
+                                                     IWebSocketConnection         Connection,
+                                                     CustomerInformationRequest   Request);
 
 
     /// <summary>
@@ -71,10 +71,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     public delegate Task
 
         OnCustomerInformationResponseSentDelegate(DateTime                      Timestamp,
-                                              IEventSender                  Sender,
-                                              IWebSocketConnection          Connection,
-                                              CustomerInformationRequest    Request,
-                                              CustomerInformationResponse   Response,
-                                              TimeSpan                      Runtime);
+                                                  IEventSender                  Sender,
+                                                  IWebSocketConnection          Connection,
+                                                  CustomerInformationRequest    Request,
+                                                  CustomerInformationResponse   Response,
+                                                  TimeSpan                      Runtime);
 
 }

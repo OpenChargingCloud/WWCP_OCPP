@@ -37,9 +37,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     public delegate Task
 
         OnSetNetworkProfileRequestReceivedDelegate(DateTime                   Timestamp,
-                                           IEventSender               Sender,
-                                           IWebSocketConnection       Connection,
-                                           SetNetworkProfileRequest   Request);
+                                                   IEventSender               Sender,
+                                                   IWebSocketConnection       Connection,
+                                                   SetNetworkProfileRequest   Request);
 
 
     /// <summary>
@@ -71,10 +71,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     public delegate Task
 
         OnSetNetworkProfileResponseSentDelegate(DateTime                    Timestamp,
-                                            IEventSender                Sender,
-                                            IWebSocketConnection        Connection,
-                                            SetNetworkProfileRequest    Request,
-                                            SetNetworkProfileResponse   Response,
-                                            TimeSpan                    Runtime);
+                                                IEventSender                Sender,
+                                                IWebSocketConnection        Connection,
+                                                SetNetworkProfileRequest    Request,
+                                                SetNetworkProfileResponse   Response,
+                                                TimeSpan                    Runtime);
 
 }

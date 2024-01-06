@@ -37,9 +37,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     public delegate Task
 
         OnGetLogRequestReceivedDelegate(DateTime               Timestamp,
-                                IEventSender           Sender,
-                                IWebSocketConnection   Connection,
-                                GetLogRequest          Request);
+                                        IEventSender           Sender,
+                                        IWebSocketConnection   Connection,
+                                        GetLogRequest          Request);
 
 
     /// <summary>
@@ -71,10 +71,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     public delegate Task
 
         OnGetLogResponseSentDelegate(DateTime               Timestamp,
-                                 IEventSender           Sender,
-                                 IWebSocketConnection   Connection,
-                                 GetLogRequest          Request,
-                                 GetLogResponse         Response,
-                                 TimeSpan               Runtime);
+                                     IEventSender           Sender,
+                                     IWebSocketConnection   Connection,
+                                     GetLogRequest          Request,
+                                     GetLogResponse         Response,
+                                     TimeSpan               Runtime);
 
 }

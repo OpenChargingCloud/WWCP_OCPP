@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -212,8 +214,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          NetworkPath,
                          out var clearedChargingLimitRequest,
                          out var errorResponse,
-                         CustomClearedChargingLimitRequestParser) &&
-                clearedChargingLimitRequest is not null)
+                         CustomClearedChargingLimitRequestParser))
             {
                 return clearedChargingLimitRequest;
             }
@@ -226,33 +227,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
         #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out ClearedChargingLimitRequest, out ErrorResponse, CustomClearedChargingLimitRequestParser = null)
-
-        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
-
-        /// <summary>
-        /// Try to parse the given JSON representation of a cleared charging limit request.
-        /// </summary>
-        /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="ClearedChargingLimitRequest">The parsed cleared charging limit request.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                           JSON,
-                                       Request_Id                        RequestId,
-                                       NetworkingNode_Id                 NetworkingNodeId,
-                                       NetworkPath                       NetworkPath,
-                                       out ClearedChargingLimitRequest?  ClearedChargingLimitRequest,
-                                       out String?                       ErrorResponse)
-
-            => TryParse(JSON,
-                        RequestId,
-                        NetworkingNodeId,
-                        NetworkPath,
-                        out ClearedChargingLimitRequest,
-                        out ErrorResponse,
-                        null);
-
 
         /// <summary>
         /// Try to parse the given JSON representation of a cleared charging limit request.
@@ -268,8 +242,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                        Request_Id                                                 RequestId,
                                        NetworkingNode_Id                                          NetworkingNodeId,
                                        NetworkPath                                                NetworkPath,
-                                       out ClearedChargingLimitRequest?                           ClearedChargingLimitRequest,
-                                       out String?                                                ErrorResponse,
+                                       [NotNullWhen(true)]  out ClearedChargingLimitRequest?      ClearedChargingLimitRequest,
+                                       [NotNullWhen(false)] out String?                           ErrorResponse,
                                        CustomJObjectParserDelegate<ClearedChargingLimitRequest>?  CustomClearedChargingLimitRequestParser)
         {
 

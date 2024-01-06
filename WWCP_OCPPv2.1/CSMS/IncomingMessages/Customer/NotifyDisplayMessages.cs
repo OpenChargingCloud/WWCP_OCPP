@@ -37,9 +37,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     public delegate Task
 
         OnNotifyDisplayMessagesRequestReceivedDelegate(DateTime                       Timestamp,
-                                               IEventSender                   Sender,
-                                               IWebSocketConnection      Connection,
-                                               NotifyDisplayMessagesRequest   Request);
+                                                       IEventSender                   Sender,
+                                                       IWebSocketConnection           Connection,
+                                                       NotifyDisplayMessagesRequest   Request);
 
 
     /// <summary>
@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnNotifyDisplayMessagesDelegate(DateTime                       Timestamp,
                                         IEventSender                   Sender,
-                                        IWebSocketConnection      Connection,
+                                        IWebSocketConnection           Connection,
                                         NotifyDisplayMessagesRequest   Request,
                                         CancellationToken              CancellationToken);
 
@@ -71,10 +71,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     public delegate Task
 
         OnNotifyDisplayMessagesResponseSentDelegate(DateTime                        Timestamp,
-                                                IEventSender                    Sender,
-                                                IWebSocketConnection       Connection,
-                                                NotifyDisplayMessagesRequest    Request,
-                                                NotifyDisplayMessagesResponse   Response,
-                                                TimeSpan                        Runtime);
+                                                    IEventSender                    Sender,
+                                                    IWebSocketConnection            Connection,
+                                                    NotifyDisplayMessagesRequest    Request,
+                                                    NotifyDisplayMessagesResponse   Response,
+                                                    TimeSpan                        Runtime);
 
 }

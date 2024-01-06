@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -262,8 +264,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
                          JSON,
                          out var deleteSignaturePolicyResponse,
                          out var errorResponse,
-                         CustomDeleteSignaturePolicyResponseParser) &&
-                deleteSignaturePolicyResponse is not null)
+                         CustomDeleteSignaturePolicyResponseParser))
             {
                 return deleteSignaturePolicyResponse;
             }
@@ -287,8 +288,8 @@ namespace cloud.charging.open.protocols.OCPP.CS
         /// <param name="CustomDeleteSignaturePolicyResponseParser">A delegate to parse custom boot notification responses.</param>
         public static Boolean TryParse(CSMS.DeleteSignaturePolicyRequest                            Request,
                                        JObject                                                      JSON,
-                                       out DeleteSignaturePolicyResponse?                           DeleteSignaturePolicyResponse,
-                                       out String?                                                  ErrorResponse,
+                                       [NotNullWhen(true)]  out DeleteSignaturePolicyResponse?      DeleteSignaturePolicyResponse,
+                                       [NotNullWhen(false)] out String?                             ErrorResponse,
                                        CustomJObjectParserDelegate<DeleteSignaturePolicyResponse>?  CustomDeleteSignaturePolicyResponseParser   = null)
         {
 

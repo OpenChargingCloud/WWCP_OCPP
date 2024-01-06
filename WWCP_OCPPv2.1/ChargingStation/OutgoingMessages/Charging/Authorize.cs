@@ -33,8 +33,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Sender">The sender of the authorize request.</param>
     /// <param name="Request">The authorize request.</param>
     public delegate Task OnAuthorizeRequestSentDelegate(DateTime           Timestamp,
-                                                    IEventSender       Sender,
-                                                    AuthorizeRequest   Request);
+                                                        IEventSender       Sender,
+                                                        AuthorizeRequest   Request);
 
     /// <summary>
     /// A delegate called whenever a response to an Authorize request was received.
@@ -45,9 +45,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Response">The authorize response.</param>
     /// <param name="Runtime">The runtime of the authorize request.</param>
     public delegate Task OnAuthorizeResponseReceivedDelegate(DateTime            Timestamp,
-                                                     IEventSender        Sender,
-                                                     AuthorizeRequest    Request,
-                                                     AuthorizeResponse   Response,
-                                                     TimeSpan            Runtime);
+                                                             IEventSender        Sender,
+                                                             AuthorizeRequest    Request,
+                                                             AuthorizeResponse   Response,
+                                                             TimeSpan            Runtime);
 
 }

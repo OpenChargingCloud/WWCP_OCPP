@@ -37,9 +37,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     public delegate Task
 
         OnGetDisplayMessagesRequestReceivedDelegate(DateTime                    Timestamp,
-                                            IEventSender                Sender,
-                                            IWebSocketConnection        Connection,
-                                            GetDisplayMessagesRequest   Request);
+                                                    IEventSender                Sender,
+                                                    IWebSocketConnection        Connection,
+                                                    GetDisplayMessagesRequest   Request);
 
 
     /// <summary>
@@ -71,10 +71,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     public delegate Task
 
         OnGetDisplayMessagesResponseSentDelegate(DateTime                     Timestamp,
-                                             IEventSender                 Sender,
-                                             IWebSocketConnection         Connection,
-                                             GetDisplayMessagesRequest    Request,
-                                             GetDisplayMessagesResponse   Response,
-                                             TimeSpan                     Runtime);
+                                                 IEventSender                 Sender,
+                                                 IWebSocketConnection         Connection,
+                                                 GetDisplayMessagesRequest    Request,
+                                                 GetDisplayMessagesResponse   Response,
+                                                 TimeSpan                     Runtime);
 
 }

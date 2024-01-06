@@ -37,9 +37,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     public delegate Task
 
         OnDeleteCertificateRequestReceivedDelegate(DateTime                   Timestamp,
-                                           IEventSender               Sender,
-                                           IWebSocketConnection       Connection,
-                                           DeleteCertificateRequest   Request);
+                                                   IEventSender               Sender,
+                                                   IWebSocketConnection       Connection,
+                                                   DeleteCertificateRequest   Request);
 
 
     /// <summary>
@@ -71,10 +71,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     public delegate Task
 
         OnDeleteCertificateResponseSentDelegate(DateTime                    Timestamp,
-                                            IEventSender                Sender,
-                                            IWebSocketConnection        Connection,
-                                            DeleteCertificateRequest    Request,
-                                            DeleteCertificateResponse   Response,
-                                            TimeSpan                    Runtime);
+                                                IEventSender                Sender,
+                                                IWebSocketConnection        Connection,
+                                                DeleteCertificateRequest    Request,
+                                                DeleteCertificateResponse   Response,
+                                                TimeSpan                    Runtime);
 
 }

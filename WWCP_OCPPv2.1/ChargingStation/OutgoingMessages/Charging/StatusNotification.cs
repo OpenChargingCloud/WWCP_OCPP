@@ -33,8 +33,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     public delegate Task OnStatusNotificationRequestSentDelegate(DateTime                    Timestamp,
-                                                             IEventSender                Sender,
-                                                             StatusNotificationRequest   Request);
+                                                                 IEventSender                Sender,
+                                                                 StatusNotificationRequest   Request);
 
     /// <summary>
     /// A delegate called whenever a response to a StatusNotification request was received.
@@ -45,9 +45,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnStatusNotificationResponseReceivedDelegate(DateTime                     Timestamp,
-                                                              IEventSender                 Sender,
-                                                              StatusNotificationRequest    Request,
-                                                              StatusNotificationResponse   Response,
-                                                              TimeSpan                     Runtime);
+                                                                      IEventSender                 Sender,
+                                                                      StatusNotificationRequest    Request,
+                                                                      StatusNotificationResponse   Response,
+                                                                      TimeSpan                     Runtime);
 
 }

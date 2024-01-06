@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -228,8 +230,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          NetworkPath,
                          out var signCertificateRequest,
                          out var errorResponse,
-                         CustomSignCertificateRequestParser) &&
-                signCertificateRequest is not null)
+                         CustomSignCertificateRequestParser))
             {
                 return signCertificateRequest;
             }
@@ -242,33 +243,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
         #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out SignCertificateRequest, out ErrorResponse, CustomSignCertificateRequestParser = null)
-
-        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
-
-        /// <summary>
-        /// Try to parse the given JSON representation of a sign certificate request.
-        /// </summary>
-        /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="SignCertificateRequest">The parsed sign certificate request.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                      JSON,
-                                       Request_Id                   RequestId,
-                                       NetworkingNode_Id            NetworkingNodeId,
-                                       NetworkPath                  NetworkPath,
-                                       out SignCertificateRequest?  SignCertificateRequest,
-                                       out String?                  ErrorResponse)
-
-            => TryParse(JSON,
-                        RequestId,
-                        NetworkingNodeId,
-                        NetworkPath,
-                        out SignCertificateRequest,
-                        out ErrorResponse,
-                        null);
-
 
         /// <summary>
         /// Try to parse the given JSON representation of a sign certificate request.
@@ -284,8 +258,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                        Request_Id                                            RequestId,
                                        NetworkingNode_Id                                     NetworkingNodeId,
                                        NetworkPath                                           NetworkPath,
-                                       out SignCertificateRequest?                           SignCertificateRequest,
-                                       out String?                                           ErrorResponse,
+                                       [NotNullWhen(true)]  out SignCertificateRequest?      SignCertificateRequest,
+                                       [NotNullWhen(false)] out String?                      ErrorResponse,
                                        CustomJObjectParserDelegate<SignCertificateRequest>?  CustomSignCertificateRequestParser)
         {
 

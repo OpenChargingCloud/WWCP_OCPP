@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -228,8 +230,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var deleteCertificateResponse,
                          out var errorResponse,
-                         CustomDeleteCertificateResponseParser) &&
-                deleteCertificateResponse is not null)
+                         CustomDeleteCertificateResponseParser))
             {
                 return deleteCertificateResponse;
             }
@@ -253,8 +254,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomDeleteCertificateResponseParser">A delegate to parse custom delete certificate responses.</param>
         public static Boolean TryParse(CSMS.DeleteCertificateRequest                            Request,
                                        JObject                                                  JSON,
-                                       out DeleteCertificateResponse?                           DeleteCertificateResponse,
-                                       out String?                                              ErrorResponse,
+                                       [NotNullWhen(true)]  out DeleteCertificateResponse?      DeleteCertificateResponse,
+                                       [NotNullWhen(false)] out String?                         ErrorResponse,
                                        CustomJObjectParserDelegate<DeleteCertificateResponse>?  CustomDeleteCertificateResponseParser   = null)
         {
 

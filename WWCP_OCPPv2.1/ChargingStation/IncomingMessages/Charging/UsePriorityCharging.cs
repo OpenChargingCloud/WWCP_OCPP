@@ -37,9 +37,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     public delegate Task
 
         OnUsePriorityChargingRequestReceivedDelegate(DateTime                     Timestamp,
-                                             IEventSender                 Sender,
-                                             IWebSocketConnection         Connection,
-                                             UsePriorityChargingRequest   Request);
+                                                     IEventSender                 Sender,
+                                                     IWebSocketConnection         Connection,
+                                                     UsePriorityChargingRequest   Request);
 
 
     /// <summary>
@@ -71,10 +71,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     public delegate Task
 
         OnUsePriorityChargingResponseSentDelegate(DateTime                      Timestamp,
-                                              IEventSender                  Sender,
-                                              IWebSocketConnection          Connection,
-                                              UsePriorityChargingRequest    Request,
-                                              UsePriorityChargingResponse   Response,
-                                              TimeSpan                      Runtime);
+                                                  IEventSender                  Sender,
+                                                  IWebSocketConnection          Connection,
+                                                  UsePriorityChargingRequest    Request,
+                                                  UsePriorityChargingResponse   Response,
+                                                  TimeSpan                      Runtime);
 
 }

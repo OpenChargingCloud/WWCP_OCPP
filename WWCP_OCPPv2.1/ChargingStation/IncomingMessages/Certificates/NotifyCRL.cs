@@ -37,9 +37,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     public delegate Task
 
         OnNotifyCRLRequestReceivedDelegate(DateTime               Timestamp,
-                                   IEventSender           Sender,
-                                   IWebSocketConnection   Connection,
-                                   NotifyCRLRequest       Request);
+                                           IEventSender           Sender,
+                                           IWebSocketConnection   Connection,
+                                           NotifyCRLRequest       Request);
 
 
     /// <summary>
@@ -70,10 +70,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     public delegate Task
 
         OnNotifyCRLResponseSentDelegate(DateTime               Timestamp,
-                                    IEventSender           Sender,
-                                    IWebSocketConnection   Connection,
-                                    NotifyCRLRequest       Request,
-                                    NotifyCRLResponse      Response,
-                                    TimeSpan               Runtime);
+                                        IEventSender           Sender,
+                                        IWebSocketConnection   Connection,
+                                        NotifyCRLRequest       Request,
+                                        NotifyCRLResponse      Response,
+                                        TimeSpan               Runtime);
 
 }

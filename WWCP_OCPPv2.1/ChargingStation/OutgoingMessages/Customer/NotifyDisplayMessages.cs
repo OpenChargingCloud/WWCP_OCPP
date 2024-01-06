@@ -33,8 +33,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     public delegate Task OnNotifyDisplayMessagesRequestSentDelegate(DateTime                       Timestamp,
-                                                                IEventSender                   Sender,
-                                                                NotifyDisplayMessagesRequest   Request);
+                                                                    IEventSender                   Sender,
+                                                                    NotifyDisplayMessagesRequest   Request);
 
     /// <summary>
     /// A delegate called whenever a response to a NotifyDisplayMessages request was received.
@@ -45,9 +45,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnNotifyDisplayMessagesResponseReceivedDelegate(DateTime                        Timestamp,
-                                                                 IEventSender                    Sender,
-                                                                 NotifyDisplayMessagesRequest    Request,
-                                                                 NotifyDisplayMessagesResponse   Response,
-                                                                 TimeSpan                        Runtime);
+                                                                         IEventSender                    Sender,
+                                                                         NotifyDisplayMessagesRequest    Request,
+                                                                         NotifyDisplayMessagesResponse   Response,
+                                                                         TimeSpan                        Runtime);
 
 }

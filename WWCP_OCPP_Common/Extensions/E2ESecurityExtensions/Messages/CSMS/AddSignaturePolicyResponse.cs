@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -160,8 +162,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
                          JSON,
                          out var addSignaturePolicyResponse,
                          out var errorResponse,
-                         CustomAddSignaturePolicyResponseParser) &&
-                addSignaturePolicyResponse is not null)
+                         CustomAddSignaturePolicyResponseParser))
             {
                 return addSignaturePolicyResponse;
             }
@@ -185,8 +186,8 @@ namespace cloud.charging.open.protocols.OCPP.CS
         /// <param name="CustomAddSignaturePolicyResponseParser">A delegate to parse custom add signature policy responses.</param>
         public static Boolean TryParse(CSMS.AddSignaturePolicyRequest                            Request,
                                        JObject                                                   JSON,
-                                       out AddSignaturePolicyResponse?                           AddSignaturePolicyResponse,
-                                       out String?                                               ErrorResponse,
+                                       [NotNullWhen(true)]  out AddSignaturePolicyResponse?      AddSignaturePolicyResponse,
+                                       [NotNullWhen(false)] out String?                          ErrorResponse,
                                        CustomJObjectParserDelegate<AddSignaturePolicyResponse>?  CustomAddSignaturePolicyResponseParser   = null)
         {
 
@@ -270,7 +271,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
 
                 if (CustomAddSignaturePolicyResponseParser is not null)
                     AddSignaturePolicyResponse = CustomAddSignaturePolicyResponseParser(JSON,
-                                                                                    AddSignaturePolicyResponse);
+                                                                                        AddSignaturePolicyResponse);
 
                 return true;
 
@@ -278,7 +279,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
             catch (Exception e)
             {
                 AddSignaturePolicyResponse  = null;
-                ErrorResponse             = "The given JSON representation of an add signature policy response is invalid: " + e.Message;
+                ErrorResponse               = "The given JSON representation of an add signature policy response is invalid: " + e.Message;
                 return false;
             }
 

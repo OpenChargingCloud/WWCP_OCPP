@@ -71,10 +71,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     public delegate Task
 
         OnAFRRSignalResponseSentDelegate(DateTime               Timestamp,
-                                     IEventSender           Sender,
-                                     IWebSocketConnection   Connection,
-                                     AFRRSignalRequest      Request,
-                                     AFRRSignalResponse     Response,
-                                     TimeSpan               Runtime);
+                                         IEventSender           Sender,
+                                         IWebSocketConnection   Connection,
+                                         AFRRSignalRequest      Request,
+                                         AFRRSignalResponse     Response,
+                                         TimeSpan               Runtime);
 
 }

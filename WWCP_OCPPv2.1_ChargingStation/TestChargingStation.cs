@@ -1985,14 +1985,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// An event fired whenever a SetDefaultChargingTariff request was received from the CSMS.
         /// </summary>
-        public event OnSetDefaultChargingTariffRequestDelegate?   OnSetDefaultChargingTariffRequest;
+        public event OnSetDefaultChargingTariffRequestReceivedDelegate?   OnSetDefaultChargingTariffRequest;
 
         public event OnSetDefaultChargingTariffDelegate?          OnSetDefaultChargingTariff;
 
         /// <summary>
         /// An event fired whenever a response to a SetDefaultChargingTariff request was sent.
         /// </summary>
-        public event OnSetDefaultChargingTariffResponseDelegate?  OnSetDefaultChargingTariffResponse;
+        public event OnSetDefaultChargingTariffResponseSentDelegate?  OnSetDefaultChargingTariffResponse;
 
         #endregion
 
@@ -2001,14 +2001,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// An event fired whenever a GetDefaultChargingTariff request was received from the CSMS.
         /// </summary>
-        public event OnGetDefaultChargingTariffRequestDelegate?   OnGetDefaultChargingTariffRequest;
+        public event OnGetDefaultChargingTariffRequestReceivedDelegate?   OnGetDefaultChargingTariffRequest;
 
         public event OnGetDefaultChargingTariffDelegate?          OnGetDefaultChargingTariff;
 
         /// <summary>
         /// An event fired whenever a response to a GetDefaultChargingTariff request was sent.
         /// </summary>
-        public event OnGetDefaultChargingTariffResponseDelegate?  OnGetDefaultChargingTariffResponse;
+        public event OnGetDefaultChargingTariffResponseSentDelegate?  OnGetDefaultChargingTariffResponse;
 
         #endregion
 
@@ -2017,14 +2017,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// An event fired whenever a RemoveDefaultChargingTariff request was received from the CSMS.
         /// </summary>
-        public event OnRemoveDefaultChargingTariffRequestDelegate?   OnRemoveDefaultChargingTariffRequest;
+        public event OnRemoveDefaultChargingTariffRequestReceivedDelegate?   OnRemoveDefaultChargingTariffRequest;
 
         public event OnRemoveDefaultChargingTariffDelegate?          OnRemoveDefaultChargingTariff;
 
         /// <summary>
         /// An event fired whenever a response to a RemoveDefaultChargingTariff request was sent.
         /// </summary>
-        public event OnRemoveDefaultChargingTariffResponseDelegate?  OnRemoveDefaultChargingTariffResponse;
+        public event OnRemoveDefaultChargingTariffResponseSentDelegate?  OnRemoveDefaultChargingTariffResponse;
 
         #endregion
 
@@ -10982,7 +10982,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 {
 
                     var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                           OfType <OnSetDefaultChargingTariffRequestDelegate>().
+                                                           OfType <OnSetDefaultChargingTariffRequestReceivedDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
                                                                                                              connection,
@@ -11156,7 +11156,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     var responseTime         = Timestamp.Now;
 
                     var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                              OfType <OnSetDefaultChargingTariffResponseDelegate>().
+                                                              OfType <OnSetDefaultChargingTariffResponseSentDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
                                                                                                                 connection,
@@ -11205,7 +11205,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 {
 
                     var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                           OfType <OnGetDefaultChargingTariffRequestDelegate>().
+                                                           OfType <OnGetDefaultChargingTariffRequestReceivedDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
                                                                                                              connection,
@@ -11327,7 +11327,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     var responseTime         = Timestamp.Now;
 
                     var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                              OfType <OnGetDefaultChargingTariffResponseDelegate>().
+                                                              OfType <OnGetDefaultChargingTariffResponseSentDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
                                                                                                                 connection,
@@ -11376,7 +11376,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 {
 
                     var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                           OfType <OnRemoveDefaultChargingTariffRequestDelegate>().
+                                                           OfType <OnRemoveDefaultChargingTariffRequestReceivedDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
                                                                                                              connection,
@@ -11519,7 +11519,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     var responseTime         = Timestamp.Now;
 
                     var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                              OfType <OnRemoveDefaultChargingTariffResponseDelegate>().
+                                                              OfType <OnRemoveDefaultChargingTariffResponseSentDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
                                                                                                                 connection,

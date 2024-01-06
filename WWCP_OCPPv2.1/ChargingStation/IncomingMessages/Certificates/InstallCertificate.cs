@@ -37,9 +37,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     public delegate Task
 
         OnInstallCertificateRequestReceivedDelegate(DateTime                    Timestamp,
-                                            IEventSender                Sender,
-                                            IWebSocketConnection        Connection,
-                                            InstallCertificateRequest   Request);
+                                                    IEventSender                Sender,
+                                                    IWebSocketConnection        Connection,
+                                                    InstallCertificateRequest   Request);
 
 
     /// <summary>
@@ -71,10 +71,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     public delegate Task
 
         OnInstallCertificateResponseSentDelegate(DateTime                     Timestamp,
-                                             IEventSender                 Sender,
-                                             IWebSocketConnection         Connection,
-                                             InstallCertificateRequest    Request,
-                                             InstallCertificateResponse   Response,
-                                             TimeSpan                     Runtime);
+                                                 IEventSender                 Sender,
+                                                 IWebSocketConnection         Connection,
+                                                 InstallCertificateRequest    Request,
+                                                 InstallCertificateResponse   Response,
+                                                 TimeSpan                     Runtime);
 
 }

@@ -37,9 +37,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     public delegate Task
 
         OnUpdateDynamicScheduleRequestReceivedDelegate(DateTime                       Timestamp,
-                                               IEventSender                   Sender,
-                                               IWebSocketConnection           Connection,
-                                               UpdateDynamicScheduleRequest   Request);
+                                                       IEventSender                   Sender,
+                                                       IWebSocketConnection           Connection,
+                                                       UpdateDynamicScheduleRequest   Request);
 
 
     /// <summary>
@@ -71,10 +71,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     public delegate Task
 
         OnUpdateDynamicScheduleResponseSentDelegate(DateTime                        Timestamp,
-                                                IEventSender                    Sender,
-                                                IWebSocketConnection            Connection,
-                                                UpdateDynamicScheduleRequest    Request,
-                                                UpdateDynamicScheduleResponse   Response,
-                                                TimeSpan                        Runtime);
+                                                    IEventSender                    Sender,
+                                                    IWebSocketConnection            Connection,
+                                                    UpdateDynamicScheduleRequest    Request,
+                                                    UpdateDynamicScheduleResponse   Response,
+                                                    TimeSpan                        Runtime);
 
 }

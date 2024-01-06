@@ -37,9 +37,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     public delegate Task
 
         OnNotifyAllowedEnergyTransferRequestReceivedDelegate(DateTime                             Timestamp,
-                                                     IEventSender                         Sender,
-                                                     IWebSocketConnection                 Connection,
-                                                     NotifyAllowedEnergyTransferRequest   Request);
+                                                             IEventSender                         Sender,
+                                                             IWebSocketConnection                 Connection,
+                                                             NotifyAllowedEnergyTransferRequest   Request);
 
 
     /// <summary>
@@ -71,10 +71,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     public delegate Task
 
         OnNotifyAllowedEnergyTransferResponseSentDelegate(DateTime                              Timestamp,
-                                                      IEventSender                          Sender,
-                                                      IWebSocketConnection                  Connection,
-                                                      NotifyAllowedEnergyTransferRequest    Request,
-                                                      NotifyAllowedEnergyTransferResponse   Response,
-                                                      TimeSpan                              Runtime);
+                                                          IEventSender                          Sender,
+                                                          IWebSocketConnection                  Connection,
+                                                          NotifyAllowedEnergyTransferRequest    Request,
+                                                          NotifyAllowedEnergyTransferResponse   Response,
+                                                          TimeSpan                              Runtime);
 
 }

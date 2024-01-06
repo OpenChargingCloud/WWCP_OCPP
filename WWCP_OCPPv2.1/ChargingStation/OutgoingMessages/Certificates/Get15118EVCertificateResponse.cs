@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -254,8 +256,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          JSON,
                          out var get15118EVCertificateResponse,
                          out var errorResponse,
-                         CustomGet15118EVCertificateResponseParser) &&
-                get15118EVCertificateResponse is not null)
+                         CustomGet15118EVCertificateResponseParser))
             {
                 return get15118EVCertificateResponse;
             }
@@ -279,8 +280,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomGet15118EVCertificateResponseParser">A delegate to parse custom get 15118 EV certificate responses.</param>
         public static Boolean TryParse(CS.Get15118EVCertificateRequest                              Request,
                                        JObject                                                      JSON,
-                                       out Get15118EVCertificateResponse?                           Get15118EVCertificateResponse,
-                                       out String?                                                  ErrorResponse,
+                                       [NotNullWhen(true)]  out Get15118EVCertificateResponse?      Get15118EVCertificateResponse,
+                                       [NotNullWhen(false)] out String?                             ErrorResponse,
                                        CustomJObjectParserDelegate<Get15118EVCertificateResponse>?  CustomGet15118EVCertificateResponseParser   = null)
         {
 

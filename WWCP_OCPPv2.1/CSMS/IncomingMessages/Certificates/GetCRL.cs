@@ -36,10 +36,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Request">The stop transaction request.</param>
     public delegate Task
 
-        OnGetCRLRequestReceivedDelegate(DateTime                    Timestamp,
-                                IEventSender                Sender,
-                                IWebSocketConnection   Connection,
-                                GetCRLRequest               Request);
+        OnGetCRLRequestReceivedDelegate(DateTime               Timestamp,
+                                        IEventSender           Sender,
+                                        IWebSocketConnection   Connection,
+                                        GetCRLRequest          Request);
 
 
     /// <summary>
@@ -52,11 +52,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<GetCRLResponse>
 
-        OnGetCRLDelegate(DateTime                    Timestamp,
-                         IEventSender                Sender,
+        OnGetCRLDelegate(DateTime               Timestamp,
+                         IEventSender           Sender,
                          IWebSocketConnection   Connection,
-                         GetCRLRequest               Request,
-                         CancellationToken           CancellationToken);
+                         GetCRLRequest          Request,
+                         CancellationToken      CancellationToken);
 
 
     /// <summary>
@@ -70,11 +70,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task
 
-        OnGetCRLResponseSentDelegate(DateTime                    Timestamp,
-                                 IEventSender                Sender,
-                                 IWebSocketConnection   Connection,
-                                 GetCRLRequest               Request,
-                                 GetCRLResponse              Response,
-                                 TimeSpan                    Runtime);
+        OnGetCRLResponseSentDelegate(DateTime               Timestamp,
+                                     IEventSender           Sender,
+                                     IWebSocketConnection   Connection,
+                                     GetCRLRequest          Request,
+                                     GetCRLResponse         Response,
+                                     TimeSpan               Runtime);
 
 }

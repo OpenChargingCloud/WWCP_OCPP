@@ -37,9 +37,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     public delegate Task
 
         OnSetMonitoringLevelRequestReceivedDelegate(DateTime                    Timestamp,
-                                            IEventSender                Sender,
-                                            IWebSocketConnection        Connection,
-                                            SetMonitoringLevelRequest   Request);
+                                                    IEventSender                Sender,
+                                                    IWebSocketConnection        Connection,
+                                                    SetMonitoringLevelRequest   Request);
 
 
     /// <summary>
@@ -71,10 +71,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     public delegate Task
 
         OnSetMonitoringLevelResponseSentDelegate(DateTime                     Timestamp,
-                                             IEventSender                 Sender,
-                                             IWebSocketConnection         Connection,
-                                             SetMonitoringLevelRequest    Request,
-                                             SetMonitoringLevelResponse   Response,
-                                             TimeSpan                     Runtime);
+                                                 IEventSender                 Sender,
+                                                 IWebSocketConnection         Connection,
+                                                 SetMonitoringLevelRequest    Request,
+                                                 SetMonitoringLevelResponse   Response,
+                                                 TimeSpan                     Runtime);
 
 }

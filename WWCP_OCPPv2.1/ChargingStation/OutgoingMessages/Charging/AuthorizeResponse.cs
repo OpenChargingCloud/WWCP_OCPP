@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -427,8 +429,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          JSON,
                          out var authorizeResponse,
                          out var errorResponse,
-                         CustomAuthorizeResponseParser) &&
-                authorizeResponse is not null)
+                         CustomAuthorizeResponseParser))
             {
                 return authorizeResponse;
             }
@@ -452,8 +453,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomAuthorizeResponseParser">A delegate to parse custom authorize responses.</param>
         public static Boolean TryParse(CS.AuthorizeRequest                              Request,
                                        JObject                                          JSON,
-                                       out AuthorizeResponse?                           AuthorizeResponse,
-                                       out String?                                      ErrorResponse,
+                                       [NotNullWhen(true)]  out AuthorizeResponse?      AuthorizeResponse,
+                                       [NotNullWhen(false)] out String?                 ErrorResponse,
                                        CustomJObjectParserDelegate<AuthorizeResponse>?  CustomAuthorizeResponseParser   = null)
         {
 

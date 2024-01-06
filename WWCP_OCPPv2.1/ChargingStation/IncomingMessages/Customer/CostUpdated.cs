@@ -37,9 +37,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     public delegate Task
 
         OnCostUpdatedRequestReceivedDelegate(DateTime               Timestamp,
-                                     IEventSender           Sender,
-                                     IWebSocketConnection   Connection,
-                                     CostUpdatedRequest     Request);
+                                             IEventSender           Sender,
+                                             IWebSocketConnection   Connection,
+                                             CostUpdatedRequest     Request);
 
 
     /// <summary>
@@ -71,10 +71,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     public delegate Task
 
         OnCostUpdatedResponseSentDelegate(DateTime               Timestamp,
-                                      IEventSender           Sender,
-                                      IWebSocketConnection   Connection,
-                                      CostUpdatedRequest     Request,
-                                      CostUpdatedResponse    Response,
-                                      TimeSpan               Runtime);
+                                          IEventSender           Sender,
+                                          IWebSocketConnection   Connection,
+                                          CostUpdatedRequest     Request,
+                                          CostUpdatedResponse    Response,
+                                          TimeSpan               Runtime);
 
 }

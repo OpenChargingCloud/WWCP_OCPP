@@ -37,9 +37,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     public delegate Task
 
         OnUpdateFirmwareRequestReceivedDelegate(DateTime                Timestamp,
-                                        IEventSender            Sender,
-                                        IWebSocketConnection    Connection,
-                                        UpdateFirmwareRequest   Request);
+                                                IEventSender            Sender,
+                                                IWebSocketConnection    Connection,
+                                                UpdateFirmwareRequest   Request);
 
 
     /// <summary>
@@ -71,10 +71,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     public delegate Task
 
         OnUpdateFirmwareResponseSentDelegate(DateTime                 Timestamp,
-                                         IEventSender             Sender,
-                                         IWebSocketConnection     Connection,
-                                         UpdateFirmwareRequest    Request,
-                                         UpdateFirmwareResponse   Response,
-                                         TimeSpan                 Runtime);
+                                             IEventSender             Sender,
+                                             IWebSocketConnection     Connection,
+                                             UpdateFirmwareRequest    Request,
+                                             UpdateFirmwareResponse   Response,
+                                             TimeSpan                 Runtime);
 
 }

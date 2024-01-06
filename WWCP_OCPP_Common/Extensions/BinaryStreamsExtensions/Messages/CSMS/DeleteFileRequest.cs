@@ -334,8 +334,8 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<DeleteFileRequest>?  CustomDeleteFileRequestSerializer   = null,
-                              CustomJObjectSerializerDelegate<Signature>?       CustomSignatureSerializer        = null,
-                              CustomJObjectSerializerDelegate<CustomData>?      CustomCustomDataSerializer       = null)
+                              CustomJObjectSerializerDelegate<Signature>?          CustomSignatureSerializer           = null,
+                              CustomJObjectSerializerDelegate<CustomData>?         CustomCustomDataSerializer          = null)
         {
 
             var json = JSONObject.Create(

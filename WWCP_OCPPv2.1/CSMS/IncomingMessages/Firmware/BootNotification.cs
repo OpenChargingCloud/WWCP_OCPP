@@ -37,9 +37,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     public delegate Task
 
         OnBootNotificationRequestReceivedDelegate(DateTime                  Timestamp,
-                                          IEventSender              Sender,
-                                          IWebSocketConnection      Connection,
-                                          BootNotificationRequest   Request);
+                                                  IEventSender              Sender,
+                                                  IWebSocketConnection      Connection,
+                                                  BootNotificationRequest   Request);
 
 
     /// <summary>
@@ -71,10 +71,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     public delegate Task
 
         OnBootNotificationResponseSentDelegate(DateTime                   Timestamp,
-                                           IEventSender               Sender,
-                                           IWebSocketConnection       Connection,
-                                           BootNotificationRequest    Request,
-                                           BootNotificationResponse   Response,
-                                           TimeSpan                   Runtime);
+                                               IEventSender               Sender,
+                                               IWebSocketConnection       Connection,
+                                               BootNotificationRequest    Request,
+                                               BootNotificationResponse   Response,
+                                               TimeSpan                   Runtime);
 
 }

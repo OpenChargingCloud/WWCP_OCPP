@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -145,8 +147,7 @@ namespace cloud.charging.open.protocols.OCPP.NN
                          JSON,
                          out var notifyNetworkTopologyResponse,
                          out var errorResponse,
-                         CustomNotifyNetworkTopologyResponseParser) &&
-                notifyNetworkTopologyResponse is not null)
+                         CustomNotifyNetworkTopologyResponseParser))
             {
                 return notifyNetworkTopologyResponse;
             }
@@ -170,8 +171,8 @@ namespace cloud.charging.open.protocols.OCPP.NN
         /// <param name="CustomNotifyNetworkTopologyResponseParser">A delegate to parse custom notify network topology responses.</param>
         public static Boolean TryParse(NotifyNetworkTopologyRequest                                 Request,
                                        JObject                                                      JSON,
-                                       out NotifyNetworkTopologyResponse?                           NotifyNetworkTopologyResponse,
-                                       out String?                                                  ErrorResponse,
+                                       [NotNullWhen(true)]  out NotifyNetworkTopologyResponse?      NotifyNetworkTopologyResponse,
+                                       [NotNullWhen(false)] out String?                             ErrorResponse,
                                        CustomJObjectParserDelegate<NotifyNetworkTopologyResponse>?  CustomNotifyNetworkTopologyResponseParser   = null)
         {
 

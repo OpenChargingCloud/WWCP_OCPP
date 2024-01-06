@@ -33,8 +33,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     public delegate Task OnGetCertificateStatusRequestSentDelegate(DateTime                      Timestamp,
-                                                               IEventSender                  Sender,
-                                                               GetCertificateStatusRequest   Request);
+                                                                   IEventSender                  Sender,
+                                                                   GetCertificateStatusRequest   Request);
 
     /// <summary>
     /// A delegate called whenever a response to a GetCertificateStatus request was received.
@@ -45,9 +45,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnGetCertificateStatusResponseReceivedDelegate(DateTime                       Timestamp,
-                                                                IEventSender                   Sender,
-                                                                GetCertificateStatusRequest    Request,
-                                                                GetCertificateStatusResponse   Response,
-                                                                TimeSpan                       Runtime);
+                                                                        IEventSender                   Sender,
+                                                                        GetCertificateStatusRequest    Request,
+                                                                        GetCertificateStatusResponse   Response,
+                                                                        TimeSpan                       Runtime);
 
 }

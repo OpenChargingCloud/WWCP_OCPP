@@ -37,9 +37,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     public delegate Task
 
         OnSetVariableMonitoringRequestReceivedDelegate(DateTime                       Timestamp,
-                                               IEventSender                   Sender,
-                                               IWebSocketConnection           Connection,
-                                               SetVariableMonitoringRequest   Request);
+                                                       IEventSender                   Sender,
+                                                       IWebSocketConnection           Connection,
+                                                       SetVariableMonitoringRequest   Request);
 
 
     /// <summary>
@@ -71,10 +71,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     public delegate Task
 
         OnSetVariableMonitoringResponseSentDelegate(DateTime                        Timestamp,
-                                                IEventSender                    Sender,
-                                                IWebSocketConnection            Connection,
-                                                SetVariableMonitoringRequest    Request,
-                                                SetVariableMonitoringResponse   Response,
-                                                TimeSpan                        Runtime);
+                                                    IEventSender                    Sender,
+                                                    IWebSocketConnection            Connection,
+                                                    SetVariableMonitoringRequest    Request,
+                                                    SetVariableMonitoringResponse   Response,
+                                                    TimeSpan                        Runtime);
 
 }

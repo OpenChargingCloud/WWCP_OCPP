@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -484,8 +486,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          NetworkPath,
                          out var notifyReportRequest,
                          out var errorResponse,
-                         CustomNotifyReportRequestParser) &&
-                notifyReportRequest is not null)
+                         CustomNotifyReportRequestParser))
             {
                 return notifyReportRequest;
             }
@@ -498,33 +499,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
         #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out NotifyReportRequest, out ErrorResponse, CustomNotifyReportRequestParser = null)
-
-        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
-
-        /// <summary>
-        /// Try to parse the given JSON representation of a notify report request.
-        /// </summary>
-        /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="NotifyReportRequest">The parsed notify report request.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                   JSON,
-                                       Request_Id                RequestId,
-                                       NetworkingNode_Id         NetworkingNodeId,
-                                       NetworkPath               NetworkPath,
-                                       out NotifyReportRequest?  NotifyReportRequest,
-                                       out String?               ErrorResponse)
-
-            => TryParse(JSON,
-                        RequestId,
-                        NetworkingNodeId,
-                        NetworkPath,
-                        out NotifyReportRequest,
-                        out ErrorResponse,
-                        null);
-
 
         /// <summary>
         /// Try to parse the given JSON representation of a notify report request.
@@ -540,8 +514,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                        Request_Id                                         RequestId,
                                        NetworkingNode_Id                                  NetworkingNodeId,
                                        NetworkPath                                        NetworkPath,
-                                       out NotifyReportRequest?                           NotifyReportRequest,
-                                       out String?                                        ErrorResponse,
+                                       [NotNullWhen(true)]  out NotifyReportRequest?      NotifyReportRequest,
+                                       [NotNullWhen(false)] out String?                   ErrorResponse,
                                        CustomJObjectParserDelegate<NotifyReportRequest>?  CustomNotifyReportRequestParser)
         {
 

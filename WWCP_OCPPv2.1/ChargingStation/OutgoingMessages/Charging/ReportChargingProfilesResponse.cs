@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -163,8 +165,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          JSON,
                          out var reportChargingProfilesResponse,
                          out var errorResponse,
-                         CustomReportChargingProfilesResponseParser) &&
-                reportChargingProfilesResponse is not null)
+                         CustomReportChargingProfilesResponseParser))
             {
                 return reportChargingProfilesResponse;
             }
@@ -188,8 +189,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomReportChargingProfilesResponseParser">A delegate to parse custom report charging profiles responses.</param>
         public static Boolean TryParse(CS.ReportChargingProfilesRequest                              Request,
                                        JObject                                                       JSON,
-                                       out ReportChargingProfilesResponse?                           ReportChargingProfilesResponse,
-                                       out String?                                                   ErrorResponse,
+                                       [NotNullWhen(true)]  out ReportChargingProfilesResponse?      ReportChargingProfilesResponse,
+                                       [NotNullWhen(false)] out String?                              ErrorResponse,
                                        CustomJObjectParserDelegate<ReportChargingProfilesResponse>?  CustomReportChargingProfilesResponseParser   = null)
         {
 

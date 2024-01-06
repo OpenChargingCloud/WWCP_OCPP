@@ -36,10 +36,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Request">The charging station heartbeat request.</param>
     public delegate Task
 
-        OnHeartbeatRequestReceivedDelegate(DateTime                    Timestamp,
-                                   IEventSender                Sender,
-                                   IWebSocketConnection   Connection,
-                                   HeartbeatRequest            Request);
+        OnHeartbeatRequestReceivedDelegate(DateTime               Timestamp,
+                                           IEventSender           Sender,
+                                           IWebSocketConnection   Connection,
+                                           HeartbeatRequest       Request);
 
 
     /// <summary>
@@ -52,11 +52,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="CancellationToken">A token to cancel this charging station heartbeat request.</param>
     public delegate Task<HeartbeatResponse>
 
-        OnHeartbeatDelegate(DateTime                    Timestamp,
-                            IEventSender                Sender,
+        OnHeartbeatDelegate(DateTime               Timestamp,
+                            IEventSender           Sender,
                             IWebSocketConnection   Connection,
-                            HeartbeatRequest            Request,
-                            CancellationToken           CancellationToken);
+                            HeartbeatRequest       Request,
+                            CancellationToken      CancellationToken);
 
 
     /// <summary>
@@ -70,11 +70,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Runtime">The runtime of the charging station heartbeat response.</param>
     public delegate Task
 
-        OnHeartbeatResponseSentDelegate(DateTime                    Timestamp,
-                                    IEventSender                Sender,
-                                    IWebSocketConnection   Connection,
-                                    HeartbeatRequest            Request,
-                                    HeartbeatResponse           Response,
-                                    TimeSpan                    Runtime);
+        OnHeartbeatResponseSentDelegate(DateTime               Timestamp,
+                                        IEventSender           Sender,
+                                        IWebSocketConnection   Connection,
+                                        HeartbeatRequest       Request,
+                                        HeartbeatResponse      Response,
+                                        TimeSpan               Runtime);
 
 }

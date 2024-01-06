@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -137,8 +139,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var notifyCRLResponse,
                          out var errorResponse,
-                         CustomNotifyCRLResponseParser) &&
-                notifyCRLResponse is not null)
+                         CustomNotifyCRLResponseParser))
             {
                 return notifyCRLResponse;
             }
@@ -162,8 +163,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomNotifyCRLResponseParser">A delegate to parse custom notify certificate revocation list responses.</param>
         public static Boolean TryParse(CSMS.NotifyCRLRequest                            Request,
                                        JObject                                          JSON,
-                                       out NotifyCRLResponse?                           NotifyCRLResponse,
-                                       out String?                                      ErrorResponse,
+                                       [NotNullWhen(true)]  out NotifyCRLResponse?      NotifyCRLResponse,
+                                       [NotNullWhen(false)] out String?                 ErrorResponse,
                                        CustomJObjectParserDelegate<NotifyCRLResponse>?  CustomNotifyCRLResponseParser   = null)
         {
 

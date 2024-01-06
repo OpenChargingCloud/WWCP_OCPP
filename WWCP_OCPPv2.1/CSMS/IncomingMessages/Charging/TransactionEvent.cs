@@ -36,10 +36,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Request">The transaction event request.</param>
     public delegate Task
 
-        OnTransactionEventRequestReceivedDelegate(DateTime                    Timestamp,
-                                          IEventSender                Sender,
-                                          IWebSocketConnection   Connection,
-                                          TransactionEventRequest     Request);
+        OnTransactionEventRequestReceivedDelegate(DateTime                  Timestamp,
+                                                  IEventSender              Sender,
+                                                  IWebSocketConnection      Connection,
+                                                  TransactionEventRequest   Request);
 
 
     /// <summary>
@@ -52,11 +52,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="CancellationToken">A token to cancel this transaction event request.</param>
     public delegate Task<TransactionEventResponse>
 
-        OnTransactionEventDelegate(DateTime                    Timestamp,
-                                   IEventSender                Sender,
-                                   IWebSocketConnection   Connection,
-                                   TransactionEventRequest     Request,
-                                   CancellationToken           CancellationToken);
+        OnTransactionEventDelegate(DateTime                  Timestamp,
+                                   IEventSender              Sender,
+                                   IWebSocketConnection      Connection,
+                                   TransactionEventRequest   Request,
+                                   CancellationToken         CancellationToken);
 
 
     /// <summary>
@@ -70,11 +70,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Runtime">The runtime of the transaction event response.</param>
     public delegate Task
 
-        OnTransactionEventResponseSentDelegate(DateTime                    Timestamp,
-                                           IEventSender                Sender,
-                                           IWebSocketConnection   Connection,
-                                           TransactionEventRequest     Request,
-                                           TransactionEventResponse    Response,
-                                           TimeSpan                    Runtime);
+        OnTransactionEventResponseSentDelegate(DateTime                   Timestamp,
+                                               IEventSender               Sender,
+                                               IWebSocketConnection       Connection,
+                                               TransactionEventRequest    Request,
+                                               TransactionEventResponse   Response,
+                                               TimeSpan                   Runtime);
 
 }

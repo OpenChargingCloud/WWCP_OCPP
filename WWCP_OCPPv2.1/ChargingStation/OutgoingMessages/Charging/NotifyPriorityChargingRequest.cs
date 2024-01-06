@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -165,8 +167,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          NetworkPath,
                          out var notifyPriorityChargingRequest,
                          out var errorResponse,
-                         CustomNotifyPriorityChargingRequestParser) &&
-                notifyPriorityChargingRequest is not null)
+                         CustomNotifyPriorityChargingRequestParser))
             {
                 return notifyPriorityChargingRequest;
             }
@@ -179,33 +180,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
         #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out NotifyPriorityChargingRequest, out ErrorResponse, CustomNotifyPriorityChargingRequestParser = null)
-
-        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
-
-        /// <summary>
-        /// Try to parse the given JSON representation of a notify priority charging request.
-        /// </summary>
-        /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="NotifyPriorityChargingRequest">The parsed notify priority charging request.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                             JSON,
-                                       Request_Id                          RequestId,
-                                       NetworkingNode_Id                   NetworkingNodeId,
-                                       NetworkPath                         NetworkPath,
-                                       out NotifyPriorityChargingRequest?  NotifyPriorityChargingRequest,
-                                       out String?                         ErrorResponse)
-
-            => TryParse(JSON,
-                        RequestId,
-                        NetworkingNodeId,
-                        NetworkPath,
-                        out NotifyPriorityChargingRequest,
-                        out ErrorResponse,
-                        null);
-
 
         /// <summary>
         /// Try to parse the given JSON representation of a notify priority charging request.
@@ -221,8 +195,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                        Request_Id                                                   RequestId,
                                        NetworkingNode_Id                                            NetworkingNodeId,
                                        NetworkPath                                                  NetworkPath,
-                                       out NotifyPriorityChargingRequest?                           NotifyPriorityChargingRequest,
-                                       out String?                                                  ErrorResponse,
+                                       [NotNullWhen(true)]  out NotifyPriorityChargingRequest?      NotifyPriorityChargingRequest,
+                                       [NotNullWhen(false)] out String?                             ErrorResponse,
                                        CustomJObjectParserDelegate<NotifyPriorityChargingRequest>?  CustomNotifyPriorityChargingRequestParser)
         {
 
@@ -338,16 +312,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("transactionId",    TransactionId.ToString()),
-                                 new JProperty("activated",        Activated),
+                                 new JProperty("transactionId",   TransactionId.ToString()),
+                                 new JProperty("activated",       Activated),
 
                            Signatures.Any()
-                               ? new JProperty("signatures",       new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
-                                                                                                                              CustomCustomDataSerializer))))
+                               ? new JProperty("signatures",      new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                             CustomCustomDataSerializer))))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",       CustomData.   ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",      CustomData.   ToJSON(CustomCustomDataSerializer))
                                : null);
 
             return CustomNotifyPriorityChargingRequestSerializer is not null

@@ -37,9 +37,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     public delegate Task
 
         OnResetRequestReceivedDelegate(DateTime               Timestamp,
-                               IEventSender           Sender,
-                               IWebSocketConnection   Connection,
-                               ResetRequest           Request);
+                                       IEventSender           Sender,
+                                       IWebSocketConnection   Connection,
+                                       ResetRequest           Request);
 
 
     /// <summary>
@@ -71,10 +71,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     public delegate Task
 
         OnResetResponseSentDelegate(DateTime               Timestamp,
-                                IEventSender           Sender,
-                                IWebSocketConnection   Connection,
-                                ResetRequest           Request,
-                                ResetResponse          Response,
-                                TimeSpan               Runtime);
+                                    IEventSender           Sender,
+                                    IWebSocketConnection   Connection,
+                                    ResetRequest           Request,
+                                    ResetResponse          Response,
+                                    TimeSpan               Runtime);
 
 }

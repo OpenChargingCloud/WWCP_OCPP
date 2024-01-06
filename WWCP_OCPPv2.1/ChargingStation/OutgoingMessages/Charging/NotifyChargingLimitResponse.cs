@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -163,8 +165,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          JSON,
                          out var notifyChargingLimitResponse,
                          out var errorResponse,
-                         CustomNotifyChargingLimitResponseParser) &&
-                notifyChargingLimitResponse is not null)
+                         CustomNotifyChargingLimitResponseParser))
             {
                 return notifyChargingLimitResponse;
             }
@@ -188,8 +189,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomNotifyChargingLimitResponseParser">A delegate to parse custom notify charging limit responses.</param>
         public static Boolean TryParse(CS.NotifyChargingLimitRequest                              Request,
                                        JObject                                                    JSON,
-                                       out NotifyChargingLimitResponse?                           NotifyChargingLimitResponse,
-                                       out String?                                                ErrorResponse,
+                                       [NotNullWhen(true)]  out NotifyChargingLimitResponse?      NotifyChargingLimitResponse,
+                                       [NotNullWhen(false)] out String?                           ErrorResponse,
                                        CustomJObjectParserDelegate<NotifyChargingLimitResponse>?  CustomNotifyChargingLimitResponseParser   = null)
         {
 

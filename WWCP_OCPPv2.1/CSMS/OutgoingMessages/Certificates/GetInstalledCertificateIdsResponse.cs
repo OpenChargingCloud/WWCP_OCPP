@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -336,8 +338,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var getInstalledCertificateIdsResponse,
                          out var errorResponse,
-                         CustomGetInstalledCertificateIdsResponseParser) &&
-                getInstalledCertificateIdsResponse is not null)
+                         CustomGetInstalledCertificateIdsResponseParser))
             {
                 return getInstalledCertificateIdsResponse;
             }
@@ -361,8 +362,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomGetInstalledCertificateIdsResponseParser">A delegate to parse custom get installed certificate ids responses.</param>
         public static Boolean TryParse(CSMS.GetInstalledCertificateIdsRequest                            Request,
                                        JObject                                                           JSON,
-                                       out GetInstalledCertificateIdsResponse?                           GetInstalledCertificateIdsResponse,
-                                       out String?                                                       ErrorResponse,
+                                       [NotNullWhen(true)]  out GetInstalledCertificateIdsResponse?      GetInstalledCertificateIdsResponse,
+                                       [NotNullWhen(false)] out String?                                  ErrorResponse,
                                        CustomJObjectParserDelegate<GetInstalledCertificateIdsResponse>?  CustomGetInstalledCertificateIdsResponseParser   = null)
         {
 

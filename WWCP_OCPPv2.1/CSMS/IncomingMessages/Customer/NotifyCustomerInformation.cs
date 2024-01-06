@@ -37,9 +37,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     public delegate Task
 
         OnNotifyCustomerInformationRequestReceivedDelegate(DateTime                           Timestamp,
-                                                   IEventSender                       Sender,
-                                                   IWebSocketConnection          Connection,
-                                                   NotifyCustomerInformationRequest   Request);
+                                                           IEventSender                       Sender,
+                                                           IWebSocketConnection               Connection,
+                                                           NotifyCustomerInformationRequest   Request);
 
 
     /// <summary>
@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnNotifyCustomerInformationDelegate(DateTime                           Timestamp,
                                             IEventSender                       Sender,
-                                            IWebSocketConnection          Connection,
+                                            IWebSocketConnection               Connection,
                                             NotifyCustomerInformationRequest   Request,
                                             CancellationToken                  CancellationToken);
 
@@ -71,10 +71,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     public delegate Task
 
         OnNotifyCustomerInformationResponseSentDelegate(DateTime                            Timestamp,
-                                                    IEventSender                        Sender,
-                                                    IWebSocketConnection           Connection,
-                                                    NotifyCustomerInformationRequest    Request,
-                                                    NotifyCustomerInformationResponse   Response,
-                                                    TimeSpan                            Runtime);
+                                                        IEventSender                        Sender,
+                                                        IWebSocketConnection                Connection,
+                                                        NotifyCustomerInformationRequest    Request,
+                                                        NotifyCustomerInformationResponse   Response,
+                                                        TimeSpan                            Runtime);
 
 }

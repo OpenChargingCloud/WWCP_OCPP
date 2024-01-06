@@ -37,9 +37,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     public delegate Task
 
         OnChangeAvailabilityRequestReceivedDelegate(DateTime                    Timestamp,
-                                            IEventSender                Sender,
-                                            IWebSocketConnection        Connection,
-                                            ChangeAvailabilityRequest   Request);
+                                                    IEventSender                Sender,
+                                                    IWebSocketConnection        Connection,
+                                                    ChangeAvailabilityRequest   Request);
 
 
     /// <summary>
@@ -71,10 +71,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     public delegate Task
 
         OnChangeAvailabilityResponseSentDelegate(DateTime                     Timestamp,
-                                             IEventSender                 Sender,
-                                             IWebSocketConnection         Connection,
-                                             ChangeAvailabilityRequest    Request,
-                                             ChangeAvailabilityResponse   Response,
-                                             TimeSpan                     Runtime);
+                                                 IEventSender                 Sender,
+                                                 IWebSocketConnection         Connection,
+                                                 ChangeAvailabilityRequest    Request,
+                                                 ChangeAvailabilityResponse   Response,
+                                                 TimeSpan                     Runtime);
 
 }

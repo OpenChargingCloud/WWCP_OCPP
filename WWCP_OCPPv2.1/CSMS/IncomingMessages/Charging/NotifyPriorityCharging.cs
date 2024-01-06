@@ -37,9 +37,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     public delegate Task
 
         OnNotifyPriorityChargingRequestReceivedDelegate(DateTime                        Timestamp,
-                                                IEventSender                    Sender,
-                                                IWebSocketConnection       Connection,
-                                                NotifyPriorityChargingRequest   Request);
+                                                        IEventSender                    Sender,
+                                                        IWebSocketConnection            Connection,
+                                                        NotifyPriorityChargingRequest   Request);
 
 
     /// <summary>
@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnNotifyPriorityChargingDelegate(DateTime                        Timestamp,
                                          IEventSender                    Sender,
-                                         IWebSocketConnection       Connection,
+                                         IWebSocketConnection            Connection,
                                          NotifyPriorityChargingRequest   Request,
                                          CancellationToken               CancellationToken);
 
@@ -71,10 +71,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     public delegate Task
 
         OnNotifyPriorityChargingResponseSentDelegate(DateTime                         Timestamp,
-                                                 IEventSender                     Sender,
-                                                 IWebSocketConnection        Connection,
-                                                 NotifyPriorityChargingRequest    Request,
-                                                 NotifyPriorityChargingResponse   Response,
-                                                 TimeSpan                         Runtime);
+                                                     IEventSender                     Sender,
+                                                     IWebSocketConnection             Connection,
+                                                     NotifyPriorityChargingRequest    Request,
+                                                     NotifyPriorityChargingResponse   Response,
+                                                     TimeSpan                         Runtime);
 
 }

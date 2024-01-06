@@ -37,9 +37,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     public delegate Task
 
         OnGetTransactionStatusRequestReceivedDelegate(DateTime                      Timestamp,
-                                              IEventSender                  Sender,
-                                              IWebSocketConnection          Connection,
-                                              GetTransactionStatusRequest   Request);
+                                                      IEventSender                  Sender,
+                                                      IWebSocketConnection          Connection,
+                                                      GetTransactionStatusRequest   Request);
 
 
     /// <summary>
@@ -71,10 +71,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     public delegate Task
 
         OnGetTransactionStatusResponseSentDelegate(DateTime                       Timestamp,
-                                               IEventSender                   Sender,
-                                               IWebSocketConnection           Connection,
-                                               GetTransactionStatusRequest    Request,
-                                               GetTransactionStatusResponse   Response,
-                                               TimeSpan                       Runtime);
+                                                   IEventSender                   Sender,
+                                                   IWebSocketConnection           Connection,
+                                                   GetTransactionStatusRequest    Request,
+                                                   GetTransactionStatusResponse   Response,
+                                                   TimeSpan                       Runtime);
 
 }

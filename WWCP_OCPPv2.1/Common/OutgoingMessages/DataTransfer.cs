@@ -34,9 +34,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// <param name="Connection">The HTTP Web Socket server connection.</param>
     /// <param name="Request">The request.</param>
     public delegate Task OnDataTransferRequestSentDelegate(DateTime               Timestamp,
-                                                       IEventSender           Sender,
-                                                       //IWebSocketConnection   Connection,
-                                                       DataTransferRequest    Request);
+                                                           IEventSender           Sender,
+                                                           //IWebSocketConnection   Connection,
+                                                           DataTransferRequest    Request);
 
     /// <summary>
     /// A delegate called whenever a response to a data transfer request was received.
@@ -48,11 +48,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnDataTransferResponseReceivedDelegate(DateTime               Timestamp,
-                                                        IEventSender           Sender,
-                                                        //IWebSocketConnection   Connection,
-                                                        DataTransferRequest    Request,
-                                                        DataTransferResponse   Response,
-                                                        TimeSpan               Runtime);
+                                                                IEventSender           Sender,
+                                                                //IWebSocketConnection   Connection,
+                                                                DataTransferRequest    Request,
+                                                                DataTransferResponse   Response,
+                                                                TimeSpan               Runtime);
 
     #endregion
 

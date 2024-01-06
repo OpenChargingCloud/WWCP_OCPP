@@ -36,10 +36,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Request">The stop transaction request.</param>
     public delegate Task
 
-        OnNotifyReportRequestReceivedDelegate(DateTime                    Timestamp,
-                                      IEventSender                Sender,
-                                      IWebSocketConnection   Connection,
-                                      NotifyReportRequest         Request);
+        OnNotifyReportRequestReceivedDelegate(DateTime               Timestamp,
+                                              IEventSender           Sender,
+                                              IWebSocketConnection   Connection,
+                                              NotifyReportRequest    Request);
 
 
     /// <summary>
@@ -52,11 +52,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<NotifyReportResponse>
 
-        OnNotifyReportDelegate(DateTime                    Timestamp,
-                               IEventSender                Sender,
+        OnNotifyReportDelegate(DateTime               Timestamp,
+                               IEventSender           Sender,
                                IWebSocketConnection   Connection,
-                               NotifyReportRequest         Request,
-                               CancellationToken           CancellationToken);
+                               NotifyReportRequest    Request,
+                               CancellationToken      CancellationToken);
 
 
     /// <summary>
@@ -70,11 +70,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task
 
-        OnNotifyReportResponseSentDelegate(DateTime                    Timestamp,
-                                       IEventSender                Sender,
-                                       IWebSocketConnection   Connection,
-                                       NotifyReportRequest         Request,
-                                       NotifyReportResponse        Response,
-                                       TimeSpan                    Runtime);
+        OnNotifyReportResponseSentDelegate(DateTime               Timestamp,
+                                           IEventSender           Sender,
+                                           IWebSocketConnection   Connection,
+                                           NotifyReportRequest    Request,
+                                           NotifyReportResponse   Response,
+                                           TimeSpan               Runtime);
 
 }

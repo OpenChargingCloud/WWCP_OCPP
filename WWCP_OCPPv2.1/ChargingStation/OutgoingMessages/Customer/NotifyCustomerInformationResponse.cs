@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -163,8 +165,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          JSON,
                          out var notifyCustomerInformationResponse,
                          out var errorResponse,
-                         CustomNotifyCustomerInformationResponseParser) &&
-                notifyCustomerInformationResponse is not null)
+                         CustomNotifyCustomerInformationResponseParser))
             {
                 return notifyCustomerInformationResponse;
             }
@@ -188,8 +189,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomNotifyCustomerInformationResponseParser">A delegate to parse custom notify customer information responses.</param>
         public static Boolean TryParse(CS.NotifyCustomerInformationRequest                              Request,
                                        JObject                                                          JSON,
-                                       out NotifyCustomerInformationResponse?                           NotifyCustomerInformationResponse,
-                                       out String?                                                      ErrorResponse,
+                                       [NotNullWhen(true)]  out NotifyCustomerInformationResponse?      NotifyCustomerInformationResponse,
+                                       [NotNullWhen(false)] out String?                                 ErrorResponse,
                                        CustomJObjectParserDelegate<NotifyCustomerInformationResponse>?  CustomNotifyCustomerInformationResponseParser   = null)
         {
 

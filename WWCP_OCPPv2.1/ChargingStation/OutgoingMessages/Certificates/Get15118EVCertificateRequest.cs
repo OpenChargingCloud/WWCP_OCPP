@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -256,8 +258,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          NetworkPath,
                          out var get15118EVCertificateRequest,
                          out var errorResponse,
-                         CustomGet15118EVCertificateRequestParser) &&
-                get15118EVCertificateRequest is not null)
+                         CustomGet15118EVCertificateRequestParser))
             {
                 return get15118EVCertificateRequest;
             }
@@ -270,33 +271,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
         #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out Get15118EVCertificateRequest, OnException = null)
-
-        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
-
-        /// <summary>
-        /// Try to parse the given JSON representation of a get 15118 EV certificate request.
-        /// </summary>
-        /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="Get15118EVCertificateRequest">The parsed Get15118EVCertificate request.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                            JSON,
-                                       Request_Id                         RequestId,
-                                       NetworkingNode_Id                  NetworkingNodeId,
-                                       NetworkPath                        NetworkPath,
-                                       out Get15118EVCertificateRequest?  Get15118EVCertificateRequest,
-                                       out String?                        ErrorResponse)
-
-            => TryParse(JSON,
-                        RequestId,
-                        NetworkingNodeId,
-                        NetworkPath,
-                        out Get15118EVCertificateRequest,
-                        out ErrorResponse,
-                        null);
-
 
         /// <summary>
         /// Try to parse the given JSON representation of a get 15118 EV certificate request.
@@ -312,8 +286,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                        Request_Id                                                  RequestId,
                                        NetworkingNode_Id                                           NetworkingNodeId,
                                        NetworkPath                                                 NetworkPath,
-                                       out Get15118EVCertificateRequest?                           Get15118EVCertificateRequest,
-                                       out String?                                                 ErrorResponse,
+                                       [NotNullWhen(true)]  out Get15118EVCertificateRequest?      Get15118EVCertificateRequest,
+                                       [NotNullWhen(false)] out String?                            ErrorResponse,
                                        CustomJObjectParserDelegate<Get15118EVCertificateRequest>?  CustomGet15118EVCertificateRequestParser)
         {
 

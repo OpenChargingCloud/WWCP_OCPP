@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -409,8 +411,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          JSON,
                          out var transactionEventResponse,
                          out var errorResponse,
-                         CustomTransactionEventResponseParser) &&
-                transactionEventResponse is not null)
+                         CustomTransactionEventResponseParser))
             {
                 return transactionEventResponse;
             }
@@ -433,8 +434,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomTransactionEventResponseParser">A delegate to parse custom transaction event responses.</param>
         public static Boolean TryParse(CS.TransactionEventRequest                              Request,
                                        JObject                                                 JSON,
-                                       out TransactionEventResponse?                           TransactionEventResponse,
-                                       out String?                                             ErrorResponse,
+                                       [NotNullWhen(true)]  out TransactionEventResponse?      TransactionEventResponse,
+                                       [NotNullWhen(false)] out String?                        ErrorResponse,
                                        CustomJObjectParserDelegate<TransactionEventResponse>?  CustomTransactionEventResponseParser   = null)
         {
 

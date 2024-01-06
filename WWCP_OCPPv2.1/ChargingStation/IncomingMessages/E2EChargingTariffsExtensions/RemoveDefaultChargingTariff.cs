@@ -36,10 +36,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnRemoveDefaultChargingTariffRequestDelegate(DateTime                             Timestamp,
-                                                     IEventSender                         Sender,
-                                                     IWebSocketConnection                 Connection,
-                                                     RemoveDefaultChargingTariffRequest   Request);
+        OnRemoveDefaultChargingTariffRequestReceivedDelegate(DateTime                             Timestamp,
+                                                             IEventSender                         Sender,
+                                                             IWebSocketConnection                 Connection,
+                                                             RemoveDefaultChargingTariffRequest   Request);
 
 
     /// <summary>
@@ -70,11 +70,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnRemoveDefaultChargingTariffResponseDelegate(DateTime                              Timestamp,
-                                                      IEventSender                          Sender,
-                                                      IWebSocketConnection                  Connection,
-                                                      RemoveDefaultChargingTariffRequest    Request,
-                                                      RemoveDefaultChargingTariffResponse   Response,
-                                                      TimeSpan                              Runtime);
+        OnRemoveDefaultChargingTariffResponseSentDelegate(DateTime                              Timestamp,
+                                                          IEventSender                          Sender,
+                                                          IWebSocketConnection                  Connection,
+                                                          RemoveDefaultChargingTariffRequest    Request,
+                                                          RemoveDefaultChargingTariffResponse   Response,
+                                                          TimeSpan                              Runtime);
 
 }

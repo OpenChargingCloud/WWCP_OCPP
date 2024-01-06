@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -262,8 +264,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
                          JSON,
                          out var addUserRoleResponse,
                          out var errorResponse,
-                         CustomAddUserRoleResponseParser) &&
-                addUserRoleResponse is not null)
+                         CustomAddUserRoleResponseParser))
             {
                 return addUserRoleResponse;
             }
@@ -287,8 +288,8 @@ namespace cloud.charging.open.protocols.OCPP.CS
         /// <param name="CustomAddUserRoleResponseParser">A delegate to parse custom boot notification responses.</param>
         public static Boolean TryParse(CSMS.AddUserRoleRequest                            Request,
                                        JObject                                            JSON,
-                                       out AddUserRoleResponse?                           AddUserRoleResponse,
-                                       out String?                                        ErrorResponse,
+                                       [NotNullWhen(true)]  out AddUserRoleResponse?      AddUserRoleResponse,
+                                       [NotNullWhen(false)] out String?                   ErrorResponse,
                                        CustomJObjectParserDelegate<AddUserRoleResponse>?  CustomAddUserRoleResponseParser   = null)
         {
 
@@ -396,7 +397,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
 
                 if (CustomAddUserRoleResponseParser is not null)
                     AddUserRoleResponse = CustomAddUserRoleResponseParser(JSON,
-                                                                                    AddUserRoleResponse);
+                                                                          AddUserRoleResponse);
 
                 return true;
 
@@ -404,7 +405,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
             catch (Exception e)
             {
                 AddUserRoleResponse  = null;
-                ErrorResponse             = "The given JSON representation of a boot notification response is invalid: " + e.Message;
+                ErrorResponse        = "The given JSON representation of a boot notification response is invalid: " + e.Message;
                 return false;
             }
 

@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -242,8 +244,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          JSON,
                          out var getCertificateStatusResponse,
                          out var errorResponse,
-                         CustomGetCertificateStatusResponseParser) &&
-                getCertificateStatusResponse is not null)
+                         CustomGetCertificateStatusResponseParser))
             {
                 return getCertificateStatusResponse;
             }
@@ -267,8 +268,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomGetCertificateStatusResponseParser">A delegate to parse custom get certificate status responses.</param>
         public static Boolean TryParse(CS.GetCertificateStatusRequest                              Request,
                                        JObject                                                     JSON,
-                                       out GetCertificateStatusResponse?                           GetCertificateStatusResponse,
-                                       out String?                                                 ErrorResponse,
+                                       [NotNullWhen(true)]  out GetCertificateStatusResponse?      GetCertificateStatusResponse,
+                                       [NotNullWhen(false)] out String?                            ErrorResponse,
                                        CustomJObjectParserDelegate<GetCertificateStatusResponse>?  CustomGetCertificateStatusResponseParser   = null)
         {
 

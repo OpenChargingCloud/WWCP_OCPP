@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -230,8 +232,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          JSON,
                          out var signCertificateResponse,
                          out var errorResponse,
-                         CustomSignCertificateResponseParser) &&
-                signCertificateResponse is not null)
+                         CustomSignCertificateResponseParser))
             {
                 return signCertificateResponse;
             }
@@ -254,8 +255,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomSignCertificateResponseParser">A delegate to parse custom sign certificate responses.</param>
         public static Boolean TryParse(CS.SignCertificateRequest                              Request,
                                        JObject                                                JSON,
-                                       out SignCertificateResponse?                           SignCertificateResponse,
-                                       out String?                                            ErrorResponse,
+                                       [NotNullWhen(true)]  out SignCertificateResponse?      SignCertificateResponse,
+                                       [NotNullWhen(false)] out String?                       ErrorResponse,
                                        CustomJObjectParserDelegate<SignCertificateResponse>?  CustomSignCertificateResponseParser   = null)
         {
 

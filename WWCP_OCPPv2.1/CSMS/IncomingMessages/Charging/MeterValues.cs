@@ -36,10 +36,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Request">The meter values request.</param>
     public delegate Task
 
-        OnMeterValuesRequestReceivedDelegate(DateTime                    Timestamp,
-                                     IEventSender                Sender,
-                                     IWebSocketConnection   Connection,
-                                     MeterValuesRequest          Request);
+        OnMeterValuesRequestReceivedDelegate(DateTime               Timestamp,
+                                             IEventSender           Sender,
+                                             IWebSocketConnection   Connection,
+                                             MeterValuesRequest     Request);
 
 
     /// <summary>
@@ -52,11 +52,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<MeterValuesResponse>
 
-        OnMeterValuesDelegate(DateTime                    Timestamp,
-                              IEventSender                Sender,
+        OnMeterValuesDelegate(DateTime               Timestamp,
+                              IEventSender           Sender,
                               IWebSocketConnection   Connection,
-                              MeterValuesRequest          Request,
-                              CancellationToken           CancellationToken);
+                              MeterValuesRequest     Request,
+                              CancellationToken      CancellationToken);
 
 
     /// <summary>
@@ -70,11 +70,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task
 
-        OnMeterValuesResponseSentDelegate(DateTime                    Timestamp,
-                                      IEventSender                Sender,
-                                      IWebSocketConnection   Connection,
-                                      MeterValuesRequest          Request,
-                                      MeterValuesResponse         Response,
-                                      TimeSpan                    Runtime);
+        OnMeterValuesResponseSentDelegate(DateTime               Timestamp,
+                                          IEventSender           Sender,
+                                          IWebSocketConnection   Connection,
+                                          MeterValuesRequest     Request,
+                                          MeterValuesResponse    Response,
+                                          TimeSpan               Runtime);
 
 }

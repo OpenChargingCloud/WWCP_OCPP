@@ -71,10 +71,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     public delegate Task
 
         OnGetLocalListVersionResponseSentDelegate(DateTime                      Timestamp,
-                                              IEventSender                  Sender,
-                                              IWebSocketConnection          Connection,
-                                              GetLocalListVersionRequest    Request,
-                                              GetLocalListVersionResponse   Response,
-                                              TimeSpan                      Runtime);
+                                                  IEventSender                  Sender,
+                                                  IWebSocketConnection          Connection,
+                                                  GetLocalListVersionRequest    Request,
+                                                  GetLocalListVersionResponse   Response,
+                                                  TimeSpan                      Runtime);
 
 }

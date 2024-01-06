@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -163,8 +165,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          JSON,
                          out var clearedChargingLimitResponse,
                          out var errorResponse,
-                         CustomClearedChargingLimitResponseParser) &&
-                clearedChargingLimitResponse is not null)
+                         CustomClearedChargingLimitResponseParser))
             {
                 return clearedChargingLimitResponse;
             }
@@ -188,8 +189,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomClearedChargingLimitResponseParser">A delegate to parse custom cleared charging limit responses.</param>
         public static Boolean TryParse(CS.ClearedChargingLimitRequest                              Request,
                                        JObject                                                     JSON,
-                                       out ClearedChargingLimitResponse?                           ClearedChargingLimitResponse,
-                                       out String?                                                 ErrorResponse,
+                                       [NotNullWhen(true)]  out ClearedChargingLimitResponse?      ClearedChargingLimitResponse,
+                                       [NotNullWhen(false)] out String?                            ErrorResponse,
                                        CustomJObjectParserDelegate<ClearedChargingLimitResponse>?  CustomClearedChargingLimitResponseParser   = null)
         {
 

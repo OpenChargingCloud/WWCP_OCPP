@@ -36,10 +36,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnGetDefaultChargingTariffRequestDelegate(DateTime                          Timestamp,
-                                                  IEventSender                      Sender,
-                                                  IWebSocketConnection              Connection,
-                                                  GetDefaultChargingTariffRequest   Request);
+        OnGetDefaultChargingTariffRequestReceivedDelegate(DateTime                          Timestamp,
+                                                          IEventSender                      Sender,
+                                                          IWebSocketConnection              Connection,
+                                                          GetDefaultChargingTariffRequest   Request);
 
 
     /// <summary>
@@ -70,11 +70,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnGetDefaultChargingTariffResponseDelegate(DateTime                           Timestamp,
-                                                   IEventSender                       Sender,
-                                                   IWebSocketConnection               Connection,
-                                                   GetDefaultChargingTariffRequest    Request,
-                                                   GetDefaultChargingTariffResponse   Response,
-                                                   TimeSpan                           Runtime);
+        OnGetDefaultChargingTariffResponseSentDelegate(DateTime                           Timestamp,
+                                                       IEventSender                       Sender,
+                                                       IWebSocketConnection               Connection,
+                                                       GetDefaultChargingTariffRequest    Request,
+                                                       GetDefaultChargingTariffResponse   Response,
+                                                       TimeSpan                           Runtime);
 
 }

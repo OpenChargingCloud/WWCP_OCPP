@@ -17,11 +17,11 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-
-using cloud.charging.open.protocols.OCPP;
 
 #endregion
 
@@ -262,8 +262,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                          NetworkPath,
                          out var addUserRoleRequest,
                          out var errorResponse,
-                         CustomAddUserRoleRequestParser) &&
-                addUserRoleRequest is not null)
+                         CustomAddUserRoleRequestParser))
             {
                 return addUserRoleRequest;
             }
@@ -276,33 +275,6 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         #endregion
 
         #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out AddUserRoleRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
-
-        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
-
-        /// <summary>
-        /// Try to parse the given JSON representation of a boot notification request.
-        /// </summary>
-        /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="AddUserRoleRequest">The parsed boot notification request.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                  JSON,
-                                       Request_Id               RequestId,
-                                       NetworkingNode_Id        NetworkingNodeId,
-                                       NetworkPath              NetworkPath,
-                                       out AddUserRoleRequest?  AddUserRoleRequest,
-                                       out String?              ErrorResponse)
-
-            => TryParse(JSON,
-                        RequestId,
-                        NetworkingNodeId,
-                        NetworkPath,
-                        out AddUserRoleRequest,
-                        out ErrorResponse,
-                        null);
-
 
         /// <summary>
         /// Try to parse the given JSON representation of a boot notification request.
@@ -318,8 +290,8 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                                        Request_Id                                        RequestId,
                                        NetworkingNode_Id                                 NetworkingNodeId,
                                        NetworkPath                                       NetworkPath,
-                                       out AddUserRoleRequest?                           AddUserRoleRequest,
-                                       out String?                                       ErrorResponse,
+                                       [NotNullWhen(true)]  out AddUserRoleRequest?      AddUserRoleRequest,
+                                       [NotNullWhen(false)] out String?                  ErrorResponse,
                                        CustomJObjectParserDelegate<AddUserRoleRequest>?  CustomAddUserRoleRequestParser)
         {
 

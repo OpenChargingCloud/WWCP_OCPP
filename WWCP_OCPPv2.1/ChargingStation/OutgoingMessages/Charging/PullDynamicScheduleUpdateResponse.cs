@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -317,8 +319,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          JSON,
                          out var pullDynamicScheduleUpdateResponse,
                          out var errorResponse,
-                         CustomPullDynamicScheduleUpdateResponseParser) &&
-                pullDynamicScheduleUpdateResponse is not null)
+                         CustomPullDynamicScheduleUpdateResponseParser))
             {
                 return pullDynamicScheduleUpdateResponse;
             }
@@ -341,8 +342,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomPullDynamicScheduleUpdateResponseParser">A delegate to parse custom pull dynamic schedule update responses.</param>
         public static Boolean TryParse(CS.PullDynamicScheduleUpdateRequest                              Request,
                                        JObject                                                          JSON,
-                                       out PullDynamicScheduleUpdateResponse?                           PullDynamicScheduleUpdateResponse,
-                                       out String?                                                      ErrorResponse,
+                                       [NotNullWhen(true)]  out PullDynamicScheduleUpdateResponse?      PullDynamicScheduleUpdateResponse,
+                                       [NotNullWhen(false)] out String?                                 ErrorResponse,
                                        CustomJObjectParserDelegate<PullDynamicScheduleUpdateResponse>?  CustomPullDynamicScheduleUpdateResponseParser   = null)
         {
 

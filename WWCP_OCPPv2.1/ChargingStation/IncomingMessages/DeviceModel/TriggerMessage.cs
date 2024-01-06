@@ -37,9 +37,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     public delegate Task
 
         OnTriggerMessageRequestReceivedDelegate(DateTime                Timestamp,
-                                        IEventSender            Sender,
-                                        IWebSocketConnection    Connection,
-                                        TriggerMessageRequest   Request);
+                                                IEventSender            Sender,
+                                                IWebSocketConnection    Connection,
+                                                TriggerMessageRequest   Request);
 
 
     /// <summary>
@@ -71,10 +71,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     public delegate Task
 
         OnTriggerMessageResponseSentDelegate(DateTime                 Timestamp,
-                                         IEventSender             Sender,
-                                         IWebSocketConnection     Connection,
-                                         TriggerMessageRequest    Request,
-                                         TriggerMessageResponse   Response,
-                                         TimeSpan                 Runtime);
+                                             IEventSender             Sender,
+                                             IWebSocketConnection     Connection,
+                                             TriggerMessageRequest    Request,
+                                             TriggerMessageResponse   Response,
+                                             TimeSpan                 Runtime);
 
 }

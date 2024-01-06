@@ -27,140 +27,140 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region OnBootNotification                  (Request/-Response)
 
         /// <summary>
-        /// An event sent whenever a boot notification request was received.
+        /// An event sent whenever a BootNotification request was received.
         /// </summary>
-        event OnBootNotificationRequestReceivedDelegate    OnBootNotificationRequestReceived;
+        event OnBootNotificationRequestReceivedDelegate                     OnBootNotificationRequestReceived;
 
         /// <summary>
-        /// An event sent whenever a response to a boot notification request was sent.
+        /// An event sent whenever a response to a BootNotification request was sent.
         /// </summary>
-        event OnBootNotificationResponseSentDelegate   OnBootNotificationResponse;
+        event OnBootNotificationResponseSentDelegate                        OnBootNotificationResponse;
 
         #endregion
 
         #region OnFirmwareStatusNotification        (Request/-Response)
 
         /// <summary>
-        /// An event sent whenever a firmware status notification request was received.
+        /// An event sent whenever a FirmwareStatusNotification request was received.
         /// </summary>
-        event OnFirmwareStatusNotificationRequestReceivedDelegate    OnFirmwareStatusNotificationRequest;
+        event OnFirmwareStatusNotificationRequestReceivedDelegate           OnFirmwareStatusNotificationRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a firmware status notification request was sent.
+        /// An event sent whenever a response to a FirmwareStatusNotification request was sent.
         /// </summary>
-        event OnFirmwareStatusNotificationResponseSentDelegate   OnFirmwareStatusNotificationResponse;
+        event OnFirmwareStatusNotificationResponseSentDelegate              OnFirmwareStatusNotificationResponse;
 
         #endregion
 
         #region OnPublishFirmwareStatusNotification (Request/-Response)
 
         /// <summary>
-        /// An event sent whenever a publish firmware status notification request was received.
+        /// An event sent whenever a PublishFirmwareStatusNotification request was received.
         /// </summary>
         event OnPublishFirmwareStatusNotificationRequestReceivedDelegate    OnPublishFirmwareStatusNotificationRequest;
 
         /// <summary>
-        /// An event sent whenever a publish firmware to a firmware status notification request was sent.
+        /// An event sent whenever a response to a PublishFirmwareStatusNotification request was sent.
         /// </summary>
-        event OnPublishFirmwareStatusNotificationResponseSentDelegate   OnPublishFirmwareStatusNotificationResponse;
+        event OnPublishFirmwareStatusNotificationResponseSentDelegate       OnPublishFirmwareStatusNotificationResponse;
 
         #endregion
 
         #region OnHeartbeat                         (Request/-Response)
 
         /// <summary>
-        /// An event sent whenever a heartbeat request was received.
+        /// An event sent whenever a Heartbeat request was received.
         /// </summary>
-        event OnHeartbeatRequestReceivedDelegate    OnHeartbeatRequest;
+        event OnHeartbeatRequestReceivedDelegate                            OnHeartbeatRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a heartbeat was sent.
+        /// An event sent whenever a response to a Heartbeat request was sent.
         /// </summary>
-        event OnHeartbeatResponseSentDelegate   OnHeartbeatResponse;
+        event OnHeartbeatResponseSentDelegate                               OnHeartbeatResponse;
 
         #endregion
 
         #region OnNotifyEvent                       (Request/-Response)
 
         /// <summary>
-        /// An event sent whenever a notify event request was received.
+        /// An event sent whenever a NotifyEvent request was received.
         /// </summary>
-        event OnNotifyEventRequestReceivedDelegate    OnNotifyEventRequest;
+        event OnNotifyEventRequestReceivedDelegate                          OnNotifyEventRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a notify event was sent.
+        /// An event sent whenever a response to a NotifyEvent request was sent.
         /// </summary>
-        event OnNotifyEventResponseSentDelegate   OnNotifyEventResponse;
+        event OnNotifyEventResponseSentDelegate                             OnNotifyEventResponse;
 
         #endregion
 
         #region OnSecurityEventNotification         (Request/-Response)
 
         /// <summary>
-        /// An event sent whenever a security event notification request was received.
+        /// An event sent whenever a SecurityEventNotification request was received.
         /// </summary>
-        event OnSecurityEventNotificationRequestReceivedDelegate    OnSecurityEventNotificationRequest;
+        event OnSecurityEventNotificationRequestReceivedDelegate            OnSecurityEventNotificationRequest;
 
         /// <summary>
-        /// An event sent whenever a security event notification to a heartbeat was sent.
+        /// An event sent whenever a response to a SecurityEventNotification request was sent.
         /// </summary>
-        event OnSecurityEventNotificationResponseSentDelegate   OnSecurityEventNotificationResponse;
+        event OnSecurityEventNotificationResponseSentDelegate               OnSecurityEventNotificationResponse;
 
         #endregion
 
         #region OnNotifyReport                      (Request/-Response)
 
         /// <summary>
-        /// An event sent whenever a notify report request was received.
+        /// An event sent whenever a NotifyReport request was received.
         /// </summary>
-        event OnNotifyReportRequestReceivedDelegate    OnNotifyReportRequest;
+        event OnNotifyReportRequestReceivedDelegate                         OnNotifyReportRequest;
 
         /// <summary>
-        /// An event sent whenever a notify report to a heartbeat was sent.
+        /// An event sent whenever a response to a NotifyReport request was sent.
         /// </summary>
-        event OnNotifyReportResponseSentDelegate   OnNotifyReportResponse;
+        event OnNotifyReportResponseSentDelegate                            OnNotifyReportResponse;
 
         #endregion
 
         #region OnNotifyMonitoringReport            (Request/-Response)
 
         /// <summary>
-        /// An event sent whenever a notify monitoring report request was received.
+        /// An event sent whenever a NotifyMonitoringReport request was received.
         /// </summary>
-        event OnNotifyMonitoringReportRequestReceivedDelegate    OnNotifyMonitoringReportRequest;
+        event OnNotifyMonitoringReportRequestReceivedDelegate               OnNotifyMonitoringReportRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a notify monitoring report was sent.
+        /// An event sent whenever a response to a NotifyMonitoringReport request was sent.
         /// </summary>
-        event OnNotifyMonitoringReportResponseSentDelegate   OnNotifyMonitoringReportResponse;
+        event OnNotifyMonitoringReportResponseSentDelegate                  OnNotifyMonitoringReportResponse;
 
         #endregion
 
         #region OnLogStatusNotification             (Request/-Response)
 
         /// <summary>
-        /// An event sent whenever a log status notification request was received.
+        /// An event sent whenever a LogStatusNotification request was received.
         /// </summary>
-        event OnLogStatusNotificationRequestReceivedDelegate    OnLogStatusNotificationRequest;
+        event OnLogStatusNotificationRequestReceivedDelegate                OnLogStatusNotificationRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a log status notification was sent.
+        /// An event sent whenever a response to a LogStatusNotification request was sent.
         /// </summary>
-        event OnLogStatusNotificationResponseSentDelegate   OnLogStatusNotificationResponse;
+        event OnLogStatusNotificationResponseSentDelegate                   OnLogStatusNotificationResponse;
 
         #endregion
 
         #region OnDataTransfer                      (Request/-Response)
 
         /// <summary>
-        /// An event sent whenever a data transfer request was received.
+        /// An event sent whenever an incoming DataTransfer request was received.
         /// </summary>
-        event OnIncomingDataTransferRequestDelegate    OnIncomingDataTransferRequest;
+        event OnIncomingDataTransferRequestDelegate                         OnIncomingDataTransferRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a data transfer request was sent.
+        /// An event sent whenever a response to an incoming DataTransfer request was sent.
         /// </summary>
-        event OnIncomingDataTransferResponseDelegate   OnIncomingDataTransferResponse;
+        event OnIncomingDataTransferResponseDelegate                        OnIncomingDataTransferResponse;
 
         #endregion
 
@@ -168,56 +168,56 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region OnSignCertificate                   (Request/-Response)
 
         /// <summary>
-        /// An event sent whenever a sign certificate request was received.
+        /// An event sent whenever a SignCertificate request was received.
         /// </summary>
-        event OnSignCertificateRequestReceivedDelegate    OnSignCertificateRequest;
+        event OnSignCertificateRequestReceivedDelegate                      OnSignCertificateRequest;
 
         /// <summary>
-        /// An event sent whenever a sign certificate to a heartbeat was sent.
+        /// An event sent whenever a response to a SignCertificate request was sent.
         /// </summary>
-        event OnSignCertificateResponseSentDelegate   OnSignCertificateResponse;
+        event OnSignCertificateResponseSentDelegate                         OnSignCertificateResponse;
 
         #endregion
 
         #region OnGet15118EVCertificate             (Request/-Response)
 
         /// <summary>
-        /// An event sent whenever a get 15118 EV certificate request was received.
+        /// An event sent whenever a Get15118EVCertificate request was received.
         /// </summary>
-        event OnGet15118EVCertificateRequestReceivedDelegate    OnGet15118EVCertificateRequest;
+        event OnGet15118EVCertificateRequestReceivedDelegate                OnGet15118EVCertificateRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a get 15118 EV certificate was sent.
+        /// An event sent whenever a response to a Get15118EVCertificate request was sent.
         /// </summary>
-        event OnGet15118EVCertificateResponseSentDelegate   OnGet15118EVCertificateResponse;
+        event OnGet15118EVCertificateResponseSentDelegate                   OnGet15118EVCertificateResponse;
 
         #endregion
 
         #region OnGetCertificateStatus              (Request/-Response)
 
         /// <summary>
-        /// An event sent whenever a get certificate status request was received.
+        /// An event sent whenever a GetCertificateStatus request was received.
         /// </summary>
-        event OnGetCertificateStatusRequestReceivedDelegate    OnGetCertificateStatusRequest;
+        event OnGetCertificateStatusRequestReceivedDelegate                 OnGetCertificateStatusRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a get certificate status was sent.
+        /// An event sent whenever a response to a GetCertificateStatus request was sent.
         /// </summary>
-        event OnGetCertificateStatusResponseSentDelegate   OnGetCertificateStatusResponse;
+        event OnGetCertificateStatusResponseSentDelegate                    OnGetCertificateStatusResponse;
 
         #endregion
 
         #region OnGetCRL                            (Request/-Response)
 
         /// <summary>
-        /// An event sent whenever a get certificate revocation list request was received.
+        /// An event sent whenever a GetCRL request was received.
         /// </summary>
-        event OnGetCRLRequestReceivedDelegate    OnGetCRLRequest;
+        event OnGetCRLRequestReceivedDelegate                               OnGetCRLRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a get certificate revocation list was sent.
+        /// An event sent whenever a response to a GetCRL request was sent.
         /// </summary>
-        event OnGetCRLResponseSentDelegate   OnGetCRLResponse;
+        event OnGetCRLResponseSentDelegate                                  OnGetCRLResponse;
 
         #endregion
 
@@ -225,112 +225,112 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region OnReservationStatusUpdate           (Request/-Response)
 
         /// <summary>
-        /// An event sent whenever a reservation status update request was received.
+        /// An event sent whenever a ReservationStatusUpdate request was received.
         /// </summary>
-        event OnReservationStatusUpdateRequestReceivedDelegate    OnReservationStatusUpdateRequest;
+        event OnReservationStatusUpdateRequestReceivedDelegate              OnReservationStatusUpdateRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a reservation status update was sent.
+        /// An event sent whenever a response to a ReservationStatusUpdate request was sent.
         /// </summary>
-        event OnReservationStatusUpdateResponseSentDelegate   OnReservationStatusUpdateResponse;
+        event OnReservationStatusUpdateResponseSentDelegate                 OnReservationStatusUpdateResponse;
 
         #endregion
 
         #region OnAuthorize                         (Request/-Response)
 
         /// <summary>
-        /// An event sent whenever an authorize request was received.
+        /// An event sent whenever an Authorize request was received.
         /// </summary>
-        event OnAuthorizeRequestReceivedDelegate    OnAuthorizeRequest;
+        event OnAuthorizeRequestReceivedDelegate                            OnAuthorizeRequest;
 
         /// <summary>
-        /// An event sent whenever an authorize response was sent.
+        /// An event sent whenever a response to an Authorize request was sent.
         /// </summary>
-        event OnAuthorizeResponseSentDelegate   OnAuthorizeResponse;
+        event OnAuthorizeResponseSentDelegate                               OnAuthorizeResponse;
 
         #endregion
 
         #region OnNotifyEVChargingNeeds             (Request/-Response)
 
         /// <summary>
-        /// An event sent whenever a notify EV charging needs request was received.
+        /// An event sent whenever a NotifyEVChargingNeeds request was received.
         /// </summary>
-        event OnNotifyEVChargingNeedsRequestReceivedDelegate    OnNotifyEVChargingNeedsRequest;
+        event OnNotifyEVChargingNeedsRequestReceivedDelegate                OnNotifyEVChargingNeedsRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a notify EV charging needs was sent.
+        /// An event sent whenever a response to a NotifyEVChargingNeeds request was sent.
         /// </summary>
-        event OnNotifyEVChargingNeedsResponseSentDelegate   OnNotifyEVChargingNeedsResponse;
+        event OnNotifyEVChargingNeedsResponseSentDelegate                   OnNotifyEVChargingNeedsResponse;
 
         #endregion
 
         #region OnTransactionEvent                  (Request/-Response)
 
         /// <summary>
-        /// An event sent whenever a transaction event request was received.
+        /// An event sent whenever a TransactionEvent request was received.
         /// </summary>
-        event OnTransactionEventRequestReceivedDelegate    OnTransactionEventRequest;
+        event OnTransactionEventRequestReceivedDelegate                     OnTransactionEventRequest;
 
         /// <summary>
-        /// An event sent whenever a transaction event response was sent.
+        /// An event sent whenever a response to a TransactionEvent request was sent.
         /// </summary>
-        event OnTransactionEventResponseSentDelegate   OnTransactionEventResponse;
+        event OnTransactionEventResponseSentDelegate                        OnTransactionEventResponse;
 
         #endregion
 
         #region OnStatusNotification                (Request/-Response)
 
         /// <summary>
-        /// An event sent whenever a status notification request was received.
+        /// An event sent whenever a StatusNotification request was received.
         /// </summary>
-        event OnStatusNotificationRequestReceivedDelegate    OnStatusNotificationRequest;
+        event OnStatusNotificationRequestReceivedDelegate                   OnStatusNotificationRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a status notification request was sent.
+        /// An event sent whenever a response to a StatusNotification request was sent.
         /// </summary>
-        event OnStatusNotificationResponseSentDelegate   OnStatusNotificationResponse;
+        event OnStatusNotificationResponseSentDelegate                      OnStatusNotificationResponse;
 
         #endregion
 
         #region OnMeterValues                       (Request/-Response)
 
         /// <summary>
-        /// An event sent whenever a meter values request was received.
+        /// An event sent whenever a MeterValues request was received.
         /// </summary>
-        event OnMeterValuesRequestReceivedDelegate    OnMeterValuesRequest;
+        event OnMeterValuesRequestReceivedDelegate                          OnMeterValuesRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a meter values request was sent.
+        /// An event sent whenever a response to a MeterValues request was sent.
         /// </summary>
-        event OnMeterValuesResponseSentDelegate   OnMeterValuesResponse;
+        event OnMeterValuesResponseSentDelegate                             OnMeterValuesResponse;
 
         #endregion
 
         #region OnNotifyChargingLimit               (Request/-Response)
 
         /// <summary>
-        /// An event sent whenever a notify charging limit request was received.
+        /// An event sent whenever a NotifyChargingLimit request was received.
         /// </summary>
-        event OnNotifyChargingLimitRequestReceivedDelegate    OnNotifyChargingLimitRequest;
+        event OnNotifyChargingLimitRequestReceivedDelegate                  OnNotifyChargingLimitRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a notify charging limit was sent.
+        /// An event sent whenever a response to a NotifyChargingLimit request was sent.
         /// </summary>
-        event OnNotifyChargingLimitResponseSentDelegate   OnNotifyChargingLimitResponse;
+        event OnNotifyChargingLimitResponseSentDelegate                     OnNotifyChargingLimitResponse;
 
         #endregion
 
         #region OnClearedChargingLimit              (Request/-Response)
 
         /// <summary>
-        /// An event sent whenever a cleared charging limit request was received.
+        /// An event sent whenever a ClearedChargingLimit request was received.
         /// </summary>
-        event OnClearedChargingLimitRequestReceivedDelegate    OnClearedChargingLimitRequest;
+        event OnClearedChargingLimitRequestReceivedDelegate                 OnClearedChargingLimitRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a cleared charging limit was sent.
+        /// An event sent whenever a response to a ClearedChargingLimit request was sent.
         /// </summary>
-        event OnClearedChargingLimitResponseSentDelegate   OnClearedChargingLimitResponse;
+        event OnClearedChargingLimitResponseSentDelegate                    OnClearedChargingLimitResponse;
 
         #endregion
 
@@ -339,12 +339,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a ReportChargingProfiles request was received.
         /// </summary>
-        event OnReportChargingProfilesRequestReceivedDelegate    OnReportChargingProfilesRequest;
+        event OnReportChargingProfilesRequestReceivedDelegate               OnReportChargingProfilesRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a ReportChargingProfiles was sent.
+        /// An event sent whenever a response to a ReportChargingProfiles request was sent.
         /// </summary>
-        event OnReportChargingProfilesResponseSentDelegate   OnReportChargingProfilesResponse;
+        event OnReportChargingProfilesResponseSentDelegate                  OnReportChargingProfilesResponse;
 
         #endregion
 
@@ -353,12 +353,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a NotifyEVChargingSchedule request was received.
         /// </summary>
-        event OnNotifyEVChargingScheduleRequestReceivedDelegate    OnNotifyEVChargingScheduleRequest;
+        event OnNotifyEVChargingScheduleRequestReceivedDelegate             OnNotifyEVChargingScheduleRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a NotifyEVChargingSchedule was sent.
+        /// An event sent whenever a response to a NotifyEVChargingSchedule request was sent.
         /// </summary>
-        event OnNotifyEVChargingScheduleResponseSentDelegate   OnNotifyEVChargingScheduleResponse;
+        event OnNotifyEVChargingScheduleResponseSentDelegate                OnNotifyEVChargingScheduleResponse;
 
         #endregion
 
@@ -367,12 +367,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a NotifyPriorityCharging request was received.
         /// </summary>
-        event OnNotifyPriorityChargingRequestReceivedDelegate    OnNotifyPriorityChargingRequest;
+        event OnNotifyPriorityChargingRequestReceivedDelegate               OnNotifyPriorityChargingRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a NotifyPriorityCharging was sent.
+        /// An event sent whenever a response to a NotifyPriorityCharging request was sent.
         /// </summary>
-        event OnNotifyPriorityChargingResponseSentDelegate   OnNotifyPriorityChargingResponse;
+        event OnNotifyPriorityChargingResponseSentDelegate                  OnNotifyPriorityChargingResponse;
 
         #endregion
 
@@ -381,12 +381,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a PullDynamicScheduleUpdate request was received.
         /// </summary>
-        event OnPullDynamicScheduleUpdateRequestReceivedDelegate    OnPullDynamicScheduleUpdateRequest;
+        event OnPullDynamicScheduleUpdateRequestReceivedDelegate            OnPullDynamicScheduleUpdateRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a PullDynamicScheduleUpdate was sent.
+        /// An event sent whenever a response to a PullDynamicScheduleUpdate request was sent.
         /// </summary>
-        event OnPullDynamicScheduleUpdateResponseSentDelegate   OnPullDynamicScheduleUpdateResponse;
+        event OnPullDynamicScheduleUpdateResponseSentDelegate               OnPullDynamicScheduleUpdateResponse;
 
         #endregion
 
@@ -396,12 +396,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a notify display messages request was received.
         /// </summary>
-        event OnNotifyDisplayMessagesRequestReceivedDelegate    OnNotifyDisplayMessagesRequest;
+        event OnNotifyDisplayMessagesRequestReceivedDelegate                OnNotifyDisplayMessagesRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a notify display messages was sent.
+        /// An event sent whenever a response to a notify display messages request was sent.
         /// </summary>
-        event OnNotifyDisplayMessagesResponseSentDelegate   OnNotifyDisplayMessagesResponse;
+        event OnNotifyDisplayMessagesResponseSentDelegate                   OnNotifyDisplayMessagesResponse;
 
         #endregion
 
@@ -410,12 +410,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a notify customer information request was received.
         /// </summary>
-        event OnNotifyCustomerInformationRequestReceivedDelegate    OnNotifyCustomerInformationRequest;
+        event OnNotifyCustomerInformationRequestReceivedDelegate            OnNotifyCustomerInformationRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a notify customer information was sent.
+        /// An event sent whenever a response to a notify customer information request was sent.
         /// </summary>
-        event OnNotifyCustomerInformationResponseSentDelegate   OnNotifyCustomerInformationResponse;
+        event OnNotifyCustomerInformationResponseSentDelegate               OnNotifyCustomerInformationResponse;
 
         #endregion
 

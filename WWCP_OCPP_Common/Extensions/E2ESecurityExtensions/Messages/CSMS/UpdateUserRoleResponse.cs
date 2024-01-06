@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -262,8 +264,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
                          JSON,
                          out var updateUserRoleResponse,
                          out var errorResponse,
-                         CustomUpdateUserRoleResponseParser) &&
-                updateUserRoleResponse is not null)
+                         CustomUpdateUserRoleResponseParser))
             {
                 return updateUserRoleResponse;
             }
@@ -287,8 +288,8 @@ namespace cloud.charging.open.protocols.OCPP.CS
         /// <param name="CustomUpdateUserRoleResponseParser">A delegate to parse custom boot notification responses.</param>
         public static Boolean TryParse(CSMS.UpdateUserRoleRequest                            Request,
                                        JObject                                               JSON,
-                                       out UpdateUserRoleResponse?                           UpdateUserRoleResponse,
-                                       out String?                                           ErrorResponse,
+                                       [NotNullWhen(true)]  out UpdateUserRoleResponse?      UpdateUserRoleResponse,
+                                       [NotNullWhen(false)] out String?                      ErrorResponse,
                                        CustomJObjectParserDelegate<UpdateUserRoleResponse>?  CustomUpdateUserRoleResponseParser   = null)
         {
 
@@ -396,7 +397,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
 
                 if (CustomUpdateUserRoleResponseParser is not null)
                     UpdateUserRoleResponse = CustomUpdateUserRoleResponseParser(JSON,
-                                                                                    UpdateUserRoleResponse);
+                                                                                UpdateUserRoleResponse);
 
                 return true;
 
@@ -404,7 +405,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
             catch (Exception e)
             {
                 UpdateUserRoleResponse  = null;
-                ErrorResponse             = "The given JSON representation of a boot notification response is invalid: " + e.Message;
+                ErrorResponse           = "The given JSON representation of a boot notification response is invalid: " + e.Message;
                 return false;
             }
 

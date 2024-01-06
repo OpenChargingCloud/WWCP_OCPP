@@ -37,9 +37,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     public delegate Task
 
         OnReservationStatusUpdateRequestReceivedDelegate(DateTime                         Timestamp,
-                                                 IEventSender                     Sender,
-                                                 IWebSocketConnection        Connection,
-                                                 ReservationStatusUpdateRequest   Request);
+                                                         IEventSender                     Sender,
+                                                         IWebSocketConnection             Connection,
+                                                         ReservationStatusUpdateRequest   Request);
 
 
     /// <summary>
@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnReservationStatusUpdateDelegate(DateTime                         Timestamp,
                                           IEventSender                     Sender,
-                                          IWebSocketConnection        Connection,
+                                          IWebSocketConnection             Connection,
                                           ReservationStatusUpdateRequest   Request,
                                           CancellationToken                CancellationToken);
 
@@ -71,10 +71,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     public delegate Task
 
         OnReservationStatusUpdateResponseSentDelegate(DateTime                          Timestamp,
-                                                  IEventSender                      Sender,
-                                                  IWebSocketConnection         Connection,
-                                                  ReservationStatusUpdateRequest    Request,
-                                                  ReservationStatusUpdateResponse   Response,
-                                                  TimeSpan                          Runtime);
+                                                      IEventSender                      Sender,
+                                                      IWebSocketConnection              Connection,
+                                                      ReservationStatusUpdateRequest    Request,
+                                                      ReservationStatusUpdateResponse   Response,
+                                                      TimeSpan                          Runtime);
 
 }

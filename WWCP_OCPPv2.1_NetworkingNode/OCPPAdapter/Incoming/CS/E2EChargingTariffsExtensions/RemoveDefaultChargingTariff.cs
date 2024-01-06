@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a RemoveDefaultChargingTariff request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnRemoveDefaultChargingTariffRequestDelegate?     OnRemoveDefaultChargingTariffRequest;
+        public event OCPPv2_1.CS.OnRemoveDefaultChargingTariffRequestReceivedDelegate?     OnRemoveDefaultChargingTariffRequest;
 
         /// <summary>
         /// An event sent whenever a RemoveDefaultChargingTariff request was received.
@@ -66,7 +66,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a response to a RemoveDefaultChargingTariff request was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnRemoveDefaultChargingTariffResponseDelegate?    OnRemoveDefaultChargingTariffResponseSent;
+        public event OCPPv2_1.CS.OnRemoveDefaultChargingTariffResponseSentDelegate?    OnRemoveDefaultChargingTariffResponseSent;
 
         /// <summary>
         /// An event sent whenever a websocket response to a RemoveDefaultChargingTariff request was sent.
@@ -266,7 +266,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a response to a RemoveDefaultChargingTariff request was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnRemoveDefaultChargingTariffResponseDelegate? OnRemoveDefaultChargingTariffResponseSent;
+        public event OCPPv2_1.CS.OnRemoveDefaultChargingTariffResponseSentDelegate? OnRemoveDefaultChargingTariffResponseSent;
 
     }
 

@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -262,8 +264,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
                          JSON,
                          out var updateSignaturePolicyResponse,
                          out var errorResponse,
-                         CustomUpdateSignaturePolicyResponseParser) &&
-                updateSignaturePolicyResponse is not null)
+                         CustomUpdateSignaturePolicyResponseParser))
             {
                 return updateSignaturePolicyResponse;
             }
@@ -287,8 +288,8 @@ namespace cloud.charging.open.protocols.OCPP.CS
         /// <param name="CustomUpdateSignaturePolicyResponseParser">A delegate to parse custom boot notification responses.</param>
         public static Boolean TryParse(CSMS.UpdateSignaturePolicyRequest                            Request,
                                        JObject                                                      JSON,
-                                       out UpdateSignaturePolicyResponse?                           UpdateSignaturePolicyResponse,
-                                       out String?                                                  ErrorResponse,
+                                       [NotNullWhen(true)]  out UpdateSignaturePolicyResponse?      UpdateSignaturePolicyResponse,
+                                       [NotNullWhen(false)] out String?                             ErrorResponse,
                                        CustomJObjectParserDelegate<UpdateSignaturePolicyResponse>?  CustomUpdateSignaturePolicyResponseParser   = null)
         {
 
@@ -396,7 +397,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
 
                 if (CustomUpdateSignaturePolicyResponseParser is not null)
                     UpdateSignaturePolicyResponse = CustomUpdateSignaturePolicyResponseParser(JSON,
-                                                                                    UpdateSignaturePolicyResponse);
+                                                                                              UpdateSignaturePolicyResponse);
 
                 return true;
 
@@ -404,7 +405,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
             catch (Exception e)
             {
                 UpdateSignaturePolicyResponse  = null;
-                ErrorResponse             = "The given JSON representation of a boot notification response is invalid: " + e.Message;
+                ErrorResponse                  = "The given JSON representation of a boot notification response is invalid: " + e.Message;
                 return false;
             }
 

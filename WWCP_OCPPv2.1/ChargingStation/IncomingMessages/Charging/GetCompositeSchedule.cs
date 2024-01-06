@@ -37,9 +37,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     public delegate Task
 
         OnGetCompositeScheduleRequestReceivedDelegate(DateTime                      Timestamp,
-                                              IEventSender                  Sender,
-                                              IWebSocketConnection          Connection,
-                                              GetCompositeScheduleRequest   Request);
+                                                      IEventSender                  Sender,
+                                                      IWebSocketConnection          Connection,
+                                                      GetCompositeScheduleRequest   Request);
 
 
     /// <summary>
@@ -71,10 +71,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     public delegate Task
 
         OnGetCompositeScheduleResponseSentDelegate(DateTime                       Timestamp,
-                                               IEventSender                   Sender,
-                                               IWebSocketConnection           Connection,
-                                               GetCompositeScheduleRequest    Request,
-                                               GetCompositeScheduleResponse   Response,
-                                               TimeSpan                       Runtime);
+                                                   IEventSender                   Sender,
+                                                   IWebSocketConnection           Connection,
+                                                   GetCompositeScheduleRequest    Request,
+                                                   GetCompositeScheduleResponse   Response,
+                                                   TimeSpan                       Runtime);
 
 }

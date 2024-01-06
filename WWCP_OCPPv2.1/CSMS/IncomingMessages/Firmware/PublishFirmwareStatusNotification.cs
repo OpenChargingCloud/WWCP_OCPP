@@ -38,9 +38,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     public delegate Task
 
         OnPublishFirmwareStatusNotificationRequestReceivedDelegate(DateTime                                   Timestamp,
-                                                           IEventSender                               Sender,
-                                                           IWebSocketConnection                  Connection,
-                                                           PublishFirmwareStatusNotificationRequest   Request);
+                                                                   IEventSender                               Sender,
+                                                                   IWebSocketConnection                       Connection,
+                                                                   PublishFirmwareStatusNotificationRequest   Request);
 
 
     /// <summary>
@@ -55,7 +55,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnPublishFirmwareStatusNotificationDelegate(DateTime                                   Timestamp,
                                                     IEventSender                               Sender,
-                                                    IWebSocketConnection                  Connection,
+                                                    IWebSocketConnection                       Connection,
                                                     PublishFirmwareStatusNotificationRequest   Request,
                                                     CancellationToken                          CancellationToken);
 
@@ -72,10 +72,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     public delegate Task
 
         OnPublishFirmwareStatusNotificationResponseSentDelegate(DateTime                                    Timestamp,
-                                                            IEventSender                                Sender,
-                                                            IWebSocketConnection                   Connection,
-                                                            PublishFirmwareStatusNotificationRequest    Request,
-                                                            PublishFirmwareStatusNotificationResponse   Response,
-                                                            TimeSpan                                    Runtime);
+                                                                IEventSender                                Sender,
+                                                                IWebSocketConnection                        Connection,
+                                                                PublishFirmwareStatusNotificationRequest    Request,
+                                                                PublishFirmwareStatusNotificationResponse   Response,
+                                                                TimeSpan                                    Runtime);
 
 }

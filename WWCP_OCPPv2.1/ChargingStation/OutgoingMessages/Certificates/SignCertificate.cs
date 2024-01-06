@@ -33,8 +33,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     public delegate Task OnSignCertificateRequestSentDelegate(DateTime                 Timestamp,
-                                                          IEventSender             Sender,
-                                                          SignCertificateRequest   Request);
+                                                              IEventSender             Sender,
+                                                              SignCertificateRequest   Request);
 
     /// <summary>
     /// A delegate called whenever a response to a SignCertificate request was received.
@@ -45,9 +45,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnSignCertificateResponseReceivedDelegate(DateTime                  Timestamp,
-                                                           IEventSender              Sender,
-                                                           SignCertificateRequest    Request,
-                                                           SignCertificateResponse   Response,
-                                                           TimeSpan                  Runtime);
+                                                                   IEventSender              Sender,
+                                                                   SignCertificateRequest    Request,
+                                                                   SignCertificateResponse   Response,
+                                                                   TimeSpan                  Runtime);
 
 }

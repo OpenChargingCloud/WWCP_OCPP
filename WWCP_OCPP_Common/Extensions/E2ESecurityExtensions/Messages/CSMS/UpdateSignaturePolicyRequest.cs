@@ -17,11 +17,11 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-
-using cloud.charging.open.protocols.OCPP;
 
 #endregion
 
@@ -262,8 +262,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                          NetworkPath,
                          out var updateSignaturePolicyRequest,
                          out var errorResponse,
-                         CustomUpdateSignaturePolicyRequestParser) &&
-                updateSignaturePolicyRequest is not null)
+                         CustomUpdateSignaturePolicyRequestParser))
             {
                 return updateSignaturePolicyRequest;
             }
@@ -276,33 +275,6 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         #endregion
 
         #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out UpdateSignaturePolicyRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
-
-        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
-
-        /// <summary>
-        /// Try to parse the given JSON representation of a boot notification request.
-        /// </summary>
-        /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="UpdateSignaturePolicyRequest">The parsed boot notification request.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                            JSON,
-                                       Request_Id                         RequestId,
-                                       NetworkingNode_Id                  NetworkingNodeId,
-                                       NetworkPath                        NetworkPath,
-                                       out UpdateSignaturePolicyRequest?  UpdateSignaturePolicyRequest,
-                                       out String?                        ErrorResponse)
-
-            => TryParse(JSON,
-                        RequestId,
-                        NetworkingNodeId,
-                        NetworkPath,
-                        out UpdateSignaturePolicyRequest,
-                        out ErrorResponse,
-                        null);
-
 
         /// <summary>
         /// Try to parse the given JSON representation of a boot notification request.
@@ -318,8 +290,8 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                                        Request_Id                                                  RequestId,
                                        NetworkingNode_Id                                           NetworkingNodeId,
                                        NetworkPath                                                 NetworkPath,
-                                       out UpdateSignaturePolicyRequest?                           UpdateSignaturePolicyRequest,
-                                       out String?                                                 ErrorResponse,
+                                       [NotNullWhen(true)]  out UpdateSignaturePolicyRequest?      UpdateSignaturePolicyRequest,
+                                       [NotNullWhen(false)] out String?                            ErrorResponse,
                                        CustomJObjectParserDelegate<UpdateSignaturePolicyRequest>?  CustomUpdateSignaturePolicyRequestParser)
         {
 
@@ -394,18 +366,17 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
 
         #endregion
 
-        #region ToJSON(CustomUpdateSignaturePolicyRequestSerializer = null, CustomChargingStationSerializer = null, ...)
+        #region ToJSON(CustomUpdateSignaturePolicyRequestSerializer = null, CustomSignatureSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomUpdateSignaturePolicyRequestSerializer">A delegate to serialize custom boot notification requests.</param>
-        /// <param name="CustomChargingStationSerializer">A delegate to serialize custom ChargingStations.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<UpdateSignaturePolicyRequest>?  CustomUpdateSignaturePolicyRequestSerializer   = null,
-                              CustomJObjectSerializerDelegate<Signature>?                CustomSignatureSerializer                 = null,
-                              CustomJObjectSerializerDelegate<CustomData>?               CustomCustomDataSerializer                = null)
+                              CustomJObjectSerializerDelegate<Signature>?                     CustomSignatureSerializer                      = null,
+                              CustomJObjectSerializerDelegate<CustomData>?                    CustomCustomDataSerializer                     = null)
         {
 
             var json = JSONObject.Create(

@@ -38,9 +38,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     public delegate Task
 
         OnFirmwareStatusNotificationRequestReceivedDelegate(DateTime                            Timestamp,
-                                                    IEventSender                        Sender,
-                                                    IWebSocketConnection           Connection,
-                                                    FirmwareStatusNotificationRequest   Request);
+                                                            IEventSender                        Sender,
+                                                            IWebSocketConnection                Connection,
+                                                            FirmwareStatusNotificationRequest   Request);
 
 
     /// <summary>
@@ -55,7 +55,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnFirmwareStatusNotificationDelegate(DateTime                            Timestamp,
                                              IEventSender                        Sender,
-                                             IWebSocketConnection           Connection,
+                                             IWebSocketConnection                Connection,
                                              FirmwareStatusNotificationRequest   Request,
                                              CancellationToken                   CancellationToken);
 
@@ -72,10 +72,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     public delegate Task
 
         OnFirmwareStatusNotificationResponseSentDelegate(DateTime                             Timestamp,
-                                                     IEventSender                         Sender,
-                                                     IWebSocketConnection            Connection,
-                                                     FirmwareStatusNotificationRequest    Request,
-                                                     FirmwareStatusNotificationResponse   Response,
-                                                     TimeSpan                             Runtime);
+                                                         IEventSender                         Sender,
+                                                         IWebSocketConnection                 Connection,
+                                                         FirmwareStatusNotificationRequest    Request,
+                                                         FirmwareStatusNotificationResponse   Response,
+                                                         TimeSpan                             Runtime);
 
 }

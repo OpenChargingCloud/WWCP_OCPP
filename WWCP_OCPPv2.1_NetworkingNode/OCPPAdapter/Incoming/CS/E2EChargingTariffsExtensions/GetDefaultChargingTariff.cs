@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a GetDefaultChargingTariff request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnGetDefaultChargingTariffRequestDelegate?     OnGetDefaultChargingTariffRequest;
+        public event OCPPv2_1.CS.OnGetDefaultChargingTariffRequestReceivedDelegate?     OnGetDefaultChargingTariffRequest;
 
         /// <summary>
         /// An event sent whenever a GetDefaultChargingTariff request was received.
@@ -66,7 +66,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a response to a GetDefaultChargingTariff request was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnGetDefaultChargingTariffResponseDelegate?    OnGetDefaultChargingTariffResponseSent;
+        public event OCPPv2_1.CS.OnGetDefaultChargingTariffResponseSentDelegate?    OnGetDefaultChargingTariffResponseSent;
 
         /// <summary>
         /// An event sent whenever a websocket response to a GetDefaultChargingTariff request was sent.
@@ -266,7 +266,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a response to a GetDefaultChargingTariff request was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnGetDefaultChargingTariffResponseDelegate? OnGetDefaultChargingTariffResponseSent;
+        public event OCPPv2_1.CS.OnGetDefaultChargingTariffResponseSentDelegate? OnGetDefaultChargingTariffResponseSent;
 
     }
 

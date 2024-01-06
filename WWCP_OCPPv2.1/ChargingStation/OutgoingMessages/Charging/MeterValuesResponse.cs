@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -163,8 +165,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          JSON,
                          out var meterValuesResponse,
                          out var errorResponse,
-                         CustomMeterValuesResponseParser) &&
-                meterValuesResponse is not null)
+                         CustomMeterValuesResponseParser))
             {
                 return meterValuesResponse;
             }
@@ -188,8 +189,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomMeterValuesResponseParser">A delegate to parse custom meter values responses.</param>
         public static Boolean TryParse(CS.MeterValuesRequest                              Request,
                                        JObject                                            JSON,
-                                       out MeterValuesResponse?                           MeterValuesResponse,
-                                       out String?                                        ErrorResponse,
+                                       [NotNullWhen(true)]  out MeterValuesResponse?      MeterValuesResponse,
+                                       [NotNullWhen(false)] out String?                   ErrorResponse,
                                        CustomJObjectParserDelegate<MeterValuesResponse>?  CustomMeterValuesResponseParser   = null)
         {
 

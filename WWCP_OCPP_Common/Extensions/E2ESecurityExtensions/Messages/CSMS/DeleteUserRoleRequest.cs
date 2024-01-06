@@ -17,11 +17,11 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-
-using cloud.charging.open.protocols.OCPP;
 
 #endregion
 
@@ -266,8 +266,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                          NetworkPath,
                          out var deleteUserRoleRequest,
                          out var errorResponse,
-                         CustomDeleteUserRoleRequestParser) &&
-                deleteUserRoleRequest is not null)
+                         CustomDeleteUserRoleRequestParser))
             {
                 return deleteUserRoleRequest;
             }
@@ -280,33 +279,6 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         #endregion
 
         #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out DeleteUserRoleRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
-
-        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
-
-        /// <summary>
-        /// Try to parse the given JSON representation of a boot notification request.
-        /// </summary>
-        /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="DeleteUserRoleRequest">The parsed boot notification request.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                     JSON,
-                                       Request_Id                  RequestId,
-                                       NetworkingNode_Id           NetworkingNodeId,
-                                       NetworkPath                 NetworkPath,
-                                       out DeleteUserRoleRequest?  DeleteUserRoleRequest,
-                                       out String?                 ErrorResponse)
-
-            => TryParse(JSON,
-                        RequestId,
-                        NetworkingNodeId,
-                        NetworkPath,
-                        out DeleteUserRoleRequest,
-                        out ErrorResponse,
-                        null);
-
 
         /// <summary>
         /// Try to parse the given JSON representation of a boot notification request.
@@ -322,8 +294,8 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                                        Request_Id                                           RequestId,
                                        NetworkingNode_Id                                    NetworkingNodeId,
                                        NetworkPath                                          NetworkPath,
-                                       out DeleteUserRoleRequest?                           DeleteUserRoleRequest,
-                                       out String?                                          ErrorResponse,
+                                       [NotNullWhen(true)]  out DeleteUserRoleRequest?      DeleteUserRoleRequest,
+                                       [NotNullWhen(false)] out String?                     ErrorResponse,
                                        CustomJObjectParserDelegate<DeleteUserRoleRequest>?  CustomDeleteUserRoleRequestParser)
         {
 
