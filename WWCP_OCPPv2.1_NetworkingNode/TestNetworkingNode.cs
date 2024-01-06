@@ -18,7 +18,10 @@
 #region Usings
 
 using System.Security.Authentication;
+using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
+
+using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
@@ -31,11 +34,10 @@ using org.GraphDefined.Vanaheimr.Hermod.Sockets.TCP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPP.CS;
+using cloud.charging.open.protocols.OCPP.CSMS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
 using cloud.charging.open.protocols.OCPPv2_1.NN;
-using cloud.charging.open.protocols.OCPP.CS;
-using System.Security.Cryptography;
-using cloud.charging.open.protocols.OCPP.CSMS;
 
 #endregion
 
@@ -999,89 +1001,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public void Wire()
         {
 
-            // Bidirectional
+            
 
-            #region OnIncomingDataTransfer
-
-            //IN.OnIncomingDataTransfer += async (timestamp,
-            //                                    sender,
-            //                                    connection,
-            //                                    request,
-            //                                    cancellationToken) => {
-
-            //    // VendorId
-            //    // MessageId
-            //    // Data
-
-            //    DebugX.Log("OnIncomingDataTransfer: " + request.VendorId  + ", " +
-            //                                            request.MessageId + ", " +
-            //                                            request.Data);
-
-
-            //    var responseData = request.Data;
-
-            //    if (request.Data is not null)
-            //    {
-
-            //        if      (request.Data.Type == JTokenType.String)
-            //            responseData = request.Data.ToString().Reverse();
-
-            //        else if (request.Data.Type == JTokenType.Object) {
-
-            //            var responseObject = new JObject();
-
-            //            foreach (var property in (request.Data as JObject)!)
-            //            {
-            //                if (property.Value?.Type == JTokenType.String)
-            //                    responseObject.Add(property.Key,
-            //                                        property.Value.ToString().Reverse());
-            //            }
-
-            //            responseData = responseObject;
-
-            //        }
-
-            //        else if (request.Data.Type == JTokenType.Array) {
-
-            //            var responseArray = new JArray();
-
-            //            foreach (var element in (request.Data as JArray)!)
-            //            {
-            //                if (element?.Type == JTokenType.String)
-            //                    responseArray.Add(element.ToString().Reverse());
-            //            }
-
-            //            responseData = responseArray;
-
-            //        }
-
-            //    }
-
-
-            //    var response =  request.VendorId == Vendor_Id.GraphDefined
-
-            //                                ? new DataTransferResponse(
-            //                                    Request:      request,
-            //                                    Status:       DataTransferStatus.Accepted,
-            //                                    Data:         responseData,
-            //                                    StatusInfo:   null,
-            //                                    CustomData:   null
-            //                                )
-
-            //                                : new DataTransferResponse(
-            //                                    Request:      request,
-            //                                    Status:       DataTransferStatus.Rejected,
-            //                                    Data:         null,
-            //                                    StatusInfo:   null,
-            //                                    CustomData:   null
-            //                                );
-
-
-            //    return response;
-
-            //};
-
-            #endregion
 
 
 
@@ -1089,49 +1010,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnReset
 
-            //IN.OnReset += async (timestamp,
-            //                     sender,
-            //                     connection,
-            //                     request,
-            //                     cancellationToken) => {
+            OCPP.IN.OnReset += async (timestamp,
+                                      sender,
+                                      connection,
+                                      request,
+                                      cancellationToken) => {
 
-            //    OCPPv2_1.CS.ResetResponse? response = null;
+                OCPPv2_1.CS.ResetResponse? response = null;
 
-            //    DebugX.Log($"Charging Station '{Id}': Incoming '{request.ResetType}' reset request{(request.EVSEId.HasValue ? $" for EVSE '{request.EVSEId}" : "")}'!");
+                DebugX.Log($"Charging Station '{Id}': Incoming '{request.ResetType}' reset request{(request.EVSEId.HasValue ? $" for EVSE '{request.EVSEId}" : "")}'!");
 
-            //    // ResetType
+                // ResetType
 
-            //    // Reset entire charging station
-            //    if (!request.EVSEId.HasValue)
-            //    {
+                // Reset entire charging station
+                if (!request.EVSEId.HasValue)
+                {
 
-            //        response = new OCPPv2_1.CS.ResetResponse(
-            //                        Request:      request,
-            //                        Status:       ResetStatus.Accepted,
-            //                        StatusInfo:   null,
-            //                        CustomData:   null
-            //                    );
+                    response = new OCPPv2_1.CS.ResetResponse(
+                                    Request:      request,
+                                    Status:       ResetStatus.Accepted,
+                                    StatusInfo:   null,
+                                    CustomData:   null
+                                );
 
-            //    }
+                }
 
-            //    // Unknown EVSE
-            //    else
-            //    {
+                // Unknown EVSE
+                else
+                {
 
-            //        response = new OCPPv2_1.CS.ResetResponse(
-            //                        Request:      request,
-            //                        Status:       ResetStatus.Rejected,
-            //                        StatusInfo:   null,
-            //                        CustomData:   null
-            //                    );
+                    response = new OCPPv2_1.CS.ResetResponse(
+                                    Request:      request,
+                                    Status:       ResetStatus.Rejected,
+                                    StatusInfo:   null,
+                                    CustomData:   null
+                                );
 
-            //    }
+                }
 
-            //    return response;
+                return response;
 
-            //};
+            };
 
-            #endregion
 
             OCPP.FORWARD.OnResetRequest += (timestamp,
                                             sender,
@@ -1146,63 +1066,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     )
                 );
 
+            #endregion
+
 
             #region BinaryDataStreamsExtensions
-
-            #region OnIncomingBinaryDataTransfer
-
-            OCPP.IN.OnBinaryDataTransfer += (timestamp,
-                                             sender,
-                                             connection,
-                                             request,
-                                             cancellationToken) => {
-
-                DebugX.Log($"Charging Station '{Id}': Incoming BinaryDataTransfer request: {request.VendorId}.{request.MessageId?.ToString() ?? "-"}: {request.Data?.ToHexString() ?? "-"}!");
-
-                // VendorId
-                // MessageId
-                // Data
-
-                var responseBinaryData = request.Data;
-
-                if (request.Data is not null)
-                    responseBinaryData = request.Data.Reverse();
-
-                return Task.FromResult(
-                           request.VendorId == Vendor_Id.GraphDefined
-
-                               ? new BinaryDataTransferResponse(
-                                       Request:                request,
-                                       Status:                 BinaryDataTransferStatus.Accepted,
-                                       AdditionalStatusInfo:   null,
-                                       Data:                   responseBinaryData
-                                   )
-
-                               : new BinaryDataTransferResponse(
-                                       Request:                request,
-                                       Status:                 BinaryDataTransferStatus.Rejected,
-                                       AdditionalStatusInfo:   null,
-                                       Data:                   responseBinaryData
-                                   )
-                       );
-
-            };
-
-
-            OCPP.FORWARD.OnBinaryDataTransferRequest += (timestamp,
-                                                         sender,
-                                                         connection,
-                                                         request,
-                                                         cancellationToken) =>
-
-                Task.FromResult(
-                    new ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>(
-                        request,
-                        ForwardingResult.FORWARD
-                    )
-                );
-
-            #endregion
 
             #region OnDeleteFile
 
@@ -1304,6 +1171,145 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             };
 
             #endregion
+
+            #endregion
+
+            // Bidirectional
+
+            #region OnBinaryDataTransfer
+
+            OCPP.IN.OnBinaryDataTransfer += (timestamp,
+                                             sender,
+                                             connection,
+                                             request,
+                                             cancellationToken) => {
+
+                DebugX.Log($"Charging Station '{Id}': Incoming BinaryDataTransfer request: {request.VendorId}.{request.MessageId?.ToString() ?? "-"}: {request.Data?.ToHexString() ?? "-"}!");
+
+                // VendorId
+                // MessageId
+                // Data
+
+                var responseBinaryData = request.Data;
+
+                if (request.Data is not null)
+                    responseBinaryData = request.Data.Reverse();
+
+                return Task.FromResult(
+                           request.VendorId == Vendor_Id.GraphDefined
+
+                               ? new BinaryDataTransferResponse(
+                                       Request:                request,
+                                       Status:                 BinaryDataTransferStatus.Accepted,
+                                       AdditionalStatusInfo:   null,
+                                       Data:                   responseBinaryData
+                                   )
+
+                               : new BinaryDataTransferResponse(
+                                       Request:                request,
+                                       Status:                 BinaryDataTransferStatus.Rejected,
+                                       AdditionalStatusInfo:   null,
+                                       Data:                   responseBinaryData
+                                   )
+                       );
+
+            };
+
+
+            OCPP.FORWARD.OnBinaryDataTransferRequest += (timestamp,
+                                                         sender,
+                                                         connection,
+                                                         request,
+                                                         cancellationToken) =>
+
+                Task.FromResult(
+                    new ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>(
+                        request,
+                        ForwardingResult.FORWARD
+                    )
+                );
+
+            #endregion
+
+            #region OnIncomingDataTransfer
+
+            OCPP.IN.OnDataTransfer += async (timestamp,
+                                                sender,
+                                                connection,
+                                                request,
+                                                cancellationToken) => {
+
+                // VendorId
+                // MessageId
+                // Data
+
+                DebugX.Log("OnIncomingDataTransfer: " + request.VendorId  + ", " +
+                                                        request.MessageId + ", " +
+                                                        request.Data);
+
+
+                var responseData = request.Data;
+
+                if (request.Data is not null)
+                {
+
+                    if      (request.Data.Type == JTokenType.String)
+                        responseData = request.Data.ToString().Reverse();
+
+                    else if (request.Data.Type == JTokenType.Object) {
+
+                        var responseObject = new JObject();
+
+                        foreach (var property in (request.Data as JObject)!)
+                        {
+                            if (property.Value?.Type == JTokenType.String)
+                                responseObject.Add(property.Key,
+                                                    property.Value.ToString().Reverse());
+                        }
+
+                        responseData = responseObject;
+
+                    }
+
+                    else if (request.Data.Type == JTokenType.Array) {
+
+                        var responseArray = new JArray();
+
+                        foreach (var element in (request.Data as JArray)!)
+                        {
+                            if (element?.Type == JTokenType.String)
+                                responseArray.Add(element.ToString().Reverse());
+                        }
+
+                        responseData = responseArray;
+
+                    }
+
+                }
+
+
+                var response =  request.VendorId == Vendor_Id.GraphDefined
+
+                                            ? new DataTransferResponse(
+                                                Request:      request,
+                                                Status:       DataTransferStatus.Accepted,
+                                                Data:         responseData,
+                                                StatusInfo:   null,
+                                                CustomData:   null
+                                            )
+
+                                            : new DataTransferResponse(
+                                                Request:      request,
+                                                Status:       DataTransferStatus.Rejected,
+                                                Data:         null,
+                                                StatusInfo:   null,
+                                                CustomData:   null
+                                            );
+
+
+                return response;
+
+            };
 
             #endregion
 

@@ -23,12 +23,14 @@
     <None Remove="HTTPRoot\template.html" />
     <None Remove="HTTPRoot\template.scss" />
     <None Remove="OCPPAdapter\Forwarding\CS\BinaryDataStreamsExtensions\.gitkeep" />
+    <None Remove="OCPPAdapter\Incoming\CSMS\BinaryDataStreamsExtensions\.gitkeep" />
     <None Remove="OCPPAdapter\Outgoing\CS\BinaryDataStreamsExtensions\.gitkeep" />
     <None Remove="TestNetworkingNode.cs~RF349fda6f.TMP" />
   </ItemGroup>
 
   <ItemGroup>
     <Compile Include="OCPPAdapter\Forwarding\CS\BinaryDataStreamsExtensions\.gitkeep" />
+    <Compile Include="OCPPAdapter\Incoming\CSMS\BinaryDataStreamsExtensions\.gitkeep" />
     <Compile Include="OCPPAdapter\Outgoing\CS\BinaryDataStreamsExtensions\.gitkeep" />
   </ItemGroup>
 
@@ -59,10 +61,6 @@
     <ProjectReference Include="..\..\Styx\Styx\Styx.csproj" />
     <ProjectReference Include="..\WWCP_OCPPv2.1\WWCP_OCPPv2.1.csproj" />
     <ProjectReference Include="..\WWCP_OCPP_Common\WWCP_OCPP_Common.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="OCPPAdapter\Incoming\CSMS\BinaryDataStreamsExtensions\" />
   </ItemGroup>
 
 </Project>

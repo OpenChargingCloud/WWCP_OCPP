@@ -106,7 +106,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             if (AnycastIdsDenied. Any() &&  AnycastIdsDenied. Contains(JSONRequestMessage.DestinationNodeId))
                 return;
 
+            expectedResponses.TryAdd(
+                                  JSONRequestMessage.RequestId,
+                                  new ResponseInfo(
+                                      JSONRequestMessage.RequestId,
+                                      JSONRequestMessage.Payload["action"]?.ToString() ?? "",
+                                      JSONRequestMessage.RequestTimeout
+                                  )
+                              );
 
+            await parentNetworkingNode.OCPP.SendJSONRequest(JSONRequestMessage);
 
         }
 
@@ -124,6 +133,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //responseInfo.Context == JSONResponseMessage.Context)
                 {
 
+                    await parentNetworkingNode.OCPP.SendJSONResponse(JSONResponseMessage);
 
                 }
                 else
@@ -149,6 +159,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //responseInfo.Context == JSONResponseMessage.Context)
                 {
 
+                    await parentNetworkingNode.OCPP.SendJSONError(JSONErrorMessage);
 
                 }
                 else
@@ -174,6 +185,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             if (AnycastIdsDenied. Any() &&  AnycastIdsDenied. Contains(BinaryRequestMessage.DestinationNodeId))
                 return;
 
+            await parentNetworkingNode.OCPP.SendBinaryRequest(BinaryRequestMessage);
+
         }
 
         #endregion
@@ -190,6 +203,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 //responseInfo.Context == JSONResponseMessage.Context)
                 {
 
+                    await parentNetworkingNode.OCPP.SendBinaryResponse(BinaryResponseMessage);
 
                 }
                 else

@@ -80,8 +80,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Receive message (wired via reflection!)
 
-        public async Task<Tuple<OCPP_JSONResponseMessage?,
-                                OCPP_JSONErrorMessage?>>
+        public async Task<OCPP_Response>
 
             Receive_DeleteFile(DateTime              RequestTimestamp,
                                IWebSocketConnection  WebSocketConnection,
@@ -116,10 +115,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnDeleteFileWSRequest));
             }
 
-            #endregion
+            OCPP_Response? ocppResponse   = null;
 
-            OCPP_JSONResponseMessage?  OCPPResponse        = null;
-            OCPP_JSONErrorMessage?     OCPPErrorResponse   = null;
+            #endregion
 
             try
             {
@@ -196,7 +194,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #endregion
 
-                    OCPPResponse = OCPP_JSONResponseMessage.From(
+                    ocppResponse = OCPP_Response.JSONResponse(
+                                       EventTrackingId,
                                        NetworkPath.Source,
                                        NetworkPath,
                                        RequestId,
@@ -205,28 +204,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                            parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
                                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                                       )
+                                       ),
+                                       CancellationToken
                                    );
 
                 }
 
                 else
-                    OCPPErrorResponse = OCPP_JSONErrorMessage.CouldNotParse(
-                                            RequestId,
-                                            nameof(Receive_DeleteFile)[8..],
-                                            RequestJSON,
-                                            errorResponse
-                                        );
+                    ocppResponse = OCPP_Response.CouldNotParse(
+                                       EventTrackingId,
+                                       RequestId,
+                                       nameof(Receive_DeleteFile)[8..],
+                                       RequestJSON,
+                                       errorResponse
+                                   );
 
             }
             catch (Exception e)
             {
-                OCPPErrorResponse = OCPP_JSONErrorMessage.FormationViolation(
-                                        RequestId,
-                                        nameof(Receive_DeleteFile)[8..],
-                                        RequestJSON,
-                                        e
-                                    );
+                ocppResponse = OCPP_Response.FormationViolation(
+                                   EventTrackingId,
+                                   RequestId,
+                                   nameof(Receive_DeleteFile)[8..],
+                                   RequestJSON,
+                                   e
+                               );
             }
 
             #region Send OnDeleteFileWSResponse event
@@ -244,8 +246,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                EventTrackingId,
                                                RequestTimestamp,
                                                RequestJSON,
-                                               OCPPResponse?.Payload,
-                                               OCPPErrorResponse?.ToJSON(),
+                                               ocppResponse.JSONResponseMessage?.Payload,
+                                               ocppResponse.JSONErrorMessage?.   ToJSON(),
                                                endTime - startTime);
 
             }
@@ -256,9 +258,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
-            return new Tuple<OCPP_JSONResponseMessage?,
-                             OCPP_JSONErrorMessage?>(OCPPResponse,
-                                                     OCPPErrorResponse);
+            return ocppResponse;
 
         }
 

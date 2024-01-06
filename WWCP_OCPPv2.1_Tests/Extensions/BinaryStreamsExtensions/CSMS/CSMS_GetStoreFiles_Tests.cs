@@ -77,7 +77,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
 
                 var response   = await testCSMS01.GetFile(
                                      DestinationNodeId:  chargingStation1.Id,
-                                     Filename:           filename
+                                     FileName:           filename
                                  );
 
 

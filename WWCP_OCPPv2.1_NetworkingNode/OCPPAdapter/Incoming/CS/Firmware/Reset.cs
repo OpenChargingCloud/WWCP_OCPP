@@ -23,7 +23,6 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPP.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
@@ -51,27 +50,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Events
 
         /// <summary>
-        /// An event sent whenever a reset websocket request was received.
+        /// An event sent whenever a Reset websocket request was received.
         /// </summary>
         public event WebSocketJSONRequestLogHandler?                OnResetWSRequest;
 
         /// <summary>
-        /// An event sent whenever a reset request was received.
+        /// An event sent whenever a Reset request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnResetRequestReceivedDelegate?            OnResetRequestReceived;
+        public event OnResetRequestReceivedDelegate?                OnResetRequestReceived;
 
         /// <summary>
-        /// An event sent whenever a reset request was received.
+        /// An event sent whenever a Reset request was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnResetDelegate?                   OnReset;
+        public event OnResetDelegate?                               OnReset;
 
         /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
+        /// An event sent whenever a response to a Reset request was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnResetResponseSentDelegate?           OnResetResponseSent;
+        public event OnResetResponseSentDelegate?                   OnResetResponseSent;
 
         /// <summary>
-        /// An event sent whenever a websocket response to a reset request was sent.
+        /// An event sent whenever a websocket response to a Reset request was sent.
         /// </summary>
         public event WebSocketJSONRequestJSONResponseLogHandler?    OnResetWSResponse;
 
@@ -80,8 +79,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Receive message (wired via reflection!)
 
-        public async Task<Tuple<OCPP_JSONResponseMessage?,
-                                OCPP_JSONErrorMessage?>>
+        public async Task<OCPP_Response>
 
             Receive_Reset(DateTime              RequestTimestamp,
                           IWebSocketConnection  WebSocketConnection,
@@ -116,10 +114,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnResetWSRequest));
             }
 
-            #endregion
+            OCPP_Response? ocppResponse   = null;
 
-            OCPP_JSONResponseMessage?  OCPPResponse        = null;
-            OCPP_JSONErrorMessage?     OCPPErrorResponse   = null;
+            #endregion
 
             try
             {
@@ -196,37 +193,41 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #endregion
 
-                    OCPPResponse = OCPP_JSONResponseMessage.From(
+                    ocppResponse = OCPP_Response.JSONResponse(
+                                       EventTrackingId,
                                        NetworkPath.Source,
-                                       NetworkPath,
+                                       NetworkPath.From(parentNetworkingNode.Id),
                                        RequestId,
                                        response.ToJSON(
                                            CustomResetResponseSerializer,
                                            parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
                                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                                       )
+                                       ),
+                                       CancellationToken
                                    );
 
                 }
 
                 else
-                    OCPPErrorResponse = OCPP_JSONErrorMessage.CouldNotParse(
-                                            RequestId,
-                                            nameof(Receive_Reset)[8..],
-                                            RequestJSON,
-                                            errorResponse
-                                        );
+                    ocppResponse = OCPP_Response.CouldNotParse(
+                                       EventTrackingId,
+                                       RequestId,
+                                       nameof(Receive_Reset)[8..],
+                                       RequestJSON,
+                                       errorResponse
+                                   );
 
             }
             catch (Exception e)
             {
-                OCPPErrorResponse = OCPP_JSONErrorMessage.FormationViolation(
-                                        RequestId,
-                                        nameof(Receive_Reset)[8..],
-                                        RequestJSON,
-                                        e
-                                    );
+                ocppResponse = OCPP_Response.FormationViolation(
+                                   EventTrackingId,
+                                   RequestId,
+                                   nameof(Receive_Reset)[8..],
+                                   RequestJSON,
+                                   e
+                               );
             }
 
             #region Send OnResetWSResponse event
@@ -244,8 +245,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           EventTrackingId,
                                           RequestTimestamp,
                                           RequestJSON,
-                                          OCPPResponse?.Payload,
-                                          OCPPErrorResponse?.ToJSON(),
+                                          ocppResponse.JSONResponseMessage?.Payload,
+                                          ocppResponse.JSONErrorMessage?.   ToJSON(),
                                           endTime - startTime);
 
             }
@@ -256,9 +257,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
-            return new Tuple<OCPP_JSONResponseMessage?,
-                             OCPP_JSONErrorMessage?>(OCPPResponse,
-                                                     OCPPErrorResponse);
+            return ocppResponse;
 
         }
 
@@ -273,7 +272,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnResetResponseSentDelegate? OnResetResponseSent;
+        public event OnResetResponseSentDelegate? OnResetResponseSent;
 
     }
 

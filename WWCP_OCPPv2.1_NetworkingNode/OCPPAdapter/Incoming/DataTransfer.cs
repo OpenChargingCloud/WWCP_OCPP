@@ -23,7 +23,6 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPP.CS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
@@ -49,37 +48,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Events
 
         /// <summary>
-        /// An event sent whenever a data transfer websocket request was received.
+        /// An event sent whenever a DataTransfer websocket request was received.
         /// </summary>
-        public event WebSocketJSONRequestLogHandler?                OnIncomingDataTransferWSRequest;
+        public event WebSocketJSONRequestLogHandler?                OnDataTransferWSRequest;
 
         /// <summary>
-        /// An event sent whenever a data transfer request was received.
+        /// An event sent whenever a DataTransfer request was received.
         /// </summary>
-        public event OnIncomingDataTransferRequestDelegate?         OnIncomingDataTransferRequest;
+        public event OnIncomingDataTransferRequestDelegate?         OnDataTransferRequest;
 
         /// <summary>
-        /// An event sent whenever a data transfer request was received.
+        /// An event sent whenever a DataTransfer request was received.
         /// </summary>
-        public event OnIncomingDataTransferDelegate?                OnIncomingDataTransfer;
+        public event OnIncomingDataTransferDelegate?                OnDataTransfer;
 
         /// <summary>
-        /// An event sent whenever a response to a data transfer request was sent.
+        /// An event sent whenever a response to a DataTransfer request was sent.
         /// </summary>
-        public event OnIncomingDataTransferResponseDelegate?        OnIncomingDataTransferResponse;
+        public event OnIncomingDataTransferResponseDelegate?        OnDataTransferResponse;
 
         /// <summary>
-        /// An event sent whenever a websocket response to a data transfer request was sent.
+        /// An event sent whenever a websocket response to a DataTransfer request was sent.
         /// </summary>
-        public event WebSocketJSONRequestJSONResponseLogHandler?    OnIncomingDataTransferWSResponse;
+        public event WebSocketJSONRequestJSONResponseLogHandler?    OnDataTransferWSResponse;
 
         #endregion
 
 
         #region Receive message (wired via reflection!)
 
-        public async Task<Tuple<OCPP_JSONResponseMessage?,
-                                OCPP_JSONErrorMessage?>>
+        public async Task<OCPP_Response>
 
             Receive_DataTransfer(DateTime              RequestTimestamp,
                                  IWebSocketConnection  WebSocketConnection,
@@ -99,7 +97,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnIncomingDataTransferWSRequest?.Invoke(startTime,
+                OnDataTransferWSRequest?.Invoke(startTime,
                                                         parentNetworkingNode,
                                                         WebSocketConnection,
                                                         DestinationNodeId,
@@ -111,13 +109,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnIncomingDataTransferWSRequest));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnDataTransferWSRequest));
             }
 
-            #endregion
+            OCPP_Response? ocppResponse   = null;
 
-            OCPP_JSONResponseMessage?  OCPPResponse        = null;
-            OCPP_JSONErrorMessage?     OCPPErrorResponse   = null;
+            #endregion
 
             try
             {
@@ -135,7 +132,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     try
                     {
 
-                        OnIncomingDataTransferRequest?.Invoke(Timestamp.Now,
+                        OnDataTransferRequest?.Invoke(Timestamp.Now,
                                                               parentNetworkingNode,
                                                               WebSocketConnection,
                                                               request);
@@ -143,7 +140,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnIncomingDataTransferRequest));
+                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnDataTransferRequest));
                     }
 
                     #endregion
@@ -152,7 +149,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     DataTransferResponse? response = null;
 
-                    var results = OnIncomingDataTransfer?.
+                    var results = OnDataTransfer?.
                                       GetInvocationList()?.
                                       SafeSelect(subscriber => (subscriber as OnIncomingDataTransferDelegate)?.Invoke(Timestamp.Now,
                                                                                                                       parentNetworkingNode,
@@ -179,7 +176,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     try
                     {
 
-                        OnIncomingDataTransferResponse?.Invoke(Timestamp.Now,
+                        OnDataTransferResponse?.Invoke(Timestamp.Now,
                                                                parentNetworkingNode,
                                                                WebSocketConnection,
                                                                request,
@@ -189,12 +186,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnIncomingDataTransferResponse));
+                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnDataTransferResponse));
                     }
 
                     #endregion
 
-                    OCPPResponse = OCPP_JSONResponseMessage.From(
+                    ocppResponse = OCPP_Response.JSONResponse(
+                                       EventTrackingId,
                                        NetworkPath.Source,
                                        NetworkPath,
                                        RequestId,
@@ -203,28 +201,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                            parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
                                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                                       )
+                                       ),
+                                       CancellationToken
                                    );
 
                 }
 
                 else
-                    OCPPErrorResponse = OCPP_JSONErrorMessage.CouldNotParse(
-                                            RequestId,
-                                            nameof(Receive_DataTransfer)[8..],
-                                            RequestJSON,
-                                            errorResponse
-                                        );
+                    ocppResponse = OCPP_Response.CouldNotParse(
+                                       EventTrackingId,
+                                       RequestId,
+                                       nameof(Receive_DataTransfer)[8..],
+                                       RequestJSON,
+                                       errorResponse
+                                   );
 
             }
             catch (Exception e)
             {
-                OCPPErrorResponse = OCPP_JSONErrorMessage.FormationViolation(
-                                        RequestId,
-                                        nameof(Receive_DataTransfer)[8..],
-                                        RequestJSON,
-                                        e
-                                    );
+                ocppResponse = OCPP_Response.FormationViolation(
+                                   EventTrackingId,
+                                   RequestId,
+                                   nameof(Receive_DataTransfer)[8..],
+                                   RequestJSON,
+                                   e
+                               );
             }
 
             #region Send OnIncomingDataTransferWSResponse event
@@ -234,7 +235,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 var endTime = Timestamp.Now;
 
-                OnIncomingDataTransferWSResponse?.Invoke(endTime,
+                OnDataTransferWSResponse?.Invoke(endTime,
                                                          parentNetworkingNode,
                                                          WebSocketConnection,
                                                          DestinationNodeId,
@@ -242,21 +243,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                          EventTrackingId,
                                                          RequestTimestamp,
                                                          RequestJSON,
-                                                         OCPPResponse?.Payload,
-                                                         OCPPErrorResponse?.ToJSON(),
+                                                         ocppResponse.JSONResponseMessage?.Payload,
+                                                         ocppResponse.JSONErrorMessage?.   ToJSON(),
                                                          endTime - startTime);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnIncomingDataTransferWSResponse));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnDataTransferWSResponse));
             }
 
             #endregion
 
-            return new Tuple<OCPP_JSONResponseMessage?,
-                             OCPP_JSONErrorMessage?>(OCPPResponse,
-                                                     OCPPErrorResponse);
+            return ocppResponse;
 
         }
 

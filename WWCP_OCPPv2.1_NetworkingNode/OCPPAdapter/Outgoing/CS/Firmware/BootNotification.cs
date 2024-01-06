@@ -118,11 +118,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     sendRequestState.JSONResponse is not null)
                 {
 
-                    if (BootNotificationResponse.TryParse(Request,
-                                                          sendRequestState.JSONResponse.Payload,
-                                                          out response,
-                                                          out var errorResponse,
-                                                          CustomBootNotificationResponseParser))
+                    if (!BootNotificationResponse.TryParse(Request,
+                                                           sendRequestState.JSONResponse.Payload,
+                                                           out response,
+                                                           out var errorResponse,
+                                                           CustomBootNotificationResponseParser))
                     {
                         response = new BootNotificationResponse(
                                        Request,

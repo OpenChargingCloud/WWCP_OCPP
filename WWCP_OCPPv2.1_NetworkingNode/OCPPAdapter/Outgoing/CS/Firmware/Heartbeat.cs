@@ -122,20 +122,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     sendRequestState.JSONResponse is not null)
                 {
 
-                    if (HeartbeatResponse.TryParse(Request,
-                                                   sendRequestState.JSONResponse.Payload,
-                                                   out var heartbeatResponse,
-                                                   out var errorResponse,
-                                                   CustomHeartbeatResponseParser) &&
-                        heartbeatResponse is not null)
+                    if (!HeartbeatResponse.TryParse(Request,
+                                                    sendRequestState.JSONResponse.Payload,
+                                                    out response,
+                                                    out var errorResponse,
+                                                    CustomHeartbeatResponseParser))
                     {
-                        response = heartbeatResponse;
+                        response = new HeartbeatResponse(
+                                       Request,
+                                       Result.Format(errorResponse)
+                                   );
                     }
-
-                    response ??= new HeartbeatResponse(
-                                     Request,
-                                     Result.Format(errorResponse)
-                                 );
 
                 }
 

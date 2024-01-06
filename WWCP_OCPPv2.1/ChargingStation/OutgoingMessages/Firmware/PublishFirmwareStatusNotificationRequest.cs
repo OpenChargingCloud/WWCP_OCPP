@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -244,8 +246,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          NetworkPath,
                          out var publishFirmwareStatusNotificationRequest,
                          out var errorResponse,
-                         CustomPublishFirmwareStatusNotificationRequestParser) &&
-                publishFirmwareStatusNotificationRequest is not null)
+                         CustomPublishFirmwareStatusNotificationRequestParser))
             {
                 return publishFirmwareStatusNotificationRequest;
             }
@@ -258,33 +259,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
         #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out PublishFirmwareStatusNotificationRequest, out ErrorResponse, CustomPublishFirmwareStatusNotificationRequestParser = null)
-
-        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
-
-        /// <summary>
-        /// Try to parse the given JSON representation of a publish firmware status notification request.
-        /// </summary>
-        /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="PublishFirmwareStatusNotificationRequest">The parsed publish firmware status notification request.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                                        JSON,
-                                       Request_Id                                     RequestId,
-                                       NetworkingNode_Id                              NetworkingNodeId,
-                                       NetworkPath                                    NetworkPath,
-                                       out PublishFirmwareStatusNotificationRequest?  PublishFirmwareStatusNotificationRequest,
-                                       out String?                                    ErrorResponse)
-
-            => TryParse(JSON,
-                        RequestId,
-                        NetworkingNodeId,
-                        NetworkPath,
-                        out PublishFirmwareStatusNotificationRequest,
-                        out ErrorResponse,
-                        null);
-
 
         /// <summary>
         /// Try to parse the given JSON representation of a publish firmware status notification request.
@@ -300,8 +274,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                        Request_Id                                                              RequestId,
                                        NetworkingNode_Id                                                       NetworkingNodeId,
                                        NetworkPath                                                             NetworkPath,
-                                       out PublishFirmwareStatusNotificationRequest?                           PublishFirmwareStatusNotificationRequest,
-                                       out String?                                                             ErrorResponse,
+                                       [NotNullWhen(true)]  out PublishFirmwareStatusNotificationRequest?      PublishFirmwareStatusNotificationRequest,
+                                       [NotNullWhen(false)] out String?                                        ErrorResponse,
                                        CustomJObjectParserDelegate<PublishFirmwareStatusNotificationRequest>?  CustomPublishFirmwareStatusNotificationRequestParser)
         {
 

@@ -360,6 +360,22 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         #endregion
 
 
+        public OCPP_BinaryRequestMessage ChangeDestinationNodeId(NetworkingNode_Id NewDestinationNodeId,
+                                                                 NetworkPath       NewNetworkPath)
+
+            => new (RequestTimestamp,
+                    EventTrackingId,
+                    NetworkingMode,
+                    NewDestinationNodeId,
+                    NewNetworkPath,
+                    RequestId,
+                    Action,
+                    Payload,
+                    RequestTimeout,
+                    ErrorMessage,
+                    CancellationToken);
+
+
         #region (override) ToString()
 
         /// <summary>

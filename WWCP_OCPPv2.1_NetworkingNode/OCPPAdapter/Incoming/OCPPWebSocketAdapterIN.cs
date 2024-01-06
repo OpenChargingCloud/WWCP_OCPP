@@ -238,7 +238,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                              jsonRequest.Payload,
                                                              jsonRequest.CancellationToken ]);
 
-                            if (result is Task<Tuple<OCPP_JSONResponseMessage?, OCPP_JSONErrorMessage?>> textProcessor) {
+                                 if (result is Task<Tuple<OCPP_JSONResponseMessage?,   OCPP_JSONErrorMessage?>> textProcessor) {
                                 (OCPPResponse, OCPPErrorResponse) = await textProcessor;
 
                                 if (OCPPResponse is not null)
@@ -317,13 +317,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region NotifyJSON(Message/Error)ResponseSent
 
-                    var now = Timestamp.Now;
+                    if (OCPPResponse       is not null)
+                        await parentNetworkingNode.OCPP.OUT.NotifyJSONMessageResponseSent  (OCPPResponse);
 
-                    if (OCPPResponse      is not null)
-                        await parentNetworkingNode.OCPP.OUT.NotifyJSONMessageResponseSent(OCPPResponse);
+                    if (OCPPErrorResponse  is not null)
+                        await parentNetworkingNode.OCPP.OUT.NotifyJSONErrorResponseSent    (OCPPErrorResponse);
 
-                    if (OCPPErrorResponse is not null)
-                        await parentNetworkingNode.OCPP.OUT.NotifyJSONErrorResponseSent(OCPPErrorResponse);
+                    if (OCPPBinaryResponse is not null)
+                        await parentNetworkingNode.OCPP.OUT.NotifyBinaryMessageResponseSent(OCPPBinaryResponse);
 
                     #endregion
 
@@ -486,8 +487,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                                CancellationToken     CancellationToken)
         {
 
-            OCPP_BinaryResponseMessage?  OCPPResponse        = null;
-            OCPP_JSONErrorMessage?       OCPPErrorResponse   = null;
+            OCPP_JSONResponseMessage?    OCPPResponse         = null;
+            OCPP_BinaryResponseMessage?  OCPPBinaryResponse   = null;
+            OCPP_JSONErrorMessage?       OCPPErrorResponse    = null;
 
             try
             {
@@ -496,6 +498,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                      if (OCPP_BinaryRequestMessage. TryParse(BinaryMessage, out var binaryRequest,  out var requestParsingError,  RequestTimestamp, EventTrackingId, sourceNodeId, CancellationToken) && binaryRequest  is not null)
                 {
+
+                    #region Fix DestinationNodeId and network path for standard networking connections
+
+                    if (binaryRequest.NetworkingMode    == NetworkingMode.Standard &&
+                        binaryRequest.DestinationNodeId == NetworkingNode_Id.Zero  &&
+                        sourceNodeId.HasValue)
+                    {
+                        switch (WebSocketConnection)
+                        {
+
+                            case WebSocketClientConnection:
+                                binaryRequest = binaryRequest.ChangeDestinationNodeId(
+                                                                  parentNetworkingNode.Id,
+                                                                  binaryRequest.NetworkPath.Append(sourceNodeId.Value)
+                                                              );
+                                break;
+
+                            case WebSocketServerConnection:
+                                binaryRequest = binaryRequest.ChangeDestinationNodeId(
+                                                                  NetworkingNode_Id.CSMS,
+                                                                  binaryRequest.NetworkPath.Append(sourceNodeId.Value)
+                                                              );
+                                break;
+
+                        }
+                    }
+
+                    #endregion
+
+
 
                     #region OnBinaryMessageRequestReceived
 
@@ -523,67 +555,119 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #endregion
 
-                    #region Try to call the matching 'incoming message processor'
 
-                    if (incomingMessageProcessorsLookup.TryGetValue(binaryRequest.Action, out var methodInfo) &&
-                        methodInfo is not null)
+                    // When not for this node, send it to the FORWARD processor...
+                    if (binaryRequest.DestinationNodeId != parentNetworkingNode.Id)
+                        await parentNetworkingNode.OCPP.FORWARD.ProcessBinaryRequestMessage(binaryRequest);
+
+                    // Directly for this node OR an anycast message for this node...
+                    if (binaryRequest.DestinationNodeId == parentNetworkingNode.Id ||
+                        parentNetworkingNode.AnycastIds.Contains(binaryRequest.DestinationNodeId))
                     {
 
-                        var result = methodInfo.Invoke(this,
-                                                       [ binaryRequest.RequestTimestamp,
-                                                         WebSocketConnection,
-                                                         binaryRequest.DestinationNodeId,
-                                                         binaryRequest.NetworkPath,
-                                                         binaryRequest.EventTrackingId,
-                                                         binaryRequest.RequestId,
-                                                         binaryRequest.Payload,
-                                                         binaryRequest.CancellationToken ]);
+                        #region Try to call the matching 'incoming message processor'
 
-                        if (result is Task<Tuple<OCPP_BinaryResponseMessage?, OCPP_JSONErrorMessage?>> binaryProcessor)
+                        if (incomingMessageProcessorsLookup.TryGetValue(binaryRequest.Action, out var methodInfo) &&
+                            methodInfo is not null)
                         {
-                            (OCPPResponse, OCPPErrorResponse) = await binaryProcessor;
+
+                            var result = methodInfo.Invoke(this,
+                                                           [ binaryRequest.RequestTimestamp,
+                                                             WebSocketConnection,
+                                                             binaryRequest.DestinationNodeId,
+                                                             binaryRequest.NetworkPath,
+                                                             binaryRequest.EventTrackingId,
+                                                             binaryRequest.RequestId,
+                                                             binaryRequest.Payload,
+                                                             binaryRequest.CancellationToken ]);
+
+                                 if (result is Task<Tuple<OCPP_JSONResponseMessage?,   OCPP_JSONErrorMessage?>> textProcessor) {
+                                (OCPPResponse, OCPPErrorResponse) = await textProcessor;
+
+                                if (OCPPResponse is not null)
+                                    await parentNetworkingNode.OCPP.SendJSONResponse(OCPPResponse);
+
+                                if (OCPPErrorResponse is not null)
+                                    await parentNetworkingNode.OCPP.SendJSONError   (OCPPErrorResponse);
+
+                            }
+
+                            else if (result is Task<Tuple<OCPP_BinaryResponseMessage?, OCPP_JSONErrorMessage?>> binaryProcessor) {
+
+                                (OCPPBinaryResponse, OCPPErrorResponse) = await binaryProcessor;
+
+                                if (OCPPBinaryResponse is not null)
+                                    await parentNetworkingNode.OCPP.SendBinaryResponse(OCPPBinaryResponse);
+
+                                if (OCPPErrorResponse is not null)
+                                    await parentNetworkingNode.OCPP.SendJSONError     (OCPPErrorResponse);
+
+                            }
+
+                            else if (result is Task<OCPP_Response> ocppProcessor)
+                            {
+
+                                var ocppReply = await ocppProcessor;
+
+                                OCPPResponse         = ocppReply.JSONResponseMessage;
+                                OCPPErrorResponse    = ocppReply.JSONErrorMessage;
+                                OCPPBinaryResponse   = ocppReply.BinaryResponseMessage;
+
+                                if (ocppReply.JSONResponseMessage is not null)
+                                    await parentNetworkingNode.OCPP.SendJSONResponse  (ocppReply.JSONResponseMessage);
+
+                                if (ocppReply.JSONErrorMessage is not null)
+                                    await parentNetworkingNode.OCPP.SendJSONError     (ocppReply.JSONErrorMessage);
+
+                                if (ocppReply.BinaryResponseMessage is not null)
+                                    await parentNetworkingNode.OCPP.SendBinaryResponse(ocppReply.BinaryResponseMessage);
+
+                            }
+
+                            else
+                                DebugX.Log($"Received undefined '{binaryRequest.Action}' binary request message handler within {nameof(OCPPWebSocketAdapterIN)}!");
+
                         }
 
+                        #endregion
+
+                        #region ...or error!
+
                         else
-                            DebugX.Log($"Received undefined '{binaryRequest.Action}' binary request message handler within {nameof(OCPPWebSocketAdapterIN)}!");
+                        {
+
+                            DebugX.Log($"Received unknown '{binaryRequest.Action}' binary request message handler within {nameof(OCPPWebSocketAdapterIN)}!");
+
+                            OCPPErrorResponse = new OCPP_JSONErrorMessage(
+                                                    Timestamp.Now,
+                                                    EventTracking_Id.New,
+                                                    NetworkingMode.Unknown,
+                                                    NetworkingNode_Id.Zero,
+                                                    NetworkPath.Empty,
+                                                    binaryRequest.RequestId,
+                                                    ResultCode.ProtocolError,
+                                                    $"The OCPP message '{binaryRequest.Action}' is unkown!",
+                                                    new JObject(
+                                                        new JProperty("request", BinaryMessage.ToBase64())
+                                                    )
+                                                );
+
+                        }
+
+                        #endregion
 
                     }
-
-                    #endregion
-
-                    #region ...or error!
-
-                    else
-                    {
-
-                        DebugX.Log($"Received unknown '{binaryRequest.Action}' binary request message handler within {nameof(OCPPWebSocketAdapterIN)}!");
-
-                        OCPPErrorResponse = new OCPP_JSONErrorMessage(
-                                                Timestamp.Now,
-                                                EventTracking_Id.New,
-                                                NetworkingMode.Unknown,
-                                                NetworkingNode_Id.Zero,
-                                                NetworkPath.Empty,
-                                                binaryRequest.RequestId,
-                                                ResultCode.ProtocolError,
-                                                $"The OCPP message '{binaryRequest.Action}' is unkown!",
-                                                new JObject(
-                                                    new JProperty("request", BinaryMessage.ToBase64())
-                                                )
-                                            );
-
-                    }
-
-                    #endregion
-
 
                     #region NotifyJSON(Message/Error)ResponseSent
 
-                    if (OCPPResponse is not null)
-                        await parentNetworkingNode.OCPP.OUT.NotifyBinaryMessageResponseSent(OCPPResponse);
+                    if (OCPPResponse       is not null)
+                        await parentNetworkingNode.OCPP.OUT.NotifyJSONMessageResponseSent  (OCPPResponse);
 
-                    if (OCPPErrorResponse is not null)
-                        await parentNetworkingNode.OCPP.OUT.NotifyJSONErrorResponseSent(OCPPErrorResponse);
+                    if (OCPPErrorResponse  is not null)
+                        await parentNetworkingNode.OCPP.OUT.NotifyJSONErrorResponseSent    (OCPPErrorResponse);
+
+                    if (OCPPBinaryResponse is not null)
+                        await parentNetworkingNode.OCPP.OUT.NotifyBinaryMessageResponseSent(OCPPBinaryResponse);
 
                     #endregion
 
@@ -647,11 +731,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
 
 
+            // The response is empty!
             return new WebSocketBinaryMessageResponse(
                        RequestTimestamp,
                        BinaryMessage,
                        Timestamp.Now,
-                       OCPPResponse?.ToByteArray() ?? [],
+                       [],
                        EventTrackingId
                    );
 

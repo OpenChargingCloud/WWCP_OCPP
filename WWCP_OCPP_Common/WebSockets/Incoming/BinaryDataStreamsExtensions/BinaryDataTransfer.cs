@@ -25,8 +25,6 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 namespace cloud.charging.open.protocols.OCPP
 {
 
-    #region OnIncomingBinaryDataTransfer
-
     /// <summary>
     /// An incoming BinaryDataTransfer request.
     /// </summary>
@@ -76,7 +74,5 @@ namespace cloud.charging.open.protocols.OCPP
                                                      BinaryDataTransferRequest    Request,
                                                      BinaryDataTransferResponse   Response,
                                                      TimeSpan                     Runtime);
-
-    #endregion
 
 }

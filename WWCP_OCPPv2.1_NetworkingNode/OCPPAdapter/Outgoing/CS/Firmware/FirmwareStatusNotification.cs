@@ -122,20 +122,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     sendRequestState.JSONResponse is not null)
                 {
 
-                    if (FirmwareStatusNotificationResponse.TryParse(Request,
-                                                                    sendRequestState.JSONResponse.Payload,
-                                                                    out var firmwareStatusNotificationResponse,
-                                                                    out var errorResponse,
-                                                                    CustomFirmwareStatusNotificationResponseResponseParser) &&
-                        firmwareStatusNotificationResponse is not null)
+                    if (!FirmwareStatusNotificationResponse.TryParse(Request,
+                                                                     sendRequestState.JSONResponse.Payload,
+                                                                     out response,
+                                                                     out var errorResponse,
+                                                                     CustomFirmwareStatusNotificationResponseResponseParser))
                     {
-                        response = firmwareStatusNotificationResponse;
+                        response = new FirmwareStatusNotificationResponse(
+                                       Request,
+                                       Result.Format(errorResponse)
+                                   );
                     }
-
-                    response ??= new FirmwareStatusNotificationResponse(
-                                     Request,
-                                     Result.Format(errorResponse)
-                                 );
 
                 }
 

@@ -2886,7 +2886,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// Request to download the given file from the charging station.
         /// </summary>
         /// <param name="DestinationNodeId">The networking node identification.</param>
-        /// <param name="Filename">The name of the file including its absolute path.</param>
+        /// <param name="FileName">The name of the file including its absolute path.</param>
         /// <param name="Priority">The optional priority of the file request.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -2901,7 +2901,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             GetFile(this ICSMS                    CSMS,
 
                     NetworkingNode_Id             DestinationNodeId,
-                    FilePath                      Filename,
+                    FilePath                      FileName,
                     Byte?                         Priority            = null,
 
                     IEnumerable<KeyPair>?         SignKeys            = null,
@@ -2920,7 +2920,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 => CSMS.GetFile(
                        new OCPP.CSMS.GetFileRequest(
                            DestinationNodeId,
-                           Filename,
+                           FileName,
                            Priority,
 
                            SignKeys,

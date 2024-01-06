@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -186,8 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          JSON,
                          out var heartbeatResponse,
                          out var errorResponse,
-                         CustomHeartbeatResponseParser) &&
-                heartbeatResponse is not null)
+                         CustomHeartbeatResponseParser))
             {
                 return heartbeatResponse;
             }
@@ -211,8 +212,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomHeartbeatResponseParser">A delegate to parse custom heartbeat responses.</param>
         public static Boolean TryParse(CS.HeartbeatRequest                              Request,
                                        JObject                                          JSON,
-                                       out HeartbeatResponse?                           HeartbeatResponse,
-                                       out String?                                      ErrorResponse,
+                                       [NotNullWhen(true)]  out HeartbeatResponse?      HeartbeatResponse,
+                                       [NotNullWhen(false)] out String?                 ErrorResponse,
                                        CustomJObjectParserDelegate<HeartbeatResponse>?  CustomHeartbeatResponseParser   = null)
         {
 
