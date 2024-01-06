@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -228,8 +230,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var sendLocalListResponse,
                          out var errorResponse,
-                         CustomSendLocalListResponseParser) &&
-                sendLocalListResponse is not null)
+                         CustomSendLocalListResponseParser))
             {
                 return sendLocalListResponse;
             }
@@ -253,8 +254,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomSendLocalListResponseParser">A delegate to parse custom send local list responses.</param>
         public static Boolean TryParse(CSMS.SendLocalListRequest                            Request,
                                        JObject                                              JSON,
-                                       out SendLocalListResponse?                           SendLocalListResponse,
-                                       out String?                                          ErrorResponse,
+                                       [NotNullWhen(true)]  out SendLocalListResponse?      SendLocalListResponse,
+                                       [NotNullWhen(false)] out String?                     ErrorResponse,
                                        CustomJObjectParserDelegate<SendLocalListResponse>?  CustomSendLocalListResponseParser   = null)
         {
 

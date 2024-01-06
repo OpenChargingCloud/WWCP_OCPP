@@ -33,8 +33,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     public delegate Task OnUpdateFirmwareRequestSentDelegate(DateTime                Timestamp,
-                                                         IEventSender            Sender,
-                                                         UpdateFirmwareRequest   Request);
+                                                             IEventSender            Sender,
+                                                             UpdateFirmwareRequest   Request);
 
     /// <summary>
     /// A delegate called whenever a response to an UpdateFirmware request was received.
@@ -45,9 +45,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnUpdateFirmwareResponseReceivedDelegate(DateTime                 Timestamp,
-                                                          IEventSender             Sender,
-                                                          UpdateFirmwareRequest    Request,
-                                                          UpdateFirmwareResponse   Response,
-                                                          TimeSpan                 Runtime);
+                                                                  IEventSender             Sender,
+                                                                  UpdateFirmwareRequest    Request,
+                                                                  UpdateFirmwareResponse   Response,
+                                                                  TimeSpan                 Runtime);
 
 }

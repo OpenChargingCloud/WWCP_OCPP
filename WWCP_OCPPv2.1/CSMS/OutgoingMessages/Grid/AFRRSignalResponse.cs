@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -157,8 +159,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var afrrSignalResponse,
                          out var errorResponse,
-                         CustomAFRRSignalResponseParser) &&
-                afrrSignalResponse is not null)
+                         CustomAFRRSignalResponseParser))
             {
                 return afrrSignalResponse;
             }
@@ -182,8 +183,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomAFRRSignalResponseParser">A delegate to parse custom AFRR signal responses.</param>
         public static Boolean TryParse(CSMS.AFRRSignalRequest                            Request,
                                        JObject                                           JSON,
-                                       out AFRRSignalResponse?                           AFRRSignalResponse,
-                                       out String?                                       ErrorResponse,
+                                       [NotNullWhen(true)]  out AFRRSignalResponse?      AFRRSignalResponse,
+                                       [NotNullWhen(false)] out String?                  ErrorResponse,
                                        CustomJObjectParserDelegate<AFRRSignalResponse>?  CustomAFRRSignalResponseParser   = null)
         {
 

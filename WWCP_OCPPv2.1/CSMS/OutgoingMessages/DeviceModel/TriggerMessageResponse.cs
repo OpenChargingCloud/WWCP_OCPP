@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -228,8 +230,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var triggerMessageResponse,
                          out var errorResponse,
-                         CustomTriggerMessageResponseParser) &&
-                triggerMessageResponse is not null)
+                         CustomTriggerMessageResponseParser))
             {
                 return triggerMessageResponse;
             }
@@ -253,8 +254,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomTriggerMessageResponseParser">A delegate to parse custom trigger message responses.</param>
         public static Boolean TryParse(CSMS.TriggerMessageRequest                            Request,
                                        JObject                                               JSON,
-                                       out TriggerMessageResponse?                           TriggerMessageResponse,
-                                       out String?                                           ErrorResponse,
+                                       [NotNullWhen(true)]  out TriggerMessageResponse?      TriggerMessageResponse,
+                                       [NotNullWhen(false)] out String?                      ErrorResponse,
                                        CustomJObjectParserDelegate<TriggerMessageResponse>?  CustomTriggerMessageResponseParser   = null)
         {
 

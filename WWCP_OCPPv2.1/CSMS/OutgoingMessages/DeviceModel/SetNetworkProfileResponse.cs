@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -228,8 +230,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var setNetworkProfileResponse,
                          out var errorResponse,
-                         CustomSetNetworkProfileResponseParser) &&
-                setNetworkProfileResponse is not null)
+                         CustomSetNetworkProfileResponseParser))
             {
                 return setNetworkProfileResponse;
             }
@@ -253,8 +254,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomSetNetworkProfileResponseParser">A delegate to parse custom set network profile responses.</param>
         public static Boolean TryParse(CSMS.SetNetworkProfileRequest                            Request,
                                        JObject                                                  JSON,
-                                       out SetNetworkProfileResponse?                           SetNetworkProfileResponse,
-                                       out String?                                              ErrorResponse,
+                                       [NotNullWhen(true)]  out SetNetworkProfileResponse?      SetNetworkProfileResponse,
+                                       [NotNullWhen(false)] out String?                         ErrorResponse,
                                        CustomJObjectParserDelegate<SetNetworkProfileResponse>?  CustomSetNetworkProfileResponseParser   = null)
         {
 

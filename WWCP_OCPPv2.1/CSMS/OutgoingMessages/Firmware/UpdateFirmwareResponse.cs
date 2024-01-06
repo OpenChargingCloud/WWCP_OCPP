@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -230,8 +232,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var updateFirmwareResponse,
                          out var errorResponse,
-                         CustomUpdateFirmwareResponseParser) &&
-                updateFirmwareResponse is not null)
+                         CustomUpdateFirmwareResponseParser))
             {
                 return updateFirmwareResponse;
             }
@@ -255,8 +256,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomUpdateFirmwareResponseParser">A delegate to parse custom update firmware responses.</param>
         public static Boolean TryParse(CSMS.UpdateFirmwareRequest                            Request,
                                        JObject                                               JSON,
-                                       out UpdateFirmwareResponse?                           UpdateFirmwareResponse,
-                                       out String?                                           ErrorResponse,
+                                       [NotNullWhen(true)]  out UpdateFirmwareResponse?      UpdateFirmwareResponse,
+                                       [NotNullWhen(false)] out String?                      ErrorResponse,
                                        CustomJObjectParserDelegate<UpdateFirmwareResponse>?  CustomUpdateFirmwareResponseParser   = null)
         {
 

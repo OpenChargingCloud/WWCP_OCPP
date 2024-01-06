@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -244,7 +246,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Request">The clear variable monitoring request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomClearVariableMonitoringResponseParser">A delegate to parse custom clear variable monitoring responses.</param>
-        public static ClearVariableMonitoringResponse Parse(CSMS.ClearVariableMonitoringRequest                              Request,
+        public static ClearVariableMonitoringResponse Parse(CSMS.ClearVariableMonitoringRequest                            Request,
                                                             JObject                                                        JSON,
                                                             CustomJObjectParserDelegate<ClearVariableMonitoringResponse>?  CustomClearVariableMonitoringResponseParser   = null)
         {
@@ -253,8 +255,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var clearVariableMonitoringResponse,
                          out var errorResponse,
-                         CustomClearVariableMonitoringResponseParser) &&
-                clearVariableMonitoringResponse is not null)
+                         CustomClearVariableMonitoringResponseParser))
             {
                 return clearVariableMonitoringResponse;
             }
@@ -276,10 +277,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="ClearVariableMonitoringResponse">The parsed clear variable monitoring response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomClearVariableMonitoringResponseParser">A delegate to parse custom clear variable monitoring responses.</param>
-        public static Boolean TryParse(CSMS.ClearVariableMonitoringRequest                              Request,
+        public static Boolean TryParse(CSMS.ClearVariableMonitoringRequest                            Request,
                                        JObject                                                        JSON,
-                                       out ClearVariableMonitoringResponse?                           ClearVariableMonitoringResponse,
-                                       out String?                                                    ErrorResponse,
+                                       [NotNullWhen(true)]  out ClearVariableMonitoringResponse?      ClearVariableMonitoringResponse,
+                                       [NotNullWhen(false)] out String?                               ErrorResponse,
                                        CustomJObjectParserDelegate<ClearVariableMonitoringResponse>?  CustomClearVariableMonitoringResponseParser   = null)
         {
 

@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -255,8 +257,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          NetworkPath,
                          out var triggerMessageRequest,
                          out var errorResponse,
-                         CustomTriggerMessageRequestParser) &&
-                triggerMessageRequest is not null)
+                         CustomTriggerMessageRequestParser))
             {
                 return triggerMessageRequest;
             }
@@ -269,33 +270,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
         #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out TriggerMessageRequest, out ErrorResponse, CustomTriggerMessageRequestParser = null)
-
-        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
-
-        /// <summary>
-        /// Try to parse the given JSON representation of a trigger message request.
-        /// </summary>
-        /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="TriggerMessageRequest">The parsed trigger message request.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                     JSON,
-                                       Request_Id                  RequestId,
-                                       NetworkingNode_Id           NetworkingNodeId,
-                                       NetworkPath                 NetworkPath,
-                                       out TriggerMessageRequest?  TriggerMessageRequest,
-                                       out String?                 ErrorResponse)
-
-            => TryParse(JSON,
-                        RequestId,
-                        NetworkingNodeId,
-                        NetworkPath,
-                        out TriggerMessageRequest,
-                        out ErrorResponse,
-                        null);
-
 
         /// <summary>
         /// Try to parse the given JSON representation of a trigger message request.
@@ -311,8 +285,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                        Request_Id                                           RequestId,
                                        NetworkingNode_Id                                    NetworkingNodeId,
                                        NetworkPath                                          NetworkPath,
-                                       out TriggerMessageRequest?                           TriggerMessageRequest,
-                                       out String?                                          ErrorResponse,
+                                       [NotNullWhen(true)]  out TriggerMessageRequest?      TriggerMessageRequest,
+                                       [NotNullWhen(false)] out String?                     ErrorResponse,
                                        CustomJObjectParserDelegate<TriggerMessageRequest>?  CustomTriggerMessageRequestParser)
         {
 

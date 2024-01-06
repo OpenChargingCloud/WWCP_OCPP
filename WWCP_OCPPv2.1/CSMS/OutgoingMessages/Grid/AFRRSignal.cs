@@ -33,8 +33,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     public delegate Task OnAFRRSignalRequestSentDelegate(DateTime            Timestamp,
-                                                     IEventSender        Sender,
-                                                     AFRRSignalRequest   Request);
+                                                         IEventSender        Sender,
+                                                         AFRRSignalRequest   Request);
 
     /// <summary>
     /// A delegate called whenever an response to an AFRRSignal request was received.
@@ -45,9 +45,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnAFRRSignalResponseReceivedDelegate(DateTime             Timestamp,
-                                                      IEventSender         Sender,
-                                                      AFRRSignalRequest    Request,
-                                                      AFRRSignalResponse   Response,
-                                                      TimeSpan             Runtime);
+                                                              IEventSender         Sender,
+                                                              AFRRSignalRequest    Request,
+                                                              AFRRSignalResponse   Response,
+                                                              TimeSpan             Runtime);
 
 }

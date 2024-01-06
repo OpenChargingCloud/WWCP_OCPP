@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -344,8 +346,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var setVariablesResponse,
                          out var errorResponse,
-                         CustomSetVariablesResponseParser) &&
-                setVariablesResponse is not null)
+                         CustomSetVariablesResponseParser))
             {
                 return setVariablesResponse;
             }
@@ -369,8 +370,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomSetVariablesResponseParser">A delegate to parse custom set variables responses.</param>
         public static Boolean TryParse(CSMS.SetVariablesRequest                            Request,
                                        JObject                                             JSON,
-                                       out SetVariablesResponse?                           SetVariablesResponse,
-                                       out String?                                         ErrorResponse,
+                                       [NotNullWhen(true)]  out SetVariablesResponse?      SetVariablesResponse,
+                                       [NotNullWhen(false)] out String?                    ErrorResponse,
                                        CustomJObjectParserDelegate<SetVariablesResponse>?  CustomSetVariablesResponseParser   = null)
         {
 

@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -227,8 +229,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var setMonitoringLevelResponse,
                          out var errorResponse,
-                         CustomSetMonitoringLevelResponseParser) &&
-                setMonitoringLevelResponse is not null)
+                         CustomSetMonitoringLevelResponseParser))
             {
                 return setMonitoringLevelResponse;
             }
@@ -252,8 +253,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomSetMonitoringLevelResponseParser">A delegate to parse custom set monitoring level responses.</param>
         public static Boolean TryParse(CSMS.SetMonitoringLevelRequest                            Request,
                                        JObject                                                   JSON,
-                                       out SetMonitoringLevelResponse?                           SetMonitoringLevelResponse,
-                                       out String?                                               ErrorResponse,
+                                       [NotNullWhen(true)]  out SetMonitoringLevelResponse?      SetMonitoringLevelResponse,
+                                       [NotNullWhen(false)] out String?                          ErrorResponse,
                                        CustomJObjectParserDelegate<SetMonitoringLevelResponse>?  CustomSetMonitoringLevelResponseParser   = null)
         {
 

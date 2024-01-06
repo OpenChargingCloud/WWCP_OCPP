@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -229,8 +231,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var getReportResponse,
                          out var errorResponse,
-                         CustomGetReportResponseParser) &&
-                getReportResponse is not null)
+                         CustomGetReportResponseParser))
             {
                 return getReportResponse;
             }
@@ -254,8 +255,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomGetReportResponseParser">A delegate to parse custom get report responses.</param>
         public static Boolean TryParse(CSMS.GetReportRequest                            Request,
                                        JObject                                          JSON,
-                                       out GetReportResponse?                           GetReportResponse,
-                                       out String?                                      ErrorResponse,
+                                       [NotNullWhen(true)]  out GetReportResponse?      GetReportResponse,
+                                       [NotNullWhen(false)] out String?                 ErrorResponse,
                                        CustomJObjectParserDelegate<GetReportResponse>?  CustomGetReportResponseParser   = null)
         {
 

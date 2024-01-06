@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -182,8 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var getLocalListVersionResponse,
                          out var errorResponse,
-                         CustomGetLocalListVersionResponseParser) &&
-                getLocalListVersionResponse is not null)
+                         CustomGetLocalListVersionResponseParser))
             {
                 return getLocalListVersionResponse;
             }
@@ -207,8 +208,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomGetLocalListVersionResponseParser">A delegate to parse custom get local list version responses.</param>
         public static Boolean TryParse(CSMS.GetLocalListVersionRequest                            Request,
                                        JObject                                                    JSON,
-                                       out GetLocalListVersionResponse?                           GetLocalListVersionResponse,
-                                       out String?                                                ErrorResponse,
+                                       [NotNullWhen(true)]  out GetLocalListVersionResponse?      GetLocalListVersionResponse,
+                                       [NotNullWhen(false)] out String?                           ErrorResponse,
                                        CustomJObjectParserDelegate<GetLocalListVersionResponse>?  CustomGetLocalListVersionResponseParser   = null)
         {
 

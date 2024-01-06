@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -84,22 +86,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public AFRRSignalRequest(NetworkingNode_Id        NetworkingNodeId,
-                                 DateTime                 ActivationTimestamp,
-                                 AFRR_Signal              Signal,
+        public AFRRSignalRequest(NetworkingNode_Id             NetworkingNodeId,
+                                 DateTime                      ActivationTimestamp,
+                                 AFRR_Signal                   Signal,
 
-                                 IEnumerable<KeyPair>?    SignKeys            = null,
-                                 IEnumerable<SignInfo>?   SignInfos           = null,
+                                 IEnumerable<KeyPair>?         SignKeys            = null,
+                                 IEnumerable<SignInfo>?        SignInfos           = null,
                                  IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                                 CustomData?              CustomData          = null,
+                                 CustomData?                   CustomData          = null,
 
-                                 Request_Id?              RequestId           = null,
-                                 DateTime?                RequestTimestamp    = null,
-                                 TimeSpan?                RequestTimeout      = null,
-                                 EventTracking_Id?        EventTrackingId     = null,
-                                 NetworkPath?             NetworkPath         = null,
-                                 CancellationToken        CancellationToken   = default)
+                                 Request_Id?                   RequestId           = null,
+                                 DateTime?                     RequestTimestamp    = null,
+                                 TimeSpan?                     RequestTimeout      = null,
+                                 EventTracking_Id?             EventTrackingId     = null,
+                                 NetworkPath?                  NetworkPath         = null,
+                                 CancellationToken             CancellationToken   = default)
 
             : base(NetworkingNodeId,
                    nameof(AFRRSignalRequest)[..^7],
@@ -166,8 +168,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          NetworkPath,
                          out var afrrSignalRequest,
                          out var errorResponse,
-                         CustomAFRRSignalRequestParser) &&
-                afrrSignalRequest is not null)
+                         CustomAFRRSignalRequestParser))
             {
                 return afrrSignalRequest;
             }
@@ -180,33 +181,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
         #region (static) TryParse(JSON,  RequestId, NetworkingNodeId, NetworkPath, out AFRRSignalRequest, out ErrorResponse, CustomAFRRSignalRequestParser = null)
-
-        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
-
-        /// <summary>
-        /// Try to parse the given JSON representation of an AFRR signal request.
-        /// </summary>
-        /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="AFRRSignalRequest">The parsed AFRR signal request.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                 JSON,
-                                       Request_Id              RequestId,
-                                       NetworkingNode_Id       NetworkingNodeId,
-                                       NetworkPath             NetworkPath,
-                                       out AFRRSignalRequest?  AFRRSignalRequest,
-                                       out String?             ErrorResponse)
-
-            => TryParse(JSON,
-                        RequestId,
-                        NetworkingNodeId,
-                        NetworkPath,
-                        out AFRRSignalRequest,
-                        out ErrorResponse,
-                        null);
-
 
         /// <summary>
         /// Try to parse the given JSON representation of an AFRR signal request.
@@ -222,8 +196,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                        Request_Id                                       RequestId,
                                        NetworkingNode_Id                                NetworkingNodeId,
                                        NetworkPath                                      NetworkPath,
-                                       out AFRRSignalRequest?                           AFRRSignalRequest,
-                                       out String?                                      ErrorResponse,
+                                       [NotNullWhen(true)]  out AFRRSignalRequest?      AFRRSignalRequest,
+                                       [NotNullWhen(false)] out String?                 ErrorResponse,
                                        CustomJObjectParserDelegate<AFRRSignalRequest>?  CustomAFRRSignalRequestParser)
         {
 

@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -217,7 +219,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The clear cache request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        /// <param name="CustomClearCacheResponseParser">A delegate to parse custom ClearCache responses.</param>
         public static ClearCacheResponse Parse(CSMS.ClearCacheRequest                            Request,
                                                JObject                                           JSON,
                                                CustomJObjectParserDelegate<ClearCacheResponse>?  CustomClearCacheResponseParser   = null)
@@ -227,8 +229,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var clearCacheResponse,
                          out var errorResponse,
-                         CustomClearCacheResponseParser) &&
-                clearCacheResponse is not null)
+                         CustomClearCacheResponseParser))
             {
                 return clearCacheResponse;
             }
@@ -252,8 +253,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomClearCacheResponseParser">A delegate to parse custom clear cache responses.</param>
         public static Boolean TryParse(CSMS.ClearCacheRequest                            Request,
                                        JObject                                           JSON,
-                                       out ClearCacheResponse?                           ClearCacheResponse,
-                                       out String?                                       ErrorResponse,
+                                       [NotNullWhen(true)]  out ClearCacheResponse?      ClearCacheResponse,
+                                       [NotNullWhen(false)] out String?                  ErrorResponse,
                                        CustomJObjectParserDelegate<ClearCacheResponse>?  CustomClearCacheResponseParser   = null)
         {
 

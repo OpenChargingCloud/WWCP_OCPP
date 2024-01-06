@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -191,8 +193,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var unpublishFirmwareResponse,
                          out var errorResponse,
-                         CustomUnpublishFirmwareResponseParser) &&
-                unpublishFirmwareResponse is not null)
+                         CustomUnpublishFirmwareResponseParser))
             {
                 return unpublishFirmwareResponse;
             }
@@ -216,8 +217,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomUnpublishFirmwareResponseParser">A delegate to parse custom unpublish firmware responses.</param>
         public static Boolean TryParse(CSMS.UnpublishFirmwareRequest                            Request,
                                        JObject                                                  JSON,
-                                       out UnpublishFirmwareResponse?                           UnpublishFirmwareResponse,
-                                       out String?                                              ErrorResponse,
+                                       [NotNullWhen(true)]  out UnpublishFirmwareResponse?      UnpublishFirmwareResponse,
+                                       [NotNullWhen(false)] out String?                         ErrorResponse,
                                        CustomJObjectParserDelegate<UnpublishFirmwareResponse>?  CustomUnpublishFirmwareResponseParser   = null)
         {
 

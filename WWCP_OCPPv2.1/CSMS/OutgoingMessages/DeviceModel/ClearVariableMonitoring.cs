@@ -33,8 +33,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     public delegate Task OnClearVariableMonitoringRequestSentDelegate(DateTime                         Timestamp,
-                                                                  IEventSender                     Sender,
-                                                                  ClearVariableMonitoringRequest   Request);
+                                                                      IEventSender                     Sender,
+                                                                      ClearVariableMonitoringRequest   Request);
 
     /// <summary>
     /// A delegate called whenever a response to a ClearVariableMonitoring request was received.
@@ -45,9 +45,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnClearVariableMonitoringResponseReceivedDelegate(DateTime                          Timestamp,
-                                                                   IEventSender                      Sender,
-                                                                   ClearVariableMonitoringRequest    Request,
-                                                                   ClearVariableMonitoringResponse   Response,
-                                                                   TimeSpan                          Runtime);
+                                                                           IEventSender                      Sender,
+                                                                           ClearVariableMonitoringRequest    Request,
+                                                                           ClearVariableMonitoringResponse   Response,
+                                                                           TimeSpan                          Runtime);
 
 }

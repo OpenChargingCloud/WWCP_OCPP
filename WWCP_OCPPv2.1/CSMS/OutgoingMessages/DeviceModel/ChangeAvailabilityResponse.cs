@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -228,8 +230,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var changeAvailabilityResponse,
                          out var errorResponse,
-                         CustomChangeAvailabilityResponseParser) &&
-                changeAvailabilityResponse is not null)
+                         CustomChangeAvailabilityResponseParser))
             {
                 return changeAvailabilityResponse;
             }
@@ -253,8 +254,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomChangeAvailabilityResponseParser">A delegate to parse custom change availability responses.</param>
         public static Boolean TryParse(CSMS.ChangeAvailabilityRequest                            Request,
                                        JObject                                                   JSON,
-                                       out ChangeAvailabilityResponse?                           ChangeAvailabilityResponse,
-                                       out String?                                               ErrorResponse,
+                                       [NotNullWhen(true)]  out ChangeAvailabilityResponse?      ChangeAvailabilityResponse,
+                                       [NotNullWhen(false)] out String?                          ErrorResponse,
                                        CustomJObjectParserDelegate<ChangeAvailabilityResponse>?  CustomChangeAvailabilityResponseParser   = null)
         {
 

@@ -33,8 +33,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     public delegate Task OnTriggerMessageRequestSentDelegate(DateTime                Timestamp,
-                                                         IEventSender            Sender,
-                                                         TriggerMessageRequest   Request);
+                                                             IEventSender            Sender,
+                                                             TriggerMessageRequest   Request);
 
     /// <summary>
     /// A delegate called whenever a response to a TriggerMessage request was received.
@@ -45,9 +45,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnTriggerMessageResponseReceivedDelegate(DateTime                 Timestamp,
-                                                          IEventSender             Sender,
-                                                          TriggerMessageRequest    Request,
-                                                          TriggerMessageResponse   Response,
-                                                          TimeSpan                 Runtime);
+                                                                  IEventSender             Sender,
+                                                                  TriggerMessageRequest    Request,
+                                                                  TriggerMessageResponse   Response,
+                                                                  TimeSpan                 Runtime);
 
 }

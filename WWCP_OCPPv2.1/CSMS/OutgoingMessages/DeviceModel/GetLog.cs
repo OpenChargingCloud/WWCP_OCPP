@@ -33,8 +33,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     public delegate Task OnGetLogRequestSentDelegate(DateTime        Timestamp,
-                                                 IEventSender    Sender,
-                                                 GetLogRequest   Request);
+                                                     IEventSender    Sender,
+                                                     GetLogRequest   Request);
 
     /// <summary>
     /// A delegate called whenever a response to a GetLog request was received.
@@ -45,9 +45,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnGetLogResponseReceivedDelegate(DateTime         Timestamp,
-                                                  IEventSender     Sender,
-                                                  GetLogRequest    Request,
-                                                  GetLogResponse   Response,
-                                                  TimeSpan         Runtime);
+                                                          IEventSender     Sender,
+                                                          GetLogRequest    Request,
+                                                          GetLogResponse   Response,
+                                                          TimeSpan         Runtime);
 
 }

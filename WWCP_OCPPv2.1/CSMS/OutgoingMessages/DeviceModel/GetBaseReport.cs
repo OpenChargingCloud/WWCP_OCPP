@@ -33,8 +33,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     public delegate Task OnGetBaseReportRequestSentDelegate(DateTime               Timestamp,
-                                                        IEventSender           Sender,
-                                                        GetBaseReportRequest   Request);
+                                                            IEventSender           Sender,
+                                                            GetBaseReportRequest   Request);
 
     /// <summary>
     /// A delegate called whenever a response to a GetBaseReport request was received.
@@ -45,9 +45,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnGetBaseReportResponseReceivedDelegate(DateTime                Timestamp,
-                                                         IEventSender            Sender,
-                                                         GetBaseReportRequest    Request,
-                                                         GetBaseReportResponse   Response,
-                                                         TimeSpan                Runtime);
+                                                                 IEventSender            Sender,
+                                                                 GetBaseReportRequest    Request,
+                                                                 GetBaseReportResponse   Response,
+                                                                 TimeSpan                Runtime);
 
 }

@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -189,8 +191,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          NetworkPath,
                          out var unpublishFirmwareRequest,
                          out var errorResponse,
-                         CustomUnpublishFirmwareRequestParser) &&
-                unpublishFirmwareRequest is not null)
+                         CustomUnpublishFirmwareRequestParser))
             {
                 return unpublishFirmwareRequest;
             }
@@ -204,39 +205,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out UnpublishFirmwareRequest, out ErrorResponse, CustomUnpublishFirmwareRequestParser = null)
 
-        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
-
         /// <summary>
         /// Try to parse the given JSON representation of an unpublish firmware request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="UnpublishFirmwareRequest">The parsed unpublish firmware request.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                        JSON,
-                                       Request_Id                     RequestId,
-                                       NetworkingNode_Id              NetworkingNodeId,
-                                       NetworkPath                    NetworkPath,
-                                       out UnpublishFirmwareRequest?  UnpublishFirmwareRequest,
-                                       out String?                    ErrorResponse)
-
-            => TryParse(JSON,
-                        RequestId,
-                        NetworkingNodeId,
-                        NetworkPath,
-                        out UnpublishFirmwareRequest,
-                        out ErrorResponse,
-                        null);
-
-
-        /// <summary>
-        /// Try to parse the given JSON representation of an unpublish firmware request.
-        /// </summary>
-        /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="UnpublishFirmwareRequest">The parsed unpublish firmware request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomUnpublishFirmwareRequestParser">A delegate to parse custom unpublish firmware requests.</param>
@@ -244,8 +218,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                        Request_Id                                              RequestId,
                                        NetworkingNode_Id                                       NetworkingNodeId,
                                        NetworkPath                                             NetworkPath,
-                                       out UnpublishFirmwareRequest?                           UnpublishFirmwareRequest,
-                                       out String?                                             ErrorResponse,
+                                       [NotNullWhen(true)]  out UnpublishFirmwareRequest?      UnpublishFirmwareRequest,
+                                       [NotNullWhen(false)] out String?                        ErrorResponse,
                                        CustomJObjectParserDelegate<UnpublishFirmwareRequest>?  CustomUnpublishFirmwareRequestParser)
         {
 

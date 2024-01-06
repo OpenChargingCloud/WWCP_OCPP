@@ -45,9 +45,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnResetResponseReceivedDelegate(DateTime        Timestamp,
-                                                 IEventSender    Sender,
-                                                 ResetRequest    Request,
-                                                 ResetResponse   Response,
-                                                 TimeSpan        Runtime);
+                                                         IEventSender    Sender,
+                                                         ResetRequest    Request,
+                                                         ResetResponse   Response,
+                                                         TimeSpan        Runtime);
 
 }

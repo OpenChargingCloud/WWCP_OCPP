@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -229,8 +231,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var setDisplayMessageResponse,
                          out var errorResponse,
-                         CustomSetMonitoringBaseResponseParser) &&
-                setDisplayMessageResponse is not null)
+                         CustomSetMonitoringBaseResponseParser))
             {
                 return setDisplayMessageResponse;
             }
@@ -254,8 +255,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomSetMonitoringBaseResponseParser">A delegate to parse custom set monitoring base responses.</param>
         public static Boolean TryParse(CSMS.SetMonitoringBaseRequest                            Request,
                                        JObject                                                  JSON,
-                                       out SetMonitoringBaseResponse?                           SetMonitoringBaseResponse,
-                                       out String?                                              ErrorResponse,
+                                       [NotNullWhen(true)]  out SetMonitoringBaseResponse?      SetMonitoringBaseResponse,
+                                       [NotNullWhen(false)] out String?                         ErrorResponse,
                                        CustomJObjectParserDelegate<SetMonitoringBaseResponse>?  CustomSetMonitoringBaseResponseParser   = null)
         {
 
