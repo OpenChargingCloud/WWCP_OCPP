@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -205,8 +207,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          NetworkPath,
                          out var costUpdatedRequest,
                          out var errorResponse,
-                         CustomCostUpdatedRequestParser) &&
-                costUpdatedRequest is not null)
+                         CustomCostUpdatedRequestParser))
             {
                 return costUpdatedRequest;
             }
@@ -219,33 +220,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
         #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out CostUpdatedRequest, out ErrorResponse, CustomCostUpdatedRequestParser = null)
-
-        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
-
-        /// <summary>
-        /// Try to parse the given JSON representation of a cost updated request.
-        /// </summary>
-        /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CostUpdatedRequest">The parsed cost updated request.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                  JSON,
-                                       Request_Id               RequestId,
-                                       NetworkingNode_Id        NetworkingNodeId,
-                                       NetworkPath              NetworkPath,
-                                       out CostUpdatedRequest?  CostUpdatedRequest,
-                                       out String?              ErrorResponse)
-
-            => TryParse(JSON,
-                        RequestId,
-                        NetworkingNodeId,
-                        NetworkPath,
-                        out CostUpdatedRequest,
-                        out ErrorResponse,
-                        null);
-
 
         /// <summary>
         /// Try to parse the given JSON representation of a cost updated request.
@@ -260,8 +234,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                        Request_Id                                        RequestId,
                                        NetworkingNode_Id                                 NetworkingNodeId,
                                        NetworkPath                                       NetworkPath,
-                                       out CostUpdatedRequest?                           CostUpdatedRequest,
-                                       out String?                                       ErrorResponse,
+                                       [NotNullWhen(true)]  out CostUpdatedRequest?      CostUpdatedRequest,
+                                       [NotNullWhen(false)] out String?                  ErrorResponse,
                                        CustomJObjectParserDelegate<CostUpdatedRequest>?  CustomCostUpdatedRequestParser)
         {
 

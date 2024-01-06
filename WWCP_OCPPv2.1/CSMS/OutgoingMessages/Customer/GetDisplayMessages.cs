@@ -33,8 +33,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     public delegate Task OnGetDisplayMessagesRequestSentDelegate(DateTime                    Timestamp,
-                                                             IEventSender                Sender,
-                                                             GetDisplayMessagesRequest   Request);
+                                                                 IEventSender                Sender,
+                                                                 GetDisplayMessagesRequest   Request);
 
     /// <summary>
     /// A delegate called whenever a response to a GetDisplayMessages request was received.
@@ -45,9 +45,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnGetDisplayMessagesResponseReceivedDelegate(DateTime                     Timestamp,
-                                                              IEventSender                 Sender,
-                                                              GetDisplayMessagesRequest    Request,
-                                                              GetDisplayMessagesResponse   Response,
-                                                              TimeSpan                     Runtime);
+                                                                      IEventSender                 Sender,
+                                                                      GetDisplayMessagesRequest    Request,
+                                                                      GetDisplayMessagesResponse   Response,
+                                                                      TimeSpan                     Runtime);
 
 }

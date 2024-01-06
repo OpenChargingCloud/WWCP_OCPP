@@ -33,8 +33,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     public delegate Task OnReserveNowRequestSentDelegate(DateTime            Timestamp,
-                                                     IEventSender        Sender,
-                                                     ReserveNowRequest   Request);
+                                                         IEventSender        Sender,
+                                                         ReserveNowRequest   Request);
 
     /// <summary>
     /// A delegate called whenever a response to a ReserveNow request was received.
@@ -45,9 +45,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnReserveNowResponseReceivedDelegate(DateTime             Timestamp,
-                                                      IEventSender         Sender,
-                                                      ReserveNowRequest    Request,
-                                                      ReserveNowResponse   Response,
-                                                      TimeSpan             Runtime);
+                                                              IEventSender         Sender,
+                                                              ReserveNowRequest    Request,
+                                                              ReserveNowResponse   Response,
+                                                              TimeSpan             Runtime);
 
 }

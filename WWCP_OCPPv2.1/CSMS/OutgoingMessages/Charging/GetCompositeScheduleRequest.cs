@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -230,8 +232,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          NetworkPath,
                          out var getCompositeScheduleRequest,
                          out var errorResponse,
-                         CustomGetCompositeScheduleRequestParser) &&
-                getCompositeScheduleRequest is not null)
+                         CustomGetCompositeScheduleRequestParser))
             {
                 return getCompositeScheduleRequest;
             }
@@ -244,33 +245,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
         #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out GetCompositeScheduleRequest, out ErrorResponse, CustomGetCompositeScheduleRequestParser = null)
-
-        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
-
-        /// <summary>
-        /// Try to parse the given JSON representation of a get composite schedule request.
-        /// </summary>
-        /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="GetCompositeScheduleRequest">The parsed get composite schedule request.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                           JSON,
-                                       Request_Id                        RequestId,
-                                       NetworkingNode_Id                 NetworkingNodeId,
-                                       NetworkPath                       NetworkPath,
-                                       out GetCompositeScheduleRequest?  GetCompositeScheduleRequest,
-                                       out String?                       ErrorResponse)
-
-            => TryParse(JSON,
-                        RequestId,
-                        NetworkingNodeId,
-                        NetworkPath,
-                        out GetCompositeScheduleRequest,
-                        out ErrorResponse,
-                        null);
-
 
         /// <summary>
         /// Try to parse the given JSON representation of a get composite schedule request.
@@ -286,8 +260,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                        Request_Id                                                 RequestId,
                                        NetworkingNode_Id                                          NetworkingNodeId,
                                        NetworkPath                                                NetworkPath,
-                                       out GetCompositeScheduleRequest?                           GetCompositeScheduleRequest,
-                                       out String?                                                ErrorResponse,
+                                       [NotNullWhen(true)]  out GetCompositeScheduleRequest?      GetCompositeScheduleRequest,
+                                       [NotNullWhen(false)] out String?                           ErrorResponse,
                                        CustomJObjectParserDelegate<GetCompositeScheduleRequest>?  CustomGetCompositeScheduleRequestParser)
         {
 

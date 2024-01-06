@@ -32,9 +32,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
-    public delegate Task OnUsePriorityChargingRequestSentDelegate(DateTime                      Timestamp,
-                                                              IEventSender                  Sender,
-                                                              UsePriorityChargingRequest   Request);
+    public delegate Task OnUsePriorityChargingRequestSentDelegate(DateTime                     Timestamp,
+                                                                  IEventSender                 Sender,
+                                                                  UsePriorityChargingRequest   Request);
 
     /// <summary>
     /// A delegate called whenever a response to an UsePriorityCharging request was received.
@@ -44,10 +44,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Request">The request.</param>
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate Task OnUsePriorityChargingResponseReceivedDelegate(DateTime                       Timestamp,
-                                                               IEventSender                   Sender,
-                                                               UsePriorityChargingRequest    Request,
-                                                               UsePriorityChargingResponse   Response,
-                                                               TimeSpan                       Runtime);
+    public delegate Task OnUsePriorityChargingResponseReceivedDelegate(DateTime                      Timestamp,
+                                                                       IEventSender                  Sender,
+                                                                       UsePriorityChargingRequest    Request,
+                                                                       UsePriorityChargingResponse   Response,
+                                                                       TimeSpan                      Runtime);
 
 }

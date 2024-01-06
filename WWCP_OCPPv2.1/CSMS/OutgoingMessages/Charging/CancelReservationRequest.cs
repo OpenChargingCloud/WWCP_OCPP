@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -187,8 +189,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          NetworkPath,
                          out var cancelReservationRequest,
                          out var errorResponse,
-                         CustomCancelReservationRequestParser) &&
-                cancelReservationRequest is not null)
+                         CustomCancelReservationRequestParser))
             {
                 return cancelReservationRequest;
             }
@@ -201,33 +202,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
         #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out CancelReservationRequest, out ErrorResponse, CustomRemoteStartTransactionRequestParser = null)
-
-        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
-
-        /// <summary>
-        /// Try to parse the given JSON representation of a cancel reservation request.
-        /// </summary>
-        /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CancelReservationRequest">The parsed cancel reservation request.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                        JSON,
-                                       Request_Id                     RequestId,
-                                       NetworkingNode_Id              NetworkingNodeId,
-                                       NetworkPath                    NetworkPath,
-                                       out CancelReservationRequest?  CancelReservationRequest,
-                                       out String?                    ErrorResponse)
-
-            => TryParse(JSON,
-                        RequestId,
-                        NetworkingNodeId,
-                        NetworkPath,
-                        out CancelReservationRequest,
-                        out ErrorResponse,
-                        null);
-
 
         /// <summary>
         /// Try to parse the given JSON representation of a cancel reservation request.
@@ -243,8 +217,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                        Request_Id                                              RequestId,
                                        NetworkingNode_Id                                       NetworkingNodeId,
                                        NetworkPath                                             NetworkPath,
-                                       out CancelReservationRequest?                           CancelReservationRequest,
-                                       out String?                                             ErrorResponse,
+                                       [NotNullWhen(true)]  out CancelReservationRequest?      CancelReservationRequest,
+                                       [NotNullWhen(false)] out String?                        ErrorResponse,
                                        CustomJObjectParserDelegate<CancelReservationRequest>?  CustomCancelReservationRequestParser)
         {
 

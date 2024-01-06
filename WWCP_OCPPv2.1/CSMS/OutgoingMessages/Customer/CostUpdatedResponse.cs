@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -163,8 +165,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var costUpdatedResponse,
                          out var errorResponse,
-                         CustomCostUpdatedResponseParser) &&
-                costUpdatedResponse is not null)
+                         CustomCostUpdatedResponseParser))
             {
                 return costUpdatedResponse;
             }
@@ -188,8 +189,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomCostUpdatedResponseParser">A delegate to parse custom cost updated responses.</param>
         public static Boolean TryParse(CSMS.CostUpdatedRequest                            Request,
                                        JObject                                            JSON,
-                                       out CostUpdatedResponse?                           CostUpdatedResponse,
-                                       out String?                                        ErrorResponse,
+                                       [NotNullWhen(true)]  out CostUpdatedResponse?      CostUpdatedResponse,
+                                       [NotNullWhen(false)] out String?                   ErrorResponse,
                                        CustomJObjectParserDelegate<CostUpdatedResponse>?  CustomCostUpdatedResponseParser   = null)
         {
 

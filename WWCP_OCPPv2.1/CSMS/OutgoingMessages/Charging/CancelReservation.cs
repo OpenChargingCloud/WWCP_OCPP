@@ -33,8 +33,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     public delegate Task OnCancelReservationRequestSentDelegate(DateTime                   Timestamp,
-                                                            IEventSender               Sender,
-                                                            CancelReservationRequest   Request);
+                                                                IEventSender               Sender,
+                                                                CancelReservationRequest   Request);
 
     /// <summary>
     /// A delegate called whenever a response to a CancelReservation request was received.
@@ -45,9 +45,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnCancelReservationResponseReceivedDelegate(DateTime                    Timestamp,
-                                                             IEventSender                Sender,
-                                                             CancelReservationRequest    Request,
-                                                             CancelReservationResponse   Response,
-                                                             TimeSpan                    Runtime);
+                                                                     IEventSender                Sender,
+                                                                     CancelReservationRequest    Request,
+                                                                     CancelReservationResponse   Response,
+                                                                     TimeSpan                    Runtime);
 
 }

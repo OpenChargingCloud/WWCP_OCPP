@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -158,8 +160,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var notifyAllowedEnergyTransferResponse,
                          out var errorResponse,
-                         CustomNotifyAllowedEnergyTransferResponseParser) &&
-                notifyAllowedEnergyTransferResponse is not null)
+                         CustomNotifyAllowedEnergyTransferResponseParser))
             {
                 return notifyAllowedEnergyTransferResponse;
             }
@@ -183,8 +184,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomNotifyAllowedEnergyTransferResponseParser">A delegate to parse custom notify allowed energy transfer responses.</param>
         public static Boolean TryParse(CSMS.NotifyAllowedEnergyTransferRequest                            Request,
                                        JObject                                                            JSON,
-                                       out NotifyAllowedEnergyTransferResponse?                           NotifyAllowedEnergyTransferResponse,
-                                       out String?                                                        ErrorResponse,
+                                       [NotNullWhen(true)]  out NotifyAllowedEnergyTransferResponse?      NotifyAllowedEnergyTransferResponse,
+                                       [NotNullWhen(false)] out String?                                   ErrorResponse,
                                        CustomJObjectParserDelegate<NotifyAllowedEnergyTransferResponse>?  CustomNotifyAllowedEnergyTransferResponseParser   = null)
         {
 

@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -189,8 +191,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          NetworkPath,
                          out var requestStopTransactionRequest,
                          out var errorResponse,
-                         CustomRequestStopTransactionRequestParser) &&
-                requestStopTransactionRequest is not null)
+                         CustomRequestStopTransactionRequestParser))
             {
                 return requestStopTransactionRequest;
             }
@@ -203,33 +204,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
         #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out RequestStopTransactionRequest, out ErrorResponse, CustomRequestStopTransactionRequestParser = null)
-
-        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
-
-        /// <summary>
-        /// Try to parse the given JSON representation of a request stop transaction request.
-        /// </summary>
-        /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="RequestStopTransactionRequest">The parsed request stop transaction request.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                             JSON,
-                                       Request_Id                          RequestId,
-                                       NetworkingNode_Id                   NetworkingNodeId,
-                                       NetworkPath                         NetworkPath,
-                                       out RequestStopTransactionRequest?  RequestStopTransactionRequest,
-                                       out String?                         ErrorResponse)
-
-            => TryParse(JSON,
-                        RequestId,
-                        NetworkingNodeId,
-                        NetworkPath,
-                        out RequestStopTransactionRequest,
-                        out ErrorResponse,
-                        null);
-
 
         /// <summary>
         /// Try to parse the given JSON representation of a request stop transaction request.
@@ -245,8 +219,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                        Request_Id                                                   RequestId,
                                        NetworkingNode_Id                                            NetworkingNodeId,
                                        NetworkPath                                                  NetworkPath,
-                                       out RequestStopTransactionRequest?                           RequestStopTransactionRequest,
-                                       out String?                                                  ErrorResponse,
+                                       [NotNullWhen(true)]  out RequestStopTransactionRequest?      RequestStopTransactionRequest,
+                                       [NotNullWhen(false)] out String?                             ErrorResponse,
                                        CustomJObjectParserDelegate<RequestStopTransactionRequest>?  CustomRequestStopTransactionRequestParser)
         {
 

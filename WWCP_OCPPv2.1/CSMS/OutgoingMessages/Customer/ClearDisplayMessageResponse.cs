@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -227,8 +229,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var clearDisplayMessageResponse,
                          out var errorResponse,
-                         CustomClearDisplayMessageResponseParser) &&
-                clearDisplayMessageResponse is not null)
+                         CustomClearDisplayMessageResponseParser))
             {
                 return clearDisplayMessageResponse;
             }
@@ -252,8 +253,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomClearDisplayMessageResponseParser">A delegate to parse custom clear display message responses.</param>
         public static Boolean TryParse(CSMS.ClearDisplayMessageRequest                            Request,
                                        JObject                                                    JSON,
-                                       out ClearDisplayMessageResponse?                           ClearDisplayMessageResponse,
-                                       out String?                                                ErrorResponse,
+                                       [NotNullWhen(true)]  out ClearDisplayMessageResponse?      ClearDisplayMessageResponse,
+                                       [NotNullWhen(false)] out String?                           ErrorResponse,
                                        CustomJObjectParserDelegate<ClearDisplayMessageResponse>?  CustomClearDisplayMessageResponseParser   = null)
         {
 

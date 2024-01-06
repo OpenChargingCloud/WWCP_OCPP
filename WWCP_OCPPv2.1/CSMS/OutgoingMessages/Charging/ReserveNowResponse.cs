@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -230,8 +232,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var reserveNowResponse,
                          out var errorResponse,
-                         CustomReserveNowResponseParser) &&
-                reserveNowResponse is not null)
+                         CustomReserveNowResponseParser))
             {
                 return reserveNowResponse;
             }
@@ -255,8 +256,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomReserveNowResponseParser">A delegate to parse custom reserve now responses.</param>
         public static Boolean TryParse(CSMS.ReserveNowRequest                            Request,
                                        JObject                                           JSON,
-                                       out ReserveNowResponse?                           ReserveNowResponse,
-                                       out String?                                       ErrorResponse,
+                                       [NotNullWhen(true)]  out ReserveNowResponse?      ReserveNowResponse,
+                                       [NotNullWhen(false)] out String?                  ErrorResponse,
                                        CustomJObjectParserDelegate<ReserveNowResponse>?  CustomReserveNowResponseParser   = null)
         {
 

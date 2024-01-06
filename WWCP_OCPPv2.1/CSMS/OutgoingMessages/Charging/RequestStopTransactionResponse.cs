@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -227,8 +229,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var requestStopTransactionResponse,
                          out var errorResponse,
-                         CustomRequestStopTransactionResponseParser) &&
-                requestStopTransactionResponse is not null)
+                         CustomRequestStopTransactionResponseParser))
             {
                 return requestStopTransactionResponse;
             }
@@ -252,8 +253,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomRequestStopTransactionResponseParser">A delegate to parse custom request stop transaction responses.</param>
         public static Boolean TryParse(CSMS.RequestStopTransactionRequest                            Request,
                                        JObject                                                       JSON,
-                                       out RequestStopTransactionResponse?                           RequestStopTransactionResponse,
-                                       out String?                                                   ErrorResponse,
+                                       [NotNullWhen(true)]  out RequestStopTransactionResponse?      RequestStopTransactionResponse,
+                                       [NotNullWhen(false)] out String?                              ErrorResponse,
                                        CustomJObjectParserDelegate<RequestStopTransactionResponse>?  CustomRequestStopTransactionResponseParser   = null)
         {
 

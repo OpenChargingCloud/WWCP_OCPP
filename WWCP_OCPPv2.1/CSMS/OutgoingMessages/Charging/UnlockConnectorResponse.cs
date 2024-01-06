@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -228,8 +230,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var unlockConnectorResponse,
                          out var errorResponse,
-                         CustomUnlockConnectorResponseParser) &&
-                unlockConnectorResponse is not null)
+                         CustomUnlockConnectorResponseParser))
             {
                 return unlockConnectorResponse;
             }
@@ -253,8 +254,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomUnlockConnectorResponseParser">A delegate to parse custom unlock connector responses.</param>
         public static Boolean TryParse(CSMS.UnlockConnectorRequest                            Request,
                                        JObject                                                JSON,
-                                       out UnlockConnectorResponse?                           UnlockConnectorResponse,
-                                       out String?                                            ErrorResponse,
+                                       [NotNullWhen(true)]  out UnlockConnectorResponse?      UnlockConnectorResponse,
+                                       [NotNullWhen(false)] out String?                       ErrorResponse,
                                        CustomJObjectParserDelegate<UnlockConnectorResponse>?  CustomUnlockConnectorResponseParser   = null)
         {
 

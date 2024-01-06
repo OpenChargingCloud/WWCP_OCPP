@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -283,8 +285,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          NetworkPath,
                          out var getChargingProfilesRequest,
                          out var errorResponse,
-                         CustomGetChargingProfilesRequestParser) &&
-                getChargingProfilesRequest is not null)
+                         CustomGetChargingProfilesRequestParser))
             {
                 return getChargingProfilesRequest;
             }
@@ -297,33 +298,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
         #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out GetChargingProfilesRequest, out ErrorResponse, CustomRemoteStartTransactionRequestParser = null)
-
-        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
-
-        /// <summary>
-        /// Try to parse the given JSON representation of a get charging profiles request.
-        /// </summary>
-        /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="GetChargingProfilesRequest">The parsed GetChargingProfiles request.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                          JSON,
-                                       Request_Id                       RequestId,
-                                       NetworkingNode_Id                NetworkingNodeId,
-                                       NetworkPath                      NetworkPath,
-                                       out GetChargingProfilesRequest?  GetChargingProfilesRequest,
-                                       out String?                      ErrorResponse)
-
-            => TryParse(JSON,
-                        RequestId,
-                        NetworkingNodeId,
-                        NetworkPath,
-                        out GetChargingProfilesRequest,
-                        out ErrorResponse,
-                        null);
-
 
         /// <summary>
         /// Try to parse the given JSON representation of a get charging profiles request.
@@ -339,8 +313,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                        Request_Id                                                RequestId,
                                        NetworkingNode_Id                                         NetworkingNodeId,
                                        NetworkPath                                               NetworkPath,
-                                       out GetChargingProfilesRequest?                           GetChargingProfilesRequest,
-                                       out String?                                               ErrorResponse,
+                                       [NotNullWhen(true)]  out GetChargingProfilesRequest?      GetChargingProfilesRequest,
+                                       [NotNullWhen(false)] out String?                          ErrorResponse,
                                        CustomJObjectParserDelegate<GetChargingProfilesRequest>?  CustomGetChargingProfilesRequestParser)
         {
 

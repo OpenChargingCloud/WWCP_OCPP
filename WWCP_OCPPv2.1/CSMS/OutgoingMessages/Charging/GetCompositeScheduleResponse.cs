@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -323,8 +325,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var getCompositeScheduleResponse,
                          out var errorResponse,
-                         CustomGetCompositeScheduleResponseParser) &&
-                getCompositeScheduleResponse is not null)
+                         CustomGetCompositeScheduleResponseParser))
             {
                 return getCompositeScheduleResponse;
             }
@@ -348,8 +349,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomGetCompositeScheduleResponseParser">A delegate to parse custom get composite schedule responses.</param>
         public static Boolean TryParse(CSMS.GetCompositeScheduleRequest                            Request,
                                        JObject                                                     JSON,
-                                       out GetCompositeScheduleResponse?                           GetCompositeScheduleResponse,
-                                       out String?                                                 ErrorResponse,
+                                       [NotNullWhen(true)]  out GetCompositeScheduleResponse?      GetCompositeScheduleResponse,
+                                       [NotNullWhen(false)] out String?                            ErrorResponse,
                                        CustomJObjectParserDelegate<GetCompositeScheduleResponse>?  CustomGetCompositeScheduleResponseParser   = null)
         {
 

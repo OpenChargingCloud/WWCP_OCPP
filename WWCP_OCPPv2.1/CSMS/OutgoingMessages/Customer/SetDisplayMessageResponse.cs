@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -231,8 +233,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var setDisplayMessageResponse,
                          out var errorResponse,
-                         CustomSetDisplayMessageResponseParser) &&
-                setDisplayMessageResponse is not null)
+                         CustomSetDisplayMessageResponseParser))
             {
                 return setDisplayMessageResponse;
             }
@@ -254,10 +255,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="SetDisplayMessageResponse">The parsed set display message response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomSetDisplayMessageResponseParser">A delegate to parse custom set display message responses.</param>
-        public static Boolean TryParse(CSMS.SetDisplayMessageRequest                              Request,
+        public static Boolean TryParse(CSMS.SetDisplayMessageRequest                            Request,
                                        JObject                                                  JSON,
-                                       out SetDisplayMessageResponse?                           SetDisplayMessageResponse,
-                                       out String?                                              ErrorResponse,
+                                       [NotNullWhen(true)]  out SetDisplayMessageResponse?      SetDisplayMessageResponse,
+                                       [NotNullWhen(false)] out String?                         ErrorResponse,
                                        CustomJObjectParserDelegate<SetDisplayMessageResponse>?  CustomSetDisplayMessageResponseParser   = null)
         {
 

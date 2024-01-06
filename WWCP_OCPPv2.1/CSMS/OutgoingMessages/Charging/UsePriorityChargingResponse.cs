@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -157,8 +159,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var usePriorityChargingResponse,
                          out var errorResponse,
-                         CustomUsePriorityChargingResponseParser) &&
-                usePriorityChargingResponse is not null)
+                         CustomUsePriorityChargingResponseParser))
             {
                 return usePriorityChargingResponse;
             }
@@ -182,8 +183,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomUsePriorityChargingResponseParser">A delegate to parse custom use priority charging responses.</param>
         public static Boolean TryParse(CSMS.UsePriorityChargingRequest                            Request,
                                        JObject                                                    JSON,
-                                       out UsePriorityChargingResponse?                           UsePriorityChargingResponse,
-                                       out String?                                                ErrorResponse,
+                                       [NotNullWhen(true)]  out UsePriorityChargingResponse?      UsePriorityChargingResponse,
+                                       [NotNullWhen(false)] out String?                           ErrorResponse,
                                        CustomJObjectParserDelegate<UsePriorityChargingResponse>?  CustomUsePriorityChargingResponseParser   = null)
         {
 

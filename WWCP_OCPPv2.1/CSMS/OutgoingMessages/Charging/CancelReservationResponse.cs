@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -227,8 +229,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var cancelReservationResponse,
                          out var errorResponse,
-                         CustomCancelReservationResponseParser) &&
-                cancelReservationResponse is not null)
+                         CustomCancelReservationResponseParser))
             {
                 return cancelReservationResponse;
             }
@@ -252,8 +253,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomCancelReservationResponseParser">A delegate to parse custom cancel reservation responses.</param>
         public static Boolean TryParse(CSMS.CancelReservationRequest                            Request,
                                        JObject                                                  JSON,
-                                       out CancelReservationResponse?                           CancelReservationResponse,
-                                       out String?                                              ErrorResponse,
+                                       [NotNullWhen(true)]  out CancelReservationResponse?      CancelReservationResponse,
+                                       [NotNullWhen(false)] out String?                         ErrorResponse,
                                        CustomJObjectParserDelegate<CancelReservationResponse>?  CustomCancelReservationResponseParser   = null)
         {
 
