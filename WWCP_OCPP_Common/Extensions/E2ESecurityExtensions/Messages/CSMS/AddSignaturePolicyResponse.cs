@@ -89,6 +89,9 @@ namespace cloud.charging.open.protocols.OCPP.CS
                                           StatusInfo?                     StatusInfo          = null,
                                           DateTime?                       ResponseTimestamp   = null,
 
+                                          NetworkingNode_Id?              DestinationNodeId   = null,
+                                          NetworkPath?                    NetworkPath         = null,
+
                                           IEnumerable<KeyPair>?           SignKeys            = null,
                                           IEnumerable<SignInfo>?          SignInfos           = null,
                                           IEnumerable<Signature>?         Signatures          = null,
@@ -98,6 +101,9 @@ namespace cloud.charging.open.protocols.OCPP.CS
             : base(Request,
                    Result.OK(),
                    ResponseTimestamp,
+
+                   DestinationNodeId,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
@@ -259,14 +265,21 @@ namespace cloud.charging.open.protocols.OCPP.CS
 
 
                 AddSignaturePolicyResponse = new AddSignaturePolicyResponse(
+
                                                  Request,
                                                  RegistrationStatus,
                                                  StatusInfo,
                                                  null,
+
+                                                 null,
+                                                 null,
+
                                                  null,
                                                  null,
                                                  Signatures,
+
                                                  CustomData
+
                                              );
 
                 if (CustomAddSignaturePolicyResponseParser is not null)

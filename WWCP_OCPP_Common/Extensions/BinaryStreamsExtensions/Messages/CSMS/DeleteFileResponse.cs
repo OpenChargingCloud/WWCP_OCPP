@@ -97,6 +97,9 @@ namespace cloud.charging.open.protocols.OCPP.CS
                                   StatusInfo?              StatusInfo          = null,
                                   DateTime?                ResponseTimestamp   = null,
 
+                                  NetworkingNode_Id?       DestinationNodeId   = null,
+                                  NetworkPath?             NetworkPath         = null,
+
                                   IEnumerable<KeyPair>?    SignKeys            = null,
                                   IEnumerable<SignInfo>?   SignInfos           = null,
                                   IEnumerable<Signature>?  Signatures          = null,
@@ -106,6 +109,9 @@ namespace cloud.charging.open.protocols.OCPP.CS
             : base(Request,
                    Result.OK(),
                    ResponseTimestamp,
+
+                   DestinationNodeId,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
@@ -287,19 +293,22 @@ namespace cloud.charging.open.protocols.OCPP.CS
 
                 DeleteFileResponse = new DeleteFileResponse(
 
-                                       Request,
-                                       FileName,
-                                       Status,
-                                       StatusInfo,
-                                       null,
+                                         Request,
+                                         FileName,
+                                         Status,
+                                         StatusInfo,
+                                         null,
 
-                                       null,
-                                       null,
-                                       Signatures,
+                                         null,
+                                         null,
 
-                                       CustomData
+                                         null,
+                                         null,
+                                         Signatures,
 
-                                   );
+                                         CustomData
+
+                                     );
 
                 if (CustomDeleteFileResponseParser is not null)
                     DeleteFileResponse = CustomDeleteFileResponseParser(JSON,

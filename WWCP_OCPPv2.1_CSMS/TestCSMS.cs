@@ -427,7 +427,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// An event fired whenever a Get15118EVCertificate request was sent from a charging station.
         /// </summary>
-        public event OnGet15118EVCertificateRequestReceivedDelegate?   OnGet15118EVCertificateRequest;
+        public event OnGet15118EVCertificateRequestReceivedDelegate?   OnGet15118EVCertificateRequestReceived;
 
         /// <summary>
         /// An event fired whenever a response to a Get15118EVCertificate request was received.
@@ -2846,12 +2846,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     //                                    ));
 
                     response  = new BootNotificationResponse(
-                                    Request:       request,
-                                    Status:        RegistrationStatus.Accepted,
-                                    CurrentTime:   Timestamp.Now,
-                                    Interval:      TimeSpan.FromMinutes(5),
-                                    StatusInfo:    null,
-                                    CustomData:    null
+                                    Request:      request,
+                                    Status:       RegistrationStatus.Accepted,
+                                    CurrentTime:  Timestamp.Now,
+                                    Interval:     TimeSpan.FromMinutes(5),
+                                    StatusInfo:   null,
+                                    CustomData:   null
                                 );
 
                 }
@@ -4209,7 +4209,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 var startTime      = Timestamp.Now;
 
-                var requestLogger  = OnGet15118EVCertificateRequest;
+                var requestLogger  = OnGet15118EVCertificateRequestReceived;
                 if (requestLogger is not null)
                 {
 
@@ -4229,7 +4229,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     {
                         await HandleErrors(
                                   nameof(TestCSMS),
-                                  nameof(OnGet15118EVCertificateRequest),
+                                  nameof(OnGet15118EVCertificateRequestReceived),
                                   e
                               );
                     }

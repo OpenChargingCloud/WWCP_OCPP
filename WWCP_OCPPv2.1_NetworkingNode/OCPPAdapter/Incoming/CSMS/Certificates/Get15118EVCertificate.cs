@@ -130,7 +130,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                           NetworkPath,
                                                           out var request,
                                                           out var errorResponse,
-                                                          CustomGet15118EVCertificateRequestParser) && request is not null) {
+                                                          CustomGet15118EVCertificateRequestParser)) {
 
                     #region Send OnGet15118EVCertificateRequest event
 
@@ -273,7 +273,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a response to a Get15118EVCertificate was sent.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnGet15118EVCertificateResponseSentDelegate? OnGet15118EVCertificateResponseSent;
+        public event OnGet15118EVCertificateResponseSentDelegate? OnGet15118EVCertificateResponseSent;
 
     }
 

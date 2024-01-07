@@ -130,7 +130,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                     NetworkPath,
                                                     out var request,
                                                     out var errorResponse,
-                                                    CustomSignCertificateRequestParser) && request is not null) {
+                                                    CustomSignCertificateRequestParser)) {
 
                     #region Send OnSignCertificateRequest event
 

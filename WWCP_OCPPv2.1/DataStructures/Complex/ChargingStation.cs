@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -143,15 +145,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region (static) Parse   (JSON, CustomChargingStationParser = null)
+        #region (static) Parse   (JSON, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a charging station.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomChargingStationParser">A delegate to parse custom charging stations.</param>
+        /// <param name="CustomCustomDataParser">A delegate to parse custom CustomData objects.</param>
         public static ChargingStation Parse(JObject                                        JSON,
-                                            CustomJObjectParserDelegate<ChargingStation>?  CustomChargingStationParser   = null)
+                                            CustomJObjectParserDelegate<ChargingStation>?  CustomChargingStationParser   = null,
+                                            CustomJObjectParserDelegate<CustomData>?       CustomCustomDataParser        = null)
         {
 
             if (TryParse(JSON,
@@ -170,25 +174,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region (static) TryParse(JSON, out ChargingStation, out ErrorResponse, CustomChargingStationParser = null)
-
-        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
-
-        /// <summary>
-        /// Try to parse the given JSON representation of a custom data object.
-        /// </summary>
-        /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="ChargingStation">The parsed charging station.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject               JSON,
-                                       out ChargingStation?  ChargingStation,
-                                       out String?           ErrorResponse)
-
-            => TryParse(JSON,
-                        out ChargingStation,
-                        out ErrorResponse,
-                        null);
-
+        #region (static) TryParse(JSON, out ChargingStation, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a custom data object.
@@ -197,10 +183,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ChargingStation">The parsed charging station.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomChargingStationParser">A delegate to parse custom charging stations.</param>
+        /// <param name="CustomCustomDataParser">A delegate to parse custom CustomData objects.</param>
         public static Boolean TryParse(JObject                                        JSON,
-                                       out ChargingStation?                           ChargingStation,
-                                       out String?                                    ErrorResponse,
-                                       CustomJObjectParserDelegate<ChargingStation>?  CustomChargingStationParser)
+                                       [NotNullWhen(true)]  out ChargingStation?      ChargingStation,
+                                       [NotNullWhen(false)] out String?               ErrorResponse,
+                                       CustomJObjectParserDelegate<ChargingStation>?  CustomChargingStationParser   = null,
+                                       CustomJObjectParserDelegate<CustomData>?       CustomCustomDataParser        = null)
         {
 
             try
@@ -212,7 +200,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatoryText("model",
                                              "charging station model",
-                                             out String Model,
+                                             out var Model,
                                              out ErrorResponse))
                 {
                     return false;
@@ -224,7 +212,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatoryText("vendorName",
                                              "vendor name/identification",
-                                             out String VendorName,
+                                             out var VendorName,
                                              out ErrorResponse))
                 {
                     return false;
@@ -262,8 +250,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
-                                           OCPP.CustomData.TryParse,
-                                           out CustomData CustomData,
+                                           (JObject json, [NotNullWhen(true)] out CustomData? customData, [NotNullWhen(false)] out String? errorResponse)
+                                                 => OCPP.CustomData.TryParse(json, out customData, out errorResponse, CustomCustomDataParser),
+                                           out CustomData? CustomData,
                                            out ErrorResponse))
                 {
                     if (ErrorResponse is not null)

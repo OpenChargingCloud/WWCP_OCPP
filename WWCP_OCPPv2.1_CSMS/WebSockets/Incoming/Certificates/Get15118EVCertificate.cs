@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a Get15118EVCertificate request was received.
         /// </summary>
-        public event OnGet15118EVCertificateRequestReceivedDelegate?      OnGet15118EVCertificateRequest;
+        public event OnGet15118EVCertificateRequestReceivedDelegate?      OnGet15118EVCertificateRequestReceived;
 
         /// <summary>
         /// An event sent whenever a Get15118EVCertificate was received.
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     try
                     {
 
-                        OnGet15118EVCertificateRequest?.Invoke(Timestamp.Now,
+                        OnGet15118EVCertificateRequestReceived?.Invoke(Timestamp.Now,
                                                                this,
                                                                Connection,
                                                                request);
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGet15118EVCertificateRequest));
+                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGet15118EVCertificateRequestReceived));
                     }
 
                     #endregion

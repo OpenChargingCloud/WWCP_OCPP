@@ -73,7 +73,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Create a new log status notification request.
         /// </summary>
-        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="DestinationNodeId">The destination networking node identification.</param>
         /// <param name="Status">The status of the log upload.</param>
         /// <param name="LogRquestId">The optional request id that was provided in the GetLog request that started this log upload.</param>
         /// 
@@ -202,7 +202,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="DestinationNodeId">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomLogStatusNotificationRequestParser">A delegate to parse custom log status notification requests.</param>
         public static LogStatusNotificationRequest Parse(JObject                                                     JSON,
@@ -237,7 +237,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="DestinationNodeId">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="LogStatusNotificationRequest">The parsed log status notification request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>

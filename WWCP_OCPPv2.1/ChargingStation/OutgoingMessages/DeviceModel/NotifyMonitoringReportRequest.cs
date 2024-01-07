@@ -96,7 +96,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Create a notify monitoring report request.
         /// </summary>
-        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="DestinationNodeId">The destination networking node identification.</param>
         /// <param name="NotifyMonitoringReportRequestId">The unique identification of the notify monitoring report request.</param>
         /// <param name="SequenceNumber">The sequence number of this message. First message starts at 0.</param>
         /// <param name="GeneratedAt">The timestamp of the moment this message was generated at the charging station.</param>
@@ -403,7 +403,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="DestinationNodeId">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomNotifyMonitoringReportRequestParser">A delegate to parse custom notify monitoring report requests.</param>
         public static NotifyMonitoringReportRequest Parse(JObject                                                      JSON,
@@ -438,7 +438,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="DestinationNodeId">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="NotifyMonitoringReportRequest">The parsed notify monitoring report request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>

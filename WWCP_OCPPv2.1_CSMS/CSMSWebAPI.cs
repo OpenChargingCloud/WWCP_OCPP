@@ -1120,7 +1120,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnGet15118EVCertificate                 (Request/-Response)
 
-            CSMS.OnGet15118EVCertificateRequest += async (logTimestamp, sender, connection, request) =>
+            CSMS.OnGet15118EVCertificateRequestReceived += async (logTimestamp, sender, connection, request) =>
                 await this.EventLog.SubmitEvent("OnGet15118EVCertificateRequest",
                                                 request.ToAbstractJSON(request.ToJSON(CustomGet15118EVCertificateRequestSerializer,
                                                                                       CustomSignatureSerializer,

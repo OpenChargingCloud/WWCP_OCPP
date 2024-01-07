@@ -131,6 +131,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                         if (BootNotificationResponse.TryParse(Request,
                                                               sendRequestState.JSONResponse.Payload,
+                                                              sendRequestState.DestinationNodeId,
+                                                              sendRequestState.NetworkPath,
                                                               out response,
                                                               out var errorResponse,
                                                               CustomBootNotificationResponseParser))

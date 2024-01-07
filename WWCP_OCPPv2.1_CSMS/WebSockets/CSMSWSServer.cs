@@ -84,6 +84,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
         #region Custom JSON serializer delegates
+
         //public CustomJObjectSerializerDelegate<StatusInfo>?                                          CustomStatusInfoSerializer                                   { get; set; }
         //public CustomJObjectSerializerDelegate<OCPP.Signature>?                                      CustomSignatureSerializer                                    { get; set; }
         //public CustomJObjectSerializerDelegate<CustomData>?                                          CustomCustomDataSerializer                                   { get; set; }
@@ -154,6 +155,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public CustomJObjectSerializerDelegate<EnergyMix>?                                           CustomEnergyMixSerializer                                    { get; set; }
         public CustomJObjectSerializerDelegate<EnergySource>?                                        CustomEnergySourceSerializer                                 { get; set; }
         public CustomJObjectSerializerDelegate<EnvironmentalImpact>?                                 CustomEnvironmentalImpactSerializer                          { get; set; }
+
+        #endregion
+
+        #region Custom JSON parser delegates
+
+        public CustomJObjectParserDelegate<OCPPv2_1.ChargingStation>?  CustomChargingStationParser    { get; set; }
+        public CustomJObjectParserDelegate<OCPP.Signature>?            CustomSignatureParser          { get; set; }
+        public CustomJObjectParserDelegate<CustomData>?                CustomCustomDataParser         { get; set; }
 
         #endregion
 

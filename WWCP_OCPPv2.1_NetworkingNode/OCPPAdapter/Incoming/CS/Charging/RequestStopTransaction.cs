@@ -130,7 +130,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                            NetworkPath,
                                                            out var request,
                                                            out var errorResponse,
-                                                           CustomRequestStopTransactionRequestParser) && request is not null) {
+                                                           CustomRequestStopTransactionRequestParser)) {
 
                     #region Send OnRequestStopTransactionRequest event
 

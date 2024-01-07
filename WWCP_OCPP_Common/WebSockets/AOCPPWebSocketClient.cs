@@ -710,8 +710,8 @@ namespace cloud.charging.open.protocols.OCPP.CS
                                              );
 
                         var sendStatus = await SendTextMessage(jsonRequestMessage.
-                                                            ToJSON  ().
-                                                            ToString(JSONFormatting));
+                                                                   ToJSON  ().
+                                                                   ToString(JSONFormatting));
 
                         if (sendStatus == SendStatus.Success)
                             requests.TryAdd(RequestId,

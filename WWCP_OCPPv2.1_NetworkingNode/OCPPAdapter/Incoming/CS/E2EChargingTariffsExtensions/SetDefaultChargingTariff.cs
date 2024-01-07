@@ -128,7 +128,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                              NetworkPath,
                                                              out var request,
                                                              out var errorResponse,
-                                                             CustomSetDefaultChargingTariffRequestParser) && request is not null) {
+                                                             CustomSetDefaultChargingTariffRequestParser)) {
 
                     #region Send OnSetDefaultChargingTariffRequest event
 

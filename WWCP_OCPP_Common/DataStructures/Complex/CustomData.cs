@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -107,9 +109,9 @@ namespace cloud.charging.open.protocols.OCPP
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomData">The parsed custom data object.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject          JSON,
-                                       out CustomData?  CustomData,
-                                       out String?      ErrorResponse)
+        public static Boolean TryParse(JObject                               JSON,
+                                                            out CustomData?  CustomData,
+                                       [NotNullWhen(false)] out String?      ErrorResponse)
 
             => TryParse(JSON,
                         out CustomData,
@@ -125,8 +127,8 @@ namespace cloud.charging.open.protocols.OCPP
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomCustomDataParser">A delegate to parse custom custom data.</param>
         public static Boolean TryParse(JObject                                   JSON,
-                                       out CustomData?                           CustomData,
-                                       out String?                               ErrorResponse,
+                                                            out CustomData?      CustomData,
+                                       [NotNullWhen(false)] out String?          ErrorResponse,
                                        CustomJObjectParserDelegate<CustomData>?  CustomCustomDataParser)
         {
 
@@ -188,7 +190,7 @@ namespace cloud.charging.open.protocols.OCPP
         {
 
             var json = JSONObject.Create(
-                           new JProperty("vendorId", VendorId.ToString())
+                           new JProperty("vendorId",  VendorId.TextId)
                        );
 
             foreach (var jtoken in Children())

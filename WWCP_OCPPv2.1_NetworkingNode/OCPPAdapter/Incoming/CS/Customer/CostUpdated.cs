@@ -130,7 +130,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                 NetworkPath,
                                                 out var request,
                                                 out var errorResponse,
-                                                CustomCostUpdatedRequestParser) && request is not null) {
+                                                CustomCostUpdatedRequestParser)) {
 
                     #region Send OnCostUpdatedRequest event
 

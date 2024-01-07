@@ -194,6 +194,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    Result.OK(),
                    ResponseTimestamp,
 
+                   null,
+                   null,
+
                    SignKeys,
                    SignInfos,
                    Signatures,

@@ -17,14 +17,15 @@
 
 #region Usings
 
+using Newtonsoft.Json.Linq;
+
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.HTTP;
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPP.CS;
+using cloud.charging.open.protocols.OCPP.WebSockets;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
-using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
 
@@ -39,33 +40,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Custom JSON serializer delegates
 
-        public CustomJObjectSerializerDelegate<Get15118EVCertificateRequest>?  CustomGet15118EVCertificateSerializer        { get; set; }
-
-        public CustomJObjectParserDelegate<Get15118EVCertificateResponse>?     CustomGet15118EVCertificateResponseParser    { get; set; }
+        public CustomJObjectSerializerDelegate<Get15118EVCertificateRequest>?  CustomGet15118EVCertificateSerializer    { get; set; }
 
         #endregion
 
         #region Events
 
         /// <summary>
-        /// An event fired whenever a get 15118 EV certificate request will be sent to the CSMS.
+        /// An event fired whenever a Get15118EVCertificate request will be sent.
         /// </summary>
-        public event OCPPv2_1.CS.OnGet15118EVCertificateRequestSentDelegate?     OnGet15118EVCertificateRequestSent;
-
-        /// <summary>
-        /// An event fired whenever a get 15118 EV certificate request will be sent to the CSMS.
-        /// </summary>
-        public event ClientRequestLogHandler?                                OnGet15118EVCertificateWSRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a get 15118 EV certificate request was received.
-        /// </summary>
-        public event ClientResponseLogHandler?                               OnGet15118EVCertificateWSResponse;
-
-        /// <summary>
-        /// An event fired whenever a response to a get 15118 EV certificate request was received.
-        /// </summary>
-        public event OCPPv2_1.CS.OnGet15118EVCertificateResponseReceivedDelegate?    OnGet15118EVCertificateResponseReceived;
+        public event OnGet15118EVCertificateRequestSentDelegate?  OnGet15118EVCertificateRequestSent;
 
         #endregion
 
@@ -82,21 +66,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         {
 
-            #region Send OnGet15118EVCertificateRequest event
+            #region Send OnGet15118EVCertificateRequestSent event
 
-            var startTime = Timestamp.Now;
-
-            try
+            var logger = OnGet15118EVCertificateRequestSent;
+            if (logger is not null)
             {
+                try
+                {
 
-                OnGet15118EVCertificateRequestSent?.Invoke(startTime,
-                                                       parentNetworkingNode,
-                                                       Request);
+                    await Task.WhenAll(logger.GetInvocationList().
+                                            OfType<OnGet15118EVCertificateRequestSentDelegate>().
+                                            Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                          Timestamp.Now,
+                                                                          parentNetworkingNode,
+                                                                          Request
+                                                                      )).
+                                            ToArray());
 
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnGet15118EVCertificateRequestSent));
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnGet15118EVCertificateRequestSent));
+                }
             }
 
             #endregion
@@ -118,24 +109,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                  )
                                              );
 
-                if (sendRequestState.NoErrors &&
-                    sendRequestState.JSONResponse is not null)
+                if (sendRequestState.IsValidJSONResponse(Request, out var jsonResponse))
                 {
 
-                    if (Get15118EVCertificateResponse.TryParse(Request,
-                                                               sendRequestState.JSONResponse.Payload,
-                                                               out var get15118EVCertificateResponse,
-                                                               out var errorResponse,
-                                                               CustomGet15118EVCertificateResponseParser) &&
-                        get15118EVCertificateResponse is not null)
-                    {
-                        response = get15118EVCertificateResponse;
-                    }
-
-                    response ??= new Get15118EVCertificateResponse(
-                                     Request,
-                                     Result.Format(errorResponse)
-                                 );
+                    response = await (parentNetworkingNode.OCPP.IN as OCPPWebSocketAdapterIN).Receive_Get15118EVCertificateResponse(
+                                                                            Request,
+                                                                            jsonResponse,
+                                                                            null,
+                                                                            Request.EventTrackingId,
+                                                                            Request.RequestId,
+                                                                            Request.CancellationToken
+                                                                        );
 
                 }
 
@@ -155,28 +139,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             }
 
-
-            #region Send OnGet15118EVCertificateResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnGet15118EVCertificateResponseReceived?.Invoke(endTime,
-                                                        parentNetworkingNode,
-                                                        Request,
-                                                        response,
-                                                        endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnGet15118EVCertificateResponseReceived));
-            }
-
-            #endregion
-
             return response;
 
         }
@@ -189,10 +151,101 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
     {
 
+        #region Custom JSON parser delegates
+
+        public CustomJObjectParserDelegate<Get15118EVCertificateResponse>?  CustomGet15118EVCertificateResponseParser    { get; set; }
+
+        #endregion
+
+        #region Events
+
         /// <summary>
-        /// An event fired whenever a response to a get 15118 EV certificate request was received.
+        /// An event fired whenever a Get15118EVCertificate response was received.
         /// </summary>
-        public event OCPPv2_1.CS.OnGet15118EVCertificateResponseReceivedDelegate? OnGet15118EVCertificateResponseReceived;
+        public event OnGet15118EVCertificateResponseReceivedDelegate?  OnGet15118EVCertificateResponseReceived;
+
+        #endregion
+
+
+        #region Receive Get15118EVCertificate response (wired via reflection!)
+
+        public async Task<Get15118EVCertificateResponse>
+
+            Receive_Get15118EVCertificateResponse(Get15118EVCertificateRequest  Request,
+                                                  JObject                       ResponseJSON,
+                                                  IWebSocketConnection          WebSocketConnection,
+                                                  //NetworkingNode_Id             DestinationNodeId,
+                                                  //NetworkPath                   NetworkPath,
+                                                  EventTracking_Id              EventTrackingId,
+                                                  Request_Id                    RequestId,
+                                                  CancellationToken             CancellationToken   = default)
+
+        {
+
+            Get15118EVCertificateResponse? response   = null;
+
+            try
+            {
+
+                if (Get15118EVCertificateResponse.TryParse(Request,
+                                                           ResponseJSON,
+                                                           out response,
+                                                           out var errorResponse,
+                                                           CustomGet15118EVCertificateResponseParser)) {
+
+                    #region Send OnGet15118EVCertificateResponseReceived event
+
+                    var logger = OnGet15118EVCertificateResponseReceived;
+                    if (logger is not null)
+                    {
+                        try
+                        {
+
+                            await Task.WhenAll(logger.GetInvocationList().
+                                                    OfType <OnGet15118EVCertificateResponseReceivedDelegate>().
+                                                    Select (loggingDelegate => loggingDelegate.Invoke(
+                                                                                    Timestamp.Now,
+                                                                                    parentNetworkingNode,
+                                                                                    //    WebSocketConnection,
+                                                                                    Request,
+                                                                                    response,
+                                                                                    response.Runtime
+                                                                                )).
+                                                    ToArray());
+
+                        }
+                        catch (Exception e)
+                        {
+                            DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnGet15118EVCertificateResponseReceived));
+                        }
+                    }
+
+                    #endregion
+
+                }
+                else
+                    response = new Get15118EVCertificateResponse(
+                                       Request,
+                                       Result.Format(errorResponse)
+                                   );
+
+            }
+            catch (Exception e)
+            {
+
+                response = new Get15118EVCertificateResponse(
+                                   Request,
+                                   Result.FromException(e)
+                               );
+
+            }
+
+            return response;
+
+        }
+
+        #endregion
+
 
     }
 

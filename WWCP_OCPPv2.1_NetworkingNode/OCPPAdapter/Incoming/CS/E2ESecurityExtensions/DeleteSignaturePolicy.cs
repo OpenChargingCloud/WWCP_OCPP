@@ -127,7 +127,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                           NetworkPath,
                                                           out var request,
                                                           out var errorResponse,
-                                                          CustomDeleteSignaturePolicyRequestParser) && request is not null) {
+                                                          CustomDeleteSignaturePolicyRequestParser)) {
 
                     #region Send OnDeleteSignaturePolicyRequest event
 

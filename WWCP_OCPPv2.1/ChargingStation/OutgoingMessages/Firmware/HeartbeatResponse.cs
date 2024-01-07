@@ -78,19 +78,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
         /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public HeartbeatResponse(CS.HeartbeatRequest      Request,
-                                 DateTime                 CurrentTime,
-                                 DateTime?                ResponseTimestamp   = null,
+        public HeartbeatResponse(CS.HeartbeatRequest           Request,
+                                 DateTime                      CurrentTime,
+                                 DateTime?                     ResponseTimestamp   = null,
 
-                                 IEnumerable<KeyPair>?    SignKeys            = null,
-                                 IEnumerable<SignInfo>?   SignInfos           = null,
+                                 IEnumerable<KeyPair>?         SignKeys            = null,
+                                 IEnumerable<SignInfo>?        SignInfos           = null,
                                  IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                                 CustomData?              CustomData          = null)
+                                 CustomData?                   CustomData          = null)
 
             : base(Request,
                    Result.OK(),
                    ResponseTimestamp,
+
+                   null,
+                   null,
 
                    SignKeys,
                    SignInfos,

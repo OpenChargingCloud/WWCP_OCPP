@@ -77,7 +77,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Create a new boot notification request.
         /// </summary>
-        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="DestinationNodeId">The destination networking node identification.</param>
         /// <param name="ChargingStation">A physical system where an electrical vehicle (EV) can be charged.</param>
         /// <param name="Reason">The the reason for sending this boot notification to the CSMS.</param>
         /// 
@@ -90,7 +90,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public BootNotificationRequest(NetworkingNode_Id             NetworkingNodeId,
+        public BootNotificationRequest(NetworkingNode_Id             DestinationNodeId,
                                        ChargingStation               ChargingStation,
                                        BootReason                    Reason,
 
@@ -107,7 +107,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                        NetworkPath?                  NetworkPath         = null,
                                        CancellationToken             CancellationToken   = default)
 
-            : base(NetworkingNodeId,
+            : base(DestinationNodeId,
                    nameof(BootNotificationRequest)[..^7],
 
                    SignKeys,
@@ -259,31 +259,40 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomBootNotificationRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, DestinationNodeId, NetworkPath, CustomBootNotificationRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a boot notification request.
+        /// Parse the given JSON representation of a BootNotification request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="DestinationNodeId">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomBootNotificationRequestParser">A delegate to parse custom boot notification requests.</param>
+        /// <param name="CustomBootNotificationRequestParser">A delegate to parse custom BootNotification requests.</param>
+        /// <param name="CustomChargingStationParser">A delegate to parse custom charging stations.</param>
+        /// <param name="CustomSignatureParser">A delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">A delegate to parse custom CustomData objects.</param>
         public static BootNotificationRequest Parse(JObject                                                JSON,
                                                     Request_Id                                             RequestId,
-                                                    NetworkingNode_Id                                      NetworkingNodeId,
+                                                    NetworkingNode_Id                                      DestinationNodeId,
                                                     NetworkPath                                            NetworkPath,
-                                                    CustomJObjectParserDelegate<BootNotificationRequest>?  CustomBootNotificationRequestParser   = null)
+                                                    CustomJObjectParserDelegate<BootNotificationRequest>?  CustomBootNotificationRequestParser   = null,
+                                                    CustomJObjectParserDelegate<ChargingStation>?          CustomChargingStationParser           = null,
+                                                    CustomJObjectParserDelegate<OCPP.Signature>?           CustomSignatureParser                 = null,
+                                                    CustomJObjectParserDelegate<CustomData>?               CustomCustomDataParser                = null)
         {
 
 
             if (TryParse(JSON,
                          RequestId,
-                         NetworkingNodeId,
+                         DestinationNodeId,
                          NetworkPath,
                          out var bootNotificationRequest,
                          out var errorResponse,
-                         CustomBootNotificationRequestParser))
+                         CustomBootNotificationRequestParser,
+                         CustomChargingStationParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return bootNotificationRequest;
             }
@@ -295,25 +304,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out BootNotificationRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, DestinationNodeId, NetworkPath, out BootNotificationRequest, out ErrorResponse, ...)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a boot notification request.
+        /// Try to parse the given JSON representation of a BootNotification request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="DestinationNodeId">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="BootNotificationRequest">The parsed boot notification request.</param>
+        /// <param name="BootNotificationRequest">The parsed BootNotification request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomBootNotificationRequestParser">A delegate to parse custom boot notification requests.</param>
+        /// <param name="CustomBootNotificationRequestParser">A delegate to parse custom BootNotification requests.</param>
+        /// <param name="CustomChargingStationParser">A delegate to parse custom charging stations.</param>
+        /// <param name="CustomSignatureParser">A delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">A delegate to parse custom CustomData objects.</param>
         public static Boolean TryParse(JObject                                                JSON,
                                        Request_Id                                             RequestId,
-                                       NetworkingNode_Id                                      NetworkingNodeId,
+                                       NetworkingNode_Id                                      DestinationNodeId,
                                        NetworkPath                                            NetworkPath,
                                        [NotNullWhen(true)]  out BootNotificationRequest?      BootNotificationRequest,
                                        [NotNullWhen(false)] out String?                       ErrorResponse,
-                                       CustomJObjectParserDelegate<BootNotificationRequest>?  CustomBootNotificationRequestParser   = null)
+                                       CustomJObjectParserDelegate<BootNotificationRequest>?  CustomBootNotificationRequestParser   = null,
+                                       CustomJObjectParserDelegate<ChargingStation>?          CustomChargingStationParser           = null,
+                                       CustomJObjectParserDelegate<OCPP.Signature>?           CustomSignatureParser                 = null,
+                                       CustomJObjectParserDelegate<CustomData>?               CustomCustomDataParser                = null)
         {
 
             try
@@ -325,10 +340,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 if (!JSON.ParseMandatoryJSON("chargingStation",
                                              "charging station",
-                                             OCPPv2_1.ChargingStation.TryParse,
+                                             (JObject json, [NotNullWhen(true)]  out ChargingStation? chargingStation, [NotNullWhen(false)] out String? errorResponse)
+                                                 => OCPPv2_1.ChargingStation.TryParse(json, out chargingStation, out errorResponse, CustomChargingStationParser, CustomCustomDataParser),
                                              out ChargingStation? ChargingStation,
-                                             out ErrorResponse) ||
-                     ChargingStation is null)
+                                             out ErrorResponse))
                 {
                     return false;
                 }
@@ -352,7 +367,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 if (JSON.ParseOptionalHashSet("signatures",
                                               "cryptographic signatures",
-                                              OCPP.Signature.TryParse,
+                                              (JObject json, [NotNullWhen(true)] out OCPP.Signature? signature, [NotNullWhen(false)] out String? errorResponse)
+                                                 => OCPP.Signature.TryParse(json, out signature, out errorResponse, CustomSignatureParser, CustomCustomDataParser),
                                               out HashSet<OCPP.Signature> Signatures,
                                               out ErrorResponse))
                 {
@@ -366,8 +382,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
-                                           OCPP.CustomData.TryParse,
-                                           out CustomData CustomData,
+                                           (JObject json, [NotNullWhen(true)] out CustomData? customData, [NotNullWhen(false)] out String? errorResponse)
+                                                 => OCPP.CustomData.TryParse(json, out customData, out errorResponse, CustomCustomDataParser),
+                                           out CustomData? CustomData,
                                            out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -379,7 +396,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 BootNotificationRequest = new BootNotificationRequest(
 
-                                              NetworkingNodeId,
+                                              DestinationNodeId,
                                               ChargingStation,
                                               Reason,
 

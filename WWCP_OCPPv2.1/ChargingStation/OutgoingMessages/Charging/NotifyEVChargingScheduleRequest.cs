@@ -94,7 +94,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Create a notify EV charging schedule request.
         /// </summary>
-        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="DestinationNodeId">The destination networking node identification.</param>
         /// <param name="TimeBase">The charging periods contained within the charging schedule are relative to this time base.</param>
         /// <param name="EVSEId">The charging schedule applies to this EVSE.</param>
         /// <param name="ChargingSchedule">Planned energy consumption of the EV over time. Always relative to the time base.</param>
@@ -186,7 +186,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="DestinationNodeId">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomNotifyEVChargingScheduleRequestParser">A delegate to parse custom notify EV charging schedule requests.</param>
         public static NotifyEVChargingScheduleRequest Parse(JObject                                                        JSON,
@@ -221,7 +221,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="DestinationNodeId">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="NotifyEVChargingScheduleRequest">The parsed notify EV charging schedule request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>

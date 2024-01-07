@@ -100,6 +100,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    Result.OK(),
                    ResponseTimestamp,
 
+                   null,
+                   null,
+
                    SignKeys,
                    SignInfos,
                    Signatures,

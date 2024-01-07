@@ -130,7 +130,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                       NetworkPath,
                                                       out var request,
                                                       out var errorResponse,
-                                                      CustomSetMonitoringBaseRequestParser) && request is not null) {
+                                                      CustomSetMonitoringBaseRequestParser)) {
 
                     #region Send OnSetMonitoringBaseRequest event
 

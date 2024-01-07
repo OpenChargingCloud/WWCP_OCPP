@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using cloud.charging.open.protocols.OCPP.WebSockets;
@@ -26,69 +28,154 @@ using cloud.charging.open.protocols.OCPP.WebSockets;
 namespace cloud.charging.open.protocols.OCPP
 {
 
-    public class SendRequestState
+    /// <summary>
+    /// Keeping track of a sent request and its response.
+    /// </summary>
+    /// <param name="RequestTimestamp">The time stamp of the request.</param>
+    /// <param name="DestinationNodeId">The destination network node identification of the request and thus the expected source of the response.</param>
+    /// <param name="Timeout">The timeout of the request.</param>
+    /// 
+    /// <param name="JSONRequest">The JSON request message.</param>
+    /// <param name="BinaryRequest">The binary request message.</param>
+    /// 
+    /// <param name="ResponseTimestamp">The time stamp of the response.</param>
+    /// <param name="JSONResponse">The JSON response message.</param>
+    /// <param name="BinaryResponse">The binary response message.</param>
+    /// 
+    /// <param name="ErrorCode">An optional error code.</param>
+    /// <param name="ErrorDescription">An optional error description.</param>
+    /// <param name="ErrorDetails">Optional error details.</param>
+    public class SendRequestState(DateTime                     RequestTimestamp,
+                                  NetworkingNode_Id            DestinationNodeId,
+                                  NetworkPath                  NetworkPath,
+                                  DateTime                     Timeout,
+
+                                  OCPP_JSONRequestMessage?     JSONRequest         = null,
+                                  OCPP_BinaryRequestMessage?   BinaryRequest       = null,
+
+                                  DateTime?                    ResponseTimestamp   = null,
+                                  OCPP_JSONResponseMessage?    JSONResponse        = null,
+                                  OCPP_BinaryResponseMessage?  BinaryResponse      = null,
+
+                                  ResultCode?                  ErrorCode           = null,
+                                  String?                      ErrorDescription    = null,
+                                  JObject?                     ErrorDetails        = null)
     {
 
-        public NetworkingNode_Id?           NetworkingNodeId     { get; }
+        #region Properties
 
-        public DateTime                     RequestTimestamp     { get; }
-        public OCPP_JSONRequestMessage?     JSONRequest          { get; }
-        public OCPP_BinaryRequestMessage?   BinaryRequest        { get; }
-        public DateTime                     Timeout              { get; }
+        /// <summary>
+        /// The time stamp of the request.
+        /// </summary>
+        public DateTime                     RequestTimestamp     { get; }      = RequestTimestamp;
+
+        /// <summary>
+        /// The destination network node identification of the request
+        /// and thus the expected source of the response.
+        /// </summary>
+        public NetworkingNode_Id            DestinationNodeId    { get; }      = DestinationNodeId;
+
+        /// <summary>
+        /// The network (source) path of the response.
+        /// </summary>
+        public NetworkPath                  NetworkPath          { get; set; } = NetworkPath;
+
+        /// <summary>
+        /// The timeout of the request.
+        /// </summary>
+        public DateTime                     Timeout              { get; }      = Timeout;
 
 
-        public DateTime?                    ResponseTimestamp    { get; set; }
-        public OCPP_JSONResponseMessage?    JSONResponse         { get; set; }
-        public OCPP_BinaryResponseMessage?  BinaryResponse       { get; set; }
+        /// <summary>
+        /// The JSON request message.
+        /// </summary>
+        public OCPP_JSONRequestMessage?     JSONRequest          { get; }      = JSONRequest;
 
-        public ResultCode?                  ErrorCode            { get; set; }
-        public String?                      ErrorDescription     { get; set; }
-        public JObject?                     ErrorDetails         { get; set; }
+        /// <summary>
+        /// The binary request message.
+        /// </summary>
+        public OCPP_BinaryRequestMessage?   BinaryRequest        { get; }      = BinaryRequest;
 
 
-        public Boolean             NoErrors
+        /// <summary>
+        /// The time stamp of the response.
+        /// </summary>
+        public DateTime?                    ResponseTimestamp    { get; set; } = ResponseTimestamp;
+
+        /// <summary>
+        /// The JSON response message.
+        /// </summary>
+        public OCPP_JSONResponseMessage?    JSONResponse         { get; set; } = JSONResponse;
+
+        /// <summary>
+        /// The binary response message.
+        /// </summary>
+        public OCPP_BinaryResponseMessage?  BinaryResponse       { get; set; } = BinaryResponse;
+
+
+        /// <summary>
+        /// An optional error code.
+        /// </summary>
+        public ResultCode?                  ErrorCode            { get; set; } = ErrorCode;
+
+        /// <summary>
+        /// An optional error description.
+        /// </summary>
+        public String?                      ErrorDescription     { get; set; } = ErrorDescription;
+
+        /// <summary>
+        /// Optional error details.
+        /// </summary>
+        public JObject?                     ErrorDetails         { get; set; } = ErrorDetails;
+
+
+        public Boolean                      NoErrors
              => !ErrorCode.HasValue;
 
-        public Boolean             HasErrors
+        public Boolean                      HasErrors
              =>  ErrorCode.HasValue;
 
+        #endregion
 
 
-        private SendRequestState(DateTime                     RequestTimestamp,
-                                 NetworkingNode_Id?           NetworkingNodeId,
-                                 DateTime                     Timeout,
-
-                                 OCPP_JSONRequestMessage?     JSONRequest         = null,
-                                 OCPP_BinaryRequestMessage?   BinaryRequest       = null,
-
-                                 DateTime?                    ResponseTimestamp   = null,
-                                 OCPP_JSONResponseMessage?    JSONResponse        = null,
-                                 OCPP_BinaryResponseMessage?  BinaryResponse      = null,
-
-                                 ResultCode?                  ErrorCode           = null,
-                                 String?                      ErrorDescription    = null,
-                                 JObject?                     ErrorDetails        = null)
+        public Boolean IsValidJSONResponse(IRequest                          Request,
+                                           [NotNullWhen(true)] out JObject?  JSONMessage)
         {
 
-            this.RequestTimestamp   = RequestTimestamp;
-            this.NetworkingNodeId   = NetworkingNodeId;
-            this.Timeout            = Timeout;
+            if (!ErrorCode.HasValue &&
+                JSONResponse?.Payload   is not null &&
+                JSONResponse. RequestId == Request.RequestId)
+            {
+                JSONMessage = JSONResponse.Payload;
+                return true;
+            }
 
-            this.JSONRequest        = JSONRequest;
-            this.BinaryRequest      = BinaryRequest;
-
-            this.ResponseTimestamp  = ResponseTimestamp;
-            this.JSONResponse       = JSONResponse;
-            this.BinaryResponse     = BinaryResponse;
-
-            this.ErrorCode          = ErrorCode;
-            this.ErrorDescription   = ErrorDescription;
-            this.ErrorDetails       = ErrorDetails;
+            JSONMessage = null;
+            return false;
 
         }
 
+        public Boolean IsValidBinaryResponse(IRequest                         Request,
+                                             [NotNullWhen(true)] out Byte[]?  BinaryMessage)
+        {
+
+            if (!ErrorCode.HasValue &&
+                BinaryResponse?.Payload   is not null &&
+                BinaryResponse. RequestId == Request.RequestId)
+            {
+                BinaryMessage = BinaryResponse.Payload;
+                return true;
+            }
+
+            BinaryMessage = null;
+            return false;
+
+        }
+
+
+        #region (static) FromJSONRequest  (...)
         public static SendRequestState FromJSONRequest(DateTime                     RequestTimestamp,
-                                                       NetworkingNode_Id            NetworkingNodeId,
+                                                       NetworkingNode_Id            DestinationNodeId,
                                                        DateTime                     Timeout,
 
                                                        OCPP_JSONRequestMessage?     JSONRequest         = null,
@@ -103,7 +190,8 @@ namespace cloud.charging.open.protocols.OCPP
 
 
             => new (RequestTimestamp,
-                    NetworkingNodeId,
+                    DestinationNodeId,
+                    NetworkPath.Empty,
                     Timeout,
 
                     JSONRequest,
@@ -117,6 +205,9 @@ namespace cloud.charging.open.protocols.OCPP
                     ErrorDescription,
                     ErrorDetails);
 
+        #endregion
+
+        #region (static) FromBinaryRequest(...)
 
         public static SendRequestState FromBinaryRequest(DateTime                     RequestTimestamp,
                                                          NetworkingNode_Id            NetworkingNodeId,
@@ -135,6 +226,7 @@ namespace cloud.charging.open.protocols.OCPP
 
             => new (RequestTimestamp,
                     NetworkingNodeId,
+                    NetworkPath.Empty,
                     Timeout,
 
                     null,
@@ -147,6 +239,8 @@ namespace cloud.charging.open.protocols.OCPP
                     ErrorCode,
                     ErrorDescription,
                     ErrorDetails);
+
+        #endregion
 
 
     }

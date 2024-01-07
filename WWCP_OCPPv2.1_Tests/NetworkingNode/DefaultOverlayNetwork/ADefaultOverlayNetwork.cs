@@ -20,20 +20,14 @@
 using NUnit.Framework;
 using NUnit.Framework.Legacy;
 
-using Newtonsoft.Json.Linq;
-
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.tests.CSMS;
-using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
-using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS;
-using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
-using cloud.charging.open.protocols.OCPPv2_1.CS;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -63,6 +57,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode
         protected List<LogBinaryRequest>        csmsWebSocketBinaryMessagesSent                          = [];
         protected List<LogDataBinaryResponse>   csmsWebSocketBinaryMessageResponsesReceived              = [];
 
+        protected KeyPair?                      csmsKeyPair;
+
         // -------------------------------------------------------------------------------------------------------
 
         protected TestNetworkingNode?           networkingNode;
@@ -79,6 +75,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode
         protected List<LogBinaryRequest>        networkingNodeWebSocketBinaryMessagesSent                = [];
         protected List<LogDataBinaryResponse>   networkingNodeWebSocketBinaryMessageResponsesReceived    = [];
 
+        protected KeyPair?                      networkingNodeKeyPair;
+
         // -------------------------------------------------------------------------------------------------------
 
         protected TestChargingStation?          chargingStation;
@@ -92,6 +90,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode
         protected List<LogDataBinaryResponse>   chargingStation1WebSocketBinaryMessageResponsesSent       = [];
         protected List<LogBinaryRequest>        chargingStation1WebSocketBinaryMessagesSent               = [];
         protected List<LogDataBinaryResponse>   chargingStation1WebSocketBinaryMessageResponsesReceived   = [];
+
+        protected KeyPair?                      chargingStationKeyPair;
 
         #endregion
 
@@ -121,22 +121,42 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode
 
             #region Create the CSMS
 
-            CSMS          = new TestCSMS(
-                                Id:                      NetworkingNode_Id.Parse("csms01"),
-                                RequireAuthentication:   true,
-                                HTTPUploadPort:          IPPort.Parse(9100),
-                                DNSClient:               dnsClient
-                            );
+            CSMS = new TestCSMS(
+                       Id:                      NetworkingNode_Id.Parse("csms01"),
+                       RequireAuthentication:   true,
+                       HTTPUploadPort:          IPPort.Parse(9100),
+                       DNSClient:               dnsClient
+                   );
 
-            Assert.That(CSMS,         Is.Not.Null);
+            Assert.That(CSMS, Is.Not.Null);
 
-            csmsWSServer  = CSMS.AttachWebSocketService(
-                                TCPPort:                 IPPort.Parse(9101),
-                                DisableWebSocketPings:   true,
-                                AutoStart:               true
-                            );
+            #region Define signature policy
+
+            csmsKeyPair = KeyPair.GenerateKeys()!;
+
+            CSMS.SignaturePolicy.AddVerificationRule(JSONContext.OCPP.Any,
+                                                     VerificationRuleActions. VerifyAll);
+
+            CSMS.SignaturePolicy.AddSigningRule     (JSONContext.OCPP.Any,
+                                                     KeyPair:                 csmsKeyPair!,
+                                                     UserIdGenerator:         (signableMessage) => "csms001",
+                                                     DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a CSMS test!"),
+                                                     TimestampGenerator:      (signableMessage) => Timestamp.Now);
+
+            #endregion
+
+            #region Attach HTTP Web Socket Server
+
+            csmsWSServer = CSMS.AttachWebSocketService(
+                               TCPPort:                 IPPort.Parse(9101),
+                               DisableWebSocketPings:   true,
+                               AutoStart:               true
+                           );
 
             Assert.That(csmsWSServer, Is.Not.Null);
+
+            #endregion
+
 
             //csmsWSServer.OnTextMessageReceived         += (timestamp, webSocketServer, webSocketConnection, eventTrackingId, requestMessage, cancellationToken) => {
             //    csmsWebSocketJSONMessagesReceived.        Add(new LogJSONRequest(timestamp, JArray.Parse(requestMessage)));
@@ -162,45 +182,63 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode
 
             #region Create the Networking Node
 
-            networkingNode  = new TestNetworkingNode(
-                                  Id:                      NetworkingNode_Id.Parse("nn01"),
-                                  VendorName:              "GraphDefined OEM #1",
-                                  Model:                   "VCP.1",
-                                  Description:             I18NString.Create(Languages.en, "Our first virtual networking node!"),
-                                  SerialNumber:            "SN-NN0001",
-                                  FirmwareVersion:         "v0.1",
-                                  Modem:                   new Modem(
-                                                               ICCID:   "0001",
-                                                               IMSI:    "1112"
-                                                           ),
-                                  DisableSendHeartbeats:   true,
+            networkingNode = new TestNetworkingNode(
+                                 Id:                      NetworkingNode_Id.Parse("nn01"),
+                                 VendorName:              "GraphDefined OEM #1",
+                                 Model:                   "VCP.1",
+                                 Description:             I18NString.Create(Languages.en, "Our first virtual networking node!"),
+                                 SerialNumber:            "SN-NN0001",
+                                 FirmwareVersion:         "v0.1",
+                                 Modem:                   new Modem(
+                                                              ICCID:   "0001",
+                                                              IMSI:    "1112"
+                                                          ),
+                                 DisableSendHeartbeats:   true,
 
-                                  //HTTPBasicAuth:           new Tuple<String, String>("GDNN001", "1234"),
-                                  DNSClient:               dnsClient
-                              );
+                                 //HTTPBasicAuth:           new Tuple<String, String>("GDNN001", "1234"),
+                                 DNSClient:               dnsClient
+                             );
 
             Assert.That(networkingNode, Is.Not.Null);
 
+            #region Define signature policy
 
-            nnOCPPWebSocketServer        = networkingNode.AttachWebSocketServer(
-                                               TCPPort:                 IPPort.Parse(9103),
-                                               DisableWebSocketPings:   true,
-                                               AutoStart:               true
-                                           );
+            networkingNodeKeyPair = KeyPair.GenerateKeys()!;
+
+            networkingNode.OCPP.SignaturePolicy.AddSigningRule     (JSONContext.OCPP.Any,
+                                                                    KeyPair:                 networkingNodeKeyPair!,
+                                                                    UserIdGenerator:         (signableMessage) => "nn001",
+                                                                    DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a networking node test!"),
+                                                                    TimestampGenerator:      (signableMessage) => Timestamp.Now);
+
+            networkingNode.OCPP.SignaturePolicy.AddVerificationRule(JSONContext.OCPP.Any,
+                                                                    VerificationRuleActions. VerifyAll);
+
+            #endregion
+
+            #region Attach HTTP Web Socket Server
+
+            nnOCPPWebSocketServer = networkingNode.AttachWebSocketServer(
+                                        TCPPort:                 IPPort.Parse(9103),
+                                        DisableWebSocketPings:   true,
+                                        AutoStart:               true
+                                    );
 
             Assert.That(nnOCPPWebSocketServer, Is.Not.Null);
 
+            #endregion
 
+            #region Connect to CSMS
 
             CSMS.AddOrUpdateHTTPBasicAuth(networkingNode.Id, "1234abcd");
 
-            var connectionSetupResponse1  = await networkingNode.ConnectWebSocketClient(
-                                                      NetworkingNodeId:        NetworkingNode_Id.CSMS,
-                                                      RemoteURL:               URL.Parse($"http://127.0.0.1:{csmsWSServer.IPPort}/{networkingNode.Id}"),
-                                                      HTTPAuthentication:      HTTPBasicAuthentication.Create(networkingNode.Id.ToString(), "1234abcd"),
-                                                      DisableWebSocketPings:   true,
-                                                      NetworkingMode:          OCPP.WebSockets.NetworkingMode.OverlayNetwork
-                                                  );
+            var connectionSetupResponse1 = await networkingNode.ConnectWebSocketClient(
+                                                     NetworkingNodeId:        NetworkingNode_Id.CSMS,
+                                                     RemoteURL:               URL.Parse($"http://127.0.0.1:{csmsWSServer.IPPort}/{networkingNode.Id}"),
+                                                     HTTPAuthentication:      HTTPBasicAuthentication.Create(networkingNode.Id.ToString(), "1234abcd"),
+                                                     DisableWebSocketPings:   true,
+                                                     NetworkingMode:          OCPP.WebSockets.NetworkingMode.OverlayNetwork
+                                                 );
 
             Assert.That(connectionSetupResponse1, Is.Not.Null);
 
@@ -219,6 +257,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode
             ClassicAssert.AreEqual("websocket",                                                          connectionSetupResponse1.Upgrade);
             ClassicAssert.IsTrue  (connectionSetupResponse1.SecWebSocketProtocol.Contains(Version.WebSocketSubProtocolId));
             ClassicAssert.AreEqual("13",                                                                 connectionSetupResponse1.SecWebSocketVersion);
+
+            #endregion
 
 
             //networkingNode.OCPP.IN.OnTextMessageReceived         += async (timestamp, webSocketServer, webSocketConnection, webSocketFrame, eventTrackingId, message, cancellationToken) => {
@@ -241,7 +281,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode
 
             #region Create the Charging Station
 
-            chargingStation  = new TestChargingStation(
+            chargingStation = new TestChargingStation(
                                    Id:                      NetworkingNode_Id.Parse("GD-CP001"),
                                    VendorName:              "GraphDefined OEM #1",
                                    Model:                   "VCP.1",
@@ -280,6 +320,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode
 
             Assert.That(chargingStation, Is.Not.Null);
 
+            #region Define signature policy
+
+            chargingStationKeyPair = KeyPair.GenerateKeys()!;
+
+            networkingNode.OCPP.SignaturePolicy.AddSigningRule     (JSONContext.OCPP.Any,
+                                                                    KeyPair:                 networkingNodeKeyPair!,
+                                                                    UserIdGenerator:         (signableMessage) => "cs001",
+                                                                    DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a networking node test!"),
+                                                                    TimestampGenerator:      (signableMessage) => Timestamp.Now);
+
+            networkingNode.OCPP.SignaturePolicy.AddVerificationRule(JSONContext.OCPP.Any,
+                                                                    VerificationRuleActions. VerifyAll);
+
+            #endregion
+
+            #region Connect to networking node
 
             nnOCPPWebSocketServer.AddOrUpdateHTTPBasicAuth(chargingStation.Id, "1234abcd");
 
@@ -306,6 +362,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode
             ClassicAssert.AreEqual("websocket",                                                                     connectionSetupResponse2.Upgrade);
             ClassicAssert.IsTrue  (connectionSetupResponse2.SecWebSocketProtocol.Contains(Version.WebSocketSubProtocolId));
             ClassicAssert.AreEqual("13",                                                                            connectionSetupResponse2.SecWebSocketVersion);
+
+            #endregion
 
 
             //var chargingStation1WebSocketClient = chargingStation.CSClient as ChargingStationWSClient;

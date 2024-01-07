@@ -175,7 +175,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                      NetworkPath,
                                                      out var request,
                                                      out var errorResponse,
-                                                     CustomBootNotificationRequestParser)) {
+                                                     CustomBootNotificationRequestParser,
+                                                     parentNetworkingNode.OCPP.CustomChargingStationParser,
+                                                     parentNetworkingNode.OCPP.CustomSignatureParser,
+                                                     parentNetworkingNode.OCPP.CustomCustomDataParser)) {
 
                     #region Send OnBootNotificationRequest event
 

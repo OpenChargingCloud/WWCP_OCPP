@@ -228,7 +228,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="DestinationNodeId">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
         public static DataTransferRequest Parse(XElement              XML,
@@ -302,7 +302,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="XMLNamespace">The XML namespace to use.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="DestinationNodeId">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="DataTransferRequest">The parsed DataTransfer request.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>

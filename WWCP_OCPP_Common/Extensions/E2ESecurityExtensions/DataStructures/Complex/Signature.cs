@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -218,13 +220,14 @@ namespace cloud.charging.open.protocols.OCPP
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="Signature">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject         JSON,
-                                       out Signature?  Signature,
-                                       out String?     ErrorResponse)
+        public static Boolean TryParse(JObject                              JSON,
+                                       [NotNullWhen(true)]  out Signature?  Signature,
+                                       [NotNullWhen(false)] out String?     ErrorResponse)
 
             => TryParse(JSON,
                         out Signature,
                         out ErrorResponse,
+                        null,
                         null);
 
 
@@ -235,10 +238,12 @@ namespace cloud.charging.open.protocols.OCPP
         /// <param name="Signature">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomSignatureParser">A delegate to parse custom signatures.</param>
-        public static Boolean TryParse(JObject                                  JSON,
-                                       out Signature?                           Signature,
-                                       out String?                              ErrorResponse,
-                                       CustomJObjectParserDelegate<Signature>?  CustomSignatureParser   = null)
+        /// <param name="CustomCustomDataParser">A delegate to parse custom CustomData objects.</param>
+        public static Boolean TryParse(JObject                                   JSON,
+                                       [NotNullWhen(true)]  out Signature?       Signature,
+                                       [NotNullWhen(false)] out String?          ErrorResponse,
+                                       CustomJObjectParserDelegate<Signature>?   CustomSignatureParser    = null,
+                                       CustomJObjectParserDelegate<CustomData>?  CustomCustomDataParser   = null)
         {
 
             try
@@ -250,7 +255,7 @@ namespace cloud.charging.open.protocols.OCPP
 
                 if (!JSON.ParseMandatoryText("keyId",
                                              "key identification",
-                                             out String KeyId,
+                                             out String? KeyId,
                                              out ErrorResponse))
                 {
                     return false;
@@ -262,7 +267,7 @@ namespace cloud.charging.open.protocols.OCPP
 
                 if (!JSON.ParseMandatoryText("value",
                                              "signature value",
-                                             out String Value,
+                                             out String? Value,
                                              out ErrorResponse))
                 {
                     return false;
@@ -349,8 +354,9 @@ namespace cloud.charging.open.protocols.OCPP
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
-                                           OCPP.CustomData.TryParse,
-                                           out CustomData CustomData,
+                                           (JObject json, [NotNullWhen(true)] out CustomData? customData, [NotNullWhen(false)] out String? errorResponse)
+                                                 => OCPP.CustomData.TryParse(json, out customData, out errorResponse, CustomCustomDataParser),
+                                           out CustomData? CustomData,
                                            out ErrorResponse))
                 {
                     if (ErrorResponse is not null)

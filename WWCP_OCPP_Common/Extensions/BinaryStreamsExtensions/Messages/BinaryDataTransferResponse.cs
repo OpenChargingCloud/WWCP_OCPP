@@ -100,6 +100,9 @@ namespace cloud.charging.open.protocols.OCPP
                                           BinaryFormats?             Format                 = null,
                                           DateTime?                  ResponseTimestamp      = null,
 
+                                          NetworkingNode_Id?         DestinationNodeId      = null,
+                                          NetworkPath?               NetworkPath            = null,
+
                                           IEnumerable<KeyPair>?      SignKeys               = null,
                                           IEnumerable<SignInfo>?     SignInfos              = null,
                                           IEnumerable<Signature>?    Signatures             = null)
@@ -107,6 +110,9 @@ namespace cloud.charging.open.protocols.OCPP
             : base(Request,
                    Result.OK(),
                    ResponseTimestamp,
+
+                   DestinationNodeId,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,

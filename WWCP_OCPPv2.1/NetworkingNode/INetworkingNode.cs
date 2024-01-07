@@ -2286,6 +2286,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
                           String     Caller,
                           Exception  ExceptionOccured);
 
+        Task HandleErrors(String     Module,
+                          String     Caller,
+                          String     ErrorResponse);
+
 
     }
 

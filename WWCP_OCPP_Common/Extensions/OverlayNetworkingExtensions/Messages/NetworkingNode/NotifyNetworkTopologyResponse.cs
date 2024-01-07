@@ -80,6 +80,9 @@ namespace cloud.charging.open.protocols.OCPP.NN
                                              NetworkTopologyStatus         Status,
                                              DateTime?                     ResponseTimestamp   = null,
 
+                                             NetworkingNode_Id?            DestinationNodeId   = null,
+                                             NetworkPath?                  NetworkPath         = null,
+
                                              IEnumerable<KeyPair>?         SignKeys            = null,
                                              IEnumerable<SignInfo>?        SignInfos           = null,
                                              IEnumerable<Signature>?       Signatures          = null,
@@ -89,6 +92,9 @@ namespace cloud.charging.open.protocols.OCPP.NN
             : base(Request,
                    Result.OK(),
                    ResponseTimestamp,
+
+                   DestinationNodeId,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
@@ -229,6 +235,9 @@ namespace cloud.charging.open.protocols.OCPP.NN
 
                                                     Request,
                                                     Status,
+                                                    null,
+
+                                                    null,
                                                     null,
 
                                                     null,

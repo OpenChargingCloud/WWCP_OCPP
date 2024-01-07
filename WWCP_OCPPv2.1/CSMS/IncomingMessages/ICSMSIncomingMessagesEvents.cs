@@ -184,7 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a Get15118EVCertificate request was received.
         /// </summary>
-        event OnGet15118EVCertificateRequestReceivedDelegate                OnGet15118EVCertificateRequest;
+        event OnGet15118EVCertificateRequestReceivedDelegate                OnGet15118EVCertificateRequestReceived;
 
         /// <summary>
         /// An event sent whenever a response to a Get15118EVCertificate request was sent.

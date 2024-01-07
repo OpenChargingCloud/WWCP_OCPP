@@ -359,7 +359,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #endregion
 
-                    parentNetworkingNode.OCPP.ReceiveResponseMessage(jsonResponse);
+                    parentNetworkingNode.OCPP.ReceiveJSONResponseMessage(jsonResponse);
 
                     // No response to the charging station!
 
@@ -702,7 +702,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #endregion
 
-                    parentNetworkingNode.OCPP.ReceiveResponseMessage(binaryResponse);
+                    parentNetworkingNode.OCPP.ReceiveBinaryResponseMessage(binaryResponse);
 
                     // No response to the charging station!
 

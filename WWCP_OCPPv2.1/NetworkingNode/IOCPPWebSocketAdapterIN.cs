@@ -144,11 +144,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
         // To CSMS
-        Task RaiseOnBootNotificationResponseReceived(DateTime                                 Timestamp,
-                                                     IEventSender                             Sender,
-                                                     OCPPv2_1.CS.  BootNotificationRequest    Request,
-                                                     OCPPv2_1.CSMS.BootNotificationResponse   Response,
-                                                     TimeSpan                                 Runtime);
 
 
         // To Charging Station

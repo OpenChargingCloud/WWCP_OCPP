@@ -18,6 +18,7 @@
 #region Usings
 
 using System.Security.Cryptography;
+using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -520,7 +521,9 @@ namespace cloud.charging.open.protocols.OCPP
 
                 signingRules.Add(new SigningRule(
                                      Context,
-                                     signingRules.Any() ? signingRules.Max(entry => entry.Priority) + 1 : 1,
+                                     signingRules.Count > 0
+                                         ? signingRules.Max(entry => entry.Priority) + 1
+                                         : 1,
                                      SigningRuleActions.Sign,
                                      KeyPair,
                                      UserIdGenerator,
@@ -611,13 +614,28 @@ namespace cloud.charging.open.protocols.OCPP
 
         #region HasSigningRules(Context, out SigningRules)
 
-        public Boolean HasSigningRules(JSONLDContext                 Context,
-                                       out IEnumerable<SigningRule>  SigningRules)
+        public Boolean HasSigningRules(JSONLDContext             Context,
+                                       out HashSet<SigningRule>  SigningRules)
         {
 
-            SigningRules = signingRules.Where(signingRule => signingRule.Context == Context);
+            SigningRules = [];
 
-            return SigningRules.Any();
+            foreach (var signingRule in signingRules)
+            {
+
+                     // Exact match...
+                if ((signingRule.Context == Context) ||
+
+                     // Match with wildcard...
+                    (signingRule.Context.ToString().EndsWith("...") &&
+                     Context.Matches(signingRule.Context)))
+                {
+                    SigningRules.Add(signingRule);
+                }
+
+            }
+
+            return SigningRules.Count > 0;
 
         }
 
@@ -633,10 +651,10 @@ namespace cloud.charging.open.protocols.OCPP
         /// <param name="JSONMessage">The JSON representation of the signable message.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="SignInfos">An enumeration of cryptographic signature information or key pairs to sign the given message.</param>
-        public Boolean SignMessage(ISignableMessage   SignableMessage,
-                                   JObject            JSONMessage,
-                                   out String?        ErrorResponse,
-                                   params SignInfo[]  SignInfos)
+        public Boolean SignMessage(ISignableMessage                  SignableMessage,
+                                   JObject                           JSONMessage,
+                                   [NotNullWhen(false)] out String?  ErrorResponse,
+                                   params SignInfo[]                 SignInfos)
         {
 
             #region Initial checks
@@ -661,7 +679,7 @@ namespace cloud.charging.open.protocols.OCPP
                 if (JSONMessage["@context"] is null)
                     JSONMessage.AddFirst(new JProperty("@context", SignableMessage.Context.ToString()));
 
-                IEnumerable<SigningRule>? signaturePolicyEntries = null;
+                HashSet<SigningRule>? signaturePolicyEntries = null;
 
                 if ((SignInfos                 is not null && SignInfos.                Any()) ||
                     (SignableMessage.SignKeys  is not null && SignableMessage.SignKeys. Any()) ||
@@ -680,7 +698,7 @@ namespace cloud.charging.open.protocols.OCPP
                     if (SignableMessage.SignInfos is not null && SignableMessage.SignInfos.Any())
                         signInfos.AddRange(SignableMessage.SignInfos);
 
-                    if (signaturePolicyEntries    is not null && signaturePolicyEntries.   Any())
+                    if (signaturePolicyEntries    is not null && signaturePolicyEntries.Count > 0)
                     {
                         foreach (var signaturePolicyEntry in signaturePolicyEntries)
                         {
@@ -785,10 +803,10 @@ namespace cloud.charging.open.protocols.OCPP
         /// <param name="JSONMessage">The JSON representation of the request message.</param>
         /// <param name="ErrorResponse">An optional error response in case of signing errors.</param>
         /// <param name="SignInfos">One or multiple cryptographic signature information or key pairs to sign the request message.</param>
-        public Boolean SignRequestMessage(IRequest           RequestMessage,
-                                          JObject            JSONMessage,
-                                          out String?        ErrorResponse,
-                                          params SignInfo[]  SignInfos)
+        public Boolean SignRequestMessage(IRequest                          RequestMessage,
+                                          JObject                           JSONMessage,
+                                          [NotNullWhen(false)] out String?  ErrorResponse,
+                                          params SignInfo[]                 SignInfos)
         {
 
             return SignMessage(RequestMessage,
@@ -809,10 +827,10 @@ namespace cloud.charging.open.protocols.OCPP
         /// <param name="JSONMessage">The JSON representation of the response message.</param>
         /// <param name="ErrorResponse">An optional error response in case of signing errors.</param>
         /// <param name="SignInfos">One or multiple cryptographic signature information or key pairs to sign the response message.</param>
-        public Boolean SignResponseMessage(IResponse          ResponseMessage,
-                                           JObject            JSONMessage,
-                                           out String?        ErrorResponse,
-                                           params SignInfo[]  SignInfos)
+        public Boolean SignResponseMessage(IResponse                         ResponseMessage,
+                                           JObject                           JSONMessage,
+                                           [NotNullWhen(false)] out String?  ErrorResponse,
+                                           params SignInfo[]                 SignInfos)
         {
 
             return SignMessage(ResponseMessage,
@@ -834,10 +852,10 @@ namespace cloud.charging.open.protocols.OCPP
         /// <param name="BinaryMessage">The binary representation of the signable message.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="SignInfos">An enumeration of cryptographic signature information or key pairs to sign the given message.</param>
-        public Boolean SignMessage(ISignableMessage   SignableMessage,
-                                   Byte[]             BinaryMessage,
-                                   out String?        ErrorResponse,
-                                   params SignInfo[]  SignInfos)
+        public Boolean SignMessage(ISignableMessage                  SignableMessage,
+                                   Byte[]                            BinaryMessage,
+                                   [NotNullWhen(false)] out String?  ErrorResponse,
+                                   params SignInfo[]                 SignInfos)
         {
 
             #region Initial checks
@@ -862,7 +880,7 @@ namespace cloud.charging.open.protocols.OCPP
                 //if (BinaryMessage["@context"] is null)
                 //    BinaryMessage.AddFirst(new JProperty("@context", SignableMessage.Context.ToString()));
 
-                IEnumerable<SigningRule>? signaturePolicyEntries = null;
+                HashSet<SigningRule>? signaturePolicyEntries = null;
 
                 if ((SignInfos                 is not null && SignInfos.                Any()) ||
                     (SignableMessage.SignKeys  is not null && SignableMessage.SignKeys. Any()) ||
@@ -881,7 +899,7 @@ namespace cloud.charging.open.protocols.OCPP
                     if (SignableMessage.SignInfos is not null && SignableMessage.SignInfos.Any())
                         signInfos.AddRange(SignableMessage.SignInfos);
 
-                    if (signaturePolicyEntries    is not null && signaturePolicyEntries.   Any())
+                    if (signaturePolicyEntries    is not null && signaturePolicyEntries.Count > 0)
                     {
                         foreach (var signaturePolicyEntry in signaturePolicyEntries)
                         {
@@ -984,10 +1002,10 @@ namespace cloud.charging.open.protocols.OCPP
         /// <param name="BinaryMessage">The binary representation of the request message.</param>
         /// <param name="ErrorResponse">An optional error response in case of signing errors.</param>
         /// <param name="SignInfos">One or multiple cryptographic signature information or key pairs to sign the request message.</param>
-        public Boolean SignRequestMessage(IRequest           RequestMessage,
-                                          Byte[]             BinaryMessage,
-                                          out String?        ErrorResponse,
-                                          params SignInfo[]  SignInfos)
+        public Boolean SignRequestMessage(IRequest                          RequestMessage,
+                                          Byte[]                            BinaryMessage,
+                                          [NotNullWhen(false)] out String?  ErrorResponse,
+                                          params SignInfo[]                 SignInfos)
         {
 
             return SignMessage(RequestMessage,
@@ -1008,10 +1026,10 @@ namespace cloud.charging.open.protocols.OCPP
         /// <param name="BinaryMessage">The binary representation of the response message.</param>
         /// <param name="ErrorResponse">An optional error response in case of signing errors.</param>
         /// <param name="SignInfos">One or multiple cryptographic signature information or key pairs to sign the response message.</param>
-        public Boolean SignResponseMessage(IResponse          ResponseMessage,
-                                           Byte[]             BinaryMessage,
-                                           out String?        ErrorResponse,
-                                           params SignInfo[]  SignInfos)
+        public Boolean SignResponseMessage(IResponse                         ResponseMessage,
+                                           Byte[]                            BinaryMessage,
+                                           [NotNullWhen(false)] out String?  ErrorResponse,
+                                           params SignInfo[]                 SignInfos)
         {
 
             return SignMessage(ResponseMessage,
@@ -1099,7 +1117,7 @@ namespace cloud.charging.open.protocols.OCPP
         public IEnumerable<VerificationRule> GetVerificationRules(JSONLDContext Context)
         {
 
-            var rules = verificationRules.Where(verificationRule => verificationRule.Context == Context);
+            var rules = verificationRules.Where(verificationRule => Context.Matches(verificationRule.Context));
 
             if (rules.Any())
                 return rules;
@@ -1122,7 +1140,7 @@ namespace cloud.charging.open.protocols.OCPP
         {
 
             var verificationRule = verificationRules.
-                                       Where(verificationRule => verificationRule.Context == Context).
+                                       Where(verificationRule => Context.Matches(verificationRule.Context)).
                                        MaxBy(verificationRule => verificationRule.Priority);
 
             if (verificationRule is not null)
@@ -1147,9 +1165,9 @@ namespace cloud.charging.open.protocols.OCPP
         /// <param name="SignableMessage">A signable/verifiable message.</param>
         /// <param name="JSONMessage">The JSON representation of the signable/verifiable message.</param>
         /// <param name="ErrorResponse">An optional error response in case of validation errors.</param>
-        public Boolean VerifyMessage(ISignableMessage  SignableMessage,
-                                     JObject           JSONMessage,
-                                     out String?       ErrorResponse)
+        public Boolean VerifyMessage(ISignableMessage                  SignableMessage,
+                                     JObject                           JSONMessage,
+                                     [NotNullWhen(false)] out String?  ErrorResponse)
         {
 
             ErrorResponse = null;
@@ -1252,9 +1270,9 @@ namespace cloud.charging.open.protocols.OCPP
         /// <param name="RequestMessage">The request message.</param>
         /// <param name="JSONMessage">The JSON representation of the request message.</param>
         /// <param name="ErrorResponse">An optional error response in case of validation errors.</param>
-        public Boolean VerifyRequestMessage(IRequest     RequestMessage,
-                                            JObject      JSONMessage,
-                                            out String?  ErrorResponse)
+        public Boolean VerifyRequestMessage(IRequest                          RequestMessage,
+                                            JObject                           JSONMessage,
+                                            [NotNullWhen(false)] out String?  ErrorResponse)
         {
 
             return VerifyMessage(RequestMessage,
@@ -1273,9 +1291,9 @@ namespace cloud.charging.open.protocols.OCPP
         /// <param name="ResponseMessage">A response message.</param>
         /// <param name="JSONMessage">The JSON representation of the request message.</param>
         /// <param name="ErrorResponse">An optional error response in case of validation errors.</param>
-        public Boolean VerifyResponseMessage(IResponse    ResponseMessage,
-                                             JObject      JSONMessage,
-                                             out String?  ErrorResponse)
+        public Boolean VerifyResponseMessage(IResponse                         ResponseMessage,
+                                             JObject                           JSONMessage,
+                                             [NotNullWhen(false)] out String?  ErrorResponse)
         {
 
             return VerifyMessage(ResponseMessage,
@@ -1295,9 +1313,9 @@ namespace cloud.charging.open.protocols.OCPP
         /// <param name="SignableMessage">A signable/verifiable message.</param>
         /// <param name="BinaryMessage">The binary representation of the signable/verifiable message.</param>
         /// <param name="ErrorResponse">An optional error response in case of validation errors.</param>
-        public Boolean VerifyMessage(ISignableMessage  SignableMessage,
-                                     Byte[]            BinaryMessage,
-                                     out String?       ErrorResponse)
+        public Boolean VerifyMessage(ISignableMessage                  SignableMessage,
+                                     Byte[]                            BinaryMessage,
+                                     [NotNullWhen(false)] out String?  ErrorResponse)
         {
 
             ErrorResponse = null;
@@ -1400,9 +1418,9 @@ namespace cloud.charging.open.protocols.OCPP
         /// <param name="RequestMessage">The request message.</param>
         /// <param name="BinaryMessage">The binary representation of the request message.</param>
         /// <param name="ErrorResponse">An optional error response in case of validation errors.</param>
-        public Boolean VerifyRequestMessage(IRequest     RequestMessage,
-                                            Byte[]       BinaryMessage,
-                                            out String?  ErrorResponse)
+        public Boolean VerifyRequestMessage(IRequest                          RequestMessage,
+                                            Byte[]                            BinaryMessage,
+                                            [NotNullWhen(false)] out String?  ErrorResponse)
         {
 
             return VerifyMessage(RequestMessage,
@@ -1421,9 +1439,9 @@ namespace cloud.charging.open.protocols.OCPP
         /// <param name="ResponseMessage">A response message.</param>
         /// <param name="BinaryMessage">The binary representation of the request message.</param>
         /// <param name="ErrorResponse">An optional error response in case of validation errors.</param>
-        public Boolean VerifyResponseMessage(IResponse    ResponseMessage,
-                                             Byte[]       BinaryMessage,
-                                             out String?  ErrorResponse)
+        public Boolean VerifyResponseMessage(IResponse                         ResponseMessage,
+                                             Byte[]                            BinaryMessage,
+                                             [NotNullWhen(false)] out String?  ErrorResponse)
         {
 
             return VerifyMessage(ResponseMessage,

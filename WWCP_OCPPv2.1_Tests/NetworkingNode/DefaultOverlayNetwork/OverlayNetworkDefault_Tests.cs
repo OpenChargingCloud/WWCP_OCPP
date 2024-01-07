@@ -22,14 +22,10 @@ using NUnit.Framework;
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPP.NN;
 using cloud.charging.open.protocols.OCPP.WebSockets;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.NN;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
-using cloud.charging.open.protocols.OCPP.CSMS;
-using cloud.charging.open.protocols.OCPP.CS;
-using Microsoft.AspNetCore.Http.HttpResults;
 
 #endregion
 
@@ -45,13 +41,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
 
         // Networking Node -> CSMS
 
-        #region NN_SendBootNotifications_toCSMS_Test()
+        #region NN_2_CSMS_SendBootNotifications_Test()
 
         /// <summary>
-        /// A test for sending boot notifications from a networking node to the CSMS.
+        /// A test for sending signed boot notifications from a networking node to the CSMS.
         /// </summary>
         [Test]
-        public async Task NN_SendBootNotifications_toCSMS_Test()
+        public async Task NN_2_CSMS_SendBootNotifications_Test()
         {
 
             Assert.Multiple(() => {
@@ -116,8 +112,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
                     Assert.That(nnBootNotificationRequest.NetworkPath.Last,                   Is.EqualTo(networkingNode.Id));
                     Assert.That(nnBootNotificationRequest.Reason,                             Is.EqualTo(reason));
 
+                    Assert.That(nnBootNotificationRequest.Signatures.Any(),                   Is.True, "The outgoing BootNotification request is not signed!");
+
+
                     // Networking Node JSON Request OUT
                     Assert.That(nnJSONMessageRequestsSent.          Count,                    Is.EqualTo(1), "The BootNotification JSON request did not leave the networking node!");
+
 
                     // CSMS Request IN
                     Assert.That(csmsBootNotificationRequests.       Count,                    Is.EqualTo(1), "The BootNotification request did not reach the CSMS!");
@@ -127,6 +127,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
                     Assert.That(csmsBootNotificationRequest.NetworkPath.Source,               Is.EqualTo(networkingNode.Id));
                     Assert.That(csmsBootNotificationRequest.NetworkPath.Last,                 Is.EqualTo(networkingNode.Id));
                     Assert.That(csmsBootNotificationRequest.Reason,                           Is.EqualTo(reason));
+
+                    Assert.That(csmsBootNotificationRequest.Signatures.Any(),                 Is.True, "The incoming BootNotification request is not signed!");
+                    var csmsBootNotificationRequestSignature = csmsBootNotificationRequest.Signatures.First();
+                    Assert.That(csmsBootNotificationRequestSignature.Status,                  Is.EqualTo(VerificationStatus.ValidSignature));
 
                     Assert.That(csmsBootNotificationRequest.ChargingStation,                  Is.Not.Null);
                     var chargingStation = csmsBootNotificationRequests.First().ChargingStation;
@@ -149,6 +153,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
                     }
 
 
+                    // CSMS Response OUT
+
+
                     // Networking Node JSON Response IN
                     Assert.That(nnJSONResponseMessagesReceived.     Count,                    Is.EqualTo(1), "The BootNotification JSON request did not leave the networking node!");
 
@@ -158,10 +165,122 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
                     var nnBootNotificationResponse = nnBootNotificationResponsesReceived.First();
                     Assert.That(nnBootNotificationResponse.Request.RequestId,                 Is.EqualTo(nnBootNotificationRequest.RequestId));
 
+                    Assert.That(nnBootNotificationResponse.Signatures.Any(),                  Is.True, "The incoming BootNotification response is not signed!");
+                    var nnBootNotificationResponseSignature = nnBootNotificationResponse.Signatures.First();
+                    Assert.That(nnBootNotificationResponseSignature.Status,                   Is.EqualTo(VerificationStatus.ValidSignature));
+
 
                     // Result
                     Assert.That(response.Result.ResultCode,                                   Is.EqualTo(ResultCode.OK));
                     Assert.That(response.Status,                                              Is.EqualTo(RegistrationStatus.Accepted));
+
+                });
+
+            }
+
+        }
+
+        #endregion
+
+        #region NN_2_CSMS_Get15118EVCertificate_Test()
+
+        /// <summary>
+        /// A test for getting an ISO 15118 ev certificate from the CSMS.
+        /// </summary>
+        [Test]
+        public async Task NN_2_CSMS_Get15118EVCertificate_Test()
+        {
+
+            Assert.Multiple(() => {
+                Assert.That(networkingNode,          Is.Not.Null);
+                Assert.That(nnOCPPWebSocketServer,   Is.Not.Null);
+                Assert.That(CSMS,                    Is.Not.Null);
+                Assert.That(csmsWSServer,            Is.Not.Null);
+            });
+
+            if (networkingNode         is not null &&
+                nnOCPPWebSocketServer  is not null &&
+                CSMS                   is not null &&
+                csmsWSServer           is not null)
+            {
+
+                var nnGet15118EVCertificateRequestsSent       = new ConcurrentList<Get15118EVCertificateRequest>();
+                var nnJSONMessageRequestsSent                 = new ConcurrentList<OCPP_JSONRequestMessage>();
+                var csmsGet15118EVCertificateRequests         = new ConcurrentList<Get15118EVCertificateRequest>();
+                var nnJSONResponseMessagesReceived            = new ConcurrentList<OCPP_JSONResponseMessage>();
+                var nnGet15118EVCertificateResponsesReceived  = new ConcurrentList<Get15118EVCertificateResponse>();
+
+                networkingNode.OCPP.OUT.OnGet15118EVCertificateRequestSent      += (timestamp, sender, get15118EVCertificateRequest) => {
+                    nnGet15118EVCertificateRequestsSent.TryAdd(get15118EVCertificateRequest);
+                    return Task.CompletedTask;
+                };
+
+                networkingNode.OCPP.OUT.OnJSONMessageRequestSent                += (timestamp, sender, jsonRequestMessage) => {
+                    nnJSONMessageRequestsSent.     TryAdd(jsonRequestMessage);
+                    return Task.CompletedTask;
+                };
+
+                CSMS.                   OnGet15118EVCertificateRequestReceived  += (timestamp, sender, connection, get15118EVCertificateRequest) => {
+                    csmsGet15118EVCertificateRequests.  TryAdd(get15118EVCertificateRequest);
+                    return Task.CompletedTask;
+                };
+
+                networkingNode.OCPP.IN. OnJSONMessageResponseReceived           += (timestamp, sender, jsonResponseMessage) => {
+                    nnJSONResponseMessagesReceived.TryAdd(jsonResponseMessage);
+                    return Task.CompletedTask;
+                };
+
+                networkingNode.OCPP.IN. OnGet15118EVCertificateResponseReceived += (timestamp, sender, get15118EVCertificateRequest, get15118EVCertificateResponse, runtime) => {
+                    nnGet15118EVCertificateResponsesReceived.   TryAdd(get15118EVCertificateResponse);
+                    return Task.CompletedTask;
+                };
+
+
+                var reason    = BootReason.PowerUp;
+                var response  = await networkingNode.Get15118EVCertificate(
+                                          ISO15118SchemaVersion:  ISO15118SchemaVersion.Parse("xxx"),
+                                          CertificateAction:      CertificateAction.Install,
+                                          EXIRequest:             EXIData.Parse("xxx")
+                                      );
+
+
+                Assert.Multiple(() => {
+
+                    // Networking Node Request OUT
+                    Assert.That(nnGet15118EVCertificateRequestsSent.     Count,                    Is.EqualTo(1), "The Get15118EVCertificate request did not leave the networking node!");
+                    var nnGet15118EVCertificateRequest = nnGet15118EVCertificateRequestsSent.First();
+                    Assert.That(nnGet15118EVCertificateRequest.DestinationNodeId,                  Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(nnGet15118EVCertificateRequest.NetworkPath.Length,                 Is.EqualTo(1));
+                    Assert.That(nnGet15118EVCertificateRequest.NetworkPath.Source,                 Is.EqualTo(networkingNode.Id));
+                    Assert.That(nnGet15118EVCertificateRequest.NetworkPath.Last,                   Is.EqualTo(networkingNode.Id));
+
+
+                    // Networking Node JSON Request OUT
+                    Assert.That(nnJSONMessageRequestsSent.               Count,                    Is.EqualTo(1), "The Get15118EVCertificate JSON request did not leave the networking node!");
+
+
+                    // CSMS Request IN
+                    Assert.That(csmsGet15118EVCertificateRequests.       Count,                    Is.EqualTo(1), "The Get15118EVCertificate request did not reach the CSMS!");
+                    var csmsGet15118EVCertificateRequest = csmsGet15118EVCertificateRequests.First();
+                    Assert.That(csmsGet15118EVCertificateRequest.DestinationNodeId,                Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(csmsGet15118EVCertificateRequest.NetworkPath.Length,               Is.EqualTo(1));
+                    Assert.That(csmsGet15118EVCertificateRequest.NetworkPath.Source,               Is.EqualTo(networkingNode.Id));
+                    Assert.That(csmsGet15118EVCertificateRequest.NetworkPath.Last,                 Is.EqualTo(networkingNode.Id));
+
+
+                    // Networking Node JSON Response IN
+                    Assert.That(nnJSONResponseMessagesReceived.          Count,                    Is.EqualTo(1), "The Get15118EVCertificate JSON request did not leave the networking node!");
+
+
+                    // Networking Node Response IN
+                    Assert.That(nnGet15118EVCertificateResponsesReceived.Count,                    Is.EqualTo(1), "The Get15118EVCertificate response did not reach the networking node!");
+                    var nnGet15118EVCertificateResponse = nnGet15118EVCertificateResponsesReceived.First();
+                    Assert.That(nnGet15118EVCertificateResponse.Request.RequestId,                 Is.EqualTo(nnGet15118EVCertificateRequest.RequestId));
+
+
+                    // Result
+                    Assert.That(response.Result.ResultCode,                                        Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                                                   Is.EqualTo(ISO15118EVCertificateStatus.Accepted));
 
                 });
 

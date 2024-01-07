@@ -17,9 +17,10 @@
 
 #region Usings
 
+using Newtonsoft.Json.Linq;
+
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
-using org.GraphDefined.Vanaheimr.Hermod.HTTP;
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.WebSockets;
@@ -41,8 +42,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public CustomJObjectSerializerDelegate<BootNotificationRequest>?  CustomBootNotificationRequestSerializer    { get; set; }
 
-        public CustomJObjectParserDelegate<BootNotificationResponse>?     CustomBootNotificationResponseParser       { get; set; }
-
         #endregion
 
         #region Events
@@ -50,17 +49,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a boot notification request will be sent to the CSMS.
         /// </summary>
-        public event OnBootNotificationRequestSentDelegate?    OnBootNotificationRequestSent;
-
-        /// <summary>
-        /// An event fired whenever a boot notification request will be sent to the CSMS.
-        /// </summary>
-        public event ClientRequestLogHandler?                  OnBootNotificationWSRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a boot notification request was received.
-        /// </summary>
-        public event ClientResponseLogHandler?                 OnBootNotificationWSResponse;
+        public event OnBootNotificationRequestSentDelegate?  OnBootNotificationRequestSent;
 
         #endregion
 
@@ -77,21 +66,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         {
 
-            #region Send OnBootNotificationRequest event
+            #region Send OnBootNotificationRequestSent event
 
-            var startTime = Timestamp.Now;
-
-            try
+            var logger = OnBootNotificationRequestSent;
+            if (logger is not null)
             {
+                try
+                {
 
-                OnBootNotificationRequestSent?.Invoke(startTime,
-                                                  parentNetworkingNode,
-                                                  Request);
+                    await Task.WhenAll(logger.GetInvocationList().
+                                            OfType<OnBootNotificationRequestSentDelegate>().
+                                            Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                          Timestamp.Now,
+                                                                          parentNetworkingNode,
+                                                                          Request
+                                                                      )).
+                                            ToArray());
 
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnBootNotificationRequestSent));
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnBootNotificationRequestSent));
+                }
             }
 
             #endregion
@@ -102,40 +98,60 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                var sendRequestState = await SendJSONRequestAndWait(
-                                                 OCPP_JSONRequestMessage.FromRequest(
-                                                     Request,
-                                                     Request.ToJSON(
-                                                         CustomBootNotificationRequestSerializer,
-                                                         parentNetworkingNode.OCPP.CustomChargingStationSerializer,
-                                                         parentNetworkingNode.OCPP.CustomSignatureSerializer,
-                                                         parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                                                     )
-                                                 )
-                                             );
-
-                if (sendRequestState.NoErrors &&
-                    sendRequestState.JSONResponse is not null)
+                if (!parentNetworkingNode.OCPP.SignaturePolicy.SignRequestMessage(
+                        Request,
+                        Request.ToJSON(
+                            CustomBootNotificationRequestSerializer,
+                            parentNetworkingNode.OCPP.CustomChargingStationSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out var signingErrors
+                    ))
                 {
-
-                    if (!BootNotificationResponse.TryParse(Request,
-                                                           sendRequestState.JSONResponse.Payload,
-                                                           out response,
-                                                           out var errorResponse,
-                                                           CustomBootNotificationResponseParser))
-                    {
-                        response = new BootNotificationResponse(
-                                       Request,
-                                       Result.Format(errorResponse)
-                                   );
-                    }
-
+                    response = new BootNotificationResponse(
+                                   Request,
+                                   Result.SignatureError(signingErrors)
+                               );
                 }
 
-                response ??= new BootNotificationResponse(
-                                 Request,
-                                 Result.FromSendRequestState(sendRequestState)
-                             );
+                else
+                {
+
+                    var sendRequestState = await SendJSONRequestAndWait(
+                                                     OCPP_JSONRequestMessage.FromRequest(
+                                                         Request,
+                                                         Request.ToJSON(
+                                                             CustomBootNotificationRequestSerializer,
+                                                             parentNetworkingNode.OCPP.CustomChargingStationSerializer,
+                                                             parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                                             parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                                                         )
+                                                     )
+                                                 );
+
+                    if (sendRequestState.IsValidJSONResponse(Request, out var jsonResponse))
+                    {
+
+                        response = await (parentNetworkingNode.OCPP.IN as OCPPWebSocketAdapterIN).Receive_BootNotificationResponse(
+                                                                                Request,
+                                                                                jsonResponse,
+                                                                                null,
+                                                                                sendRequestState.DestinationNodeId,
+                                                                                sendRequestState.NetworkPath,
+                                                                                Request.EventTrackingId,
+                                                                                Request.RequestId,
+                                                                                Request.CancellationToken
+                                                                            );
+
+                    }
+
+                    response ??= new BootNotificationResponse(
+                                     Request,
+                                     Result.FromSendRequestState(sendRequestState)
+                                 );
+
+                }
 
             }
             catch (Exception e)
@@ -147,28 +163,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                            );
 
             }
-
-
-            #region Send OnBootNotificationResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                await parentNetworkingNode.OCPP.IN.RaiseOnBootNotificationResponseReceived(endTime,
-                                                                                           parentNetworkingNode,
-                                                                                           Request,
-                                                                                           response,
-                                                                                           endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(parentNetworkingNode.OCPP.IN.OnBootNotificationResponseReceived));
-            }
-
-            #endregion
 
             return response;
 
@@ -182,47 +176,117 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
     {
 
+        #region Custom JSON parser delegates
+
+        public CustomJObjectParserDelegate<BootNotificationResponse>?  CustomBootNotificationResponseParser    { get; set; }
+
+        #endregion
+
+        #region Events
+
         /// <summary>
-        /// An event fired whenever a response to a boot notification request was received.
+        /// An event fired whenever a BootNotification response was received.
         /// </summary>
         public event OnBootNotificationResponseReceivedDelegate? OnBootNotificationResponseReceived;
 
-        public async Task RaiseOnBootNotificationResponseReceived(DateTime                   Timestamp,
-                                                                  IEventSender               Sender,
-                                                                  BootNotificationRequest    Request,
-                                                                  BootNotificationResponse   Response,
-                                                                  TimeSpan                   Runtime)
+        #endregion
+
+
+        #region Receive BootNotification response (wired via reflection!)
+
+        public async Task<BootNotificationResponse>
+
+            Receive_BootNotificationResponse(BootNotificationRequest  Request,
+                                             JObject                  ResponseJSON,
+                                             IWebSocketConnection     WebSocketConnection,
+                                             NetworkingNode_Id        DestinationNodeId,
+                                             NetworkPath              NetworkPath,
+                                             EventTracking_Id         EventTrackingId,
+                                             Request_Id               RequestId,
+                                             CancellationToken        CancellationToken   = default)
+
         {
 
-            var requestLogger = OnBootNotificationResponseReceived;
-            if (requestLogger is not null)
+            var response = BootNotificationResponse.Failed(Request);
+
+            try
             {
 
-                try
-                {
-                    await Task.WhenAll(
-                              requestLogger.GetInvocationList().
-                                            OfType <OnBootNotificationResponseReceivedDelegate>().
-                                            Select (loggingDelegate => loggingDelegate.Invoke(Timestamp,
-                                                                                              Sender,
-                                                                                              Request,
-                                                                                              Response,
-                                                                                              Runtime)).
-                                            ToArray()
-                          );
+                if (BootNotificationResponse.TryParse(Request,
+                                                      ResponseJSON,
+                                                      DestinationNodeId,
+                                                      NetworkPath,
+                                                      out response,
+                                                      out var errorResponse,
+                                                      CustomBootNotificationResponseParser,
+                                                      parentNetworkingNode.OCPP.CustomStatusInfoParser,
+                                                      parentNetworkingNode.OCPP.CustomSignatureParser,
+                                                      parentNetworkingNode.OCPP.CustomCustomDataParser)) {
+
+                    parentNetworkingNode.OCPP.SignaturePolicy.VerifyResponseMessage(
+                        response,
+                        response.ToJSON(
+                            CustomBootNotificationResponseSerializer,
+                            parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out errorResponse
+                    );
+
+                    #region Send OnBootNotificationResponseReceived event
+
+                    var logger = OnBootNotificationResponseReceived;
+                    if (logger is not null)
+                    {
+                        try
+                        {
+
+                            await Task.WhenAll(logger.GetInvocationList().
+                                                    OfType <OnBootNotificationResponseReceivedDelegate>().
+                                                    Select (loggingDelegate => loggingDelegate.Invoke(
+                                                                                    Timestamp.Now,
+                                                                                    parentNetworkingNode,
+                                                                                    //    WebSocketConnection,
+                                                                                    Request,
+                                                                                    response,
+                                                                                    response.Runtime
+                                                                                )).
+                                                    ToArray());
+
+                        }
+                        catch (Exception e)
+                        {
+                            DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnBootNotificationResponseReceived));
+                        }
+                    }
+
+                    #endregion
+
                 }
-                catch (Exception e)
-                {
-                    await parentNetworkingNode.HandleErrors(
-                              nameof(OCPPWebSocketAdapterIN),
-                              nameof(OnBootNotificationResponseReceived),
-                              e
-                          );
-                }
+
+                else
+                    response = new BootNotificationResponse(
+                                   Request,
+                                   Result.Format(errorResponse)
+                               );
+
+            }
+            catch (Exception e)
+            {
+
+                response = new BootNotificationResponse(
+                                   Request,
+                                   Result.FromException(e)
+                               );
 
             }
 
+            return response;
+
         }
+
+        #endregion
 
 
     }

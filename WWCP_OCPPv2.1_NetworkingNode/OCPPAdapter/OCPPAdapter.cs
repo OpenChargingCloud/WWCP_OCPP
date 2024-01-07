@@ -510,6 +510,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public CustomJObjectParserDelegate<OCPPv2_1.CSMS.BootNotificationResponse>?   CustomBootNotificationResponseParser          { get; set; }
 
+        public CustomJObjectParserDelegate<ChargingStation>?                          CustomChargingStationParser                   { get; set; }
+        public CustomJObjectParserDelegate<OCPP.Signature>?                           CustomSignatureParser                         { get; set; }
+        public CustomJObjectParserDelegate<CustomData>?                               CustomCustomDataParser                        { get; set; }
+        public CustomJObjectParserDelegate<StatusInfo>?                               CustomStatusInfoParser                        { get; set; }
+
         #endregion
 
         #region Constructor(s)
@@ -651,7 +656,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             // Just in case...
             return SendRequestState.FromJSONRequest(
                        RequestTimestamp:   JSONRequestMessage.RequestTimestamp,
-                       NetworkingNodeId:   JSONRequestMessage.DestinationNodeId,
+                       DestinationNodeId:   JSONRequestMessage.DestinationNodeId,
                        Timeout:            JSONRequestMessage.RequestTimeout,
                        JSONRequest:        JSONRequestMessage,
                        ResponseTimestamp:  Timestamp.Now,
@@ -839,9 +844,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
-        #region ReceiveResponseMessage   (JSONResponseMessage)
+        #region ReceiveJSONResponseMessage   (JSONResponseMessage)
 
-        public Boolean ReceiveResponseMessage(OCPP_JSONResponseMessage JSONResponseMessage)
+        public Boolean ReceiveJSONResponseMessage(OCPP_JSONResponseMessage JSONResponseMessage)
         {
 
             if (requests.TryGetValue(JSONResponseMessage.RequestId, out var sendRequestState) &&
@@ -862,9 +867,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region ReceiveResponseMessage   (BinaryResponseMessage)
+        #region ReceiveBinaryResponseMessage (BinaryResponseMessage)
 
-        public Boolean ReceiveResponseMessage(OCPP_BinaryResponseMessage BinaryResponseMessage)
+        public Boolean ReceiveBinaryResponseMessage(OCPP_BinaryResponseMessage BinaryResponseMessage)
         {
 
             if (requests.TryGetValue(BinaryResponseMessage.RequestId, out var sendRequestState) &&
@@ -873,41 +878,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 sendRequestState.ResponseTimestamp  = Timestamp.Now;
                 sendRequestState.BinaryResponse     = BinaryResponseMessage;
-
-                #region OnBinaryMessageResponseReceived
-
-                //var onBinaryMessageResponseReceived = OnBinaryMessageResponseReceived;
-                //if (onBinaryMessageResponseReceived is not null)
-                //{
-                //    try
-                //    {
-
-                //        await Task.WhenAll(onBinaryMessageResponseReceived.GetInvocationList().
-                //                               OfType <OnWebSocketBinaryMessageResponseDelegate>().
-                //                               Select (loggingDelegate => loggingDelegate.Invoke(
-                //                                                              Timestamp.Now,
-                //                                                              this,
-                //                                                              Connection,
-                //                                                              jsonResponse.DestinationNodeId,
-                //                                                              jsonResponse.NetworkPath,
-                //                                                              EventTrackingId,
-                //                                                              sendRequestState.RequestTimestamp,
-                //                                                              sendRequestState.BinaryRequest?.  ToBinary()      ?? [],
-                //                                                              sendRequestState.BinaryRequest?.ToByteArray() ?? [],
-                //                                                              Timestamp.Now,
-                //                                                              sendRequestState.BinaryResponse.  ToBinary(),
-                //                                                              CancellationToken
-                //                                                          )).
-                //                               ToArray());
-
-                //    }
-                //    catch (Exception e)
-                //    {
-                //        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnBinaryMessageResponseReceived));
-                //    }
-                //}
-
-                #endregion
 
                 return true;
 
@@ -921,7 +891,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
-        #region ReceiveErrorMessage      (JSONErrorMessage)
+        #region ReceiveErrorMessage          (JSONErrorMessage)
 
         public Boolean ReceiveErrorMessage(OCPP_JSONErrorMessage JSONErrorMessage)
         {

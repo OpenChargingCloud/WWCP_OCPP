@@ -276,6 +276,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
 
+
+
+
+
+
+
+
+
+
+
         public IEnumerable<OCPPWebSocketClient> OCPPWebSocketClients
             => OCPPWebSocketClients;
 
@@ -995,6 +1005,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+        #region HandleErrors(Module, Caller, ErrorResponse)
+
+        public Task HandleErrors(String  Module,
+                                 String  Caller,
+                                 String  ErrorResponse)
+        {
+
+            DebugX.Log($"{Module}.{Caller}: {ErrorResponse}");
+
+            return Task.CompletedTask;
+
+        }
+
+        #endregion
 
 
 

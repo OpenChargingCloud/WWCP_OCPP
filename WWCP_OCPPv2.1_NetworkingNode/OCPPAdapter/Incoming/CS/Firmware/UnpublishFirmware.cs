@@ -130,7 +130,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                       NetworkPath,
                                                       out var request,
                                                       out var errorResponse,
-                                                      CustomUnpublishFirmwareRequestParser) && request is not null) {
+                                                      CustomUnpublishFirmwareRequestParser)) {
 
                     #region Send OnUnpublishFirmwareRequest event
 

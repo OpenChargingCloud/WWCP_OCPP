@@ -465,6 +465,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         CustomJObjectParserDelegate<OCPPv2_1.CSMS.BootNotificationResponse>?   CustomBootNotificationResponseParser          { get; set; }
 
+        CustomJObjectParserDelegate<ChargingStation>?                          CustomChargingStationParser                   { get; set; }
+        CustomJObjectParserDelegate<OCPP.Signature>?                           CustomSignatureParser                         { get; set; }
+        CustomJObjectParserDelegate<CustomData>?                               CustomCustomDataParser                        { get; set; }
+        CustomJObjectParserDelegate<StatusInfo>?                               CustomStatusInfoParser                        { get; set; }
+
         #endregion
 
 
@@ -478,9 +483,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         Task<SendRequestState>      SendBinaryRequestAndWait(OCPP_BinaryRequestMessage   BinaryRequestMessage);
         Task<SendOCPPMessageResult> SendBinaryResponse      (OCPP_BinaryResponseMessage  BinaryResponseMessage);
 
-        Boolean ReceiveResponseMessage(OCPP_JSONResponseMessage    JSONResponseMessage);
-        Boolean ReceiveResponseMessage(OCPP_BinaryResponseMessage  BinaryResponseMessage);
-        Boolean ReceiveErrorMessage   (OCPP_JSONErrorMessage       JSONErrorMessage);
+        Boolean ReceiveJSONResponseMessage  (OCPP_JSONResponseMessage    JSONResponseMessage);
+        Boolean ReceiveBinaryResponseMessage(OCPP_BinaryResponseMessage  BinaryResponseMessage);
+        Boolean ReceiveErrorMessage         (OCPP_JSONErrorMessage       JSONErrorMessage);
 
 
 

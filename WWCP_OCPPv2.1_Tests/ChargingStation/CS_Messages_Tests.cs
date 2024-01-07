@@ -879,7 +879,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var notifyReportRequests= new ConcurrentList<CS.Get15118EVCertificateRequest>();
 
-                testCSMS01.OnGet15118EVCertificateRequest += (timestamp, sender, connection, notifyReportRequest) => {
+                testCSMS01.OnGet15118EVCertificateRequestReceived += (timestamp, sender, connection, notifyReportRequest) => {
                     notifyReportRequests.TryAdd(notifyReportRequest);
                     return Task.CompletedTask;
                 };

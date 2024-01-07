@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -158,8 +160,8 @@ namespace cloud.charging.open.protocols.OCPP
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomStatusInfoParser">A delegate to parse custom status information.</param>
         public static Boolean TryParse(JObject                                   JSON,
-                                       out StatusInfo?                           StatusInfo,
-                                       out String?                               ErrorResponse,
+                                       [NotNullWhen(true)]  out StatusInfo?      StatusInfo,
+                                       [NotNullWhen(false)] out String?          ErrorResponse,
                                        CustomJObjectParserDelegate<StatusInfo>?  CustomStatusInfoParser)
         {
 
@@ -210,9 +212,11 @@ namespace cloud.charging.open.protocols.OCPP
                 #endregion
 
 
-                StatusInfo = new StatusInfo(ReasonCode.     Trim(),
-                                            AdditionalInfo?.Trim(),
-                                            CustomData);
+                StatusInfo = new StatusInfo(
+                                 ReasonCode.     Trim(),
+                                 AdditionalInfo?.Trim(),
+                                 CustomData
+                             );
 
                 if (CustomStatusInfoParser is not null)
                     StatusInfo = CustomStatusInfoParser(JSON,

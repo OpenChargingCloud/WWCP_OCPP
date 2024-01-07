@@ -129,7 +129,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                       NetworkPath,
                                                       out var request,
                                                       out var errorResponse,
-                                                      CustomCancelReservationRequestParser) && request is not null) {
+                                                      CustomCancelReservationRequestParser)) {
 
                     #region Send OnCancelReservationRequest event
 
