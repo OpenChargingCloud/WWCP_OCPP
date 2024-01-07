@@ -135,6 +135,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                               sendRequestState.NetworkPath,
                                                               out response,
                                                               out var errorResponse,
+                                                              sendRequestState.ResponseTimestamp,
                                                               CustomBootNotificationResponseParser))
                         {
                             response = new BootNotificationResponse(

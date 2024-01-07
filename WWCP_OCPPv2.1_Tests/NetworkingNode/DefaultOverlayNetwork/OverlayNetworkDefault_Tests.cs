@@ -725,13 +725,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
 
         // Networking Node -> Charging Station
 
-        #region NN_SendReset_toChargingStation_Test()
+        #region NN_2_CS_SendReset_Test()
 
         /// <summary>
         /// A test for resetting a charging station.
         /// </summary>
         [Test]
-        public async Task NN_SendReset_toChargingStation_Test()
+        public async Task NN_2_CS_SendReset_Test()
         {
 
             Assert.Multiple(() => {
@@ -795,8 +795,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
                     Assert.That(nnResetRequest.NetworkPath.Last,        Is.EqualTo(networkingNode.Id));
                     Assert.That(nnResetRequest.ResetType,               Is.EqualTo(resetType));
 
+                    Assert.That(nnResetRequest.Signatures.Any(),        Is.True, "The outgoing Reset request is not signed!");
+
+
                     // Networking Node JSON Request OUT
                     Assert.That(nnJSONMessageRequestsSent.     Count,   Is.EqualTo(1), "The Reset JSON request did not leave the networking node!");
+
 
                     // Charging Station Request IN
                     Assert.That(csResetRequests.               Count,   Is.EqualTo(1), "The Reset request did not reach the charging station!");
@@ -807,13 +811,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
                     //Assert.That(csResetRequest.NetworkPath.Last,        Is.EqualTo(networkingNode.Id));    // Because of "standard" networking mode!
                     Assert.That(csResetRequest.ResetType,               Is.EqualTo(resetType));
 
+
                     // Networking Node JSON Response IN
                     Assert.That(nnJSONResponseMessagesReceived.Count,   Is.EqualTo(1), "The Reset JSON request did not leave the networking node!");
+
 
                     // Networking Node Response IN
                     Assert.That(nnResetResponsesReceived.      Count,   Is.EqualTo(1), "The Reset response did not reach the networking node!");
                     var nnResetResponse = nnResetResponsesReceived.First();
                     Assert.That(nnResetResponse.Request.RequestId,      Is.EqualTo(nnResetRequest.RequestId));
+
+                    Assert.That(nnResetResponse.Signatures.Any(),       Is.True, "The incoming Reset response is not signed!");
+                    var nnResetResponseSignature = nnResetResponse.Signatures.First();
+                    Assert.That(nnResetResponseSignature.Status,        Is.EqualTo(VerificationStatus.ValidSignature));
 
 
                     // Result
@@ -832,13 +842,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
 
         // Charging Station --Networking Node-> CSMS
 
-        #region CS_SendBootNotifications_toCSMS_Test()
+        #region CS_2_CSMS_SendBootNotifications_Test()
 
         /// <summary>
         /// A test for sending boot notifications to the CSMS.
         /// </summary>
         [Test]
-        public async Task CS_SendBootNotifications_toCSMS_Test()
+        public async Task CS_2_CSMS_SendBootNotifications_Test()
         {
 
             Assert.Multiple(() => {
@@ -993,26 +1003,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
 
         // CSMS --Networking Node-> Charging Station
 
-        #region CSMS_SendReset_toChargingStation_Test()
+        #region CSMS_2_CS_SendReset_Test()
 
         /// <summary>
         /// A test for resetting a charging station.
         /// </summary>
         [Test]
-        public async Task CSMS_SendReset_toChargingStation_Test()
+        public async Task CSMS_2_CS_SendReset_Test()
         {
 
             Assert.Multiple(() => {
                 Assert.That(chargingStation,         Is.Not.Null);
                 Assert.That(networkingNode,          Is.Not.Null);
                 Assert.That(nnOCPPWebSocketServer,   Is.Not.Null);
-                Assert.That(chargingStation,         Is.Not.Null);
+                Assert.That(CSMS,                    Is.Not.Null);
             });
 
             if (chargingStation        is not null &&
                 networkingNode         is not null &&
                 nnOCPPWebSocketServer  is not null &&
-                chargingStation        is not null)
+                CSMS                   is not null)
             {
 
                 var nnResetRequestsSent             = new ConcurrentList<ResetRequest>();
@@ -1048,7 +1058,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
 
 
                 var resetType  = ResetType.Immediate;
-                var response   = await networkingNode.Reset(
+                var response   = await CSMS.Reset(
                                            DestinationNodeId:  chargingStation.Id,
                                            ResetType:          resetType
                                        );

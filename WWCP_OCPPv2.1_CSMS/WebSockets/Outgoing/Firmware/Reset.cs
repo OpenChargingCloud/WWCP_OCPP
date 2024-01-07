@@ -107,8 +107,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                     if (!ResetResponse.TryParse(Request,
                                                 sendRequestState.JSONResponse.Payload,
+                                                sendRequestState.DestinationNodeId,
+                                                sendRequestState.NetworkPath,
                                                 out response,
                                                 out var errorResponse,
+                                                sendRequestState.ResponseTimestamp,
                                                 CustomResetResponseParser))
                     {
                         response = new ResetResponse(

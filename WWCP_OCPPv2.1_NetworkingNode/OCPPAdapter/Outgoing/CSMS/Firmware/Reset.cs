@@ -17,8 +17,10 @@
 
 #region Usings
 
+using Newtonsoft.Json.Linq;
+
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.WebSockets;
@@ -31,7 +33,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
     /// <summary>
-    /// The CSMS HTTP/WebSocket/JSON server.
+    /// A charging station HTTP Web Socket client.
     /// </summary>
     public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
     {
@@ -40,39 +42,52 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public CustomJObjectSerializerDelegate<ResetRequest>?  CustomResetRequestSerializer    { get; set; }
 
-        public CustomJObjectParserDelegate<ResetResponse>?     CustomResetResponseParser       { get; set; }
-
         #endregion
 
         #region Events
 
         /// <summary>
-        /// An event sent whenever a Reset request was sent.
+        /// An event fired whenever a Reset request will be sent to the CSMS.
         /// </summary>
-        public event OnResetRequestSentDelegate?    OnResetRequestSent;
+        public event OnResetRequestSentDelegate?  OnResetRequestSent;
 
         #endregion
 
 
         #region Reset(Request)
 
-        public async Task<ResetResponse> Reset(ResetRequest Request)
+        /// <summary>
+        /// Send a Reset request.
+        /// </summary>
+        /// <param name="Request">A Reset request.</param>
+        public async Task<ResetResponse>
+
+            Reset(ResetRequest Request)
+
         {
 
-            #region Send OnResetRequest event
+            #region Send OnResetRequestSent event
 
-            var startTime = Timestamp.Now;
-
-            try
+            var logger = OnResetRequestSent;
+            if (logger is not null)
             {
+                try
+                {
 
-                OnResetRequestSent?.Invoke(startTime,
-                                       parentNetworkingNode,
-                                       Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnResetRequestSent));
+                    await Task.WhenAll(logger.GetInvocationList().
+                                            OfType<OnResetRequestSentDelegate>().
+                                            Select(loggingDelegate => loggingDelegate.Invoke(
+                                                                          Timestamp.Now,
+                                                                          parentNetworkingNode,
+                                                                          Request
+                                                                      )).
+                                            ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnResetRequestSent));
+                }
             }
 
             #endregion
@@ -83,39 +98,59 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                var sendRequestState = await SendJSONRequestAndWait(
-                                                 OCPP_JSONRequestMessage.FromRequest(
-                                                     Request,
-                                                     Request.ToJSON(
-                                                         CustomResetRequestSerializer,
-                                                         parentNetworkingNode.OCPP.CustomSignatureSerializer,
-                                                         parentNetworkingNode.OCPP.CustomCustomDataSerializer
-                                                     )
-                                                 )
-                                             );
-
-                if (sendRequestState.NoErrors &&
-                    sendRequestState.JSONResponse is not null)
+                if (!parentNetworkingNode.OCPP.SignaturePolicy.SignRequestMessage(
+                        Request,
+                        Request.ToJSON(
+                            CustomResetRequestSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out var signingErrors
+                    ))
                 {
-
-                    if (!ResetResponse.TryParse(Request,
-                                                sendRequestState.JSONResponse.Payload,
-                                                out response,
-                                                out var errorResponse,
-                                                CustomResetResponseParser))
-                    {
-                        response = new ResetResponse(
-                                       Request,
-                                       Result.Format(errorResponse)
-                                   );
-                    }
-
+                    response = new ResetResponse(
+                                   Request,
+                                   Result.SignatureError(signingErrors)
+                               );
                 }
 
-                response ??= new ResetResponse(
-                                 Request,
-                                 Result.FromSendRequestState(sendRequestState)
-                             );
+                else
+                {
+
+                    var sendRequestState = await SendJSONRequestAndWait(
+                                                     OCPP_JSONRequestMessage.FromRequest(
+                                                         Request,
+                                                         Request.ToJSON(
+                                                             CustomResetRequestSerializer,
+                                                             parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                                             parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                                                         )
+                                                     )
+                                                 );
+
+                    if (sendRequestState.IsValidJSONResponse(Request, out var jsonResponse))
+                    {
+
+                        response = await (parentNetworkingNode.OCPP.IN as OCPPWebSocketAdapterIN).Receive_ResetResponse(
+                                                                                Request,
+                                                                                jsonResponse,
+                                                                                null,
+                                                                                sendRequestState.DestinationNodeId,
+                                                                                sendRequestState.NetworkPath,
+                                                                                Request.         EventTrackingId,
+                                                                                Request.         RequestId,
+                                                                                sendRequestState.ResponseTimestamp,
+                                                                                Request.         CancellationToken
+                                                                            );
+
+                    }
+
+                    response ??= new ResetResponse(
+                                     Request,
+                                     Result.FromSendRequestState(sendRequestState)
+                                 );
+
+                }
 
             }
             catch (Exception e)
@@ -127,28 +162,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                            );
 
             }
-
-
-            #region Send OnResetResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                await parentNetworkingNode.OCPP.IN.RaiseOnResetResponseReceived(endTime,
-                                                                                parentNetworkingNode,
-                                                                                Request,
-                                                                                response,
-                                                                                endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(parentNetworkingNode.OCPP.IN.OnResetResponseReceived));
-            }
-
-            #endregion
 
             return response;
 
@@ -162,47 +175,120 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
     {
 
+        #region Custom JSON parser delegates
+
+        public CustomJObjectParserDelegate<ResetResponse>?  CustomResetResponseParser    { get; set; }
+
+        #endregion
+
+        #region Events
+
         /// <summary>
-        /// An event sent whenever a response to a Reset request was sent.
+        /// An event fired whenever a Reset response was received.
         /// </summary>
         public event OnResetResponseReceivedDelegate? OnResetResponseReceived;
 
-        public async Task RaiseOnResetResponseReceived(DateTime        Timestamp,
-                                                       IEventSender    Sender,
-                                                       ResetRequest    Request,
-                                                       ResetResponse   Response,
-                                                       TimeSpan        Runtime)
+        #endregion
+
+
+        #region Receive Reset response (wired via reflection!)
+
+        public async Task<ResetResponse>
+
+            Receive_ResetResponse(ResetRequest          Request,
+                                  JObject               ResponseJSON,
+                                  IWebSocketConnection  WebSocketConnection,
+                                  NetworkingNode_Id     DestinationNodeId,
+                                  NetworkPath           NetworkPath,
+                                  EventTracking_Id      EventTrackingId,
+                                  Request_Id            RequestId,
+                                  DateTime?             ResponseTimestamp   = null,
+                                  CancellationToken     CancellationToken   = default)
+
         {
 
-            var requestLogger = OnResetResponseReceived;
-            if (requestLogger is not null)
+            var response = ResetResponse.Failed(Request);
+
+            try
             {
 
-                try
-                {
-                    await Task.WhenAll(
-                              requestLogger.GetInvocationList().
-                                            OfType <OnResetResponseReceivedDelegate>().
-                                            Select (loggingDelegate => loggingDelegate.Invoke(Timestamp,
-                                                                                              Sender,
-                                                                                              Request,
-                                                                                              Response,
-                                                                                              Runtime)).
-                                            ToArray()
-                          );
+                if (ResetResponse.TryParse(Request,
+                                           ResponseJSON,
+                                           DestinationNodeId,
+                                           NetworkPath,
+                                           out response,
+                                           out var errorResponse,
+                                           ResponseTimestamp,
+                                           CustomResetResponseParser,
+                                           parentNetworkingNode.OCPP.CustomStatusInfoParser,
+                                           parentNetworkingNode.OCPP.CustomSignatureParser,
+                                           parentNetworkingNode.OCPP.CustomCustomDataParser)) {
+
+                    parentNetworkingNode.OCPP.SignaturePolicy.VerifyResponseMessage(
+                        response,
+                        response.ToJSON(
+                            CustomResetResponseSerializer,
+                            parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
+                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
+                        ),
+                        out errorResponse
+                    );
+
+                    #region Send OnResetResponseReceived event
+
+                    var logger = OnResetResponseReceived;
+                    if (logger is not null)
+                    {
+                        try
+                        {
+
+                            await Task.WhenAll(logger.GetInvocationList().
+                                                    OfType <OnResetResponseReceivedDelegate>().
+                                                    Select (loggingDelegate => loggingDelegate.Invoke(
+                                                                                    Timestamp.Now,
+                                                                                    parentNetworkingNode,
+                                                                                    //    WebSocketConnection,
+                                                                                    Request,
+                                                                                    response,
+                                                                                    response.Runtime
+                                                                                )).
+                                                    ToArray());
+
+                        }
+                        catch (Exception e)
+                        {
+                            DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnResetResponseReceived));
+                        }
+                    }
+
+                    #endregion
+
                 }
-                catch (Exception e)
-                {
-                    await parentNetworkingNode.HandleErrors(
-                              nameof(OCPPWebSocketAdapterIN),
-                              nameof(OnResetResponseReceived),
-                              e
-                          );
-                }
+
+                else
+                    response = new ResetResponse(
+                                   Request,
+                                   Result.Format(errorResponse)
+                               );
+
+            }
+            catch (Exception e)
+            {
+
+                response = new ResetResponse(
+                                   Request,
+                                   Result.FromException(e)
+                               );
 
             }
 
+            return response;
+
         }
+
+        #endregion
+
 
     }
 

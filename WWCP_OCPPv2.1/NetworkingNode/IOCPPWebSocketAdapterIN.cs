@@ -143,17 +143,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
 
-        // To CSMS
-
-
-        // To Charging Station
-        Task RaiseOnResetResponseReceived           (DateTime                                 Timestamp,
-                                                     IEventSender                             Sender,
-                                                     OCPPv2_1.CSMS.ResetRequest               Request,
-                                                     OCPPv2_1.CS.  ResetResponse              Response,
-                                                     TimeSpan                                 Runtime);
-
-
 
         Task<WebSocketTextMessageResponse>   ProcessJSONMessage  (DateTime              RequestTimestamp,
                                                                   IWebSocketConnection  WebSocketConnection,

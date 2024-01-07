@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region BootNotification(Request)
 
         /// <summary>
-        /// Send a boot notification.
+        /// Send a BootNotification request.
         /// </summary>
         /// <param name="Request">A BootNotification request.</param>
         public async Task<BootNotificationResponse>
@@ -139,9 +139,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                                 null,
                                                                                 sendRequestState.DestinationNodeId,
                                                                                 sendRequestState.NetworkPath,
-                                                                                Request.EventTrackingId,
-                                                                                Request.RequestId,
-                                                                                Request.CancellationToken
+                                                                                Request.         EventTrackingId,
+                                                                                Request.         RequestId,
+                                                                                sendRequestState.ResponseTimestamp,
+                                                                                Request.         CancellationToken
                                                                             );
 
                     }
@@ -203,6 +204,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                              NetworkPath              NetworkPath,
                                              EventTracking_Id         EventTrackingId,
                                              Request_Id               RequestId,
+                                             DateTime?                ResponseTimestamp   = null,
                                              CancellationToken        CancellationToken   = default)
 
         {
@@ -218,6 +220,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                       NetworkPath,
                                                       out response,
                                                       out var errorResponse,
+                                                      ResponseTimestamp,
                                                       CustomBootNotificationResponseParser,
                                                       parentNetworkingNode.OCPP.CustomStatusInfoParser,
                                                       parentNetworkingNode.OCPP.CustomSignatureParser,

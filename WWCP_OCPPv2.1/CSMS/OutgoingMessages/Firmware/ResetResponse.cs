@@ -91,6 +91,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                              StatusInfo?                   StatusInfo          = null,
                              DateTime?                     ResponseTimestamp   = null,
 
+                             NetworkingNode_Id?            DestinationNodeId   = null,
+                             NetworkPath?                  NetworkPath         = null,
+
                              IEnumerable<KeyPair>?         SignKeys            = null,
                              IEnumerable<SignInfo>?        SignInfos           = null,
                              IEnumerable<OCPP.Signature>?  Signatures          = null,
@@ -101,8 +104,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    Result.OK(),
                    ResponseTimestamp,
 
-                   null,
-                   null,
+                   DestinationNodeId,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
@@ -224,16 +227,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Request">The reset request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomResetResponseParser">A delegate to parse custom reset responses.</param>
-        public static ResetResponse Parse(CSMS.ResetRequest                            Request,
-                                          JObject                                      JSON,
-                                          CustomJObjectParserDelegate<ResetResponse>?  CustomResetResponseParser   = null)
+        public static ResetResponse Parse(CSMS.ResetRequest                             Request,
+                                          JObject                                       JSON,
+                                          NetworkingNode_Id                             DestinationNodeId,
+                                          NetworkPath                                   NetworkPath,
+                                          DateTime?                                     ResponseTimestamp           = null,
+                                          CustomJObjectParserDelegate<ResetResponse>?   CustomResetResponseParser   = null,
+                                          CustomJObjectParserDelegate<StatusInfo>?      CustomStatusInfoParser      = null,
+                                          CustomJObjectParserDelegate<OCPP.Signature>?  CustomSignatureParser       = null,
+                                          CustomJObjectParserDelegate<CustomData>?      CustomCustomDataParser      = null)
         {
 
             if (TryParse(Request,
                          JSON,
+                         DestinationNodeId,
+                         NetworkPath,
                          out var resetResponse,
                          out var errorResponse,
-                         CustomResetResponseParser))
+                         ResponseTimestamp,
+                         CustomResetResponseParser,
+                         CustomStatusInfoParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return resetResponse;
             }
@@ -255,11 +270,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="ResetResponse">The parsed reset response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomResetResponseParser">A delegate to parse custom reset responses.</param>
-        public static Boolean TryParse(CSMS.ResetRequest                            Request,
-                                       JObject                                      JSON,
-                                       [NotNullWhen(true)]  out ResetResponse?      ResetResponse,
-                                       [NotNullWhen(false)] out String?             ErrorResponse,
-                                       CustomJObjectParserDelegate<ResetResponse>?  CustomResetResponseParser   = null)
+        public static Boolean TryParse(CSMS.ResetRequest                             Request,
+                                       JObject                                       JSON,
+                                       NetworkingNode_Id                             DestinationNodeId,
+                                       NetworkPath                                   NetworkPath,
+                                       [NotNullWhen(true)]  out ResetResponse?       ResetResponse,
+                                       [NotNullWhen(false)] out String?              ErrorResponse,
+                                       DateTime?                                     ResponseTimestamp           = null,
+                                       CustomJObjectParserDelegate<ResetResponse>?   CustomResetResponseParser   = null,
+                                       CustomJObjectParserDelegate<StatusInfo>?      CustomStatusInfoParser      = null,
+                                       CustomJObjectParserDelegate<OCPP.Signature>?  CustomSignatureParser       = null,
+                                       CustomJObjectParserDelegate<CustomData>?      CustomCustomDataParser      = null)
         {
 
             try
@@ -284,7 +305,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 if (JSON.ParseOptionalJSON("statusInfo",
                                            "detailed status info",
-                                           OCPP.StatusInfo.TryParse,
+                                           (JObject json, [NotNullWhen(true)] out StatusInfo? statusInfo, [NotNullWhen(false)] out String? errorResponse)
+                                                 => OCPP.StatusInfo.TryParse(json, out statusInfo, out errorResponse, CustomStatusInfoParser),
                                            out StatusInfo? StatusInfo,
                                            out ErrorResponse))
                 {
@@ -298,7 +320,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 if (JSON.ParseOptionalHashSet("signatures",
                                               "cryptographic signatures",
-                                              OCPP.Signature.TryParse,
+                                              (JObject json, [NotNullWhen(true)] out OCPP.Signature? signature, [NotNullWhen(false)] out String? errorResponse)
+                                                  => OCPP.Signature.TryParse(json, out signature, out errorResponse, CustomSignatureParser, CustomCustomDataParser),
                                               out HashSet<OCPP.Signature> Signatures,
                                               out ErrorResponse))
                 {
@@ -312,8 +335,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
-                                           OCPP.CustomData.TryParse,
-                                           out CustomData CustomData,
+                                           (JObject json, [NotNullWhen(true)] out CustomData? customData, [NotNullWhen(false)] out String? errorResponse)
+                                                => OCPP.CustomData.TryParse(json, out customData, out errorResponse, CustomCustomDataParser),
+                                           out CustomData? CustomData,
                                            out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -324,14 +348,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
                 ResetResponse = new ResetResponse(
+
                                     Request,
                                     ResetStatus,
                                     StatusInfo,
-                                    null,
+                                    ResponseTimestamp,
+
+                                    DestinationNodeId,
+                                    NetworkPath,
+
                                     null,
                                     null,
                                     Signatures,
+
                                     CustomData
+
                                 );
 
                 if (CustomResetResponseParser is not null)
@@ -361,10 +392,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<ResetResponse>?  CustomResetResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<StatusInfo>?     CustomStatusInfoSerializer      = null,
-                              CustomJObjectSerializerDelegate<OCPP.Signature>? CustomSignatureSerializer       = null,
-                              CustomJObjectSerializerDelegate<CustomData>?     CustomCustomDataSerializer      = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ResetResponse>?   CustomResetResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<StatusInfo>?      CustomStatusInfoSerializer      = null,
+                              CustomJObjectSerializerDelegate<OCPP.Signature>?  CustomSignatureSerializer       = null,
+                              CustomJObjectSerializerDelegate<CustomData>?      CustomCustomDataSerializer      = null)
         {
 
             var json = JSONObject.Create(

@@ -276,6 +276,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      JObject                                                 JSON,
                                                      NetworkingNode_Id                                       DestinationNodeId,
                                                      NetworkPath                                             NetworkPath,
+                                                     DateTime?                                               ResponseTimestamp                      = null,
                                                      CustomJObjectParserDelegate<BootNotificationResponse>?  CustomBootNotificationResponseParser   = null,
                                                      CustomJObjectParserDelegate<StatusInfo>?                CustomStatusInfoParser                 = null,
                                                      CustomJObjectParserDelegate<OCPP.Signature>?            CustomSignatureParser                  = null,
@@ -289,6 +290,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          NetworkPath,
                          out var bootNotificationResponse,
                          out var errorResponse,
+                         ResponseTimestamp,
                          CustomBootNotificationResponseParser,
                          CustomStatusInfoParser,
                          CustomSignatureParser,
@@ -325,6 +327,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                        NetworkPath                                             NetworkPath,
                                        [NotNullWhen(true)]  out BootNotificationResponse?      BootNotificationResponse,
                                        [NotNullWhen(false)] out String?                        ErrorResponse,
+                                       DateTime?                                               ResponseTimestamp                      = null,
                                        CustomJObjectParserDelegate<BootNotificationResponse>?  CustomBootNotificationResponseParser   = null,
                                        CustomJObjectParserDelegate<StatusInfo>?                CustomStatusInfoParser                 = null,
                                        CustomJObjectParserDelegate<OCPP.Signature>?            CustomSignatureParser                  = null,
@@ -399,7 +402,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 if (JSON.ParseOptionalHashSet("signatures",
                                               "cryptographic signatures",
                                               (JObject json, [NotNullWhen(true)] out OCPP.Signature? signature, [NotNullWhen(false)] out String? errorResponse)
-                                                 => OCPP.Signature.TryParse(json, out signature, out errorResponse, CustomSignatureParser, CustomCustomDataParser),
+                                                  => OCPP.Signature.TryParse(json, out signature, out errorResponse, CustomSignatureParser, CustomCustomDataParser),
                                               out HashSet<OCPP.Signature> Signatures,
                                               out ErrorResponse))
                 {
@@ -414,7 +417,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
                                            (JObject json, [NotNullWhen(true)] out CustomData? customData, [NotNullWhen(false)] out String? errorResponse)
-                                                 => OCPP.CustomData.TryParse(json, out customData, out errorResponse, CustomCustomDataParser),
+                                                => OCPP.CustomData.TryParse(json, out customData, out errorResponse, CustomCustomDataParser),
                                            out CustomData? CustomData,
                                            out ErrorResponse))
                 {
@@ -432,7 +435,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                CurrentTime,
                                                Interval,
                                                StatusInfo,
-                                               null,
+                                               ResponseTimestamp,
 
                                                DestinationNodeId,
                                                NetworkPath,

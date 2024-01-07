@@ -352,9 +352,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomResetRequestSerializer">A delegate to serialize custom reset requests.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<ResetRequest>?  CustomResetRequestSerializer   = null,
-                              CustomJObjectSerializerDelegate<OCPP.Signature>?CustomSignatureSerializer      = null,
-                              CustomJObjectSerializerDelegate<CustomData>?    CustomCustomDataSerializer     = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ResetRequest>?    CustomResetRequestSerializer   = null,
+                              CustomJObjectSerializerDelegate<OCPP.Signature>?  CustomSignatureSerializer      = null,
+                              CustomJObjectSerializerDelegate<CustomData>?      CustomCustomDataSerializer     = null)
         {
 
             var json = JSONObject.Create(
