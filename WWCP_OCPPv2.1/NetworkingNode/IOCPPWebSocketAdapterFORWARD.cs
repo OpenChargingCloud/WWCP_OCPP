@@ -3690,7 +3690,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Firmware
 
-        Task<ForwardingDecision<BootNotificationRequest,                  BootNotificationResponse>>                   Forward_BootNotification                  (BootNotificationRequest                  Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision>                                                                                       Forward_BootNotification                  (OCPP_JSONRequestMessage JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
         Task<ForwardingDecision<FirmwareStatusNotificationRequest,        FirmwareStatusNotificationResponse>>         Forward_FirmwareStatusNotification        (FirmwareStatusNotificationRequest        Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
         Task<ForwardingDecision<HeartbeatRequest,                         HeartbeatResponse>>                          Forward_Heartbeat                         (HeartbeatRequest                         Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
         Task<ForwardingDecision<PublishFirmwareStatusNotificationRequest, PublishFirmwareStatusNotificationResponse>>  Forward_PublishFirmwareStatusNotification (PublishFirmwareStatusNotificationRequest Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);

@@ -154,7 +154,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 var sourceNodeId  = WebSocketConnection.TryGetCustomDataAs<NetworkingNode_Id>(OCPPAdapter.NetworkingNodeId_WebSocketKey);
 
-                if      (OCPP_JSONRequestMessage. TryParse(JSONMessage, out var jsonRequest,  out var requestParsingError,  RequestTimestamp, EventTrackingId, sourceNodeId, CancellationToken)) // && jsonRequest       is not null)
+                if      (OCPP_JSONRequestMessage. TryParse(JSONMessage, out var jsonRequest,  out var requestParsingError,  RequestTimestamp, null, EventTrackingId, sourceNodeId, CancellationToken))
                 {
 
                     #region Fix DestinationNodeId and network path for standard networking connections
@@ -330,7 +330,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 }
 
-                else if (OCPP_JSONResponseMessage.TryParse(JSONMessage, out var jsonResponse, out var responseParsingError,                                    sourceNodeId)                    && jsonResponse      is not null)
+                else if (OCPP_JSONResponseMessage.TryParse(JSONMessage, out var jsonResponse, out var responseParsingError,                                    sourceNodeId))
                 {
 
                     #region OnJSONMessageResponseReceived
@@ -359,13 +359,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #endregion
 
-                    parentNetworkingNode.OCPP.ReceiveJSONResponseMessage(jsonResponse);
+                    // When not for this node, send it to the FORWARD processor...
+                    if (jsonResponse.DestinationNodeId != parentNetworkingNode.Id)
+                        await parentNetworkingNode.OCPP.FORWARD.ProcessJSONResponseMessage(jsonResponse);
+
+                    // Directly for this node OR an anycast message for this node...
+                    if (jsonResponse.DestinationNodeId == parentNetworkingNode.Id ||
+                        parentNetworkingNode.AnycastIds.Contains(jsonResponse.DestinationNodeId))
+                    {
+                        parentNetworkingNode.OCPP.ReceiveJSONResponseMessage(jsonResponse);
+                    }
 
                     // No response to the charging station!
 
                 }
 
-                else if (OCPP_JSONErrorMessage.   TryParse(JSONMessage, out var jsonErrorResponse,                                                             sourceNodeId)                    && jsonErrorResponse is not null)
+                else if (OCPP_JSONErrorMessage.   TryParse(JSONMessage, out var jsonErrorResponse,                                                             sourceNodeId))
                 {
 
                     #region OnJSONErrorResponseReceived

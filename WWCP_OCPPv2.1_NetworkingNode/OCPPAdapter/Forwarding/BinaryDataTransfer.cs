@@ -69,19 +69,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                                                      CancellationToken)).
                                                      ToArray());
 
-                    var response = results.First();
-
-                    forwardingDecision = response.Result == ForwardingResult.DROP && response.DropResponse is null
-                                             ? new ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>(
-                                                   response.Request,
-                                                   ForwardingResult.DROP,
-                                                   new BinaryDataTransferResponse(
-                                                       Request,
-                                                       Result.Filtered("Default handler")
-                                                   ),
-                                                   "Default handler"
-                                               )
-                                             : response;
+                    //ToDo: Find a good result!
+                    forwardingDecision = results.First();
 
                 }
                 catch (Exception e)
@@ -99,22 +88,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Default result
 
-            forwardingDecision ??= DefaultResult == ForwardingResult.FORWARD
+            if (forwardingDecision is null && DefaultResult == ForwardingResult.FORWARD)
+                forwardingDecision = new ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>(
+                                         Request,
+                                         ForwardingResult.FORWARD,
+                                         LogMessage: "Default handler"
+                                     );
 
-                                       ? new ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>(
-                                             Request,
-                                             ForwardingResult.FORWARD
-                                         )
+            if (forwardingDecision is null ||
+               (forwardingDecision.Result == ForwardingResult.REJECT && forwardingDecision.BinaryRejectResponse is null))
+            {
 
-                                       : new ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>(
-                                             Request,
-                                             ForwardingResult.DROP,
-                                             new BinaryDataTransferResponse(
-                                                 Request,
-                                                 Result.Filtered("Default handler")
-                                             ),
-                                             "Default handler"
-                                         );
+                var binaryDataTransferResponse = forwardingDecision?.RejectResponse ??
+                                                     new BinaryDataTransferResponse(
+                                                         Request,
+                                                         Result.Filtered("Default handler")
+                                                     );
+
+                forwardingDecision = new ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>(
+                                         Request,
+                                         ForwardingResult.REJECT,
+                                         binaryDataTransferResponse,
+                                         null,
+                                         binaryDataTransferResponse.ToBinary(
+                                             parentNetworkingNode.OCPP.CustomBinaryDataTransferResponseSerializer,
+                                             parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
+                                             parentNetworkingNode.OCPP.CustomBinarySignatureSerializer,
+                                             IncludeSignatures: true
+                                         ),
+                                         "Default handler"
+                                     );
+
+            }
 
             #endregion
 

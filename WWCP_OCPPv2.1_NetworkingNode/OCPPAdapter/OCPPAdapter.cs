@@ -508,6 +508,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Custom JSON parser delegates
 
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  BootNotificationRequest>?    CustomBootNotificationRequestParser           { get; set; }
         public CustomJObjectParserDelegate<OCPPv2_1.CSMS.BootNotificationResponse>?   CustomBootNotificationResponseParser          { get; set; }
 
         public CustomJObjectParserDelegate<ChargingStation>?                          CustomChargingStationParser                   { get; set; }

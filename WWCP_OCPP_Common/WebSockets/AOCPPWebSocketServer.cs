@@ -681,7 +681,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                 var jsonArray     = JArray.Parse(TextMessage);
                 var sourceNodeId  = Connection.TryGetCustomDataAs<NetworkingNode_Id>(networkingNodeId_WebSocketKey);
 
-                if      (OCPP_JSONRequestMessage. TryParse(jsonArray, out var jsonRequest,  out var requestParsingError,  RequestTimestamp, EventTrackingId, sourceNodeId, CancellationToken) && jsonRequest       is not null)
+                if      (OCPP_JSONRequestMessage. TryParse(jsonArray, out var jsonRequest,  out var requestParsingError,  RequestTimestamp, null, EventTrackingId, sourceNodeId, CancellationToken))
                 {
 
                     #region OnTextMessageRequestReceived
@@ -739,6 +739,13 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
 
                         else
                             DebugX.Log($"Received undefined '{jsonRequest.Action}' JSON request message handler within {nameof(AOCPPWebSocketServer)}!");
+
+                        if (OCPPResponse is not null &&
+                            OCPPResponse.NetworkingMode == NetworkingMode.Unknown &&
+                           !connectedNetworkingNodes.ContainsKey(OCPPResponse.DestinationNodeId))
+                        {
+                            OCPPResponse.NetworkingMode = NetworkingMode.OverlayNetwork;
+                        }
 
                     }
 
@@ -815,7 +822,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
 
                 }
 
-                else if (OCPP_JSONResponseMessage.TryParse(jsonArray, out var jsonResponse, out var responseParsingError, sourceNodeId) && jsonResponse      is not null)
+                else if (OCPP_JSONResponseMessage.TryParse(jsonArray, out var jsonResponse, out var responseParsingError, sourceNodeId))
                 {
 
                     if (requests.TryGetValue(jsonResponse.RequestId, out var sendRequestState) &&
@@ -869,7 +876,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
 
                 }
 
-                else if (OCPP_JSONErrorMessage.   TryParse(jsonArray, out var jsonErrorResponse,                          sourceNodeId) && jsonErrorResponse is not null)
+                else if (OCPP_JSONErrorMessage.   TryParse(jsonArray, out var jsonErrorResponse,                          sourceNodeId))
                 {
 
                     if (requests.TryGetValue(jsonErrorResponse.RequestId, out var sendRequestState) &&

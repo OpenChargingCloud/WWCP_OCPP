@@ -226,7 +226,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
                 var jsonArray = JArray.Parse(TextMessage);
               //  var sourceNodeId = Connection.TryGetCustomDataAs<NetworkingNode_Id>(networkingNodeId_WebSocketKey) ?? NetworkingNode_Id.Zero;
 
-                if      (OCPP_JSONRequestMessage. TryParse(jsonArray, out var jsonRequest,  out var requestParsingError, RequestTimestamp, EventTrackingId, null, CancellationToken)  && jsonRequest       is not null)
+                if      (OCPP_JSONRequestMessage. TryParse(jsonArray, out var jsonRequest,  out var requestParsingError, RequestTimestamp, null, EventTrackingId, null, CancellationToken))
                 {
 
                     OCPP_JSONResponseMessage?    OCPPJSONResponse     = null;
@@ -368,7 +368,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
 
                 }
 
-                else if (OCPP_JSONResponseMessage.TryParse(jsonArray, out var jsonResponse, out var responseParsingError) && jsonResponse      is not null)
+                else if (OCPP_JSONResponseMessage.TryParse(jsonArray, out var jsonResponse, out var responseParsingError))
                 {
 
                     if (requests.TryGetValue(jsonResponse.RequestId, out var sendRequestState) &&
@@ -387,10 +387,10 @@ namespace cloud.charging.open.protocols.OCPP.CS
                                                                   this,
                                                                   EventTrackingId,
                                                                   sendRequestState.RequestTimestamp,
-                                                                  sendRequestState.JSONRequest?.  ToJSON()      ?? [],
-                                                                  sendRequestState.BinaryRequest?.ToByteArray() ?? [],
+                                                                  sendRequestState.JSONRequest?.     ToJSON()      ?? [],
+                                                                  sendRequestState.BinaryRequest?.   ToByteArray() ?? [],
                                                                   sendRequestState.ResponseTimestamp.Value,
-                                                                  sendRequestState.JSONResponse?. ToJSON()      ?? []);
+                                                                  sendRequestState.JSONResponse?.    ToJSON()      ?? []);
 
                         }
                         catch (Exception e)
@@ -406,7 +406,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
 
                 }
 
-                else if (OCPP_JSONErrorMessage.   TryParse(jsonArray, out var jsonErrorResponse)                          && jsonErrorResponse is not null)
+                else if (OCPP_JSONErrorMessage.   TryParse(jsonArray, out var jsonErrorResponse))
                 {
                     DebugX.Log(nameof(AOCPPWebSocketClient), " Received unknown OCPP error message: " + TextMessage);
                 }

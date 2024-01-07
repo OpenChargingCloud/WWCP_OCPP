@@ -59,7 +59,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
         #region Data
 
-        public static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(30);
+        public static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(333);
 
         #endregion
 
@@ -174,6 +174,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                                        [NotNullWhen(true)]  out OCPP_JSONRequestMessage?  RequestMessage,
                                        [NotNullWhen(false)] out String?                   ErrorResponse,
                                        DateTime?                                          RequestTimestamp       = null,
+                                       DateTime?                                          RequestTimeout         = null,
                                        EventTracking_Id?                                  EventTrackingId        = null,
                                        NetworkingNode_Id?                                 ImplicitSourceNodeId   = null,
                                        CancellationToken                                  CancellationToken      = default)
@@ -242,7 +243,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                                          requestId,
                                          action,
                                          payload,
-                                         null,
+                                         RequestTimeout,
                                          null,
                                          CancellationToken
                                      );
@@ -334,7 +335,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                                          requestId,
                                          action,
                                          payload,
-                                         null,
+                                         RequestTimeout,
                                          null,
                                          CancellationToken
                                      );

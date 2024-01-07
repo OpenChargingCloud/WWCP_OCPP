@@ -198,7 +198,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                     OCPPResponse = OCPP_JSONResponseMessage.From(
                                        NetworkPath.Source,
-                                       NetworkPath,
+                                       NetworkPath.From(NetworkingNodeId),
                                        RequestId,
                                        response.ToJSON(
                                            CustomBootNotificationResponseSerializer,

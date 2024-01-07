@@ -263,13 +263,12 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
         #endregion
 
-        #region ToJSON(NetworkingMode = Standard)
+        #region ToJSON()
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="NetworkingMode">The networking mode to use.</param>
-        public JArray ToJSON(NetworkingMode NetworkingMode = NetworkingMode.Standard)
+        public JArray ToJSON()
 
             => NetworkingMode switch {
 
@@ -325,7 +324,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
             => new (Timestamp.Now,
                     EventTracking_Id.New,
-                    NetworkingMode.Standard,
+                    NetworkingMode.Unknown,
                     DestinationNodeId,
                     NetworkPath,
                     RequestId,

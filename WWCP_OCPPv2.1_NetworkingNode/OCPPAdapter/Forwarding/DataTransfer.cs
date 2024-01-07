@@ -72,10 +72,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     var response = results.First();
 
-                    forwardingDecision = response.Result == ForwardingResult.DROP && response.DropResponse is null
+                    forwardingDecision = response.Result == ForwardingResult.REJECT && response.RejectResponse is null
                                              ? new ForwardingDecision<DataTransferRequest, DataTransferResponse>(
                                                    response.Request,
-                                                   ForwardingResult.DROP,
+                                                   ForwardingResult.REJECT,
                                                    new DataTransferResponse(
                                                        Request,
                                                        Result.Filtered("Default handler")
@@ -105,7 +105,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                        : new ForwardingDecision<DataTransferRequest, DataTransferResponse>(
                                              Request,
-                                             ForwardingResult.DROP,
+                                             ForwardingResult.REJECT,
                                              new DataTransferResponse(
                                                  Request,
                                                  Result.Filtered("Default handler")

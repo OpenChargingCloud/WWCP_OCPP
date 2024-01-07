@@ -72,10 +72,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     var response = results.First();
 
-                    forwardingDecision = response.Result == ForwardingResult.DROP && response.DropResponse is null
+                    forwardingDecision = response.Result == ForwardingResult.REJECT && response.RejectResponse is null
                                              ? new ForwardingDecision<Get15118EVCertificateRequest, Get15118EVCertificateResponse>(
                                                    response.Request,
-                                                   ForwardingResult.DROP,
+                                                   ForwardingResult.REJECT,
                                                    new Get15118EVCertificateResponse(
                                                        Request,
                                                        Result.Filtered("Default handler")
@@ -109,7 +109,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                        : new ForwardingDecision<Get15118EVCertificateRequest, Get15118EVCertificateResponse>(
                                              Request,
-                                             ForwardingResult.DROP,
+                                             ForwardingResult.REJECT,
                                              new Get15118EVCertificateResponse(
                                                  Request,
                                                  Result.Filtered("Default handler")

@@ -72,10 +72,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     var response = results.First();
 
-                    forwardingDecision = response.Result == ForwardingResult.DROP && response.DropResponse is null
+                    forwardingDecision = response.Result == ForwardingResult.REJECT && response.RejectResponse is null
                                              ? new ForwardingDecision<GetMonitoringReportRequest, GetMonitoringReportResponse>(
                                                    response.Request,
-                                                   ForwardingResult.DROP,
+                                                   ForwardingResult.REJECT,
                                                    new GetMonitoringReportResponse(
                                                        Request,
                                                        Result.Filtered("Default handler")
@@ -109,7 +109,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                        : new ForwardingDecision<GetMonitoringReportRequest, GetMonitoringReportResponse>(
                                              Request,
-                                             ForwardingResult.DROP,
+                                             ForwardingResult.REJECT,
                                              new GetMonitoringReportResponse(
                                                  Request,
                                                  Result.Filtered("Default handler")

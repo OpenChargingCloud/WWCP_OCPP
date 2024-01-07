@@ -20,31 +20,51 @@
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.OCPP;
+using Newtonsoft.Json.Linq;
 
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
+    public class ForwardingDecision(ForwardingResult  Result,
+                                    JObject?          JSONRejectResponse     = null,
+                                    Byte[]?           BinaryRejectResponse   = null,
+                                    String?           LogMessage             = null)
+
+    {
+
+        public ForwardingResult  Result                  { get; } = Result;
+        public JObject?          JSONRejectResponse      { get; } = JSONRejectResponse;
+        public Byte[]?           BinaryRejectResponse    { get; } = BinaryRejectResponse;
+        public String?           LogMessage              { get; } = LogMessage;
+
+        public override String ToString()
+            => $"{Result}{(LogMessage.IsNotNullOrEmpty() ? $": {LogMessage}" : "")}";
+
+    }
+
+
     public class ForwardingDecision<TRequest, TResponse>(TRequest          Request,
                                                          ForwardingResult  Result,
-                                                         TResponse?        DropResponse   = null,
-                                                         String?           LogMessage     = null)
+                                                         TResponse?        RejectResponse         = null,
+                                                         JObject?          JSONRejectResponse     = null,
+                                                         Byte[]?           BinaryRejectResponse   = null,
+                                                         String?           LogMessage             = null) : ForwardingDecision(
+                                                                                                                Result,
+                                                                                                                JSONRejectResponse,
+                                                                                                                BinaryRejectResponse,
+                                                                                                                LogMessage
+                                                                                                            )
 
         where TRequest  : class, IRequest
         where TResponse : class, IResponse
 
     {
 
-        public TRequest          Request         { get; } = Request;
-        public ForwardingResult  Result          { get; } = Result;
-        public TResponse?        DropResponse    { get; } = DropResponse;
-        public String?           LogMessage      { get; } = LogMessage;
+        public TRequest    Request           { get; } = Request;
+        public TResponse?  RejectResponse    { get; } = RejectResponse;
 
-
-        public override String ToString()
-
-            => $"{Result}{(LogMessage.IsNotNullOrEmpty() ? $": {LogMessage}" : "")}";
 
     }
 

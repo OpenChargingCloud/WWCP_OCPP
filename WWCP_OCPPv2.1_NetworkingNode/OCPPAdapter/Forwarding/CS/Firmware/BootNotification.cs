@@ -23,6 +23,7 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
 
@@ -32,7 +33,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <summary>
     /// The OCPP adapter for forwarding messages.
     /// </summary>
-    public partial class OCPPWebSocketAdapterFORWARD
+    public partial class OCPPWebSocketAdapterFORWARD : IOCPPWebSocketAdapterFORWARD
     {
 
         #region Events
@@ -43,13 +44,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        public async Task<ForwardingDecision<BootNotificationRequest, BootNotificationResponse>>
+        public async Task<ForwardingDecision>
 
-            Forward_BootNotification(BootNotificationRequest  Request,
+            Forward_BootNotification(OCPP_JSONRequestMessage  JSONRequestMessage,
                                      IWebSocketConnection     Connection,
                                      CancellationToken        CancellationToken   = default)
 
         {
+
+            if (BootNotificationRequest.TryParse(JSONRequestMessage.Payload,
+                                                 JSONRequestMessage.RequestId,
+                                                 JSONRequestMessage.DestinationNodeId,
+                                                 JSONRequestMessage.NetworkPath,
+                                                 out var Request,
+                                                 out var errorResponse,
+                                                 parentNetworkingNode.OCPP.CustomBootNotificationRequestParser,
+                                                 parentNetworkingNode.OCPP.CustomChargingStationParser,
+                                                 parentNetworkingNode.OCPP.CustomSignatureParser,
+                                                 parentNetworkingNode.OCPP.CustomCustomDataParser))
+            {
+
+            }
 
             #region Send OnBootNotificationRequest event
 
@@ -72,10 +87,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     var response = results.First();
 
-                    forwardingDecision = response.Result == ForwardingResult.DROP && response.DropResponse is null
+                    forwardingDecision = response.Result == ForwardingResult.REJECT && response.RejectResponse is null
                                              ? new ForwardingDecision<BootNotificationRequest, BootNotificationResponse>(
                                                    response.Request,
-                                                   ForwardingResult.DROP,
+                                                   ForwardingResult.REJECT,
                                                    new BootNotificationResponse(
                                                        Request,
                                                        Result.Filtered("Default handler")
@@ -109,7 +124,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                        : new ForwardingDecision<BootNotificationRequest, BootNotificationResponse>(
                                              Request,
-                                             ForwardingResult.DROP,
+                                             ForwardingResult.REJECT,
                                              new BootNotificationResponse(
                                                  Request,
                                                  Result.Filtered("Default handler")

@@ -106,7 +106,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             if (AnycastIdsDenied. Any() &&  AnycastIdsDenied. Contains(JSONRequestMessage.DestinationNodeId))
                 return;
 
-            expectedResponses.TryAdd(
+
+            #region Try to call the matching 'incoming message processor'...
+
+            if (forwardingMessageProcessorsLookup.TryGetValue(JSONRequestMessage.Action, out var methodInfo) &&
+                methodInfo is not null)
+            {
+
+                //ToDo: Maybe this could be done via code generation!
+                var result = methodInfo.Invoke(this,
+                                               [ JSONRequestMessage,
+                                                 null, //WebSocketConnection,
+                                                 JSONRequestMessage.CancellationToken ]);
+
+                if (result is Task<ForwardingDecision> forwardingProcessor)
+                {
+
+                    var forwardingDecision = await forwardingProcessor;
+
+                    if (forwardingDecision.Result == ForwardingResult.FORWARD)
+                    {
+
+                        expectedResponses.TryAdd(
                                   JSONRequestMessage.RequestId,
                                   new ResponseInfo(
                                       JSONRequestMessage.RequestId,
@@ -115,7 +136,54 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                   )
                               );
 
-            await parentNetworkingNode.OCPP.SendJSONRequest(JSONRequestMessage);
+                        await parentNetworkingNode.OCPP.SendJSONRequest(JSONRequestMessage);
+
+                    }
+                    else if (forwardingDecision.Result == ForwardingResult.REJECT &&
+                             forwardingDecision.JSONRejectResponse is not null)
+                    {
+
+                        //ToDo: Send the REJECT response back to the sender!
+
+                    }
+                    else // ForwardingResult.DROP
+                    {
+                        // Just ignore the request!
+                    }
+
+                }
+
+                else
+                    DebugX.Log($"Received undefined '{JSONRequestMessage.Action}' JSON request message handler within {nameof(OCPPWebSocketAdapterFORWARD)}!");
+
+            }
+
+            #endregion
+
+            #region ...or error!
+
+            else
+            {
+
+                DebugX.Log($"Received unknown '{JSONRequestMessage.Action}' JSON request message handler within {nameof(OCPPWebSocketAdapterFORWARD)}!");
+
+                //OCPPErrorResponse = new OCPP_JSONErrorMessage(
+                //                        Timestamp.Now,
+                //                        EventTracking_Id.New,
+                //                        NetworkingMode.Unknown,
+                //                        NetworkingNode_Id.Zero,
+                //                        NetworkPath.Empty,
+                //                        jsonRequest.RequestId,
+                //                        ResultCode.ProtocolError,
+                //                        $"The OCPP message '{jsonRequest.Action}' is unkown!",
+                //                        new JObject(
+                //                            new JProperty("request", JSONMessage)
+                //                        )
+                //                    );
+
+            }
+
+            #endregion
 
         }
 
@@ -129,7 +197,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             if (expectedResponses.TryRemove(JSONResponseMessage.RequestId, out var responseInfo))
             {
 
-                if (responseInfo.Timeout <= Timestamp.Now)
+                if (responseInfo.Timeout >= Timestamp.Now)
                     //responseInfo.Context == JSONResponseMessage.Context)
                 {
 
