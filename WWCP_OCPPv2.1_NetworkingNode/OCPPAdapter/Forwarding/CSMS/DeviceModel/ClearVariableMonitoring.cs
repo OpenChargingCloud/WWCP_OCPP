@@ -23,6 +23,7 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
 
@@ -43,17 +44,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        public async Task<ForwardingDecision<ClearVariableMonitoringRequest, ClearVariableMonitoringResponse>>
+        public async Task<ForwardingDecision>
 
-            Forward_ClearVariableMonitoring(ClearVariableMonitoringRequest  Request,
-                                            IWebSocketConnection            Connection,
-                                            CancellationToken               CancellationToken   = default)
+            Forward_ClearVariableMonitoring(OCPP_JSONRequestMessage  JSONRequestMessage,
+                                            IWebSocketConnection     Connection,
+                                            CancellationToken        CancellationToken   = default)
 
         {
 
-            #region Send OnClearVariableMonitoringRequest event
+            if (!ClearVariableMonitoringRequest.TryParse(JSONRequestMessage.Payload,
+                                                         JSONRequestMessage.RequestId,
+                                                         JSONRequestMessage.DestinationNodeId,
+                                                         JSONRequestMessage.NetworkPath,
+                                                         out var Request,
+                                                         out var errorResponse,
+                                                         parentNetworkingNode.OCPP.CustomClearVariableMonitoringRequestParser))
+            {
+                return ForwardingDecision.REJECT(errorResponse);
+            }
 
             ForwardingDecision<ClearVariableMonitoringRequest, ClearVariableMonitoringResponse>? forwardingDecision = null;
+
+            #region Send OnClearVariableMonitoringRequest event
 
             var requestFilter = OnClearVariableMonitoringRequest;
             if (requestFilter is not null)
@@ -70,19 +82,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                                                      CancellationToken)).
                                                      ToArray());
 
-                    var response = results.First();
-
-                    forwardingDecision = response.Result == ForwardingResult.REJECT && response.RejectResponse is null
-                                             ? new ForwardingDecision<ClearVariableMonitoringRequest, ClearVariableMonitoringResponse>(
-                                                   response.Request,
-                                                   ForwardingResult.REJECT,
-                                                   new ClearVariableMonitoringResponse(
-                                                       Request,
-                                                       Result.Filtered("Default handler")
-                                                   ),
-                                                   "Default handler"
-                                               )
-                                             : response;
+                    //ToDo: Find a good result!
+                    forwardingDecision = results.First();
 
                 }
                 catch (Exception e)
@@ -100,35 +101,49 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Default result
 
-            forwardingDecision ??= DefaultResult == ForwardingResult.FORWARD
+            if (forwardingDecision is null && DefaultResult == ForwardingResult.FORWARD)
+                forwardingDecision = new ForwardingDecision<ClearVariableMonitoringRequest, ClearVariableMonitoringResponse>(
+                                         Request,
+                                         ForwardingResult.FORWARD
+                                     );
 
-                                       ? new ForwardingDecision<ClearVariableMonitoringRequest, ClearVariableMonitoringResponse>(
-                                             Request,
-                                             ForwardingResult.FORWARD
+            if (forwardingDecision is null ||
+               (forwardingDecision.Result == ForwardingResult.REJECT && forwardingDecision.RejectResponse is null))
+            {
+
+                var response = forwardingDecision?.RejectResponse ??
+                                   new ClearVariableMonitoringResponse(
+                                       Request,
+                                       Result.Filtered(ForwardingDecision.DefaultLogMessage)
+                                   );
+
+                forwardingDecision = new ForwardingDecision<ClearVariableMonitoringRequest, ClearVariableMonitoringResponse>(
+                                         Request,
+                                         ForwardingResult.REJECT,
+                                         response,
+                                         response.ToJSON(
+                                             parentNetworkingNode.OCPP.CustomClearVariableMonitoringResponseSerializer,
+                                             parentNetworkingNode.OCPP.CustomClearMonitoringResultSerializer,
+                                             parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
+                                             parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                             parentNetworkingNode.OCPP.CustomCustomDataSerializer
                                          )
+                                     );
 
-                                       : new ForwardingDecision<ClearVariableMonitoringRequest, ClearVariableMonitoringResponse>(
-                                             Request,
-                                             ForwardingResult.REJECT,
-                                             new ClearVariableMonitoringResponse(
-                                                 Request,
-                                                 Result.Filtered("Default handler")
-                                             ),
-                                             "Default handler"
-                                         );
+            }
 
             #endregion
 
 
-            #region Send OnGetFileRequestLogging event
+            #region Send OnClearVariableMonitoringRequestLogging event
 
-            var resultLog = OnClearVariableMonitoringRequestLogging;
-            if (resultLog is not null)
+            var logger = OnClearVariableMonitoringRequestLogging;
+            if (logger is not null)
             {
                 try
                 {
 
-                    await Task.WhenAll(resultLog.GetInvocationList().
+                    await Task.WhenAll(logger.GetInvocationList().
                                        OfType <OnClearVariableMonitoringRequestFilteredDelegate>().
                                        Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
                                                                                          parentNetworkingNode,

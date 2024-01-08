@@ -23,6 +23,7 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
 
@@ -43,17 +44,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        public async Task<ForwardingDecision<GetCRLRequest, GetCRLResponse>>
+        public async Task<ForwardingDecision>
 
-            Forward_GetCRL(GetCRLRequest         Request,
-                           IWebSocketConnection  Connection,
-                           CancellationToken     CancellationToken   = default)
+            Forward_GetCRL(OCPP_JSONRequestMessage  JSONRequestMessage,
+                           IWebSocketConnection     Connection,
+                           CancellationToken        CancellationToken   = default)
 
         {
 
-            #region Send OnGetCRLRequest event
+            if (!GetCRLRequest.TryParse(JSONRequestMessage.Payload,
+                                        JSONRequestMessage.RequestId,
+                                        JSONRequestMessage.DestinationNodeId,
+                                        JSONRequestMessage.NetworkPath,
+                                        out var Request,
+                                        out var errorResponse,
+                                        parentNetworkingNode.OCPP.CustomGetCRLRequestParser))
+            {
+                return ForwardingDecision.REJECT(errorResponse);
+            }
 
             ForwardingDecision<GetCRLRequest, GetCRLResponse>? forwardingDecision = null;
+
+            #region Send OnGetCRLRequest event
 
             var requestFilter = OnGetCRLRequest;
             if (requestFilter is not null)
@@ -70,19 +82,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                                                      CancellationToken)).
                                                      ToArray());
 
-                    var response = results.First();
-
-                    forwardingDecision = response.Result == ForwardingResult.REJECT && response.RejectResponse is null
-                                             ? new ForwardingDecision<GetCRLRequest, GetCRLResponse>(
-                                                   response.Request,
-                                                   ForwardingResult.REJECT,
-                                                   new GetCRLResponse(
-                                                       Request,
-                                                       Result.Filtered("Default handler")
-                                                   ),
-                                                   "Default handler"
-                                               )
-                                             : response;
+                    //ToDo: Find a good result!
+                    forwardingDecision = results.First();
 
                 }
                 catch (Exception e)
@@ -100,35 +101,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Default result
 
-            forwardingDecision ??= DefaultResult == ForwardingResult.FORWARD
+            if (forwardingDecision is null && DefaultResult == ForwardingResult.FORWARD)
+                forwardingDecision = new ForwardingDecision<GetCRLRequest, GetCRLResponse>(
+                                         Request,
+                                         ForwardingResult.FORWARD
+                                     );
 
-                                       ? new ForwardingDecision<GetCRLRequest, GetCRLResponse>(
-                                             Request,
-                                             ForwardingResult.FORWARD
+            if (forwardingDecision is null ||
+               (forwardingDecision.Result == ForwardingResult.REJECT && forwardingDecision.RejectResponse is null))
+            {
+
+                var response = forwardingDecision?.RejectResponse ??
+                                   new GetCRLResponse(
+                                       Request,
+                                       Result.Filtered(ForwardingDecision.DefaultLogMessage)
+                                   );
+
+                forwardingDecision = new ForwardingDecision<GetCRLRequest, GetCRLResponse>(
+                                         Request,
+                                         ForwardingResult.REJECT,
+                                         response,
+                                         response.ToJSON(
+                                             parentNetworkingNode.OCPP.CustomGetCRLResponseSerializer,
+                                             parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
+                                             parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                             parentNetworkingNode.OCPP.CustomCustomDataSerializer
                                          )
+                                     );
 
-                                       : new ForwardingDecision<GetCRLRequest, GetCRLResponse>(
-                                             Request,
-                                             ForwardingResult.REJECT,
-                                             new GetCRLResponse(
-                                                 Request,
-                                                 Result.Filtered("Default handler")
-                                             ),
-                                             "Default handler"
-                                         );
+            }
 
             #endregion
 
 
-            #region Send OnGetFileRequestLogging event
+            #region Send OnGetCRLRequestLogging event
 
-            var resultLog = OnGetCRLRequestLogging;
-            if (resultLog is not null)
+            var logger = OnGetCRLRequestLogging;
+            if (logger is not null)
             {
                 try
                 {
 
-                    await Task.WhenAll(resultLog.GetInvocationList().
+                    await Task.WhenAll(logger.GetInvocationList().
                                        OfType <OnGetCRLRequestFilteredDelegate>().
                                        Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
                                                                                          parentNetworkingNode,

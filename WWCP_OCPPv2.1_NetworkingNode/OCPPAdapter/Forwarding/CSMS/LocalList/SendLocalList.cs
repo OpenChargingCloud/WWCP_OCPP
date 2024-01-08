@@ -23,6 +23,7 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
 
@@ -43,17 +44,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        public async Task<ForwardingDecision<SendLocalListRequest, SendLocalListResponse>>
+        public async Task<ForwardingDecision>
 
-            Forward_SendLocalList(SendLocalListRequest  Request,
-                                  IWebSocketConnection  Connection,
-                                  CancellationToken     CancellationToken   = default)
+            Forward_SendLocalList(OCPP_JSONRequestMessage  JSONRequestMessage,
+                                  IWebSocketConnection     Connection,
+                                  CancellationToken        CancellationToken   = default)
 
         {
 
-            #region Send OnSendLocalListRequest event
+            if (!SendLocalListRequest.TryParse(JSONRequestMessage.Payload,
+                                               JSONRequestMessage.RequestId,
+                                               JSONRequestMessage.DestinationNodeId,
+                                               JSONRequestMessage.NetworkPath,
+                                               out var Request,
+                                               out var errorResponse,
+                                               parentNetworkingNode.OCPP.CustomSendLocalListRequestParser))
+            {
+                return ForwardingDecision.REJECT(errorResponse);
+            }
 
             ForwardingDecision<SendLocalListRequest, SendLocalListResponse>? forwardingDecision = null;
+
+            #region Send OnSendLocalListRequest event
 
             var requestFilter = OnSendLocalListRequest;
             if (requestFilter is not null)
@@ -70,19 +82,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                                                      CancellationToken)).
                                                      ToArray());
 
-                    var response = results.First();
-
-                    forwardingDecision = response.Result == ForwardingResult.REJECT && response.RejectResponse is null
-                                             ? new ForwardingDecision<SendLocalListRequest, SendLocalListResponse>(
-                                                   response.Request,
-                                                   ForwardingResult.REJECT,
-                                                   new SendLocalListResponse(
-                                                       Request,
-                                                       Result.Filtered("Default handler")
-                                                   ),
-                                                   "Default handler"
-                                               )
-                                             : response;
+                    //ToDo: Find a good result!
+                    forwardingDecision = results.First();
 
                 }
                 catch (Exception e)
@@ -100,35 +101,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Default result
 
-            forwardingDecision ??= DefaultResult == ForwardingResult.FORWARD
+            if (forwardingDecision is null && DefaultResult == ForwardingResult.FORWARD)
+                forwardingDecision = new ForwardingDecision<SendLocalListRequest, SendLocalListResponse>(
+                                         Request,
+                                         ForwardingResult.FORWARD
+                                     );
 
-                                       ? new ForwardingDecision<SendLocalListRequest, SendLocalListResponse>(
-                                             Request,
-                                             ForwardingResult.FORWARD
+            if (forwardingDecision is null ||
+               (forwardingDecision.Result == ForwardingResult.REJECT && forwardingDecision.RejectResponse is null))
+            {
+
+                var response = forwardingDecision?.RejectResponse ??
+                                   new SendLocalListResponse(
+                                       Request,
+                                       Result.Filtered(ForwardingDecision.DefaultLogMessage)
+                                   );
+
+                forwardingDecision = new ForwardingDecision<SendLocalListRequest, SendLocalListResponse>(
+                                         Request,
+                                         ForwardingResult.REJECT,
+                                         response,
+                                         response.ToJSON(
+                                             parentNetworkingNode.OCPP.CustomSendLocalListResponseSerializer,
+                                             parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
+                                             parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                             parentNetworkingNode.OCPP.CustomCustomDataSerializer
                                          )
+                                     );
 
-                                       : new ForwardingDecision<SendLocalListRequest, SendLocalListResponse>(
-                                             Request,
-                                             ForwardingResult.REJECT,
-                                             new SendLocalListResponse(
-                                                 Request,
-                                                 Result.Filtered("Default handler")
-                                             ),
-                                             "Default handler"
-                                         );
+            }
 
             #endregion
 
 
-            #region Send OnGetFileRequestLogging event
+            #region Send OnSendLocalListRequestLogging event
 
-            var resultLog = OnSendLocalListRequestLogging;
-            if (resultLog is not null)
+            var logger = OnSendLocalListRequestLogging;
+            if (logger is not null)
             {
                 try
                 {
 
-                    await Task.WhenAll(resultLog.GetInvocationList().
+                    await Task.WhenAll(logger.GetInvocationList().
                                        OfType <OnSendLocalListRequestFilteredDelegate>().
                                        Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
                                                                                          parentNetworkingNode,

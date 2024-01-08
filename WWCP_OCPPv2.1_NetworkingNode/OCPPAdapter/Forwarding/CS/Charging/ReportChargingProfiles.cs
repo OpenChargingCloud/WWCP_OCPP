@@ -23,6 +23,7 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
 
@@ -43,17 +44,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        public async Task<ForwardingDecision<ReportChargingProfilesRequest, ReportChargingProfilesResponse>>
+        public async Task<ForwardingDecision>
 
-            Forward_ReportChargingProfiles(ReportChargingProfilesRequest  Request,
-                                           IWebSocketConnection           Connection,
-                                           CancellationToken              CancellationToken   = default)
+            Forward_ReportChargingProfiles(OCPP_JSONRequestMessage  JSONRequestMessage,
+                                           IWebSocketConnection     Connection,
+                                           CancellationToken        CancellationToken   = default)
 
         {
 
-            #region Send OnReportChargingProfilesRequest event
+            if (!ReportChargingProfilesRequest.TryParse(JSONRequestMessage.Payload,
+                                                        JSONRequestMessage.RequestId,
+                                                        JSONRequestMessage.DestinationNodeId,
+                                                        JSONRequestMessage.NetworkPath,
+                                                        out var Request,
+                                                        out var errorResponse,
+                                                        parentNetworkingNode.OCPP.CustomReportChargingProfilesRequestParser))
+            {
+                return ForwardingDecision.REJECT(errorResponse);
+            }
 
             ForwardingDecision<ReportChargingProfilesRequest, ReportChargingProfilesResponse>? forwardingDecision = null;
+
+            #region Send OnReportChargingProfilesRequest event
 
             var requestFilter = OnReportChargingProfilesRequest;
             if (requestFilter is not null)
@@ -70,19 +82,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                                                      CancellationToken)).
                                                      ToArray());
 
-                    var response = results.First();
-
-                    forwardingDecision = response.Result == ForwardingResult.REJECT && response.RejectResponse is null
-                                             ? new ForwardingDecision<ReportChargingProfilesRequest, ReportChargingProfilesResponse>(
-                                                   response.Request,
-                                                   ForwardingResult.REJECT,
-                                                   new ReportChargingProfilesResponse(
-                                                       Request,
-                                                       Result.Filtered("Default handler")
-                                                   ),
-                                                   "Default handler"
-                                               )
-                                             : response;
+                    //ToDo: Find a good result!
+                    forwardingDecision = results.First();
 
                 }
                 catch (Exception e)
@@ -100,35 +101,47 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Default result
 
-            forwardingDecision ??= DefaultResult == ForwardingResult.FORWARD
+            if (forwardingDecision is null && DefaultResult == ForwardingResult.FORWARD)
+                forwardingDecision = new ForwardingDecision<ReportChargingProfilesRequest, ReportChargingProfilesResponse>(
+                                         Request,
+                                         ForwardingResult.FORWARD
+                                     );
 
-                                       ? new ForwardingDecision<ReportChargingProfilesRequest, ReportChargingProfilesResponse>(
-                                             Request,
-                                             ForwardingResult.FORWARD
+            if (forwardingDecision is null ||
+               (forwardingDecision.Result == ForwardingResult.REJECT && forwardingDecision.RejectResponse is null))
+            {
+
+                var response = forwardingDecision?.RejectResponse ??
+                                   new ReportChargingProfilesResponse(
+                                       Request,
+                                       Result.Filtered(ForwardingDecision.DefaultLogMessage)
+                                   );
+
+                forwardingDecision = new ForwardingDecision<ReportChargingProfilesRequest, ReportChargingProfilesResponse>(
+                                         Request,
+                                         ForwardingResult.REJECT,
+                                         response,
+                                         response.ToJSON(
+                                             parentNetworkingNode.OCPP.CustomReportChargingProfilesResponseSerializer,
+                                             parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                             parentNetworkingNode.OCPP.CustomCustomDataSerializer
                                          )
+                                     );
 
-                                       : new ForwardingDecision<ReportChargingProfilesRequest, ReportChargingProfilesResponse>(
-                                             Request,
-                                             ForwardingResult.REJECT,
-                                             new ReportChargingProfilesResponse(
-                                                 Request,
-                                                 Result.Filtered("Default handler")
-                                             ),
-                                             "Default handler"
-                                         );
+            }
 
             #endregion
 
 
-            #region Send OnGetFileRequestLogging event
+            #region Send OnReportChargingProfilesRequestLogging event
 
-            var resultLog = OnReportChargingProfilesRequestLogging;
-            if (resultLog is not null)
+            var logger = OnReportChargingProfilesRequestLogging;
+            if (logger is not null)
             {
                 try
                 {
 
-                    await Task.WhenAll(resultLog.GetInvocationList().
+                    await Task.WhenAll(logger.GetInvocationList().
                                        OfType <OnReportChargingProfilesRequestFilteredDelegate>().
                                        Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
                                                                                          parentNetworkingNode,

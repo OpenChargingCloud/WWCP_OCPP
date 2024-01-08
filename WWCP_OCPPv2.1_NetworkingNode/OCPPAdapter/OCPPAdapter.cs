@@ -512,6 +512,72 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region CS
 
+        #region BinaryDataStreamsExtensions
+
+        #endregion
+
+        #region Certificates
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  Get15118EVCertificateRequest>?                CustomGet15118EVCertificateRequestParser                 { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.Get15118EVCertificateResponse>?               CustomGet15118EVCertificateResponseParser                { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  GetCertificateStatusRequest>?                 CustomGetCertificateStatusRequestParser                  { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.GetCertificateStatusResponse>?                CustomGetCertificateStatusResponseParser                 { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  GetCRLRequest>?                               CustomGetCRLRequestParser                                { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.GetCRLResponse>?                              CustomGetCRLResponseParser                               { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  SignCertificateRequest>?                      CustomSignCertificateRequestParser                       { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.SignCertificateResponse>?                     CustomSignCertificateResponseParser                      { get; set; }
+
+        #endregion
+
+        #region Charging
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  AuthorizeRequest>?                            CustomAuthorizeRequestParser                             { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.AuthorizeResponse>?                           CustomAuthorizeResponseParser                            { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  ClearedChargingLimitRequest>?                 CustomClearedChargingLimitRequestParser                  { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.ClearedChargingLimitResponse>?                CustomClearedChargingLimitResponseParser                 { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  MeterValuesRequest>?                          CustomMeterValuesRequestParser                           { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.MeterValuesResponse>?                         CustomMeterValuesResponseParser                          { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  NotifyChargingLimitRequest>?                  CustomNotifyChargingLimitRequestParser                   { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.NotifyChargingLimitResponse>?                 CustomNotifyChargingLimitResponseParser                  { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  NotifyEVChargingNeedsRequest>?                CustomNotifyEVChargingNeedsRequestParser                 { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.NotifyEVChargingNeedsResponse>?               CustomNotifyEVChargingNeedsResponseParser                { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  NotifyEVChargingScheduleRequest>?             CustomNotifyEVChargingScheduleRequestParser              { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.NotifyEVChargingScheduleResponse>?            CustomNotifyEVChargingScheduleResponseParser             { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  NotifyPriorityChargingRequest>?               CustomNotifyPriorityChargingRequestParser                { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.NotifyPriorityChargingResponse>?              CustomNotifyPriorityChargingResponseParser               { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  PullDynamicScheduleUpdateRequest>?            CustomPullDynamicScheduleUpdateRequestParser             { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.PullDynamicScheduleUpdateResponse>?           CustomPullDynamicScheduleUpdateResponseParser            { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  ReportChargingProfilesRequest>?               CustomReportChargingProfilesRequestParser                { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.ReportChargingProfilesResponse>?              CustomReportChargingProfilesResponseParser               { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  ReservationStatusUpdateRequest>?              CustomReservationStatusUpdateRequestParser               { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.ReservationStatusUpdateResponse>?             CustomReservationStatusUpdateResponseParser              { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  StatusNotificationRequest>?                   CustomStatusNotificationRequestParser                    { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.StatusNotificationResponse>?                  CustomStatusNotificationResponseParser                   { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  TransactionEventRequest>?                     CustomTransactionEventRequestParser                      { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.TransactionEventResponse>?                    CustomTransactionEventResponseParser                     { get; set; }
+
+        #endregion
+
+        #region Customer
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  NotifyCustomerInformationRequest>?            CustomNotifyCustomerInformationRequestParser             { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.NotifyCustomerInformationResponse>?           CustomNotifyCustomerInformationResponseParser            { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  NotifyDisplayMessagesRequest>?                CustomNotifyDisplayMessagesRequestParser                 { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.NotifyDisplayMessagesResponse>?               CustomNotifyDisplayMessagesResponseParser                { get; set; }
+
+        #endregion
+
+        #region DeviceModel
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  LogStatusNotificationRequest>?                CustomLogStatusNotificationRequestParser                 { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.LogStatusNotificationResponse>?               CustomLogStatusNotificationResponseParser                { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  NotifyEventRequest>?                          CustomNotifyEventRequestParser                           { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.NotifyEventResponse>?                         CustomNotifyEventResponseParser                          { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  NotifyMonitoringReportRequest>?               CustomNotifyMonitoringReportRequestParser                { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.NotifyMonitoringReportResponse>?              CustomNotifyMonitoringReportResponseParser               { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  NotifyReportRequest>?                         CustomNotifyReportRequestParser                          { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.NotifyReportResponse>?                        CustomNotifyReportResponseParser                         { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  SecurityEventNotificationRequest>?            CustomSecurityEventNotificationRequestParser             { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.SecurityEventNotificationResponse>?           CustomSecurityEventNotificationResponseParser            { get; set; }
+
+        #endregion
+
         #region Firmware
 
         public CustomJObjectParserDelegate<OCPPv2_1.CS.  BootNotificationRequest>?                     CustomBootNotificationRequestParser                      { get; set; }
@@ -554,6 +620,140 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public CustomJObjectParserDelegate<OCPPv2_1.CS.  InstallCertificateResponse>?                  CustomInstallCertificateResponseParser                   { get; set; }
         public CustomJObjectParserDelegate<OCPPv2_1.CSMS.NotifyCRLRequest>?                            CustomNotifyCRLRequestParser                             { get; set; }
         public CustomJObjectParserDelegate<OCPPv2_1.CS.  NotifyCRLResponse>?                           CustomNotifyCRLResponseParser                            { get; set; }
+
+        #endregion
+
+        #region Charging
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.CancelReservationRequest>?                    CustomCancelReservationRequestParser                     { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  CancelReservationResponse>?                   CustomCancelReservationResponseParser                    { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.ClearChargingProfileRequest>?                 CustomClearChargingProfileRequestParser                  { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  ClearChargingProfileResponse>?                CustomClearChargingProfileResponseParser                 { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.GetChargingProfilesRequest>?                  CustomGetChargingProfilesRequestParser                   { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  GetChargingProfilesResponse>?                 CustomGetChargingProfilesResponseParser                  { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.GetCompositeScheduleRequest>?                 CustomGetCompositeScheduleRequestParser                  { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  GetCompositeScheduleResponse>?                CustomGetCompositeScheduleResponseParser                 { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.GetTransactionStatusRequest>?                 CustomGetTransactionStatusRequestParser                  { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  GetTransactionStatusResponse>?                CustomGetTransactionStatusResponseParser                 { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.NotifyAllowedEnergyTransferRequest>?          CustomNotifyAllowedEnergyTransferRequestParser           { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  NotifyAllowedEnergyTransferResponse>?         CustomNotifyAllowedEnergyTransferResponseParser          { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.RequestStartTransactionRequest>?              CustomRequestStartTransactionRequestParser               { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  RequestStartTransactionResponse>?             CustomRequestStartTransactionResponseParser              { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.RequestStopTransactionRequest>?               CustomRequestStopTransactionRequestParser                { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  RequestStopTransactionResponse>?              CustomRequestStopTransactionResponseParser               { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.ReserveNowRequest>?                           CustomReserveNowRequestParser                            { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  ReserveNowResponse>?                          CustomReserveNowResponseParser                           { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.SetChargingProfileRequest>?                   CustomSetChargingProfileRequestParser                    { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  SetChargingProfileResponse>?                  CustomSetChargingProfileResponseParser                   { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.UnlockConnectorRequest>?                      CustomUnlockConnectorRequestParser                       { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  UnlockConnectorResponse>?                     CustomUnlockConnectorResponseParser                      { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.UpdateDynamicScheduleRequest>?                CustomUpdateDynamicScheduleRequestParser                 { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  UpdateDynamicScheduleResponse>?               CustomUpdateDynamicScheduleResponseParser                { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.UsePriorityChargingRequest>?                  CustomUsePriorityChargingRequestParser                   { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  UsePriorityChargingResponse>?                 CustomUsePriorityChargingResponseParser                  { get; set; }
+
+        #endregion
+
+        #region Customer
+
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.ClearDisplayMessageRequest>?                  CustomClearDisplayMessageRequestParser                   { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  ClearDisplayMessageResponse>?                 CustomClearDisplayMessageResponseParser                  { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.CostUpdatedRequest>?                          CustomCostUpdatedRequestParser                           { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  CostUpdatedResponse>?                         CustomCostUpdatedResponseParser                          { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.CustomerInformationRequest>?                  CustomCustomerInformationRequestParser                   { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  CustomerInformationResponse>?                 CustomCustomerInformationResponseParser                  { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.GetDisplayMessagesRequest>?                   CustomGetDisplayMessagesRequestParser                    { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  GetDisplayMessagesResponse>?                  CustomGetDisplayMessagesResponseParser                   { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.SetDisplayMessageRequest>?                    CustomSetDisplayMessageRequestParser                     { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  SetDisplayMessageResponse>?                   CustomSetDisplayMessageResponseParser                    { get; set; }
+
+        #endregion
+
+        #region DeviceModel
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.ChangeAvailabilityRequest>?                   CustomChangeAvailabilityRequestParser                    { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  ChangeAvailabilityResponse>?                  CustomChangeAvailabilityResponseParser                   { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.ClearVariableMonitoringRequest>?              CustomClearVariableMonitoringRequestParser               { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  ClearVariableMonitoringResponse>?             CustomClearVariableMonitoringResponseParser              { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.GetBaseReportRequest>?                        CustomGetBaseReportRequestParser                         { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  GetBaseReportResponse>?                       CustomGetBaseReportResponseParser                        { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.GetLogRequest>?                               CustomGetLogRequestParser                                { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  GetLogResponse>?                              CustomGetLogResponseParser                               { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.GetMonitoringReportRequest>?                  CustomGetMonitoringReportRequestParser                   { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  GetMonitoringReportResponse>?                 CustomGetMonitoringReportResponseParser                  { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.GetReportRequest>?                            CustomGetReportRequestParser                             { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  GetReportResponse>?                           CustomGetReportResponseParser                            { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.GetVariablesRequest>?                         CustomGetVariablesRequestParser                          { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  GetVariablesResponse>?                        CustomGetVariablesResponseParser                         { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.SetMonitoringBaseRequest>?                    CustomSetMonitoringBaseRequestParser                     { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  SetMonitoringBaseResponse>?                   CustomSetMonitoringBaseResponseParser                    { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.SetMonitoringLevelRequest>?                   CustomSetMonitoringLevelRequestParser                    { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  SetMonitoringLevelResponse>?                  CustomSetMonitoringLevelResponseParser                   { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.SetNetworkProfileRequest>?                    CustomSetNetworkProfileRequestParser                     { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  SetNetworkProfileResponse>?                   CustomSetNetworkProfileResponseParser                    { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.SetVariableMonitoringRequest>?                CustomSetVariableMonitoringRequestParser                 { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  SetVariableMonitoringResponse>?               CustomSetVariableMonitoringResponseParser                { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.SetVariablesRequest>?                         CustomSetVariablesRequestParser                          { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  SetVariablesResponse>?                        CustomSetVariablesResponseParser                         { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.TriggerMessageRequest>?                       CustomTriggerMessageRequestParser                        { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  TriggerMessageResponse>?                      CustomTriggerMessageResponseParser                       { get; set; }
+
+        #endregion
+
+        #region E2EChargingTariffsExtensions
+
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.GetDefaultChargingTariffRequest>?             CustomGetDefaultChargingTariffRequestParser              { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  GetDefaultChargingTariffResponse>?            CustomGetDefaultChargingTariffResponseParser             { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.RemoveDefaultChargingTariffRequest>?          CustomRemoveDefaultChargingTariffRequestParser           { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  RemoveDefaultChargingTariffResponse>?         CustomRemoveDefaultChargingTariffResponseParser          { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.SetDefaultChargingTariffRequest>?             CustomSetDefaultChargingTariffRequestParser              { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  SetDefaultChargingTariffResponse>?            CustomSetDefaultChargingTariffResponseParser             { get; set; }
+
+        #endregion
+
+        #region E2ESecurityExtensions
+
+        public CustomJObjectParserDelegate<AddSignaturePolicyRequest>?                                 CustomAddSignaturePolicyRequestParser                    { get; set; }
+        public CustomJObjectParserDelegate<AddSignaturePolicyResponse>?                                CustomAddSignaturePolicyResponseParser                   { get; set; }
+        public CustomJObjectParserDelegate<AddUserRoleRequest>?                                        CustomAddUserRoleRequestParser                           { get; set; }
+        public CustomJObjectParserDelegate<AddUserRoleResponse>?                                       CustomAddUserRoleResponseParser                          { get; set; }
+        public CustomJObjectParserDelegate<DeleteSignaturePolicyRequest>?                              CustomDeleteSignaturePolicyRequestParser                 { get; set; }
+        public CustomJObjectParserDelegate<DeleteSignaturePolicyResponse>?                             CustomDeleteSignaturePolicyResponseParser                { get; set; }
+        public CustomJObjectParserDelegate<DeleteUserRoleRequest>?                                     CustomDeleteUserRoleRequestParser                        { get; set; }
+        public CustomJObjectParserDelegate<DeleteUserRoleResponse>?                                    CustomDeleteUserRoleResponseParser                       { get; set; }
+        public CustomJObjectParserDelegate<UpdateSignaturePolicyRequest>?                              CustomUpdateSignaturePolicyRequestParser                 { get; set; }
+        public CustomJObjectParserDelegate<UpdateSignaturePolicyResponse>?                             CustomUpdateSignaturePolicyResponseParser                { get; set; }
+        public CustomJObjectParserDelegate<UpdateUserRoleRequest>?                                     CustomUpdateUserRoleRequestParser                        { get; set; }
+        public CustomJObjectParserDelegate<UpdateUserRoleResponse>?                                    CustomUpdateUserRoleResponseParser                       { get; set; }
+
+        #endregion
+
+        #region Firmware
+
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.PublishFirmwareRequest>?                      CustomPublishFirmwareRequestParser                       { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  PublishFirmwareResponse>?                     CustomPublishFirmwareResponseParser                      { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.ResetRequest>?                                CustomResetRequestParser                                 { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  ResetResponse>?                               CustomResetResponseParser                                { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.UnpublishFirmwareRequest>?                    CustomUnpublishFirmwareRequestParser                     { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  UnpublishFirmwareResponse>?                   CustomUnpublishFirmwareResponseParser                    { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.UpdateFirmwareRequest>?                       CustomUpdateFirmwareRequestParser                        { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  UpdateFirmwareResponse>?                      CustomUpdateFirmwareResponseParser                       { get; set; }
+
+        #endregion
+
+        #region Grid
+
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.AFRRSignalRequest>?                           CustomAFRRSignalRequestParser                            { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  AFRRSignalResponse>?                          CustomAFRRSignalResponseParser                           { get; set; }
+
+        #endregion
+
+        #region LocalList
+
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.ClearCacheRequest>?                           CustomClearCacheRequestParser                            { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  ClearCacheResponse>?                          CustomClearCacheResponseParser                           { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.GetLocalListVersionRequest>?                  CustomGetLocalListVersionRequestParser                   { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  GetLocalListVersionResponse>?                 CustomGetLocalListVersionResponseParser                  { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.SendLocalListRequest>?                        CustomSendLocalListRequestParser                         { get; set; }
+        public CustomJObjectParserDelegate<OCPPv2_1.CS.  SendLocalListResponse>?                       CustomSendLocalListResponseParser                        { get; set; }
 
         #endregion
 

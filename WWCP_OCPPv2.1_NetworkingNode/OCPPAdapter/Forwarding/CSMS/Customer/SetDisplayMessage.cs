@@ -23,6 +23,7 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
 
@@ -43,17 +44,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        public async Task<ForwardingDecision<SetDisplayMessageRequest, SetDisplayMessageResponse>>
+        public async Task<ForwardingDecision>
 
-            Forward_SetDisplayMessage(SetDisplayMessageRequest  Request,
-                                      IWebSocketConnection      Connection,
-                                      CancellationToken         CancellationToken   = default)
+            Forward_SetDisplayMessage(OCPP_JSONRequestMessage  JSONRequestMessage,
+                                      IWebSocketConnection     Connection,
+                                      CancellationToken        CancellationToken   = default)
 
         {
 
-            #region Send OnSetDisplayMessageRequest event
+            if (!SetDisplayMessageRequest.TryParse(JSONRequestMessage.Payload,
+                                                   JSONRequestMessage.RequestId,
+                                                   JSONRequestMessage.DestinationNodeId,
+                                                   JSONRequestMessage.NetworkPath,
+                                                   out var Request,
+                                                   out var errorResponse,
+                                                   parentNetworkingNode.OCPP.CustomSetDisplayMessageRequestParser))
+            {
+                return ForwardingDecision.REJECT(errorResponse);
+            }
 
             ForwardingDecision<SetDisplayMessageRequest, SetDisplayMessageResponse>? forwardingDecision = null;
+
+            #region Send OnSetDisplayMessageRequest event
 
             var requestFilter = OnSetDisplayMessageRequest;
             if (requestFilter is not null)
@@ -70,19 +82,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                                                      CancellationToken)).
                                                      ToArray());
 
-                    var response = results.First();
-
-                    forwardingDecision = response.Result == ForwardingResult.REJECT && response.RejectResponse is null
-                                             ? new ForwardingDecision<SetDisplayMessageRequest, SetDisplayMessageResponse>(
-                                                   response.Request,
-                                                   ForwardingResult.REJECT,
-                                                   new SetDisplayMessageResponse(
-                                                       Request,
-                                                       Result.Filtered("Default handler")
-                                                   ),
-                                                   "Default handler"
-                                               )
-                                             : response;
+                    //ToDo: Find a good result!
+                    forwardingDecision = results.First();
 
                 }
                 catch (Exception e)
@@ -100,35 +101,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Default result
 
-            forwardingDecision ??= DefaultResult == ForwardingResult.FORWARD
+            if (forwardingDecision is null && DefaultResult == ForwardingResult.FORWARD)
+                forwardingDecision = new ForwardingDecision<SetDisplayMessageRequest, SetDisplayMessageResponse>(
+                                         Request,
+                                         ForwardingResult.FORWARD
+                                     );
 
-                                       ? new ForwardingDecision<SetDisplayMessageRequest, SetDisplayMessageResponse>(
-                                             Request,
-                                             ForwardingResult.FORWARD
+            if (forwardingDecision is null ||
+               (forwardingDecision.Result == ForwardingResult.REJECT && forwardingDecision.RejectResponse is null))
+            {
+
+                var response = forwardingDecision?.RejectResponse ??
+                                   new SetDisplayMessageResponse(
+                                       Request,
+                                       Result.Filtered(ForwardingDecision.DefaultLogMessage)
+                                   );
+
+                forwardingDecision = new ForwardingDecision<SetDisplayMessageRequest, SetDisplayMessageResponse>(
+                                         Request,
+                                         ForwardingResult.REJECT,
+                                         response,
+                                         response.ToJSON(
+                                             parentNetworkingNode.OCPP.CustomSetDisplayMessageResponseSerializer,
+                                             parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
+                                             parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                             parentNetworkingNode.OCPP.CustomCustomDataSerializer
                                          )
+                                     );
 
-                                       : new ForwardingDecision<SetDisplayMessageRequest, SetDisplayMessageResponse>(
-                                             Request,
-                                             ForwardingResult.REJECT,
-                                             new SetDisplayMessageResponse(
-                                                 Request,
-                                                 Result.Filtered("Default handler")
-                                             ),
-                                             "Default handler"
-                                         );
+            }
 
             #endregion
 
 
-            #region Send OnGetFileRequestLogging event
+            #region Send OnSetDisplayMessageRequestLogging event
 
-            var resultLog = OnSetDisplayMessageRequestLogging;
-            if (resultLog is not null)
+            var logger = OnSetDisplayMessageRequestLogging;
+            if (logger is not null)
             {
                 try
                 {
 
-                    await Task.WhenAll(resultLog.GetInvocationList().
+                    await Task.WhenAll(logger.GetInvocationList().
                                        OfType <OnSetDisplayMessageRequestFilteredDelegate>().
                                        Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
                                                                                          parentNetworkingNode,

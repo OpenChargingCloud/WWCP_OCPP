@@ -23,6 +23,7 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
 
@@ -43,17 +44,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        public async Task<ForwardingDecision<CustomerInformationRequest, CustomerInformationResponse>>
+        public async Task<ForwardingDecision>
 
-            Forward_CustomerInformation(CustomerInformationRequest  Request,
-                                        IWebSocketConnection        Connection,
-                                        CancellationToken           CancellationToken   = default)
+            Forward_CustomerInformation(OCPP_JSONRequestMessage  JSONRequestMessage,
+                                        IWebSocketConnection     Connection,
+                                        CancellationToken        CancellationToken   = default)
 
         {
 
-            #region Send OnCustomerInformationRequest event
+            if (!CustomerInformationRequest.TryParse(JSONRequestMessage.Payload,
+                                                     JSONRequestMessage.RequestId,
+                                                     JSONRequestMessage.DestinationNodeId,
+                                                     JSONRequestMessage.NetworkPath,
+                                                     out var Request,
+                                                     out var errorResponse,
+                                                     parentNetworkingNode.OCPP.CustomCustomerInformationRequestParser))
+            {
+                return ForwardingDecision.REJECT(errorResponse);
+            }
 
             ForwardingDecision<CustomerInformationRequest, CustomerInformationResponse>? forwardingDecision = null;
+
+            #region Send OnCustomerInformationRequest event
 
             var requestFilter = OnCustomerInformationRequest;
             if (requestFilter is not null)
@@ -70,19 +82,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                                                      CancellationToken)).
                                                      ToArray());
 
-                    var response = results.First();
-
-                    forwardingDecision = response.Result == ForwardingResult.REJECT && response.RejectResponse is null
-                                             ? new ForwardingDecision<CustomerInformationRequest, CustomerInformationResponse>(
-                                                   response.Request,
-                                                   ForwardingResult.REJECT,
-                                                   new CustomerInformationResponse(
-                                                       Request,
-                                                       Result.Filtered("Default handler")
-                                                   ),
-                                                   "Default handler"
-                                               )
-                                             : response;
+                    //ToDo: Find a good result!
+                    forwardingDecision = results.First();
 
                 }
                 catch (Exception e)
@@ -100,35 +101,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Default result
 
-            forwardingDecision ??= DefaultResult == ForwardingResult.FORWARD
+            if (forwardingDecision is null && DefaultResult == ForwardingResult.FORWARD)
+                forwardingDecision = new ForwardingDecision<CustomerInformationRequest, CustomerInformationResponse>(
+                                         Request,
+                                         ForwardingResult.FORWARD
+                                     );
 
-                                       ? new ForwardingDecision<CustomerInformationRequest, CustomerInformationResponse>(
-                                             Request,
-                                             ForwardingResult.FORWARD
+            if (forwardingDecision is null ||
+               (forwardingDecision.Result == ForwardingResult.REJECT && forwardingDecision.RejectResponse is null))
+            {
+
+                var response = forwardingDecision?.RejectResponse ??
+                                   new CustomerInformationResponse(
+                                       Request,
+                                       Result.Filtered(ForwardingDecision.DefaultLogMessage)
+                                   );
+
+                forwardingDecision = new ForwardingDecision<CustomerInformationRequest, CustomerInformationResponse>(
+                                         Request,
+                                         ForwardingResult.REJECT,
+                                         response,
+                                         response.ToJSON(
+                                             parentNetworkingNode.OCPP.CustomCustomerInformationResponseSerializer,
+                                             parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
+                                             parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                             parentNetworkingNode.OCPP.CustomCustomDataSerializer
                                          )
+                                     );
 
-                                       : new ForwardingDecision<CustomerInformationRequest, CustomerInformationResponse>(
-                                             Request,
-                                             ForwardingResult.REJECT,
-                                             new CustomerInformationResponse(
-                                                 Request,
-                                                 Result.Filtered("Default handler")
-                                             ),
-                                             "Default handler"
-                                         );
+            }
 
             #endregion
 
 
-            #region Send OnGetFileRequestLogging event
+            #region Send OnCustomerInformationRequestLogging event
 
-            var resultLog = OnCustomerInformationRequestLogging;
-            if (resultLog is not null)
+            var logger = OnCustomerInformationRequestLogging;
+            if (logger is not null)
             {
                 try
                 {
 
-                    await Task.WhenAll(resultLog.GetInvocationList().
+                    await Task.WhenAll(logger.GetInvocationList().
                                        OfType <OnCustomerInformationRequestFilteredDelegate>().
                                        Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
                                                                                          parentNetworkingNode,

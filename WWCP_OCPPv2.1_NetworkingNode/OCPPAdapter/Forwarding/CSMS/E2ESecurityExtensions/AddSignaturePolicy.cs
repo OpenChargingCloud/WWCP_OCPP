@@ -23,6 +23,7 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.CS;
 using cloud.charging.open.protocols.OCPP.CSMS;
+using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
 
@@ -43,17 +44,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        public async Task<ForwardingDecision<AddSignaturePolicyRequest, AddSignaturePolicyResponse>>
+        public async Task<ForwardingDecision>
 
-            Forward_AddSignaturePolicy(AddSignaturePolicyRequest  Request,
-                                       IWebSocketConnection       Connection,
-                                       CancellationToken          CancellationToken   = default)
+            Forward_AddSignaturePolicy(OCPP_JSONRequestMessage  JSONRequestMessage,
+                                       IWebSocketConnection     Connection,
+                                       CancellationToken        CancellationToken   = default)
 
         {
 
-            #region Send OnAddSignaturePolicyRequest event
+            if (!AddSignaturePolicyRequest.TryParse(JSONRequestMessage.Payload,
+                                                    JSONRequestMessage.RequestId,
+                                                    JSONRequestMessage.DestinationNodeId,
+                                                    JSONRequestMessage.NetworkPath,
+                                                    out var Request,
+                                                    out var errorResponse,
+                                                    parentNetworkingNode.OCPP.CustomAddSignaturePolicyRequestParser))
+            {
+                return ForwardingDecision.REJECT(errorResponse);
+            }
 
             ForwardingDecision<AddSignaturePolicyRequest, AddSignaturePolicyResponse>? forwardingDecision = null;
+
+            #region Send OnAddSignaturePolicyRequest event
 
             var requestFilter = OnAddSignaturePolicyRequest;
             if (requestFilter is not null)
@@ -70,19 +82,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                                                      CancellationToken)).
                                                      ToArray());
 
-                    var response = results.First();
-
-                    forwardingDecision = response.Result == ForwardingResult.REJECT && response.RejectResponse is null
-                                             ? new ForwardingDecision<AddSignaturePolicyRequest, AddSignaturePolicyResponse>(
-                                                   response.Request,
-                                                   ForwardingResult.REJECT,
-                                                   new AddSignaturePolicyResponse(
-                                                       Request,
-                                                       Result.Filtered("Default handler")
-                                                   ),
-                                                   "Default handler"
-                                               )
-                                             : response;
+                    //ToDo: Find a good result!
+                    forwardingDecision = results.First();
 
                 }
                 catch (Exception e)
@@ -100,35 +101,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Default result
 
-            forwardingDecision ??= DefaultResult == ForwardingResult.FORWARD
+            if (forwardingDecision is null && DefaultResult == ForwardingResult.FORWARD)
+                forwardingDecision = new ForwardingDecision<AddSignaturePolicyRequest, AddSignaturePolicyResponse>(
+                                         Request,
+                                         ForwardingResult.FORWARD
+                                     );
 
-                                       ? new ForwardingDecision<AddSignaturePolicyRequest, AddSignaturePolicyResponse>(
-                                             Request,
-                                             ForwardingResult.FORWARD
+            if (forwardingDecision is null ||
+               (forwardingDecision.Result == ForwardingResult.REJECT && forwardingDecision.RejectResponse is null))
+            {
+
+                var response = forwardingDecision?.RejectResponse ??
+                                   new AddSignaturePolicyResponse(
+                                       Request,
+                                       Result.Filtered(ForwardingDecision.DefaultLogMessage)
+                                   );
+
+                forwardingDecision = new ForwardingDecision<AddSignaturePolicyRequest, AddSignaturePolicyResponse>(
+                                         Request,
+                                         ForwardingResult.REJECT,
+                                         response,
+                                         response.ToJSON(
+                                             parentNetworkingNode.OCPP.CustomAddSignaturePolicyResponseSerializer,
+                                             parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
+                                             parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                             parentNetworkingNode.OCPP.CustomCustomDataSerializer
                                          )
+                                     );
 
-                                       : new ForwardingDecision<AddSignaturePolicyRequest, AddSignaturePolicyResponse>(
-                                             Request,
-                                             ForwardingResult.REJECT,
-                                             new AddSignaturePolicyResponse(
-                                                 Request,
-                                                 Result.Filtered("Default handler")
-                                             ),
-                                             "Default handler"
-                                         );
+            }
 
             #endregion
 
 
-            #region Send OnGetFileRequestLogging event
+            #region Send OnAddSignaturePolicyRequestLogging event
 
-            var resultLog = OnAddSignaturePolicyRequestLogging;
-            if (resultLog is not null)
+            var logger = OnAddSignaturePolicyRequestLogging;
+            if (logger is not null)
             {
                 try
                 {
 
-                    await Task.WhenAll(resultLog.GetInvocationList().
+                    await Task.WhenAll(logger.GetInvocationList().
                                        OfType <OnAddSignaturePolicyRequestFilteredDelegate>().
                                        Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
                                                                                          parentNetworkingNode,

@@ -23,6 +23,7 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
 
@@ -43,17 +44,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        public async Task<ForwardingDecision<SetMonitoringLevelRequest, SetMonitoringLevelResponse>>
+        public async Task<ForwardingDecision>
 
-            Forward_SetMonitoringLevel(SetMonitoringLevelRequest  Request,
-                                       IWebSocketConnection       Connection,
-                                       CancellationToken          CancellationToken   = default)
+            Forward_SetMonitoringLevel(OCPP_JSONRequestMessage  JSONRequestMessage,
+                                       IWebSocketConnection     Connection,
+                                       CancellationToken        CancellationToken   = default)
 
         {
 
-            #region Send OnSetMonitoringLevelRequest event
+            if (!SetMonitoringLevelRequest.TryParse(JSONRequestMessage.Payload,
+                                                    JSONRequestMessage.RequestId,
+                                                    JSONRequestMessage.DestinationNodeId,
+                                                    JSONRequestMessage.NetworkPath,
+                                                    out var Request,
+                                                    out var errorResponse,
+                                                    parentNetworkingNode.OCPP.CustomSetMonitoringLevelRequestParser))
+            {
+                return ForwardingDecision.REJECT(errorResponse);
+            }
 
             ForwardingDecision<SetMonitoringLevelRequest, SetMonitoringLevelResponse>? forwardingDecision = null;
+
+            #region Send OnSetMonitoringLevelRequest event
 
             var requestFilter = OnSetMonitoringLevelRequest;
             if (requestFilter is not null)
@@ -70,19 +82,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                                                      CancellationToken)).
                                                      ToArray());
 
-                    var response = results.First();
-
-                    forwardingDecision = response.Result == ForwardingResult.REJECT && response.RejectResponse is null
-                                             ? new ForwardingDecision<SetMonitoringLevelRequest, SetMonitoringLevelResponse>(
-                                                   response.Request,
-                                                   ForwardingResult.REJECT,
-                                                   new SetMonitoringLevelResponse(
-                                                       Request,
-                                                       Result.Filtered("Default handler")
-                                                   ),
-                                                   "Default handler"
-                                               )
-                                             : response;
+                    //ToDo: Find a good result!
+                    forwardingDecision = results.First();
 
                 }
                 catch (Exception e)
@@ -100,35 +101,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Default result
 
-            forwardingDecision ??= DefaultResult == ForwardingResult.FORWARD
+            if (forwardingDecision is null && DefaultResult == ForwardingResult.FORWARD)
+                forwardingDecision = new ForwardingDecision<SetMonitoringLevelRequest, SetMonitoringLevelResponse>(
+                                         Request,
+                                         ForwardingResult.FORWARD
+                                     );
 
-                                       ? new ForwardingDecision<SetMonitoringLevelRequest, SetMonitoringLevelResponse>(
-                                             Request,
-                                             ForwardingResult.FORWARD
+            if (forwardingDecision is null ||
+               (forwardingDecision.Result == ForwardingResult.REJECT && forwardingDecision.RejectResponse is null))
+            {
+
+                var response = forwardingDecision?.RejectResponse ??
+                                   new SetMonitoringLevelResponse(
+                                       Request,
+                                       Result.Filtered(ForwardingDecision.DefaultLogMessage)
+                                   );
+
+                forwardingDecision = new ForwardingDecision<SetMonitoringLevelRequest, SetMonitoringLevelResponse>(
+                                         Request,
+                                         ForwardingResult.REJECT,
+                                         response,
+                                         response.ToJSON(
+                                             parentNetworkingNode.OCPP.CustomSetMonitoringLevelResponseSerializer,
+                                             parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
+                                             parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                             parentNetworkingNode.OCPP.CustomCustomDataSerializer
                                          )
+                                     );
 
-                                       : new ForwardingDecision<SetMonitoringLevelRequest, SetMonitoringLevelResponse>(
-                                             Request,
-                                             ForwardingResult.REJECT,
-                                             new SetMonitoringLevelResponse(
-                                                 Request,
-                                                 Result.Filtered("Default handler")
-                                             ),
-                                             "Default handler"
-                                         );
+            }
 
             #endregion
 
 
-            #region Send OnGetFileRequestLogging event
+            #region Send OnSetMonitoringLevelRequestLogging event
 
-            var resultLog = OnSetMonitoringLevelRequestLogging;
-            if (resultLog is not null)
+            var logger = OnSetMonitoringLevelRequestLogging;
+            if (logger is not null)
             {
                 try
                 {
 
-                    await Task.WhenAll(resultLog.GetInvocationList().
+                    await Task.WhenAll(logger.GetInvocationList().
                                        OfType <OnSetMonitoringLevelRequestFilteredDelegate>().
                                        Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
                                                                                          parentNetworkingNode,

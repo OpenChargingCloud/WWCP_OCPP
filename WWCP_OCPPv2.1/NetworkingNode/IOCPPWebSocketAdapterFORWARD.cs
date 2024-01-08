@@ -3650,41 +3650,41 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
         #region Certificates
-        Task<ForwardingDecision<Get15118EVCertificateRequest,             Get15118EVCertificateResponse>>              Forward_Get15118EVCertificate             (Get15118EVCertificateRequest             Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<GetCertificateStatusRequest,              GetCertificateStatusResponse>>               Forward_GetCertificateStatus              (GetCertificateStatusRequest              Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<GetCRLRequest,                            GetCRLResponse>>                             Forward_GetCRL                            (GetCRLRequest                            Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<SignCertificateRequest,                   SignCertificateResponse>>                    Forward_SignCertificate                   (SignCertificateRequest                   Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_Get15118EVCertificate             (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_GetCertificateStatus              (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_GetCRL                            (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_SignCertificate                   (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
 
         #endregion
 
         #region Charging
-        Task<ForwardingDecision<AuthorizeRequest,                         AuthorizeResponse>>                          Forward_Authorize                         (AuthorizeRequest                         Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<ClearedChargingLimitRequest,              ClearedChargingLimitResponse>>               Forward_ClearedChargingLimit              (ClearedChargingLimitRequest              Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<MeterValuesRequest,                       MeterValuesResponse>>                        Forward_MeterValues                       (MeterValuesRequest                       Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<NotifyChargingLimitRequest,               NotifyChargingLimitResponse>>                Forward_NotifyChargingLimit               (NotifyChargingLimitRequest               Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<NotifyEVChargingNeedsRequest,             NotifyEVChargingNeedsResponse>>              Forward_NotifyEVChargingNeeds             (NotifyEVChargingNeedsRequest             Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<NotifyEVChargingScheduleRequest,          NotifyEVChargingScheduleResponse>>           Forward_NotifyEVChargingSchedule          (NotifyEVChargingScheduleRequest          Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<NotifyPriorityChargingRequest,            NotifyPriorityChargingResponse>>             Forward_NotifyPriorityCharging            (NotifyPriorityChargingRequest            Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<PullDynamicScheduleUpdateRequest,         PullDynamicScheduleUpdateResponse>>          Forward_PullDynamicScheduleUpdate         (PullDynamicScheduleUpdateRequest         Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<ReportChargingProfilesRequest,            ReportChargingProfilesResponse>>             Forward_ReportChargingProfiles            (ReportChargingProfilesRequest            Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<ReservationStatusUpdateRequest,           ReservationStatusUpdateResponse>>            Forward_ReservationStatusUpdate           (ReservationStatusUpdateRequest           Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<StatusNotificationRequest,                StatusNotificationResponse>>                 Forward_StatusNotification                (StatusNotificationRequest                Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<TransactionEventRequest,                  TransactionEventResponse>>                   Forward_TransactionEvent                  (TransactionEventRequest                  Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_Authorize                         (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_ClearedChargingLimit              (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_MeterValues                       (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_NotifyChargingLimit               (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_NotifyEVChargingNeeds             (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_NotifyEVChargingSchedule          (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_NotifyPriorityCharging            (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_PullDynamicScheduleUpdate         (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_ReportChargingProfiles            (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_ReservationStatusUpdate           (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_StatusNotification                (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_TransactionEvent                  (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
 
         #endregion
 
         #region Customer
-        Task<ForwardingDecision<NotifyCustomerInformationRequest,         NotifyCustomerInformationResponse>>          Forward_NotifyCustomerInformation         (NotifyCustomerInformationRequest         Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<NotifyDisplayMessagesRequest,             NotifyDisplayMessagesResponse>>              Forward_NotifyDisplayMessages             (NotifyDisplayMessagesRequest             Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_NotifyCustomerInformation         (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_NotifyDisplayMessages             (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
 
         #endregion
 
         #region DeviceModel
-        Task<ForwardingDecision<LogStatusNotificationRequest,             LogStatusNotificationResponse>>              Forward_LogStatusNotification             (LogStatusNotificationRequest             Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<NotifyEventRequest,                       NotifyEventResponse>>                        Forward_NotifyEvent                       (NotifyEventRequest                       Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<NotifyMonitoringReportRequest,            NotifyMonitoringReportResponse>>             Forward_NotifyMonitoringReport            (NotifyMonitoringReportRequest            Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<NotifyReportRequest,                      NotifyReportResponse>>                       Forward_NotifyReport                      (NotifyReportRequest                      Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<SecurityEventNotificationRequest,         SecurityEventNotificationResponse>>          Forward_SecurityEventNotification         (SecurityEventNotificationRequest         Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_LogStatusNotification             (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_NotifyEvent                       (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_NotifyMonitoringReport            (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_NotifyReport                      (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_SecurityEventNotification         (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
 
         #endregion
 
@@ -3721,87 +3721,87 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Charging
 
-        Task<ForwardingDecision<CancelReservationRequest,                 CancelReservationResponse>>                  Forward_CancelReservation                 (CancelReservationRequest                 Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<ClearChargingProfileRequest,              ClearChargingProfileResponse>>               Forward_ClearChargingProfile              (ClearChargingProfileRequest              Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<GetChargingProfilesRequest,               GetChargingProfilesResponse>>                Forward_GetChargingProfiles               (GetChargingProfilesRequest               Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<GetCompositeScheduleRequest,              GetCompositeScheduleResponse>>               Forward_GetCompositeSchedule              (GetCompositeScheduleRequest              Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<GetTransactionStatusRequest,              GetTransactionStatusResponse>>               Forward_GetTransactionStatus              (GetTransactionStatusRequest              Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<NotifyAllowedEnergyTransferRequest,       NotifyAllowedEnergyTransferResponse>>        Forward_NotifyAllowedEnergyTransfer       (NotifyAllowedEnergyTransferRequest       Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<RequestStartTransactionRequest,           RequestStartTransactionResponse>>            Forward_RequestStartTransaction           (RequestStartTransactionRequest           Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<RequestStopTransactionRequest,            RequestStopTransactionResponse>>             Forward_RequestStopTransaction            (RequestStopTransactionRequest            Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<ReserveNowRequest,                        ReserveNowResponse>>                         Forward_ReserveNow                        (ReserveNowRequest                        Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<SetChargingProfileRequest,                SetChargingProfileResponse>>                 Forward_SetChargingProfile                (SetChargingProfileRequest                Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<UnlockConnectorRequest,                   UnlockConnectorResponse>>                    Forward_UnlockConnector                   (UnlockConnectorRequest                   Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<UpdateDynamicScheduleRequest,             UpdateDynamicScheduleResponse>>              Forward_UpdateDynamicSchedule             (UpdateDynamicScheduleRequest             Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<UsePriorityChargingRequest,               UsePriorityChargingResponse>>                Forward_UsePriorityCharging               (UsePriorityChargingRequest               Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_CancelReservation                 (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_ClearChargingProfile              (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_GetChargingProfiles               (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_GetCompositeSchedule              (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_GetTransactionStatus              (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_NotifyAllowedEnergyTransfer       (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_RequestStartTransaction           (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_RequestStopTransaction            (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_ReserveNow                        (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_SetChargingProfile                (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_UnlockConnector                   (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_UpdateDynamicSchedule             (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_UsePriorityCharging               (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
 
         #endregion
 
         #region Customer
 
-        Task<ForwardingDecision<ClearDisplayMessageRequest,               ClearDisplayMessageResponse>>                Forward_ClearDisplayMessage               (ClearDisplayMessageRequest               Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<CostUpdatedRequest,                       CostUpdatedResponse>>                        Forward_CostUpdated                       (CostUpdatedRequest                       Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<CustomerInformationRequest,               CustomerInformationResponse>>                Forward_CustomerInformation               (CustomerInformationRequest               Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<GetDisplayMessagesRequest,                GetDisplayMessagesResponse>>                 Forward_GetDisplayMessages                (GetDisplayMessagesRequest                Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<SetDisplayMessageRequest,                 SetDisplayMessageResponse>>                  Forward_SetDisplayMessage                 (SetDisplayMessageRequest                 Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_ClearDisplayMessage               (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_CostUpdated                       (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_CustomerInformation               (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_GetDisplayMessages                (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_SetDisplayMessage                 (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
 
         #endregion
 
         #region DeviceModel
-        Task<ForwardingDecision<ChangeAvailabilityRequest,                ChangeAvailabilityResponse>>                 Forward_ChangeAvailability                (ChangeAvailabilityRequest                Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<ClearVariableMonitoringRequest,           ClearVariableMonitoringResponse>>            Forward_ClearVariableMonitoring           (ClearVariableMonitoringRequest           Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<GetBaseReportRequest,                     GetBaseReportResponse>>                      Forward_GetBaseReport                     (GetBaseReportRequest                     Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<GetLogRequest,                            GetLogResponse>>                             Forward_GetLog                            (GetLogRequest                            Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<GetMonitoringReportRequest,               GetMonitoringReportResponse>>                Forward_GetMonitoringReport               (GetMonitoringReportRequest               Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<GetReportRequest,                         GetReportResponse>>                          Forward_GetReport                         (GetReportRequest                         Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<GetVariablesRequest,                      GetVariablesResponse>>                       Forward_GetVariables                      (GetVariablesRequest                      Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<SetMonitoringBaseRequest,                 SetMonitoringBaseResponse>>                  Forward_SetMonitoringBase                 (SetMonitoringBaseRequest                 Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<SetMonitoringLevelRequest,                SetMonitoringLevelResponse>>                 Forward_SetMonitoringLevel                (SetMonitoringLevelRequest                Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<SetNetworkProfileRequest,                 SetNetworkProfileResponse>>                  Forward_SetNetworkProfile                 (SetNetworkProfileRequest                 Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<SetVariableMonitoringRequest,             SetVariableMonitoringResponse>>              Forward_SetVariableMonitoring             (SetVariableMonitoringRequest             Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<SetVariablesRequest,                      SetVariablesResponse>>                       Forward_SetVariables                      (SetVariablesRequest                      Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<TriggerMessageRequest,                    TriggerMessageResponse>>                     Forward_TriggerMessage                    (TriggerMessageRequest                    Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_ChangeAvailability                (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_ClearVariableMonitoring           (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_GetBaseReport                     (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_GetLog                            (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_GetMonitoringReport               (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_GetReport                         (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_GetVariables                      (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_SetMonitoringBase                 (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_SetMonitoringLevel                (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_SetNetworkProfile                 (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_SetVariableMonitoring             (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_SetVariables                      (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_TriggerMessage                    (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
 
         #endregion
 
         #region E2EChargingTariffsExtensions
 
-        Task<ForwardingDecision<GetDefaultChargingTariffRequest,          GetDefaultChargingTariffResponse>>           Forward_GetDefaultChargingTariff          (GetDefaultChargingTariffRequest          Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<RemoveDefaultChargingTariffRequest,       RemoveDefaultChargingTariffResponse>>        Forward_RemoveDefaultChargingTariff       (RemoveDefaultChargingTariffRequest       Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<SetDefaultChargingTariffRequest,          SetDefaultChargingTariffResponse>>           Forward_SetDefaultChargingTariff          (SetDefaultChargingTariffRequest          Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_GetDefaultChargingTariff          (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_RemoveDefaultChargingTariff       (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_SetDefaultChargingTariff          (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
 
         #endregion
 
         #region E2ESecurityExtensions
 
-        Task<ForwardingDecision<AddSignaturePolicyRequest,                AddSignaturePolicyResponse>>                 Forward_AddSignaturePolicy                (AddSignaturePolicyRequest                Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<AddUserRoleRequest,                       AddUserRoleResponse>>                        Forward_AddUserRole                       (AddUserRoleRequest                       Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<DeleteSignaturePolicyRequest,             DeleteSignaturePolicyResponse>>              Forward_DeleteSignaturePolicy             (DeleteSignaturePolicyRequest             Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<DeleteUserRoleRequest,                    DeleteUserRoleResponse>>                     Forward_DeleteUserRole                    (DeleteUserRoleRequest                    Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<UpdateSignaturePolicyRequest,             UpdateSignaturePolicyResponse>>              Forward_UpdateSignaturePolicy             (UpdateSignaturePolicyRequest             Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<UpdateUserRoleRequest,                    UpdateUserRoleResponse>>                     Forward_UpdateUserRole                    (UpdateUserRoleRequest                    Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_AddSignaturePolicy                (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_AddUserRole                       (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_DeleteSignaturePolicy             (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_DeleteUserRole                    (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_UpdateSignaturePolicy             (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_UpdateUserRole                    (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
 
         #endregion
 
         #region Firmware
 
-        Task<ForwardingDecision<PublishFirmwareRequest,                   PublishFirmwareResponse>>                    Forward_PublishFirmware                   (PublishFirmwareRequest                   Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<ResetRequest,                             ResetResponse>>                              Forward_Reset                             (ResetRequest                             Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<UnpublishFirmwareRequest,                 UnpublishFirmwareResponse>>                  Forward_UnpublishFirmware                 (UnpublishFirmwareRequest                 Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<UpdateFirmwareRequest,                    UpdateFirmwareResponse>>                     Forward_UpdateFirmware                    (UpdateFirmwareRequest                    Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_PublishFirmware                   (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_Reset                             (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_UnpublishFirmware                 (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_UpdateFirmware                    (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
 
         #endregion
 
         #region Grid
-        Task<ForwardingDecision<AFRRSignalRequest,                        AFRRSignalResponse>>                         Forward_AFRRSignal                        (AFRRSignalRequest                        Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_AFRRSignal                        (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
 
         #endregion
 
         #region LocalList
 
-        Task<ForwardingDecision<ClearCacheRequest,                        ClearCacheResponse>>                         Forward_ClearCache                        (ClearCacheRequest                        Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<GetLocalListVersionRequest,               GetLocalListVersionResponse>>                Forward_GetLocalListVersion               (GetLocalListVersionRequest               Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<SendLocalListRequest,                     SendLocalListResponse>>                      Forward_SendLocalList                     (SendLocalListRequest                     Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_ClearCache                        (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_GetLocalListVersion               (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_SendLocalList                     (OCPP_JSONRequestMessage   JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
 
         #endregion
 

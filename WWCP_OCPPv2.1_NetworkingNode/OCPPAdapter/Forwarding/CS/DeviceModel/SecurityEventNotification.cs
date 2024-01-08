@@ -23,6 +23,7 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
 
@@ -43,17 +44,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        public async Task<ForwardingDecision<SecurityEventNotificationRequest, SecurityEventNotificationResponse>>
+        public async Task<ForwardingDecision>
 
-            Forward_SecurityEventNotification(SecurityEventNotificationRequest  Request,
-                                              IWebSocketConnection              Connection,
-                                              CancellationToken                 CancellationToken   = default)
+            Forward_SecurityEventNotification(OCPP_JSONRequestMessage  JSONRequestMessage,
+                                              IWebSocketConnection     Connection,
+                                              CancellationToken        CancellationToken   = default)
 
         {
 
-            #region Send OnSecurityEventNotificationRequest event
+            if (!SecurityEventNotificationRequest.TryParse(JSONRequestMessage.Payload,
+                                                           JSONRequestMessage.RequestId,
+                                                           JSONRequestMessage.DestinationNodeId,
+                                                           JSONRequestMessage.NetworkPath,
+                                                           out var Request,
+                                                           out var errorResponse,
+                                                           parentNetworkingNode.OCPP.CustomSecurityEventNotificationRequestParser))
+            {
+                return ForwardingDecision.REJECT(errorResponse);
+            }
 
             ForwardingDecision<SecurityEventNotificationRequest, SecurityEventNotificationResponse>? forwardingDecision = null;
+
+            #region Send OnSecurityEventNotificationRequest event
 
             var requestFilter = OnSecurityEventNotificationRequest;
             if (requestFilter is not null)
@@ -70,19 +82,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                                                      CancellationToken)).
                                                      ToArray());
 
-                    var response = results.First();
-
-                    forwardingDecision = response.Result == ForwardingResult.REJECT && response.RejectResponse is null
-                                             ? new ForwardingDecision<SecurityEventNotificationRequest, SecurityEventNotificationResponse>(
-                                                   response.Request,
-                                                   ForwardingResult.REJECT,
-                                                   new SecurityEventNotificationResponse(
-                                                       Request,
-                                                       Result.Filtered("Default handler")
-                                                   ),
-                                                   "Default handler"
-                                               )
-                                             : response;
+                    //ToDo: Find a good result!
+                    forwardingDecision = results.First();
 
                 }
                 catch (Exception e)
@@ -100,35 +101,47 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Default result
 
-            forwardingDecision ??= DefaultResult == ForwardingResult.FORWARD
+            if (forwardingDecision is null && DefaultResult == ForwardingResult.FORWARD)
+                forwardingDecision = new ForwardingDecision<SecurityEventNotificationRequest, SecurityEventNotificationResponse>(
+                                         Request,
+                                         ForwardingResult.FORWARD
+                                     );
 
-                                       ? new ForwardingDecision<SecurityEventNotificationRequest, SecurityEventNotificationResponse>(
-                                             Request,
-                                             ForwardingResult.FORWARD
+            if (forwardingDecision is null ||
+               (forwardingDecision.Result == ForwardingResult.REJECT && forwardingDecision.RejectResponse is null))
+            {
+
+                var response = forwardingDecision?.RejectResponse ??
+                                   new SecurityEventNotificationResponse(
+                                       Request,
+                                       Result.Filtered(ForwardingDecision.DefaultLogMessage)
+                                   );
+
+                forwardingDecision = new ForwardingDecision<SecurityEventNotificationRequest, SecurityEventNotificationResponse>(
+                                         Request,
+                                         ForwardingResult.REJECT,
+                                         response,
+                                         response.ToJSON(
+                                             parentNetworkingNode.OCPP.CustomSecurityEventNotificationResponseSerializer,
+                                             parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                             parentNetworkingNode.OCPP.CustomCustomDataSerializer
                                          )
+                                     );
 
-                                       : new ForwardingDecision<SecurityEventNotificationRequest, SecurityEventNotificationResponse>(
-                                             Request,
-                                             ForwardingResult.REJECT,
-                                             new SecurityEventNotificationResponse(
-                                                 Request,
-                                                 Result.Filtered("Default handler")
-                                             ),
-                                             "Default handler"
-                                         );
+            }
 
             #endregion
 
 
-            #region Send OnGetFileRequestLogging event
+            #region Send OnSecurityEventNotificationRequestLogging event
 
-            var resultLog = OnSecurityEventNotificationRequestLogging;
-            if (resultLog is not null)
+            var logger = OnSecurityEventNotificationRequestLogging;
+            if (logger is not null)
             {
                 try
                 {
 
-                    await Task.WhenAll(resultLog.GetInvocationList().
+                    await Task.WhenAll(logger.GetInvocationList().
                                        OfType <OnSecurityEventNotificationRequestFilteredDelegate>().
                                        Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
                                                                                          parentNetworkingNode,

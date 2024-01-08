@@ -23,6 +23,7 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
 
@@ -43,17 +44,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        public async Task<ForwardingDecision<NotifyPriorityChargingRequest, NotifyPriorityChargingResponse>>
+        public async Task<ForwardingDecision>
 
-            Forward_NotifyPriorityCharging(NotifyPriorityChargingRequest  Request,
-                                           IWebSocketConnection           Connection,
-                                           CancellationToken              CancellationToken   = default)
+            Forward_NotifyPriorityCharging(OCPP_JSONRequestMessage  JSONRequestMessage,
+                                           IWebSocketConnection     Connection,
+                                           CancellationToken        CancellationToken   = default)
 
         {
 
-            #region Send OnNotifyPriorityChargingRequest event
+            if (!NotifyPriorityChargingRequest.TryParse(JSONRequestMessage.Payload,
+                                                        JSONRequestMessage.RequestId,
+                                                        JSONRequestMessage.DestinationNodeId,
+                                                        JSONRequestMessage.NetworkPath,
+                                                        out var Request,
+                                                        out var errorResponse,
+                                                        parentNetworkingNode.OCPP.CustomNotifyPriorityChargingRequestParser))
+            {
+                return ForwardingDecision.REJECT(errorResponse);
+            }
 
             ForwardingDecision<NotifyPriorityChargingRequest, NotifyPriorityChargingResponse>? forwardingDecision = null;
+
+            #region Send OnNotifyPriorityChargingRequest event
 
             var requestFilter = OnNotifyPriorityChargingRequest;
             if (requestFilter is not null)
@@ -70,19 +82,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                                                      CancellationToken)).
                                                      ToArray());
 
-                    var response = results.First();
-
-                    forwardingDecision = response.Result == ForwardingResult.REJECT && response.RejectResponse is null
-                                             ? new ForwardingDecision<NotifyPriorityChargingRequest, NotifyPriorityChargingResponse>(
-                                                   response.Request,
-                                                   ForwardingResult.REJECT,
-                                                   new NotifyPriorityChargingResponse(
-                                                       Request,
-                                                       Result.Filtered("Default handler")
-                                                   ),
-                                                   "Default handler"
-                                               )
-                                             : response;
+                    //ToDo: Find a good result!
+                    forwardingDecision = results.First();
 
                 }
                 catch (Exception e)
@@ -100,35 +101,47 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Default result
 
-            forwardingDecision ??= DefaultResult == ForwardingResult.FORWARD
+            if (forwardingDecision is null && DefaultResult == ForwardingResult.FORWARD)
+                forwardingDecision = new ForwardingDecision<NotifyPriorityChargingRequest, NotifyPriorityChargingResponse>(
+                                         Request,
+                                         ForwardingResult.FORWARD
+                                     );
 
-                                       ? new ForwardingDecision<NotifyPriorityChargingRequest, NotifyPriorityChargingResponse>(
-                                             Request,
-                                             ForwardingResult.FORWARD
+            if (forwardingDecision is null ||
+               (forwardingDecision.Result == ForwardingResult.REJECT && forwardingDecision.RejectResponse is null))
+            {
+
+                var response = forwardingDecision?.RejectResponse ??
+                                   new NotifyPriorityChargingResponse(
+                                       Request,
+                                       Result.Filtered(ForwardingDecision.DefaultLogMessage)
+                                   );
+
+                forwardingDecision = new ForwardingDecision<NotifyPriorityChargingRequest, NotifyPriorityChargingResponse>(
+                                         Request,
+                                         ForwardingResult.REJECT,
+                                         response,
+                                         response.ToJSON(
+                                             parentNetworkingNode.OCPP.CustomNotifyPriorityChargingResponseSerializer,
+                                             parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                             parentNetworkingNode.OCPP.CustomCustomDataSerializer
                                          )
+                                     );
 
-                                       : new ForwardingDecision<NotifyPriorityChargingRequest, NotifyPriorityChargingResponse>(
-                                             Request,
-                                             ForwardingResult.REJECT,
-                                             new NotifyPriorityChargingResponse(
-                                                 Request,
-                                                 Result.Filtered("Default handler")
-                                             ),
-                                             "Default handler"
-                                         );
+            }
 
             #endregion
 
 
-            #region Send OnGetFileRequestLogging event
+            #region Send OnNotifyPriorityChargingRequestLogging event
 
-            var resultLog = OnNotifyPriorityChargingRequestLogging;
-            if (resultLog is not null)
+            var logger = OnNotifyPriorityChargingRequestLogging;
+            if (logger is not null)
             {
                 try
                 {
 
-                    await Task.WhenAll(resultLog.GetInvocationList().
+                    await Task.WhenAll(logger.GetInvocationList().
                                        OfType <OnNotifyPriorityChargingRequestFilteredDelegate>().
                                        Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
                                                                                          parentNetworkingNode,

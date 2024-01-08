@@ -23,6 +23,7 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.CS;
 using cloud.charging.open.protocols.OCPP.CSMS;
+using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
 
@@ -43,17 +44,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        public async Task<ForwardingDecision<DeleteUserRoleRequest, DeleteUserRoleResponse>>
+        public async Task<ForwardingDecision>
 
-            Forward_DeleteUserRole(DeleteUserRoleRequest  Request,
-                                   IWebSocketConnection   Connection,
-                                   CancellationToken      CancellationToken   = default)
+            Forward_DeleteUserRole(OCPP_JSONRequestMessage  JSONRequestMessage,
+                                   IWebSocketConnection     Connection,
+                                   CancellationToken        CancellationToken   = default)
 
         {
 
-            #region Send OnDeleteUserRoleRequest event
+            if (!DeleteUserRoleRequest.TryParse(JSONRequestMessage.Payload,
+                                                JSONRequestMessage.RequestId,
+                                                JSONRequestMessage.DestinationNodeId,
+                                                JSONRequestMessage.NetworkPath,
+                                                out var Request,
+                                                out var errorResponse,
+                                                parentNetworkingNode.OCPP.CustomDeleteUserRoleRequestParser))
+            {
+                return ForwardingDecision.REJECT(errorResponse);
+            }
 
             ForwardingDecision<DeleteUserRoleRequest, DeleteUserRoleResponse>? forwardingDecision = null;
+
+            #region Send OnDeleteUserRoleRequest event
 
             var requestFilter = OnDeleteUserRoleRequest;
             if (requestFilter is not null)
@@ -70,19 +82,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                                                      CancellationToken)).
                                                      ToArray());
 
-                    var response = results.First();
-
-                    forwardingDecision = response.Result == ForwardingResult.REJECT && response.RejectResponse is null
-                                             ? new ForwardingDecision<DeleteUserRoleRequest, DeleteUserRoleResponse>(
-                                                   response.Request,
-                                                   ForwardingResult.REJECT,
-                                                   new DeleteUserRoleResponse(
-                                                       Request,
-                                                       Result.Filtered("Default handler")
-                                                   ),
-                                                   "Default handler"
-                                               )
-                                             : response;
+                    //ToDo: Find a good result!
+                    forwardingDecision = results.First();
 
                 }
                 catch (Exception e)
@@ -100,35 +101,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Default result
 
-            forwardingDecision ??= DefaultResult == ForwardingResult.FORWARD
+            if (forwardingDecision is null && DefaultResult == ForwardingResult.FORWARD)
+                forwardingDecision = new ForwardingDecision<DeleteUserRoleRequest, DeleteUserRoleResponse>(
+                                         Request,
+                                         ForwardingResult.FORWARD
+                                     );
 
-                                       ? new ForwardingDecision<DeleteUserRoleRequest, DeleteUserRoleResponse>(
-                                             Request,
-                                             ForwardingResult.FORWARD
+            if (forwardingDecision is null ||
+               (forwardingDecision.Result == ForwardingResult.REJECT && forwardingDecision.RejectResponse is null))
+            {
+
+                var response = forwardingDecision?.RejectResponse ??
+                                   new DeleteUserRoleResponse(
+                                       Request,
+                                       Result.Filtered(ForwardingDecision.DefaultLogMessage)
+                                   );
+
+                forwardingDecision = new ForwardingDecision<DeleteUserRoleRequest, DeleteUserRoleResponse>(
+                                         Request,
+                                         ForwardingResult.REJECT,
+                                         response,
+                                         response.ToJSON(
+                                             parentNetworkingNode.OCPP.CustomDeleteUserRoleResponseSerializer,
+                                             parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
+                                             parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                             parentNetworkingNode.OCPP.CustomCustomDataSerializer
                                          )
+                                     );
 
-                                       : new ForwardingDecision<DeleteUserRoleRequest, DeleteUserRoleResponse>(
-                                             Request,
-                                             ForwardingResult.REJECT,
-                                             new DeleteUserRoleResponse(
-                                                 Request,
-                                                 Result.Filtered("Default handler")
-                                             ),
-                                             "Default handler"
-                                         );
+            }
 
             #endregion
 
 
-            #region Send OnGetFileRequestLogging event
+            #region Send OnDeleteUserRoleRequestLogging event
 
-            var resultLog = OnDeleteUserRoleRequestLogging;
-            if (resultLog is not null)
+            var logger = OnDeleteUserRoleRequestLogging;
+            if (logger is not null)
             {
                 try
                 {
 
-                    await Task.WhenAll(resultLog.GetInvocationList().
+                    await Task.WhenAll(logger.GetInvocationList().
                                        OfType <OnDeleteUserRoleRequestFilteredDelegate>().
                                        Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
                                                                                          parentNetworkingNode,

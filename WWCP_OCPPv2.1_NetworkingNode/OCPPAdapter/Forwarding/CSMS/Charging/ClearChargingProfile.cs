@@ -23,6 +23,7 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
 
@@ -43,17 +44,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        public async Task<ForwardingDecision<ClearChargingProfileRequest, ClearChargingProfileResponse>>
+        public async Task<ForwardingDecision>
 
-            Forward_ClearChargingProfile(ClearChargingProfileRequest  Request,
-                                         IWebSocketConnection         Connection,
-                                         CancellationToken            CancellationToken   = default)
+            Forward_ClearChargingProfile(OCPP_JSONRequestMessage  JSONRequestMessage,
+                                         IWebSocketConnection     Connection,
+                                         CancellationToken        CancellationToken   = default)
 
         {
 
-            #region Send OnClearChargingProfileRequest event
+            if (!ClearChargingProfileRequest.TryParse(JSONRequestMessage.Payload,
+                                                      JSONRequestMessage.RequestId,
+                                                      JSONRequestMessage.DestinationNodeId,
+                                                      JSONRequestMessage.NetworkPath,
+                                                      out var Request,
+                                                      out var errorResponse,
+                                                      parentNetworkingNode.OCPP.CustomClearChargingProfileRequestParser))
+            {
+                return ForwardingDecision.REJECT(errorResponse);
+            }
 
             ForwardingDecision<ClearChargingProfileRequest, ClearChargingProfileResponse>? forwardingDecision = null;
+
+            #region Send OnClearChargingProfileRequest event
 
             var requestFilter = OnClearChargingProfileRequest;
             if (requestFilter is not null)
@@ -70,19 +82,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                                                      CancellationToken)).
                                                      ToArray());
 
-                    var response = results.First();
-
-                    forwardingDecision = response.Result == ForwardingResult.REJECT && response.RejectResponse is null
-                                             ? new ForwardingDecision<ClearChargingProfileRequest, ClearChargingProfileResponse>(
-                                                   response.Request,
-                                                   ForwardingResult.REJECT,
-                                                   new ClearChargingProfileResponse(
-                                                       Request,
-                                                       Result.Filtered("Default handler")
-                                                   ),
-                                                   "Default handler"
-                                               )
-                                             : response;
+                    //ToDo: Find a good result!
+                    forwardingDecision = results.First();
 
                 }
                 catch (Exception e)
@@ -100,35 +101,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Default result
 
-            forwardingDecision ??= DefaultResult == ForwardingResult.FORWARD
+            if (forwardingDecision is null && DefaultResult == ForwardingResult.FORWARD)
+                forwardingDecision = new ForwardingDecision<ClearChargingProfileRequest, ClearChargingProfileResponse>(
+                                         Request,
+                                         ForwardingResult.FORWARD
+                                     );
 
-                                       ? new ForwardingDecision<ClearChargingProfileRequest, ClearChargingProfileResponse>(
-                                             Request,
-                                             ForwardingResult.FORWARD
+            if (forwardingDecision is null ||
+               (forwardingDecision.Result == ForwardingResult.REJECT && forwardingDecision.RejectResponse is null))
+            {
+
+                var response = forwardingDecision?.RejectResponse ??
+                                   new ClearChargingProfileResponse(
+                                       Request,
+                                       Result.Filtered(ForwardingDecision.DefaultLogMessage)
+                                   );
+
+                forwardingDecision = new ForwardingDecision<ClearChargingProfileRequest, ClearChargingProfileResponse>(
+                                         Request,
+                                         ForwardingResult.REJECT,
+                                         response,
+                                         response.ToJSON(
+                                             parentNetworkingNode.OCPP.CustomClearChargingProfileResponseSerializer,
+                                             parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
+                                             parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                             parentNetworkingNode.OCPP.CustomCustomDataSerializer
                                          )
+                                     );
 
-                                       : new ForwardingDecision<ClearChargingProfileRequest, ClearChargingProfileResponse>(
-                                             Request,
-                                             ForwardingResult.REJECT,
-                                             new ClearChargingProfileResponse(
-                                                 Request,
-                                                 Result.Filtered("Default handler")
-                                             ),
-                                             "Default handler"
-                                         );
+            }
 
             #endregion
 
 
-            #region Send OnGetFileRequestLogging event
+            #region Send OnClearChargingProfileRequestLogging event
 
-            var resultLog = OnClearChargingProfileRequestLogging;
-            if (resultLog is not null)
+            var logger = OnClearChargingProfileRequestLogging;
+            if (logger is not null)
             {
                 try
                 {
 
-                    await Task.WhenAll(resultLog.GetInvocationList().
+                    await Task.WhenAll(logger.GetInvocationList().
                                        OfType <OnClearChargingProfileRequestFilteredDelegate>().
                                        Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
                                                                                          parentNetworkingNode,

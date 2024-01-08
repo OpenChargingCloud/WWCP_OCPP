@@ -23,6 +23,7 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
 
@@ -43,17 +44,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        public async Task<ForwardingDecision<GetLocalListVersionRequest, GetLocalListVersionResponse>>
+        public async Task<ForwardingDecision>
 
-            Forward_GetLocalListVersion(GetLocalListVersionRequest  Request,
-                                        IWebSocketConnection        Connection,
-                                        CancellationToken           CancellationToken   = default)
+            Forward_GetLocalListVersion(OCPP_JSONRequestMessage  JSONRequestMessage,
+                                        IWebSocketConnection     Connection,
+                                        CancellationToken        CancellationToken   = default)
 
         {
 
-            #region Send OnGetLocalListVersionRequest event
+            if (!GetLocalListVersionRequest.TryParse(JSONRequestMessage.Payload,
+                                                     JSONRequestMessage.RequestId,
+                                                     JSONRequestMessage.DestinationNodeId,
+                                                     JSONRequestMessage.NetworkPath,
+                                                     out var Request,
+                                                     out var errorResponse,
+                                                     parentNetworkingNode.OCPP.CustomGetLocalListVersionRequestParser))
+            {
+                return ForwardingDecision.REJECT(errorResponse);
+            }
 
             ForwardingDecision<GetLocalListVersionRequest, GetLocalListVersionResponse>? forwardingDecision = null;
+
+            #region Send OnGetLocalListVersionRequest event
 
             var requestFilter = OnGetLocalListVersionRequest;
             if (requestFilter is not null)
@@ -70,19 +82,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                                                      CancellationToken)).
                                                      ToArray());
 
-                    var response = results.First();
-
-                    forwardingDecision = response.Result == ForwardingResult.REJECT && response.RejectResponse is null
-                                             ? new ForwardingDecision<GetLocalListVersionRequest, GetLocalListVersionResponse>(
-                                                   response.Request,
-                                                   ForwardingResult.REJECT,
-                                                   new GetLocalListVersionResponse(
-                                                       Request,
-                                                       Result.Filtered("Default handler")
-                                                   ),
-                                                   "Default handler"
-                                               )
-                                             : response;
+                    //ToDo: Find a good result!
+                    forwardingDecision = results.First();
 
                 }
                 catch (Exception e)
@@ -100,35 +101,47 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Default result
 
-            forwardingDecision ??= DefaultResult == ForwardingResult.FORWARD
+            if (forwardingDecision is null && DefaultResult == ForwardingResult.FORWARD)
+                forwardingDecision = new ForwardingDecision<GetLocalListVersionRequest, GetLocalListVersionResponse>(
+                                         Request,
+                                         ForwardingResult.FORWARD
+                                     );
 
-                                       ? new ForwardingDecision<GetLocalListVersionRequest, GetLocalListVersionResponse>(
-                                             Request,
-                                             ForwardingResult.FORWARD
+            if (forwardingDecision is null ||
+               (forwardingDecision.Result == ForwardingResult.REJECT && forwardingDecision.RejectResponse is null))
+            {
+
+                var response = forwardingDecision?.RejectResponse ??
+                                   new GetLocalListVersionResponse(
+                                       Request,
+                                       Result.Filtered(ForwardingDecision.DefaultLogMessage)
+                                   );
+
+                forwardingDecision = new ForwardingDecision<GetLocalListVersionRequest, GetLocalListVersionResponse>(
+                                         Request,
+                                         ForwardingResult.REJECT,
+                                         response,
+                                         response.ToJSON(
+                                             parentNetworkingNode.OCPP.CustomGetLocalListVersionResponseSerializer,
+                                             parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                             parentNetworkingNode.OCPP.CustomCustomDataSerializer
                                          )
+                                     );
 
-                                       : new ForwardingDecision<GetLocalListVersionRequest, GetLocalListVersionResponse>(
-                                             Request,
-                                             ForwardingResult.REJECT,
-                                             new GetLocalListVersionResponse(
-                                                 Request,
-                                                 Result.Filtered("Default handler")
-                                             ),
-                                             "Default handler"
-                                         );
+            }
 
             #endregion
 
 
-            #region Send OnGetFileRequestLogging event
+            #region Send OnGetLocalListVersionRequestLogging event
 
-            var resultLog = OnGetLocalListVersionRequestLogging;
-            if (resultLog is not null)
+            var logger = OnGetLocalListVersionRequestLogging;
+            if (logger is not null)
             {
                 try
                 {
 
-                    await Task.WhenAll(resultLog.GetInvocationList().
+                    await Task.WhenAll(logger.GetInvocationList().
                                        OfType <OnGetLocalListVersionRequestFilteredDelegate>().
                                        Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
                                                                                          parentNetworkingNode,
