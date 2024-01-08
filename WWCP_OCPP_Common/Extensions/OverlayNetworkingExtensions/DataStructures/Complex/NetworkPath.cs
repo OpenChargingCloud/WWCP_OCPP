@@ -281,7 +281,7 @@ namespace cloud.charging.open.protocols.OCPP
             => networkingNodeIds.Count  == 0 ||
                networkingNodeIds.Last() != NetworkingNodeId
 
-                   ? new(networkingNodeIds.ToList().AddAndReturnList(NetworkingNodeId))
+                   ? new (networkingNodeIds.ToList().AddAndReturnList(NetworkingNodeId))
 
                    : this;
 

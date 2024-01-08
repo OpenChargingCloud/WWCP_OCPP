@@ -3212,7 +3212,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
     #endregion
 
-
     #region OnBinaryDataTransferRequestFilter(ed)Delegate
 
     /// <summary>
@@ -3286,6 +3285,42 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                               ForwardingDecision<DataTransferRequest, DataTransferResponse>   ForwardingDecision);
 
     #endregion
+
+
+
+
+    /// <summary>
+    /// A filtered BootNotification request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket connection.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="ForwardingDecision">The forwarding decision.</param>
+    public delegate Task
+
+        OnJSONRequestMessageSentDelegate(DateTime                 Timestamp,
+                                         IEventSender             Sender,
+                                         //IWebSocketConnection     Connection,
+                                         OCPP_JSONRequestMessage  Request,
+                                         SendOCPPMessageResult    SendOCPPMessageResult);
+
+    /// <summary>
+    /// A filtered BootNotification request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket connection.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="ForwardingDecision">The forwarding decision.</param>
+    public delegate Task
+
+        OnJSONResponseMessageSentDelegate(DateTime                  Timestamp,
+                                          IEventSender              Sender,
+                                          //IWebSocketConnection      Connection,
+                                          OCPP_JSONResponseMessage  Response,
+                                          SendOCPPMessageResult     SendOCPPMessageResult);
+
 
 
     public interface IOCPPWebSocketAdapterFORWARD
@@ -3630,6 +3665,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         event OnDataTransferRequestFilterDelegate?                          OnDataTransferRequest;
         event OnDataTransferRequestFilteredDelegate?                        OnDataTransferRequestLogging;
+
+
+        event OnJSONRequestMessageSentDelegate?   OnJSONRequestMessageSent;
+        event OnJSONResponseMessageSentDelegate?  OnJSONResponseMessageSent;
 
         #endregion
 

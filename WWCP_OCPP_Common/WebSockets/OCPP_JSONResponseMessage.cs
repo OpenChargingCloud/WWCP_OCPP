@@ -345,6 +345,26 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                     Payload);
 
 
+        #region AppendToNetworkPath(NetworkingNodeId)
+
+        /// <summary>
+        /// Append the given networking node identification to the network path.
+        /// </summary>
+        /// <param name="NetworkingNodeId">A networking node identification to append.</param>
+        public OCPP_JSONResponseMessage AppendToNetworkPath(NetworkingNode_Id NetworkingNodeId)
+
+            => new (ResponseTimestamp,
+                    EventTrackingId,
+                    NetworkingMode,
+                    DestinationNodeId,
+                    NetworkPath.Append(NetworkingNodeId),
+                    RequestId,
+                    Payload,
+                    CancellationToken);
+
+        #endregion
+
+
         #region (override) ToString()
 
         /// <summary>

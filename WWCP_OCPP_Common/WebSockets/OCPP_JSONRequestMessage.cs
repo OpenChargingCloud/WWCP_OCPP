@@ -431,6 +431,28 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                     CancellationToken);
 
 
+        #region AppendToNetworkPath(NetworkingNodeId)
+
+        /// <summary>
+        /// Append the given networking node identification to the network path.
+        /// </summary>
+        /// <param name="NetworkingNodeId">A networking node identification to append.</param>
+        public OCPP_JSONRequestMessage AppendToNetworkPath(NetworkingNode_Id NetworkingNodeId)
+
+            => new (RequestTimestamp,
+                    EventTrackingId,
+                    NetworkingMode,
+                    DestinationNodeId,
+                    NetworkPath.Append(NetworkingNodeId),
+                    RequestId,
+                    Action,
+                    Payload,
+                    RequestTimeout,
+                    ErrorMessage,
+                    CancellationToken);
+
+        #endregion
+
 
         #region (override) ToString()
 

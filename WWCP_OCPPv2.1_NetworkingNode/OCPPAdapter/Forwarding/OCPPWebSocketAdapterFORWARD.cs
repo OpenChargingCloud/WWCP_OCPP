@@ -57,6 +57,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+        #region Events
+
+        public event OnJSONRequestMessageSentDelegate?   OnJSONRequestMessageSent;
+        public event OnJSONResponseMessageSentDelegate?  OnJSONResponseMessageSent;
+
+        #endregion
+
         #region Constructor(s)
 
         /// <summary>
@@ -127,16 +134,49 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     if (forwardingDecision.Result == ForwardingResult.FORWARD)
                     {
 
-                        expectedResponses.TryAdd(
-                                  JSONRequestMessage.RequestId,
-                                  new ResponseInfo(
-                                      JSONRequestMessage.RequestId,
-                                      JSONRequestMessage.Payload["action"]?.ToString() ?? "",
-                                      JSONRequestMessage.RequestTimeout
-                                  )
-                              );
+                        var newJSONRequestMessage = JSONRequestMessage.AppendToNetworkPath(parentNetworkingNode.Id);
 
-                        await parentNetworkingNode.OCPP.SendJSONRequest(JSONRequestMessage);
+                        expectedResponses.TryAdd(
+                            newJSONRequestMessage.RequestId,
+                            new ResponseInfo(
+                                newJSONRequestMessage.RequestId,
+                                forwardingDecision.RequestContext ?? JSONLDContext.Parse("willnothappen!"),
+                                newJSONRequestMessage.RequestTimeout
+                            )
+                        );
+
+                        var sendOCPPMessageResult = await parentNetworkingNode.OCPP.SendJSONRequest(newJSONRequestMessage);
+
+                        #region Send OnJSONRequestMessageSent event
+
+                        var logger = OnJSONRequestMessageSent;
+                        if (logger is not null)
+                        {
+                            try
+                            {
+
+                                await Task.WhenAll(logger.GetInvocationList().
+                                                   OfType<OnJSONRequestMessageSentDelegate>().
+                                                   Select(loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
+                                                                                                    parentNetworkingNode,
+                                                                                                    //Connection,
+                                                                                                    newJSONRequestMessage,
+                                                                                                    sendOCPPMessageResult)).
+                                                   ToArray());
+
+                            }
+                            catch (Exception e)
+                            {
+                                await HandleErrors(
+                                          nameof(TestNetworkingNode),
+                                          nameof(OnBootNotificationRequestLogging),
+                                          e
+                                      );
+                            }
+
+                        }
+
+                        #endregion
 
                     }
                     else if (forwardingDecision.Result == ForwardingResult.REJECT &&
@@ -201,7 +241,40 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //responseInfo.Context == JSONResponseMessage.Context)
                 {
 
-                    await parentNetworkingNode.OCPP.SendJSONResponse(JSONResponseMessage);
+                    var newJSONResponseMessage  = JSONResponseMessage.AppendToNetworkPath(parentNetworkingNode.Id);
+
+                    var sendOCPPMessageResult   = await parentNetworkingNode.OCPP.SendJSONResponse(newJSONResponseMessage);
+
+                    #region Send OnJSONResponseMessageSent event
+
+                    var logger = OnJSONResponseMessageSent;
+                    if (logger is not null)
+                    {
+                        try
+                        {
+
+                            await Task.WhenAll(logger.GetInvocationList().
+                                                OfType<OnJSONResponseMessageSentDelegate>().
+                                                Select(loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
+                                                                                                parentNetworkingNode,
+                                                                                                //Connection,
+                                                                                                newJSONResponseMessage,
+                                                                                                sendOCPPMessageResult)).
+                                                ToArray());
+
+                        }
+                        catch (Exception e)
+                        {
+                            await HandleErrors(
+                                        nameof(TestNetworkingNode),
+                                        nameof(OnBootNotificationRequestLogging),
+                                        e
+                                    );
+                        }
+
+                    }
+
+                    #endregion
 
                 }
                 else

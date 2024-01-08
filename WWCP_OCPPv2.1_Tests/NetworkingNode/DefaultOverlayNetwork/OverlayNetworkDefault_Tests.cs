@@ -26,6 +26,7 @@ using cloud.charging.open.protocols.OCPP.WebSockets;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.NN;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -867,56 +868,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
             {
 
                 var csBootNotificationRequestsSent       = new ConcurrentList<BootNotificationRequest>();
-                var nnBootNotificationRequestsReceived   = new ConcurrentList<BootNotificationRequest>();
-
-                var nnBootNotificationRequestsSent       = new ConcurrentList<BootNotificationRequest>();
-                var nnJSONMessageRequestsSent            = new ConcurrentList<OCPP_JSONRequestMessage>();
+                var nnBootNotificationRequestsForwarded  = new ConcurrentList<ForwardingDecision<BootNotificationRequest, BootNotificationResponse>>();
+                var nnJSONRequestMessagesSent            = new ConcurrentList<OCPP_JSONRequestMessage>();
                 var csmsBootNotificationRequests         = new ConcurrentList<BootNotificationRequest>();
-                var nnJSONResponseMessagesReceived       = new ConcurrentList<OCPP_JSONResponseMessage>();
-                var nnBootNotificationResponsesReceived  = new ConcurrentList<BootNotificationResponse>();
+                var nnJSONResponseMessagesSent           = new ConcurrentList<OCPP_JSONResponseMessage>();
                 var csBootNotificationResponsesReceived  = new ConcurrentList<BootNotificationResponse>();
 
-                chargingStation.            OnBootNotificationRequest          += (timestamp, sender,             bootNotificationRequest) => {
-                    csBootNotificationRequestsSent.TryAdd(bootNotificationRequest);
+                chargingStation.            OnBootNotificationRequest         += (timestamp, sender, bootNotificationRequest) => {
+                    csBootNotificationRequestsSent.     TryAdd(bootNotificationRequest);
                     return Task.CompletedTask;
                 };
 
-                //networkingNode.OCPP.FORWARD.OnBootNotificationRequestReceived  += (timestamp, sender, connection, bootNotificationRequest) => {
-                //    nnBootNotificationRequestsReceived.TryAdd(bootNotificationRequest);
-                //    return Task.CompletedTask;
-                //};
-
-
-
-
-
-
-                networkingNode.OCPP.OUT.OnBootNotificationRequestSent      += (timestamp, sender,             bootNotificationRequest) => {
-                    nnBootNotificationRequestsSent.TryAdd(bootNotificationRequest);
+                networkingNode.OCPP.FORWARD.OnBootNotificationRequestLogging  += (timestamp, sender, connection, bootNotificationRequest, forwardingDecision) => {
+                    nnBootNotificationRequestsForwarded.TryAdd(forwardingDecision);
                     return Task.CompletedTask;
                 };
 
-                networkingNode.OCPP.OUT.OnJSONMessageRequestSent           += (timestamp, sender, jsonRequestMessage) => {
-                    nnJSONMessageRequestsSent.     TryAdd(jsonRequestMessage);
+                networkingNode.OCPP.FORWARD.OnJSONRequestMessageSent          += (timestamp, sender, jsonRequestMessage, sendOCPPMessageResult) => {
+                    nnJSONRequestMessagesSent.          TryAdd(jsonRequestMessage);
                     return Task.CompletedTask;
                 };
 
-                CSMS.                   OnBootNotificationRequestReceived  += (timestamp, sender, connection, bootNotificationRequest) => {
-                    csmsBootNotificationRequests.  TryAdd(bootNotificationRequest);
+                CSMS.                       OnBootNotificationRequestReceived += (timestamp, sender, connection, bootNotificationRequest) => {
+                    csmsBootNotificationRequests.       TryAdd(bootNotificationRequest);
                     return Task.CompletedTask;
                 };
 
-                networkingNode.OCPP.IN. OnJSONMessageResponseReceived      += (timestamp, sender, jsonResponseMessage) => {
-                    nnJSONResponseMessagesReceived.TryAdd(jsonResponseMessage);
+                networkingNode.OCPP.FORWARD.OnJSONResponseMessageSent         += (timestamp, sender, jsonResponseMessage, sendOCPPMessageResult) => {
+                    nnJSONResponseMessagesSent.         TryAdd(jsonResponseMessage);
                     return Task.CompletedTask;
                 };
 
-                networkingNode.OCPP.IN. OnBootNotificationResponseReceived += (timestamp, sender,             bootNotificationRequest, bootNotificationResponse, runtime) => {
-                    nnBootNotificationResponsesReceived.   TryAdd(bootNotificationResponse);
-                    return Task.CompletedTask;
-                };
-
-                chargingStation.        OnBootNotificationResponse         += (timestamp, sender,             bootNotificationRequest, bootNotificationResponse, runtime) => {
+                chargingStation.            OnBootNotificationResponse        += (timestamp, sender, bootNotificationRequest, bootNotificationResponse, runtime) => {
                     csBootNotificationResponsesReceived.   TryAdd(bootNotificationResponse);
                     return Task.CompletedTask;
                 };
@@ -939,53 +922,65 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
                     Assert.That(csBootNotificationRequest.Signatures.Any(),                   Is.True, "The outgoing BootNotification request is not signed!");
 
 
-                    // Networking Node Request IN
-                    Assert.That(nnBootNotificationRequestsReceived. Count,                    Is.EqualTo(1), "The BootNotification request did not reach the networking node!");
-                    var nnBootNotificationRequest = nnBootNotificationRequestsReceived.First();
-                    Assert.That(nnBootNotificationRequest.DestinationNodeId,                  Is.EqualTo(NetworkingNode_Id.CSMS));
-                    Assert.That(nnBootNotificationRequest.NetworkPath.Length,                 Is.EqualTo(1));
-                    Assert.That(nnBootNotificationRequest.NetworkPath.Source,                 Is.EqualTo(chargingStation.Id));
-                    Assert.That(nnBootNotificationRequest.NetworkPath.Last,                   Is.EqualTo(chargingStation.Id));
-                    Assert.That(nnBootNotificationRequest.Reason,                             Is.EqualTo(reason));
+                    // Networking Node Request FORWARD
+                    Assert.That(nnBootNotificationRequestsForwarded.Count,                    Is.EqualTo(1), "The BootNotification request did not reach the networking node!");
+                    var nnBootNotificationRequest = nnBootNotificationRequestsForwarded.First();
+                    Assert.That(nnBootNotificationRequest.Request.DestinationNodeId,          Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(nnBootNotificationRequest.Request.NetworkPath.Length,         Is.EqualTo(1));
+                    Assert.That(nnBootNotificationRequest.Request.NetworkPath.Source,         Is.EqualTo(chargingStation.Id));
+                    Assert.That(nnBootNotificationRequest.Request.NetworkPath.Last,           Is.EqualTo(chargingStation.Id));
+                    Assert.That(nnBootNotificationRequest.Request.Reason,                     Is.EqualTo(reason));
+                    Assert.That(nnBootNotificationRequest.Result,                             Is.EqualTo(ForwardingResult.FORWARD));
 
 
-                    //// Networking Node JSON Request OUT
-                    //Assert.That(nnJSONMessageRequestsSent.          Count,                    Is.EqualTo(1), "The BootNotification JSON request did not leave the networking node!");
+                    // Networking Node JSON Request OUT
+                    Assert.That(nnJSONRequestMessagesSent.           Count,                   Is.EqualTo(1), "The BootNotification JSON request did not leave the networking node!");
+                    var nnJSONRequestMessage = nnJSONRequestMessagesSent.First();
+                    Assert.That(nnJSONRequestMessage.DestinationNodeId,                       Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(nnJSONRequestMessage.NetworkPath.Length,                      Is.EqualTo(2));
+                    Assert.That(nnJSONRequestMessage.NetworkPath.Source,                      Is.EqualTo(chargingStation.Id));
+                    Assert.That(nnJSONRequestMessage.NetworkPath.Last,                        Is.EqualTo(networkingNode.Id));
+                    Assert.That(nnJSONRequestMessage.NetworkingMode,                          Is.EqualTo(NetworkingMode.OverlayNetwork));
 
 
-                    //// CSMS Request IN
-                    //Assert.That(csmsBootNotificationRequests.       Count,                    Is.EqualTo(1), "The BootNotification request did not reach the CSMS!");
-                    //var csmsBootNotificationRequest = csmsBootNotificationRequests.First();
-                    //Assert.That(csmsBootNotificationRequest.DestinationNodeId,                Is.EqualTo(NetworkingNode_Id.CSMS));
-                    //Assert.That(csmsBootNotificationRequest.NetworkPath.Length,               Is.EqualTo(1));
-                    //Assert.That(csmsBootNotificationRequest.NetworkPath.Source,               Is.EqualTo(networkingNode.Id));
-                    //Assert.That(csmsBootNotificationRequest.NetworkPath.Last,                 Is.EqualTo(networkingNode.Id));
-                    //Assert.That(csmsBootNotificationRequest.Reason,                           Is.EqualTo(reason));
+                    // CSMS Request IN
+                    Assert.That(csmsBootNotificationRequests.       Count,                    Is.EqualTo(1), "The BootNotification request did not reach the CSMS!");
+                    var csmsBootNotificationRequest = csmsBootNotificationRequests.First();
+                    Assert.That(csmsBootNotificationRequest.DestinationNodeId,                Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(csmsBootNotificationRequest.NetworkPath.Length,               Is.EqualTo(2));
+                    Assert.That(csmsBootNotificationRequest.NetworkPath.Source,               Is.EqualTo(chargingStation.Id));
+                    Assert.That(csmsBootNotificationRequest.NetworkPath.Last,                 Is.EqualTo(networkingNode. Id));
+                    Assert.That(csmsBootNotificationRequest.Reason,                           Is.EqualTo(reason));
 
-                    //Assert.That(csmsBootNotificationRequest.ChargingStation,                  Is.Not.Null);
-                    //var chargingStation = csmsBootNotificationRequests.First().ChargingStation;
-                    //if (chargingStation is not null)
-                    //{
+                    Assert.That(csmsBootNotificationRequest.ChargingStation,                  Is.Not.Null);
+                    var bootNotificationChargingStation = csmsBootNotificationRequests.First().ChargingStation;
+                    if (bootNotificationChargingStation is not null)
+                    {
 
-                    //    Assert.That(chargingStation.Model,             Is.EqualTo(networkingNode.Model));
-                    //    Assert.That(chargingStation.VendorName,        Is.EqualTo(networkingNode.VendorName));
-                    //    Assert.That(chargingStation.SerialNumber,      Is.EqualTo(networkingNode.SerialNumber));
-                    //    Assert.That(chargingStation.FirmwareVersion,   Is.EqualTo(networkingNode.FirmwareVersion));
-                    //    Assert.That(chargingStation.Modem,             Is.Not.Null);
+                        Assert.That(bootNotificationChargingStation.Model,                    Is.EqualTo(chargingStation.Model));
+                        Assert.That(bootNotificationChargingStation.VendorName,               Is.EqualTo(chargingStation.VendorName));
+                        Assert.That(bootNotificationChargingStation.SerialNumber,             Is.EqualTo(chargingStation.SerialNumber));
+                        Assert.That(bootNotificationChargingStation.FirmwareVersion,          Is.EqualTo(chargingStation.FirmwareVersion));
+                        Assert.That(bootNotificationChargingStation.Modem,                    Is.Not.Null);
 
-                    //    if (chargingStation.Modem is not null &&
-                    //        networkingNode.Modem is not null)
-                    //    {
-                    //        Assert.That(chargingStation.Modem.ICCID,   Is.EqualTo(networkingNode.Modem.ICCID));
-                    //        Assert.That(chargingStation.Modem.IMSI,    Is.EqualTo(networkingNode.Modem.IMSI));
-                    //    }
+                        if (bootNotificationChargingStation.Modem is not null &&
+                            chargingStation.                Modem is not null)
+                        {
+                            Assert.That(bootNotificationChargingStation.Modem.ICCID,          Is.EqualTo(chargingStation.Modem.ICCID));
+                            Assert.That(bootNotificationChargingStation.Modem.IMSI,           Is.EqualTo(chargingStation.Modem.IMSI));
+                        }
 
-                    //}
+                    }
 
 
-                    //// Networking Node JSON Response IN
-                    //Assert.That(nnJSONResponseMessagesReceived.     Count,                    Is.EqualTo(1), "The BootNotification JSON request did not leave the networking node!");
-
+                    // Networking Node JSON Response OUT
+                    Assert.That(nnJSONResponseMessagesSent.Count,                             Is.EqualTo(1), "The BootNotification JSON response did not leave the networking node!");
+                    var nnJSONResponseMessage = nnJSONResponseMessagesSent.First();
+                    Assert.That(nnJSONResponseMessage.DestinationNodeId,                      Is.EqualTo(chargingStation.Id));
+                    //Assert.That(nnJSONResponseMessage.NetworkPath.Length,                     Is.EqualTo(2));
+                    Assert.That(nnJSONResponseMessage.NetworkPath.Source,                     Is.EqualTo(chargingStation.Id));
+                    Assert.That(nnJSONResponseMessage.NetworkPath.Last,                       Is.EqualTo(networkingNode.Id));
+                    Assert.That(nnJSONResponseMessage.NetworkingMode,                         Is.EqualTo(NetworkingMode.OverlayNetwork));
 
                     //// Networking Node Response IN
                     //Assert.That(nnBootNotificationResponsesReceived.Count,                    Is.EqualTo(1), "The BootNotification response did not reach the networking node!");

@@ -17,6 +17,8 @@
 
 #region Usings
 
+using org.GraphDefined.Vanaheimr.Illias;
+
 using cloud.charging.open.protocols.OCPP;
 
 #endregion
@@ -27,14 +29,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <summary>
     /// Information about expected OCPP responses.
     /// </summary>
-    public class ResponseInfo(Request_Id  RequestId,
-                              String      Context,
-                              DateTime    Timeout)
+    public class ResponseInfo(Request_Id     RequestId,
+                              JSONLDContext  RequestContext,
+                              DateTime       Timeout)
     {
 
-        public Request_Id  RequestId    { get; } = RequestId;
-        public String      Context      { get; } = Context;
-        public DateTime    Timeout      { get; } = Timeout;
+        public Request_Id     RequestId         { get; } = RequestId;
+        public JSONLDContext  RequestContext    { get; } = RequestContext;
+        public DateTime       Timeout           { get; } = Timeout;
 
 
     }
