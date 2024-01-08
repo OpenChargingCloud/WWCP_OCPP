@@ -205,6 +205,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         CustomBinarySerializerDelegate <            GetFileResponse>?                                     CustomGetFileResponseSerializer                              { get; set; }
         CustomJObjectSerializerDelegate<            SendFileResponse>?                                    CustomSendFileResponseSerializer                             { get; set; }
         CustomJObjectSerializerDelegate<            DeleteFileResponse>?                                  CustomDeleteFileResponseSerializer                           { get; set; }
+        CustomJObjectSerializerDelegate<            ListDirectoryResponse>?                               CustomListDirectoryResponseSerializer                        { get; set; }
 
 
         // E2E Security Extensions
@@ -283,6 +284,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         CustomJObjectSerializerDelegate<              GetFileRequest>?                                 CustomGetFileRequestSerializer                               { get; set; }
         CustomBinarySerializerDelegate <              SendFileRequest>?                                CustomSendFileRequestSerializer                              { get; set; }
         CustomJObjectSerializerDelegate<              DeleteFileRequest>?                              CustomDeleteFileRequestSerializer                            { get; set; }
+        CustomJObjectSerializerDelegate<              ListDirectoryRequest>?                           CustomListDirectoryRequestSerializer                         { get; set; }
 
 
         // E2E Security Extensions
@@ -463,16 +465,66 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Custom JSON parser delegates
 
+        #region CS
 
-        CustomJObjectParserDelegate<OCPPv2_1.CS.  BootNotificationRequest>?    CustomBootNotificationRequestParser           { get; set; }
-        CustomJObjectParserDelegate<OCPPv2_1.CSMS.BootNotificationResponse>?   CustomBootNotificationResponseParser          { get; set; }
+        #region Firmware
+        CustomJObjectParserDelegate<OCPPv2_1.CS.  BootNotificationRequest>?                     CustomBootNotificationRequestParser                      { get; set; }
+        CustomJObjectParserDelegate<OCPPv2_1.CSMS.BootNotificationResponse>?                    CustomBootNotificationResponseParser                     { get; set; }
+        CustomJObjectParserDelegate<OCPPv2_1.CS.  FirmwareStatusNotificationRequest>?           CustomFirmwareStatusNotificationRequestParser            { get; set; }
+        CustomJObjectParserDelegate<OCPPv2_1.CSMS.FirmwareStatusNotificationResponse>?          CustomFirmwareStatusNotificationResponseParser           { get; set; }
+        CustomJObjectParserDelegate<OCPPv2_1.CS.  HeartbeatRequest>?                            CustomHeartbeatRequestParser                             { get; set; }
+        CustomJObjectParserDelegate<OCPPv2_1.CSMS.HeartbeatResponse>?                           CustomHeartbeatResponseParser                            { get; set; }
+        CustomJObjectParserDelegate<OCPPv2_1.CS.  PublishFirmwareStatusNotificationRequest>?    CustomPublishFirmwareStatusNotificationRequestParser     { get; set; }
+        CustomJObjectParserDelegate<OCPPv2_1.CSMS.PublishFirmwareStatusNotificationResponse>?   CustomPublishFirmwareStatusNotificationResponseParser    { get; set; }
+
+        #endregion
+
+        #endregion
+
+
+        #region CSMS
+
+        #region BinaryDataStreamsExtensions
+
+        CustomJObjectParserDelegate<DeleteFileRequest>?                                         CustomDeleteFileRequestParser                            { get; set; }
+        CustomJObjectParserDelegate<DeleteFileResponse>?                                        CustomDeleteFileResponseParser                           { get; set; }
+        CustomJObjectParserDelegate<GetFileRequest>?                                            CustomGetFileRequestParser                               { get; set; }
+        CustomJObjectParserDelegate<GetFileResponse>?                                           CustomGetFileResponseParser                              { get; set; }
+        CustomJObjectParserDelegate<ListDirectoryRequest>?                                      CustomListDirectoryRequestParser                         { get; set; }
+        CustomJObjectParserDelegate<ListDirectoryResponse>?                                     CustomListDirectoryResponseParser                        { get; set; }
+        CustomBinaryParserDelegate <SendFileRequest>?                                           CustomSendFileRequestParser                              { get; set; }
+        CustomJObjectParserDelegate<SendFileResponse>?                                          CustomSendFileResponseParser                             { get; set; }
+
+        #endregion
+
+        #region Certificates
+
+        CustomJObjectParserDelegate<OCPPv2_1.CSMS.CertificateSignedRequest>?                    CustomCertificateSignedRequestParser                     { get; set; }
+        CustomJObjectParserDelegate<OCPPv2_1.CS.  CertificateSignedResponse>?                   CustomCertificateSignedResponseParser                    { get; set; }
+        CustomJObjectParserDelegate<OCPPv2_1.CSMS.DeleteCertificateRequest>?                    CustomDeleteCertificateRequestParser                     { get; set; }
+        CustomJObjectParserDelegate<OCPPv2_1.CS.  DeleteCertificateResponse>?                   CustomDeleteCertificateResponseParser                    { get; set; }
+        CustomJObjectParserDelegate<OCPPv2_1.CSMS.GetInstalledCertificateIdsRequest>?           CustomGetInstalledCertificateIdsRequestParser            { get; set; }
+        CustomJObjectParserDelegate<OCPPv2_1.CS.  GetInstalledCertificateIdsResponse>?          CustomGetInstalledCertificateIdsResponseParser           { get; set; }
+        CustomJObjectParserDelegate<OCPPv2_1.CSMS.InstallCertificateRequest>?                   CustomInstallCertificateRequestParser                    { get; set; }
+        CustomJObjectParserDelegate<OCPPv2_1.CS.  InstallCertificateResponse>?                  CustomInstallCertificateResponseParser                   { get; set; }
+        CustomJObjectParserDelegate<OCPPv2_1.CSMS.NotifyCRLRequest>?                            CustomNotifyCRLRequestParser                             { get; set; }
+        CustomJObjectParserDelegate<OCPPv2_1.CS.  NotifyCRLResponse>?                           CustomNotifyCRLResponseParser                            { get; set; }
+
+        #endregion
+
+        #endregion
+
+        CustomBinaryParserDelegate<BinaryDataTransferRequest>?                                  CustomBinaryDataTransferRequestParser                    { get; set; }
+        CustomBinaryParserDelegate<BinaryDataTransferResponse>?                                 CustomBinaryDataTransferResponseParser                   { get; set; }
+        CustomJObjectParserDelegate<DataTransferRequest>?                                       CustomDataTransferRequestParser                          { get; set; }
+        CustomJObjectParserDelegate<DataTransferResponse>?                                      CustomDataTransferResponseParser                         { get; set; }
 
 
 
-        CustomJObjectParserDelegate<ChargingStation>?                          CustomChargingStationParser                   { get; set; }
-        CustomJObjectParserDelegate<OCPP.Signature>?                           CustomSignatureParser                         { get; set; }
-        CustomJObjectParserDelegate<CustomData>?                               CustomCustomDataParser                        { get; set; }
-        CustomJObjectParserDelegate<StatusInfo>?                               CustomStatusInfoParser                        { get; set; }
+        CustomJObjectParserDelegate<ChargingStation>?                                           CustomChargingStationParser                              { get; set; }
+        CustomJObjectParserDelegate<OCPP.Signature>?                                            CustomSignatureParser                                    { get; set; }
+        CustomJObjectParserDelegate<CustomData>?                                                CustomCustomDataParser                                   { get; set; }
+        CustomJObjectParserDelegate<StatusInfo>?                                                CustomStatusInfoParser                                   { get; set; }
 
         #endregion
 

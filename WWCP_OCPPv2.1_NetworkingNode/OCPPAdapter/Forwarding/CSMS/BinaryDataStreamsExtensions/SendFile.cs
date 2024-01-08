@@ -17,12 +17,12 @@
 
 #region Usings
 
-using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
-
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.CS;
 using cloud.charging.open.protocols.OCPP.CSMS;
+using cloud.charging.open.protocols.OCPP.WebSockets;
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -43,17 +43,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        public async Task<ForwardingDecision<SendFileRequest, SendFileResponse>>
+        public async Task<ForwardingDecision>
 
-            Forward_SendFile(SendFileRequest       Request,
-                             IWebSocketConnection  Connection,
-                             CancellationToken     CancellationToken   = default)
+            Forward_SendFile(OCPP_BinaryRequestMessage  BinaryRequestMessage,
+                             IWebSocketConnection       Connection,
+                             CancellationToken          CancellationToken   = default)
 
         {
 
-            #region Send OnSendFileRequest event
+            if (!SendFileRequest.TryParse(BinaryRequestMessage.Payload,
+                                          BinaryRequestMessage.RequestId,
+                                          BinaryRequestMessage.DestinationNodeId,
+                                          BinaryRequestMessage.NetworkPath,
+                                          out var Request,
+                                          out var errorResponse,
+                                          parentNetworkingNode.OCPP.CustomSendFileRequestParser))
+            {
+                return ForwardingDecision.REJECT(errorResponse);
+            }
 
             ForwardingDecision<SendFileRequest, SendFileResponse>? forwardingDecision = null;
+
+            #region Send OnSendFileRequest event
 
             var requestFilter = OnSendFileRequest;
             if (requestFilter is not null)
@@ -70,19 +81,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                                                      CancellationToken)).
                                                      ToArray());
 
-                    var response = results.First();
-
-                    forwardingDecision = response.Result == ForwardingResult.REJECT && response.RejectResponse is null
-                                             ? new ForwardingDecision<SendFileRequest, SendFileResponse>(
-                                                   response.Request,
-                                                   ForwardingResult.REJECT,
-                                                   new SendFileResponse(
-                                                       Request,
-                                                       Result.Filtered("Default handler")
-                                                   ),
-                                                   "Default handler"
-                                               )
-                                             : response;
+                    //ToDo: Find a good result!
+                    forwardingDecision = results.First();
 
                 }
                 catch (Exception e)
@@ -100,35 +100,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Default result
 
-            forwardingDecision ??= DefaultResult == ForwardingResult.FORWARD
+            if (forwardingDecision is null && DefaultResult == ForwardingResult.FORWARD)
+                forwardingDecision = new ForwardingDecision<SendFileRequest, SendFileResponse>(
+                                         Request,
+                                         ForwardingResult.FORWARD
+                                     );
 
-                                       ? new ForwardingDecision<SendFileRequest, SendFileResponse>(
-                                             Request,
-                                             ForwardingResult.FORWARD
+            if (forwardingDecision is null ||
+               (forwardingDecision.Result == ForwardingResult.REJECT && forwardingDecision.RejectResponse is null))
+            {
+
+                var response = forwardingDecision?.RejectResponse ??
+                                   new SendFileResponse(
+                                       Request,
+                                       Result.Filtered(ForwardingDecision.DefaultLogMessage)
+                                   );
+
+                forwardingDecision = new ForwardingDecision<SendFileRequest, SendFileResponse>(
+                                         Request,
+                                         ForwardingResult.REJECT,
+                                         response,
+                                         response.ToJSON(
+                                             parentNetworkingNode.OCPP.CustomSendFileResponseSerializer,
+                                             parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
+                                             parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                             parentNetworkingNode.OCPP.CustomCustomDataSerializer
                                          )
+                                     );
 
-                                       : new ForwardingDecision<SendFileRequest, SendFileResponse>(
-                                             Request,
-                                             ForwardingResult.REJECT,
-                                             new SendFileResponse(
-                                                 Request,
-                                                 Result.Filtered("Default handler")
-                                             ),
-                                             "Default handler"
-                                         );
+            }
 
             #endregion
 
 
             #region Send OnSendFileRequestLogging event
 
-            var resultLog = OnSendFileRequestLogging;
-            if (resultLog is not null)
+            var logger = OnSendFileRequestLogging;
+            if (logger is not null)
             {
                 try
                 {
 
-                    await Task.WhenAll(resultLog.GetInvocationList().
+                    await Task.WhenAll(logger.GetInvocationList().
                                        OfType <OnSendFileRequestFilteredDelegate>().
                                        Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
                                                                                          parentNetworkingNode,

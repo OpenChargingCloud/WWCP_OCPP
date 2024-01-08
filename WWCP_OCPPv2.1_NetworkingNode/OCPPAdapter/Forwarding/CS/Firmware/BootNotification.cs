@@ -52,23 +52,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         {
 
-            if (BootNotificationRequest.TryParse(JSONRequestMessage.Payload,
-                                                 JSONRequestMessage.RequestId,
-                                                 JSONRequestMessage.DestinationNodeId,
-                                                 JSONRequestMessage.NetworkPath,
-                                                 out var Request,
-                                                 out var errorResponse,
-                                                 parentNetworkingNode.OCPP.CustomBootNotificationRequestParser,
-                                                 parentNetworkingNode.OCPP.CustomChargingStationParser,
-                                                 parentNetworkingNode.OCPP.CustomSignatureParser,
-                                                 parentNetworkingNode.OCPP.CustomCustomDataParser))
+            if (!BootNotificationRequest.TryParse(JSONRequestMessage.Payload,
+                                                  JSONRequestMessage.RequestId,
+                                                  JSONRequestMessage.DestinationNodeId,
+                                                  JSONRequestMessage.NetworkPath,
+                                                  out var Request,
+                                                  out var errorResponse,
+                                                  parentNetworkingNode.OCPP.CustomBootNotificationRequestParser,
+                                                  parentNetworkingNode.OCPP.CustomChargingStationParser,
+                                                  parentNetworkingNode.OCPP.CustomSignatureParser,
+                                                  parentNetworkingNode.OCPP.CustomCustomDataParser))
             {
-
+                return ForwardingDecision.REJECT(errorResponse);
             }
 
-            #region Send OnBootNotificationRequest event
 
             ForwardingDecision<BootNotificationRequest, BootNotificationResponse>? forwardingDecision = null;
+
+
+            #region Send OnBootNotificationRequest event
 
             var requestFilter = OnBootNotificationRequest;
             if (requestFilter is not null)
@@ -77,36 +79,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
 
                     var results = await Task.WhenAll(requestFilter.GetInvocationList().
-                                                     OfType <OnBootNotificationRequestFilterDelegate>().
-                                                     Select (filterDelegate => filterDelegate.Invoke(Timestamp.Now,
-                                                                                                     parentNetworkingNode,
-                                                                                                     Connection,
-                                                                                                     Request,
-                                                                                                     CancellationToken)).
-                                                     ToArray());
+                                                        OfType <OnBootNotificationRequestFilterDelegate>().
+                                                        Select (filterDelegate => filterDelegate.Invoke(Timestamp.Now,
+                                                                                                        parentNetworkingNode,
+                                                                                                        Connection,
+                                                                                                        Request,
+                                                                                                        CancellationToken)).
+                                                        ToArray());
 
-                    var response = results.First();
-
-                    forwardingDecision = response.Result == ForwardingResult.REJECT && response.RejectResponse is null
-                                             ? new ForwardingDecision<BootNotificationRequest, BootNotificationResponse>(
-                                                   response.Request,
-                                                   ForwardingResult.REJECT,
-                                                   new BootNotificationResponse(
-                                                       Request,
-                                                       Result.Filtered("Default handler")
-                                                   ),
-                                                   "Default handler"
-                                               )
-                                             : response;
+                    //ToDo: Find a good result!
+                    forwardingDecision = results.First();
 
                 }
                 catch (Exception e)
                 {
                     await HandleErrors(
-                              nameof(TestNetworkingNode),
-                              nameof(OnBootNotificationRequest),
-                              e
-                          );
+                                nameof(TestNetworkingNode),
+                                nameof(OnBootNotificationRequest),
+                                e
+                            );
                 }
 
             }
@@ -115,35 +106,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Default result
 
-            forwardingDecision ??= DefaultResult == ForwardingResult.FORWARD
+            if (forwardingDecision is null && DefaultResult == ForwardingResult.FORWARD)
+                forwardingDecision = new ForwardingDecision<BootNotificationRequest, BootNotificationResponse>(
+                                         Request,
+                                         ForwardingResult.FORWARD
+                                     );
 
-                                       ? new ForwardingDecision<BootNotificationRequest, BootNotificationResponse>(
-                                             Request,
-                                             ForwardingResult.FORWARD
+            if (forwardingDecision is null ||
+               (forwardingDecision.Result == ForwardingResult.REJECT && forwardingDecision.RejectResponse is null))
+            {
+
+                var dataTransferResponse = forwardingDecision?.RejectResponse ??
+                                               new BootNotificationResponse(
+                                                   Request,
+                                                   Result.Filtered(ForwardingDecision.DefaultLogMessage)
+                                               );
+
+                forwardingDecision = new ForwardingDecision<BootNotificationRequest, BootNotificationResponse>(
+                                         Request,
+                                         ForwardingResult.REJECT,
+                                         dataTransferResponse,
+                                         dataTransferResponse.ToJSON(
+                                             parentNetworkingNode.OCPP.CustomBootNotificationResponseSerializer,
+                                             parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
+                                             parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                             parentNetworkingNode.OCPP.CustomCustomDataSerializer
                                          )
+                                     );
 
-                                       : new ForwardingDecision<BootNotificationRequest, BootNotificationResponse>(
-                                             Request,
-                                             ForwardingResult.REJECT,
-                                             new BootNotificationResponse(
-                                                 Request,
-                                                 Result.Filtered("Default handler")
-                                             ),
-                                             "Default handler"
-                                         );
+            }
 
             #endregion
 
 
-            #region Send OnGetFileRequestLogging event
+            #region Send OnBootNotificationRequestLogging event
 
-            var resultLog = OnBootNotificationRequestLogging;
-            if (resultLog is not null)
+            var logger = OnBootNotificationRequestLogging;
+            if (logger is not null)
             {
                 try
                 {
 
-                    await Task.WhenAll(resultLog.GetInvocationList().
+                    await Task.WhenAll(logger.GetInvocationList().
                                        OfType <OnBootNotificationRequestFilteredDelegate>().
                                        Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
                                                                                          parentNetworkingNode,

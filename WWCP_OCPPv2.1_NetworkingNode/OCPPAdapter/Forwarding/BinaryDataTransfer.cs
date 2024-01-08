@@ -18,10 +18,10 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <summary>
     /// The OCPP adapter for forwarding messages.
     /// </summary>
-    public partial class OCPPWebSocketAdapterFORWARD
+    public partial class OCPPWebSocketAdapterFORWARD : IOCPPWebSocketAdapterFORWARD
     {
 
         #region Events
@@ -42,17 +42,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        public async Task<ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>>
+        public async Task<ForwardingDecision>
 
-            Forward_BinaryDataTransfer(BinaryDataTransferRequest  Request,
+            Forward_BinaryDataTransfer(OCPP_BinaryRequestMessage  BinaryRequestMessage,
                                        IWebSocketConnection       Connection,
                                        CancellationToken          CancellationToken   = default)
 
         {
 
-            #region Send OnBinaryDataTransferRequest event
+            if (!BinaryDataTransferRequest.TryParse(BinaryRequestMessage.Payload,
+                                                    BinaryRequestMessage.RequestId,
+                                                    BinaryRequestMessage.DestinationNodeId,
+                                                    BinaryRequestMessage.NetworkPath,
+                                                    out var Request,
+                                                    out var errorResponse,
+                                                    parentNetworkingNode.OCPP.CustomBinaryDataTransferRequestParser))
+            {
+                return ForwardingDecision.REJECT(errorResponse);
+            }
 
             ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>? forwardingDecision = null;
+
+            #region Send OnBinaryDataTransferRequest event
 
             var requestFilter = OnBinaryDataTransferRequest;
             if (requestFilter is not null)
@@ -91,32 +102,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             if (forwardingDecision is null && DefaultResult == ForwardingResult.FORWARD)
                 forwardingDecision = new ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>(
                                          Request,
-                                         ForwardingResult.FORWARD,
-                                         LogMessage: "Default handler"
+                                         ForwardingResult.FORWARD
                                      );
 
             if (forwardingDecision is null ||
                (forwardingDecision.Result == ForwardingResult.REJECT && forwardingDecision.BinaryRejectResponse is null))
             {
 
-                var binaryDataTransferResponse = forwardingDecision?.RejectResponse ??
-                                                     new BinaryDataTransferResponse(
-                                                         Request,
-                                                         Result.Filtered("Default handler")
-                                                     );
+                var response = forwardingDecision?.RejectResponse ??
+                                   new BinaryDataTransferResponse(
+                                       Request,
+                                       Result.Filtered(ForwardingDecision.DefaultLogMessage)
+                                   );
 
                 forwardingDecision = new ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>(
                                          Request,
                                          ForwardingResult.REJECT,
-                                         binaryDataTransferResponse,
-                                         null,
-                                         binaryDataTransferResponse.ToBinary(
+                                         response,
+                                         response.ToBinary(
                                              parentNetworkingNode.OCPP.CustomBinaryDataTransferResponseSerializer,
                                              parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
                                              parentNetworkingNode.OCPP.CustomBinarySignatureSerializer,
                                              IncludeSignatures: true
-                                         ),
-                                         "Default handler"
+                                         )
                                      );
 
             }
@@ -126,13 +134,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Send OnBinaryDataTransferRequestLogging event
 
-            var resultLog = OnBinaryDataTransferRequestLogging;
-            if (resultLog is not null)
+            var logger = OnBinaryDataTransferRequestLogging;
+            if (logger is not null)
             {
                 try
                 {
 
-                    await Task.WhenAll(resultLog.GetInvocationList().
+                    await Task.WhenAll(logger.GetInvocationList().
                                        OfType <OnBinaryDataTransferRequestFilteredDelegate>().
                                        Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
                                                                                          parentNetworkingNode,

@@ -23,6 +23,7 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.CS;
 using cloud.charging.open.protocols.OCPP.CSMS;
+using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
 
@@ -43,17 +44,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        public async Task<ForwardingDecision<ListDirectoryRequest, ListDirectoryResponse>>
+        public async Task<ForwardingDecision>
 
-            Forward_ListDirectory(ListDirectoryRequest  Request,
-                                  IWebSocketConnection  Connection,
-                                  CancellationToken     CancellationToken   = default)
+            Forward_ListDirectory(OCPP_JSONRequestMessage  JSONRequestMessage,
+                                  IWebSocketConnection     Connection,
+                                  CancellationToken        CancellationToken   = default)
 
         {
 
-            #region Send OnListDirectoryRequest event
+            if (!ListDirectoryRequest.TryParse(JSONRequestMessage.Payload,
+                                               JSONRequestMessage.RequestId,
+                                               JSONRequestMessage.DestinationNodeId,
+                                               JSONRequestMessage.NetworkPath,
+                                               out var Request,
+                                               out var errorResponse,
+                                               parentNetworkingNode.OCPP.CustomListDirectoryRequestParser))
+            {
+                return ForwardingDecision.REJECT(errorResponse);
+            }
 
             ForwardingDecision<ListDirectoryRequest, ListDirectoryResponse>? forwardingDecision = null;
+
+            #region Send OnListDirectoryRequest event
 
             var requestFilter = OnListDirectoryRequest;
             if (requestFilter is not null)
@@ -70,19 +82,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                                                      CancellationToken)).
                                                      ToArray());
 
-                    var response = results.First();
-
-                    forwardingDecision = response.Result == ForwardingResult.REJECT && response.RejectResponse is null
-                                             ? new ForwardingDecision<ListDirectoryRequest, ListDirectoryResponse>(
-                                                   response.Request,
-                                                   ForwardingResult.REJECT,
-                                                   new ListDirectoryResponse(
-                                                       Request,
-                                                       Result.Filtered("Default handler")
-                                                   ),
-                                                   "Default handler"
-                                               )
-                                             : response;
+                    //ToDo: Find a good result!
+                    forwardingDecision = results.First();
 
                 }
                 catch (Exception e)
@@ -100,35 +101,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Default result
 
-            forwardingDecision ??= DefaultResult == ForwardingResult.FORWARD
+            if (forwardingDecision is null && DefaultResult == ForwardingResult.FORWARD)
+                forwardingDecision = new ForwardingDecision<ListDirectoryRequest, ListDirectoryResponse>(
+                                         Request,
+                                         ForwardingResult.FORWARD
+                                     );
 
-                                       ? new ForwardingDecision<ListDirectoryRequest, ListDirectoryResponse>(
-                                             Request,
-                                             ForwardingResult.FORWARD
+            if (forwardingDecision is null ||
+               (forwardingDecision.Result == ForwardingResult.REJECT && forwardingDecision.RejectResponse is null))
+            {
+
+                var response = forwardingDecision?.RejectResponse ??
+                                   new ListDirectoryResponse(
+                                       Request,
+                                       Result.Filtered(ForwardingDecision.DefaultLogMessage)
+                                   );
+
+                forwardingDecision = new ForwardingDecision<ListDirectoryRequest, ListDirectoryResponse>(
+                                         Request,
+                                         ForwardingResult.REJECT,
+                                         response,
+                                         response.ToJSON(
+                                             parentNetworkingNode.OCPP.CustomListDirectoryResponseSerializer,
+                                             parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
+                                             parentNetworkingNode.OCPP.CustomSignatureSerializer,
+                                             parentNetworkingNode.OCPP.CustomCustomDataSerializer
                                          )
+                                     );
 
-                                       : new ForwardingDecision<ListDirectoryRequest, ListDirectoryResponse>(
-                                             Request,
-                                             ForwardingResult.REJECT,
-                                             new ListDirectoryResponse(
-                                                 Request,
-                                                 Result.Filtered("Default handler")
-                                             ),
-                                             "Default handler"
-                                         );
+            }
 
             #endregion
 
 
             #region Send OnListDirectoryRequestLogging event
 
-            var resultLog = OnListDirectoryRequestLogging;
-            if (resultLog is not null)
+            var logger = OnListDirectoryRequestLogging;
+            if (logger is not null)
             {
                 try
                 {
 
-                    await Task.WhenAll(resultLog.GetInvocationList().
+                    await Task.WhenAll(logger.GetInvocationList().
                                        OfType <OnListDirectoryRequestFilteredDelegate>().
                                        Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
                                                                                          parentNetworkingNode,

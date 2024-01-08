@@ -27,17 +27,67 @@ using Newtonsoft.Json.Linq;
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    public class ForwardingDecision(ForwardingResult  Result,
-                                    JObject?          JSONRejectResponse     = null,
-                                    Byte[]?           BinaryRejectResponse   = null,
-                                    String?           LogMessage             = null)
-
+    public class ForwardingDecision
     {
 
-        public ForwardingResult  Result                  { get; } = Result;
-        public JObject?          JSONRejectResponse      { get; } = JSONRejectResponse;
-        public Byte[]?           BinaryRejectResponse    { get; } = BinaryRejectResponse;
-        public String?           LogMessage              { get; } = LogMessage;
+        public const String DefaultLogMessage = "Default FORWARDING handler";
+
+
+        public ForwardingResult  Result                  { get; }
+        public JObject?          JSONRejectResponse      { get; }
+        public Byte[]?           BinaryRejectResponse    { get; }
+        public String            LogMessage              { get; }
+
+
+
+        public ForwardingDecision(ForwardingResult  Result,
+                                  String?           LogMessage   = null)
+        {
+
+            this.Result                = Result;
+            this.LogMessage            = LogMessage ?? DefaultLogMessage;
+
+        }
+
+        public ForwardingDecision(ForwardingResult  Result,
+                                  JObject           JSONRejectResponse,
+                                  String?           LogMessage   = null)
+        {
+
+            this.Result                = Result;
+            this.JSONRejectResponse    = JSONRejectResponse;
+            this.LogMessage            = LogMessage ?? DefaultLogMessage;
+
+        }
+
+        public ForwardingDecision(ForwardingResult  Result,
+                                  Byte[]            BinaryRejectResponse,
+                                  String?           LogMessage   = null)
+        {
+
+            this.Result                = Result;
+            this.BinaryRejectResponse  = BinaryRejectResponse;
+            this.LogMessage            = LogMessage ?? DefaultLogMessage;
+
+        }
+
+
+
+        public static ForwardingDecision FORWARD (String? LogMessage = null)
+
+            => new (ForwardingResult.FORWARD,
+                    LogMessage);
+
+        public static ForwardingDecision REJECT  (String? LogMessage = null)
+
+            => new (ForwardingResult.REJECT,
+                    LogMessage);
+
+        public static ForwardingDecision DROP    (String? LogMessage = null)
+
+            => new (ForwardingResult.DROP,
+                    LogMessage);
+
 
         public override String ToString()
             => $"{Result}{(LogMessage.IsNotNullOrEmpty() ? $": {LogMessage}" : "")}";
@@ -45,25 +95,69 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     }
 
 
-    public class ForwardingDecision<TRequest, TResponse>(TRequest          Request,
-                                                         ForwardingResult  Result,
-                                                         TResponse?        RejectResponse         = null,
-                                                         JObject?          JSONRejectResponse     = null,
-                                                         Byte[]?           BinaryRejectResponse   = null,
-                                                         String?           LogMessage             = null) : ForwardingDecision(
-                                                                                                                Result,
-                                                                                                                JSONRejectResponse,
-                                                                                                                BinaryRejectResponse,
-                                                                                                                LogMessage
-                                                                                                            )
+    public class ForwardingDecision<TRequest, TResponse> : ForwardingDecision
 
         where TRequest  : class, IRequest
         where TResponse : class, IResponse
 
     {
 
-        public TRequest    Request           { get; } = Request;
-        public TResponse?  RejectResponse    { get; } = RejectResponse;
+
+        public TRequest    Request           { get; }
+        public TResponse?  RejectResponse    { get; }
+
+
+
+
+        public ForwardingDecision(TRequest          Request,
+                                  ForwardingResult  Result,
+                                  String?           LogMessage   = null)
+
+            : base(Result,
+                   LogMessage)
+
+        {
+
+            this.Request         = Request;
+
+        }
+
+
+        public ForwardingDecision(TRequest          Request,
+                                  ForwardingResult  Result,
+                                  TResponse         RejectResponse,
+                                  JObject           JSONRejectResponse,
+                                  String?           LogMessage   = null)
+
+            : base(Result,
+                   JSONRejectResponse,
+                   LogMessage)
+
+        {
+
+            this.Request         = Request;
+            this.RejectResponse  = RejectResponse;
+
+        }
+
+
+        public ForwardingDecision(TRequest          Request,
+                                  ForwardingResult  Result,
+                                  TResponse         RejectResponse,
+                                  Byte[]            BinaryRejectResponse,
+                                  String?           LogMessage   = null)
+
+            : base(Result,
+                   BinaryRejectResponse,
+                   LogMessage)
+
+        {
+
+            this.Request         = Request;
+            this.RejectResponse  = RejectResponse;
+
+        }
+
 
 
     }

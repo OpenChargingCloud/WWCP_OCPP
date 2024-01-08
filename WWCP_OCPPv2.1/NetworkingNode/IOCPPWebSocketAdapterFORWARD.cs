@@ -3690,10 +3690,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Firmware
 
-        Task<ForwardingDecision>                                                                                       Forward_BootNotification                  (OCPP_JSONRequestMessage JSONRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<FirmwareStatusNotificationRequest,        FirmwareStatusNotificationResponse>>         Forward_FirmwareStatusNotification        (FirmwareStatusNotificationRequest        Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<HeartbeatRequest,                         HeartbeatResponse>>                          Forward_Heartbeat                         (HeartbeatRequest                         Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<PublishFirmwareStatusNotificationRequest, PublishFirmwareStatusNotificationResponse>>  Forward_PublishFirmwareStatusNotification (PublishFirmwareStatusNotificationRequest Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_BootNotification                  (OCPP_JSONRequestMessage   JSONRequestMessage,   IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_FirmwareStatusNotification        (OCPP_JSONRequestMessage   JSONRequestMessage,   IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_Heartbeat                         (OCPP_JSONRequestMessage   JSONRequestMessage,   IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_PublishFirmwareStatusNotification (OCPP_JSONRequestMessage   JSONRequestMessage,   IWebSocketConnection Connection, CancellationToken CancellationToken = default);
 
         #endregion
 
@@ -3703,19 +3703,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region BinaryDataStreamsExtensions
 
-        Task<ForwardingDecision<DeleteFileRequest,                        DeleteFileResponse>>                         Forward_DeleteFile                        (DeleteFileRequest                        Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<GetFileRequest,                           GetFileResponse>>                            Forward_GetFile                           (GetFileRequest                           Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<ListDirectoryRequest,                     ListDirectoryResponse>>                      Forward_ListDirectory                     (ListDirectoryRequest                     Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<SendFileRequest,                          SendFileResponse>>                           Forward_SendFile                          (SendFileRequest                          Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_DeleteFile                        (OCPP_JSONRequestMessage   JSONRequestMessage,   IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_GetFile                           (OCPP_JSONRequestMessage   JSONRequestMessage,   IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_ListDirectory                     (OCPP_JSONRequestMessage   JSONRequestMessage,   IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_SendFile                          (OCPP_BinaryRequestMessage BinaryRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
 
         #endregion
 
         #region Certificates
-        Task<ForwardingDecision<CertificateSignedRequest,                 CertificateSignedResponse>>                  Forward_CertificateSigned                 (CertificateSignedRequest                 Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<DeleteCertificateRequest,                 DeleteCertificateResponse>>                  Forward_DeleteCertificate                 (DeleteCertificateRequest                 Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<GetInstalledCertificateIdsRequest,        GetInstalledCertificateIdsResponse>>         Forward_GetInstalledCertificateIds        (GetInstalledCertificateIdsRequest        Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<InstallCertificateRequest,                InstallCertificateResponse>>                 Forward_InstallCertificate                (InstallCertificateRequest                Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<NotifyCRLRequest,                         NotifyCRLResponse>>                          Forward_NotifyCRL                         (NotifyCRLRequest                         Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_CertificateSigned                 (OCPP_JSONRequestMessage   JSONRequestMessage,   IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_DeleteCertificate                 (OCPP_JSONRequestMessage   JSONRequestMessage,   IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_GetInstalledCertificateIds        (OCPP_JSONRequestMessage   JSONRequestMessage,   IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_InstallCertificate                (OCPP_JSONRequestMessage   JSONRequestMessage,   IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision> Forward_NotifyCRL                         (OCPP_JSONRequestMessage   JSONRequestMessage,   IWebSocketConnection Connection, CancellationToken CancellationToken = default);
 
         #endregion
 
@@ -3807,8 +3807,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        Task<ForwardingDecision<BinaryDataTransferRequest,                BinaryDataTransferResponse>>                 Forward_BinaryDataTransfer                (BinaryDataTransferRequest                Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
-        Task<ForwardingDecision<DataTransferRequest,                      DataTransferResponse>>                       Forward_DataTransfer                      (DataTransferRequest                      Request, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision>                 Forward_BinaryDataTransfer                (OCPP_BinaryRequestMessage BinaryRequestMessage, IWebSocketConnection Connection, CancellationToken CancellationToken = default);
+        Task<ForwardingDecision>                 Forward_DataTransfer                      (OCPP_JSONRequestMessage   JSONRequestMessage,   IWebSocketConnection Connection, CancellationToken CancellationToken = default);
 
 
     }
