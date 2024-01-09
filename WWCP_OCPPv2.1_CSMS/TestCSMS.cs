@@ -53,7 +53,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         private          readonly  HashSet<CSMS.ICSMSChannel>                                                    csmsChannelServers         = [];
 
-        private          readonly  ConcurrentDictionary<NetworkingNode_Id, Tuple<CSMS.ICSMSChannel, DateTime>>   reachableChargingStations    = [];
+        private          readonly  ConcurrentDictionary<NetworkingNode_Id, Tuple<CSMS.ICSMSChannel, DateTime>>   connectedNetworkingNodes    = [];
         private          readonly  ConcurrentDictionary<NetworkingNode_Id, NetworkingNode_Id>                    reachableViaNetworkingHubs   = [];
 
         private          readonly  HTTPExtAPI                                                                    TestAPI;
@@ -117,7 +117,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The unique identifications of all connected or reachable networking nodes.
         /// </summary>
         public IEnumerable<NetworkingNode_Id> NetworkingNodeIds
-            => reachableChargingStations.Values.SelectMany(csmsChannel => csmsChannel.Item1.NetworkingNodeIds);
+            => connectedNetworkingNodes.Values.SelectMany(csmsChannel => csmsChannel.Item1.NetworkingNodeIds);
 
 
         public Dictionary<String, Transaction_Id> TransactionIds = new ();
@@ -2075,7 +2075,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (reachableViaNetworkingHubs.TryGetValue(lookUpNetworkingNodeId, out var networkingHubId))
                 lookUpNetworkingNodeId = networkingHubId;
 
-            if (reachableChargingStations. TryGetValue(lookUpNetworkingNodeId, out var csmsChannel) &&
+            if (connectedNetworkingNodes.  TryGetValue(lookUpNetworkingNodeId, out var csmsChannel) &&
                 csmsChannel?.Item1 is not null)
             {
                 CSMSChannel = csmsChannel.Item1;
@@ -2091,7 +2091,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                      NetworkingNode_Id NetworkingHubId)
         {
 
-            if (reachableChargingStations.TryGetValue(NetworkingHubId, out var csmsChannel) &&
+            if (connectedNetworkingNodes.TryGetValue(NetworkingHubId, out var csmsChannel) &&
                 csmsChannel?.Item1 is not null)
             {
 
@@ -2109,7 +2109,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                         NetworkingNode_Id NetworkingHubId)
         {
 
-            if (reachableChargingStations.TryGetValue(NetworkingHubId, out var csmsChannel) &&
+            if (connectedNetworkingNodes.TryGetValue(NetworkingHubId, out var csmsChannel) &&
                 csmsChannel?.Item1 is not null)
             {
 
@@ -2273,8 +2273,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                cancellationToken) => {
 
                 // A new connection from the same networking node/charging station will replace the older one!
-                if (!reachableChargingStations.TryAdd(networkingNodeId, new Tuple<CSMS.ICSMSChannel, DateTime>(csmsChannel as CSMS.ICSMSChannel, timestamp)))
-                    reachableChargingStations[networkingNodeId]       = new Tuple<CSMS.ICSMSChannel, DateTime>(csmsChannel as CSMS.ICSMSChannel, timestamp);
+                if (!connectedNetworkingNodes.TryAdd(networkingNodeId, new Tuple<CSMS.ICSMSChannel, DateTime>(csmsChannel as CSMS.ICSMSChannel, timestamp)))
+                    connectedNetworkingNodes[networkingNodeId]       = new Tuple<CSMS.ICSMSChannel, DateTime>(csmsChannel as CSMS.ICSMSChannel, timestamp);
 
 
                 var onNewWebSocketConnection = OnNewWebSocketConnection;

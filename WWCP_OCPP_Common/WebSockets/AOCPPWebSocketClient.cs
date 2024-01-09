@@ -261,6 +261,9 @@ namespace cloud.charging.open.protocols.OCPP.CS
                             if (OCPPJSONResponse is not null)
                             {
 
+                                if (OCPPJSONResponse.NetworkingMode == NetworkingMode.Unknown)
+                                    OCPPJSONResponse = OCPPJSONResponse.ChangeNetworkingMode(NetworkingMode);
+
                                 var sendStatus = await SendTextMessage(
                                                            OCPPJSONResponse.ToJSON().ToString(JSONFormatting),
                                                            EventTrackingId,

@@ -3290,35 +3290,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
     /// <summary>
-    /// A filtered BootNotification request.
+    /// A filtered JSON request message.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the request.</param>
-    /// <param name="Sender">The sender of the request.</param>
-    /// <param name="Connection">The HTTP Web Socket connection.</param>
-    /// <param name="Request">The request.</param>
-    /// <param name="ForwardingDecision">The forwarding decision.</param>
+    /// <param name="Timestamp">The timestamp of the request message.</param>
+    /// <param name="Sender">The sender of the request message.</param>
+    /// <param name="JSONRequestMessage">The JSON request message.</param>
+    /// <param name="SendOCPPMessageResult">The result of the sending attempt.</param>
     public delegate Task
 
         OnJSONRequestMessageSentDelegate(DateTime                 Timestamp,
                                          IEventSender             Sender,
-                                         //IWebSocketConnection     Connection,
-                                         OCPP_JSONRequestMessage  Request,
+                                         OCPP_JSONRequestMessage  JSONRequestMessage,
                                          SendOCPPMessageResult    SendOCPPMessageResult);
 
     /// <summary>
-    /// A filtered BootNotification request.
+    /// A filtered JSON response message.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the request.</param>
-    /// <param name="Sender">The sender of the request.</param>
-    /// <param name="Connection">The HTTP Web Socket connection.</param>
-    /// <param name="Request">The request.</param>
-    /// <param name="ForwardingDecision">The forwarding decision.</param>
+    /// <param name="Timestamp">The timestamp of the response message.</param>
+    /// <param name="Sender">The sender of the response message.</param>
+    /// <param name="JSONResponseMessage">The JSON response message.</param>
+    /// <param name="SendOCPPMessageResult">The result of the sending attempt.</param>
     public delegate Task
 
         OnJSONResponseMessageSentDelegate(DateTime                  Timestamp,
                                           IEventSender              Sender,
-                                          //IWebSocketConnection      Connection,
-                                          OCPP_JSONResponseMessage  Response,
+                                          OCPP_JSONResponseMessage  JSONResponseMessage,
                                           SendOCPPMessageResult     SendOCPPMessageResult);
 
 
@@ -3671,6 +3667,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         event OnJSONResponseMessageSentDelegate?  OnJSONResponseMessageSent;
 
         #endregion
+
+
+        NetworkingNode_Id? GetForwardedNodeId(Request_Id RequestId);
 
 
         Task ProcessJSONRequestMessage   (OCPP_JSONRequestMessage     JSONRequestMessage);

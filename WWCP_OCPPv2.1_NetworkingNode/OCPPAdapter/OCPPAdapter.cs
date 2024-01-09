@@ -1246,8 +1246,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                         }
 
-                    } while (reachability.OCPPWebSocketClient is not null ||
-                             reachability.OCPPWebSocketServer is not null);
+                    } while (reachability.OCPPWebSocketClient is null &&
+                             reachability.OCPPWebSocketServer is null);
 
                 }
 

@@ -415,14 +415,23 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         #endregion
 
 
-        public OCPP_JSONRequestMessage ChangeDestinationNodeId(NetworkingNode_Id NewDestinationNodeId,
-                                                               NetworkPath       NewNetworkPath)
+        #region ChangeNetworking(NewDestinationNodeId = null, NewNetworkPath = null, NewNetworkingMode = null)
+
+        /// <summary>
+        /// Change the destination node identification and network (source) path.
+        /// </summary>
+        /// <param name="NewDestinationNodeId">An optional new destination node identification.</param>
+        /// <param name="NewNetworkPath">An optional new (source) network path.</param>
+        /// <param name="NewNetworkingMode">An optional new networking mode.</param>
+        public OCPP_JSONRequestMessage ChangeNetworking(NetworkingNode_Id?  NewDestinationNodeId   = null,
+                                                        NetworkPath?        NewNetworkPath         = null,
+                                                        NetworkingMode?     NewNetworkingMode      = null)
 
             => new (RequestTimestamp,
                     EventTrackingId,
-                    NetworkingMode,
-                    NewDestinationNodeId,
-                    NewNetworkPath,
+                    NewNetworkingMode    ?? NetworkingMode,
+                    NewDestinationNodeId ?? DestinationNodeId,
+                    NewNetworkPath       ?? NetworkPath,
                     RequestId,
                     Action,
                     Payload,
@@ -430,6 +439,29 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                     ErrorMessage,
                     CancellationToken);
 
+        #endregion
+
+        #region ChangeDestionationNodeId(NewDestinationNodeId)
+
+        /// <summary>
+        /// Change the destination node identification.
+        /// </summary>
+        /// <param name="NewDestinationNodeId">A new destination node identification.</param>
+        public OCPP_JSONRequestMessage ChangeDestionationNodeId(NetworkingNode_Id NewDestinationNodeId)
+
+            => new (RequestTimestamp,
+                    EventTrackingId,
+                    NetworkingMode,
+                    NewDestinationNodeId,
+                    NetworkPath,
+                    RequestId,
+                    Action,
+                    Payload,
+                    RequestTimeout,
+                    ErrorMessage,
+                    CancellationToken);
+
+        #endregion
 
         #region AppendToNetworkPath(NetworkingNodeId)
 

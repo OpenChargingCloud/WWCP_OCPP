@@ -102,6 +102,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
+        public NetworkingNode_Id? GetForwardedNodeId(Request_Id RequestId)
+        {
+
+            if (expectedResponses.TryGetValue(RequestId, out var responseInfo))
+                return responseInfo.SourceNodeId;
+
+            return null;
+
+        }
+
+
         #region ProcessJSONRequestMessage   (JSONRequestMessage)
 
         public async Task ProcessJSONRequestMessage(OCPP_JSONRequestMessage JSONRequestMessage)
@@ -140,7 +151,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                             newJSONRequestMessage.RequestId,
                             new ResponseInfo(
                                 newJSONRequestMessage.RequestId,
-                                forwardingDecision.RequestContext ?? JSONLDContext.Parse("willnothappen!"),
+                                forwardingDecision.   RequestContext ?? JSONLDContext.Parse("willnothappen!"),
+                                newJSONRequestMessage.NetworkPath.Source,
                                 newJSONRequestMessage.RequestTimeout
                             )
                         );
@@ -241,7 +253,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //responseInfo.Context == JSONResponseMessage.Context)
                 {
 
-                    var newJSONResponseMessage  = JSONResponseMessage.AppendToNetworkPath(parentNetworkingNode.Id);
+                    var newJSONResponseMessage  = JSONResponseMessage.ChangeNetworking(
+                                                      JSONResponseMessage.DestinationNodeId == NetworkingNode_Id.Zero
+                                                          ? responseInfo.       SourceNodeId
+                                                          : JSONResponseMessage.DestinationNodeId,
+                                                      JSONResponseMessage.NetworkPath.Append(parentNetworkingNode.Id)
+                                                  );
 
                     var sendOCPPMessageResult   = await parentNetworkingNode.OCPP.SendJSONResponse(newJSONResponseMessage);
 

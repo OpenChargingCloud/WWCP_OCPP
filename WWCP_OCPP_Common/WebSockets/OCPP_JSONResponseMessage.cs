@@ -345,10 +345,52 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                     Payload);
 
 
+        #region ChangeNetworking(NewDestinationNodeId = null, NewNetworkPath = null, NewNetworkingMode = null)
+
+        /// <summary>
+        /// Change the destination node identification and network (source) path.
+        /// </summary>
+        /// <param name="NewDestinationNodeId">An optional new destination node identification.</param>
+        /// <param name="NewNetworkPath">An optional new (source) network path.</param>
+        /// <param name="NewNetworkingMode">An optional new networking mode.</param>
+        public OCPP_JSONResponseMessage ChangeNetworking(NetworkingNode_Id?  NewDestinationNodeId   = null,
+                                                         NetworkPath?        NewNetworkPath         = null,
+                                                         NetworkingMode?     NewNetworkingMode      = null)
+
+            => new (ResponseTimestamp,
+                    EventTrackingId,
+                    NewNetworkingMode    ?? NetworkingMode,
+                    NewDestinationNodeId ?? DestinationNodeId,
+                    NewNetworkPath       ?? NetworkPath,
+                    RequestId,
+                    Payload,
+                    CancellationToken);
+
+        #endregion
+
+        #region ChangeDestionationNodeId(NewDestinationNodeId)
+
+        /// <summary>
+        /// Change the destination node identification.
+        /// </summary>
+        /// <param name="NewDestinationNodeId">A new destination node identification.</param>
+        public OCPP_JSONResponseMessage ChangeDestionationNodeId(NetworkingNode_Id NewDestinationNodeId)
+
+            => new (ResponseTimestamp,
+                    EventTrackingId,
+                    NetworkingMode,
+                    NewDestinationNodeId,
+                    NetworkPath,
+                    RequestId,
+                    Payload,
+                    CancellationToken);
+
+        #endregion
+
         #region AppendToNetworkPath(NetworkingNodeId)
 
         /// <summary>
-        /// Append the given networking node identification to the network path.
+        /// Append the given networking node identification to the network (source) path.
         /// </summary>
         /// <param name="NetworkingNodeId">A networking node identification to append.</param>
         public OCPP_JSONResponseMessage AppendToNetworkPath(NetworkingNode_Id NetworkingNodeId)
@@ -358,6 +400,25 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                     NetworkingMode,
                     DestinationNodeId,
                     NetworkPath.Append(NetworkingNodeId),
+                    RequestId,
+                    Payload,
+                    CancellationToken);
+
+        #endregion
+
+        #region AppendToNetworkPath(NewNetworkingMode)
+
+        /// <summary>
+        /// Change the networking mode.
+        /// </summary>
+        /// <param name="NetworkingNodeId">A new networking mode.</param>
+        public OCPP_JSONResponseMessage ChangeNetworkingMode(NetworkingMode NewNetworkingMode)
+
+            => new (ResponseTimestamp,
+                    EventTrackingId,
+                    NewNetworkingMode,
+                    DestinationNodeId,
+                    NetworkPath,
                     RequestId,
                     Payload,
                     CancellationToken);

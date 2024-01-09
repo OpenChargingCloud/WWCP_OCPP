@@ -167,14 +167,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         {
 
                             case WebSocketClientConnection:
-                                jsonRequest = jsonRequest.ChangeDestinationNodeId(
+                                jsonRequest = jsonRequest.ChangeNetworking(
                                                               parentNetworkingNode.Id,
                                                               jsonRequest.NetworkPath.Append(sourceNodeId.Value)
                                                           );
                                 break;
 
                             case WebSocketServerConnection:
-                                jsonRequest = jsonRequest.ChangeDestinationNodeId(
+                                jsonRequest = jsonRequest.ChangeNetworking(
                                                               NetworkingNode_Id.CSMS,
                                                               jsonRequest.NetworkPath.Append(sourceNodeId.Value)
                                                           );
@@ -332,6 +332,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 else if (OCPP_JSONResponseMessage.TryParse(JSONMessage, out var jsonResponse, out var responseParsingError,                                    sourceNodeId))
                 {
+
+                    #region Fix DestinationNodeId and network path for standard networking connections
+
+                    if (jsonResponse.NetworkingMode    == NetworkingMode.Standard &&
+                        jsonResponse.DestinationNodeId == NetworkingNode_Id.Zero  &&
+                        sourceNodeId.HasValue)
+                    {
+                        switch (WebSocketConnection)
+                        {
+
+                            case WebSocketClientConnection:
+                                jsonResponse = jsonResponse.ChangeNetworking(
+                                                                sourceNodeId.Value,
+                                                                jsonResponse.NetworkPath.Append(sourceNodeId.Value)
+                                                            );
+                                break;
+
+                            case WebSocketServerConnection:
+                                jsonResponse = jsonResponse.ChangeNetworking(
+                                                                parentNetworkingNode.OCPP.FORWARD.GetForwardedNodeId(jsonResponse.RequestId) ?? parentNetworkingNode.Id,
+                                                                jsonResponse.NetworkPath.Append(sourceNodeId.Value)
+                                                            );
+                                break;
+
+                        }
+                    }
+
+                    #endregion
+
 
                     #region OnJSONMessageResponseReceived
 
