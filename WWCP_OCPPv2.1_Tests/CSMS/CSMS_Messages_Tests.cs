@@ -1192,7 +1192,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var dataTransferRequests = new ConcurrentList<DataTransferRequest>();
 
-                chargingStation1.OnIncomingDataTransferRequest += (timestamp, sender, connection, dataTransferRequest) => {
+                chargingStation1.OnDataTransferRequestReceived += (timestamp, sender, connection, dataTransferRequest) => {
                     dataTransferRequests.TryAdd(dataTransferRequest);
                     return Task.CompletedTask;
                 };
@@ -1248,7 +1248,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var dataTransferRequests = new ConcurrentList<DataTransferRequest>();
 
-                chargingStation1.OnIncomingDataTransferRequest += (timestamp, sender, connection, dataTransferRequest) => {
+                chargingStation1.OnDataTransferRequestReceived += (timestamp, sender, connection, dataTransferRequest) => {
                     dataTransferRequests.TryAdd(dataTransferRequest);
                     return Task.CompletedTask;
                 };
@@ -1311,7 +1311,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var dataTransferRequests = new ConcurrentList<DataTransferRequest>();
 
-                chargingStation1.OnIncomingDataTransferRequest += (timestamp, sender, connection, dataTransferRequest) => {
+                chargingStation1.OnDataTransferRequestReceived += (timestamp, sender, connection, dataTransferRequest) => {
                     dataTransferRequests.TryAdd(dataTransferRequest);
                     return Task.CompletedTask;
                 };
@@ -1371,7 +1371,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var dataTransferRequests = new ConcurrentList<DataTransferRequest>();
 
-                chargingStation1.OnIncomingDataTransferRequest += (timestamp, sender, connection, dataTransferRequest) => {
+                chargingStation1.OnDataTransferRequestReceived += (timestamp, sender, connection, dataTransferRequest) => {
                     dataTransferRequests.TryAdd(dataTransferRequest);
                     return Task.CompletedTask;
                 };

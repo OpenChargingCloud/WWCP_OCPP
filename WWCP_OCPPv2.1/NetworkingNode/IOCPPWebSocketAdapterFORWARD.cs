@@ -3322,11 +3322,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     public interface IOCPPWebSocketAdapterFORWARD
     {
 
-        ForwardingResult                DefaultResult        { get; set; }
+        ForwardingResult            DefaultResult        { get; set; }
 
-        IEnumerable<NetworkingNode_Id>  AnycastIdsAllowed    { get; }
+        HashSet<NetworkingNode_Id>  AnycastIdsAllowed    { get; }
 
-        IEnumerable<NetworkingNode_Id>  AnycastIdsDenied     { get; }
+        HashSet<NetworkingNode_Id>  AnycastIdsDenied     { get; }
 
         #region Events
 

@@ -50,22 +50,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event fired whenever a DataTransfer request will be sent to the CSMS.
         /// </summary>
-        public event OnDataTransferRequestSentDelegate?     OnDataTransferRequest;
+        public event OnDataTransferRequestSentDelegate?         OnDataTransferRequestSent;
 
         /// <summary>
         /// An event fired whenever a DataTransfer request will be sent to the CSMS.
         /// </summary>
-        public event ClientRequestLogHandler?           OnDataTransferWSRequest;
+        public event ClientRequestLogHandler?                   OnDataTransferWSRequest;
 
         /// <summary>
         /// An event fired whenever a response to a DataTransfer request was received.
         /// </summary>
-        public event ClientResponseLogHandler?          OnDataTransferWSResponse;
+        public event ClientResponseLogHandler?                  OnDataTransferWSResponse;
 
         /// <summary>
         /// An event fired whenever a response to a DataTransfer request was received.
         /// </summary>
-        public event OnDataTransferResponseReceivedDelegate?    OnDataTransferResponse;
+        public event OnDataTransferResponseReceivedDelegate?    OnDataTransferResponseReceived;
 
         #endregion
 
@@ -82,21 +82,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         {
 
-            #region Send OnDataTransferRequest event
+            #region Send OnDataTransferRequestSent event
 
             var startTime = Timestamp.Now;
 
             try
             {
 
-                OnDataTransferRequest?.Invoke(startTime,
-                                              this,
-                                              Request);
+                OnDataTransferRequestSent?.Invoke(startTime,
+                                                  this,
+                                                  Request);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnDataTransferRequest));
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnDataTransferRequestSent));
             }
 
             #endregion
@@ -165,23 +165,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             }
 
 
-            #region Send OnDataTransferResponse event
+            #region Send OnDataTransferResponseReceived event
 
             var endTime = Timestamp.Now;
 
             try
             {
 
-                OnDataTransferResponse?.Invoke(endTime,
-                                               this,
-                                               Request,
-                                               response,
-                                               endTime - startTime);
+                OnDataTransferResponseReceived?.Invoke(endTime,
+                                                       this,
+                                                       Request,
+                                                       response,
+                                                       endTime - startTime);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnDataTransferResponse));
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnDataTransferResponseReceived));
             }
 
             #endregion

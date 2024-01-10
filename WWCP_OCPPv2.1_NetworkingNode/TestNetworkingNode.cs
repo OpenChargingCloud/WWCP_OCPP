@@ -38,6 +38,7 @@ using cloud.charging.open.protocols.OCPP.CS;
 using cloud.charging.open.protocols.OCPP.CSMS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
 using cloud.charging.open.protocols.OCPPv2_1.NN;
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
 
@@ -211,7 +212,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public NetworkingNode_Id           Id                         { get; }
 
-        public HashSet<NetworkingNode_Id>  AnycastIds                 { get; }      = [];
+        
 
 
         /// <summary>
@@ -1258,10 +1259,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnIncomingDataTransfer
 
             OCPP.IN.OnDataTransfer += async (timestamp,
-                                                sender,
-                                                connection,
-                                                request,
-                                                cancellationToken) => {
+                                             sender,
+                                             connection,
+                                             request,
+                                             cancellationToken) => {
 
                 // VendorId
                 // MessageId
@@ -1339,6 +1340,46 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             // CSMS
+
+            #region OnBinaryDataTransfer
+
+            OCPP.IN.OnBootNotification += (timestamp,
+                                           sender,
+                                           connection,
+                                           request,
+                                           cancellationToken) => {
+
+                DebugX.Log($"'{Id}': Incoming BootNotification request: {request.ChargingStation.SerialNumber}, {request.Reason}");
+
+                // ChargingStation
+                // Reason
+
+                return Task.FromResult(
+                           new BootNotificationResponse(
+                               Request:      request,
+                               Status:       RegistrationStatus.Accepted,
+                               CurrentTime:  Timestamp.Now,
+                               Interval:     TimeSpan.FromMinutes(5)
+                           )
+                       );
+
+            };
+
+
+            OCPP.FORWARD.OnBinaryDataTransferRequest += (timestamp,
+                                                         sender,
+                                                         connection,
+                                                         request,
+                                                         cancellationToken) =>
+
+                Task.FromResult(
+                    new ForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>(
+                        request,
+                        ForwardingResult.FORWARD
+                    )
+                );
+
+            #endregion
 
             OCPP.FORWARD.OnBootNotificationRequest += (timestamp,
                                                        sender,

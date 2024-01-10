@@ -28,12 +28,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// A BootNotification request.
+    /// A received BootNotification request.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the boot notification request.</param>
-    /// <param name="Sender">The sender of the boot notification request.</param>
+    /// <param name="Timestamp">The timestamp of the BootNotification request.</param>
+    /// <param name="Sender">The sender of the BootNotification request.</param>
     /// <param name="Connection">The HTTP WebSocket server connection.</param>
-    /// <param name="Request">The boot notification request.</param>
+    /// <param name="Request">The BootNotification request.</param>
     public delegate Task
 
         OnBootNotificationRequestReceivedDelegate(DateTime                  Timestamp,
@@ -43,12 +43,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
     /// <summary>
-    /// Send a boot notification.
+    /// Process a received BootNotification request.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the boot notification request.</param>
-    /// <param name="Sender">The sender of the boot notification request.</param>
+    /// <param name="Timestamp">The timestamp of the BootNotification request.</param>
+    /// <param name="Sender">The sender of the BootNotification request.</param>
     /// <param name="Connection">The HTTP WebSocket server connection.</param>
-    /// <param name="Request">The boot notification request.</param>
+    /// <param name="Request">The BootNotification request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<BootNotificationResponse>
 
@@ -60,14 +60,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
     /// <summary>
-    /// A BootNotification response.
+    /// A sent BootNotification response.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the boot notification response.</param>
-    /// <param name="Sender">The sender of the boot notification response.</param>
+    /// <param name="Timestamp">The timestamp of the BootNotification response.</param>
+    /// <param name="Sender">The sender of the BootNotification response.</param>
     /// <param name="Connection">The HTTP WebSocket server connection.</param>
-    /// <param name="Request">The boot notification request.</param>
-    /// <param name="Response">The boot notification response.</param>
-    /// <param name="Runtime">The runtime of the boot notification response.</param>
+    /// <param name="Request">The BootNotification request.</param>
+    /// <param name="Response">The BootNotification response.</param>
+    /// <param name="Runtime">The runtime of the BootNotification response.</param>
     public delegate Task
 
         OnBootNotificationResponseSentDelegate(DateTime                   Timestamp,

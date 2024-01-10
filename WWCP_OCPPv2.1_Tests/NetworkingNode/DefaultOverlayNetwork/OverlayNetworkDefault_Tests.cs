@@ -27,14 +27,21 @@ using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.NN;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
+namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode
 {
 
     /// <summary>
-    /// Unit tests for networking nodes sending messages to the CSMS.
+    /// Unit tests for a charging station, a networking nodes and a CSMS connected via a (default) overlay network.
+    /// This means the charging station communicates with the networking node via classical HTTP Web Socket JSON messages,
+    /// and the networking node communicates with the CSMS via extended HTTP Web Socket JSON messages.
+    /// 
+    /// CS  --[classic JSON]->  NN  --[Overlay Network JSON]->  CSMS
+    /// 
+    /// All messages are digitally signed via a signature policy.
     /// </summary>
     [TestFixture]
     public class OverlayNetworkDefault_Tests : ADefaultOverlayNetwork
@@ -134,7 +141,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
                     Assert.That(csmsBootNotificationRequestSignature.Status,                  Is.EqualTo(VerificationStatus.ValidSignature));
 
                     Assert.That(csmsBootNotificationRequest.ChargingStation,                  Is.Not.Null);
-                    var chargingStation = csmsBootNotificationRequests.First().ChargingStation;
+                    var chargingStation = csmsBootNotificationRequest.ChargingStation;
                     if (chargingStation is not null)
                     {
 
@@ -736,9 +743,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
         {
 
             Assert.Multiple(() => {
-                Assert.That(networkingNode,          Is.Not.Null);
-                Assert.That(nnOCPPWebSocketServer,   Is.Not.Null);
-                Assert.That(chargingStation,         Is.Not.Null);
+                Assert.That(networkingNode,         Is.Not.Null);
+                Assert.That(nnOCPPWebSocketServer,  Is.Not.Null);
+                Assert.That(chargingStation,        Is.Not.Null);
             });
 
             if (networkingNode         is not null &&
@@ -838,6 +845,303 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
         }
 
         #endregion
+
+
+        // Charging Station -> Networking Node
+
+        #region CS_2_NN_SendBootNotifications_Test()
+
+        /// <summary>
+        /// A test for sending signed Boot Notifications from a charging station to a networking node.
+        /// </summary>
+        [Test]
+        public async Task CS_2_NN_SendBootNotifications_Test()
+        {
+
+            Assert.Multiple(() => {
+                Assert.That(networkingNode,         Is.Not.Null);
+                Assert.That(nnOCPPWebSocketServer,  Is.Not.Null);
+                Assert.That(chargingStation,        Is.Not.Null);
+            });
+
+            if (networkingNode         is not null &&
+                nnOCPPWebSocketServer  is not null &&
+                chargingStation        is not null)
+            {
+
+                var csBootNotificationRequestsSent       = new ConcurrentList<BootNotificationRequest>();
+                var nnJSONMessageRequestsReceived        = new ConcurrentList<OCPP_JSONRequestMessage>();
+                var nnBootNotificationRequestsReceived   = new ConcurrentList<BootNotificationRequest>();
+                var nnBootNotificationResponsesSent      = new ConcurrentList<BootNotificationResponse>();
+                var nnJSONResponseMessagesSent           = new ConcurrentList<OCPP_JSONResponseMessage>();
+                var csBootNotificationResponsesReceived  = new ConcurrentList<BootNotificationResponse>();
+
+                chargingStation.OnBootNotificationRequest                  += (timestamp, sender, bootNotificationRequest) => {
+                    csBootNotificationRequestsSent.     TryAdd(bootNotificationRequest);
+                    return Task.CompletedTask;
+                };
+
+                networkingNode.OCPP.IN.OnJSONMessageRequestReceived        += (timestamp, sender, jsonRequestMessage) => {
+                    nnJSONMessageRequestsReceived.      TryAdd(jsonRequestMessage);
+                    return Task.CompletedTask;
+                };
+
+                networkingNode.OCPP.IN.OnBootNotificationRequestReceived  += (timestamp, sender, connection, bootNotificationRequest) => {
+                    nnBootNotificationRequestsReceived. TryAdd(bootNotificationRequest);
+                    return Task.CompletedTask;
+                };
+
+                //networkingNode.OCPP.OUT.nnBootNotificationResponsesSent += (timestamp, sender, jsonResponseMessage) => {
+                //    nnBootNotificationResponsesSent.    TryAdd(jsonResponseMessage);
+                //    return Task.CompletedTask;
+                //};
+
+                networkingNode.OCPP.OUT.OnJSONMessageResponseSent         += (timestamp, sender, jsonResponseMessage) => {
+                    nnJSONResponseMessagesSent.         TryAdd(jsonResponseMessage);
+                    return Task.CompletedTask;
+                };
+
+                chargingStation.        OnBootNotificationResponse        += (timestamp, sender, bootNotificationRequest, bootNotificationResponse, runtime) => {
+                    csBootNotificationResponsesReceived.TryAdd(bootNotificationResponse);
+                    return Task.CompletedTask;
+                };
+
+                networkingNode.OCPP.IN.     AnycastIds.      Add(NetworkingNode_Id.CSMS);
+                networkingNode.OCPP.FORWARD.AnycastIdsDenied.Add(NetworkingNode_Id.CSMS);
+
+
+                var reason    = BootReason.PowerUp;
+                var response  = await chargingStation.SendBootNotification(
+                                          BootReason:  reason
+                                      );
+
+
+                Assert.Multiple(() => {
+
+                    // Charging Station Request OUT
+                    Assert.That(csBootNotificationRequestsSent.     Count,                    Is.EqualTo(1), "The BootNotification request did not leave the charging station!");
+                    var csBootNotificationRequest = csBootNotificationRequestsSent.First();
+                    Assert.That(csBootNotificationRequest.DestinationNodeId,                  Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(csBootNotificationRequest.NetworkPath.Length,                 Is.EqualTo(0)); // Because of "standard" networking mode
+                    Assert.That(csBootNotificationRequest.Reason,                             Is.EqualTo(reason));
+
+                    Assert.That(csBootNotificationRequest.Signatures.Any(),                   Is.True, "The outgoing BootNotification request is not signed!");
+
+
+                    // Networking Node JSON Request IN
+                    Assert.That(nnJSONMessageRequestsReceived.      Count,                    Is.EqualTo(1), "The BootNotification JSON request did not reach the networking node!");
+                    var nnJSONMessageRequest = nnJSONMessageRequestsReceived.First();
+                    Assert.That(nnJSONMessageRequest.DestinationNodeId,                       Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(nnJSONMessageRequest.NetworkPath.Length,                      Is.EqualTo(1));
+                    Assert.That(nnJSONMessageRequest.NetworkPath.Source,                      Is.EqualTo(chargingStation.Id));
+                    Assert.That(nnJSONMessageRequest.NetworkPath.Last,                        Is.EqualTo(chargingStation.Id));
+
+
+                    // Networking Node Request IN
+                    Assert.That(nnBootNotificationRequestsReceived. Count,                    Is.EqualTo(1), "The BootNotification request did not reach the networking node!");
+                    var nnBootNotificationRequest = nnBootNotificationRequestsReceived.First();
+                    Assert.That(nnBootNotificationRequest.DestinationNodeId,                  Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(nnBootNotificationRequest.NetworkPath.Length,                 Is.EqualTo(1));
+                    Assert.That(nnBootNotificationRequest.NetworkPath.Source,                 Is.EqualTo(chargingStation.Id));
+                    Assert.That(nnBootNotificationRequest.NetworkPath.Last,                   Is.EqualTo(chargingStation.Id));
+                    Assert.That(nnBootNotificationRequest.Reason,                             Is.EqualTo(reason));
+
+                    Assert.That(nnBootNotificationRequest.Signatures.Any(),                   Is.True, "The incoming BootNotification request is not signed!");
+                    var csmsBootNotificationRequestSignature = nnBootNotificationRequest.Signatures.First();
+                    Assert.That(csmsBootNotificationRequestSignature.Status,                  Is.EqualTo(VerificationStatus.ValidSignature));
+
+                    Assert.That(nnBootNotificationRequest.ChargingStation,                    Is.Not.Null);
+                    var chargingStation2 = nnBootNotificationRequest.ChargingStation;
+                    if (chargingStation2 is not null)
+                    {
+
+                        Assert.That(chargingStation2.Model,             Is.EqualTo(chargingStation.Model));
+                        Assert.That(chargingStation2.VendorName,        Is.EqualTo(chargingStation.VendorName));
+                        Assert.That(chargingStation2.SerialNumber,      Is.EqualTo(chargingStation.SerialNumber));
+                        Assert.That(chargingStation2.FirmwareVersion,   Is.EqualTo(chargingStation.FirmwareVersion));
+                        Assert.That(chargingStation2.Modem,             Is.Not.Null);
+
+                        if (chargingStation2.Modem is not null &&
+                            networkingNode.Modem is not null)
+                        {
+                            Assert.That(chargingStation2.Modem.ICCID,   Is.EqualTo(chargingStation.Modem.ICCID));
+                            Assert.That(chargingStation2.Modem.IMSI,    Is.EqualTo(chargingStation.Modem.IMSI));
+                        }
+
+                    }
+
+
+                    // Networking Node Response OUT
+
+
+                    // Networking Node JSON Response OUT
+                    Assert.That(nnJSONResponseMessagesSent.         Count,                    Is.EqualTo(1), "The BootNotification JSON response did not leave the networking node!");
+
+
+                    // Charging Station Response IN
+                    Assert.That(csBootNotificationResponsesReceived.Count,                    Is.EqualTo(1), "The BootNotification response did not reach the charging station!");
+                    var csBootNotificationResponse = csBootNotificationResponsesReceived.First();
+                    Assert.That(csBootNotificationResponse.Request.RequestId,                 Is.EqualTo(nnBootNotificationRequest.RequestId));
+
+                    Assert.That(csBootNotificationResponse.Signatures.Any(),                  Is.True, "The incoming BootNotification response is not signed!");
+                    var csBootNotificationResponseSignature = csBootNotificationResponse.Signatures.First();
+                    Assert.That(csBootNotificationResponseSignature.Status,                   Is.EqualTo(VerificationStatus.ValidSignature));
+
+
+                    // Result
+                    Assert.That(response.Result.ResultCode,                                   Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                                              Is.EqualTo(RegistrationStatus.Accepted));
+
+                });
+
+            }
+
+        }
+
+        #endregion
+
+        #region CS_2_NN_SendDataTransfers_Test()
+
+        /// <summary>
+        /// A test for sending signed custom data from a charging station to a networking node.
+        /// </summary>
+        [Test]
+        public async Task CS_2_NN_SendDataTransfers_Test()
+        {
+
+            Assert.Multiple(() => {
+                Assert.That(networkingNode,         Is.Not.Null);
+                Assert.That(nnOCPPWebSocketServer,  Is.Not.Null);
+                Assert.That(chargingStation,        Is.Not.Null);
+            });
+
+            if (networkingNode         is not null &&
+                nnOCPPWebSocketServer  is not null &&
+                chargingStation        is not null)
+            {
+
+                var csDataTransferRequestsSent       = new ConcurrentList<DataTransferRequest>();
+                var nnJSONMessageRequestsReceived        = new ConcurrentList<OCPP_JSONRequestMessage>();
+                var nnDataTransferRequestsReceived   = new ConcurrentList<DataTransferRequest>();
+                var nnDataTransferResponsesSent      = new ConcurrentList<DataTransferResponse>();
+                var nnJSONResponseMessagesSent           = new ConcurrentList<OCPP_JSONResponseMessage>();
+                var csDataTransferResponsesReceived  = new ConcurrentList<DataTransferResponse>();
+
+                chargingStation.OnDataTransferRequestSent              += (timestamp, sender, bootNotificationRequest) => {
+                    csDataTransferRequestsSent.     TryAdd(bootNotificationRequest);
+                    return Task.CompletedTask;
+                };
+
+                networkingNode.OCPP.IN.OnJSONMessageRequestReceived    += (timestamp, sender, jsonRequestMessage) => {
+                    nnJSONMessageRequestsReceived.      TryAdd(jsonRequestMessage);
+                    return Task.CompletedTask;
+                };
+
+                networkingNode.OCPP.IN.OnDataTransferRequestReceived   += (timestamp, sender, connection, bootNotificationRequest) => {
+                    nnDataTransferRequestsReceived. TryAdd(bootNotificationRequest);
+                    return Task.CompletedTask;
+                };
+
+                //networkingNode.OCPP.OUT.nnDataTransferResponsesSent  += (timestamp, sender, jsonResponseMessage) => {
+                //    nnDataTransferResponsesSent.    TryAdd(jsonResponseMessage);
+                //    return Task.CompletedTask;
+                //};
+
+                networkingNode.OCPP.OUT.OnJSONMessageResponseSent      += (timestamp, sender, jsonResponseMessage) => {
+                    nnJSONResponseMessagesSent.         TryAdd(jsonResponseMessage);
+                    return Task.CompletedTask;
+                };
+
+                chargingStation.        OnDataTransferResponseReceived += (timestamp, sender, bootNotificationRequest, bootNotificationResponse, runtime) => {
+                    csDataTransferResponsesReceived.TryAdd(bootNotificationResponse);
+                    return Task.CompletedTask;
+                };
+
+                networkingNode.OCPP.IN.     AnycastIds.      Add(NetworkingNode_Id.CSMS);
+                networkingNode.OCPP.FORWARD.AnycastIdsDenied.Add(NetworkingNode_Id.CSMS);
+
+
+                var vendorId   = Vendor_Id. GraphDefined;
+                var messageId  = Message_Id.GraphDefined_TestMessage;
+                var response   = await chargingStation.TransferData(
+                                           DestinationNodeId:  networkingNode.Id,
+                                           VendorId:           vendorId,
+                                           MessageId:          messageId,
+                                           CustomData:         null
+                                       );
+
+
+                Assert.Multiple(() => {
+
+                    // Charging Station Request OUT
+                    Assert.That(csDataTransferRequestsSent.     Count,                    Is.EqualTo(1), "The DataTransfer request did not leave the charging station!");
+                    var csDataTransferRequest = csDataTransferRequestsSent.First();
+                    Assert.That(csDataTransferRequest.DestinationNodeId,                  Is.EqualTo(networkingNode.Id));
+                    Assert.That(csDataTransferRequest.NetworkPath.Length,                 Is.EqualTo(0)); // Because of "standard" networking mode
+                    Assert.That(csDataTransferRequest.VendorId,                           Is.EqualTo(vendorId));
+                    Assert.That(csDataTransferRequest.MessageId,                          Is.EqualTo(messageId));
+
+                    Assert.That(csDataTransferRequest.Signatures.Any(),                   Is.True, "The outgoing DataTransfer request is not signed!");
+
+
+                    // Networking Node JSON Request IN
+                    Assert.That(nnJSONMessageRequestsReceived.      Count,                Is.EqualTo(1), "The DataTransfer JSON request did not reach the networking node!");
+                    var nnJSONMessageRequest = nnJSONMessageRequestsReceived.First();
+                    Assert.That(nnJSONMessageRequest.DestinationNodeId,                   Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(nnJSONMessageRequest.NetworkPath.Length,                  Is.EqualTo(1));
+                    Assert.That(nnJSONMessageRequest.NetworkPath.Source,                  Is.EqualTo(chargingStation.Id));
+                    Assert.That(nnJSONMessageRequest.NetworkPath.Last,                    Is.EqualTo(chargingStation.Id));
+
+
+                    // Networking Node Request IN
+                    Assert.That(nnDataTransferRequestsReceived. Count,                    Is.EqualTo(1), "The DataTransfer request did not reach the networking node!");
+                    var nnDataTransferRequest = nnDataTransferRequestsReceived.First();
+                    Assert.That(nnDataTransferRequest.DestinationNodeId,                  Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(nnDataTransferRequest.NetworkPath.Length,                 Is.EqualTo(1));
+                    Assert.That(nnDataTransferRequest.NetworkPath.Source,                 Is.EqualTo(chargingStation.Id));
+                    Assert.That(nnDataTransferRequest.NetworkPath.Last,                   Is.EqualTo(chargingStation.Id));
+                    Assert.That(nnDataTransferRequest.VendorId,                           Is.EqualTo(vendorId));
+                    Assert.That(nnDataTransferRequest.MessageId,                          Is.EqualTo(messageId));
+
+                    Assert.That(nnDataTransferRequest.Signatures.Any(),                   Is.True, "The incoming DataTransfer request is not signed!");
+                    var csmsDataTransferRequestSignature = nnDataTransferRequest.Signatures.First();
+                    Assert.That(csmsDataTransferRequestSignature.Status,                  Is.EqualTo(VerificationStatus.ValidSignature));
+
+
+                    // Networking Node Response OUT
+
+
+                    // Networking Node JSON Response OUT
+                    Assert.That(nnJSONResponseMessagesSent.     Count,                    Is.EqualTo(1), "The DataTransfer JSON response did not leave the networking node!");
+
+
+                    // Charging Station Response IN
+                    Assert.That(csDataTransferResponsesReceived.Count,                    Is.EqualTo(1), "The DataTransfer response did not reach the charging station!");
+                    var csDataTransferResponse = csDataTransferResponsesReceived.First();
+                    Assert.That(csDataTransferResponse.Request.RequestId,                 Is.EqualTo(nnDataTransferRequest.RequestId));
+
+                    Assert.That(csDataTransferResponse.Signatures.Any(),                  Is.True, "The incoming DataTransfer response is not signed!");
+                    var csDataTransferResponseSignature = csDataTransferResponse.Signatures.First();
+                    Assert.That(csDataTransferResponseSignature.Status,                   Is.EqualTo(VerificationStatus.ValidSignature));
+
+
+                    // Result
+                    Assert.That(response.Result.ResultCode,                               Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                                          Is.EqualTo(DataTransferStatus.Accepted));
+
+                });
+
+            }
+
+        }
+
+        #endregion
+
+
+
+
+
+
 
 
 
@@ -1002,7 +1306,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
         }
 
         #endregion
-
 
 
         // CSMS --Networking Node-> Charging Station

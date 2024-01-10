@@ -38,12 +38,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
     {
 
-        #region Custom JSON serializer delegates
-
-        public CustomJObjectSerializerDelegate<BootNotificationRequest>?  CustomBootNotificationRequestSerializer    { get; set; }
-
-        #endregion
-
         #region Events
 
         /// <summary>
@@ -52,7 +46,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnBootNotificationRequestSentDelegate?  OnBootNotificationRequestSent;
 
         #endregion
-
 
         #region BootNotification(Request)
 
@@ -101,7 +94,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 if (!parentNetworkingNode.OCPP.SignaturePolicy.SignRequestMessage(
                         Request,
                         Request.ToJSON(
-                            CustomBootNotificationRequestSerializer,
+                            parentNetworkingNode.OCPP.CustomBootNotificationRequestSerializer,
                             parentNetworkingNode.OCPP.CustomChargingStationSerializer,
                             parentNetworkingNode.OCPP.CustomSignatureSerializer,
                             parentNetworkingNode.OCPP.CustomCustomDataSerializer
@@ -122,7 +115,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                      OCPP_JSONRequestMessage.FromRequest(
                                                          Request,
                                                          Request.ToJSON(
-                                                             CustomBootNotificationRequestSerializer,
+                                                             parentNetworkingNode.OCPP.CustomBootNotificationRequestSerializer,
                                                              parentNetworkingNode.OCPP.CustomChargingStationSerializer,
                                                              parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                                              parentNetworkingNode.OCPP.CustomCustomDataSerializer
@@ -171,27 +164,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-
     }
 
     public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
     {
-
-        #region Custom JSON parser delegates
-
-        public CustomJObjectParserDelegate<BootNotificationResponse>?  CustomBootNotificationResponseParser    { get; set; }
-
-        #endregion
 
         #region Events
 
         /// <summary>
         /// An event fired whenever a BootNotification response was received.
         /// </summary>
-        public event OnBootNotificationResponseReceivedDelegate? OnBootNotificationResponseReceived;
+        public event OnBootNotificationResponseReceivedDelegate?  OnBootNotificationResponseReceived;
 
         #endregion
-
 
         #region Receive BootNotification response (wired via reflection!)
 
@@ -221,7 +206,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                       out response,
                                                       out var errorResponse,
                                                       ResponseTimestamp,
-                                                      CustomBootNotificationResponseParser,
+                                                      parentNetworkingNode.OCPP.CustomBootNotificationResponseParser,
                                                       parentNetworkingNode.OCPP.CustomStatusInfoParser,
                                                       parentNetworkingNode.OCPP.CustomSignatureParser,
                                                       parentNetworkingNode.OCPP.CustomCustomDataParser)) {
@@ -229,7 +214,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.OCPP.SignaturePolicy.VerifyResponseMessage(
                         response,
                         response.ToJSON(
-                            CustomBootNotificationResponseSerializer,
+                            parentNetworkingNode.OCPP.CustomBootNotificationResponseSerializer,
                             parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
                             parentNetworkingNode.OCPP.CustomSignatureSerializer,
                             parentNetworkingNode.OCPP.CustomCustomDataSerializer
@@ -246,16 +231,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         {
 
                             await Task.WhenAll(logger.GetInvocationList().
-                                                    OfType <OnBootNotificationResponseReceivedDelegate>().
-                                                    Select (loggingDelegate => loggingDelegate.Invoke(
-                                                                                    Timestamp.Now,
-                                                                                    parentNetworkingNode,
-                                                                                    //    WebSocketConnection,
-                                                                                    Request,
-                                                                                    response,
-                                                                                    response.Runtime
-                                                                                )).
-                                                    ToArray());
+                                                      OfType <OnBootNotificationResponseReceivedDelegate>().
+                                                      Select (loggingDelegate => loggingDelegate.Invoke(
+                                                                                      Timestamp.Now,
+                                                                                      parentNetworkingNode,
+                                                                                      //    WebSocketConnection,
+                                                                                      Request,
+                                                                                      response,
+                                                                                      response.Runtime
+                                                                                  )).
+                                                      ToArray());
 
                         }
                         catch (Exception e)
@@ -279,9 +264,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 response = new BootNotificationResponse(
-                                   Request,
-                                   Result.FromException(e)
-                               );
+                               Request,
+                               Result.FromException(e)
+                           );
 
             }
 
@@ -290,7 +275,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         }
 
         #endregion
-
 
     }
 

@@ -365,6 +365,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
+
+        #region HandleErrors(Module, Caller, ExceptionOccured)
+
+        private Task HandleErrors(String     Module,
+                                  String     Caller,
+                                  Exception  ExceptionOccured)
+        {
+
+            DebugX.LogException(ExceptionOccured, $"{Module}.{Caller}");
+
+            return Task.CompletedTask;
+
+        }
+
+        #endregion
+
     }
 
 }

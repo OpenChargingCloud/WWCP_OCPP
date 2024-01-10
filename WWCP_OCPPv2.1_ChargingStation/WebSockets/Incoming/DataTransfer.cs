@@ -59,17 +59,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a data transfer request was received.
         /// </summary>
-        public event OnIncomingDataTransferRequestDelegate?        OnIncomingDataTransferRequest;
+        public event OnDataTransferRequestReceivedDelegate?        OnDataTransferRequestReceived;
 
         /// <summary>
         /// An event sent whenever a data transfer request was received.
         /// </summary>
-        public event OnIncomingDataTransferDelegate?               OnIncomingDataTransfer;
+        public event OnDataTransferDelegate?                       OnIncomingDataTransfer;
 
         /// <summary>
         /// An event sent whenever a response to a data transfer request was sent.
         /// </summary>
-        public event OnIncomingDataTransferResponseDelegate?       OnIncomingDataTransferResponse;
+        public event OnDataTransferResponseSentDelegate?           OnDataTransferResponseSent;
 
         /// <summary>
         /// An event sent whenever a websocket response to a data transfer request was sent.
@@ -136,7 +136,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     try
                     {
 
-                        OnIncomingDataTransferRequest?.Invoke(Timestamp.Now,
+                        OnDataTransferRequestReceived?.Invoke(Timestamp.Now,
                                                               this,
                                                               WebSocketConnection,
                                                               request);
@@ -144,7 +144,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnIncomingDataTransferRequest));
+                        DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnDataTransferRequestReceived));
                     }
 
                     #endregion
@@ -155,7 +155,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                     var results = OnIncomingDataTransfer?.
                                       GetInvocationList()?.
-                                      SafeSelect(subscriber => (subscriber as OnIncomingDataTransferDelegate)?.Invoke(Timestamp.Now,
+                                      SafeSelect(subscriber => (subscriber as OnDataTransferDelegate)?.Invoke(Timestamp.Now,
                                                                                                                       this,
                                                                                                                       WebSocketConnection,
                                                                                                                       request,
@@ -180,7 +180,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     try
                     {
 
-                        OnIncomingDataTransferResponse?.Invoke(Timestamp.Now,
+                        OnDataTransferResponseSent?.Invoke(Timestamp.Now,
                                                                this,
                                                                WebSocketConnection,
                                                                request,
@@ -190,7 +190,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnIncomingDataTransferResponse));
+                        DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnDataTransferResponseSent));
                     }
 
                     #endregion

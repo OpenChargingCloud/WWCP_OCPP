@@ -457,17 +457,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region OnIncomingDataTransferRequest/-Response
+        #region OnDataTransfer (RequestReceived/-ResponseSent)
 
         /// <summary>
         /// An event sent whenever a data transfer request was received.
         /// </summary>
-        public event OnIncomingDataTransferRequestDelegate?   OnIncomingDataTransferRequest;
+        public event OnDataTransferRequestReceivedDelegate?   OnDataTransferRequestReceived;
 
         /// <summary>
         /// An event sent whenever a response to a data transfer request was sent.
         /// </summary>
-        public event OnIncomingDataTransferResponseDelegate?  OnIncomingDataTransferResponse;
+        public event OnDataTransferResponseSentDelegate?      OnDataTransferResponseSent;
 
         #endregion
 

@@ -2263,7 +2263,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
 
         NetworkingNode_Id           Id                       { get; }
 
-        HashSet<NetworkingNode_Id>  AnycastIds               { get; }
+        //HashSet<NetworkingNode_Id>  AnycastIds               { get; }
 
 
         IOCPPAdapter                OCPP                     { get; }

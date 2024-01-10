@@ -515,12 +515,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Static methods
 
         /// <summary>
-        /// The boot notification failed.
+        /// The BootNotification failed.
         /// </summary>
-        public static BootNotificationResponse Failed(CS.BootNotificationRequest Request)
+        /// <param name="Request">The BootNotification request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static BootNotificationResponse Failed(CS.BootNotificationRequest  Request,
+                                                      String?                     Description   = null)
 
             => new (Request,
-                    Result.Server());
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The BootNotification failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The BootNotification request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static BootNotificationResponse ExceptionOccured(CS.BootNotificationRequest  Request,
+                                                                Exception                   Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 

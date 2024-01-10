@@ -442,13 +442,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Static methods
 
         /// <summary>
-        /// The data transfer failed.
+        /// The DataTransfer failed.
         /// </summary>
-        /// <param name="Request">The data transfer request leading to this response.</param>
-        public static DataTransferResponse Failed(DataTransferRequest  Request)
+        /// <param name="Request">The DataTransfer request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static DataTransferResponse Failed(DataTransferRequest  Request,
+                                                  String?              Description   = null)
 
             => new (Request,
-                    Result.Server());
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The DataTransfer failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The DataTransfer request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static DataTransferResponse ExceptionOccured(DataTransferRequest  Request,
+                                                            Exception            Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
+
 
         #endregion
 

@@ -203,7 +203,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
                 //    return Task.CompletedTask;
                 //};
 
-                chargingStation1.       OnIncomingDataTransferRequest += (timestamp, sender, connection, incomingDataTransferRequest) => {
+                chargingStation1.       OnDataTransferRequestReceived += (timestamp, sender, connection, incomingDataTransferRequest) => {
                     csIncomingDataTransferRequests.TryAdd(incomingDataTransferRequest);
                     return Task.CompletedTask;
                 };

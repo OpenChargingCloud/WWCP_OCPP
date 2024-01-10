@@ -48,6 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+        #region Properties
+
+        public HashSet<NetworkingNode_Id>  AnycastIds    { get; } = [];
+
+        #endregion
+
         #region Events
 
         #region Generic Text Messages
@@ -218,7 +224,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     // Directly for this node OR an anycast message for this node...
                     if (jsonRequest.DestinationNodeId == parentNetworkingNode.Id ||
-                        parentNetworkingNode.AnycastIds.Contains(jsonRequest.DestinationNodeId))
+                        parentNetworkingNode.OCPP.IN.AnycastIds.Contains(jsonRequest.DestinationNodeId))
                     {
 
                         #region Try to call the matching 'incoming message processor'...
@@ -394,7 +400,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     // Directly for this node OR an anycast message for this node...
                     if (jsonResponse.DestinationNodeId == parentNetworkingNode.Id ||
-                        parentNetworkingNode.AnycastIds.Contains(jsonResponse.DestinationNodeId))
+                        parentNetworkingNode.OCPP.IN.AnycastIds.Contains(jsonResponse.DestinationNodeId))
                     {
                         parentNetworkingNode.OCPP.ReceiveJSONResponseMessage(jsonResponse);
                     }
@@ -600,7 +606,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     // Directly for this node OR an anycast message for this node...
                     if (binaryRequest.DestinationNodeId == parentNetworkingNode.Id ||
-                        parentNetworkingNode.AnycastIds.Contains(binaryRequest.DestinationNodeId))
+                        parentNetworkingNode.OCPP.IN.AnycastIds.Contains(binaryRequest.DestinationNodeId))
                     {
 
                         #region Try to call the matching 'incoming message processor'
@@ -777,6 +783,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                        [],
                        EventTrackingId
                    );
+
+        }
+
+        #endregion
+
+
+        #region HandleErrors(Module, Caller, ExceptionOccured)
+
+        private Task HandleErrors(String     Module,
+                                  String     Caller,
+                                  Exception  ExceptionOccured)
+        {
+
+            DebugX.LogException(ExceptionOccured, $"{Module}.{Caller}");
+
+            return Task.CompletedTask;
 
         }
 

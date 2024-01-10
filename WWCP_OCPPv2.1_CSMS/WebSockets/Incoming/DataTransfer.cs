@@ -56,17 +56,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a DataTransfer request was received.
         /// </summary>
-        public event OnIncomingDataTransferRequestDelegate?       OnIncomingDataTransferRequest;
+        public event OnDataTransferRequestReceivedDelegate?       OnDataTransferRequestReceived;
 
         /// <summary>
         /// An event sent whenever a DataTransfer request was received.
         /// </summary>
-        public event OnIncomingDataTransferDelegate?              OnIncomingDataTransfer;
+        public event OnDataTransferDelegate?                      OnIncomingDataTransfer;
 
         /// <summary>
         /// An event sent whenever a response to a DataTransfer request was sent.
         /// </summary>
-        public event OnIncomingDataTransferResponseDelegate?      OnIncomingDataTransferResponse;
+        public event OnDataTransferResponseSentDelegate?          OnDataTransferResponseSent;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a DataTransfer request was sent.
@@ -131,12 +131,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                  out var errorResponse,
                                                  CustomDataTransferRequestParser)) {
 
-                    #region Send OnIncomingDataTransferRequest event
+                    #region Send OnDataTransferRequestReceived event
 
                     try
                     {
 
-                        OnIncomingDataTransferRequest?.Invoke(Timestamp.Now,
+                        OnDataTransferRequestReceived?.Invoke(Timestamp.Now,
                                                               this,
                                                               Connection,
                                                               request);
@@ -144,7 +144,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnIncomingDataTransferRequest));
+                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnDataTransferRequestReceived));
                     }
 
                     #endregion
@@ -155,7 +155,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                     var responseTasks = OnIncomingDataTransfer?.
                                             GetInvocationList()?.
-                                            SafeSelect(subscriber => (subscriber as OnIncomingDataTransferDelegate)?.Invoke(Timestamp.Now,
+                                            SafeSelect(subscriber => (subscriber as OnDataTransferDelegate)?.Invoke(Timestamp.Now,
                                                                                                                             this,
                                                                                                                             Connection,
                                                                                                                             request,
@@ -172,22 +172,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                     #endregion
 
-                    #region Send OnIncomingDataTransferResponse event
+                    #region Send OnDataTransferResponseSent event
 
                     try
                     {
 
-                        OnIncomingDataTransferResponse?.Invoke(Timestamp.Now,
-                                                               this,
-                                                               Connection,
-                                                               request,
-                                                               response,
-                                                               response.Runtime);
+                        OnDataTransferResponseSent?.Invoke(Timestamp.Now,
+                                                           this,
+                                                           Connection,
+                                                           request,
+                                                           response,
+                                                           response.Runtime);
 
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnIncomingDataTransferResponse));
+                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnDataTransferResponseSent));
                     }
 
                     #endregion

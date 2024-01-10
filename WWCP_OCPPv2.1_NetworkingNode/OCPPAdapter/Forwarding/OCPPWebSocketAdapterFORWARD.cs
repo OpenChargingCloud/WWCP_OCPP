@@ -49,11 +49,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Properties
 
-        public ForwardingResult                DefaultResult        { get; set; } = ForwardingResult.DROP;
+        public ForwardingResult            DefaultResult        { get; set; } = ForwardingResult.DROP;
 
-        public IEnumerable<NetworkingNode_Id>  AnycastIdsAllowed    { get; }      = [];
+        public HashSet<NetworkingNode_Id>  AnycastIdsAllowed    { get; }      = [];
 
-        public IEnumerable<NetworkingNode_Id>  AnycastIdsDenied     { get; }      = [];
+        public HashSet<NetworkingNode_Id>  AnycastIdsDenied     { get; }      = [];
 
         #endregion
 
@@ -118,10 +118,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task ProcessJSONRequestMessage(OCPP_JSONRequestMessage JSONRequestMessage)
         {
 
-            if (AnycastIdsAllowed.Any() && !AnycastIdsAllowed.Contains(JSONRequestMessage.DestinationNodeId))
+            if (AnycastIdsAllowed.Count > 0 && !AnycastIdsAllowed.Contains(JSONRequestMessage.DestinationNodeId))
                 return;
 
-            if (AnycastIdsDenied. Any() &&  AnycastIdsDenied. Contains(JSONRequestMessage.DestinationNodeId))
+            if (AnycastIdsDenied. Count > 0 &&  AnycastIdsDenied. Contains(JSONRequestMessage.DestinationNodeId))
                 return;
 
 
@@ -337,10 +337,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task ProcessBinaryRequestMessage(OCPP_BinaryRequestMessage BinaryRequestMessage)
         {
 
-            if (AnycastIdsAllowed.Any() && !AnycastIdsAllowed.Contains(BinaryRequestMessage.DestinationNodeId))
+            if (AnycastIdsAllowed.Count > 0 && !AnycastIdsAllowed.Contains(BinaryRequestMessage.DestinationNodeId))
                 return;
 
-            if (AnycastIdsDenied. Any() &&  AnycastIdsDenied. Contains(BinaryRequestMessage.DestinationNodeId))
+            if (AnycastIdsDenied. Count > 0 &&  AnycastIdsDenied. Contains(BinaryRequestMessage.DestinationNodeId))
                 return;
 
             await parentNetworkingNode.OCPP.SendBinaryRequest(BinaryRequestMessage);

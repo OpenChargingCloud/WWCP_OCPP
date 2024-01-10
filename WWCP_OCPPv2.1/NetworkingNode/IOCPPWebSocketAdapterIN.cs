@@ -20,9 +20,9 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
+using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
@@ -71,6 +71,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
     {
 
+        #region Properties
+
+        HashSet<NetworkingNode_Id> AnycastIds { get; }
+
+        #endregion
+
+        #region Events
 
         #region Generic Text Messages
 
@@ -132,15 +139,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
 
-        #region OnDataTransfer
+        #region OnDataTransfer (RequestReceived/-ResponseSent)
 
         /// <summary>
         /// An event sent whenever a DataTransfer request was received.
         /// </summary>
-        event OnIncomingDataTransferDelegate OnDataTransfer;
+        event OnDataTransferRequestReceivedDelegate  OnDataTransferRequestReceived;
+
+
+        event OnDataTransferDelegate?                OnDataTransfer;
 
         #endregion
 
+
+        #endregion
 
 
 

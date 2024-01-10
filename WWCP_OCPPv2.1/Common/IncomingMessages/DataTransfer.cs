@@ -26,53 +26,53 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// An incoming data transfer request.
+    /// A received DataTransfer request.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the request.</param>
-    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Timestamp">The timestamp of the DataTransfer request.</param>
+    /// <param name="Sender">The sender of the DataTransfer request.</param>
     /// <param name="Connection">The HTTP WebSocket server connection.</param>
-    /// <param name="Request">The data transfer request.</param>
+    /// <param name="Request">The DataTransfer request.</param>
     public delegate Task
 
-        OnIncomingDataTransferRequestDelegate(DateTime               Timestamp,
+        OnDataTransferRequestReceivedDelegate(DateTime               Timestamp,
                                               IEventSender           Sender,
                                               IWebSocketConnection   Connection,
                                               DataTransferRequest    Request);
 
 
     /// <summary>
-    /// An incoming data transfer from the given charging station.
+    /// Process a received DataTransfer request.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the request.</param>
-    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Timestamp">The timestamp of the DataTransfer request.</param>
+    /// <param name="Sender">The sender of the DataTransfer request.</param>
     /// <param name="Connection">The HTTP WebSocket server connection.</param>
-    /// <param name="Request">The data transfer request.</param>
+    /// <param name="Request">The DataTransfer request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<DataTransferResponse>
 
-        OnIncomingDataTransferDelegate(DateTime               Timestamp,
-                                       IEventSender           Sender,
-                                       IWebSocketConnection   Connection,
-                                       DataTransferRequest    Request,
-                                       CancellationToken      CancellationToken);
+        OnDataTransferDelegate(DateTime               Timestamp,
+                               IEventSender           Sender,
+                               IWebSocketConnection   Connection,
+                               DataTransferRequest    Request,
+                               CancellationToken      CancellationToken);
 
 
     /// <summary>
-    /// An incoming data transfer response.
+    /// A sent DataTransfer response.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the request.</param>
-    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Timestamp">The timestamp of the DataTransfer request.</param>
+    /// <param name="Sender">The sender of the DataTransfer request.</param>
     /// <param name="Connection">The HTTP WebSocket server connection.</param>
-    /// <param name="Request">The data transfer request.</param>
-    /// <param name="Response">The stop transaction response.</param>
+    /// <param name="Request">The DataTransfer request.</param>
+    /// <param name="Response">The DataTransfer response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task
 
-        OnIncomingDataTransferResponseDelegate(DateTime               Timestamp,
-                                               IEventSender           Sender,
-                                               IWebSocketConnection   Connection,
-                                               DataTransferRequest    Request,
-                                               DataTransferResponse   Response,
-                                               TimeSpan               Runtime);
+        OnDataTransferResponseSentDelegate(DateTime               Timestamp,
+                                           IEventSender           Sender,
+                                           IWebSocketConnection   Connection,
+                                           DataTransferRequest    Request,
+                                           DataTransferResponse   Response,
+                                           TimeSpan               Runtime);
 
 }
