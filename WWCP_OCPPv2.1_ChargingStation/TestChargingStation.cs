@@ -1169,12 +1169,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// An event fired whenever a BinaryDataTransfer request will be sent to the CSMS.
         /// </summary>
-        public event OnBinaryDataTransferRequestDelegate?            OnBinaryDataTransferRequest;
+        public event OnBinaryDataTransferRequestSentDelegate?            OnBinaryDataTransferRequestSent;
 
         /// <summary>
         /// An event fired whenever a response to a BinaryDataTransfer request was received.
         /// </summary>
-        public event OnBinaryDataTransferResponseDelegate?           OnBinaryDataTransferResponse;
+        public event OnBinaryDataTransferResponseReceivedDelegate?           OnBinaryDataTransferResponseReceived;
 
         #endregion
 
@@ -1825,12 +1825,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// An event sent whenever a BinaryDataTransfer request was sent.
         /// </summary>
-        public event OnIncomingBinaryDataTransferRequestDelegate?   OnIncomingBinaryDataTransferRequest;
+        public event OnBinaryDataTransferRequestReceivedDelegate?   OnIncomingBinaryDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a response to a BinaryDataTransfer request was sent.
         /// </summary>
-        public event OnIncomingBinaryDataTransferResponseDelegate?  OnIncomingBinaryDataTransferResponse;
+        public event OnBinaryDataTransferResponseSentDelegate?  OnIncomingBinaryDataTransferResponse;
 
         #endregion
 
@@ -9355,7 +9355,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 {
 
                     var requestLoggerTasks = onIncomingBinaryDataTransferRequest.GetInvocationList().
-                                                 OfType <OnIncomingBinaryDataTransferRequestDelegate>().
+                                                 OfType <OnBinaryDataTransferRequestReceivedDelegate>().
                                                  Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                    this,
                                                                                                    connection,
@@ -9462,7 +9462,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     var responseTime         = Timestamp.Now;
 
                     var responseLoggerTasks  = responseLogger.GetInvocationList().
-                                                              OfType <OnIncomingBinaryDataTransferResponseDelegate>().
+                                                              OfType <OnBinaryDataTransferResponseSentDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
                                                                                                                 connection,
@@ -14751,14 +14751,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             try
             {
 
-                OnBinaryDataTransferRequest?.Invoke(startTime,
+                OnBinaryDataTransferRequestSent?.Invoke(startTime,
                                                     this,
                                                     Request);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnBinaryDataTransferRequest));
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnBinaryDataTransferRequestSent));
             }
 
             #endregion
@@ -14807,7 +14807,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             try
             {
 
-                OnBinaryDataTransferResponse?.Invoke(endTime,
+                OnBinaryDataTransferResponseReceived?.Invoke(endTime,
                                                      this,
                                                      Request,
                                                      response,
@@ -14816,7 +14816,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnBinaryDataTransferResponse));
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnBinaryDataTransferResponseReceived));
             }
 
             #endregion

@@ -32,7 +32,7 @@ namespace cloud.charging.open.protocols.OCPP
     /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
-    public delegate Task OnBinaryDataTransferRequestDelegate(DateTime                    Timestamp,
+    public delegate Task OnBinaryDataTransferRequestSentDelegate(DateTime                    Timestamp,
                                                              IEventSender                Sender,
                                                              BinaryDataTransferRequest   Request);
 
@@ -44,7 +44,7 @@ namespace cloud.charging.open.protocols.OCPP
     /// <param name="Request">The request.</param>
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate Task OnBinaryDataTransferResponseDelegate(DateTime                     Timestamp,
+    public delegate Task OnBinaryDataTransferResponseReceivedDelegate(DateTime                     Timestamp,
                                                               IEventSender                 Sender,
                                                               BinaryDataTransferRequest    Request,
                                                               BinaryDataTransferResponse   Response,

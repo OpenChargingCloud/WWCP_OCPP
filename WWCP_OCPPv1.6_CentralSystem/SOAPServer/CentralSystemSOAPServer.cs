@@ -402,9 +402,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public event OnSignedFirmwareStatusNotificationDelegate            OnSignedFirmwareStatusNotification;
         public event OnSignedFirmwareStatusNotificationResponseDelegate    OnSignedFirmwareStatusNotificationResponse;
 
-        public event OnIncomingBinaryDataTransferRequestDelegate           OnIncomingBinaryDataTransferRequest;
-        public event OnIncomingBinaryDataTransferDelegate                  OnIncomingBinaryDataTransfer;
-        public event OnIncomingBinaryDataTransferResponseDelegate          OnIncomingBinaryDataTransferResponse;
+        public event OnBinaryDataTransferRequestReceivedDelegate           OnIncomingBinaryDataTransferRequest;
+        public event OnBinaryDataTransferDelegate                  OnIncomingBinaryDataTransfer;
+        public event OnBinaryDataTransferResponseSentDelegate          OnIncomingBinaryDataTransferResponse;
 
         #endregion
 

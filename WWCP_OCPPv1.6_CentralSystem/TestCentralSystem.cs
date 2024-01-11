@@ -478,12 +478,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever an IncomingBinaryDataTransfer request was received.
         /// </summary>
-        public event OnIncomingBinaryDataTransferRequestDelegate?   OnIncomingBinaryDataTransferRequest;
+        public event OnBinaryDataTransferRequestReceivedDelegate?   OnIncomingBinaryDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a response to an IncomingBinaryDataTransfer request was sent.
         /// </summary>
-        public event OnIncomingBinaryDataTransferResponseDelegate?  OnIncomingBinaryDataTransferResponse;
+        public event OnBinaryDataTransferResponseSentDelegate?  OnIncomingBinaryDataTransferResponse;
 
         #endregion
 
@@ -878,12 +878,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a BinaryDataTransfer request will be sent to the charging station.
         /// </summary>
-        public event OnBinaryDataTransferRequestDelegate?   OnBinaryDataTransferRequest;
+        public event OnBinaryDataTransferRequestSentDelegate?   OnBinaryDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a response to a BinaryDataTransfer request was received.
         /// </summary>
-        public event OnBinaryDataTransferResponseDelegate?  OnBinaryDataTransferResponse;
+        public event OnBinaryDataTransferResponseReceivedDelegate?  OnBinaryDataTransferResponse;
 
         #endregion
 

@@ -34,7 +34,7 @@ namespace cloud.charging.open.protocols.OCPP
     /// <param name="Request">The BinaryDataTransfer request.</param>
     public delegate Task
 
-        OnIncomingBinaryDataTransferRequestDelegate(DateTime                    Timestamp,
+        OnBinaryDataTransferRequestReceivedDelegate(DateTime                    Timestamp,
                                                     IEventSender                Sender,
                                                     IWebSocketConnection        Connection,
                                                     BinaryDataTransferRequest   Request);
@@ -50,7 +50,7 @@ namespace cloud.charging.open.protocols.OCPP
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<BinaryDataTransferResponse>
 
-        OnIncomingBinaryDataTransferDelegate(DateTime                    Timestamp,
+        OnBinaryDataTransferDelegate(DateTime                    Timestamp,
                                              IEventSender                Sender,
                                              IWebSocketConnection        Connection,
                                              BinaryDataTransferRequest   Request,
@@ -68,7 +68,7 @@ namespace cloud.charging.open.protocols.OCPP
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task
 
-        OnIncomingBinaryDataTransferResponseDelegate(DateTime                     Timestamp,
+        OnBinaryDataTransferResponseSentDelegate(DateTime                     Timestamp,
                                                      IEventSender                 Sender,
                                                      IWebSocketConnection         Connection,
                                                      BinaryDataTransferRequest    Request,

@@ -22,6 +22,7 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.WebSockets;
+using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
@@ -29,54 +30,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
     /// <summary>
-    /// The charging station HTTP WebSocket client runs on a charging station
-    /// and connects to a CSMS to invoke methods.
+    /// The OCPP HTTP Web Socket Adapter for incoming requests.
     /// </summary>
     public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
     {
 
-        #region Custom JSON parser delegates
-
-        public CustomBinaryParserDelegate<BinaryDataTransferRequest>?       CustomBinaryDataTransferRequestParser         { get; set; }
-
-        public CustomBinarySerializerDelegate<BinaryDataTransferResponse>?  CustomBinaryDataTransferResponseSerializer    { get; set; }
-
-        #endregion
-
         #region Events
 
         /// <summary>
-        /// An event sent whenever a BinaryDataTransfer websocket request was received.
-        /// </summary>
-        public event WebSocketBinaryRequestLogHandler?                  OnIncomingBinaryDataTransferWSRequest;
-
-        /// <summary>
         /// An event sent whenever a BinaryDataTransfer request was received.
         /// </summary>
-        public event OnIncomingBinaryDataTransferRequestDelegate?       OnIncomingBinaryDataTransferRequest;
+        public event OnBinaryDataTransferRequestReceivedDelegate?  OnBinaryDataTransferRequestReceived;
 
         /// <summary>
-        /// An event sent whenever a BinaryDataTransfer request was received.
+        /// An event sent whenever a BinaryDataTransfer request was received for processing.
         /// </summary>
-        public event OnIncomingBinaryDataTransferDelegate?              OnBinaryDataTransfer;
-
-        /// <summary>
-        /// An event sent whenever a response to a BinaryDataTransfer request was sent.
-        /// </summary>
-        public event OnIncomingBinaryDataTransferResponseDelegate?      OnIncomingBinaryDataTransferResponse;
-
-        /// <summary>
-        /// An event sent whenever a websocket response to a BinaryDataTransfer request was sent.
-        /// </summary>
-        public event WebSocketBinaryRequestBinaryResponseLogHandler?    OnIncomingBinaryDataTransferWSResponse;
+        public event OnBinaryDataTransferDelegate?                 OnBinaryDataTransfer;
 
         #endregion
 
 
         #region Receive message (wired via reflection!)
 
-        public async Task<Tuple<OCPP_BinaryResponseMessage?,
-                                OCPP_JSONErrorMessage?>>
+        public async Task<OCPP_Response>
 
             Receive_BinaryDataTransfer(DateTime              RequestTimestamp,
                                        IWebSocketConnection  WebSocketConnection,
@@ -84,55 +60,55 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                        NetworkPath           NetworkPath,
                                        EventTracking_Id      EventTrackingId,
                                        Request_Id            RequestId,
-                                       Byte[]                RequestBinary,
+                                       Byte[]                BinaryRequest,
                                        CancellationToken     CancellationToken)
 
         {
 
-            #region Send OnIncomingBinaryDataTransferWSRequest event
-
-            var startTime = Timestamp.Now;
+            OCPP_Response? ocppResponse = null;
 
             try
             {
 
-                OnIncomingBinaryDataTransferWSRequest?.Invoke(startTime,
-                                                              parentNetworkingNode,
-                                                              WebSocketConnection,
-                                                              DestinationNodeId,
-                                                              NetworkPath,
-                                                              EventTrackingId,
-                                                              RequestTimestamp,
-                                                              RequestBinary);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnIncomingBinaryDataTransferWSRequest));
-            }
-
-            #endregion
-
-            OCPP_BinaryResponseMessage?  OCPPResponse        = null;
-            OCPP_JSONErrorMessage?       OCPPErrorResponse   = null;
-
-            try
-            {
-
-                if (BinaryDataTransferRequest.TryParse(RequestBinary,
+                if (BinaryDataTransferRequest.TryParse(BinaryRequest,
                                                        RequestId,
                                                        DestinationNodeId,
                                                        NetworkPath,
                                                        out var request,
                                                        out var errorResponse,
-                                                       CustomBinaryDataTransferRequestParser)) {
+                                                       parentNetworkingNode.OCPP.CustomBinaryDataTransferRequestParser)) {
 
-                    #region Send OnIncomingBinaryDataTransferRequest event
+                    BinaryDataTransferResponse? response = null;
+
+                    #region Verify request signature(s)
+
+                    if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifyRequestMessage(
+                        request,
+                        request.ToBinary(
+                            parentNetworkingNode.OCPP.CustomBinaryDataTransferRequestSerializer,
+                            parentNetworkingNode.OCPP.CustomBinarySignatureSerializer,
+                            IncludeSignatures: false
+                        ),
+                        out errorResponse))
+                    {
+
+                        response = new BinaryDataTransferResponse(
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature(s): {errorResponse}"
+                                                 )
+                                   );
+
+                    }
+
+                    #endregion
+
+                    #region Send OnBinaryDataTransferRequest event
 
                     try
                     {
 
-                        OnIncomingBinaryDataTransferRequest?.Invoke(Timestamp.Now,
+                        OnBinaryDataTransferRequestReceived?.Invoke(Timestamp.Now,
                                                                     parentNetworkingNode,
                                                                     WebSocketConnection,
                                                                     request);
@@ -140,125 +116,183 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnIncomingBinaryDataTransferRequest));
+                        await HandleErrors(
+                                  nameof(OCPPWebSocketAdapterIN),
+                                  nameof(OnBinaryDataTransferRequestReceived),
+                                  e
+                              );
                     }
 
                     #endregion
 
+
                     #region Call async subscribers
 
-                    BinaryDataTransferResponse? response = null;
+                    if (response is null)
+                    {
+                        try
+                        {
 
-                    var results = OnBinaryDataTransfer?.
-                                      GetInvocationList()?.
-                                      SafeSelect(subscriber => (subscriber as OnIncomingBinaryDataTransferDelegate)?.Invoke(Timestamp.Now,
+                            var responseTasks = OnBinaryDataTransfer?.
+                                                    GetInvocationList()?.
+                                                    SafeSelect(subscriber => (subscriber as OnBinaryDataTransferDelegate)?.Invoke(Timestamp.Now,
                                                                                                                             parentNetworkingNode,
                                                                                                                             WebSocketConnection,
                                                                                                                             request,
                                                                                                                             CancellationToken)).
-                                      ToArray();
+                                                    ToArray();
 
-                    if (results?.Length > 0)
-                    {
+                            response = responseTasks?.Length > 0
+                                           ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
+                                           : BinaryDataTransferResponse.Failed(request, $"Undefined {nameof(OnBinaryDataTransfer)}!");
 
-                        await Task.WhenAll(results!);
+                        }
+                        catch (Exception e)
+                        {
 
-                        response = results.FirstOrDefault()?.Result;
+                            response = BinaryDataTransferResponse.ExceptionOccured(request, e);
 
+                            await HandleErrors(
+                                      nameof(OCPPWebSocketAdapterIN),
+                                      nameof(OnBinaryDataTransfer),
+                                      e
+                                  );
+
+                        }
                     }
 
                     response ??= BinaryDataTransferResponse.Failed(request);
 
                     #endregion
 
-                    #region Send OnIncomingBinaryDataTransferResponse event
+                    #region Sign response message
 
-                    try
-                    {
-
-                        OnIncomingBinaryDataTransferResponse?.Invoke(Timestamp.Now,
-                                                                     parentNetworkingNode,
-                                                                     WebSocketConnection,
-                                                                     request,
-                                                                     response,
-                                                                     response.Runtime);
-
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnIncomingBinaryDataTransferResponse));
-                    }
+                    parentNetworkingNode.OCPP.SignaturePolicy.SignResponseMessage(
+                        response,
+                        response.ToBinary(
+                            parentNetworkingNode.OCPP.CustomBinaryDataTransferResponseSerializer,
+                            parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
+                            parentNetworkingNode.OCPP.CustomBinarySignatureSerializer,
+                            IncludeSignatures: true
+                        ),
+                        out var errorResponse2);
 
                     #endregion
 
-                    OCPPResponse  = OCPP_BinaryResponseMessage.From(
+
+                    #region Send OnBinaryDataTransferResponse event
+
+                    await (parentNetworkingNode.OCPP.OUT as OCPPWebSocketAdapterOUT).SendOnBinaryDataTransferResponseSent(Timestamp.Now,
+                                                                                                                          parentNetworkingNode,
+                                                                                                                          WebSocketConnection,
+                                                                                                                          request,
+                                                                                                                          response,
+                                                                                                                          response.Runtime);
+
+                    #endregion
+
+                    ocppResponse = OCPP_Response.BinaryResponse(
+                                       EventTrackingId,
                                        NetworkPath.Source,
-                                       NetworkPath.Empty,
+                                       NetworkPath.From(parentNetworkingNode.Id),
                                        RequestId,
                                        response.ToBinary(
-                                           CustomBinaryDataTransferResponseSerializer,
-                                           null, //CustomCustomDataSerializer,
+                                           parentNetworkingNode.OCPP.CustomBinaryDataTransferResponseSerializer,
+                                           parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
                                            parentNetworkingNode.OCPP.CustomBinarySignatureSerializer,
                                            IncludeSignatures: true
-                                       )
+                                       ),
+                                       CancellationToken
                                    );
 
                 }
 
                 else
-                    OCPPErrorResponse = OCPP_JSONErrorMessage.CouldNotParse(
-                                            RequestId,
-                                            nameof(Receive_BinaryDataTransfer)[8..],
-                                            RequestBinary,
-                                            errorResponse
-                                        );
+                    ocppResponse = OCPP_Response.CouldNotParse(
+                                       EventTrackingId,
+                                       RequestId,
+                                       nameof(Receive_BinaryDataTransfer)[8..],
+                                       BinaryRequest,
+                                       errorResponse
+                                   );
 
             }
             catch (Exception e)
             {
-                OCPPErrorResponse = OCPP_JSONErrorMessage.FormationViolation(
-                                        RequestId,
-                                        nameof(Receive_BinaryDataTransfer)[8..],
-                                        RequestBinary,
-                                        e
-                                    );
+                ocppResponse = OCPP_Response.FormationViolation(
+                                   EventTrackingId,
+                                   RequestId,
+                                   nameof(Receive_BinaryDataTransfer)[8..],
+                                   BinaryRequest,
+                                   e
+                               );
             }
 
-            #region Send OnIncomingBinaryDataTransferWSResponse event
-
-            try
-            {
-
-                var endTime = Timestamp.Now;
-
-                OnIncomingBinaryDataTransferWSResponse?.Invoke(endTime,
-                                                               parentNetworkingNode,
-                                                               WebSocketConnection,
-                                                               DestinationNodeId,
-                                                               NetworkPath,
-                                                               EventTrackingId,
-                                                               RequestTimestamp,
-                                                               RequestBinary,
-                                                               OCPPResponse?.Payload,
-                                                               OCPPErrorResponse?.ToJSON(),
-                                                               endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnIncomingBinaryDataTransferWSResponse));
-            }
-
-            #endregion
-
-            return new Tuple<OCPP_BinaryResponseMessage?,
-                             OCPP_JSONErrorMessage?>(OCPPResponse,
-                                                     OCPPErrorResponse);
+            return ocppResponse;
 
         }
 
         #endregion
 
+    }
+
+
+    /// <summary>
+    /// The OCPP HTTP Web Socket Adapter for outgoing requests.
+    /// </summary>
+    public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
+    {
+
+        #region Events
+
+        /// <summary>
+        /// An event sent whenever a response to a BinaryDataTransfer was sent.
+        /// </summary>
+        public event OnBinaryDataTransferResponseSentDelegate?  OnBinaryDataTransferResponseSent;
+
+        #endregion
+
+        #region Send OnBinaryDataTransferResponse event
+
+        public async Task SendOnBinaryDataTransferResponseSent(DateTime                    Timestamp,
+                                                               IEventSender                Sender,
+                                                               IWebSocketConnection        Connection,
+                                                               BinaryDataTransferRequest   Request,
+                                                               BinaryDataTransferResponse  Response,
+                                                               TimeSpan                    Runtime)
+        {
+
+            var logger = OnBinaryDataTransferResponseSent;
+            if (logger is not null)
+            {
+                try
+                {
+
+                    await Task.WhenAll(logger.GetInvocationList().
+                                              OfType <OnBinaryDataTransferResponseSentDelegate>().
+                                              Select (filterDelegate => filterDelegate.Invoke(Timestamp,
+                                                                                              Sender,
+                                                                                              Connection,
+                                                                                              Request,
+                                                                                              Response,
+                                                                                              Runtime)).
+                                              ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(OCPPWebSocketAdapterOUT),
+                              nameof(OnBinaryDataTransferResponseSent),
+                              e
+                          );
+                }
+
+            }
+
+        }
+
+        #endregion
 
     }
 

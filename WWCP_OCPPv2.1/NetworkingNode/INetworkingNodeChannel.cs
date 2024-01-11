@@ -139,7 +139,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         event OCPPv2_1.CSMS.OnNotifyDisplayMessagesDelegate?                OnNotifyDisplayMessages;
         event OCPPv2_1.CSMS.OnNotifyCustomerInformationDelegate?            OnNotifyCustomerInformation;
 
-        event OnIncomingBinaryDataTransferDelegate?                         OnIncomingBinaryDataTransfer;
+        event OnBinaryDataTransferDelegate?                         OnIncomingBinaryDataTransfer;
 
 
         void AddStaticRouting   (NetworkingNode_Id DestinationNodeId,

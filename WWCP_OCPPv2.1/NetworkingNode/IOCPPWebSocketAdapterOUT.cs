@@ -109,6 +109,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
+        event OnDataTransferResponseSentDelegate?  OnDataTransferResponseSent;
+
+
         Task<DataTransferResponse>           DataTransfer         (          DataTransferRequest           Request);
 
         Task NotifyJSONMessageResponseSent  (OCPP_JSONResponseMessage   JSONResponseMessage);

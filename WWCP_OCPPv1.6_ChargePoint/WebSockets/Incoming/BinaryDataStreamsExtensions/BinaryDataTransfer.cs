@@ -57,17 +57,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a BinaryDataTransfer request was received.
         /// </summary>
-        public event OnIncomingBinaryDataTransferRequestDelegate?      OnIncomingBinaryDataTransferRequest;
+        public event OnBinaryDataTransferRequestReceivedDelegate?      OnIncomingBinaryDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a BinaryDataTransfer request was received.
         /// </summary>
-        public event OnIncomingBinaryDataTransferDelegate?             OnIncomingBinaryDataTransfer;
+        public event OnBinaryDataTransferDelegate?             OnIncomingBinaryDataTransfer;
 
         /// <summary>
         /// An event sent whenever a response to a BinaryDataTransfer request was sent.
         /// </summary>
-        public event OnIncomingBinaryDataTransferResponseDelegate?     OnIncomingBinaryDataTransferResponse;
+        public event OnBinaryDataTransferResponseSentDelegate?     OnIncomingBinaryDataTransferResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a BinaryDataTransfer request was sent.
@@ -153,7 +153,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                     var results = OnIncomingBinaryDataTransfer?.
                                       GetInvocationList()?.
-                                      SafeSelect(subscriber => (subscriber as OnIncomingBinaryDataTransferDelegate)?.Invoke(Timestamp.Now,
+                                      SafeSelect(subscriber => (subscriber as OnBinaryDataTransferDelegate)?.Invoke(Timestamp.Now,
                                                                                                                             this,
                                                                                                                             WebSocketConnection,
                                                                                                                             request,

@@ -428,13 +428,27 @@ namespace cloud.charging.open.protocols.OCPP
         #region Static methods
 
         /// <summary>
-        /// The binary data transfer failed.
+        /// The BinaryDataTransfer failed.
         /// </summary>
-        /// <param name="Request">The BinaryDataTransfer request leading to this response.</param>
-        public static BinaryDataTransferResponse Failed(BinaryDataTransferRequest  Request)
+        /// <param name="Request">The BinaryDataTransfer request.</param>
+        /// <param name="Description">An optional error decription.</param>
+        public static BinaryDataTransferResponse Failed(BinaryDataTransferRequest  Request,
+                                                        String?                    Description   = null)
 
             => new (Request,
-                    Result.Server());
+                    Result.Server(Description));
+
+
+        /// <summary>
+        /// The BinaryDataTransfer failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The BinaryDataTransfer request.</param>
+        /// <param name="Exception">The exception.</param>
+        public static BinaryDataTransferResponse ExceptionOccured(BinaryDataTransferRequest  Request,
+                                                                  Exception                  Exception)
+
+            => new (Request,
+                    Result.FromException(Exception));
 
         #endregion
 

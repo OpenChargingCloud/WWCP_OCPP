@@ -38,12 +38,12 @@ namespace cloud.charging.open.protocols.OCPP
         /// <summary>
         /// An event fired whenever a Reset request will be sent to a charging station.
         /// </summary>
-        event OnBinaryDataTransferRequestDelegate?              OnBinaryDataTransferRequest;
+        event OnBinaryDataTransferRequestSentDelegate?              OnBinaryDataTransferRequest;
 
         /// <summary>
         /// An event fired whenever a response to a Reset request was received.
         /// </summary>
-        event OnBinaryDataTransferResponseDelegate?             OnBinaryDataTransferResponse;
+        event OnBinaryDataTransferResponseReceivedDelegate?             OnBinaryDataTransferResponse;
 
         #endregion
 

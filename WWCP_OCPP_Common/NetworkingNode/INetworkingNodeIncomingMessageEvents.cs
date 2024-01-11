@@ -29,12 +29,12 @@ namespace cloud.charging.open.protocols.OCPP.NN
         /// <summary>
         /// An event sent whenever a data transfer request was received.
         /// </summary>
-        event OnIncomingBinaryDataTransferRequestDelegate     OnIncomingBinaryDataTransferRequest;
+        event OnBinaryDataTransferRequestReceivedDelegate?     OnBinaryDataTransferRequestReceived;
 
         /// <summary>
-        /// An event sent whenever a response to a data transfer request was sent.
+        /// An event fired whenever a response to a BinaryDataTransfer request was received.
         /// </summary>
-        event OnIncomingBinaryDataTransferResponseDelegate    OnIncomingBinaryDataTransferResponse;
+        event OnBinaryDataTransferResponseReceivedDelegate?    OnBinaryDataTransferResponseReceived;
 
         #endregion
 

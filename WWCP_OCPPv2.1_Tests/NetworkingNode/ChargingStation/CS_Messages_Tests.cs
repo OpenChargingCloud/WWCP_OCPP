@@ -235,7 +235,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CS
                 var nnBinaryDataTransferRequestsOUT         = new ConcurrentList<BinaryDataTransferRequest>();
                 var csmsIncomingBinaryDataTransferRequests  = new ConcurrentList<BinaryDataTransferRequest>();
 
-                chargingStation1.       OnBinaryDataTransferRequest         += (timestamp, sender,             binaryDataTransferRequest) => {
+                chargingStation1.       OnBinaryDataTransferRequestSent         += (timestamp, sender,             binaryDataTransferRequest) => {
                     csBinaryDataTransferRequestsOUT.TryAdd(binaryDataTransferRequest);
                     return Task.CompletedTask;
                 };

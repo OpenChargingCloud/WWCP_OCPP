@@ -317,6 +317,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="BootNotificationResponse">The parsed boot notification response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// <param name="CustomBootNotificationResponseParser">A delegate to parse custom boot notification responses.</param>
         /// <param name="CustomStatusInfoParser">A delegate to parse custom status info objects.</param>
         /// <param name="CustomSignatureParser">A delegate to parse custom signatures.</param>

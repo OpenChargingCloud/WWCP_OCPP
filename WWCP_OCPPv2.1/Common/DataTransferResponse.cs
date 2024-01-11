@@ -99,6 +99,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                     StatusInfo?                   StatusInfo          = null,
                                     DateTime?                     ResponseTimestamp   = null,
 
+                                    NetworkingNode_Id?            DestinationNodeId   = null,
+                                    NetworkPath?                  NetworkPath         = null,
+
                                     IEnumerable<KeyPair>?         SignKeys            = null,
                                     IEnumerable<SignInfo>?        SignInfos           = null,
                                     IEnumerable<OCPP.Signature>?  Signatures          = null,
@@ -109,8 +112,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    Result.OK(),
                    ResponseTimestamp,
 
-                   null,
-                   null,
+                   DestinationNodeId,
+                   NetworkPath,
 
                    SignKeys,
                    SignInfos,
@@ -258,14 +261,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CustomDataTransferResponseParser">A delegate to parse custom data transfer responses.</param>
         public static DataTransferResponse Parse(DataTransferRequest                                 Request,
                                                  JObject                                             JSON,
-                                                 CustomJObjectParserDelegate<DataTransferResponse>?  CustomDataTransferResponseParser  = null)
+                                                 NetworkingNode_Id                                   DestinationNodeId,
+                                                 NetworkPath                                         NetworkPath,
+                                                 DateTime?                                           ResponseTimestamp                 = null,
+                                                 CustomJObjectParserDelegate<DataTransferResponse>?  CustomDataTransferResponseParser  = null,
+                                                 CustomJObjectParserDelegate<StatusInfo>?            CustomStatusInfoParser            = null,
+                                                 CustomJObjectParserDelegate<OCPP.Signature>?        CustomSignatureParser             = null,
+                                                 CustomJObjectParserDelegate<CustomData>?            CustomCustomDataParser            = null)
         {
 
             if (TryParse(Request,
                          JSON,
+                         DestinationNodeId,
+                         NetworkPath,
                          out var dataTransferResponse,
                          out var errorResponse,
-                         CustomDataTransferResponseParser))
+                         ResponseTimestamp,
+                         CustomDataTransferResponseParser,
+                         CustomStatusInfoParser,
+                         CustomSignatureParser,
+                         CustomCustomDataParser))
             {
                 return dataTransferResponse;
             }
@@ -284,14 +299,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="Request">The data transfer request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="DestinationNodeId">The destination networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="DataTransferResponse">The parsed data transfer response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// <param name="CustomDataTransferResponseParser">A delegate to parse custom data transfer responses.</param>
         public static Boolean TryParse(DataTransferRequest                                 Request,
                                        JObject                                             JSON,
+                                       NetworkingNode_Id                                   DestinationNodeId,
+                                       NetworkPath                                         NetworkPath,
                                        [NotNullWhen(true)]  out DataTransferResponse?      DataTransferResponse,
                                        [NotNullWhen(false)] out String?                    ErrorResponse,
-                                       CustomJObjectParserDelegate<DataTransferResponse>?  CustomDataTransferResponseParser   = null)
+                                       DateTime?                                           ResponseTimestamp                  = null,
+                                       CustomJObjectParserDelegate<DataTransferResponse>?  CustomDataTransferResponseParser   = null,
+                                       CustomJObjectParserDelegate<StatusInfo>?            CustomStatusInfoParser             = null,
+                                       CustomJObjectParserDelegate<OCPP.Signature>?        CustomSignatureParser              = null,
+                                       CustomJObjectParserDelegate<CustomData>?            CustomCustomDataParser             = null)
         {
 
             try
@@ -321,8 +345,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #region StatusInfo            [optional]
 
                 if (JSON.ParseOptionalJSON("statusInfo",
-                                           "detailed status info",
-                                           OCPP.StatusInfo.TryParse,
+                                           "status info",
+                                           (JObject json, [NotNullWhen(true)] out StatusInfo? statusInfo, [NotNullWhen(false)] out String? errorResponse)
+                                                 => OCPP.StatusInfo.TryParse(json, out statusInfo, out errorResponse, CustomStatusInfoParser),
                                            out StatusInfo? StatusInfo,
                                            out ErrorResponse))
                 {
@@ -336,7 +361,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptionalHashSet("signatures",
                                               "cryptographic signatures",
-                                              OCPP.Signature.TryParse,
+                                              (JObject json, [NotNullWhen(true)] out OCPP.Signature? signature, [NotNullWhen(false)] out String? errorResponse)
+                                                  => OCPP.Signature.TryParse(json, out signature, out errorResponse, CustomSignatureParser, CustomCustomDataParser),
                                               out HashSet<OCPP.Signature> Signatures,
                                               out ErrorResponse))
                 {
@@ -350,8 +376,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
-                                           OCPP.CustomData.TryParse,
-                                           out CustomData CustomData,
+                                           (JObject json, [NotNullWhen(true)] out CustomData? customData, [NotNullWhen(false)] out String? errorResponse)
+                                                => OCPP.CustomData.TryParse(json, out customData, out errorResponse, CustomCustomDataParser),
+                                           out CustomData? CustomData,
                                            out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -362,15 +389,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
                 DataTransferResponse = new DataTransferResponse(
+
                                            Request,
                                            DataTransferStatus,
                                            Data,
                                            StatusInfo,
-                                           null,
+                                           ResponseTimestamp,
+
+                                           DestinationNodeId,
+                                           NetworkPath,
+
                                            null,
                                            null,
                                            Signatures,
+
                                            CustomData
+
                                        );
 
                 if (CustomDataTransferResponseParser is not null)
@@ -463,7 +497,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => new (Request,
                     Result.FromException(Exception));
-
 
         #endregion
 

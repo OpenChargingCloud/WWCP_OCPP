@@ -129,8 +129,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                         if (!DataTransferResponse.TryParse(Request,
                                                            sendRequestState.JSONResponse.Payload,
+                                                           sendRequestState.DestinationNodeId,
+                                                           sendRequestState.NetworkPath,
                                                            out response,
                                                            out var errorResponse,
+                                                           sendRequestState.ResponseTimestamp,
                                                            CustomDataTransferResponseParser))
                         {
                             response = new DataTransferResponse(

@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                  NetworkPath           NetworkPath,
                                  EventTracking_Id      EventTrackingId,
                                  Request_Id            RequestId,
-                                 JObject               RequestJSON,
+                                 JObject               JSONRequest,
                                  CancellationToken     CancellationToken)
 
         {
@@ -71,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                if (DataTransferRequest.TryParse(RequestJSON,
+                if (DataTransferRequest.TryParse(JSONRequest,
                                                  RequestId,
                                                  DestinationNodeId,
                                                  NetworkPath,
@@ -164,6 +164,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     response ??= DataTransferResponse.Failed(request);
 
+                    if (response.NetworkPath.Length == 0)
+                    {
+
+                    }
+
                     #endregion
 
                     #region Sign response message
@@ -213,7 +218,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                        EventTrackingId,
                                        RequestId,
                                        nameof(Receive_DataTransfer)[8..],
-                                       RequestJSON,
+                                       JSONRequest,
                                        errorResponse
                                    );
 
@@ -224,7 +229,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                    EventTrackingId,
                                    RequestId,
                                    nameof(Receive_DataTransfer)[8..],
-                                   RequestJSON,
+                                   JSONRequest,
                                    e
                                );
             }

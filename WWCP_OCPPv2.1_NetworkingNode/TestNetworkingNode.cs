@@ -1052,10 +1052,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
 
                     response = new OCPPv2_1.CS.ResetResponse(
-                                    Request:      request,
-                                    Status:       ResetStatus.Accepted,
-                                    StatusInfo:   null,
-                                    CustomData:   null
+                                    Request:       request,
+                                    NetworkPath:   NetworkPath.From(Id),
+                                    Status:        ResetStatus.Accepted,
+                                    StatusInfo:    null,
+                                    CustomData:    null
                                 );
 
                 }
@@ -1106,9 +1107,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 return Task.FromResult(
                            new DeleteFileResponse(
-                               request,
-                               request.FileName,
-                               DeleteFileStatus.Success
+                               Request:       request,
+                               NetworkPath:   NetworkPath.From(Id),
+                               FileName:      request.FileName,
+                               Status:        DeleteFileStatus.Success
                            )
                        );
 
@@ -1142,13 +1144,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 return Task.FromResult(
                            new GetFileResponse(
-                               request,
-                               request.FileName,
-                               GetFileStatus.Success,
-                               fileContent,
-                               ContentType.Text.Plain,
-                               SHA256.HashData(fileContent),
-                               SHA512.HashData(fileContent)
+                               Request:           request,
+                               NetworkPath:       NetworkPath.From(Id),
+                               FileName:          request.FileName,
+                               Status:            GetFileStatus.Success,
+                               FileContent:       fileContent,
+                               FileContentType:   ContentType.Text.Plain,
+                               FileSHA256:        SHA256.HashData(fileContent),
+                               FileSHA512:        SHA512.HashData(fileContent)
                            )
                        );
 
@@ -1166,10 +1169,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 return Task.FromResult(
                            new ListDirectoryResponse(
-                               request,
-                               request.DirectoryPath,
-                               ListDirectoryStatus.Success,
-                               new DirectoryListing()
+                               Request:            request,
+                               NetworkPath:        NetworkPath.From(Id),
+                               DirectoryPath:      request.DirectoryPath,
+                               Status:             ListDirectoryStatus.Success,
+                               DirectoryListing:   new DirectoryListing()
                            )
                        );
 
@@ -1187,9 +1191,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 return Task.FromResult(
                            new SendFileResponse(
-                               request,
-                               request.FileName,
-                               SendFileStatus.Success
+                               Request:       request,
+                               NetworkPath:   NetworkPath.From(Id),
+                               FileName:      request.FileName,
+                               Status:        SendFileStatus.Success
                            )
                        );
 
@@ -1225,6 +1230,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                ? new BinaryDataTransferResponse(
                                        Request:                request,
+                                       NetworkPath:            NetworkPath.From(Id),
                                        Status:                 BinaryDataTransferStatus.Accepted,
                                        AdditionalStatusInfo:   null,
                                        Data:                   responseBinaryData
@@ -1232,6 +1238,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                : new BinaryDataTransferResponse(
                                        Request:                request,
+                                       NetworkPath:            NetworkPath.From(Id),
                                        Status:                 BinaryDataTransferStatus.Rejected,
                                        AdditionalStatusInfo:   null,
                                        Data:                   responseBinaryData
@@ -1256,7 +1263,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
-            #region OnIncomingDataTransfer
+            #region OnDataTransfer
 
             OCPP.IN.OnDataTransfer += async (timestamp,
                                              sender,
@@ -1315,21 +1322,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 var response =  request.VendorId == Vendor_Id.GraphDefined
 
-                                            ? new DataTransferResponse(
-                                                Request:      request,
-                                                Status:       DataTransferStatus.Accepted,
-                                                Data:         responseData,
-                                                StatusInfo:   null,
-                                                CustomData:   null
-                                            )
+                                    ? new DataTransferResponse(
+                                          Request:       request,
+                                          NetworkPath:   NetworkPath.From(Id),
+                                          Status:        DataTransferStatus.Accepted,
+                                          Data:          responseData,
+                                          StatusInfo:    null,
+                                          CustomData:    null
+                                      )
 
-                                            : new DataTransferResponse(
-                                                Request:      request,
-                                                Status:       DataTransferStatus.Rejected,
-                                                Data:         null,
-                                                StatusInfo:   null,
-                                                CustomData:   null
-                                            );
+                                    : new DataTransferResponse(
+                                          Request:       request,
+                                          NetworkPath:   NetworkPath.From(Id),
+                                          Status:        DataTransferStatus.Rejected,
+                                          Data:          null,
+                                          StatusInfo:    null,
+                                          CustomData:    null
+                                      );
 
 
                 return response;
@@ -1356,10 +1365,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 return Task.FromResult(
                            new BootNotificationResponse(
-                               Request:      request,
-                               Status:       RegistrationStatus.Accepted,
-                               CurrentTime:  Timestamp.Now,
-                               Interval:     TimeSpan.FromMinutes(5)
+                               Request:       request,
+                               NetworkPath:   NetworkPath.From(Id),
+                               Status:        RegistrationStatus.Accepted,
+                               CurrentTime:   Timestamp.Now,
+                               Interval:      TimeSpan.FromMinutes(5)
                            )
                        );
 

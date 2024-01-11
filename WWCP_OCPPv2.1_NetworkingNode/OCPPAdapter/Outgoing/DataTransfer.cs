@@ -47,17 +47,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a data transfer request will be sent to the CSMS.
         /// </summary>
-        public event OnDataTransferRequestSentDelegate?     OnDataTransferRequestSent;
+        public event OnDataTransferRequestSentDelegate?         OnDataTransferRequestSent;
 
         /// <summary>
         /// An event fired whenever a data transfer request will be sent to the CSMS.
         /// </summary>
-        public event ClientRequestLogHandler?           OnDataTransferWSRequest;
+        public event ClientRequestLogHandler?                   OnDataTransferWSRequest;
 
         /// <summary>
         /// An event fired whenever a response to a data transfer request was received.
         /// </summary>
-        public event ClientResponseLogHandler?          OnDataTransferWSResponse;
+        public event ClientResponseLogHandler?                  OnDataTransferWSResponse;
 
         /// <summary>
         /// An event fired whenever a response to a data transfer request was received.
@@ -121,8 +121,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     if (!DataTransferResponse.TryParse(Request,
                                                        sendRequestState.JSONResponse.Payload,
+                                                       sendRequestState.DestinationNodeId,
+                                                       sendRequestState.NetworkPath,
                                                        out response,
                                                        out var errorResponse,
+                                                       sendRequestState.ResponseTimestamp,
                                                        CustomDataTransferResponseParser))
                     {
                         response = new DataTransferResponse(
@@ -185,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     {
 
         /// <summary>
-        /// An event fired whenever a response to a data transfer request was received.
+        /// An event fired whenever a response to a DataTransfer request was received.
         /// </summary>
         public event OnDataTransferResponseReceivedDelegate? OnDataTransferResponseReceived;
 

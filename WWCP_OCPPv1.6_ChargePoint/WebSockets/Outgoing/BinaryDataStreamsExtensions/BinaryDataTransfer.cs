@@ -51,7 +51,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event fired whenever a BinaryDataTransfer request will be sent to the CSMS.
         /// </summary>
-        public event OnBinaryDataTransferRequestDelegate?     OnBinaryDataTransferRequest;
+        public event OnBinaryDataTransferRequestSentDelegate?     OnBinaryDataTransferRequestSent;
 
         /// <summary>
         /// An event fired whenever a BinaryDataTransfer request will be sent to the CSMS.
@@ -66,7 +66,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event fired whenever a response to a BinaryDataTransfer request was received.
         /// </summary>
-        public event OnBinaryDataTransferResponseDelegate?    OnBinaryDataTransferResponse;
+        public event OnBinaryDataTransferResponseReceivedDelegate?    OnBinaryDataTransferResponseReceived;
 
         #endregion
 
@@ -90,14 +90,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             try
             {
 
-                OnBinaryDataTransferRequest?.Invoke(startTime,
+                OnBinaryDataTransferRequestSent?.Invoke(startTime,
                                                     this,
                                                     Request);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnBinaryDataTransferRequest));
+                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnBinaryDataTransferRequestSent));
             }
 
             #endregion
@@ -172,7 +172,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             try
             {
 
-                OnBinaryDataTransferResponse?.Invoke(endTime,
+                OnBinaryDataTransferResponseReceived?.Invoke(endTime,
                                                      this,
                                                      Request,
                                                      response,
@@ -181,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnBinaryDataTransferResponse));
+                DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnBinaryDataTransferResponseReceived));
             }
 
             #endregion

@@ -50,22 +50,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event fired whenever a BinaryDataTransfer request will be sent to the CSMS.
         /// </summary>
-        public event OnBinaryDataTransferRequestDelegate?     OnBinaryDataTransferRequest;
+        public event OnBinaryDataTransferRequestSentDelegate?         OnBinaryDataTransferRequestSent;
 
         /// <summary>
         /// An event fired whenever a BinaryDataTransfer request will be sent to the CSMS.
         /// </summary>
-        public event ClientRequestLogHandler?                 OnBinaryDataTransferWSRequest;
+        public event ClientRequestLogHandler?                         OnBinaryDataTransferWSRequest;
 
         /// <summary>
         /// An event fired whenever a response to a BinaryDataTransfer request was received.
         /// </summary>
-        public event ClientResponseLogHandler?                OnBinaryDataTransferWSResponse;
+        public event ClientResponseLogHandler?                        OnBinaryDataTransferWSResponse;
 
         /// <summary>
         /// An event fired whenever a response to a BinaryDataTransfer request was received.
         /// </summary>
-        public event OnBinaryDataTransferResponseDelegate?    OnBinaryDataTransferResponse;
+        public event OnBinaryDataTransferResponseReceivedDelegate?    OnBinaryDataTransferResponseReceived;
 
         #endregion
 
@@ -82,21 +82,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         {
 
-            #region Send OnBinaryDataTransferRequest event
+            #region Send OnBinaryDataTransferRequestSent event
 
             var startTime = Timestamp.Now;
 
             try
             {
 
-                OnBinaryDataTransferRequest?.Invoke(startTime,
-                                                    this,
-                                                    Request);
+                OnBinaryDataTransferRequestSent?.Invoke(startTime,
+                                                        this,
+                                                        Request);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnBinaryDataTransferRequest));
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnBinaryDataTransferRequestSent));
             }
 
             #endregion
@@ -164,23 +164,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             }
 
 
-            #region Send OnBinaryDataTransferResponse event
+            #region Send OnBinaryDataTransferResponseReceived event
 
             var endTime = Timestamp.Now;
 
             try
             {
 
-                OnBinaryDataTransferResponse?.Invoke(endTime,
-                                                     this,
-                                                     Request,
-                                                     response,
-                                                     endTime - startTime);
+                OnBinaryDataTransferResponseReceived?.Invoke(endTime,
+                                                             this,
+                                                             Request,
+                                                             response,
+                                                             endTime - startTime);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnBinaryDataTransferResponse));
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnBinaryDataTransferResponseReceived));
             }
 
             #endregion

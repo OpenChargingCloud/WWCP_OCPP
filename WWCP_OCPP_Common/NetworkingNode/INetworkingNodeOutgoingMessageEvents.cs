@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using cloud.charging.open.protocols.OCPP.CS;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPP.NN
 {
 
@@ -37,12 +31,12 @@ namespace cloud.charging.open.protocols.OCPP.NN
         /// <summary>
         /// An event fired whenever a BinaryDataTransfer request will be sent to a charging station.
         /// </summary>
-        event OnBinaryDataTransferRequestDelegate?              OnBinaryDataTransferRequest;
+        event OnBinaryDataTransferRequestSentDelegate?     OnBinaryDataTransferRequestSent;
 
         /// <summary>
-        /// An event fired whenever a response to a BinaryDataTransfer request was received.
+        /// An event sent whenever a response to a data transfer request was sent.
         /// </summary>
-        event OnBinaryDataTransferResponseDelegate?             OnBinaryDataTransferResponse;
+        event OnBinaryDataTransferResponseSentDelegate?    OnBinaryDataTransferResponseSent;
 
         #endregion
 

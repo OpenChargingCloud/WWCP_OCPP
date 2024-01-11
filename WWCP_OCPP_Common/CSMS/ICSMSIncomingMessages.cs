@@ -51,7 +51,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         /// <summary>
         /// An event sent whenever an incoming BinaryDataTransfer request was received.
         /// </summary>
-        event OnIncomingBinaryDataTransferDelegate    OnIncomingBinaryDataTransfer;
+        event OnBinaryDataTransferDelegate    OnIncomingBinaryDataTransfer;
 
         #endregion
 

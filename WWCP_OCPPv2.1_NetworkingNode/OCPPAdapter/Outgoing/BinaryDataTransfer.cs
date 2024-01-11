@@ -47,22 +47,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a BinaryDataTransfer request will be sent to the CSMS.
         /// </summary>
-        public event OnBinaryDataTransferRequestDelegate?     OnBinaryDataTransferRequest;
+        public event OnBinaryDataTransferRequestSentDelegate?         OnBinaryDataTransferRequestSent;
 
         /// <summary>
         /// An event fired whenever a BinaryDataTransfer request will be sent to the CSMS.
         /// </summary>
-        public event ClientRequestLogHandler?                 OnBinaryDataTransferWSRequest;
+        public event ClientRequestLogHandler?                         OnBinaryDataTransferWSRequest;
 
         /// <summary>
         /// An event fired whenever a response to a BinaryDataTransfer request was received.
         /// </summary>
-        public event ClientResponseLogHandler?                OnBinaryDataTransferWSResponse;
+        public event ClientResponseLogHandler?                        OnBinaryDataTransferWSResponse;
 
         /// <summary>
         /// An event fired whenever a response to a BinaryDataTransfer request was received.
         /// </summary>
-        public event OnBinaryDataTransferResponseDelegate?    OnBinaryDataTransferResponse;
+        public event OnBinaryDataTransferResponseReceivedDelegate?    OnBinaryDataTransferResponse;
 
         #endregion
 
@@ -86,14 +86,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                OnBinaryDataTransferRequest?.Invoke(startTime,
+                OnBinaryDataTransferRequestSent?.Invoke(startTime,
                                                     parentNetworkingNode,
                                                     Request);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnBinaryDataTransferRequest));
+                DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnBinaryDataTransferRequestSent));
             }
 
             #endregion
@@ -176,6 +176,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+    }
+
+    public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
+    {
+
+        /// <summary>
+        /// An event fired whenever a response to a BinaryDataTransfer request was received.
+        /// </summary>
+        public event OnBinaryDataTransferResponseReceivedDelegate? OnBinaryDataTransferResponseReceived;
 
     }
 
