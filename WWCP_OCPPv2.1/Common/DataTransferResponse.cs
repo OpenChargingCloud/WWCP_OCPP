@@ -146,7 +146,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         {
 
-            this.Status = DataTransferStatus.Unknown;
+            this.Status = DataTransferStatus.Rejected;
 
         }
 

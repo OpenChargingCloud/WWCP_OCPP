@@ -3298,10 +3298,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="SendOCPPMessageResult">The result of the sending attempt.</param>
     public delegate Task
 
-        OnJSONRequestMessageSentDelegate(DateTime                 Timestamp,
-                                         IEventSender             Sender,
-                                         OCPP_JSONRequestMessage  JSONRequestMessage,
-                                         SendOCPPMessageResult    SendOCPPMessageResult);
+        OnJSONRequestMessageSentLoggingDelegate(DateTime                 Timestamp,
+                                                IEventSender             Sender,
+                                                OCPP_JSONRequestMessage  JSONRequestMessage,
+                                                SendOCPPMessageResult    SendOCPPMessageResult);
 
     /// <summary>
     /// A filtered JSON response message.
@@ -3312,10 +3312,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="SendOCPPMessageResult">The result of the sending attempt.</param>
     public delegate Task
 
-        OnJSONResponseMessageSentDelegate(DateTime                  Timestamp,
-                                          IEventSender              Sender,
-                                          OCPP_JSONResponseMessage  JSONResponseMessage,
-                                          SendOCPPMessageResult     SendOCPPMessageResult);
+        OnJSONResponseMessageSentLoggingDelegate(DateTime                  Timestamp,
+                                                 IEventSender              Sender,
+                                                 OCPP_JSONResponseMessage  JSONResponseMessage,
+                                                 SendOCPPMessageResult     SendOCPPMessageResult);
+
+
+    /// <summary>
+    /// A filtered JSON request error message.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the response message.</param>
+    /// <param name="Sender">The sender of the response message.</param>
+    /// <param name="JSONRequestErrorMessage">The JSON request error message.</param>
+    /// <param name="SendOCPPMessageResult">The result of the sending attempt.</param>
+    public delegate Task
+
+        OnJSONRequestErrorMessageSentLoggingDelegate(DateTime                      Timestamp,
+                                                     IEventSender                  Sender,
+                                                     OCPP_JSONRequestErrorMessage  JSONRequestErrorMessage,
+                                                     SendOCPPMessageResult         SendOCPPMessageResult);
 
 
 
@@ -3663,8 +3678,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         event OnDataTransferRequestFilteredDelegate?                        OnDataTransferRequestLogging;
 
 
-        event OnJSONRequestMessageSentDelegate?   OnJSONRequestMessageSent;
-        event OnJSONResponseMessageSentDelegate?  OnJSONResponseMessageSent;
+        event OnJSONRequestMessageSentLoggingDelegate?                      OnJSONRequestMessageSent;
+        event OnJSONResponseMessageSentLoggingDelegate?                     OnJSONResponseMessageSent;
+        event OnJSONRequestErrorMessageSentLoggingDelegate?                 OnJSONRequestErrorMessageSent;
 
         #endregion
 
@@ -3672,13 +3688,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         NetworkingNode_Id? GetForwardedNodeId(Request_Id RequestId);
 
 
-        Task ProcessJSONRequestMessage   (OCPP_JSONRequestMessage     JSONRequestMessage);
-        Task ProcessJSONResponseMessage  (OCPP_JSONResponseMessage    JSONResponseMessage);
-        Task ProcessJSONErrorMessage     (OCPP_JSONErrorMessage       JSONErrorMessage);
+        Task ProcessJSONRequestMessage     (OCPP_JSONRequestMessage       JSONRequestMessage);
+        Task ProcessJSONResponseMessage    (OCPP_JSONResponseMessage      JSONResponseMessage);
+        Task ProcessJSONRequestErrorMessage(OCPP_JSONRequestErrorMessage  JSONRequestErrorMessage);
 
 
-        Task ProcessBinaryRequestMessage (OCPP_BinaryRequestMessage   BinaryRequestMessage);
-        Task ProcessBinaryResponseMessage(OCPP_BinaryResponseMessage  BinaryResponseMessage);
+        Task ProcessBinaryRequestMessage   (OCPP_BinaryRequestMessage     BinaryRequestMessage);
+        Task ProcessBinaryResponseMessage  (OCPP_BinaryResponseMessage    BinaryResponseMessage);
 
 
         #region CS

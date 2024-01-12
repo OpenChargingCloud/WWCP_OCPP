@@ -74,10 +74,10 @@ namespace cloud.charging.open.protocols.OCPP
         /// <param name="Response">An optional response message.</param>
         /// <param name="BinaryResponse">An optional binary response message.</param>
         private Result(ResultCode  ResultCode,
-                       String?      Description      = null,
-                       JObject?     Details          = null,
-                       JObject?     Response         = null,
-                       Byte[]?      BinaryResponse   = null)
+                       String?     Description      = null,
+                       JObject?    Details          = null,
+                       JObject?    Response         = null,
+                       Byte[]?     BinaryResponse   = null)
         {
 
             this.ResultCode      = ResultCode;
@@ -94,11 +94,11 @@ namespace cloud.charging.open.protocols.OCPP
         public static Result FromSendRequestState(SendRequestState SendRequestState)
 
             => new (
-                   SendRequestState.ErrorCode ?? ResultCode.GenericError,
-                   SendRequestState.ErrorDescription,
-                   SendRequestState.ErrorDetails,
-                   SendRequestState.JSONResponse?.  Payload,
-                   SendRequestState.BinaryResponse?.Payload
+                   SendRequestState.JSONRequestErrorMessage?.ErrorCode ?? ResultCode.GenericError,
+                   SendRequestState.JSONRequestErrorMessage?.ErrorDescription,
+                   SendRequestState.JSONRequestErrorMessage?.ErrorDetails,
+                   SendRequestState.JSONResponse?.           Payload,
+                   SendRequestState.BinaryResponse?.         Payload
                );
 
 

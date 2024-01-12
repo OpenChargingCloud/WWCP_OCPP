@@ -83,7 +83,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Receive message (wired via reflection!)
 
         public async Task<Tuple<OCPP_JSONResponseMessage?,
-                                OCPP_JSONErrorMessage?>>
+                                OCPP_JSONRequestErrorMessage?>>
 
             Receive_DeleteCertificate(DateTime                   RequestTimestamp,
                                       WebSocketClientConnection  WebSocketConnection,
@@ -119,7 +119,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             #endregion
 
             OCPP_JSONResponseMessage?  OCPPResponse        = null;
-            OCPP_JSONErrorMessage?     OCPPErrorResponse   = null;
+            OCPP_JSONRequestErrorMessage?     OCPPErrorResponse   = null;
 
             try
             {
@@ -211,7 +211,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 }
 
                 else
-                    OCPPErrorResponse = OCPP_JSONErrorMessage.CouldNotParse(
+                    OCPPErrorResponse = OCPP_JSONRequestErrorMessage.CouldNotParse(
                                             RequestId,
                                             nameof(Receive_DeleteCertificate)[8..],
                                             RequestJSON,
@@ -221,7 +221,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             }
             catch (Exception e)
             {
-                OCPPErrorResponse = OCPP_JSONErrorMessage.FormationViolation(
+                OCPPErrorResponse = OCPP_JSONRequestErrorMessage.FormationViolation(
                                         RequestId,
                                         nameof(Receive_DeleteCertificate)[8..],
                                         RequestJSON,
@@ -256,7 +256,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             #endregion
 
             return new Tuple<OCPP_JSONResponseMessage?,
-                             OCPP_JSONErrorMessage?>(OCPPResponse,
+                             OCPP_JSONRequestErrorMessage?>(OCPPResponse,
                                                      OCPPErrorResponse);
 
         }

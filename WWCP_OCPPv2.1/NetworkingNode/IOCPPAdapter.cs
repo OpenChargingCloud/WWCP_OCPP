@@ -732,15 +732,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         Task<SendOCPPMessageResult> SendJSONRequest         (OCPP_JSONRequestMessage     JSONRequestMessage);
         Task<SendRequestState>      SendJSONRequestAndWait  (OCPP_JSONRequestMessage     JSONRequestMessage);
         Task<SendOCPPMessageResult> SendJSONResponse        (OCPP_JSONResponseMessage    JSONResponseMessage);
-        Task<SendOCPPMessageResult> SendJSONError           (OCPP_JSONErrorMessage       JSONErrorMessage);
+        Task<SendOCPPMessageResult> SendJSONRequestError           (OCPP_JSONRequestErrorMessage       JSONErrorMessage);
 
         Task<SendOCPPMessageResult> SendBinaryRequest       (OCPP_BinaryRequestMessage   BinaryRequestMessage);
         Task<SendRequestState>      SendBinaryRequestAndWait(OCPP_BinaryRequestMessage   BinaryRequestMessage);
         Task<SendOCPPMessageResult> SendBinaryResponse      (OCPP_BinaryResponseMessage  BinaryResponseMessage);
 
-        Boolean ReceiveJSONResponseMessage  (OCPP_JSONResponseMessage    JSONResponseMessage);
-        Boolean ReceiveBinaryResponseMessage(OCPP_BinaryResponseMessage  BinaryResponseMessage);
-        Boolean ReceiveErrorMessage         (OCPP_JSONErrorMessage       JSONErrorMessage);
+        Boolean ReceiveJSONResponse  (OCPP_JSONResponseMessage    JSONResponseMessage);
+        Boolean ReceiveBinaryResponse(OCPP_BinaryResponseMessage  BinaryResponseMessage);
+        Boolean ReceiveJSONRequestError         (OCPP_JSONRequestErrorMessage       JSONErrorMessage);
 
 
 

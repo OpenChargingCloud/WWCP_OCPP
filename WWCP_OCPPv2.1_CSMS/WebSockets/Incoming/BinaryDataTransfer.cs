@@ -77,7 +77,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Receive message (wired via reflection!)
 
         public async Task<Tuple<OCPP_BinaryResponseMessage?,
-                                OCPP_JSONErrorMessage?>>
+                                OCPP_JSONRequestErrorMessage?>>
 
             Receive_BinaryDataTransfer(DateTime                   RequestTimestamp,
                                        WebSocketServerConnection  Connection,
@@ -116,7 +116,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
             OCPP_BinaryResponseMessage?  OCPPResponse        = null;
-            OCPP_JSONErrorMessage?       OCPPErrorResponse   = null;
+            OCPP_JSONRequestErrorMessage?       OCPPErrorResponse   = null;
 
             try
             {
@@ -192,7 +192,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                     OCPPResponse  = OCPP_BinaryResponseMessage.From(
                                         NetworkPath.Source,
-                                        NetworkPath.Empty,
+                                        NetworkPath.From(NetworkingNodeId),
                                         RequestId,
                                         response.ToBinary(
                                             CustomBinaryDataTransferResponseSerializer,
@@ -205,7 +205,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 }
 
                 else
-                    OCPPErrorResponse = OCPP_JSONErrorMessage.CouldNotParse(
+                    OCPPErrorResponse = OCPP_JSONRequestErrorMessage.CouldNotParse(
                                             RequestId,
                                             nameof(Receive_BinaryDataTransfer)[8..],
                                             BinaryRequest,
@@ -216,7 +216,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
 
-                OCPPErrorResponse = OCPP_JSONErrorMessage.FormationViolation(
+                OCPPErrorResponse = OCPP_JSONRequestErrorMessage.FormationViolation(
                                         RequestId,
                                         nameof(Receive_BinaryDataTransfer)[8..],
                                         BinaryRequest,
@@ -254,7 +254,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             #endregion
 
             return new Tuple<OCPP_BinaryResponseMessage?,
-                             OCPP_JSONErrorMessage?>(OCPPResponse,
+                             OCPP_JSONRequestErrorMessage?>(OCPPResponse,
                                                      OCPPErrorResponse);
 
         }

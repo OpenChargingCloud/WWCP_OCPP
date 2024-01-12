@@ -210,8 +210,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             foreach (var method in typeof(ChargePointWSClient).
                                        GetMethods(BindingFlags.Public | BindingFlags.Instance).
                                             Where(method            => method.Name.StartsWith("Receive_") &&
-                                                 (method.ReturnType == typeof(Task<Tuple<OCPP_JSONResponseMessage?,   OCPP_JSONErrorMessage?>>) ||
-                                                  method.ReturnType == typeof(Task<Tuple<OCPP_BinaryResponseMessage?, OCPP_JSONErrorMessage?>>))))
+                                                 (method.ReturnType == typeof(Task<Tuple<OCPP_JSONResponseMessage?,   OCPP_JSONRequestErrorMessage?>>) ||
+                                                  method.ReturnType == typeof(Task<Tuple<OCPP_BinaryResponseMessage?, OCPP_JSONRequestErrorMessage?>>))))
             {
 
                 var processorName = method.Name[8..];

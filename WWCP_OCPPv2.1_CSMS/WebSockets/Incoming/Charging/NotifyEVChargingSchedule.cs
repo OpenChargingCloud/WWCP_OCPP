@@ -80,7 +80,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Receive message (wired via reflection!)
 
         public async Task<Tuple<OCPP_JSONResponseMessage?,
-                                OCPP_JSONErrorMessage?>>
+                                OCPP_JSONRequestErrorMessage?>>
 
             Receive_NotifyEVChargingSchedule(DateTime                   RequestTimestamp,
                                              WebSocketServerConnection  Connection,
@@ -119,7 +119,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
             OCPP_JSONResponseMessage?  OCPPResponse        = null;
-            OCPP_JSONErrorMessage?     OCPPErrorResponse   = null;
+            OCPP_JSONRequestErrorMessage?     OCPPErrorResponse   = null;
 
             try
             {
@@ -195,7 +195,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                     OCPPResponse = OCPP_JSONResponseMessage.From(
                                        NetworkPath.Source,
-                                       NetworkPath,
+                                       NetworkPath.From(NetworkingNodeId),
                                        RequestId,
                                        response.ToJSON(
                                            CustomNotifyEVChargingScheduleResponseSerializer,
@@ -208,7 +208,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 }
 
                 else
-                    OCPPErrorResponse = OCPP_JSONErrorMessage.CouldNotParse(
+                    OCPPErrorResponse = OCPP_JSONRequestErrorMessage.CouldNotParse(
                                             RequestId,
                                             nameof(Receive_NotifyEVChargingSchedule)[8..],
                                             JSONRequest,
@@ -219,7 +219,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
 
-                OCPPErrorResponse = OCPP_JSONErrorMessage.FormationViolation(
+                OCPPErrorResponse = OCPP_JSONRequestErrorMessage.FormationViolation(
                                         RequestId,
                                         nameof(Receive_NotifyEVChargingSchedule)[8..],
                                         JSONRequest,
@@ -257,7 +257,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             #endregion
 
             return new Tuple<OCPP_JSONResponseMessage?,
-                             OCPP_JSONErrorMessage?>(OCPPResponse,
+                             OCPP_JSONRequestErrorMessage?>(OCPPResponse,
                                                      OCPPErrorResponse);
 
         }

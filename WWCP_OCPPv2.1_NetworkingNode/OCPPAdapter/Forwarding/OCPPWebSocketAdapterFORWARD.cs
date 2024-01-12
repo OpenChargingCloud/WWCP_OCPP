@@ -25,6 +25,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.WebSockets;
 using cloud.charging.open.protocols.OCPPv2_1.NN;
+using Org.BouncyCastle.Asn1.Ocsp;
 
 #endregion
 
@@ -59,8 +60,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Events
 
-        public event OnJSONRequestMessageSentDelegate?   OnJSONRequestMessageSent;
-        public event OnJSONResponseMessageSentDelegate?  OnJSONResponseMessageSent;
+        public event OnJSONRequestMessageSentLoggingDelegate?       OnJSONRequestMessageSent;
+        public event OnJSONResponseMessageSentLoggingDelegate?      OnJSONResponseMessageSent;
+        public event OnJSONRequestErrorMessageSentLoggingDelegate?  OnJSONRequestErrorMessageSent;
 
         #endregion
 
@@ -142,6 +144,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     var forwardingDecision = await forwardingProcessor;
 
+                    #region FORWARD
+
                     if (forwardingDecision.Result == ForwardingResult.FORWARD)
                     {
 
@@ -168,7 +172,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                             {
 
                                 await Task.WhenAll(logger.GetInvocationList().
-                                                   OfType<OnJSONRequestMessageSentDelegate>().
+                                                   OfType<OnJSONRequestMessageSentLoggingDelegate>().
                                                    Select(loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
                                                                                                     parentNetworkingNode,
                                                                                                     //Connection,
@@ -181,7 +185,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                             {
                                 await HandleErrors(
                                           nameof(TestNetworkingNode),
-                                          nameof(OnBootNotificationRequestLogging),
+                                          nameof(OnJSONRequestMessageSent),
                                           e
                                       );
                             }
@@ -191,17 +195,73 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         #endregion
 
                     }
+
+                    #endregion
+
+                    #region REJECT
+
                     else if (forwardingDecision.Result == ForwardingResult.REJECT &&
                              forwardingDecision.JSONRejectResponse is not null)
                     {
 
-                        //ToDo: Send the REJECT response back to the sender!
+                        var jsonRequestErrorMessage = new OCPP_JSONRequestErrorMessage(
+                                                          Timestamp.Now,
+                                                          JSONRequestMessage.EventTrackingId,
+                                                          NetworkingMode.Unknown,
+                                                          JSONRequestMessage.NetworkPath.Source,
+                                                          NetworkPath.From(parentNetworkingNode.Id),
+                                                          JSONRequestMessage.RequestId,
+                                                          ResultCode.Filtered,
+                                                          forwardingDecision.RejectMessage,
+                                                          forwardingDecision.RejectDetails,
+                                                          JSONRequestMessage.CancellationToken
+                                                      );
+
+                        var sendOCPPMessageResult   = await parentNetworkingNode.OCPP.SendJSONRequestError(jsonRequestErrorMessage);
+
+                        #region Send OnJSONRequestErrorMessageSent event
+
+                        var logger = OnJSONRequestErrorMessageSent;
+                        if (logger is not null)
+                        {
+                            try
+                            {
+
+                                await Task.WhenAll(logger.GetInvocationList().
+                                                   OfType<OnJSONRequestErrorMessageSentLoggingDelegate>().
+                                                   Select(loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
+                                                                                                    parentNetworkingNode,
+                                                                                                    //Connection,
+                                                                                                    jsonRequestErrorMessage,
+                                                                                                    sendOCPPMessageResult)).
+                                                   ToArray());
+
+                            }
+                            catch (Exception e)
+                            {
+                                await HandleErrors(
+                                          nameof(TestNetworkingNode),
+                                          nameof(OnJSONResponseMessageSent),
+                                          e
+                                      );
+                            }
+
+                        }
+
+                        #endregion
 
                     }
-                    else // ForwardingResult.DROP
+
+                    #endregion
+
+                    #region DROP
+
+                    else
                     {
                         // Just ignore the request!
                     }
+
+                    #endregion
 
                 }
 
@@ -271,7 +331,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         {
 
                             await Task.WhenAll(logger.GetInvocationList().
-                                                OfType<OnJSONResponseMessageSentDelegate>().
+                                                OfType<OnJSONResponseMessageSentLoggingDelegate>().
                                                 Select(loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
                                                                                                 parentNetworkingNode,
                                                                                                 //Connection,
@@ -307,7 +367,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region ProcessJSONErrorMessage     (JSONErrorMessage)
 
-        public async Task ProcessJSONErrorMessage(OCPP_JSONErrorMessage JSONErrorMessage)
+        public async Task ProcessJSONRequestErrorMessage(OCPP_JSONRequestErrorMessage JSONErrorMessage)
         {
 
             if (expectedResponses.TryRemove(JSONErrorMessage.RequestId, out var responseInfo))
@@ -317,7 +377,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //responseInfo.Context == JSONResponseMessage.Context)
                 {
 
-                    await parentNetworkingNode.OCPP.SendJSONError(JSONErrorMessage);
+                    await parentNetworkingNode.OCPP.SendJSONRequestError(JSONErrorMessage);
 
                 }
                 else

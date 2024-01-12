@@ -707,7 +707,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         // Receive data...
 
-        #region (protected) ProcessTextMessage  (RequestTimestamp, ServerConnection, TextMessage,   EventTrackingId, CancellationToken)
+        #region (protected) ProcessTextMessage   (RequestTimestamp, ServerConnection, TextMessage,   EventTrackingId, CancellationToken)
 
         /// <summary>
         /// Process all text messages of this WebSocket API.
@@ -724,8 +724,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                                     CancellationToken          CancellationToken)
         {
 
-            OCPP_JSONResponseMessage? OCPPResponse       = null;
-            OCPP_JSONErrorMessage?    OCPPErrorResponse  = null;
+            OCPP_JSONResponseMessage?     OCPPResponse       = null;
+            OCPP_JSONRequestErrorMessage? OCPPErrorResponse  = null;
 
             try
             {
@@ -747,7 +747,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             catch (Exception e)
             {
 
-                OCPPErrorResponse = OCPP_JSONErrorMessage.InternalError(
+                OCPPErrorResponse = OCPP_JSONRequestErrorMessage.InternalError(
                                         nameof(OCPPWebSocketServer),
                                         EventTrackingId,
                                         TextMessage,
@@ -762,7 +762,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region (protected) ProcessBinaryMessage(RequestTimestamp, ServerConnection, BinaryMessage, EventTrackingId, CancellationToken)
+        #region (protected) ProcessBinaryMessage (RequestTimestamp, ServerConnection, BinaryMessage, EventTrackingId, CancellationToken)
 
         /// <summary>
         /// Process all text messages of this WebSocket API.
@@ -780,7 +780,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         {
 
             OCPP_BinaryResponseMessage? OCPPResponse       = null;
-            OCPP_JSONErrorMessage?      OCPPErrorResponse  = null;
+            OCPP_JSONRequestErrorMessage?      OCPPErrorResponse  = null;
 
             try
             {
@@ -799,7 +799,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             catch (Exception e)
             {
 
-                OCPPErrorResponse = OCPP_JSONErrorMessage.InternalError(
+                OCPPErrorResponse = OCPP_JSONRequestErrorMessage.InternalError(
                                         nameof(OCPPWebSocketServer),
                                         EventTrackingId,
                                         BinaryMessage,
@@ -817,29 +817,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         // Send data...
 
-        #region SendJSONRequest    (RequestMessage)
+        #region SendJSONRequest       (JSONRequestMessage)
 
         /// <summary>
         /// Send (and forget) the given JSON OCPP request message.
         /// </summary>
-        /// <param name="RequestMessage">A JSON OCPP request message.</param>
-        public async Task<SendOCPPMessageResult> SendJSONRequest(OCPP_JSONRequestMessage RequestMessage)
+        /// <param name="JSONRequestMessage">A JSON OCPP request message.</param>
+        public async Task<SendOCPPMessageResult> SendJSONRequest(OCPP_JSONRequestMessage JSONRequestMessage)
         {
 
             try
             {
 
-                var webSocketConnections = LookupNetworkingNode(RequestMessage.DestinationNodeId).ToArray();
+                var webSocketConnections = LookupNetworkingNode(JSONRequestMessage.DestinationNodeId).ToArray();
 
                 if (webSocketConnections.Length != 0)
                 {
 
                     var networkingMode = webSocketConnections.First().Item1.TryGetCustomDataAs<NetworkingMode>(NetworkingNode.OCPPAdapter.NetworkingMode_WebSocketKey);
 
-                    RequestMessage.NetworkingMode = webSocketConnections.First().Item2;
+                    JSONRequestMessage.NetworkingMode = webSocketConnections.First().Item2;
                     //RequestMessage.RequestTimeout ??= RequestMessage.RequestTimestamp + (RequestTimeout ?? DefaultRequestTimeout);
 
-                    var ocppTextMessage = RequestMessage.ToJSON().ToString(Formatting.None);
+                    var ocppTextMessage = JSONRequestMessage.ToJSON().ToString(Formatting.None);
 
 
                     foreach (var webSocketConnection in webSocketConnections)
@@ -848,8 +848,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         if (SendStatus.Success == await SendTextMessage(
                                                             webSocketConnection.Item1,
                                                             ocppTextMessage,
-                                                            RequestMessage.EventTrackingId,
-                                                            RequestMessage.CancellationToken
+                                                            JSONRequestMessage.EventTrackingId,
+                                                            JSONRequestMessage.CancellationToken
                                                         ))
                         {
 
@@ -914,29 +914,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region SendJSONResponse   (ResponseMessage)
+        #region SendJSONResponse      (JSONResponseMessage)
 
         /// <summary>
         /// Send (and forget) the given JSON OCPP response message.
         /// </summary>
-        /// <param name="ResponseMessage">A JSON OCPP response message.</param>
-        public async Task<SendOCPPMessageResult> SendJSONResponse(OCPP_JSONResponseMessage ResponseMessage)
+        /// <param name="JSONResponseMessage">A JSON OCPP response message.</param>
+        public async Task<SendOCPPMessageResult> SendJSONResponse(OCPP_JSONResponseMessage JSONResponseMessage)
         {
 
             try
             {
 
-                var webSocketConnections = LookupNetworkingNode(ResponseMessage.DestinationNodeId).ToArray();
+                var webSocketConnections = LookupNetworkingNode(JSONResponseMessage.DestinationNodeId).ToArray();
 
                 if (webSocketConnections.Length != 0)
                 {
 
                     var networkingMode = webSocketConnections.First().Item1.TryGetCustomDataAs<NetworkingMode>(NetworkingNode.OCPPAdapter.NetworkingMode_WebSocketKey);
 
-                    ResponseMessage.NetworkingMode = webSocketConnections.First().Item2;
+                    JSONResponseMessage.NetworkingMode = webSocketConnections.First().Item2;
                     //ResponseMessage.ResponseTimeout ??= ResponseMessage.ResponseTimestamp + (ResponseTimeout ?? DefaultResponseTimeout);
 
-                    var ocppTextMessage = ResponseMessage.ToJSON().ToString(Formatting.None);
+                    var ocppTextMessage = JSONResponseMessage.ToJSON().ToString(Formatting.None);
 
 
                     foreach (var webSocketConnection in webSocketConnections)
@@ -945,8 +945,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         if (SendStatus.Success == await SendTextMessage(
                                                             webSocketConnection.Item1,
                                                             ocppTextMessage,
-                                                            ResponseMessage.EventTrackingId,
-                                                            ResponseMessage.CancellationToken
+                                                            JSONResponseMessage.EventTrackingId,
+                                                            JSONResponseMessage.CancellationToken
                                                         ))
                         {
 
@@ -1011,29 +1011,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region SendJSONError      (ErrorMessage)
+        #region SendJSONRequestError  (JSONRequestErrorMessage)
 
         /// <summary>
         /// Send (and forget) the given JSON OCPP error message.
         /// </summary>
-        /// <param name="ErrorMessage">A JSON OCPP error message.</param>
-        public async Task<SendOCPPMessageResult> SendJSONError(OCPP_JSONErrorMessage ErrorMessage)
+        /// <param name="JSONRequestErrorMessage">A JSON OCPP error message.</param>
+        public async Task<SendOCPPMessageResult> SendJSONRequestError(OCPP_JSONRequestErrorMessage JSONRequestErrorMessage)
         {
 
             try
             {
 
-                var webSocketConnections = LookupNetworkingNode(ErrorMessage.DestinationNodeId).ToArray();
+                var webSocketConnections = LookupNetworkingNode(JSONRequestErrorMessage.DestinationNodeId).ToArray();
 
                 if (webSocketConnections.Length != 0)
                 {
 
                     var networkingMode = webSocketConnections.First().Item1.TryGetCustomDataAs<NetworkingMode>(NetworkingNode.OCPPAdapter.NetworkingMode_WebSocketKey);
 
-                    ErrorMessage.NetworkingMode = webSocketConnections.First().Item2;
+                    JSONRequestErrorMessage.NetworkingMode = webSocketConnections.First().Item2;
                     //ResponseMessage.ResponseTimeout ??= ResponseMessage.ResponseTimestamp + (ResponseTimeout ?? DefaultResponseTimeout);
 
-                    var ocppTextMessage = ErrorMessage.ToJSON().ToString(Formatting.None);
+                    var ocppTextMessage = JSONRequestErrorMessage.ToJSON().ToString(Formatting.None);
 
 
                     foreach (var webSocketConnection in webSocketConnections)
@@ -1042,8 +1042,105 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         if (SendStatus.Success == await SendTextMessage(
                                                             webSocketConnection.Item1,
                                                             ocppTextMessage,
-                                                            ErrorMessage.EventTrackingId,
-                                                            ErrorMessage.CancellationToken
+                                                            JSONRequestErrorMessage.EventTrackingId,
+                                                            JSONRequestErrorMessage.CancellationToken
+                                                        ))
+                        {
+
+                            //responses.TryAdd(ResponseMessage.ResponseId,
+                            //                SendResponseState.FromJSONResponse(
+                            //                    Timestamp.Now,
+                            //                    ResponseMessage.DestinationNodeId,
+                            //                    ResponseMessage.ResponseTimeout ?? (ResponseMessage.ResponseTimestamp + (ResponseTimeout ?? DefaultResponseTimeout)),
+                            //                    ResponseMessage
+                            //                ));
+
+                            #region OnJSONMessageResponseSent
+
+                            //var onJSONMessageResponseSent = OnJSONMessageResponseSent;
+                            //if (onJSONMessageResponseSent is not null)
+                            //{
+                            //    try
+                            //    {
+
+                            //        await Task.WhenAll(onJSONMessageResponseSent.GetInvocationList().
+                            //                               OfType<OnWebSocketTextMessageDelegate>().
+                            //                               Select(loggingDelegate => loggingDelegate.Invoke(
+                            //                                                              Timestamp.Now,
+                            //                                                              this,
+                            //                                                              webSocketConnection.Item1,
+                            //                                                              EventTrackingId,
+                            //                                                              ocppTextMessage,
+                            //                                                              CancellationToken
+                            //                                                          )).
+                            //                               ToArray());
+
+                            //    }
+                            //    catch (Exception e)
+                            //    {
+                            //        DebugX.Log(e, nameof(AOCPPWebSocketServer) + "." + nameof(OnJSONMessageResponseSent));
+                            //    }
+                            //}
+
+                            #endregion
+
+                            break;
+
+                        }
+
+                        RemoveConnection(webSocketConnection.Item1);
+
+                    }
+
+                    return SendOCPPMessageResult.Success;
+
+                }
+                else
+                    return SendOCPPMessageResult.UnknownClient;
+
+            }
+            catch (Exception)
+            {
+                return SendOCPPMessageResult.TransmissionFailed;
+            }
+
+        }
+
+        #endregion
+
+        #region SendJSONResponseError (JSONResponseErrorMessage)
+
+        /// <summary>
+        /// Send (and forget) the given JSON OCPP error message.
+        /// </summary>
+        /// <param name="JSONResponseErrorMessage">A JSON OCPP error message.</param>
+        public async Task<SendOCPPMessageResult> SendJSONResponseError(OCPP_JSONResponseErrorMessage JSONResponseErrorMessage)
+        {
+
+            try
+            {
+
+                var webSocketConnections = LookupNetworkingNode(JSONResponseErrorMessage.DestinationNodeId).ToArray();
+
+                if (webSocketConnections.Length != 0)
+                {
+
+                    var networkingMode = webSocketConnections.First().Item1.TryGetCustomDataAs<NetworkingMode>(NetworkingNode.OCPPAdapter.NetworkingMode_WebSocketKey);
+
+                    JSONResponseErrorMessage.NetworkingMode = webSocketConnections.First().Item2;
+                    //ResponseMessage.ResponseTimeout ??= ResponseMessage.ResponseTimestamp + (ResponseTimeout ?? DefaultResponseTimeout);
+
+                    var ocppTextMessage = JSONResponseErrorMessage.ToJSON().ToString(Formatting.None);
+
+
+                    foreach (var webSocketConnection in webSocketConnections)
+                    {
+
+                        if (SendStatus.Success == await SendTextMessage(
+                                                            webSocketConnection.Item1,
+                                                            ocppTextMessage,
+                                                            JSONResponseErrorMessage.EventTrackingId,
+                                                            JSONResponseErrorMessage.CancellationToken
                                                         ))
                         {
 
@@ -1109,7 +1206,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
-        #region SendBinaryRequest  (BinaryRequestMessage)
+        #region SendBinaryRequest     (BinaryRequestMessage)
 
         /// <summary>
         /// Send (and forget) the given binary OCPP request message.
@@ -1206,7 +1303,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region SendBinaryResponse (BinaryResponseMessage)
+        #region SendBinaryResponse    (BinaryResponseMessage)
 
         /// <summary>
         /// Send (and forget) the given binary OCPP response message.

@@ -116,7 +116,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequireAuthentication">Require a HTTP Basic Authentication of all charging boxes.</param>
         /// <param name="DNSClient">An optional DNS client to use.</param>
         /// <param name="AutoStart">Start the server immediately.</param>
-        public CentralSystemWSServer(String                               HTTPServiceName              = DefaultHTTPServiceName,
+        public CentralSystemWSServer(NetworkingNode_Id                    NetworkingNodeId,
+
+                                     String                               HTTPServiceName              = DefaultHTTPServiceName,
                                      IIPAddress?                          IPAddress                    = null,
                                      IPPort?                              TCPPort                      = null,
 
@@ -142,7 +144,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                      DNSClient?                           DNSClient                    = null,
                                      Boolean                              AutoStart                    = false)
 
-            : base(new[] {
+            : base(NetworkingNodeId,
+                   new[] {
                        Version.WebSocketSubProtocolId
                    },
                    HTTPServiceName,
@@ -183,8 +186,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             foreach (var method in typeof(CentralSystemWSServer).
                                        GetMethods(BindingFlags.Public | BindingFlags.Instance).
                                             Where(method            => method.Name.StartsWith("Receive_") &&
-                                                 (method.ReturnType == typeof(Task<Tuple<OCPP_JSONResponseMessage?,   OCPP_JSONErrorMessage?>>) ||
-                                                  method.ReturnType == typeof(Task<Tuple<OCPP_BinaryResponseMessage?, OCPP_JSONErrorMessage?>>))))
+                                                 (method.ReturnType == typeof(Task<Tuple<OCPP_JSONResponseMessage?,   OCPP_JSONRequestErrorMessage?>>) ||
+                                                  method.ReturnType == typeof(Task<Tuple<OCPP_BinaryResponseMessage?, OCPP_JSONRequestErrorMessage?>>))))
             {
 
                 var processorName = method.Name[8..];

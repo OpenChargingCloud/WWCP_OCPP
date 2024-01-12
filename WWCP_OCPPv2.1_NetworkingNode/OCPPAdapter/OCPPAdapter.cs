@@ -67,6 +67,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Properties
 
+        public NetworkingNode_Id             Id                       { get; }
+
         /// <summary>
         /// Incoming OCPP messages.
         /// </summary>
@@ -800,6 +802,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         {
 
+            this.Id                     = NetworkingNode.Id;
             this.DisableSendHeartbeats  = DisableSendHeartbeats;
             this.SendHeartbeatsEvery    = SendHeartbeatsEvery   ?? DefaultSendHeartbeatsEvery;
 
@@ -876,7 +879,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         if (requests.TryGetValue(JSONRequestMessage.RequestId, out var sendRequestState) &&
                            (sendRequestState?.JSONResponse   is not null ||
                             sendRequestState?.BinaryResponse is not null ||
-                            sendRequestState?.ErrorCode.HasValue == true))
+                            sendRequestState?.HasErrors == true))
                         {
 
                             requests.TryRemove(JSONRequestMessage.RequestId, out _);
@@ -901,9 +904,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 if (requests.TryGetValue(JSONRequestMessage.RequestId, out var sendRequestState2) &&
                     sendRequestState2 is not null)
                 {
-                    sendRequestState2.ErrorCode = ResultCode.Timeout;
+
+                    sendRequestState2.JSONRequestErrorMessage =  new OCPP_JSONRequestErrorMessage(
+
+                                                                     Timestamp.Now,
+                                                                     JSONRequestMessage.EventTrackingId,
+                                                                     NetworkingMode.Unknown,
+                                                                     JSONRequestMessage.NetworkPath.Source,
+                                                                     NetworkPath.From(Id),
+                                                                     JSONRequestMessage.RequestId,
+
+                                                                     ErrorCode: ResultCode.Timeout
+
+                                                                 );
+
                     requests.TryRemove(JSONRequestMessage.RequestId, out _);
+
                     return sendRequestState2;
+
                 }
 
                 #endregion
@@ -912,12 +930,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             // Just in case...
             return SendRequestState.FromJSONRequest(
-                       RequestTimestamp:   JSONRequestMessage.RequestTimestamp,
-                       DestinationNodeId:   JSONRequestMessage.DestinationNodeId,
-                       Timeout:            JSONRequestMessage.RequestTimeout,
-                       JSONRequest:        JSONRequestMessage,
-                       ResponseTimestamp:  Timestamp.Now,
-                       ErrorCode:          ResultCode.InternalError
+
+                       RequestTimestamp:         JSONRequestMessage.RequestTimestamp,
+                       DestinationNodeId:        JSONRequestMessage.DestinationNodeId,
+                       Timeout:                  JSONRequestMessage.RequestTimeout,
+                       JSONRequest:              JSONRequestMessage,
+                       ResponseTimestamp:        Timestamp.Now,
+
+                       JSONRequestErrorMessage:  new OCPP_JSONRequestErrorMessage(
+
+                                                     Timestamp.Now,
+                                                     JSONRequestMessage.EventTrackingId,
+                                                     NetworkingMode.Unknown,
+                                                     JSONRequestMessage.NetworkPath.Source,
+                                                     NetworkPath.From(Id),
+                                                     JSONRequestMessage.RequestId,
+
+                                                     ErrorCode: ResultCode.InternalError
+
+                                                 )
+
                    );
 
         }
@@ -947,20 +979,43 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region SendJSONError            (JSONErrorMessage)
+        #region SendJSONRequestError     (JSONRequestErrorMessage)
 
-        public async Task<SendOCPPMessageResult> SendJSONError(OCPP_JSONErrorMessage JSONErrorMessage)
+        public async Task<SendOCPPMessageResult> SendJSONRequestError(OCPP_JSONRequestErrorMessage JSONRequestErrorMessage)
         {
 
-            if (LookupNetworkingNode(JSONErrorMessage.DestinationNodeId, out var reachability) &&
+            if (LookupNetworkingNode(JSONRequestErrorMessage.DestinationNodeId, out var reachability) &&
                 reachability is not null)
             {
 
                 if (reachability.OCPPWebSocketClient is not null)
-                    return await reachability.OCPPWebSocketClient.SendJSONError(JSONErrorMessage);
+                    return await reachability.OCPPWebSocketClient.SendJSONRequestError(JSONRequestErrorMessage);
 
                 if (reachability.OCPPWebSocketServer is not null)
-                    return await reachability.OCPPWebSocketServer.SendJSONError(JSONErrorMessage);
+                    return await reachability.OCPPWebSocketServer.SendJSONRequestError(JSONRequestErrorMessage);
+
+            }
+
+            return SendOCPPMessageResult.UnknownClient;
+
+        }
+
+        #endregion
+
+        #region SendJSONResponseError    (JSONResponseErrorMessage)
+
+        public async Task<SendOCPPMessageResult> SendJSONResponseError(OCPP_JSONResponseErrorMessage JSONResponseErrorMessage)
+        {
+
+            if (LookupNetworkingNode(JSONResponseErrorMessage.DestinationNodeId, out var reachability) &&
+                reachability is not null)
+            {
+
+                if (reachability.OCPPWebSocketClient is not null)
+                    return await reachability.OCPPWebSocketClient.SendJSONResponseError(JSONResponseErrorMessage);
+
+                if (reachability.OCPPWebSocketServer is not null)
+                    return await reachability.OCPPWebSocketServer.SendJSONResponseError(JSONResponseErrorMessage);
 
             }
 
@@ -1029,7 +1084,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         if (requests.TryGetValue(BinaryRequestMessage.RequestId, out var sendRequestState) &&
                            (sendRequestState?.JSONResponse   is not null ||
                             sendRequestState?.BinaryResponse is not null ||
-                            sendRequestState?.ErrorCode.HasValue == true))
+                            sendRequestState?.HasErrors == true))
                         {
 
                             requests.TryRemove(BinaryRequestMessage.RequestId, out _);
@@ -1054,9 +1109,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 if (requests.TryGetValue(BinaryRequestMessage.RequestId, out var sendRequestState2) &&
                     sendRequestState2 is not null)
                 {
-                    sendRequestState2.ErrorCode = ResultCode.Timeout;
+
+                    sendRequestState2.JSONRequestErrorMessage =  new OCPP_JSONRequestErrorMessage(
+
+                                                                     Timestamp.Now,
+                                                                     BinaryRequestMessage.EventTrackingId,
+                                                                     NetworkingMode.Unknown,
+                                                                     BinaryRequestMessage.NetworkPath.Source,
+                                                                     NetworkPath.From(Id),
+                                                                     BinaryRequestMessage.RequestId,
+
+                                                                     ErrorCode: ResultCode.Timeout
+
+                                                                 );
+
                     requests.TryRemove(BinaryRequestMessage.RequestId, out _);
+
                     return sendRequestState2;
+
                 }
 
                 #endregion
@@ -1065,12 +1135,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             // Just in case...
             return SendRequestState.FromBinaryRequest(
-                       RequestTimestamp:   BinaryRequestMessage.RequestTimestamp,
-                       NetworkingNodeId:   BinaryRequestMessage.DestinationNodeId,
-                       Timeout:            BinaryRequestMessage.RequestTimeout,
-                       BinaryRequest:      BinaryRequestMessage,
-                       ResponseTimestamp:  Timestamp.Now,
-                       ErrorCode:          ResultCode.InternalError
+
+                       RequestTimestamp:         BinaryRequestMessage.RequestTimestamp,
+                       NetworkingNodeId:         BinaryRequestMessage.DestinationNodeId,
+                       Timeout:                  BinaryRequestMessage.RequestTimeout,
+                       BinaryRequest:            BinaryRequestMessage,
+                       ResponseTimestamp:        Timestamp.Now,
+
+                       JSONRequestErrorMessage:  new OCPP_JSONRequestErrorMessage(
+
+                                                     Timestamp.Now,
+                                                     BinaryRequestMessage.EventTrackingId,
+                                                     NetworkingMode.Unknown,
+                                                     BinaryRequestMessage.NetworkPath.Source,
+                                                     NetworkPath.From(Id),
+                                                     BinaryRequestMessage.RequestId,
+
+                                                     ErrorCode: ResultCode.InternalError
+
+                                                 )
+
                    );
 
         }
@@ -1101,9 +1185,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
-        #region ReceiveJSONResponseMessage   (JSONResponseMessage)
+        #region ReceiveJSONResponse      (JSONResponseMessage)
 
-        public Boolean ReceiveJSONResponseMessage(OCPP_JSONResponseMessage JSONResponseMessage)
+        public Boolean ReceiveJSONResponse(OCPP_JSONResponseMessage JSONResponseMessage)
         {
 
             if (requests.TryGetValue(JSONResponseMessage.RequestId, out var sendRequestState) &&
@@ -1124,9 +1208,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region ReceiveBinaryResponseMessage (BinaryResponseMessage)
+        #region ReceiveBinaryResponse    (BinaryResponseMessage)
 
-        public Boolean ReceiveBinaryResponseMessage(OCPP_BinaryResponseMessage BinaryResponseMessage)
+        public Boolean ReceiveBinaryResponse(OCPP_BinaryResponseMessage BinaryResponseMessage)
         {
 
             if (requests.TryGetValue(BinaryResponseMessage.RequestId, out var sendRequestState) &&
@@ -1147,59 +1231,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+        #region ReceiveJSONRequestError  (JSONRequestErrorMessage)
 
-        #region ReceiveErrorMessage          (JSONErrorMessage)
-
-        public Boolean ReceiveErrorMessage(OCPP_JSONErrorMessage JSONErrorMessage)
+        public Boolean ReceiveJSONRequestError(OCPP_JSONRequestErrorMessage JSONRequestErrorMessage)
         {
 
-            if (requests.TryGetValue(JSONErrorMessage.RequestId, out var sendRequestState) &&
+            if (requests.TryGetValue(JSONRequestErrorMessage.RequestId, out var sendRequestState) &&
                 sendRequestState is not null)
             {
 
-                sendRequestState.JSONResponse      = null;
-                sendRequestState.ErrorCode         = JSONErrorMessage.ErrorCode;
-                sendRequestState.ErrorDescription  = JSONErrorMessage.ErrorDescription;
-                sendRequestState.ErrorDetails      = JSONErrorMessage.ErrorDetails;
-
-                #region OnJSONErrorResponseReceived
-
-                //var onJSONErrorResponseReceived = OnJSONErrorResponseReceived;
-                //if (onJSONErrorResponseReceived is not null)
-                //{
-                //    try
-                //    {
-
-                //        await Task.WhenAll(onJSONErrorResponseReceived.GetInvocationList().
-                //                               OfType <OnWebSocketTextErrorResponseDelegate>().
-                //                               Select (loggingDelegate => loggingDelegate.Invoke(
-                //                                                              Timestamp.Now,
-                //                                                              this,
-                //                                                              Connection,
-                //                                                              EventTrackingId,
-                //                                                              sendRequestState.RequestTimestamp,
-                //                                                              sendRequestState.JSONRequest?.  ToJSON().ToString(JSONFormatting) ?? "",
-                //                                                              sendRequestState.BinaryRequest?.ToByteArray()                     ?? [],
-                //                                                              Timestamp.Now,
-                //                                                              sendRequestState.JSONResponse?. ToString() ?? "",
-                //                                                              CancellationToken
-                //                                                          )).
-                //                               ToArray());
-
-                //    }
-                //    catch (Exception e)
-                //    {
-                //        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnJSONErrorResponseReceived));
-                //    }
-                //}
-
-                #endregion
+                sendRequestState.JSONResponse             = null;
+                sendRequestState.JSONRequestErrorMessage  = JSONRequestErrorMessage;
 
                 return true;
 
             }
 
-            DebugX.Log($"Received an unknown OCPP error response with identificaiton '{JSONErrorMessage.RequestId}' within {nameof(TestNetworkingNode)}:{Environment.NewLine}'{JSONErrorMessage.ToJSON().ToString(Formatting.None)}'!");
+            DebugX.Log($"Received an unknown OCPP JSON request error message with identificaiton '{JSONRequestErrorMessage.RequestId}' within {nameof(TestNetworkingNode)}:{Environment.NewLine}'{JSONRequestErrorMessage.ToJSON().ToString(Formatting.None)}'!");
+            return false;
+
+        }
+
+        #endregion
+
+        #region ReceiveJSONResponseError (JSONResponseErrorMessage)
+
+        public Boolean ReceiveJSONResponseError(OCPP_JSONResponseErrorMessage JSONResponseErrorMessage)
+        {
+
+            if (requests.TryGetValue(JSONResponseErrorMessage.RequestId, out var sendRequestState) &&
+                sendRequestState is not null)
+            {
+
+                sendRequestState.JSONResponse              = null;
+                sendRequestState.JSONResponseErrorMessage  = JSONResponseErrorMessage;
+
+                //ToDo: This has to be forwarded actively, as it is not expected (async)!
+
+                return true;
+
+            }
+
+            DebugX.Log($"Received an unknown OCPP JSON response error message with identificaiton '{JSONResponseErrorMessage.RequestId}' within {nameof(TestNetworkingNode)}:{Environment.NewLine}'{JSONResponseErrorMessage.ToJSON().ToString(Formatting.None)}'!");
             return false;
 
         }

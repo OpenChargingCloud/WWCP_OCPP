@@ -22,12 +22,12 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 {
 
     public class OCPP_Response(OCPP_JSONResponseMessage?    JSONResponseMessage,
-                               OCPP_JSONErrorMessage?       JSONErrorMessage,
+                               OCPP_JSONRequestErrorMessage?       JSONErrorMessage,
                                OCPP_BinaryResponseMessage?  BinaryResponseMessage) : IEquatable<OCPP_Response>
     {
 
         public OCPP_JSONResponseMessage?    JSONResponseMessage      { get; } = JSONResponseMessage;
-        public OCPP_JSONErrorMessage?       JSONErrorMessage         { get; } = JSONErrorMessage;
+        public OCPP_JSONRequestErrorMessage?       JSONErrorMessage         { get; } = JSONErrorMessage;
         public OCPP_BinaryResponseMessage?  BinaryResponseMessage    { get; } = BinaryResponseMessage;
 
 
@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                     null,
                     null);
 
-        public static OCPP_Response FromJSONError(OCPP_JSONErrorMessage JSONErrorMessage)
+        public static OCPP_Response FromJSONError(OCPP_JSONRequestErrorMessage JSONErrorMessage)
 
             => new (null,
                     JSONErrorMessage,
@@ -84,7 +84,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                                               CancellationToken  CancellationToken   = default)
 
             => new (null,
-                    new OCPP_JSONErrorMessage(
+                    new OCPP_JSONRequestErrorMessage(
                         Timestamp.Now,
                         EventTrackingId,
                         NetworkingMode.Unknown,
@@ -129,7 +129,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                                                   String?           ErrorResponse   = null)
 
             => new (null,
-                    OCPP_JSONErrorMessage.CouldNotParse(
+                    OCPP_JSONRequestErrorMessage.CouldNotParse(
                         EventTrackingId,
                         RequestId,
                         Action,
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                                                   String?           ErrorResponse   = null)
 
             => new (null,
-                    OCPP_JSONErrorMessage.CouldNotParse(
+                    OCPP_JSONRequestErrorMessage.CouldNotParse(
                         EventTrackingId,
                         RequestId,
                         Action,
@@ -162,7 +162,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                                                        Exception         Exception)
 
             => new (null,
-                    OCPP_JSONErrorMessage.FormationViolation(
+                    OCPP_JSONRequestErrorMessage.FormationViolation(
                         EventTrackingId,
                         RequestId,
                         Action,
@@ -179,7 +179,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                                                        Exception         Exception)
 
             => new (null,
-                    OCPP_JSONErrorMessage.FormationViolation(
+                    OCPP_JSONRequestErrorMessage.FormationViolation(
                         EventTrackingId,
                         RequestId,
                         Action,

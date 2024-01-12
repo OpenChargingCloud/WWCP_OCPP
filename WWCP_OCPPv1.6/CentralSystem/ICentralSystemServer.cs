@@ -37,7 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// The unique identifications of all connected charge boxes.
         /// </summary>
-        IEnumerable<NetworkingNode_Id>  NetworkingNodeIds    { get; }
+        IEnumerable<NetworkingNode_Id>  ConnectedNetworkingNodeIds    { get; }
 
         #endregion
 

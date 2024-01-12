@@ -77,7 +77,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Receive message (wired via reflection!)
 
         public async Task<Tuple<OCPP_BinaryResponseMessage?,
-                                OCPP_JSONErrorMessage?>>
+                                OCPP_JSONRequestErrorMessage?>>
 
             Receive_BinaryDataTransfer(DateTime                   RequestTimestamp,
                                        WebSocketServerConnection  Connection,
@@ -116,7 +116,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
 
             OCPP_BinaryResponseMessage?  OCPPResponse        = null;
-            OCPP_JSONErrorMessage?       OCPPErrorResponse   = null;
+            OCPP_JSONRequestErrorMessage?       OCPPErrorResponse   = null;
 
             try
             {
@@ -206,7 +206,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 }
 
                 else
-                    OCPPErrorResponse = OCPP_JSONErrorMessage.CouldNotParse(
+                    OCPPErrorResponse = OCPP_JSONRequestErrorMessage.CouldNotParse(
                                             RequestId,
                                             nameof(Receive_BinaryDataTransfer)[8..],
                                             BinaryRequest,
@@ -217,7 +217,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             catch (Exception e)
             {
 
-                OCPPErrorResponse = OCPP_JSONErrorMessage.FormationViolation(
+                OCPPErrorResponse = OCPP_JSONRequestErrorMessage.FormationViolation(
                                         RequestId,
                                         nameof(Receive_BinaryDataTransfer)[8..],
                                         BinaryRequest,
@@ -255,7 +255,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             #endregion
 
             return new Tuple<OCPP_BinaryResponseMessage?,
-                             OCPP_JSONErrorMessage?>(OCPPResponse,
+                             OCPP_JSONRequestErrorMessage?>(OCPPResponse,
                                                      OCPPErrorResponse);
 
         }

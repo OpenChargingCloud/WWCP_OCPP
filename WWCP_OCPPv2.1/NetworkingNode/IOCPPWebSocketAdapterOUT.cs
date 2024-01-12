@@ -25,17 +25,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
 
-    public delegate Task OnJSONMessageRequestSentDelegate   (DateTime                    Timestamp,
-                                                             IOCPPWebSocketAdapterOUT    Server,
-                                                             OCPP_JSONRequestMessage     JSONRequestMessage);
+    public delegate Task OnJSONMessageRequestSentDelegate     (DateTime                      Timestamp,
+                                                               IOCPPWebSocketAdapterOUT      Server,
+                                                               OCPP_JSONRequestMessage       JSONRequestMessage);
 
-    public delegate Task OnJSONMessageResponseSentDelegate  (DateTime                    Timestamp,
-                                                             IOCPPWebSocketAdapterOUT    Server,
-                                                             OCPP_JSONResponseMessage    JSONResponseMessage);
+    public delegate Task OnJSONMessageResponseSentDelegate    (DateTime                      Timestamp,
+                                                               IOCPPWebSocketAdapterOUT      Server,
+                                                               OCPP_JSONResponseMessage      JSONResponseMessage);
 
-    public delegate Task OnJSONErrorMessageSentDelegate     (DateTime                    Timestamp,
-                                                             IOCPPWebSocketAdapterOUT    Server,
-                                                             OCPP_JSONErrorMessage       JSONErrorMessage);
+    public delegate Task OnJSONRequestErrorMessageSentDelegate(DateTime                      Timestamp,
+                                                               IOCPPWebSocketAdapterOUT      Server,
+                                                               OCPP_JSONRequestErrorMessage  JSONRequestErrorMessage);
 
 
 
@@ -85,7 +85,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a JSON error response was sent.
         /// </summary>
-        event OnJSONErrorMessageSentDelegate?            OnJSONErrorResponseSent;
+        event OnJSONRequestErrorMessageSentDelegate?            OnJSONErrorResponseSent;
 
         #endregion
 
@@ -115,7 +115,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         Task<DataTransferResponse>           DataTransfer         (          DataTransferRequest           Request);
 
         Task NotifyJSONMessageResponseSent  (OCPP_JSONResponseMessage   JSONResponseMessage);
-        Task NotifyJSONErrorResponseSent    (OCPP_JSONErrorMessage      JSONErrorMessage);
+        Task NotifyJSONErrorResponseSent    (OCPP_JSONRequestErrorMessage      JSONErrorMessage);
         Task NotifyBinaryMessageResponseSent(OCPP_BinaryResponseMessage BinaryResponseMessage);
 
 

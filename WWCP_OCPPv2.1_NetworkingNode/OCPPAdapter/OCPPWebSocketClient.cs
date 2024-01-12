@@ -88,7 +88,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever the error response to a text message was sent.
         /// </summary>
-        public event OnWebSocketTextErrorResponseDelegate?    OnJSONErrorResponseSent;
+        public event OnWebSocketTextErrorResponseDelegate?    OnJSONRequestErrorSent;
 
 
         /// <summary>
@@ -104,7 +104,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever an error response to a text message request was received.
         /// </summary>
-        public event OnWebSocketTextErrorResponseDelegate?    OnJSONErrorResponseReceived;
+        public event OnWebSocketTextErrorResponseDelegate?    OnJSONRequestErrorReceived;
 
         #endregion
 
@@ -246,7 +246,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
-        #region ProcessWebSocketTextFrame  (RequestTimestamp, ClientConnection, TextMessage,   EventTrackingId, CancellationToken)
+        #region ProcessWebSocketTextFrame   (RequestTimestamp, ClientConnection, TextMessage,   EventTrackingId, CancellationToken)
 
         public override async Task ProcessWebSocketTextFrame(DateTime                   RequestTimestamp,
                                                              WebSocketClientConnection  ClientConnection,
@@ -300,7 +300,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region ProcessWebSocketBinaryFrame(RequestTimestamp, ClientConnection, BinaryMessage, EventTrackingId, CancellationToken)
+        #region ProcessWebSocketBinaryFrame (RequestTimestamp, ClientConnection, BinaryMessage, EventTrackingId, CancellationToken)
 
         public override async Task ProcessWebSocketBinaryFrame(DateTime                   RequestTimestamp,
                                                                WebSocketClientConnection  ClientConnection,
@@ -350,27 +350,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
-        #region SendJSONRequest    (RequestMessage)
+        #region SendJSONRequest       (JSONRequestMessage)
 
         /// <summary>
         /// Send (and forget) the given JSON OCPP request message.
         /// </summary>
-        /// <param name="RequestMessage">A JSON OCPP request message.</param>
-        public async Task<SendOCPPMessageResult> SendJSONRequest(OCPP_JSONRequestMessage RequestMessage)
+        /// <param name="JSONRequestMessage">A JSON OCPP request message.</param>
+        public async Task<SendOCPPMessageResult> SendJSONRequest(OCPP_JSONRequestMessage JSONRequestMessage)
         {
 
             try
             {
 
-                RequestMessage.NetworkingMode = NetworkingMode;
+                JSONRequestMessage.NetworkingMode = NetworkingMode;
                 //RequestMessage.RequestTimeout ??= RequestMessage.RequestTimestamp + (RequestTimeout ?? DefaultRequestTimeout);
 
-                var ocppTextMessage = RequestMessage.ToJSON().ToString(Formatting.None);
+                var ocppTextMessage = JSONRequestMessage.ToJSON().ToString(Formatting.None);
 
                 if (SendStatus.Success == await SendTextMessage(
                                                     ocppTextMessage,
-                                                    RequestMessage.EventTrackingId,
-                                                    RequestMessage.CancellationToken
+                                                    JSONRequestMessage.EventTrackingId,
+                                                    JSONRequestMessage.CancellationToken
                                                 ))
                 {
 
@@ -425,27 +425,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region SendJSONResponse   (ResponseMessage)
+        #region SendJSONResponse      (JSONResponseMessage)
 
         /// <summary>
         /// Send (and forget) the given JSON OCPP request message.
         /// </summary>
-        /// <param name="ResponseMessage">A JSON OCPP request message.</param>
-        public async Task<SendOCPPMessageResult> SendJSONResponse(OCPP_JSONResponseMessage ResponseMessage)
+        /// <param name="JSONResponseMessage">A JSON OCPP request message.</param>
+        public async Task<SendOCPPMessageResult> SendJSONResponse(OCPP_JSONResponseMessage JSONResponseMessage)
         {
 
             try
             {
 
-                ResponseMessage.NetworkingMode = NetworkingMode;
+                JSONResponseMessage.NetworkingMode = NetworkingMode;
                 //ResponseMessage.ResponseTimeout ??= ResponseMessage.ResponseTimestamp + (ResponseTimeout ?? DefaultResponseTimeout);
 
-                var ocppTextMessage = ResponseMessage.ToJSON().ToString(Formatting.None);
+                var ocppTextMessage = JSONResponseMessage.ToJSON().ToString(Formatting.None);
 
                 if (SendStatus.Success == await SendTextMessage(
                                                     ocppTextMessage,
-                                                    ResponseMessage.EventTrackingId,
-                                                    ResponseMessage.CancellationToken
+                                                    JSONResponseMessage.EventTrackingId,
+                                                    JSONResponseMessage.CancellationToken
                                                 ))
                 {
 
@@ -500,27 +500,102 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region SendJSONError      (ErrorMessage)
+        #region SendJSONRequestError  (JSONRequestErrorMessage)
 
         /// <summary>
         /// Send (and forget) the given JSON OCPP request message.
         /// </summary>
-        /// <param name="ErrorMessage">A JSON OCPP request message.</param>
-        public async Task<SendOCPPMessageResult> SendJSONError(OCPP_JSONErrorMessage ErrorMessage)
+        /// <param name="JSONRequestErrorMessage">A JSON OCPP request message.</param>
+        public async Task<SendOCPPMessageResult> SendJSONRequestError(OCPP_JSONRequestErrorMessage JSONRequestErrorMessage)
         {
 
             try
             {
 
-                ErrorMessage.NetworkingMode = NetworkingMode;
+                JSONRequestErrorMessage.NetworkingMode = NetworkingMode;
                 //ErrorMessage.ErrorTimeout ??= ErrorMessage.ErrorTimestamp + (ErrorTimeout ?? DefaultErrorTimeout);
 
-                var ocppTextMessage = ErrorMessage.ToJSON().ToString(Formatting.None);
+                var ocppTextMessage = JSONRequestErrorMessage.ToJSON().ToString(Formatting.None);
 
                 if (SendStatus.Success == await SendTextMessage(
                                                     ocppTextMessage,
-                                                    ErrorMessage.EventTrackingId,
-                                                    ErrorMessage.CancellationToken
+                                                    JSONRequestErrorMessage.EventTrackingId,
+                                                    JSONRequestErrorMessage.CancellationToken
+                                                ))
+                {
+
+                    //requests.TryAdd(ErrorMessage.ErrorId,
+                    //                SendErrorState.FromJSONError(
+                    //                    Timestamp.Now,
+                    //                    ErrorMessage.DestinationNodeId,
+                    //                    ErrorMessage.ErrorTimeout ?? (ErrorMessage.ErrorTimestamp + (ErrorTimeout ?? DefaultErrorTimeout)),
+                    //                    ErrorMessage
+                    //                ));
+
+                    #region OnJSONMessageErrorSent
+
+                    //var onJSONMessageErrorSent = OnJSONMessageErrorSent;
+                    //if (onJSONMessageErrorSent is not null)
+                    //{
+                    //    try
+                    //    {
+
+                    //        await Task.WhenAll(onJSONMessageErrorSent.GetInvocationList().
+                    //                               OfType<OnWebSocketTextMessageDelegate>().
+                    //                               Select(loggingDelegate => loggingDelegate.Invoke(
+                    //                                                              Timestamp.Now,
+                    //                                                              this,
+                    //                                                              webSocketConnection.Item1,
+                    //                                                              EventTrackingId,
+                    //                                                              ocppTextMessage,
+                    //                                                              CancellationToken
+                    //                                                          )).
+                    //                               ToArray());
+
+                    //    }
+                    //    catch (Exception e)
+                    //    {
+                    //        DebugX.Log(e, nameof(AOCPPWebSocketServer) + "." + nameof(OnJSONMessageErrorSent));
+                    //    }
+                    //}
+
+                    #endregion
+
+                }
+
+                return SendOCPPMessageResult.Success;
+
+            }
+            catch (Exception)
+            {
+                return SendOCPPMessageResult.TransmissionFailed;
+            }
+
+        }
+
+        #endregion
+
+        #region SendJSONResponseError (JSONResponseErrorMessage)
+
+        /// <summary>
+        /// Send (and forget) the given JSON OCPP response message.
+        /// </summary>
+        /// <param name="JSONResponseErrorMessage">A JSON OCPP response message.</param>
+        public async Task<SendOCPPMessageResult> SendJSONResponseError(OCPP_JSONResponseErrorMessage JSONResponseErrorMessage)
+        {
+
+            try
+            {
+
+                JSONResponseErrorMessage.NetworkingMode = NetworkingMode;
+                //ErrorMessage.ErrorTimeout ??= ErrorMessage.ErrorTimestamp + (ErrorTimeout ?? DefaultErrorTimeout);
+
+                var ocppTextMessage = JSONResponseErrorMessage.ToJSON().ToString(Formatting.None);
+
+                if (SendStatus.Success == await SendTextMessage(
+                                                    ocppTextMessage,
+                                                    JSONResponseErrorMessage.EventTrackingId,
+                                                    JSONResponseErrorMessage.CancellationToken
                                                 ))
                 {
 
@@ -576,7 +651,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
-        #region SendBinaryRequest  (BinaryRequestMessage)
+        #region SendBinaryRequest     (BinaryRequestMessage)
 
         /// <summary>
         /// Send (and forget) the given binary OCPP request message.
@@ -651,7 +726,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region SendBinaryResponse (BinaryResponseMessage)
+        #region SendBinaryResponse    (BinaryResponseMessage)
 
         /// <summary>
         /// Send (and forget) the given binary OCPP request message.

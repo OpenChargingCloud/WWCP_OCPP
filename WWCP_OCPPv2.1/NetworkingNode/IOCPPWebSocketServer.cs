@@ -56,8 +56,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         event OnWebSocketJSONMessageResponseDelegate?    OnJSONMessageResponseReceived;
         event OnWebSocketJSONMessageResponseDelegate?    OnJSONMessageResponseSent;
 
-        event OnWebSocketTextErrorResponseDelegate?      OnJSONErrorResponseReceived;
-        event OnWebSocketTextErrorResponseDelegate?      OnJSONErrorResponseSent;
+        //event OnWebSocketTextErrorResponseDelegate?      OnJSONErrorResponseReceived;
+        //event OnWebSocketTextErrorResponseDelegate?      OnJSONErrorResponseSent;
 
         event OnWebSocketBinaryMessageRequestDelegate?   OnBinaryMessageRequestReceived;
         event OnWebSocketBinaryMessageRequestDelegate?   OnBinaryMessageRequestSent;
@@ -72,13 +72,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         void    RemoveStaticRouting     (NetworkingNode_Id DestinationNodeId, NetworkingNode_Id NetworkingHubId);
 
 
-        Task<SendOCPPMessageResult> SendJSONRequest   (OCPP_JSONRequestMessage    RequestMessage);
-        Task<SendOCPPMessageResult> SendJSONResponse  (OCPP_JSONResponseMessage   ResponseMessage);
-        Task<SendOCPPMessageResult> SendJSONError     (OCPP_JSONErrorMessage      ErrorMessage);
+        Task<SendOCPPMessageResult> SendJSONRequest       (OCPP_JSONRequestMessage        JSONRequestMessage);
+        Task<SendOCPPMessageResult> SendJSONResponse      (OCPP_JSONResponseMessage       JSONResponseMessage);
+        Task<SendOCPPMessageResult> SendJSONRequestError  (OCPP_JSONRequestErrorMessage   JSONRequestErrorMessage);
+        Task<SendOCPPMessageResult> SendJSONResponseError (OCPP_JSONResponseErrorMessage  JSONResponseErrorMessage);
 
 
-        Task<SendOCPPMessageResult> SendBinaryRequest (OCPP_BinaryRequestMessage  RequestMessage);
-        Task<SendOCPPMessageResult> SendBinaryResponse(OCPP_BinaryResponseMessage ResponseMessage);
+        Task<SendOCPPMessageResult> SendBinaryRequest     (OCPP_BinaryRequestMessage      BinaryRequestMessage);
+        Task<SendOCPPMessageResult> SendBinaryResponse    (OCPP_BinaryResponseMessage     BinaryResponseMessage);
 
 
     }

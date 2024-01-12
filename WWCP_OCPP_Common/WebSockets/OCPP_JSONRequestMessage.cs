@@ -295,11 +295,11 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                         ImplicitSourceNodeId.Value != NetworkingNode_Id.Zero)
                     {
 
-                        if (networkPath.Length > 0 &&
-                            networkPath.Last() != ImplicitSourceNodeId)
-                        {
-                            networkPath = networkPath.Append(ImplicitSourceNodeId.Value);
-                        }
+                        //if (networkPath.Length > 0 &&
+                        //    networkPath.Last() != ImplicitSourceNodeId)
+                        //{
+                        //    networkPath = networkPath.Append(ImplicitSourceNodeId.Value);
+                        //}
 
                         if (networkPath.Length == 0)
                             networkPath = networkPath.Append(ImplicitSourceNodeId.Value);

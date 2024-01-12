@@ -32,7 +32,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 {
 
     /// <summary>
-    /// A OCPP WebSocket error message.
+    /// A OCPP Web Socket JSON request error message.
     /// </summary>
     /// <param name="ResponseTimestamp">The response time stamp.</param>
     /// <param name="EventTrackingId">The event tracking identification.</param>
@@ -44,16 +44,16 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
     /// <param name="ErrorDescription">An optional error description.</param>
     /// <param name="ErrorDetails">Optional error details.</param>
     /// <param name="CancellationToken">The cancellation token.</param>
-    public class OCPP_JSONErrorMessage(DateTime           ResponseTimestamp,
-                                       EventTracking_Id   EventTrackingId,
-                                       NetworkingMode     NetworkingMode,
-                                       NetworkingNode_Id  DestinationNodeId,
-                                       NetworkPath        NetworkPath,
-                                       Request_Id         RequestId,
-                                       ResultCode         ErrorCode,
-                                       String?            ErrorDescription    = null,
-                                       JObject?           ErrorDetails        = null,
-                                       CancellationToken  CancellationToken   = default)
+    public class OCPP_JSONRequestErrorMessage(DateTime           ResponseTimestamp,
+                                              EventTracking_Id   EventTrackingId,
+                                              NetworkingMode     NetworkingMode,
+                                              NetworkingNode_Id  DestinationNodeId,
+                                              NetworkPath        NetworkPath,
+                                              Request_Id         RequestId,
+                                              ResultCode         ErrorCode,
+                                              String?            ErrorDescription    = null,
+                                              JObject?           ErrorDetails        = null,
+                                              CancellationToken  CancellationToken   = default)
     {
 
         #region Properties
@@ -113,7 +113,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
         #region (static) CouldNotParse     (RequestId, Action, JSONObjectRequest, ErrorResponse = null)
 
-        public static OCPP_JSONErrorMessage CouldNotParse(Request_Id  RequestId,
+        public static OCPP_JSONRequestErrorMessage CouldNotParse(Request_Id  RequestId,
                                                           String      Action,
                                                           JObject     JSONObjectRequest,
                                                           String?     ErrorResponse   = null)
@@ -136,7 +136,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
                     ));
 
-        public static OCPP_JSONErrorMessage CouldNotParse(EventTracking_Id  EventTrackingId,
+        public static OCPP_JSONRequestErrorMessage CouldNotParse(EventTracking_Id  EventTrackingId,
                                                           Request_Id        RequestId,
                                                           String            Action,
                                                           JObject           JSONObjectRequest,
@@ -164,7 +164,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
         #region (static) CouldNotParse     (RequestId, Action, JSONArrayRequest,  ErrorResponse = null)
 
-        public static OCPP_JSONErrorMessage CouldNotParse(Request_Id  RequestId,
+        public static OCPP_JSONRequestErrorMessage CouldNotParse(Request_Id  RequestId,
                                                           String      Action,
                                                           JArray      JSONArrayRequest,
                                                           String?     ErrorResponse   = null)
@@ -191,7 +191,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
         #region (static) CouldNotParse     (RequestId, Action, BinaryRequest,     ErrorResponse = null)
 
-        public static OCPP_JSONErrorMessage CouldNotParse(Request_Id  RequestId,
+        public static OCPP_JSONRequestErrorMessage CouldNotParse(Request_Id  RequestId,
                                                           String      Action,
                                                           Byte[]      BinaryRequest,
                                                           String?     ErrorResponse   = null)
@@ -215,7 +215,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                     ));
 
 
-        public static OCPP_JSONErrorMessage CouldNotParse(EventTracking_Id  EventTrackingId,
+        public static OCPP_JSONRequestErrorMessage CouldNotParse(EventTracking_Id  EventTrackingId,
                                                           Request_Id        RequestId,
                                                           String            Action,
                                                           Byte[]            BinaryRequest,
@@ -244,7 +244,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
         #region (static) FormationViolation(RequestId, Action, JSONObjectRequest, Exception)
 
-        public static OCPP_JSONErrorMessage FormationViolation(Request_Id  RequestId,
+        public static OCPP_JSONRequestErrorMessage FormationViolation(Request_Id  RequestId,
                                                                String      Action,
                                                                JObject     JSONObjectRequest,
                                                                Exception   Exception)
@@ -264,7 +264,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                     ));
 
 
-        public static OCPP_JSONErrorMessage FormationViolation(EventTracking_Id  EventTrackingId,
+        public static OCPP_JSONRequestErrorMessage FormationViolation(EventTracking_Id  EventTrackingId,
                                                                Request_Id        RequestId,
                                                                String            Action,
                                                                JObject           JSONObjectRequest,
@@ -288,7 +288,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
         #region (static) FormationViolation(RequestId, Action, JSONArrayRequest,  Exception)
 
-        public static OCPP_JSONErrorMessage FormationViolation(Request_Id  RequestId,
+        public static OCPP_JSONRequestErrorMessage FormationViolation(Request_Id  RequestId,
                                                                String      Action,
                                                                JArray      JSONArrayRequest,
                                                                Exception   Exception)
@@ -311,7 +311,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
         #region (static) FormationViolation(RequestId, Action, BinaryRequest,     Exception)
 
-        public static OCPP_JSONErrorMessage FormationViolation(Request_Id  RequestId,
+        public static OCPP_JSONRequestErrorMessage FormationViolation(Request_Id  RequestId,
                                                                String      Action,
                                                                Byte[]      BinaryRequest,
                                                                Exception   Exception)
@@ -331,7 +331,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                     ));
 
 
-        public static OCPP_JSONErrorMessage FormationViolation(EventTracking_Id  EventTrackingId,
+        public static OCPP_JSONRequestErrorMessage FormationViolation(EventTracking_Id  EventTrackingId,
                                                                Request_Id        RequestId,
                                                                String            Action,
                                                                Byte[]            BinaryRequest,
@@ -356,7 +356,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
         #region (static) InternalError     (Sender, EventTrackingId, JSONTextRequest,   Exception, RequestId = null)
 
-        public static OCPP_JSONErrorMessage InternalError(String            Sender,
+        public static OCPP_JSONRequestErrorMessage InternalError(String            Sender,
                                                           EventTracking_Id  EventTrackingId,
                                                           String            JSONTextRequest,
                                                           Exception         Exception,
@@ -381,7 +381,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
         #region (static) InternalError     (Sender, EventTrackingId, JSONObjectRequest, Exception, RequestId = null)
 
-        public static OCPP_JSONErrorMessage InternalError(String            Sender,
+        public static OCPP_JSONRequestErrorMessage InternalError(String            Sender,
                                                           EventTracking_Id  EventTrackingId,
                                                           JObject           JSONObjectRequest,
                                                           Exception         Exception,
@@ -406,7 +406,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
         #region (static) InternalError     (Sender, EventTrackingId, OCPPArrayRequest,  Exception, RequestId = null)
 
-        public static OCPP_JSONErrorMessage InternalError(String            Sender,
+        public static OCPP_JSONRequestErrorMessage InternalError(String            Sender,
                                                           EventTracking_Id  EventTrackingId,
                                                           JArray            OCPPArrayRequest,
                                                           Exception         Exception,
@@ -431,7 +431,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
         #region (static) InternalError     (Sender, EventTrackingId, OCPPBinaryRequest, Exception, RequestId = null)
 
-        public static OCPP_JSONErrorMessage InternalError(String            Sender,
+        public static OCPP_JSONRequestErrorMessage InternalError(String            Sender,
                                                           EventTracking_Id  EventTrackingId,
                                                           Byte[]            OCPPBinaryRequest,
                                                           Exception         Exception,
@@ -464,7 +464,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         /// <param name="ErrorMessage">The parsed OCPP WebSocket error message.</param>
         /// <param name="ImplicitSourceNodeId">An optional source networking node identification, e.g. from the HTTP Web Sockets connection.</param>
         public static Boolean TryParse(JArray                                          JSONArray,
-                                       [NotNullWhen(true)] out OCPP_JSONErrorMessage?  ErrorMessage,
+                                       [NotNullWhen(true)] out OCPP_JSONRequestErrorMessage?  ErrorMessage,
                                        NetworkingNode_Id?                              ImplicitSourceNodeId   = null)
         {
 
@@ -520,7 +520,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                 if (JSONArray[4] is not JObject details)
                     return false;
 
-                ErrorMessage = new OCPP_JSONErrorMessage(
+                ErrorMessage = new OCPP_JSONRequestErrorMessage(
                                    Timestamp.Now,
                                    EventTracking_Id.New,
                                    NetworkingMode.Standard,
@@ -538,7 +538,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
             catch (Exception e)
             {
 
-                ErrorMessage = new OCPP_JSONErrorMessage(
+                ErrorMessage = new OCPP_JSONRequestErrorMessage(
                                    Timestamp.Now,
                                    EventTracking_Id.New,
                                    NetworkingMode.Standard,

@@ -116,8 +116,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// The unique identifications of all connected or reachable networking nodes.
         /// </summary>
-        public IEnumerable<NetworkingNode_Id> NetworkingNodeIds
-            => connectedNetworkingNodes.Values.SelectMany(csmsChannel => csmsChannel.Item1.NetworkingNodeIds);
+        public IEnumerable<NetworkingNode_Id> ConnectedNetworkingNodeIds
+            => connectedNetworkingNodes.Values.SelectMany(csmsChannel => csmsChannel.Item1.ConnectedNetworkingNodeIds);
 
 
         public Dictionary<String, Transaction_Id> TransactionIds = new ();

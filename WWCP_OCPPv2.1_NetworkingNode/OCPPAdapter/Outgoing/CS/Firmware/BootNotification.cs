@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a boot notification request will be sent to the CSMS.
         /// </summary>
-        public event OnBootNotificationRequestSentDelegate?  OnBootNotificationRequestSent;
+        public event OnBootNotificationRequestSentDelegate? OnBootNotificationRequestSent;
 
         #endregion
 
@@ -53,10 +53,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Send a BootNotification request.
         /// </summary>
         /// <param name="Request">A BootNotification request.</param>
-        public async Task<BootNotificationResponse>
-
-            BootNotification(BootNotificationRequest Request)
-
+        public async Task<BootNotificationResponse> BootNotification(BootNotificationRequest Request)
         {
 
             #region Send OnBootNotificationRequestSent event
@@ -79,7 +76,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 }
                 catch (Exception e)
                 {
-                    DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnBootNotificationRequestSent));
+                    DebugX.Log(e, nameof(OCPPWebSocketAdapterOUT) + "." + nameof(OnBootNotificationRequestSent));
                 }
             }
 
@@ -174,7 +171,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a BootNotification response was received.
         /// </summary>
-        public event OnBootNotificationResponseReceivedDelegate?  OnBootNotificationResponseReceived;
+        public event OnBootNotificationResponseReceivedDelegate? OnBootNotificationResponseReceived;
 
         #endregion
 

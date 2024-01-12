@@ -42,24 +42,22 @@ namespace cloud.charging.open.protocols.OCPP
     /// <param name="JSONResponse">The JSON response message.</param>
     /// <param name="BinaryResponse">The binary response message.</param>
     /// 
-    /// <param name="ErrorCode">An optional error code.</param>
-    /// <param name="ErrorDescription">An optional error description.</param>
-    /// <param name="ErrorDetails">Optional error details.</param>
-    public class SendRequestState(DateTime                     RequestTimestamp,
-                                  NetworkingNode_Id            DestinationNodeId,
-                                  NetworkPath                  NetworkPath,
-                                  DateTime                     Timeout,
+    /// <param name="JSONRequestErrorMessage">An optional JSON request error message.</param>
+    /// <param name="JSONResponseErrorMessage">An optional JSON response error message.</param>
+    public class SendRequestState(DateTime                        RequestTimestamp,
+                                  NetworkingNode_Id               DestinationNodeId,
+                                  NetworkPath                     NetworkPath,
+                                  DateTime                        Timeout,
 
-                                  OCPP_JSONRequestMessage?     JSONRequest         = null,
-                                  OCPP_BinaryRequestMessage?   BinaryRequest       = null,
+                                  OCPP_JSONRequestMessage?        JSONRequest                = null,
+                                  OCPP_BinaryRequestMessage?      BinaryRequest              = null,
 
-                                  DateTime?                    ResponseTimestamp   = null,
-                                  OCPP_JSONResponseMessage?    JSONResponse        = null,
-                                  OCPP_BinaryResponseMessage?  BinaryResponse      = null,
+                                  DateTime?                       ResponseTimestamp          = null,
+                                  OCPP_JSONResponseMessage?       JSONResponse               = null,
+                                  OCPP_BinaryResponseMessage?     BinaryResponse             = null,
 
-                                  ResultCode?                  ErrorCode           = null,
-                                  String?                      ErrorDescription    = null,
-                                  JObject?                     ErrorDetails        = null)
+                                  OCPP_JSONRequestErrorMessage?   JSONRequestErrorMessage    = null,
+                                  OCPP_JSONResponseErrorMessage?  JSONResponseErrorMessage   = null)
     {
 
         #region Properties
@@ -67,73 +65,74 @@ namespace cloud.charging.open.protocols.OCPP
         /// <summary>
         /// The time stamp of the request.
         /// </summary>
-        public DateTime                     RequestTimestamp     { get; }      = RequestTimestamp;
+        public DateTime                        RequestTimestamp            { get; }      = RequestTimestamp;
 
         /// <summary>
         /// The destination network node identification of the request
         /// and thus the expected source of the response.
         /// </summary>
-        public NetworkingNode_Id            DestinationNodeId    { get; }      = DestinationNodeId;
+        public NetworkingNode_Id               DestinationNodeId           { get; }      = DestinationNodeId;
 
         /// <summary>
         /// The network (source) path of the response.
         /// </summary>
-        public NetworkPath                  NetworkPath          { get; set; } = NetworkPath;
+        public NetworkPath                     NetworkPath                 { get; set; } = NetworkPath;
 
         /// <summary>
         /// The timeout of the request.
         /// </summary>
-        public DateTime                     Timeout              { get; }      = Timeout;
+        public DateTime                        Timeout                     { get; }      = Timeout;
 
 
         /// <summary>
         /// The JSON request message.
         /// </summary>
-        public OCPP_JSONRequestMessage?     JSONRequest          { get; }      = JSONRequest;
+        public OCPP_JSONRequestMessage?        JSONRequest                 { get; }      = JSONRequest;
 
         /// <summary>
         /// The binary request message.
         /// </summary>
-        public OCPP_BinaryRequestMessage?   BinaryRequest        { get; }      = BinaryRequest;
+        public OCPP_BinaryRequestMessage?      BinaryRequest               { get; }      = BinaryRequest;
 
 
         /// <summary>
         /// The time stamp of the response.
         /// </summary>
-        public DateTime?                    ResponseTimestamp    { get; set; } = ResponseTimestamp;
+        public DateTime?                       ResponseTimestamp           { get; set; } = ResponseTimestamp;
 
         /// <summary>
         /// The JSON response message.
         /// </summary>
-        public OCPP_JSONResponseMessage?    JSONResponse         { get; set; } = JSONResponse;
+        public OCPP_JSONResponseMessage?       JSONResponse                { get; set; } = JSONResponse;
 
         /// <summary>
         /// The binary response message.
         /// </summary>
-        public OCPP_BinaryResponseMessage?  BinaryResponse       { get; set; } = BinaryResponse;
-
-
-        /// <summary>
-        /// An optional error code.
-        /// </summary>
-        public ResultCode?                  ErrorCode            { get; set; } = ErrorCode;
+        public OCPP_BinaryResponseMessage?     BinaryResponse              { get; set; } = BinaryResponse;
 
         /// <summary>
-        /// An optional error description.
+        /// The optional JSON request error message.
         /// </summary>
-        public String?                      ErrorDescription     { get; set; } = ErrorDescription;
+        public OCPP_JSONRequestErrorMessage?   JSONRequestErrorMessage     { get; set; } = JSONRequestErrorMessage;
 
         /// <summary>
-        /// Optional error details.
+        /// The optional JSON response error message.
         /// </summary>
-        public JObject?                     ErrorDetails         { get; set; } = ErrorDetails;
+        public OCPP_JSONResponseErrorMessage?  JSONResponseErrorMessage    { get; set; } = JSONResponseErrorMessage;
 
+        /// <summary>
+        /// No Errors.
+        /// </summary>
+        public Boolean                         NoErrors
+             => JSONRequestErrorMessage  is null &&
+                JSONResponseErrorMessage is null;
 
-        public Boolean                      NoErrors
-             => !ErrorCode.HasValue;
-
-        public Boolean                      HasErrors
-             =>  ErrorCode.HasValue;
+        /// <summary>
+        /// Errors occurred.
+        /// </summary>
+        public Boolean                         HasErrors
+             => JSONRequestErrorMessage  is not null ||
+                JSONResponseErrorMessage is not null;
 
         #endregion
 
@@ -142,7 +141,7 @@ namespace cloud.charging.open.protocols.OCPP
                                            [NotNullWhen(true)] out JObject?  JSONMessage)
         {
 
-            if (!ErrorCode.HasValue &&
+            if (NoErrors &&
                 JSONResponse?.Payload   is not null &&
                 JSONResponse. RequestId == Request.RequestId)
             {
@@ -159,7 +158,7 @@ namespace cloud.charging.open.protocols.OCPP
                                              [NotNullWhen(true)] out Byte[]?  BinaryMessage)
         {
 
-            if (!ErrorCode.HasValue &&
+            if (NoErrors &&
                 BinaryResponse?.Payload   is not null &&
                 BinaryResponse. RequestId == Request.RequestId)
             {
@@ -184,10 +183,7 @@ namespace cloud.charging.open.protocols.OCPP
                                                        OCPP_JSONResponseMessage?    JSONResponse        = null,
                                                        OCPP_BinaryResponseMessage?  BinaryResponse      = null,
 
-                                                       ResultCode?                  ErrorCode           = null,
-                                                       String?                      ErrorDescription    = null,
-                                                       JObject?                     ErrorDetails        = null)
-
+                                                       OCPP_JSONRequestErrorMessage?  JSONRequestErrorMessage = null)
 
             => new (RequestTimestamp,
                     DestinationNodeId,
@@ -201,9 +197,7 @@ namespace cloud.charging.open.protocols.OCPP
                     JSONResponse,
                     BinaryResponse,
 
-                    ErrorCode,
-                    ErrorDescription,
-                    ErrorDetails);
+                    JSONRequestErrorMessage);
 
         #endregion
 
@@ -219,10 +213,7 @@ namespace cloud.charging.open.protocols.OCPP
                                                          OCPP_JSONResponseMessage?    JSONResponse        = null,
                                                          OCPP_BinaryResponseMessage?  BinaryResponse      = null,
 
-                                                         ResultCode?                  ErrorCode           = null,
-                                                         String?                      ErrorDescription    = null,
-                                                         JObject?                     ErrorDetails        = null)
-
+                                                         OCPP_JSONRequestErrorMessage?  JSONRequestErrorMessage = null)
 
             => new (RequestTimestamp,
                     NetworkingNodeId,
@@ -236,9 +227,7 @@ namespace cloud.charging.open.protocols.OCPP
                     JSONResponse,
                     BinaryResponse,
 
-                    ErrorCode,
-                    ErrorDescription,
-                    ErrorDetails);
+                    JSONRequestErrorMessage);
 
         #endregion
 

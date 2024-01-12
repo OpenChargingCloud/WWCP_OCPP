@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
     public delegate Task OnJSONErrorResponseReceivedDelegate    (DateTime                    Timestamp,
                                                                  IOCPPWebSocketAdapterIN     Server,
-                                                                 OCPP_JSONErrorMessage       JSONErrorMessage);
+                                                                 OCPP_JSONRequestErrorMessage       JSONErrorMessage);
 
 
     public delegate Task OnBinaryMessageRequestReceivedDelegate (DateTime                    Timestamp,

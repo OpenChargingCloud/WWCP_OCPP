@@ -29,9 +29,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
     /// <summary>
-    /// The OCPP adapter for sending outgoing messages.
-    /// </remarks>
-    /// <param name="NetworkingNode">The parent networking node.</param>
+    /// The OCPP adapter for sending messages.
+    /// </summary>
     public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
     {
 
@@ -58,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a JSON error response was sent.
         /// </summary>
-        public event OnJSONErrorMessageSentDelegate?            OnJSONErrorResponseSent;
+        public event OnJSONRequestErrorMessageSentDelegate?            OnJSONErrorResponseSent;
 
         #endregion
 
@@ -302,7 +301,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region NotifyJSONErrorResponseSent    (JSONErrorMessage)
 
-        public async Task NotifyJSONErrorResponseSent(OCPP_JSONErrorMessage JSONErrorMessage)
+        public async Task NotifyJSONErrorResponseSent(OCPP_JSONRequestErrorMessage JSONErrorMessage)
         {
 
             var logger = OnJSONErrorResponseSent;
@@ -312,7 +311,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
 
                     await Task.WhenAll(logger.GetInvocationList().
-                                           OfType<OnJSONErrorMessageSentDelegate>().
+                                           OfType<OnJSONRequestErrorMessageSentDelegate>().
                                            Select(loggingDelegate => loggingDelegate.Invoke(
                                                                          Timestamp.Now,
                                                                          this,

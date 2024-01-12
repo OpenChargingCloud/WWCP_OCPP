@@ -226,35 +226,35 @@ namespace cloud.charging.open.protocols.OCPP.CS
                 var jsonArray = JArray.Parse(TextMessage);
               //  var sourceNodeId = Connection.TryGetCustomDataAs<NetworkingNode_Id>(networkingNodeId_WebSocketKey) ?? NetworkingNode_Id.Zero;
 
-                if      (OCPP_JSONRequestMessage. TryParse(jsonArray, out var jsonRequest,  out var requestParsingError, RequestTimestamp, null, EventTrackingId, null, CancellationToken))
+                if      (OCPP_JSONRequestMessage.     TryParse(jsonArray, out var jsonRequestMessage,  out var requestParsingError, RequestTimestamp, null, EventTrackingId, null, CancellationToken))
                 {
 
-                    OCPP_JSONResponseMessage?    OCPPJSONResponse     = null;
-                    OCPP_BinaryResponseMessage?  OCPPBinaryResponse   = null;
-                    OCPP_JSONErrorMessage?       OCPPErrorResponse    = null;
+                    OCPP_JSONResponseMessage?      OCPPJSONResponse     = null;
+                    OCPP_BinaryResponseMessage?    OCPPBinaryResponse   = null;
+                    OCPP_JSONRequestErrorMessage?  OCPPRequestError     = null;
 
                     // Try to call the matching 'incoming message processor'
-                    if (incomingMessageProcessorsLookup.TryGetValue(jsonRequest.Action, out var methodInfo) && methodInfo is not null)
+                    if (incomingMessageProcessorsLookup.TryGetValue(jsonRequestMessage.Action, out var methodInfo) && methodInfo is not null)
                     {
 
                         #region Call 'incoming message' processor
 
                         var result = methodInfo.Invoke(this,
-                                                       [ jsonRequest.RequestTimestamp,
+                                                       [ jsonRequestMessage.RequestTimestamp,
                                                          Connection,
-                                                         jsonRequest.DestinationNodeId,
-                                                         jsonRequest.NetworkPath,
-                                                         jsonRequest.EventTrackingId,
-                                                         jsonRequest.RequestId,
-                                                         jsonRequest.Payload,
-                                                         jsonRequest.CancellationToken ]);
+                                                         jsonRequestMessage.DestinationNodeId,
+                                                         jsonRequestMessage.NetworkPath,
+                                                         jsonRequestMessage.EventTrackingId,
+                                                         jsonRequestMessage.RequestId,
+                                                         jsonRequestMessage.Payload,
+                                                         jsonRequestMessage.CancellationToken ]);
 
                         #endregion
 
-                             if (result is Task<Tuple<OCPP_JSONResponseMessage?,   OCPP_JSONErrorMessage?>> jsonProcessor)
+                             if (result is Task<Tuple<OCPP_JSONResponseMessage?,   OCPP_JSONRequestErrorMessage?>> jsonProcessor)
                         {
 
-                            (OCPPJSONResponse,   OCPPErrorResponse) = await jsonProcessor;
+                            (OCPPJSONResponse,   OCPPRequestError) = await jsonProcessor;
 
                             #region Send response...
 
@@ -276,7 +276,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
 
                             #region ..., or send error response!
 
-                            if (OCPPErrorResponse is not null)
+                            if (OCPPRequestError is not null)
                             {
                                 // CALL RESULT ERROR: New in OCPP v2.1++
                             }
@@ -284,7 +284,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
                             #endregion
 
 
-                            #region OnTextMessageResponseSent
+                            #region OnJSONMessageResponseSent
 
                             try
                             {
@@ -296,7 +296,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
                                                                   jsonArray,
                                                                   null,
                                                                   Timestamp.Now,
-                                                                  OCPPJSONResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON() ?? []);
+                                                                  OCPPJSONResponse?.ToJSON() ?? OCPPRequestError?.ToJSON() ?? []);
 
                             }
                             catch (Exception e)
@@ -308,10 +308,10 @@ namespace cloud.charging.open.protocols.OCPP.CS
 
                         }
 
-                        else if (result is Task<Tuple<OCPP_BinaryResponseMessage?, OCPP_JSONErrorMessage?>> binaryProcessor)
+                        else if (result is Task<Tuple<OCPP_BinaryResponseMessage?, OCPP_JSONRequestErrorMessage?>> binaryProcessor)
                         {
 
-                            (OCPPBinaryResponse, OCPPErrorResponse) = await binaryProcessor;
+                            (OCPPBinaryResponse, OCPPRequestError) = await binaryProcessor;
 
                             #region Send response...
 
@@ -330,7 +330,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
 
                             #region ..., or send error response!
 
-                            if (OCPPErrorResponse is not null)
+                            if (OCPPRequestError is not null)
                             {
                                 // CALL RESULT ERROR: New in OCPP v2.1++
                             }
@@ -350,7 +350,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
                                                                     jsonArray,
                                                                     null,
                                                                     Timestamp.Now,
-                                                                    OCPPBinaryResponse?.ToByteArray() ?? OCPPErrorResponse?.ToByteArray() ?? []);
+                                                                    OCPPBinaryResponse?.ToByteArray() ?? OCPPRequestError?.ToByteArray() ?? []);
 
                             }
                             catch (Exception e)
@@ -363,25 +363,25 @@ namespace cloud.charging.open.protocols.OCPP.CS
                         }
 
                         else
-                            DebugX.Log($"Received undefined '{jsonRequest.Action}' JSON request message handler within {nameof(AOCPPWebSocketClient)}!");
+                            DebugX.Log($"Received undefined '{jsonRequestMessage.Action}' JSON request message handler within {nameof(AOCPPWebSocketClient)}!");
 
                     }
                     else
-                        DebugX.Log($"Received unknown '{jsonRequest.Action}' JSON request message handler within {nameof(AOCPPWebSocketClient)}!");
+                        DebugX.Log($"Received unknown '{jsonRequestMessage.Action}' JSON request message handler within {nameof(AOCPPWebSocketClient)}!");
 
                 }
 
-                else if (OCPP_JSONResponseMessage.TryParse(jsonArray, out var jsonResponse, out var responseParsingError))
+                else if (OCPP_JSONResponseMessage.    TryParse(jsonArray, out var jsonResponseMessage, out var responseParsingError))
                 {
 
-                    if (requests.TryGetValue(jsonResponse.RequestId, out var sendRequestState) &&
+                    if (requests.TryGetValue(jsonResponseMessage.RequestId, out var sendRequestState) &&
                         sendRequestState is not null)
                     {
 
                         sendRequestState.ResponseTimestamp  = Timestamp.Now;
-                        sendRequestState.JSONResponse       = jsonResponse;
+                        sendRequestState.JSONResponse       = jsonResponseMessage;
 
-                        #region OnTextMessageResponseReceived
+                        #region OnJSONMessageResponseReceived
 
                         try
                         {
@@ -405,13 +405,48 @@ namespace cloud.charging.open.protocols.OCPP.CS
 
                     }
                     else
-                        DebugX.Log($"Received an OCPP JSON response message having an unknown request identification within {nameof(AOCPPWebSocketClient)}: '{jsonResponse}'!");
+                        DebugX.Log($"Received an OCPP JSON response message having an unknown request identification within {nameof(AOCPPWebSocketClient)}: '{jsonResponseMessage}'!");
 
                 }
 
-                else if (OCPP_JSONErrorMessage.   TryParse(jsonArray, out var jsonErrorResponse))
+                else if (OCPP_JSONRequestErrorMessage.TryParse(jsonArray, out var jsonRequestErrorMessage))
                 {
+
+                    if (requests.TryGetValue(jsonRequestErrorMessage.RequestId, out var sendRequestState) &&
+                        sendRequestState is not null)
+                    {
+
+                        sendRequestState.ResponseTimestamp        = Timestamp.Now;
+                        sendRequestState.JSONRequestErrorMessage  = jsonRequestErrorMessage;
+
+                        #region OnJSONMessageResponseReceived
+
+                        try
+                        {
+
+                            OnJSONMessageResponseReceived?.Invoke(Timestamp.Now,
+                                                                  this,
+                                                                  EventTrackingId,
+                                                                  sendRequestState.RequestTimestamp,
+                                                                  sendRequestState.JSONRequest?.            ToJSON()      ?? [],
+                                                                  sendRequestState.BinaryRequest?.          ToByteArray() ?? [],
+                                                                  sendRequestState.ResponseTimestamp.       Value,
+                                                                  sendRequestState.JSONRequestErrorMessage?.ToJSON()      ?? []);
+
+                        }
+                        catch (Exception e)
+                        {
+                            DebugX.Log(e, nameof(AOCPPWebSocketClient) + "." + nameof(OnJSONMessageResponseReceived));
+                        }
+
+                        #endregion
+
+                    }
+
+
                     DebugX.Log(nameof(AOCPPWebSocketClient), " Received unknown OCPP error message: " + TextMessage);
+
+
                 }
 
                 else if (requestParsingError  is not null)
@@ -471,7 +506,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
 
                     OCPP_JSONResponseMessage?    OCPPJSONResponse     = null;
                     OCPP_BinaryResponseMessage?  OCPPBinaryResponse   = null;
-                    OCPP_JSONErrorMessage?       OCPPErrorResponse    = null;
+                    OCPP_JSONRequestErrorMessage?       OCPPErrorResponse    = null;
 
                     // Try to call the matching 'incoming message processor'
                     if (incomingMessageProcessorsLookup.TryGetValue(binaryRequest.Action, out var methodInfo) && methodInfo is not null)
@@ -491,7 +526,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
 
                         #endregion
 
-                             if (result is Task<Tuple<OCPP_JSONResponseMessage?,   OCPP_JSONErrorMessage?>> jsonProcessor)
+                             if (result is Task<Tuple<OCPP_JSONResponseMessage?,   OCPP_JSONRequestErrorMessage?>> jsonProcessor)
                         {
 
                             (OCPPJSONResponse,   OCPPErrorResponse) = await jsonProcessor;
@@ -517,7 +552,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
                             #endregion
 
 
-                            #region OnTextMessageResponseSent
+                            #region OnJSONMessageResponseSent
 
                             try
                             {
@@ -541,7 +576,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
 
                         }
 
-                        else if (result is Task<Tuple<OCPP_BinaryResponseMessage?, OCPP_JSONErrorMessage?>> binaryProcessor)
+                        else if (result is Task<Tuple<OCPP_BinaryResponseMessage?, OCPP_JSONRequestErrorMessage?>> binaryProcessor)
                         {
 
                             (OCPPBinaryResponse, OCPPErrorResponse) = await binaryProcessor;
@@ -939,7 +974,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
                     if (requests.TryGetValue(JSONRequestMessage.RequestId, out var aSendRequestState) &&
                         aSendRequestState is SendRequestState sendRequestState &&
                        (sendRequestState?.JSONResponse is not null ||
-                        sendRequestState?.ErrorCode.HasValue == true))
+                        sendRequestState?.HasErrors == true))
                     {
 
                         requests.TryRemove(JSONRequestMessage.RequestId, out _);
@@ -961,12 +996,24 @@ namespace cloud.charging.open.protocols.OCPP.CS
 
             return SendRequestState.FromJSONRequest(
 
-                       Timestamp.Now,
+                       JSONRequestMessage.RequestTimestamp,
                        Id,
                        endTime,
                        JSONRequestMessage,
+                       Timestamp.Now,
 
-                       ErrorCode:  ResultCode.Timeout
+                       JSONRequestErrorMessage:  new OCPP_JSONRequestErrorMessage(
+
+                                                     Timestamp.Now,
+                                                     JSONRequestMessage.EventTrackingId,
+                                                     NetworkingMode.Unknown,
+                                                     JSONRequestMessage.NetworkPath.Source,
+                                                     NetworkPath.From(Id),
+                                                     JSONRequestMessage.RequestId,
+
+                                                     ErrorCode: ResultCode.Timeout
+
+                                                 )
 
                    );
 
@@ -994,7 +1041,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
                     if (requests.TryGetValue(BinaryRequestMessage.RequestId, out var aSendRequestState) &&
                         aSendRequestState is SendRequestState sendRequestState &&
                        (sendRequestState?.BinaryResponse is not null ||
-                        sendRequestState?.ErrorCode.HasValue == true))
+                        sendRequestState?.HasErrors == true))
                     {
 
                         requests.TryRemove(BinaryRequestMessage.RequestId, out _);
@@ -1021,7 +1068,18 @@ namespace cloud.charging.open.protocols.OCPP.CS
                        endTime,
                        BinaryRequestMessage,
 
-                       ErrorCode:  ResultCode.Timeout
+                       JSONRequestErrorMessage:  new OCPP_JSONRequestErrorMessage(
+
+                                                     Timestamp.Now,
+                                                     BinaryRequestMessage.EventTrackingId,
+                                                     NetworkingMode.Unknown,
+                                                     BinaryRequestMessage.NetworkPath.Source,
+                                                     NetworkPath.From(Id),
+                                                     BinaryRequestMessage.RequestId,
+
+                                                     ErrorCode: ResultCode.Timeout
+
+                                                 )
 
                    );
 

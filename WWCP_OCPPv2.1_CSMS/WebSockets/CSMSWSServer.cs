@@ -74,12 +74,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// The parent charging station management system.
         /// </summary>
-        public ICSMSWebSocket     CSMS                { get; }
-
-        /// <summary>
-        /// The networking node identification of the parent CSMS.
-        /// </summary>
-        public NetworkingNode_Id  NetworkingNodeId    { get; }
+        public ICSMSWebSocket  CSMS    { get; }
 
         #endregion
 
@@ -207,7 +202,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                             DNSClient?                           DNSClient                    = null,
                             Boolean                              AutoStart                    = false)
 
-            : base(new[] {
+            : base(CSMS.Id,
+                   new[] {
                       "ocpp2.0.1",
                        Version.WebSocketSubProtocolId
                    },
@@ -239,16 +235,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         {
 
-            this.CSMS              = CSMS;
-            this.NetworkingNodeId  = CSMS.Id;
+            this.CSMS = CSMS;
 
             #region Reflect "Receive_XXX" messages and wire them...
 
             foreach (var method in typeof(CSMSWSServer).
                                        GetMethods(BindingFlags.Public | BindingFlags.Instance).
                                             Where(method            => method.Name.StartsWith("Receive_") &&
-                                                 (method.ReturnType == typeof(Task<Tuple<OCPP_JSONResponseMessage?,   OCPP_JSONErrorMessage?>>) ||
-                                                  method.ReturnType == typeof(Task<Tuple<OCPP_BinaryResponseMessage?, OCPP_JSONErrorMessage?>>))))
+                                                 (method.ReturnType == typeof(Task<Tuple<OCPP_JSONResponseMessage?,   OCPP_JSONRequestErrorMessage?>>) ||
+                                                  method.ReturnType == typeof(Task<Tuple<OCPP_BinaryResponseMessage?, OCPP_JSONRequestErrorMessage?>>))))
             {
 
                 var processorName = method.Name[8..];

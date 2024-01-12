@@ -29,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
     /// <summary>
-    /// A charging station HTTP Web Socket client.
+    /// The OCPP adapter for sending messages.
     /// </summary>
     public partial class OCPPWebSocketAdapterOUT : IOCPPWebSocketAdapterOUT
     {
@@ -179,6 +179,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
     }
 
+
+    /// <summary>
+    /// The OCPP adapter for receiving messages.
+    /// </summary>
     public partial class OCPPWebSocketAdapterIN : IOCPPWebSocketAdapterIN
     {
 

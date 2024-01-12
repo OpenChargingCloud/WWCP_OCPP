@@ -35,7 +35,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         /// <summary>
         /// The unique identifications of all connected networking nodes.
         /// </summary>
-        IEnumerable<NetworkingNode_Id>  NetworkingNodeIds    { get; }
+        IEnumerable<NetworkingNode_Id>  ConnectedNetworkingNodeIds    { get; }
 
         #endregion
 

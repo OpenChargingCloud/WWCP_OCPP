@@ -91,10 +91,12 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         String IEventSender.Id
             => HTTPServiceName;
 
+        public NetworkingNode_Id                                  NetworkingNodeId         { get; }
+
         /// <summary>
         /// The enumeration of all connected networking nodes.
         /// </summary>
-        public IEnumerable<NetworkingNode_Id> NetworkingNodeIds
+        public IEnumerable<NetworkingNode_Id> ConnectedNetworkingNodeIds
             => connectedNetworkingNodes.Keys;
 
         /// <summary>
@@ -237,7 +239,8 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         /// <param name="RequireAuthentication">Require a HTTP Basic Authentication of all charging boxes.</param>
         /// <param name="DNSClient">An optional DNS client to use.</param>
         /// <param name="AutoStart">Start the server immediately.</param>
-        public AOCPPWebSocketServer(IEnumerable<String>                  SupportedOCPPWebSocketSubprotocols,
+        public AOCPPWebSocketServer(NetworkingNode_Id                    NetworkingNodeId,
+                                    IEnumerable<String>                  SupportedOCPPWebSocketSubprotocols,
                                     String                               HTTPServiceName              = DefaultHTTPServiceName,
                                     IIPAddress?                          IPAddress                    = null,
                                     IPPort?                              TCPPort                      = null,
@@ -292,6 +295,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
 
         {
 
+            this.NetworkingNodeId                = NetworkingNodeId;
             this.RequireAuthentication           = RequireAuthentication;
 
             base.OnValidateTCPConnection        += ValidateTCPConnection;
@@ -673,7 +677,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         {
 
             OCPP_JSONResponseMessage?  OCPPResponse        = null;
-            OCPP_JSONErrorMessage?     OCPPErrorResponse   = null;
+            OCPP_JSONRequestErrorMessage?     OCPPErrorResponse   = null;
 
             try
             {
@@ -681,7 +685,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                 var jsonArray     = JArray.Parse(TextMessage);
                 var sourceNodeId  = Connection.TryGetCustomDataAs<NetworkingNode_Id>(networkingNodeId_WebSocketKey);
 
-                if      (OCPP_JSONRequestMessage. TryParse(jsonArray, out var jsonRequest,  out var requestParsingError,  RequestTimestamp, null, EventTrackingId, sourceNodeId, CancellationToken))
+                if      (OCPP_JSONRequestMessage.     TryParse(jsonArray, out var jsonRequestMessage,  out var requestParsingError,  RequestTimestamp, null, EventTrackingId, sourceNodeId, CancellationToken))
                 {
 
                     #region OnTextMessageRequestReceived
@@ -698,8 +702,8 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                                                                                   Timestamp.Now,
                                                                                   this,
                                                                                   Connection,
-                                                                                  jsonRequest.DestinationNodeId,
-                                                                                  jsonRequest.NetworkPath,
+                                                                                  jsonRequestMessage.DestinationNodeId,
+                                                                                  jsonRequestMessage.NetworkPath,
                                                                                   EventTrackingId,
                                                                                   Timestamp.Now,
                                                                                   jsonArray,
@@ -718,27 +722,27 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
 
                     #region Try to call the matching 'incoming message processor'...
 
-                    if (incomingMessageProcessorsLookup.TryGetValue(jsonRequest.Action, out var methodInfo) &&
+                    if (incomingMessageProcessorsLookup.TryGetValue(jsonRequestMessage.Action, out var methodInfo) &&
                         methodInfo is not null)
                     {
 
                         //ToDo: Maybe this could be done via code generation!
                         var result = methodInfo.Invoke(this,
-                                                       [ jsonRequest.RequestTimestamp,
+                                                       [ jsonRequestMessage.RequestTimestamp,
                                                          Connection,
-                                                         jsonRequest.DestinationNodeId,
-                                                         jsonRequest.NetworkPath,
-                                                         jsonRequest.EventTrackingId,
-                                                         jsonRequest.RequestId,
-                                                         jsonRequest.Payload,
-                                                         jsonRequest.CancellationToken ]);
+                                                         jsonRequestMessage.DestinationNodeId,
+                                                         jsonRequestMessage.NetworkPath,
+                                                         jsonRequestMessage.EventTrackingId,
+                                                         jsonRequestMessage.RequestId,
+                                                         jsonRequestMessage.Payload,
+                                                         jsonRequestMessage.CancellationToken ]);
 
-                        if (result is Task<Tuple<OCPP_JSONResponseMessage?, OCPP_JSONErrorMessage?>> textProcessor) {
+                        if (result is Task<Tuple<OCPP_JSONResponseMessage?, OCPP_JSONRequestErrorMessage?>> textProcessor) {
                             (OCPPResponse, OCPPErrorResponse) = await textProcessor;
                         }
 
                         else
-                            DebugX.Log($"Received undefined '{jsonRequest.Action}' JSON request message handler within {nameof(AOCPPWebSocketServer)}!");
+                            DebugX.Log($"Received undefined '{jsonRequestMessage.Action}' JSON request message handler within {nameof(AOCPPWebSocketServer)}!");
 
                         if (OCPPResponse is not null &&
                             OCPPResponse.NetworkingMode == NetworkingMode.Unknown &&
@@ -756,17 +760,17 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                     else
                     {
 
-                        DebugX.Log($"Received unknown '{jsonRequest.Action}' JSON request message handler within {nameof(AOCPPWebSocketServer)}!");
+                        DebugX.Log($"Received unknown '{jsonRequestMessage.Action}' JSON request message handler within {nameof(AOCPPWebSocketServer)}!");
 
-                        OCPPErrorResponse = new OCPP_JSONErrorMessage(
+                        OCPPErrorResponse = new OCPP_JSONRequestErrorMessage(
                                                 Timestamp.Now,
                                                 EventTracking_Id.New,
                                                 NetworkingMode.Unknown,
                                                 NetworkingNode_Id.Zero,
                                                 NetworkPath.Empty,
-                                                jsonRequest.RequestId,
+                                                jsonRequestMessage.RequestId,
                                                 ResultCode.ProtocolError,
-                                                $"The OCPP message '{jsonRequest.Action}' is unkown!",
+                                                $"The OCPP message '{jsonRequestMessage.Action}' is unkown!",
                                                 new JObject(
                                                     new JProperty("request", TextMessage)
                                                 )
@@ -796,8 +800,8 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                                                                                       now,
                                                                                       this,
                                                                                       Connection,
-                                                                                      jsonRequest.DestinationNodeId,
-                                                                                      jsonRequest.NetworkPath,
+                                                                                      jsonRequestMessage.DestinationNodeId,
+                                                                                      jsonRequestMessage.NetworkPath,
                                                                                       EventTrackingId,
                                                                                       RequestTimestamp,
                                                                                       jsonArray,
@@ -822,15 +826,15 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
 
                 }
 
-                else if (OCPP_JSONResponseMessage.TryParse(jsonArray, out var jsonResponse, out var responseParsingError, sourceNodeId))
+                else if (OCPP_JSONResponseMessage.    TryParse(jsonArray, out var jsonResponseMessage, out var responseParsingError, sourceNodeId))
                 {
 
-                    if (requests.TryGetValue(jsonResponse.RequestId, out var sendRequestState) &&
+                    if (requests.TryGetValue(jsonResponseMessage.RequestId, out var sendRequestState) &&
                         sendRequestState is not null)
                     {
 
                         sendRequestState.ResponseTimestamp  = Timestamp.Now;
-                        sendRequestState.JSONResponse       = jsonResponse;
+                        sendRequestState.JSONResponse       = jsonResponseMessage;
 
                         #region OnJSONMessageResponseReceived
 
@@ -846,8 +850,8 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                                                                                       Timestamp.Now,
                                                                                       this,
                                                                                       Connection,
-                                                                                      jsonResponse.DestinationNodeId,
-                                                                                      jsonResponse.NetworkPath,
+                                                                                      jsonResponseMessage.DestinationNodeId,
+                                                                                      jsonResponseMessage.NetworkPath,
                                                                                       EventTrackingId,
                                                                                       sendRequestState.RequestTimestamp,
                                                                                       sendRequestState.JSONRequest?.  ToJSON()      ?? [],
@@ -870,28 +874,39 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                     }
 
                     else
-                        DebugX.Log($"Received an unknown OCPP response with identificaiton '{jsonResponse.RequestId}' within {nameof(AOCPPWebSocketServer)}:{Environment.NewLine}'{TextMessage}'!");
+                        DebugX.Log($"Received an unknown OCPP response with identificaiton '{jsonResponseMessage.RequestId}' within {nameof(AOCPPWebSocketServer)}:{Environment.NewLine}'{TextMessage}'!");
 
                     // No response to the charging station!
 
                 }
 
-                else if (OCPP_JSONErrorMessage.   TryParse(jsonArray, out var jsonErrorResponse,                          sourceNodeId))
+                else if (OCPP_JSONRequestErrorMessage.TryParse(jsonArray, out var jsonRequestErrorMessage,                           sourceNodeId))
                 {
 
-                    if (requests.TryGetValue(jsonErrorResponse.RequestId, out var sendRequestState) &&
+                    if (requests.TryGetValue(jsonRequestErrorMessage.RequestId, out var sendRequestState) &&
                         sendRequestState is not null)
                     {
 
-                        // ToDo: Refactor 
-                        if (ResultCode.TryParse(jsonArray[2]?.Value<String>() ?? "", out var errorCode))
-                            sendRequestState.ErrorCode = errorCode;
-                        else
-                            sendRequestState.ErrorCode = ResultCode.GenericError;
+                        var errorCode = ResultCode.GenericError;
 
-                        sendRequestState.JSONResponse      = null;
-                        sendRequestState.ErrorDescription  = jsonArray[3]?.Value<String>();
-                        sendRequestState.ErrorDetails      = jsonArray[4] as JObject;
+                        if (ResultCode.TryParse(jsonArray[2]?.Value<String>() ?? "", out var errorCode2))
+                            errorCode = errorCode2;
+
+                        sendRequestState.JSONResponse             = null;
+                        sendRequestState.JSONRequestErrorMessage  = new OCPP_JSONRequestErrorMessage(
+
+                                                                        Timestamp.Now,
+                                                                        jsonRequestErrorMessage.EventTrackingId,
+                                                                        NetworkingMode.Unknown,
+                                                                        jsonRequestErrorMessage.NetworkPath.Source,
+                                                                        NetworkPath.From(NetworkingNodeId),
+                                                                        jsonRequestErrorMessage.RequestId,
+
+                                                                        ErrorCode:         errorCode,
+                                                                        ErrorDescription:  jsonArray[3]?.Value<String>(),
+                                                                        ErrorDetails:      jsonArray[4] as JObject
+
+                                                                    );
 
                         #region OnJSONErrorResponseReceived
 
@@ -945,7 +960,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
             catch (Exception e)
             {
 
-                OCPPErrorResponse = OCPP_JSONErrorMessage.InternalError(
+                OCPPErrorResponse = OCPP_JSONRequestErrorMessage.InternalError(
                                         nameof(AOCPPWebSocketServer),
                                         EventTrackingId,
                                         TextMessage,
@@ -1027,7 +1042,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         {
 
             OCPP_BinaryResponseMessage?  OCPPResponse        = null;
-            OCPP_JSONErrorMessage?       OCPPErrorResponse   = null;
+            OCPP_JSONRequestErrorMessage?       OCPPErrorResponse   = null;
 
             try
             {
@@ -1085,7 +1100,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                                                          binaryRequest.Payload,
                                                          binaryRequest.CancellationToken ]);
 
-                        if (result is Task<Tuple<OCPP_BinaryResponseMessage?, OCPP_JSONErrorMessage?>> binaryProcessor)
+                        if (result is Task<Tuple<OCPP_BinaryResponseMessage?, OCPP_JSONRequestErrorMessage?>> binaryProcessor)
                         {
                             (OCPPResponse, OCPPErrorResponse) = await binaryProcessor;
                         }
@@ -1102,7 +1117,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
 
                         DebugX.Log($"Received unknown '{binaryRequest.Action}' binary request message handler within {nameof(AOCPPWebSocketServer)}!");
 
-                        OCPPErrorResponse = new OCPP_JSONErrorMessage(
+                        OCPPErrorResponse = new OCPP_JSONRequestErrorMessage(
                                                 Timestamp.Now,
                                                 EventTracking_Id.New,
                                                 NetworkingMode.Unknown,
@@ -1209,7 +1224,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
             catch (Exception e)
             {
 
-                OCPPErrorResponse = OCPP_JSONErrorMessage.InternalError(
+                OCPPErrorResponse = OCPP_JSONRequestErrorMessage.InternalError(
                                         nameof(AOCPPWebSocketServer),
                                         EventTrackingId,
                                         BinaryMessage,
@@ -1510,10 +1525,10 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         #endregion
 
 
-        #region SendJSONAndWait  (EventTrackingId, NetworkingNodeId, NetworkPath, RequestId, OCPPAction, JSONPayload,   RequestTimeout = null)
+        #region SendJSONAndWait  (EventTrackingId, DestinationNodeId, NetworkPath, RequestId, OCPPAction, JSONPayload,   RequestTimeout = null)
 
         public async Task<SendRequestState> SendJSONAndWait(EventTracking_Id   EventTrackingId,
-                                                            NetworkingNode_Id  NetworkingNodeId,
+                                                            NetworkingNode_Id  DestinationNodeId,
                                                             NetworkPath        NetworkPath,
                                                             Request_Id         RequestId,
                                                             String             OCPPAction,
@@ -1526,7 +1541,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
 
             var sendJSONResult  = await SendJSONData(
                                             EventTrackingId,
-                                            NetworkingNodeId,
+                                            DestinationNodeId,
                                             NetworkPath,
                                             RequestId,
                                             OCPPAction,
@@ -1550,7 +1565,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                         if (requests.TryGetValue(RequestId, out var sendRequestState) &&
                            (sendRequestState?.JSONResponse   is not null ||
                             sendRequestState?.BinaryResponse is not null ||
-                            sendRequestState?.ErrorCode.HasValue == true))
+                            sendRequestState?.HasErrors == true))
                         {
 
                             requests.TryRemove(RequestId, out _);
@@ -1575,9 +1590,24 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                 if (requests.TryGetValue(RequestId, out var sendRequestState2) &&
                     sendRequestState2 is not null)
                 {
-                    sendRequestState2.ErrorCode = ResultCode.Timeout;
+
+                    sendRequestState2.JSONRequestErrorMessage  = new OCPP_JSONRequestErrorMessage(
+
+                                                                     Timestamp.Now,
+                                                                     EventTrackingId,
+                                                                     NetworkingMode.Unknown,
+                                                                     NetworkPath.Source,
+                                                                     NetworkPath.From(NetworkingNodeId),
+                                                                     RequestId,
+
+                                                                     ErrorCode: ResultCode.Timeout
+
+                                                                 );
+
                     requests.TryRemove(RequestId, out _);
+
                     return sendRequestState2;
+
                 }
 
                 #endregion
@@ -1591,9 +1621,24 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                 if (requests.TryGetValue(RequestId, out var sendRequestState3) &&
                     sendRequestState3 is not null)
                 {
-                    sendRequestState3.ErrorCode = ResultCode.Timeout;
+
+                    sendRequestState3.JSONRequestErrorMessage =  new OCPP_JSONRequestErrorMessage(
+
+                                                                     Timestamp.Now,
+                                                                     EventTrackingId,
+                                                                     NetworkingMode.Unknown,
+                                                                     NetworkPath.Source,
+                                                                     NetworkPath.From(NetworkingNodeId),
+                                                                     RequestId,
+
+                                                                     ErrorCode: ResultCode.Timeout
+
+                                                                 );
+
                     requests.TryRemove(RequestId, out _);
+
                     return sendRequestState3;
+
                 }
             }
 
@@ -1606,21 +1651,33 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
             return SendRequestState.FromJSONRequest(
 
                        now,
-                       NetworkingNodeId,
+                       DestinationNodeId,
                        now,
                        new OCPP_JSONRequestMessage(
                            Timestamp.Now,
                            EventTracking_Id.New,
                            NetworkingMode.Standard,
-                           NetworkingNodeId,
+                           DestinationNodeId,
                            NetworkPath,
                            RequestId,
                            OCPPAction,
                            JSONPayload
                        ),
                        now,
+                       null,
+                       null,
+                       new OCPP_JSONRequestErrorMessage(
 
-                       ErrorCode:  ResultCode.InternalError
+                           Timestamp.Now,
+                           EventTrackingId,
+                           NetworkingMode.Unknown,
+                           NetworkPath.Source,
+                           NetworkPath.From(NetworkingNodeId),
+                           RequestId,
+
+                           ErrorCode: ResultCode.InternalError
+
+                       )
 
                    );
 
@@ -1668,7 +1725,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                         if (requests.TryGetValue(RequestId, out var sendRequestState) &&
                            (sendRequestState?.JSONResponse   is not null ||
                             sendRequestState?.BinaryResponse is not null ||
-                            sendRequestState?.ErrorCode.HasValue == true))
+                            sendRequestState?.HasErrors == true))
                         {
 
                             requests.TryRemove(RequestId, out _);
@@ -1693,9 +1750,24 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                 if (requests.TryGetValue(RequestId, out var sendRequestState2) &&
                     sendRequestState2 is not null)
                 {
-                    sendRequestState2.ErrorCode = ResultCode.Timeout;
+
+                    sendRequestState2.JSONRequestErrorMessage =  new OCPP_JSONRequestErrorMessage(
+
+                                                                     Timestamp.Now,
+                                                                     EventTrackingId,
+                                                                     NetworkingMode.Unknown,
+                                                                     NetworkPath.Source,
+                                                                     NetworkPath.From(NetworkingNodeId),
+                                                                     RequestId,
+
+                                                                     ErrorCode: ResultCode.Timeout
+
+                                                                 );
+
                     requests.TryRemove(RequestId, out _);
+
                     return sendRequestState2;
+
                 }
 
                 #endregion
@@ -1709,9 +1781,24 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                 if (requests.TryGetValue(RequestId, out var sendRequestState3) &&
                     sendRequestState3 is not null)
                 {
-                    sendRequestState3.ErrorCode = ResultCode.Timeout;
+
+                    sendRequestState3.JSONRequestErrorMessage =  new OCPP_JSONRequestErrorMessage(
+
+                                                                     Timestamp.Now,
+                                                                     EventTrackingId,
+                                                                     NetworkingMode.Unknown,
+                                                                     NetworkPath.Source,
+                                                                     NetworkPath.From(NetworkingNodeId),
+                                                                     RequestId,
+
+                                                                     ErrorCode: ResultCode.Timeout
+
+                                                                 );
+
                     requests.TryRemove(RequestId, out _);
+
                     return sendRequestState3;
+
                 }
             }
 
@@ -1737,8 +1824,20 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                            BinaryPayload
                        ),
                        now,
+                       null,
+                       null,
+                       new OCPP_JSONRequestErrorMessage(
 
-                       ErrorCode:  ResultCode.InternalError
+                           Timestamp.Now,
+                           EventTrackingId,
+                           NetworkingMode.Unknown,
+                           NetworkPath.Source,
+                           NetworkPath.From(NetworkingNodeId),
+                           RequestId,
+
+                           ErrorCode: ResultCode.InternalError
+
+                       )
 
                    );
 

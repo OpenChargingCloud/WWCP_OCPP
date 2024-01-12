@@ -108,8 +108,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// The unique identifications of all connected or reachable charge boxes.
         /// </summary>
-        public IEnumerable<NetworkingNode_Id> NetworkingNodeIds
-            => reachableChargeBoxes.Values.SelectMany(tuple => tuple.Item1.NetworkingNodeIds);
+        public IEnumerable<NetworkingNode_Id> ConnectedNetworkingNodeIds
+            => reachableChargeBoxes.Values.SelectMany(tuple => tuple.Item1.ConnectedNetworkingNodeIds);
 
 
         public Dictionary<String, Transaction_Id> TransactionIds = [];
@@ -1329,6 +1329,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         {
 
             var centralSystemServer = new CentralSystemWSServer(
+
+                                          NetworkingNode_Id.Parse(CentralSystemId.ToString()),
+
                                           HTTPServerName,
                                           IPAddress,
                                           TCPPort,
@@ -1340,6 +1343,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                                           DNSClient: DNSClient ?? this.DNSClient,
                                           AutoStart: false
+
                                       );
 
             #region WebSocket related

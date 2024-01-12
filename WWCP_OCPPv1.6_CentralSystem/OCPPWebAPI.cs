@@ -1440,7 +1440,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                           AccessControlAllowHeaders  = new[] { "Authorization" },
                                           ContentType                = HTTPContentType.Application.JSON_UTF8,
                                           Content                    = JSONArray.Create(
-                                                                           CentralSystem.NetworkingNodeIds.Select(networkingNodeId => new JObject(new JProperty("@id", networkingNodeId.ToString())))
+                                                                           CentralSystem.ConnectedNetworkingNodeIds.Select(networkingNodeId => new JObject(new JProperty("@id", networkingNodeId.ToString())))
                                                                        ).ToUTF8Bytes(Newtonsoft.Json.Formatting.None),
                                           Connection                 = "close"
                                       }.AsImmutable);

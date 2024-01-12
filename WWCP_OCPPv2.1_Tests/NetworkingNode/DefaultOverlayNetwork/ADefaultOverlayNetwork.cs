@@ -31,7 +31,7 @@ using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode
+namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNetwork.Default
 {
 
     /// <summary>
@@ -419,17 +419,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode
         #region ShutdownOnce()
 
         [OneTimeTearDown]
-        public virtual void ShutdownOnce()
+        public virtual async Task ShutdownOnce()
         {
 
-            csmsWSServer.Shutdown();
+            if (csmsWSServer is not null)
+                await csmsWSServer.  Shutdown();
+
+            if (networkingNode is not null)
+                await networkingNode.Shutdown();
 
             CSMS             = null;
             csmsWSServer     = null;
-
-            //networkingNode.Shutdown();
             networkingNode   = null;
-
             chargingStation  = null;
 
         }

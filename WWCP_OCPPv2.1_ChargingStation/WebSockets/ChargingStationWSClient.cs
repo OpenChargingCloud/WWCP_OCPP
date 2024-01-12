@@ -243,8 +243,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             foreach (var method in typeof(ChargingStationWSClient).
                                        GetMethods(BindingFlags.Public | BindingFlags.Instance).
                                             Where(method            => method.Name.StartsWith("Receive_") &&
-                                                 (method.ReturnType == typeof(Task<Tuple<OCPP_JSONResponseMessage?,   OCPP_JSONErrorMessage?>>) ||
-                                                  method.ReturnType == typeof(Task<Tuple<OCPP_BinaryResponseMessage?, OCPP_JSONErrorMessage?>>))))
+                                                 (method.ReturnType == typeof(Task<Tuple<OCPP_JSONResponseMessage?,   OCPP_JSONRequestErrorMessage?>>) ||
+                                                  method.ReturnType == typeof(Task<Tuple<OCPP_BinaryResponseMessage?, OCPP_JSONRequestErrorMessage?>>))))
             {
 
                 var processorName = method.Name[8..];
