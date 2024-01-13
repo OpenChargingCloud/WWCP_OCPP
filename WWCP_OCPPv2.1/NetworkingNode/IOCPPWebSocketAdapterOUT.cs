@@ -39,17 +39,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
 
-    public delegate Task OnBinaryMessageRequestSentDelegate (DateTime                    Timestamp,
-                                                             IOCPPWebSocketAdapterOUT    Server,
-                                                             OCPP_BinaryRequestMessage   BinaryRequestMessage);
+    public delegate Task OnBinaryMessageRequestSentDelegate   (DateTime                    Timestamp,
+                                                               IOCPPWebSocketAdapterOUT    Server,
+                                                               OCPP_BinaryRequestMessage   BinaryRequestMessage);
 
-    public delegate Task OnBinaryMessageResponseSentDelegate(DateTime                    Timestamp,
-                                                             IOCPPWebSocketAdapterOUT    Server,
-                                                             OCPP_BinaryResponseMessage  BinaryResponseMessage);
+    public delegate Task OnBinaryMessageResponseSentDelegate  (DateTime                    Timestamp,
+                                                               IOCPPWebSocketAdapterOUT    Server,
+                                                               OCPP_BinaryResponseMessage  BinaryResponseMessage);
 
-    //public delegate Task OnBinaryErrorMessageSentDelegate   (DateTime                    Timestamp,
-    //                                                         IOCPPWebSocketAdapterOUT    Server,
-    //                                                         OCPP_BinaryErrorMessage     BinaryErrorMessage);
+    //public delegate Task OnBinaryErrorMessageSentDelegate     (DateTime                    Timestamp,
+    //                                                           IOCPPWebSocketAdapterOUT    Server,
+    //                                                           OCPP_BinaryErrorMessage     BinaryErrorMessage);
 
 
     /// <summary>

@@ -20,9 +20,7 @@
 using System.Collections.Concurrent;
 
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
-using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;

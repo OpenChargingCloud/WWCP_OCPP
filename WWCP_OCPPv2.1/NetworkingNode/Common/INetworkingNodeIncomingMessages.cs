@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a data transfer request was received.
         /// </summary>
-        event OnDataTransferDelegate    OnIncomingDataTransfer;
+        event OnDataTransferDelegate  OnIncomingDataTransfer;
 
         #endregion
 
