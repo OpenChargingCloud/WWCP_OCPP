@@ -27,8 +27,8 @@ The *HTTP Web Sockets* standard supports an efficient way to transport binary da
 - Loosely related to the OCA internal *"OCPP Local CSMS"* concept.
 - Every charging station, networking node, CSMS backend has an unique networking node identification.
 - Connected charging stations, (local) networking nodes and CSMS backends exchange routing information about the reachability of devices based on the networking node identifications.
-- Networking nodes can act as a **Security Gateway** or **OCPP Firewall** and make use of a [Signature policy](../WWCP_OCPPv2.1/Extensions/E2ESecurityExtensions/README.md).
-- **Anycast** and **Multicast** support allows sendind information like e.g. EVSE status information or meter values to multiple destinations/backends.
+- Networking nodes can act as a **Security Gateway** or **OCPP Firewall** and make use of a [Signature policy](../WWCP_OCPPv2.1/Extensions/E2ESecurityExtensions/README.md) e.g. to add additional signatures to requests/responses.
+- **Anycast** and **Multicast** support allows sending information like e.g. EVSE status information or meter values to multiple destinations/backends.
 - A charging station is no longer just a HTTP Web Socket client and a CSMS is no longer just a HTTP Web Socket server. Both can use both HTTP Web Socket roles.
   - After a network outtage e.g. a local networking node could initiate a HTTP Web Socket connection to a local charging station, instead of waiting for a reconnect.
   - OCPP local initial setup and maintenance is simplified as a charging station could also expose an OCPP endpoint via its WLAN access point and service people could use their notebook or a smartphone app for OCPP configuration and maintenance.
