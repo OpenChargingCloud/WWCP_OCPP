@@ -21,14 +21,6 @@ The *HTTP Web Sockets* standard supports an efficient way to transport binary da
 - *RS232/RS485* and *Modbus/RTU* transport to allow a direct communication with e.g. smart energy meters located in the remote network of a charging location.
 - Generic *TCP/TLS-Proxy* to allow a direct communication with legacy devices located in the remote network of a charging location, e.g Germany *Smart Meter Gateways (SMGWs)*.
 - As binary data is often very large compared to normal OCPP requests/responses an additional priority scheduling of message transmission is required to prioritize *"normal"* OCPP requests/responses over binary background transmissions.
-  
-
-## End-to-End Security Extensions
-In addition to the use of *Transport Layer Security (TLS)* as defined within the official [OCPP Security Whitepaper](https://www.openchargealliance.org/about-us/info-en-whitepapers/) the [End-to-End Security Extensions](../WWCP_OCPPv2.1/Extensions/E2ESecurityExtensions/README.md):
-  - **Digital signatures** on *every OCPP v2.1+ request/response* and for some data structures like [end-to-end charging tariffs](../WWCP_OCPPv2.1/Extensions/E2EChargingTariffsExtensions/README.md), [charging tickets](../WWCP_OCPPv2.1/Extensions/ChargingTicketsExtension/README.md) and signature policies.
-  - **Signature policies** define which request/response/data structure is signed or verified by which cryptographic keys. Multiple signatures per data structure are allowed, e.g. for *Overlay Networking* or secure grid load control. *(implemented)*.
-  - **User roles** overcome the current *"everything is done by the same user"* approach of OCPP. Users are identified by the digital signature of their requests/responses and a **signature policy** defines which commands having which parameters can be used by which user role.
-  - **Public key infrastructure (PKI)** using specialized certificates defining what can be done with a certificate (*key usage*) within the large e-mobility and energy domain. This improves the security and flexibility of the end-to-end security extensions and overcomes the main weaknesses and too narrow focus of ISO 15118 based PKIs.
 
 
 ## Overlay Networking Extensions
@@ -45,6 +37,14 @@ In addition to the use of *Transport Layer Security (TLS)* as defined within the
 - High availability for network configurations *upcoming*
   - Like DNS Service (SRV) Resource Records, https://de.wikipedia.org/wiki/SRV_Resource_Record
   - Better strategies and fall backs when remote endpoints are changed or login, passwords or certificates are changed.
+  
+
+## End-to-End Security Extensions
+In addition to the use of *Transport Layer Security (TLS)* as defined within the official [OCPP Security Whitepaper](https://www.openchargealliance.org/about-us/info-en-whitepapers/) the [End-to-End Security Extensions](../WWCP_OCPPv2.1/Extensions/E2ESecurityExtensions/README.md):
+  - **Digital signatures** on *every OCPP v2.1+ request/response* and for some data structures like [end-to-end charging tariffs](../WWCP_OCPPv2.1/Extensions/E2EChargingTariffsExtensions/README.md), [charging tickets](../WWCP_OCPPv2.1/Extensions/ChargingTicketsExtension/README.md) and signature policies.
+  - **Signature policies** define which request/response/data structure is signed or verified by which cryptographic keys. Multiple signatures per data structure are allowed, e.g. for *Overlay Networking* or secure grid load control. *(implemented)*.
+  - **User roles** overcome the current *"everything is done by the same user"* approach of OCPP. Users are identified by the digital signature of their requests/responses and a **signature policy** defines which commands having which parameters can be used by which user role.
+  - **Public key infrastructure (PKI)** using specialized certificates defining what can be done with a certificate (*key usage*) within the large e-mobility and energy domain. This improves the security and flexibility of the end-to-end security extensions and overcomes the main weaknesses and too narrow focus of ISO 15118 based PKIs.
 
 
 ## Charging Tickets Extensions
