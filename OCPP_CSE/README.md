@@ -44,6 +44,7 @@ In addition to the use of *Transport Layer Security (TLS)* as defined within the
   - **Digital signatures** on *every OCPP v2.1+ request/response* and for some data structures like [end-to-end charging tariffs](../WWCP_OCPPv2.1/Extensions/E2EChargingTariffsExtensions/README.md), [charging tickets](../WWCP_OCPPv2.1/Extensions/ChargingTicketsExtension/README.md) and signature policies.
   - **Signature policies** define which request/response/data structure is signed or verified by which cryptographic keys. Multiple signatures per data structure are allowed, e.g. for *Overlay Networking* or secure grid load control. *(implemented)*.
   - **User roles** overcome the current *"everything is done by the same user"* approach of OCPP. Users are identified by the digital signature of their requests/responses and a **signature policy** defines which commands having which parameters can be used by which user role.
+  - **Encapsulated Security Payload (ESP)** OCPP requests and responses can be encrypted, transported via the overlay network and be decrypted. ESP requests/responses are send via binary HTTP Web Socket streams.
   - **Public key infrastructure (PKI)** using specialized certificates defining what can be done with a certificate (*key usage*) within the large e-mobility and energy domain. This improves the security and flexibility of the end-to-end security extensions and overcomes the main weaknesses and too narrow focus of ISO 15118 based PKIs.
 
 
