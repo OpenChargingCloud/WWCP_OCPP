@@ -4261,6 +4261,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             throw new NotImplementedException();
         }
 
+        public Task<OCPP.SecureDataTransferResponse> SecureDataTransfer(OCPP.SecureDataTransferRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
 
     }
 

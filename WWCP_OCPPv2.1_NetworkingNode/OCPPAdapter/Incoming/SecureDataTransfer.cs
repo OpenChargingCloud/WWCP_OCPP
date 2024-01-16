@@ -38,14 +38,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Events
 
         /// <summary>
-        /// An event sent whenever a BinaryDataTransfer request was received.
+        /// An event sent whenever a SecureDataTransfer request was received.
         /// </summary>
-        public event OnBinaryDataTransferRequestReceivedDelegate?  OnBinaryDataTransferRequestReceived;
+        public event OnSecureDataTransferRequestReceivedDelegate?  OnSecureDataTransferRequestReceived;
 
         /// <summary>
-        /// An event sent whenever a BinaryDataTransfer request was received for processing.
+        /// An event sent whenever a SecureDataTransfer request was received for processing.
         /// </summary>
-        public event OnBinaryDataTransferDelegate?                 OnBinaryDataTransfer;
+        public event OnSecureDataTransferDelegate?                 OnSecureDataTransfer;
 
         #endregion
 
@@ -53,7 +53,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public async Task<OCPP_Response>
 
-            Receive_BinaryDataTransfer(DateTime              RequestTimestamp,
+            Receive_SecureDataTransfer(DateTime              RequestTimestamp,
                                        IWebSocketConnection  WebSocketConnection,
                                        NetworkingNode_Id     DestinationNodeId,
                                        NetworkPath           NetworkPath,
@@ -69,29 +69,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                if (BinaryDataTransferRequest.TryParse(BinaryRequest,
+                if (SecureDataTransferRequest.TryParse(BinaryRequest,
                                                        RequestId,
                                                        DestinationNodeId,
                                                        NetworkPath,
                                                        out var request,
                                                        out var errorResponse,
-                                                       parentNetworkingNode.OCPP.CustomBinaryDataTransferRequestParser)) {
+                                                       parentNetworkingNode.OCPP.CustomSecureDataTransferRequestParser)) {
 
-                    BinaryDataTransferResponse? response = null;
+                    SecureDataTransferResponse? response = null;
 
                     #region Verify request signature(s)
 
                     if (!parentNetworkingNode.OCPP.SignaturePolicy.VerifyRequestMessage(
                         request,
                         request.ToBinary(
-                            parentNetworkingNode.OCPP.CustomBinaryDataTransferRequestSerializer,
+                            parentNetworkingNode.OCPP.CustomSecureDataTransferRequestSerializer,
                             parentNetworkingNode.OCPP.CustomBinarySignatureSerializer,
                             IncludeSignatures: false
                         ),
                         out errorResponse))
                     {
 
-                        response = new BinaryDataTransferResponse(
+                        response = new SecureDataTransferResponse(
                                        Request:  request,
                                        Result:   Result.SignatureError(
                                                      $"Invalid signature(s): {errorResponse}"
@@ -102,12 +102,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #endregion
 
-                    #region Send OnBinaryDataTransferRequest event
+                    #region Send OnSecureDataTransferRequest event
 
                     try
                     {
 
-                        OnBinaryDataTransferRequestReceived?.Invoke(Timestamp.Now,
+                        OnSecureDataTransferRequestReceived?.Invoke(Timestamp.Now,
                                                                     parentNetworkingNode,
                                                                     WebSocketConnection,
                                                                     request);
@@ -117,7 +117,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
                         await HandleErrors(
                                   nameof(OCPPWebSocketAdapterIN),
-                                  nameof(OnBinaryDataTransferRequestReceived),
+                                  nameof(OnSecureDataTransferRequestReceived),
                                   e
                               );
                     }
@@ -132,9 +132,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         try
                         {
 
-                            var responseTasks = OnBinaryDataTransfer?.
+                            var responseTasks = OnSecureDataTransfer?.
                                                     GetInvocationList()?.
-                                                    SafeSelect(subscriber => (subscriber as OnBinaryDataTransferDelegate)?.Invoke(Timestamp.Now,
+                                                    SafeSelect(subscriber => (subscriber as OnSecureDataTransferDelegate)?.Invoke(Timestamp.Now,
                                                                                                                             parentNetworkingNode,
                                                                                                                             WebSocketConnection,
                                                                                                                             request,
@@ -143,24 +143,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                             response = responseTasks?.Length > 0
                                            ? (await Task.WhenAll(responseTasks!)).FirstOrDefault()
-                                           : BinaryDataTransferResponse.Failed(request, $"Undefined {nameof(OnBinaryDataTransfer)}!");
+                                           : SecureDataTransferResponse.Failed(request, $"Undefined {nameof(OnSecureDataTransfer)}!");
 
                         }
                         catch (Exception e)
                         {
 
-                            response = BinaryDataTransferResponse.ExceptionOccured(request, e);
+                            response = SecureDataTransferResponse.ExceptionOccured(request, e);
 
                             await HandleErrors(
                                       nameof(OCPPWebSocketAdapterIN),
-                                      nameof(OnBinaryDataTransfer),
+                                      nameof(OnSecureDataTransfer),
                                       e
                                   );
 
                         }
                     }
 
-                    response ??= BinaryDataTransferResponse.Failed(request);
+                    response ??= SecureDataTransferResponse.Failed(request);
 
                     #endregion
 
@@ -169,8 +169,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     parentNetworkingNode.OCPP.SignaturePolicy.SignResponseMessage(
                         response,
                         response.ToBinary(
-                            parentNetworkingNode.OCPP.CustomBinaryDataTransferResponseSerializer,
-                            parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
+                            parentNetworkingNode.OCPP.CustomSecureDataTransferResponseSerializer,
+                            //parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
                             parentNetworkingNode.OCPP.CustomBinarySignatureSerializer,
                             IncludeSignatures: true
                         ),
@@ -179,9 +179,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    #region Send OnBinaryDataTransferResponse event
+                    #region Send OnSecureDataTransferResponse event
 
-                    await (parentNetworkingNode.OCPP.OUT as OCPPWebSocketAdapterOUT).SendOnBinaryDataTransferResponseSent(Timestamp.Now,
+                    await (parentNetworkingNode.OCPP.OUT as OCPPWebSocketAdapterOUT).SendOnSecureDataTransferResponseSent(Timestamp.Now,
                                                                                                                           parentNetworkingNode,
                                                                                                                           WebSocketConnection,
                                                                                                                           request,
@@ -196,8 +196,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                        NetworkPath.From(parentNetworkingNode.Id),
                                        RequestId,
                                        response.ToBinary(
-                                           parentNetworkingNode.OCPP.CustomBinaryDataTransferResponseSerializer,
-                                           parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
+                                           parentNetworkingNode.OCPP.CustomSecureDataTransferResponseSerializer,
+                                           //parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
                                            parentNetworkingNode.OCPP.CustomBinarySignatureSerializer,
                                            IncludeSignatures: true
                                        ),
@@ -210,7 +210,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     ocppResponse = OCPP_Response.CouldNotParse(
                                        EventTrackingId,
                                        RequestId,
-                                       nameof(Receive_BinaryDataTransfer)[8..],
+                                       nameof(Receive_SecureDataTransfer)[8..],
                                        BinaryRequest,
                                        errorResponse
                                    );
@@ -221,7 +221,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 ocppResponse = OCPP_Response.FormationViolation(
                                    EventTrackingId,
                                    RequestId,
-                                   nameof(Receive_BinaryDataTransfer)[8..],
+                                   nameof(Receive_SecureDataTransfer)[8..],
                                    BinaryRequest,
                                    e
                                );
@@ -245,30 +245,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Events
 
         /// <summary>
-        /// An event sent whenever a response to a BinaryDataTransfer was sent.
+        /// An event sent whenever a response to a SecureDataTransfer was sent.
         /// </summary>
-        public event OnBinaryDataTransferResponseSentDelegate?  OnBinaryDataTransferResponseSent;
+        public event OnSecureDataTransferResponseSentDelegate?  OnSecureDataTransferResponseSent;
 
         #endregion
 
-        #region Send OnBinaryDataTransferResponse event
+        #region Send OnSecureDataTransferResponse event
 
-        public async Task SendOnBinaryDataTransferResponseSent(DateTime                    Timestamp,
+        public async Task SendOnSecureDataTransferResponseSent(DateTime                    Timestamp,
                                                                IEventSender                Sender,
                                                                IWebSocketConnection        Connection,
-                                                               BinaryDataTransferRequest   Request,
-                                                               BinaryDataTransferResponse  Response,
+                                                               SecureDataTransferRequest   Request,
+                                                               SecureDataTransferResponse  Response,
                                                                TimeSpan                    Runtime)
         {
 
-            var logger = OnBinaryDataTransferResponseSent;
+            var logger = OnSecureDataTransferResponseSent;
             if (logger is not null)
             {
                 try
                 {
 
                     await Task.WhenAll(logger.GetInvocationList().
-                                              OfType <OnBinaryDataTransferResponseSentDelegate>().
+                                              OfType <OnSecureDataTransferResponseSentDelegate>().
                                               Select (filterDelegate => filterDelegate.Invoke(Timestamp,
                                                                                               Sender,
                                                                                               Connection,
@@ -282,7 +282,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
                     await HandleErrors(
                               nameof(OCPPWebSocketAdapterOUT),
-                              nameof(OnBinaryDataTransferResponseSent),
+                              nameof(OnSecureDataTransferResponseSent),
                               e
                           );
                 }

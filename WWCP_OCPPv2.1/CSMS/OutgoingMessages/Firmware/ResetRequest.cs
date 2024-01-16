@@ -90,6 +90,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                             ResetType                     ResetType,
                             EVSE_Id?                      EVSEId              = null,
 
+                            String?                       EncryptionKey       = null,
+                            String?                       EncryptionNonce     = null,
                             IEnumerable<KeyPair>?         SignKeys            = null,
                             IEnumerable<SignInfo>?        SignInfos           = null,
                             IEnumerable<OCPP.Signature>?  Signatures          = null,
@@ -106,6 +108,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             : base(NetworkingNodeId,
                    nameof(ResetRequest)[..^7],
 
+                   EncryptionKey,
+                   EncryptionNonce,
                    SignKeys,
                    SignInfos,
                    Signatures,
@@ -311,6 +315,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                    NetworkingNodeId,
                                    ResetType,
                                    EVSEId,
+
+                                   null,
+                                   null,
 
                                    null,
                                    null,

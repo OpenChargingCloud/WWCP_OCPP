@@ -45,6 +45,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         IEnumerable<ICSMSChannel>  CSMSChannels             { get; }
 
 
+        Byte[]  GetEncryptionKey     (NetworkingNode_Id DestinationNodeId);
+        UInt64  GetEncryptionNonce   (NetworkingNode_Id DestinationNodeId);
+        UInt64  GetEncryptionCounter (NetworkingNode_Id DestinationNodeId);
+
+
+
     }
 
 }

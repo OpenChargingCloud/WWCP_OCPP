@@ -1343,7 +1343,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// An event sent whenever a BinaryDataTransfer request will be sent to the charging station.
         /// </summary>
-        public event OnBinaryDataTransferRequestSentDelegate?   OnBinaryDataTransferRequest;
+        public event OnBinaryDataTransferRequestSentDelegate?       OnBinaryDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a response to a BinaryDataTransfer request was received.
@@ -1492,6 +1492,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// An event fired whenever a response to a DeleteUserRole request was received.
         /// </summary>
         public event OnDeleteUserRoleResponseDelegate?  OnDeleteUserRoleResponse;
+
+        #endregion
+
+
+        #region OnSecureDataTransfer          (Request/-Response)
+
+        /// <summary>
+        /// An event sent whenever a SecureDataTransfer request will be sent to the charging station.
+        /// </summary>
+        public event OnSecureDataTransferRequestSentDelegate?       OnSecureDataTransferRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a SecureDataTransfer request was received.
+        /// </summary>
+        public event OnSecureDataTransferResponseReceivedDelegate?  OnSecureDataTransferResponse;
 
         #endregion
 
@@ -1662,6 +1677,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public CustomJObjectSerializerDelegate<UpdateUserRoleRequest>?                               CustomUpdateUserRoleRequestSerializer                        { get; set; }
         public CustomJObjectSerializerDelegate<DeleteUserRoleRequest>?                               CustomDeleteUserRoleRequestSerializer                        { get; set; }
 
+        public CustomBinarySerializerDelegate<SecureDataTransferRequest>?                            CustomSecureDataTransferRequestSerializer              { get; set; }
+
 
         // E2E Charging Tariffs
         public CustomJObjectSerializerDelegate<SetDefaultChargingTariffRequest>?                     CustomSetDefaultChargingTariffRequestSerializer              { get; set; }
@@ -1820,6 +1837,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public CustomJObjectSerializerDelegate<OCPP.CS.SendFileResponse>?                            CustomSendFileResponseSerializer                             { get; set; }
         public CustomJObjectSerializerDelegate<OCPP.CS.DeleteFileResponse>?                          CustomDeleteFileResponseSerializer                           { get; set; }
         public CustomJObjectSerializerDelegate<OCPP.CS.ListDirectoryResponse>?                       CustomListDirectoryResponseSerializer                        { get; set; }
+
+
+        // E2E Security Extensions
+        public CustomBinarySerializerDelegate<SecureDataTransferResponse>?                           CustomSecureDataTransferResponseSerializer                   { get; set; }
 
 
         // E2E Charging Tariff Extensions
@@ -6729,6 +6750,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         }
 
         #endregion
+
+        public Byte[] GetEncryptionKey(NetworkingNode_Id DestinationNodeId)
+        {
+            return new Byte[32];
+        }
+
+        public UInt64 GetEncryptionNonce(NetworkingNode_Id DestinationNodeId)
+        {
+            return 1;
+        }
+
+        public UInt64 GetEncryptionCounter(NetworkingNode_Id DestinationNodeId)
+        {
+            return 1;
+        }
 
 
         #region Reset                       (Request)
@@ -12087,6 +12123,100 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             catch (Exception e)
             {
                 DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnDeleteUserRoleResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+
+        #region SecureDataTransfer          (Request)
+
+        /// <summary>
+        /// Transfer the given data to the given charging station.
+        /// </summary>
+        /// <param name="Request">A SecureDataTransfer request.</param>
+        public async Task<SecureDataTransferResponse> SecureDataTransfer(SecureDataTransferRequest Request)
+        {
+
+            #region Send OnSecureDataTransferRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnSecureDataTransferRequest?.Invoke(startTime,
+                                                    this,
+                                                    Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnSecureDataTransferRequest));
+            }
+
+            #endregion
+
+
+            var response  = LookupNetworkingNode(Request.DestinationNodeId, out var csmsChannel) &&
+                                csmsChannel is not null
+
+                                ? SignaturePolicy.SignRequestMessage(
+                                      Request,
+                                      Request.ToBinary(
+                                          CustomSecureDataTransferRequestSerializer,
+                                          CustomBinarySignatureSerializer,
+                                          IncludeSignatures: false
+                                      ),
+                                      out var errorResponse
+                                  )
+
+                                      ? await csmsChannel.SecureDataTransfer(Request)
+
+                                      : new SecureDataTransferResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new SecureDataTransferResponse(
+                                      Request,
+                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                  );
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToBinary(
+                    CustomSecureDataTransferResponseSerializer,
+                    // CustomStatusInfoSerializer
+                    CustomBinarySignatureSerializer,
+                    IncludeSignatures: false
+                ),
+                out errorResponse
+            );
+
+
+            #region Send OnSecureDataTransferResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnSecureDataTransferResponse?.Invoke(endTime,
+                                               this,
+                                               Request,
+                                               response,
+                                               endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnSecureDataTransferResponse));
             }
 
             #endregion

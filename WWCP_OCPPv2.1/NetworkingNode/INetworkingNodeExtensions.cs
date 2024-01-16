@@ -1910,6 +1910,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
                            ResetType,
                            EVSEId,
 
+                           null,
+                           null,
+
                            SignKeys,
                            SignInfos,
                            Signatures,

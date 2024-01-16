@@ -25,27 +25,27 @@ namespace cloud.charging.open.protocols.OCPP
 {
 
     /// <summary>
-    /// A delegate called whenever a BinaryDataTransfer request will be sent to a charging station.
+    /// A delegate called whenever a SecureDataTransfer request will be sent to a charging station.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
-    public delegate Task OnBinaryDataTransferRequestSentDelegate(DateTime                    Timestamp,
+    public delegate Task OnSecureDataTransferRequestSentDelegate(DateTime                    Timestamp,
                                                                  IEventSender                Sender,
-                                                                 BinaryDataTransferRequest   Request);
+                                                                 SecureDataTransferRequest   Request);
 
     /// <summary>
-    /// A delegate called whenever a response to a BinaryDataTransfer request was received.
+    /// A delegate called whenever a response to a SecureDataTransfer request was received.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate Task OnBinaryDataTransferResponseReceivedDelegate(DateTime                     Timestamp,
+    public delegate Task OnSecureDataTransferResponseReceivedDelegate(DateTime                     Timestamp,
                                                                       IEventSender                 Sender,
-                                                                      BinaryDataTransferRequest    Request,
-                                                                      BinaryDataTransferResponse   Response,
+                                                                      SecureDataTransferRequest    Request,
+                                                                      SecureDataTransferResponse   Response,
                                                                       TimeSpan                     Runtime);
 
 }

@@ -141,6 +141,17 @@ namespace cloud.charging.open.protocols.OCPP
         #endregion
 
 
+        #region SecureDataTransfer          (Request)
+
+        /// <summary>
+        /// Encrypt and send the given encapsulated security payload.
+        /// </summary>
+        /// <param name="Request">A SecureDataTransfer request.</param>
+        Task<SecureDataTransferResponse> SecureDataTransfer(SecureDataTransferRequest Request);
+
+        #endregion
+
+
     }
 
 }

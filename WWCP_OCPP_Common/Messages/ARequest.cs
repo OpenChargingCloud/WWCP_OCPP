@@ -100,6 +100,43 @@ namespace cloud.charging.open.protocols.OCPP
 
         #region Constructor(s)
 
+        public ARequest(NetworkingNode_Id        DestinationNodeId,
+                        String                   Action,
+
+                        IEnumerable<KeyPair>?    SignKeys            = null,
+                        IEnumerable<SignInfo>?   SignInfos           = null,
+                        IEnumerable<Signature>?  Signatures          = null,
+
+                        CustomData?              CustomData          = null,
+
+                        Request_Id?              RequestId           = null,
+                        DateTime?                RequestTimestamp    = null,
+                        TimeSpan?                RequestTimeout      = null,
+                        EventTracking_Id?        EventTrackingId     = null,
+                        NetworkPath?             NetworkPath         = null,
+                        CancellationToken        CancellationToken   = default)
+
+            : this(DestinationNodeId,
+                   Action,
+
+                   null,
+                   null,
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData,
+
+                   RequestId,
+                   RequestTimestamp,
+                   RequestTimeout,
+                   EventTrackingId,
+                   NetworkPath,
+                   CancellationToken)
+
+        { }
+
+
         /// <summary>
         /// Create a new generic OCPP request message.
         /// </summary>
@@ -121,6 +158,8 @@ namespace cloud.charging.open.protocols.OCPP
         public ARequest(NetworkingNode_Id        DestinationNodeId,
                         String                   Action,
 
+                        String?                  EncryptionKey       = null,
+                        String?                  EncryptionNonce     = null,
                         IEnumerable<KeyPair>?    SignKeys            = null,
                         IEnumerable<SignInfo>?   SignInfos           = null,
                         IEnumerable<Signature>?  Signatures          = null,

@@ -878,7 +878,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a BinaryDataTransfer request will be sent to the charging station.
         /// </summary>
-        public event OnBinaryDataTransferRequestSentDelegate?   OnBinaryDataTransferRequest;
+        public event OnBinaryDataTransferRequestSentDelegate?       OnBinaryDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a response to a BinaryDataTransfer request was received.
@@ -1030,6 +1030,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
+
+        #region OnSecureDataTransfer          (Request/-Response)
+
+        /// <summary>
+        /// An event sent whenever a SecureDataTransfer request will be sent to the charging station.
+        /// </summary>
+        public event OnSecureDataTransferRequestSentDelegate?       OnSecureDataTransferRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a SecureDataTransfer request was received.
+        /// </summary>
+        public event OnSecureDataTransferResponseReceivedDelegate?  OnSecureDataTransferResponse;
+
+        #endregion
+
         #endregion
 
         #endregion
@@ -1105,7 +1120,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
 
         // Binary Data Streams Extensions
-
         public CustomBinarySerializerDelegate <BinaryDataTransferRequest>?              CustomBinaryDataTransferRequestSerializer               { get; set; }
         public CustomJObjectSerializerDelegate<GetFileRequest>?                         CustomGetFileRequestSerializer                          { get; set; }
         public CustomBinarySerializerDelegate <SendFileRequest>?                        CustomSendFileRequestSerializer                         { get; set; }
@@ -1114,7 +1128,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
 
         // E2E Security Extensions
-
         public CustomJObjectSerializerDelegate<AddSignaturePolicyRequest>?              CustomAddSignaturePolicyRequestSerializer               { get; set; }
         public CustomJObjectSerializerDelegate<UpdateSignaturePolicyRequest>?           CustomUpdateSignaturePolicyRequestSerializer            { get; set; }
         public CustomJObjectSerializerDelegate<DeleteSignaturePolicyRequest>?           CustomDeleteSignaturePolicyRequestSerializer            { get; set; }
@@ -1122,6 +1135,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public CustomJObjectSerializerDelegate<UpdateUserRoleRequest>?                  CustomUpdateUserRoleRequestSerializer                   { get; set; }
         public CustomJObjectSerializerDelegate<DeleteUserRoleRequest>?                  CustomDeleteUserRoleRequestSerializer                   { get; set; }
 
+        public CustomBinarySerializerDelegate <SecureDataTransferRequest>?              CustomSecureDataTransferRequestSerializer               { get; set; }
 
         #endregion
 
@@ -1132,6 +1146,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public CustomJObjectSerializerDelegate<OCPP.CS.SendFileResponse>?               CustomSendFileResponseSerializer                        { get; set; }
         public CustomJObjectSerializerDelegate<OCPP.CS.DeleteFileResponse>?             CustomDeleteFileResponseSerializer                      { get; set; }
         public CustomJObjectSerializerDelegate<OCPP.CS.ListDirectoryResponse>?          CustomListDirectoryResponseSerializer                   { get; set; }
+
+
+        // E2E Security Extensions
+        public CustomBinarySerializerDelegate <SecureDataTransferResponse>?             CustomSecureDataTransferResponseSerializer              { get; set; }
 
 
 
@@ -8618,6 +8636,101 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         }
 
         #endregion
+
+
+        #region SecureDataTransfer          (Request)
+
+        /// <summary>
+        /// Transfer the given data to the given charging station.
+        /// </summary>
+        /// <param name="Request">A SecureDataTransfer request.</param>
+        public async Task<SecureDataTransferResponse> SecureDataTransfer(SecureDataTransferRequest Request)
+        {
+
+            #region Send OnSecureDataTransferRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnSecureDataTransferRequest?.Invoke(startTime,
+                                                    this,
+                                                    Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnSecureDataTransferRequest));
+            }
+
+            #endregion
+
+
+            var response  = reachableChargeBoxes.TryGetValue(Request.DestinationNodeId, out var centralSystem) &&
+                                centralSystem is not null
+
+                                ? SignaturePolicy.SignRequestMessage(
+                                      Request,
+                                      Request.ToBinary(
+                                          CustomSecureDataTransferRequestSerializer,
+                                          CustomBinarySignatureSerializer,
+                                          IncludeSignatures: false
+                                      ),
+                                      out var errorResponse
+                                  )
+
+                                      ? await centralSystem.Item1.SecureDataTransfer(Request)
+
+                                      : new SecureDataTransferResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new SecureDataTransferResponse(
+                                      Request,
+                                      Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                  );
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToBinary(
+                    CustomSecureDataTransferResponseSerializer,
+                    // CustomStatusInfoSerializer
+                    CustomBinarySignatureSerializer,
+                    IncludeSignatures: false
+                ),
+                out errorResponse
+            );
+
+
+            #region Send OnSecureDataTransferResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnSecureDataTransferResponse?.Invoke(endTime,
+                                               this,
+                                               Request,
+                                               response,
+                                               endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnSecureDataTransferResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
 
         #endregion
 

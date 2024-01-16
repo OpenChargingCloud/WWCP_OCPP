@@ -26,18 +26,18 @@ namespace cloud.charging.open.protocols.OCPP
 {
 
     /// <summary>
-    /// An incoming BinaryDataTransfer request.
+    /// An incoming SecureDataTransfer request.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Connection">The HTTP Web Socket connection.</param>
-    /// <param name="Request">The BinaryDataTransfer request.</param>
+    /// <param name="Request">The SecureDataTransfer request.</param>
     public delegate Task
 
-        OnBinaryDataTransferRequestReceivedDelegate(DateTime                    Timestamp,
+        OnSecureDataTransferRequestReceivedDelegate(DateTime                    Timestamp,
                                                     IEventSender                Sender,
                                                     IWebSocketConnection        Connection,
-                                                    BinaryDataTransferRequest   Request);
+                                                    SecureDataTransferRequest   Request);
 
 
     /// <summary>
@@ -46,14 +46,14 @@ namespace cloud.charging.open.protocols.OCPP
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Connection">The HTTP Web Socket connection.</param>
-    /// <param name="Request">The BinaryDataTransfer request.</param>
+    /// <param name="Request">The SecureDataTransfer request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
-    public delegate Task<BinaryDataTransferResponse>
+    public delegate Task<SecureDataTransferResponse>
 
-        OnBinaryDataTransferDelegate(DateTime                    Timestamp,
+        OnSecureDataTransferDelegate(DateTime                    Timestamp,
                                      IEventSender                Sender,
                                      IWebSocketConnection        Connection,
-                                     BinaryDataTransferRequest   Request,
+                                     SecureDataTransferRequest   Request,
                                      CancellationToken           CancellationToken);
 
 
@@ -63,16 +63,16 @@ namespace cloud.charging.open.protocols.OCPP
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Connection">The HTTP Web Socket connection.</param>
-    /// <param name="Request">The BinaryDataTransfer request.</param>
+    /// <param name="Request">The SecureDataTransfer request.</param>
     /// <param name="Response">The stop transaction response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task
 
-        OnBinaryDataTransferResponseSentDelegate(DateTime                     Timestamp,
+        OnSecureDataTransferResponseSentDelegate(DateTime                     Timestamp,
                                                  IEventSender                 Sender,
                                                  IWebSocketConnection         Connection,
-                                                 BinaryDataTransferRequest    Request,
-                                                 BinaryDataTransferResponse   Response,
+                                                 SecureDataTransferRequest    Request,
+                                                 SecureDataTransferResponse   Response,
                                                  TimeSpan                     Runtime);
 
 }

@@ -188,10 +188,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyDisplayMessagesRequest>?                        CustomNotifyDisplayMessagesRequestSerializer                 { get; set; }
         public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyCustomerInformationRequest>?                    CustomNotifyCustomerInformationRequestSerializer             { get; set; }
 
-
-        // Binary Data Streams Extensions
-        public CustomBinarySerializerDelegate <            BinaryDataTransferRequest>?                           CustomBinaryDataTransferRequestSerializer                    { get; set; }
-
         #endregion
 
         #region Charging Station Response Messages
@@ -249,7 +245,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
         // Binary Data Streams Extensions
-        public CustomBinarySerializerDelegate <            BinaryDataTransferResponse>?                          CustomIncomingBinaryDataTransferResponseSerializer           { get; set; }
         public CustomBinarySerializerDelegate <            GetFileResponse>?                                     CustomGetFileResponseSerializer                              { get; set; }
         public CustomJObjectSerializerDelegate<            SendFileResponse>?                                    CustomSendFileResponseSerializer                             { get; set; }
         public CustomJObjectSerializerDelegate<            DeleteFileResponse>?                                  CustomDeleteFileResponseSerializer                           { get; set; }
@@ -328,7 +323,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
         // Binary Data Streams Extensions
-        public CustomBinarySerializerDelegate <              BinaryDataTransferRequest>?                      CustomIncomingBinaryDataTransferRequestSerializer            { get; set; }
         public CustomJObjectSerializerDelegate<              GetFileRequest>?                                 CustomGetFileRequestSerializer                               { get; set; }
         public CustomBinarySerializerDelegate <              SendFileRequest>?                                CustomSendFileRequestSerializer                              { get; set; }
         public CustomJObjectSerializerDelegate<              DeleteFileRequest>?                              CustomDeleteFileRequestSerializer                            { get; set; }
@@ -385,11 +379,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.NotifyDisplayMessagesResponse>?                  CustomNotifyDisplayMessagesResponseSerializer                { get; set; }
         public CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.NotifyCustomerInformationResponse>?              CustomNotifyCustomerInformationResponseSerializer            { get; set; }
 
+        #endregion
+
+
 
         // Binary Data Streams Extensions
-        public CustomBinarySerializerDelegate <              BinaryDataTransferResponse>?                     CustomBinaryDataTransferResponseSerializer                   { get; set; }
+        public CustomBinarySerializerDelegate <            BinaryDataTransferRequest>?                           CustomBinaryDataTransferRequestSerializer                    { get; set; }
+        public CustomBinarySerializerDelegate <            BinaryDataTransferResponse>?                          CustomIncomingBinaryDataTransferResponseSerializer           { get; set; }
+        public CustomBinarySerializerDelegate <            BinaryDataTransferRequest>?                           CustomIncomingBinaryDataTransferRequestSerializer            { get; set; }
+        public CustomBinarySerializerDelegate <            BinaryDataTransferResponse>?                          CustomBinaryDataTransferResponseSerializer                   { get; set; }
 
-        #endregion
+        public CustomBinarySerializerDelegate <            SecureDataTransferRequest>?                           CustomSecureDataTransferRequestSerializer                    { get; set; }
+        public CustomBinarySerializerDelegate <            SecureDataTransferResponse>?                          CustomIncomingSecureDataTransferResponseSerializer           { get; set; }
+        public CustomBinarySerializerDelegate <            SecureDataTransferRequest>?                           CustomIncomingSecureDataTransferRequestSerializer            { get; set; }
+        public CustomBinarySerializerDelegate <            SecureDataTransferResponse>?                          CustomSecureDataTransferResponseSerializer                   { get; set; }
+
 
         public CustomJObjectSerializerDelegate<NotifyNetworkTopologyRequest>?   CustomNotifyNetworkTopologyRequestSerializer           { get; set; }
         public CustomJObjectSerializerDelegate<NotifyNetworkTopologyResponse>?  CustomNotifyNetworkTopologyResponseSerializer          { get; set; }
@@ -766,6 +770,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public CustomBinaryParserDelegate<BinaryDataTransferResponse>?                                 CustomBinaryDataTransferResponseParser                   { get; set; }
         public CustomJObjectParserDelegate<DataTransferRequest>?                                       CustomDataTransferRequestParser                          { get; set; }
         public CustomJObjectParserDelegate<DataTransferResponse>?                                      CustomDataTransferResponseParser                         { get; set; }
+        public CustomBinaryParserDelegate<SecureDataTransferRequest>?                                  CustomSecureDataTransferRequestParser                    { get; set; }
+        public CustomBinaryParserDelegate<SecureDataTransferResponse>?                                 CustomSecureDataTransferResponseParser                   { get; set; }
 
 
 
