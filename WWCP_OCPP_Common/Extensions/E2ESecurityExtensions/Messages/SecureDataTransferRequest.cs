@@ -57,13 +57,13 @@ namespace cloud.charging.open.protocols.OCPP
             => DefaultJSONLDContext;
 
         /// <summary>
-        /// Reserved parameters.
+        /// Encryption parameters.
         /// </summary>
         [Mandatory]
         public UInt16         Parameter     { get; }
 
         /// <summary>
-        /// The cryptographic key identification.
+        /// The unique identification of the encryption key.
         /// </summary>
         [Mandatory]
         public UInt16         KeyId         { get; }
@@ -96,8 +96,9 @@ namespace cloud.charging.open.protocols.OCPP
         /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
         /// <param name="Parameter">Encryption parameters.</param>
         /// <param name="KeyId">The unique identification of the encryption key.</param>
-        /// <param name="Nonce"></param>
-        /// <param name="Payload">The unencrypted encapsulated security payload.</param>
+        /// <param name="Nonce">The first half of the cryptographic nonce.</param>
+        /// <param name="Counter">The counter part of the cryptographic nonce.</param>
+        /// <param name="Ciphertext">The encrypted encapsulated security payload.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// 
@@ -149,10 +150,12 @@ namespace cloud.charging.open.protocols.OCPP
             this.Counter     = Counter;
             this.Ciphertext  = Ciphertext;
 
+
             unchecked
             {
 
-                hashCode = this.KeyId.     GetHashCode() * 11 ^
+                hashCode = this.Parameter. GetHashCode() * 13 ^
+                           this.KeyId.     GetHashCode() * 11 ^
                            this.Nonce.     GetHashCode() *  7 ^
                            this.Counter.   GetHashCode() *  5 ^
                            this.Ciphertext.GetHashCode() *  3 ^
@@ -186,42 +189,70 @@ namespace cloud.charging.open.protocols.OCPP
                                                         CancellationToken        CancellationToken   = default)
         {
 
-            var nonce       = new Byte[16]; // 128-bit Nonce
-            Array.Copy(BitConverter.GetBytes(Nonce),   0, nonce, 0, 8);
-            Array.Copy(BitConverter.GetBytes(Counter), 0, nonce, 8, 8);
+            try
+            {
 
-            var cipher      = new BufferedBlockCipher(new SicBlockCipher(new AesEngine()));
-            cipher.Init(true, new ParametersWithIV(new KeyParameter(Key), nonce));
+                var nonce = new Byte[16]; // 128-bit Nonce
+                Array.Copy(BitConverter.GetBytes(Nonce),   0, nonce, 0, 8);
+                Array.Copy(BitConverter.GetBytes(Counter), 0, nonce, 8, 8);
 
-            var ciphertext  = new Byte[cipher.GetOutputSize(Payload.Length)];
-            int length = cipher.ProcessBytes(Payload, 0, Payload.Length, ciphertext, 0);
-            cipher.DoFinal(ciphertext, length);
+                var cipher = new BufferedBlockCipher(new SicBlockCipher(new AesEngine()));
+                cipher.Init(true, new ParametersWithIV(new KeyParameter(Key), nonce));
 
-            return new SecureDataTransferRequest(
+                var ciphertext = new Byte[cipher.GetOutputSize(Payload.Length)];
+                int length = cipher.ProcessBytes(Payload, 0, Payload.Length, ciphertext, 0);
+                cipher.DoFinal(ciphertext, length);
 
-                       NetworkingNodeId,
-                       Parameter,
-                       KeyId,
-                       Nonce,
-                       Counter,
-                       ciphertext,
+                return new SecureDataTransferRequest(
 
-                       SignKeys,
-                       SignInfos,
-                       Signatures,
+                           NetworkingNodeId,
+                           Parameter,
+                           KeyId,
+                           Nonce,
+                           Counter,
+                           ciphertext,
 
-                       RequestId,
-                       RequestTimestamp,
-                       RequestTimeout,
-                       EventTrackingId,
-                       NetworkPath,
-                       CancellationToken
+                           SignKeys,
+                           SignInfos,
+                           Signatures,
 
-                   );
+                           RequestId,
+                           RequestTimestamp,
+                           RequestTimeout,
+                           EventTrackingId,
+                           NetworkPath,
+                           CancellationToken
+
+                       );
+
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Could not encrypt payload!", e);
+            }
 
         }
 
 
+        public Byte[] Decrypt()
+        {
+
+            var key      = "5a733d6660df00c447ff184ae971e1d5bba5de5784768795ee6535867130aa12".HexStringToByteArray();
+
+            var nonce = new Byte[16]; // 128-bit Nonce
+            Array.Copy(BitConverter.GetBytes(Nonce),   0, nonce, 0, 8);
+            Array.Copy(BitConverter.GetBytes(Counter), 0, nonce, 8, 8);
+
+            var cipher = new BufferedBlockCipher(new SicBlockCipher(new AesEngine()));
+            cipher.Init(false, new ParametersWithIV(new KeyParameter(key), nonce));
+
+            var plaintext = new byte[cipher.GetOutputSize(Ciphertext.Length)];
+            int length = cipher.ProcessBytes(Ciphertext, 0, Ciphertext.Length, plaintext, 0);
+            cipher.DoFinal(plaintext, length);
+
+            return plaintext;
+
+        }
 
 
         #region Documentation
@@ -349,8 +380,12 @@ namespace cloud.charging.open.protocols.OCPP
 
             var binaryStream = new MemoryStream();
 
-            //binaryStream.Write(Format.AsBytes(), 0, 2);
-
+            binaryStream.Write(BitConverter.GetBytes(Parameter));                       // UInt16
+            binaryStream.Write(BitConverter.GetBytes(KeyId));                           // UInt16
+            binaryStream.Write(BitConverter.GetBytes(Nonce));                           // UInt64
+            binaryStream.Write(BitConverter.GetBytes(Counter));                         // UInt64
+            binaryStream.Write(BitConverter.GetBytes((UInt64) Ciphertext.LongLength));  // UInt64
+            binaryStream.Write(Ciphertext);
 
             var binary = binaryStream.ToArray();
 

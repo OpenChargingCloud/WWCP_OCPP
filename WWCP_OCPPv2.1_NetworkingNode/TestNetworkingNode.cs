@@ -39,6 +39,10 @@ using cloud.charging.open.protocols.OCPP.CSMS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
 using cloud.charging.open.protocols.OCPPv2_1.NN;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.Crypto.Modes;
+using Org.BouncyCastle.Crypto.Engines;
+using Org.BouncyCastle.Crypto.Parameters;
 
 #endregion
 
@@ -457,6 +461,66 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                            );
 
             };
+
+            #endregion
+
+            #region OnSecureDataTransfer
+
+            OCPP.IN.OnSecureDataTransfer += (timestamp,
+                                             sender,
+                                             connection,
+                                             request,
+                                             cancellationToken) => {
+
+                DebugX.Log($"Charging Station '{Id}': Incoming SecureDataTransfer request!");
+
+                // VendorId
+                // MessageId
+                // Data
+
+                var responseSecureData = request.Ciphertext;
+
+                var xxx = request.Decrypt();
+
+
+                //if (request.Data is not null)
+                //    responseSecureData = request.Data.Reverse();
+
+                return Task.FromResult(
+                           request.Ciphertext is not null
+
+                               ? new SecureDataTransferResponse(
+                                       Request:                request,
+                                       NetworkPath:            NetworkPath.From(Id),
+                                       Status:                 SecureDataTransferStatus.Accepted,
+                                       AdditionalStatusInfo:   null,
+                                       Ciphertext:             responseSecureData
+                                   )
+
+                               : new SecureDataTransferResponse(
+                                       Request:                request,
+                                       NetworkPath:            NetworkPath.From(Id),
+                                       Status:                 SecureDataTransferStatus.Rejected,
+                                       AdditionalStatusInfo:   null,
+                                       Ciphertext:             responseSecureData
+                                   )
+                       );
+
+            };
+
+
+            //OCPP.FORWARD.OnSecureDataTransferRequest += (timestamp,
+            //                                             sender,
+            //                                             connection,
+            //                                             request,
+            //                                             cancellationToken) =>
+
+            //    Task.FromResult(
+            //        new ForwardingDecision<SecureDataTransferRequest, SecureDataTransferResponse>(
+            //            request,
+            //            ForwardingResult.FORWARD
+            //        )
+            //    );
 
             #endregion
 

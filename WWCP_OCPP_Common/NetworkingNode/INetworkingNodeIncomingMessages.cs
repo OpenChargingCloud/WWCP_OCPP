@@ -36,6 +36,18 @@ namespace cloud.charging.open.protocols.OCPP.NN
         #endregion
 
 
+        // E2E Security Extensions
+
+        #region OnSecureDataTransfer
+
+        /// <summary>
+        /// An event sent whenever a SecureyDataTransfer request was received.
+        /// </summary>
+        event OnSecureDataTransferDelegate     OnSecureDataTransfer;
+
+        #endregion
+
+
         // Overlay Networking Extensions
 
         #region OnIncomingNotifyNetworkTopology

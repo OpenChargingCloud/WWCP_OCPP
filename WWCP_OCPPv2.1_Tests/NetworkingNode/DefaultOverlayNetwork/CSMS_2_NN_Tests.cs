@@ -307,6 +307,156 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
 
         #endregion
 
+        #region CSMS_2_NN_TransferSecureData_Test()
+
+        /// <summary>
+        /// A test for sending signed and encypted vendor-specific data form the CSMS to a networking node.
+        /// </summary>
+        [Test]
+        public async Task CSMS_2_NN_TransferSecureData_Test()
+        {
+
+            Assert.Multiple(() => {
+                Assert.That(networkingNode,          Is.Not.Null);
+                Assert.That(nnOCPPWebSocketServer,   Is.Not.Null);
+                Assert.That(CSMS,                    Is.Not.Null);
+                Assert.That(csmsWSServer,            Is.Not.Null);
+            });
+
+            if (networkingNode         is not null &&
+                nnOCPPWebSocketServer  is not null &&
+                CSMS                   is not null &&
+                csmsWSServer           is not null)
+            {
+
+                var csmsSecureDataTransferRequestsSent       = new ConcurrentList<SecureDataTransferRequest>();
+                var nnJSONMessageRequestsReceived            = new ConcurrentList<OCPP_JSONRequestMessage>();
+                var nnSecureDataTransferRequestsReceived     = new ConcurrentList<SecureDataTransferRequest>();
+                var nnSecureDataTransferResponsesSent        = new ConcurrentList<SecureDataTransferResponse>();
+                var nnJSONResponseMessagesSent               = new ConcurrentList<OCPP_JSONResponseMessage>();
+                var csmsSecureDataTransferResponsesReceived  = new ConcurrentList<SecureDataTransferResponse>();
+
+                CSMS.OnSecureDataTransferRequest                           += (timestamp, sender, dataTransferRequest) => {
+                    csmsSecureDataTransferRequestsSent.   TryAdd(dataTransferRequest);
+                    return Task.CompletedTask;
+                };
+
+                networkingNode.OCPP.IN.OnJSONMessageRequestReceived        += (timestamp, sender, jsonRequestMessage) => {
+                    nnJSONMessageRequestsReceived.  TryAdd(jsonRequestMessage);
+                    return Task.CompletedTask;
+                };
+
+                networkingNode.OCPP.IN.OnSecureDataTransferRequestReceived += (timestamp, sender, connection, dataTransferRequest) => {
+                    nnSecureDataTransferRequestsReceived. TryAdd(dataTransferRequest);
+                    return Task.CompletedTask;
+                };
+
+                networkingNode.OCPP.OUT.OnSecureDataTransferResponseSent   += (timestamp, sender, connection, dataTransferRequest, dataTransferResponse, runtime) => {
+                    nnSecureDataTransferResponsesSent.    TryAdd(dataTransferResponse);
+                    return Task.CompletedTask;
+                };
+
+                networkingNode.OCPP.OUT.OnJSONMessageResponseSent          += (timestamp, sender, jsonResponseMessage) => {
+                    nnJSONResponseMessagesSent.     TryAdd(jsonResponseMessage);
+                    return Task.CompletedTask;
+                };
+
+                CSMS.                   OnSecureDataTransferResponse       += (timestamp, sender, dataTransferRequest, dataTransferResponse, runtime) => {
+                    csmsSecureDataTransferResponsesReceived.TryAdd(dataTransferResponse);
+                    return Task.CompletedTask;
+                };
+
+
+                var data      = "Hello world!".ToUTF8Bytes();
+                var response  = await CSMS.TransferSecureData(
+                                          DestinationNodeId:  networkingNode.Id,
+                                          Parameter:          0,
+                                          KeyId:              1,
+                                          Payload:            data
+                                      );
+
+
+                Assert.Multiple(() => {
+
+                    // Charging Station Request OUT
+                    Assert.That(csmsSecureDataTransferRequestsSent.     Count,                  Is.EqualTo(1), "The SecureDataTransfer request did not leave the CSMS!");
+                    var csmsSecureDataTransferRequest = csmsSecureDataTransferRequestsSent.First();
+                    Assert.That(csmsSecureDataTransferRequest.DestinationNodeId,                Is.EqualTo(networkingNode.Id));
+                    Assert.That(csmsSecureDataTransferRequest.NetworkPath.Length,               Is.EqualTo(1));
+                    Assert.That(csmsSecureDataTransferRequest.NetworkPath.Source,               Is.EqualTo(CSMS.Id));
+                  //  Assert.That(csmsSecureDataTransferRequest.VendorId,                         Is.EqualTo(vendorId));
+                  //  Assert.That(csmsSecureDataTransferRequest.MessageId,                        Is.EqualTo(messageId));
+                  //  Assert.That(csmsSecureDataTransferRequest.SecureData?.ToString(),                 Is.EqualTo(data));
+
+                    Assert.That(csmsSecureDataTransferRequest.Signatures.Any(),                 Is.True, "The outgoing SecureDataTransfer request is not signed!");
+
+
+                    // Networking Node JSON Request IN
+                    Assert.That(nnJSONMessageRequestsReceived.  Count,                    Is.EqualTo(1), "The SecureDataTransfer JSON request did not reach the networking node!");
+                    var nnJSONMessageRequest = nnJSONMessageRequestsReceived.First();
+                    Assert.That(nnJSONMessageRequest.DestinationNodeId,                   Is.EqualTo(networkingNode.Id));
+                    Assert.That(nnJSONMessageRequest.NetworkPath.Length,                  Is.EqualTo(1));
+                    Assert.That(nnJSONMessageRequest.NetworkPath.Source,                  Is.EqualTo(NetworkingNode_Id.CSMS));  // Because of "standard" networking mode!
+                    Assert.That(nnJSONMessageRequest.NetworkPath.Last,                    Is.EqualTo(NetworkingNode_Id.CSMS));  // Because of "standard" networking mode!
+
+
+                    // Networking Node Request IN
+                    Assert.That(nnSecureDataTransferRequestsReceived. Count,                    Is.EqualTo(1), "The SecureDataTransfer request did not reach the networking node!");
+                    var nnSecureDataTransferRequestReceived = nnSecureDataTransferRequestsReceived.First();
+                    Assert.That(nnSecureDataTransferRequestReceived.DestinationNodeId,          Is.EqualTo(networkingNode.Id));
+                    Assert.That(nnSecureDataTransferRequestReceived.NetworkPath.Length,         Is.EqualTo(1));
+                    Assert.That(nnSecureDataTransferRequestReceived.NetworkPath.Source,         Is.EqualTo(NetworkingNode_Id.CSMS));  // Because of "standard" networking mode!
+                    Assert.That(nnSecureDataTransferRequestReceived.NetworkPath.Last,           Is.EqualTo(NetworkingNode_Id.CSMS));  // Because of "standard" networking mode!
+                //    Assert.That(nnSecureDataTransferRequestReceived.VendorId,                   Is.EqualTo(vendorId));
+                //    Assert.That(nnSecureDataTransferRequestReceived.MessageId,                  Is.EqualTo(messageId));
+                //    Assert.That(nnSecureDataTransferRequestReceived.SecureData?.ToString(),           Is.EqualTo(data));
+
+                    Assert.That(nnSecureDataTransferRequestReceived.Signatures.Any(),           Is.True, "The incoming SecureDataTransfer request is not signed!");
+                    var nnSecureDataTransferRequestSignature = nnSecureDataTransferRequestReceived.Signatures.First();
+                    Assert.That(nnSecureDataTransferRequestSignature.Status,                    Is.EqualTo(VerificationStatus.ValidSignature));
+
+
+                    // Networking Node Response OUT
+                    Assert.That(nnSecureDataTransferResponsesSent.    Count,                    Is.EqualTo(1), "The SecureDataTransfer response did not leave the networking node!");
+                    var nnSecureDataTransferResponseSent = nnSecureDataTransferResponsesSent.First();
+                    Assert.That(nnSecureDataTransferResponseSent.DestinationNodeId,             Is.EqualTo(NetworkingNode_Id.CSMS));  // Because of "standard" networking mode!
+                    Assert.That(nnSecureDataTransferResponseSent.NetworkPath.Length,            Is.EqualTo(1));
+                    Assert.That(nnSecureDataTransferResponseSent.NetworkPath.Source,            Is.EqualTo(networkingNode.Id));
+                    Assert.That(nnSecureDataTransferResponseSent.NetworkPath.Last,              Is.EqualTo(networkingNode.Id));
+                //    Assert.That(nnSecureDataTransferResponseSent.SecureData?.ToString(),              Is.EqualTo(data.Reverse()));
+
+                    Assert.That(nnSecureDataTransferResponseSent.Signatures.Any(),              Is.True, "The SecureDataTransfer response is not signed!");
+
+
+                    // Networking Node JSON Response OUT
+                    Assert.That(nnJSONResponseMessagesSent.     Count,                    Is.EqualTo(1), "The SecureDataTransfer JSON response did not leave the networking node!");
+
+
+                    // Charging Station Response IN
+                    Assert.That(csmsSecureDataTransferResponsesReceived.Count,                  Is.EqualTo(1), "The SecureDataTransfer response did not reach the CSMS!");
+                    var csmsSecureDataTransferResponse = csmsSecureDataTransferResponsesReceived.First();
+                    Assert.That(csmsSecureDataTransferResponse.Request.RequestId,               Is.EqualTo(nnSecureDataTransferRequestReceived.RequestId));
+
+                    Assert.That(csmsSecureDataTransferResponse.Signatures.Any(),                Is.True, "The incoming SecureDataTransfer response is not signed!");
+                    var csSecureDataTransferResponseSignature = csmsSecureDataTransferResponse.Signatures.First();
+                    Assert.That(csSecureDataTransferResponseSignature.Status,                   Is.EqualTo(VerificationStatus.ValidSignature));
+
+
+                    // Result
+                    Assert.That(response.Result.ResultCode,                               Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                                          Is.EqualTo(SecureDataTransferStatus.Accepted));
+             //       Assert.That(response.SecureData?.ToString(),                                Is.EqualTo(data.Reverse()));
+
+
+                });
+
+            }
+
+        }
+
+        #endregion
+
+
         #region CSMS_2_NN_SendEncryptedReset_Test1()
 
         /// <summary>

@@ -8731,7 +8731,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-
         #endregion
 
 

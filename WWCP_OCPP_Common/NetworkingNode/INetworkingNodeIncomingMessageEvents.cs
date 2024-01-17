@@ -27,7 +27,7 @@ namespace cloud.charging.open.protocols.OCPP.NN
         #region OnIncomingBinaryDataTransfer (Request/-Response)
 
         /// <summary>
-        /// An event sent whenever a data transfer request was received.
+        /// An event sent whenever a BinaryDataTransfer request was received.
         /// </summary>
         event OnBinaryDataTransferRequestReceivedDelegate?     OnBinaryDataTransferRequestReceived;
 
@@ -38,6 +38,19 @@ namespace cloud.charging.open.protocols.OCPP.NN
 
         #endregion
 
+        #region OnIncomingSecureDataTransfer (Request/-Response)
+
+        /// <summary>
+        /// An event sent whenever a SecureDataTransfer request was received.
+        /// </summary>
+        event OnSecureDataTransferRequestReceivedDelegate?     OnSecureDataTransferRequestReceived;
+
+        /// <summary>
+        /// An event fired whenever a response to a SecureDataTransfer request was received.
+        /// </summary>
+        event OnSecureDataTransferResponseReceivedDelegate?    OnSecureDataTransferResponseReceived;
+
+        #endregion
 
     }
 

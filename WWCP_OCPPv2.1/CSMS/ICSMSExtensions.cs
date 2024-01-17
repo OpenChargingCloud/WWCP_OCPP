@@ -3185,9 +3185,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                UInt16                        Parameter,
                                UInt16                        KeyId,
                                Byte[]                        Payload,
-                               Byte[]?                       Key,
-                               UInt64?                       Nonce,
-                               UInt64?                       Counter,
+                               Byte[]?                       Key                 = null,
+                               UInt64?                       Nonce               = null,
+                               UInt64?                       Counter             = null,
 
                                IEnumerable<KeyPair>?         SignKeys            = null,
                                IEnumerable<SignInfo>?        SignInfos           = null,
@@ -3201,32 +3201,69 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         {
 
-            var key      = Key     ?? CSMS.GetEncryptionKey    (DestinationNodeId);
-            var nonce    = Nonce   ?? CSMS.GetEncryptionNonce  (DestinationNodeId);
-            var counter  = Counter ?? CSMS.GetEncryptionCounter(DestinationNodeId);
+            try
+            {
 
-            return CSMS.SecureDataTransfer(
-                       SecureDataTransferRequest.Encrypt(
-                           DestinationNodeId,
-                           Parameter,
-                           key,
-                           KeyId,
-                           nonce,
-                           counter,
-                           Payload,
+                var key      = Key     ?? CSMS.GetEncryptionKey    (DestinationNodeId);
+                var nonce    = Nonce   ?? CSMS.GetEncryptionNonce  (DestinationNodeId);
+                var counter  = Counter ?? CSMS.GetEncryptionCounter(DestinationNodeId);
 
-                           SignKeys,
-                           SignInfos,
-                           Signatures,
+                key = "5a733d6660df00c447ff184ae971e1d5bba5de5784768795ee6535867130aa12".HexStringToByteArray();
 
-                           RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
-                           RequestTimeout   ?? CSMS.DefaultRequestTimeout,
-                           EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.From(CSMS.Id),
-                           CancellationToken
-                       )
-                   );
+                var r = SecureDataTransferRequest.Encrypt(
+                               DestinationNodeId,
+                               Parameter,
+                               key,
+                               KeyId,
+                               nonce,
+                               counter,
+                               Payload,
+
+                               SignKeys,
+                               SignInfos,
+                               Signatures,
+
+                               RequestId ?? CSMS.NextRequestId,
+                               RequestTimestamp ?? Timestamp.Now,
+                               RequestTimeout ?? CSMS.DefaultRequestTimeout,
+                               EventTrackingId ?? EventTracking_Id.New,
+                               NetworkPath.From(CSMS.Id),
+                               CancellationToken
+                           );
+
+                var x = r.Decrypt().ToUTF8String();
+
+
+                return CSMS.SecureDataTransfer(
+                           SecureDataTransferRequest.Encrypt(
+                               DestinationNodeId,
+                               Parameter,
+                               key,
+                               KeyId,
+                               nonce,
+                               counter,
+                               Payload,
+
+                               SignKeys,
+                               SignInfos,
+                               Signatures,
+
+                               RequestId        ?? CSMS.NextRequestId,
+                               RequestTimestamp ?? Timestamp.Now,
+                               RequestTimeout   ?? CSMS.DefaultRequestTimeout,
+                               EventTrackingId  ?? EventTracking_Id.New,
+                               NetworkPath.From(CSMS.Id),
+                               CancellationToken
+                           )
+                       );
+
+            }
+            catch (Exception e)
+            {
+                return Task.FromResult(
+                           SecureDataTransferResponse.ExceptionOccured(e)
+                       );
+            }
 
         }
 

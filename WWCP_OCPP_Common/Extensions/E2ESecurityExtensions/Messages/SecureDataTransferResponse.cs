@@ -39,7 +39,7 @@ namespace cloud.charging.open.protocols.OCPP
         /// <summary>
         /// The JSON-LD context of this object.
         /// </summary>
-        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/binaryDataTransferResponse");
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/secureDataTransferResponse");
 
         #endregion
 
@@ -64,10 +64,34 @@ namespace cloud.charging.open.protocols.OCPP
         public String?                   AdditionalStatusInfo    { get; }
 
         /// <summary>
-        /// Optional response binary data.
+        /// Optional encryption parameters.
         /// </summary>
         [Optional]
-        public Byte[]?                   Data                    { get; }
+        public UInt16?                   Parameter               { get; }
+
+        /// <summary>
+        /// The optional unique identification of the encryption key.
+        /// </summary>
+        [Optional]
+        public UInt16?                   KeyId                   { get; }
+
+        /// <summary>
+        /// The optional first half of the cryptographic nonce.
+        /// </summary>
+        [Optional]
+        public UInt64?                   Nonce                   { get; }
+
+        /// <summary>
+        /// The optional counter part of the cryptographic nonce.
+        /// </summary>
+        [Optional]
+        public UInt64?                   Counter                 { get; }
+
+        /// <summary>
+        /// The encrypted encapsulated optional security payload.
+        /// </summary>
+        [Optional]
+        public Byte[]?                   Ciphertext              { get; }
 
         #endregion
 
@@ -81,7 +105,11 @@ namespace cloud.charging.open.protocols.OCPP
         /// <param name="Request">The SecureDataTransfer request leading to this response.</param>
         /// <param name="Status">The success or failure status of the binary data transfer.</param>
         /// <param name="AdditionalStatusInfo">Optional detailed status information.</param>
-        /// <param name="Data">A vendor-specific JSON token.</param>
+        /// <param name="Parameter">Optional encryption parameters.</param>
+        /// <param name="KeyId">The optional unique identification of the encryption key.</param>
+        /// <param name="Nonce">The optional first half of the cryptographic nonce.</param>
+        /// <param name="Counter">The optional counter part of the cryptographic nonce.</param>
+        /// <param name="Ciphertext">The encrypted encapsulated optional security payload.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
         /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
@@ -90,7 +118,11 @@ namespace cloud.charging.open.protocols.OCPP
         public SecureDataTransferResponse(SecureDataTransferRequest  Request,
                                           SecureDataTransferStatus   Status,
                                           String?                    AdditionalStatusInfo   = null,
-                                          Byte[]?                    Data                   = null,
+                                          UInt16?                    Parameter              = null,
+                                          UInt16?                    KeyId                  = null,
+                                          UInt64?                    Nonce                  = null,
+                                          UInt64?                    Counter                = null,
+                                          Byte[]?                    Ciphertext             = null,
                                           DateTime?                  ResponseTimestamp      = null,
 
                                           NetworkingNode_Id?         DestinationNodeId      = null,
@@ -115,7 +147,25 @@ namespace cloud.charging.open.protocols.OCPP
 
             this.Status                = Status;
             this.AdditionalStatusInfo  = AdditionalStatusInfo;
-            this.Data                  = Data;
+
+            this.Parameter             = Parameter;
+            this.KeyId                 = KeyId;
+            this.Nonce                 = Nonce;
+            this.Counter               = Counter;
+            this.Ciphertext            = Ciphertext;
+
+
+            unchecked
+            {
+
+                hashCode = this.Parameter.  GetHashCode()       * 13 ^
+                           this.KeyId.      GetHashCode()       * 11 ^
+                           this.Nonce.      GetHashCode()       *  7 ^
+                           this.Counter.    GetHashCode()       *  5 ^
+                          (this.Ciphertext?.GetHashCode() ?? 0) *  3 ^
+                           base.            GetHashCode();
+
+            }
 
         }
 
@@ -166,11 +216,11 @@ namespace cloud.charging.open.protocols.OCPP
 
             if (TryParse(Request,
                          Secure,
-                         out var binaryDataTransferResponse,
+                         out var secureDataTransferResponse,
                          out var errorResponse,
                          CustomSecureDataTransferResponseParser))
             {
-                return binaryDataTransferResponse;
+                return secureDataTransferResponse;
             }
 
             throw new ArgumentException("The given binary representation of a binary data transfer response is invalid: " + errorResponse,
@@ -270,6 +320,17 @@ namespace cloud.charging.open.protocols.OCPP
         /// </summary>
         /// <param name="Request">The SecureDataTransfer request.</param>
         /// <param name="Exception">The exception.</param>
+        public static SecureDataTransferResponse ExceptionOccured(Exception  Exception)
+
+            => new (null,
+                    Result.FromException(Exception));
+
+
+        /// <summary>
+        /// The SecureDataTransfer failed because of an exception.
+        /// </summary>
+        /// <param name="Request">The SecureDataTransfer request.</param>
+        /// <param name="Exception">The exception.</param>
         public static SecureDataTransferResponse ExceptionOccured(SecureDataTransferRequest  Request,
                                                                   Exception                  Exception)
 
@@ -334,8 +395,8 @@ namespace cloud.charging.open.protocols.OCPP
         /// <param name="Object">A binary data transfer response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is SecureDataTransferResponse binaryDataTransferResponse &&
-                   Equals(binaryDataTransferResponse);
+            => Object is SecureDataTransferResponse secureDataTransferResponse &&
+                   Equals(secureDataTransferResponse);
 
         #endregion
 
@@ -354,8 +415,8 @@ namespace cloud.charging.open.protocols.OCPP
              ((AdditionalStatusInfo is     null && SecureDataTransferResponse.AdditionalStatusInfo is     null) ||
                AdditionalStatusInfo is not null && SecureDataTransferResponse.AdditionalStatusInfo is not null && AdditionalStatusInfo.Equals(SecureDataTransferResponse.AdditionalStatusInfo)) &&
 
-             ((Data                 is     null && SecureDataTransferResponse.Data                 is     null) ||
-              (Data                 is not null && SecureDataTransferResponse.Data                 is not null && Data.                Equals(SecureDataTransferResponse.Data)))                &&
+             //((Data                 is     null && SecureDataTransferResponse.Data                 is     null) ||
+             // (Data                 is not null && SecureDataTransferResponse.Data                 is not null && Data.                Equals(SecureDataTransferResponse.Data)))                &&
 
                base.GenericEquals(SecureDataTransferResponse);
 
@@ -365,22 +426,13 @@ namespace cloud.charging.open.protocols.OCPP
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Status.               GetHashCode()       * 7 ^
-                      (AdditionalStatusInfo?.GetHashCode() ?? 0) * 5 ^
-                      (Data?.                GetHashCode() ?? 0) * 3 ^
-                       base.                 GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 
@@ -399,9 +451,7 @@ namespace cloud.charging.open.protocols.OCPP
                        ? ""
                        : $" ({AdditionalStatusInfo})",
 
-                   Data?.Length > 0
-                       ? $": '{Data.ToBase64().SubstringMax(100)}' [{Data.Length} bytes]"
-                       : ""
+                   $"{KeyId} / {Counter}"
 
                );
 

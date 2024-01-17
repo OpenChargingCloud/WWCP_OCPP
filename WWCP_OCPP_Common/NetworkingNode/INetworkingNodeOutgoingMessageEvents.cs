@@ -34,9 +34,26 @@ namespace cloud.charging.open.protocols.OCPP.NN
         event OnBinaryDataTransferRequestSentDelegate?     OnBinaryDataTransferRequestSent;
 
         /// <summary>
-        /// An event sent whenever a response to a data transfer request was sent.
+        /// An event sent whenever a response to a BinaryDataTransfer request was sent.
         /// </summary>
         event OnBinaryDataTransferResponseSentDelegate?    OnBinaryDataTransferResponseSent;
+
+        #endregion
+
+
+        // E2E Security Extensions
+
+        #region SecureDataTransfer      (Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a SecureDataTransfer request will be sent to a charging station.
+        /// </summary>
+        event OnSecureDataTransferRequestSentDelegate?     OnSecureDataTransferRequestSent;
+
+        /// <summary>
+        /// An event sent whenever a response to a SecureDataTransfer request was sent.
+        /// </summary>
+        event OnSecureDataTransferResponseSentDelegate?    OnSecureDataTransferResponseSent;
 
         #endregion
 
