@@ -106,6 +106,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
 
+
+
             // CS
 
             #region OnReset
@@ -480,7 +482,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 var responseSecureData = request.Ciphertext;
 
-                var xxx = request.Decrypt();
+                var xx2 = request.Decrypt(GetDecryptionKey(request.NetworkPath.Source, request.KeyId)).ToUTF8String();
 
 
                 //if (request.Data is not null)
@@ -585,6 +587,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         }
 
         #endregion
+
+
+        public Byte[] GetEncryptionKey(NetworkingNode_Id  DestinationNodeId,
+                                       UInt16?            KeyId   = null)
+        {
+            return "5a733d6660df00c447ff184ae971e1d5bba5de5784768795ee6535867130aa12".HexStringToByteArray();
+        }
+
+        public Byte[] GetDecryptionKey(NetworkingNode_Id  SourceNodeId,
+                                       UInt16?            KeyId   = null)
+        {
+            return "5a733d6660df00c447ff184ae971e1d5bba5de5784768795ee6535867130aa12".HexStringToByteArray();
+        }
+
+
+        public UInt64 GetEncryptionNonce(NetworkingNode_Id  DestinationNodeId,
+                                         UInt16?            KeyId   = null)
+        {
+            return 1;
+        }
+
+        public UInt64 GetEncryptionCounter(NetworkingNode_Id  DestinationNodeId,
+                                           UInt16?            KeyId   = null)
+        {
+            return 1;
+        }
+
 
 
         #region HandleErrors(Module, Caller, ExceptionOccured)

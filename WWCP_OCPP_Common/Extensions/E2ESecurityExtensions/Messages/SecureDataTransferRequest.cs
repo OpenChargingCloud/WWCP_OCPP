@@ -169,10 +169,34 @@ namespace cloud.charging.open.protocols.OCPP
 
 
 
-        public static SecureDataTransferRequest Encrypt(NetworkingNode_Id        NetworkingNodeId,
+        #region Encrypt(...)
+
+        /// <summary>
+        /// Create a new SecureDataTransferRequest and encrypt the given plaintext
+        /// using the given cryptographic key.
+        /// </summary>
+        /// <param name="DestinationNodeId"></param>
+        /// <param name="Parameter"></param>
+        /// <param name="KeyId"></param>
+        /// <param name="Key"></param>
+        /// <param name="Nonce"></param>
+        /// <param name="Counter"></param>
+        /// <param name="Payload"></param>
+        /// 
+        /// <param name="SignKeys"></param>
+        /// <param name="SignInfos"></param>
+        /// <param name="Signatures"></param>
+        /// 
+        /// <param name="RequestId"></param>
+        /// <param name="RequestTimestamp"></param>
+        /// <param name="RequestTimeout"></param>
+        /// <param name="EventTrackingId"></param>
+        /// <param name="NetworkPath"></param>
+        /// <param name="CancellationToken"></param>
+        public static SecureDataTransferRequest Encrypt(NetworkingNode_Id        DestinationNodeId,
                                                         UInt16                   Parameter,
-                                                        Byte[]                   Key,
                                                         UInt16                   KeyId,
+                                                        Byte[]                   Key,
                                                         UInt64                   Nonce,
                                                         UInt64                   Counter,
                                                         Byte[]                   Payload,
@@ -205,7 +229,7 @@ namespace cloud.charging.open.protocols.OCPP
 
                 return new SecureDataTransferRequest(
 
-                           NetworkingNodeId,
+                           DestinationNodeId,
                            Parameter,
                            KeyId,
                            Nonce,
@@ -233,26 +257,33 @@ namespace cloud.charging.open.protocols.OCPP
 
         }
 
+        #endregion
 
-        public Byte[] Decrypt()
+        #region Decrypt(Key)
+
+        /// <summary>
+        /// Decrypt the ciphertext using the given cryptographic key.
+        /// </summary>
+        /// <param name="Key">A cryptographic key</param>
+        public Byte[] Decrypt(Byte[] Key)
         {
-
-            var key      = "5a733d6660df00c447ff184ae971e1d5bba5de5784768795ee6535867130aa12".HexStringToByteArray();
 
             var nonce = new Byte[16]; // 128-bit Nonce
             Array.Copy(BitConverter.GetBytes(Nonce),   0, nonce, 0, 8);
             Array.Copy(BitConverter.GetBytes(Counter), 0, nonce, 8, 8);
 
             var cipher = new BufferedBlockCipher(new SicBlockCipher(new AesEngine()));
-            cipher.Init(false, new ParametersWithIV(new KeyParameter(key), nonce));
+            cipher.Init(false, new ParametersWithIV(new KeyParameter(Key), nonce));
 
-            var plaintext = new byte[cipher.GetOutputSize(Ciphertext.Length)];
-            int length = cipher.ProcessBytes(Ciphertext, 0, Ciphertext.Length, plaintext, 0);
+            var plaintext = new Byte[cipher.GetOutputSize(Ciphertext.Length)];
+            var length    = cipher.ProcessBytes(Ciphertext, 0, Ciphertext.Length, plaintext, 0);
             cipher.DoFinal(plaintext, length);
 
             return plaintext;
 
         }
+
+        #endregion
 
 
         #region Documentation
@@ -322,16 +353,24 @@ namespace cloud.charging.open.protocols.OCPP
 
                 SecureDataTransferRequest = null;
 
-                var stream  = new MemoryStream(Secure);
+                var stream            = new MemoryStream(Secure);
+
+                var parameter         = stream.ReadUInt16();
+                var keyId             = stream.ReadUInt16();
+                var nonce             = stream.ReadUInt64();
+                var counter           = stream.ReadUInt64();
+                var ciphertextLength  = stream.ReadUInt64();
+                var ciphertext        = stream.ReadBytes(ciphertextLength);
+
 
                 SecureDataTransferRequest = new SecureDataTransferRequest(
 
                                                 NetworkingNodeId,
-                                                0,
-                                                1,
-                                                1,
-                                                1,
-                                                [],
+                                                parameter,
+                                                keyId,
+                                                nonce,
+                                                counter,
+                                                ciphertext,
 
                                                 null,
                                                 null,
@@ -380,12 +419,12 @@ namespace cloud.charging.open.protocols.OCPP
 
             var binaryStream = new MemoryStream();
 
-            binaryStream.Write(BitConverter.GetBytes(Parameter));                       // UInt16
-            binaryStream.Write(BitConverter.GetBytes(KeyId));                           // UInt16
-            binaryStream.Write(BitConverter.GetBytes(Nonce));                           // UInt64
-            binaryStream.Write(BitConverter.GetBytes(Counter));                         // UInt64
-            binaryStream.Write(BitConverter.GetBytes((UInt64) Ciphertext.LongLength));  // UInt64
-            binaryStream.Write(Ciphertext);
+            binaryStream.WriteUInt16(Parameter);
+            binaryStream.WriteUInt16(KeyId);
+            binaryStream.WriteUInt64(Nonce);
+            binaryStream.WriteUInt64(Counter);
+            binaryStream.WriteUInt64((UInt64) Ciphertext.LongLength);
+            binaryStream.Write      (Ciphertext);
 
             var binary = binaryStream.ToArray();
 

@@ -6751,20 +6751,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        public Byte[] GetEncryptionKey(NetworkingNode_Id DestinationNodeId)
+        public Byte[] GetEncryptionKey(NetworkingNode_Id  DestinationNodeId,
+                                       UInt16?            KeyId   = null)
         {
-            return new Byte[32];
+            return "5a733d6660df00c447ff184ae971e1d5bba5de5784768795ee6535867130aa12".HexStringToByteArray();
         }
 
-        public UInt64 GetEncryptionNonce(NetworkingNode_Id DestinationNodeId)
+        public Byte[] GetDecryptionKey(NetworkingNode_Id  DestinationNodeId,
+                                       UInt16?            KeyId   = null)
+        {
+            return "5a733d6660df00c447ff184ae971e1d5bba5de5784768795ee6535867130aa12".HexStringToByteArray();
+        }
+
+
+        public UInt64 GetEncryptionNonce(NetworkingNode_Id  DestinationNodeId,
+                                         UInt16?            KeyId   = null)
         {
             return 1;
         }
 
-        public UInt64 GetEncryptionCounter(NetworkingNode_Id DestinationNodeId)
+        public UInt64 GetEncryptionCounter(NetworkingNode_Id  DestinationNodeId,
+                                           UInt16?            KeyId   = null)
         {
             return 1;
         }
+
 
 
         #region Reset                       (Request)

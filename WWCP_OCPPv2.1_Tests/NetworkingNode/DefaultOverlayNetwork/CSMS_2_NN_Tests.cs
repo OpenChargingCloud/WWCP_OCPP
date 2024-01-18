@@ -525,8 +525,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                 var secureDataTransfer = SecureDataTransferRequest.Encrypt(
                                              networkingNode.Id,
                                              0,
-                                             key,
                                              1,
+                                             key,
                                              1,
                                              1,
                                              reset

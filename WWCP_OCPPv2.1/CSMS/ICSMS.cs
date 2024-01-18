@@ -45,10 +45,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         IEnumerable<ICSMSChannel>  CSMSChannels             { get; }
 
 
-        Byte[]  GetEncryptionKey     (NetworkingNode_Id DestinationNodeId);
-        UInt64  GetEncryptionNonce   (NetworkingNode_Id DestinationNodeId);
-        UInt64  GetEncryptionCounter (NetworkingNode_Id DestinationNodeId);
+        Byte[]  GetEncryptionKey     (NetworkingNode_Id DestinationNodeId, UInt16? KeyId = null);
+        Byte[]  GetDecryptionKey     (NetworkingNode_Id SourceNodeId,      UInt16? KeyId = null);
 
+        UInt64  GetEncryptionNonce   (NetworkingNode_Id DestinationNodeId, UInt16? KeyId = null);
+        UInt64  GetEncryptionCounter (NetworkingNode_Id DestinationNodeId, UInt16? KeyId = null);
 
 
     }

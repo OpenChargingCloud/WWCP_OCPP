@@ -3183,8 +3183,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                NetworkingNode_Id             DestinationNodeId,
                                UInt16                        Parameter,
-                               UInt16                        KeyId,
                                Byte[]                        Payload,
+                               UInt16?                       KeyId               = null,
                                Byte[]?                       Key                 = null,
                                UInt64?                       Nonce               = null,
                                UInt64?                       Counter             = null,
@@ -3204,44 +3204,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                var key      = Key     ?? CSMS.GetEncryptionKey    (DestinationNodeId);
-                var nonce    = Nonce   ?? CSMS.GetEncryptionNonce  (DestinationNodeId);
-                var counter  = Counter ?? CSMS.GetEncryptionCounter(DestinationNodeId);
-
-                key = "5a733d6660df00c447ff184ae971e1d5bba5de5784768795ee6535867130aa12".HexStringToByteArray();
-
-                var r = SecureDataTransferRequest.Encrypt(
-                               DestinationNodeId,
-                               Parameter,
-                               key,
-                               KeyId,
-                               nonce,
-                               counter,
-                               Payload,
-
-                               SignKeys,
-                               SignInfos,
-                               Signatures,
-
-                               RequestId ?? CSMS.NextRequestId,
-                               RequestTimestamp ?? Timestamp.Now,
-                               RequestTimeout ?? CSMS.DefaultRequestTimeout,
-                               EventTrackingId ?? EventTracking_Id.New,
-                               NetworkPath.From(CSMS.Id),
-                               CancellationToken
-                           );
-
-                var x = r.Decrypt().ToUTF8String();
-
-
                 return CSMS.SecureDataTransfer(
                            SecureDataTransferRequest.Encrypt(
                                DestinationNodeId,
                                Parameter,
-                               key,
-                               KeyId,
-                               nonce,
-                               counter,
+                               KeyId   ?? 0,
+                               Key     ?? CSMS.GetEncryptionKey    (DestinationNodeId, KeyId),
+                               Nonce   ?? CSMS.GetEncryptionNonce  (DestinationNodeId, KeyId),
+                               Counter ?? CSMS.GetEncryptionCounter(DestinationNodeId, KeyId),
                                Payload,
 
                                SignKeys,
