@@ -24,8 +24,10 @@ The *HTTP Web Sockets* standard supports an efficient way to transport binary da
 
 
 ## Overlay Networking Extensions
-- Loosely related to the OCA internal *"OCPP Local CSMS"* concept.
+- Loosely related to the OCA internal *"OCPP Local CSMS"* and *"Routing Node"* concept, but not based on *Source Routing*, as this is known to not scale well.
 - Every charging station, networking node, CSMS backend has an unique networking node identification.
+- Charging Stations can still connect via Web Socket connections using the "traditional" RPC framework. The "Networking Nodes" care about the details of the Overlay Networking.
+- *Networking Nodes* accept local HTTP Web Socket connections and aggregate them into a single HTTP Web Socket connection towards e.g. the CSMS.
 - Connected charging stations, (local) networking nodes and CSMS backends exchange routing information about the reachability of devices based on the networking node identifications.
 - Networking nodes can act as a **Security Gateway** or **OCPP Firewall** and make use of a [Signature policy](../WWCP_OCPPv2.1/Extensions/E2ESecurityExtensions/README.md) e.g. to add additional signatures to requests/responses.
 - **Anycast** and **Multicast** support allows sending information like e.g. EVSE status information or meter values to multiple destinations/backends.
