@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -118,9 +120,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="PeriodicEventStreamParameters">The parsed periodic event stream parameters.</param>
-        public static Boolean TryParse(JObject                             JSON,
-                                       out PeriodicEventStreamParameters?  PeriodicEventStreamParameters,
-                                       out String?                         ErrorResponse)
+        public static Boolean TryParse(JObject                                                  JSON,
+                                       [NotNullWhen(true)]  out PeriodicEventStreamParameters?  PeriodicEventStreamParameters,
+                                       [NotNullWhen(false)] out String?                         ErrorResponse)
 
             => TryParse(JSON,
                         out PeriodicEventStreamParameters,
@@ -135,8 +137,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="PeriodicEventStreamParameters">The parsed periodic event stream parameters.</param>
         /// <param name="CustomPeriodicEventStreamParametersParser">A delegate to parse custom periodic event stream parameterss.</param>
         public static Boolean TryParse(JObject                                                      JSON,
-                                       out PeriodicEventStreamParameters?                           PeriodicEventStreamParameters,
-                                       out String?                                                  ErrorResponse,
+                                       [NotNullWhen(true)]  out PeriodicEventStreamParameters?      PeriodicEventStreamParameters,
+                                       [NotNullWhen(false)] out String?                             ErrorResponse,
                                        CustomJObjectParserDelegate<PeriodicEventStreamParameters>?  CustomPeriodicEventStreamParametersParser   = null)
         {
 
@@ -164,7 +166,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                        out TimeSpan? MaxTime,
                                        out ErrorResponse))
                 {
-                    return false;
+                    if (ErrorResponse is not null)
+                        return false;
                 }
 
                 #endregion
@@ -174,7 +177,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
                                            OCPP.CustomData.TryParse,
-                                           out CustomData CustomData,
+                                           out CustomData? CustomData,
                                            out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -185,14 +188,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
                 PeriodicEventStreamParameters = new PeriodicEventStreamParameters(
-                                                MaxItems,
-                                                MaxTime,
-                                                CustomData
-                                            );
+                                                    MaxItems,
+                                                    MaxTime,
+                                                    CustomData
+                                                );
 
                 if (CustomPeriodicEventStreamParametersParser is not null)
                     PeriodicEventStreamParameters = CustomPeriodicEventStreamParametersParser(JSON,
-                                                                                      PeriodicEventStreamParameters);
+                                                                                              PeriodicEventStreamParameters);
 
                 return true;
 
@@ -282,121 +285,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                            PeriodicEventStreamParameters? PeriodicEventStreamParameters2)
 
             => !(PeriodicEventStreamParameters1 == PeriodicEventStreamParameters2);
-
-        #endregion
-
-        #region Operator <  (PeriodicEventStreamParameters1, PeriodicEventStreamParameters2)
-
-        /// <summary>
-        /// Compares two instances of this object.
-        /// </summary>
-        /// <param name="PeriodicEventStreamParameters1">Periodic event stream parameters.</param>
-        /// <param name="PeriodicEventStreamParameters2">Other periodic event stream parameters.</param>
-        /// <returns>true|false</returns>
-        public static Boolean operator < (PeriodicEventStreamParameters? PeriodicEventStreamParameters1,
-                                          PeriodicEventStreamParameters? PeriodicEventStreamParameters2)
-        {
-
-            if (PeriodicEventStreamParameters1 is null)
-                throw new ArgumentNullException(nameof(PeriodicEventStreamParameters1), "The given periodic event stream parameters must not be null!");
-
-            return PeriodicEventStreamParameters1.CompareTo(PeriodicEventStreamParameters2) < 0;
-
-        }
-
-        #endregion
-
-        #region Operator <= (PeriodicEventStreamParameters1, PeriodicEventStreamParameters2)
-
-        /// <summary>
-        /// Compares two instances of this object.
-        /// </summary>
-        /// <param name="PeriodicEventStreamParameters1">Periodic event stream parameters.</param>
-        /// <param name="PeriodicEventStreamParameters2">Other periodic event stream parameters.</param>
-        /// <returns>true|false</returns>
-        public static Boolean operator <= (PeriodicEventStreamParameters? PeriodicEventStreamParameters1,
-                                           PeriodicEventStreamParameters? PeriodicEventStreamParameters2)
-
-            => !(PeriodicEventStreamParameters1 > PeriodicEventStreamParameters2);
-
-        #endregion
-
-        #region Operator >  (PeriodicEventStreamParameters1, PeriodicEventStreamParameters2)
-
-        /// <summary>
-        /// Compares two instances of this object.
-        /// </summary>
-        /// <param name="PeriodicEventStreamParameters1">Periodic event stream parameters.</param>
-        /// <param name="PeriodicEventStreamParameters2">Other periodic event stream parameters.</param>
-        /// <returns>true|false</returns>
-        public static Boolean operator > (PeriodicEventStreamParameters? PeriodicEventStreamParameters1,
-                                          PeriodicEventStreamParameters? PeriodicEventStreamParameters2)
-        {
-
-            if (PeriodicEventStreamParameters1 is null)
-                throw new ArgumentNullException(nameof(PeriodicEventStreamParameters1), "The given periodic event stream parameters must not be null!");
-
-            return PeriodicEventStreamParameters1.CompareTo(PeriodicEventStreamParameters2) > 0;
-
-        }
-
-        #endregion
-
-        #region Operator >= (PeriodicEventStreamParameters1, PeriodicEventStreamParameters2)
-
-        /// <summary>
-        /// Compares two instances of this object.
-        /// </summary>
-        /// <param name="PeriodicEventStreamParameters1">Periodic event stream parameters.</param>
-        /// <param name="PeriodicEventStreamParameters2">Other periodic event stream parameters.</param>
-        /// <returns>true|false</returns>
-        public static Boolean operator >= (PeriodicEventStreamParameters? PeriodicEventStreamParameters1,
-                                           PeriodicEventStreamParameters? PeriodicEventStreamParameters2)
-
-            => !(PeriodicEventStreamParameters1 < PeriodicEventStreamParameters2);
-
-        #endregion
-
-        #endregion
-
-        #region IComparable<PeriodicEventStreamParameters> Members
-
-        #region CompareTo(Object)
-
-        /// <summary>
-        /// Compares two periodic event stream parameterss.
-        /// </summary>
-        /// <param name="Object">A periodic event stream parameters to compare with.</param>
-        public Int32 CompareTo(Object? Object)
-
-            => Object is PeriodicEventStreamParameters periodicEventStreamParams
-                   ? CompareTo(periodicEventStreamParams)
-                   : throw new ArgumentException("The given object is not a periodic event stream parameters object!",
-                                                 nameof(Object));
-
-        #endregion
-
-        #region CompareTo(PeriodicEventStreamParameters)
-
-        /// <summary>
-        /// Compares two periodic event stream parameterss.
-        /// </summary>
-        /// <param name="PeriodicEventStreamParameters">A periodic event stream parameters to compare with.</param>
-        public Int32 CompareTo(PeriodicEventStreamParameters? PeriodicEventStreamParameters)
-        {
-
-            if (PeriodicEventStreamParameters is null)
-                throw new ArgumentNullException(nameof(PeriodicEventStreamParameters),
-                                                "The given periodic event stream parameters must not be null!");
-
-            var c = MaxItems.     CompareTo(PeriodicEventStreamParameters.MaxItems);
-
-            if (c == 0 && MaxTime.HasValue && PeriodicEventStreamParameters.MaxTime.HasValue)
-                c = MaxTime.Value.CompareTo(PeriodicEventStreamParameters.MaxTime.Value);
-
-            return c;
-
-        }
 
         #endregion
 

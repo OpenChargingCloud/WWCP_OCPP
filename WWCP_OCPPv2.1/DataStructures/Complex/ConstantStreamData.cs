@@ -415,9 +415,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var c = Id.                        CompareTo(ConstantStreamData.Id);
 
-            if (c == 0)
-                c = Parameters.                CompareTo(ConstantStreamData.Parameters);
-
             if (c == 0 && VariableMonitoringId.HasValue && ConstantStreamData.VariableMonitoringId.HasValue)
                 c = VariableMonitoringId.Value.CompareTo(ConstantStreamData.VariableMonitoringId.Value);
 
