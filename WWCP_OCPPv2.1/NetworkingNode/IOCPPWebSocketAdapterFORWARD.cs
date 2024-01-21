@@ -451,6 +451,43 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
     #endregion
 
+    #region OnNotifySettlementRequestFilter(ed)Delegate
+
+    /// <summary>
+    /// A NotifySettlement request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket connection.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
+    public delegate Task<ForwardingDecision<NotifySettlementRequest, NotifySettlementResponse>>
+
+        OnNotifySettlementRequestFilterDelegate(DateTime                  Timestamp,
+                                                IEventSender              Sender,
+                                                IWebSocketConnection      Connection,
+                                                NotifySettlementRequest   Request,
+                                                CancellationToken         CancellationToken);
+
+
+    /// <summary>
+    /// A filtered NotifySettlement request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket connection.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="ForwardingDecision">The forwarding decision.</param>
+    public delegate Task
+
+        OnNotifySettlementRequestFilteredDelegate(DateTime                                                                Timestamp,
+                                                  IEventSender                                                            Sender,
+                                                  IWebSocketConnection                                                    Connection,
+                                                  NotifySettlementRequest                                                 Request,
+                                                  ForwardingDecision<NotifySettlementRequest, NotifySettlementResponse>   ForwardingDecision);
+
+    #endregion
+
     #region OnPullDynamicScheduleUpdateRequestFilter(ed)Delegate
 
     /// <summary>

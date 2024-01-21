@@ -94,6 +94,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         event OnNotifyPriorityChargingRequestSentDelegate?               OnNotifyPriorityChargingRequestSent;
 
         /// <summary>
+        /// An event fired whenever a NotifySettlement request be sent (to the CSMS).
+        /// </summary>
+        event OnNotifySettlementRequestSentDelegate?                     OnNotifySettlementRequestSent;
+
+        /// <summary>
         /// An event fired whenever a PullDynamicScheduleUpdate request be sent (to the CSMS).
         /// </summary>
         event OnPullDynamicScheduleUpdateRequestSentDelegate?            OnPullDynamicScheduleUpdateRequestSent;

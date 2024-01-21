@@ -519,6 +519,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public CustomJObjectSerializerDelegate<CSMS.ReportChargingProfilesResponse>?                 CustomReportChargingProfilesResponseSerializer               { get; set; }
         public CustomJObjectSerializerDelegate<CSMS.NotifyEVChargingScheduleResponse>?               CustomNotifyEVChargingScheduleResponseSerializer             { get; set; }
         public CustomJObjectSerializerDelegate<CSMS.NotifyPriorityChargingResponse>?                 CustomNotifyPriorityChargingResponseSerializer               { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.NotifySettlementResponse>?                       CustomNotifySettlementResponseSerializer                     { get; set; }
         public CustomJObjectSerializerDelegate<CSMS.PullDynamicScheduleUpdateResponse>?              CustomPullDynamicScheduleUpdateResponseSerializer            { get; set; }
 
         public CustomJObjectSerializerDelegate<CSMS.NotifyDisplayMessagesResponse>?                  CustomNotifyDisplayMessagesResponseSerializer                { get; set; }
@@ -559,6 +560,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public CustomJObjectSerializerDelegate<ReportChargingProfilesRequest>?                       CustomReportChargingProfilesRequestSerializer                { get; set; }
         public CustomJObjectSerializerDelegate<NotifyEVChargingScheduleRequest>?                     CustomNotifyEVChargingScheduleRequestSerializer              { get; set; }
         public CustomJObjectSerializerDelegate<NotifyPriorityChargingRequest>?                       CustomNotifyPriorityChargingRequestSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<NotifySettlementRequest>?                             CustomNotifySettlementRequestSerializer                      { get; set; }
         public CustomJObjectSerializerDelegate<PullDynamicScheduleUpdateRequest>?                    CustomPullDynamicScheduleUpdateRequestSerializer             { get; set; }
 
         public CustomJObjectSerializerDelegate<NotifyDisplayMessagesRequest>?                        CustomNotifyDisplayMessagesRequestSerializer                 { get; set; }
@@ -1115,6 +1117,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// An event fired whenever a response to a NotifyPriorityCharging request was received.
         /// </summary>
         public event OnNotifyPriorityChargingResponseReceivedDelegate?               OnNotifyPriorityChargingResponse;
+
+        #endregion
+
+        #region NotifySettlement                    (Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a NotifySettlement request will be sent to the CSMS.
+        /// </summary>
+        public event OnNotifySettlementRequestSentDelegate?                    OnNotifySettlementRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a NotifySettlement request was received.
+        /// </summary>
+        public event OnNotifySettlementResponseReceivedDelegate?               OnNotifySettlementResponse;
 
         #endregion
 
@@ -14408,6 +14424,108 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             catch (Exception e)
             {
                 DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnNotifyPriorityChargingResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region NotifySettlement                      (Request)
+
+        /// <summary>
+        /// Notify about a payment settlement.
+        /// </summary>
+        /// <param name="NotifySettlementRequestId">The request identification used to match the GetChargingProfilesRequest message with the resulting NotifySettlementRequest messages. When the CSMS provided a requestId in the GetChargingProfilesRequest, this field SHALL contain the same value.</param>
+        /// <param name="TransactionId">The transaction for which priority charging is requested.</param>
+        /// <param name="Activated">True, when priority charging was activated, or false, when it has stopped using the priority charging profile.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CSMS.NotifySettlementResponse>
+            NotifySettlement(NotifySettlementRequest Request)
+
+        {
+
+            #region Send OnNotifySettlementRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnNotifySettlementRequest?.Invoke(startTime,
+                                                        this,
+                                                        Request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnNotifySettlementRequest));
+            }
+
+            #endregion
+
+
+            var response = CSClient is not null
+
+                               ? SignaturePolicy.SignRequestMessage(
+                                     Request,
+                                     Request.ToJSON(
+                                         CustomNotifySettlementRequestSerializer,
+                                         CustomSignatureSerializer,
+                                         CustomCustomDataSerializer
+                                     ),
+                                     out var errorResponse
+                                 )
+
+                                     ? await CSClient.NotifySettlement(Request)
+
+                                     : new CSMS.NotifySettlementResponse(
+                                           Request,
+                                           Result.SignatureError(errorResponse)
+                                       )
+
+                               : new CSMS.NotifySettlementResponse(
+                                     Request,
+                                     Result.UnknownOrUnreachable(Request.DestinationNodeId)
+                                 );
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomNotifySettlementResponseSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
+
+
+            #region Send OnNotifySettlementResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnNotifySettlementResponse?.Invoke(endTime,
+                                                         this,
+                                                         Request,
+                                                         response,
+                                                         endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnNotifySettlementResponse));
             }
 
             #endregion

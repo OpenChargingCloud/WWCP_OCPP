@@ -619,6 +619,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+        #region OnNotifySettlement (Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a NotifySettlement request was sent from a charging station.
+        /// </summary>
+        public event OnNotifySettlementRequestReceivedDelegate?   OnNotifySettlementRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a NotifySettlement request was received.
+        /// </summary>
+        public event OnNotifySettlementResponseSentDelegate?  OnNotifySettlementResponse;
+
+        #endregion
+
         #region OnPullDynamicScheduleUpdate (Request/-Response)
 
         /// <summary>

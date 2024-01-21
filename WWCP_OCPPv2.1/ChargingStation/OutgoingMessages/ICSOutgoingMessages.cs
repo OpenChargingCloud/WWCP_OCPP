@@ -308,6 +308,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
+        #region NotifySettlement                      (Request)
+
+        /// <summary>
+        /// Notify about priority charging.
+        /// </summary>
+        /// <param name="Request">A NotifySettlement request.</param>
+        public Task<NotifySettlementResponse> NotifySettlement(NotifySettlementRequest Request);
+
+        #endregion
+
         #region PullDynamicScheduleUpdate             (Request)
 
         /// <summary>

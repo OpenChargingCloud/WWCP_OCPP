@@ -1913,7 +1913,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
         #region NotifyPriorityCharging_Test()
 
         /// <summary>
-        /// A test for reporting charging profiles to the CSMS.
+        /// A test for notifying the CMS about priority charging at a charging station.
         /// </summary>
         [Test]
         public async Task NotifyPriorityCharging_Test()
@@ -1943,6 +1943,63 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                    TransactionId:                     Transaction_Id.Parse("1234"),
                                    Activated:                         true,
                                    CustomData:                        null
+                               );
+
+
+                ClassicAssert.AreEqual(ResultCode.OK,   response.Result.ResultCode);
+
+                ClassicAssert.AreEqual(1,               notifyPriorityChargingRequests.Count);
+
+            }
+
+        }
+
+        #endregion
+
+        #region NotifySettlement_Test()
+
+        /// <summary>
+        /// A test for notifying the CSMS about payment settlements at a charging station.
+        /// </summary>
+        [Test]
+        public async Task NotifySettlement_Test()
+        {
+
+            ClassicAssert.IsNotNull(testCSMS01);
+            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(chargingStation1);
+            ClassicAssert.IsNotNull(chargingStation2);
+            ClassicAssert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var notifyPriorityChargingRequests= new ConcurrentList<CS.NotifySettlementRequest>();
+
+                testCSMS01.OnNotifySettlementRequest += (timestamp, sender, connection, notifyPriorityChargingRequest) => {
+                    notifyPriorityChargingRequests.TryAdd(notifyPriorityChargingRequest);
+                    return Task.CompletedTask;
+                };
+
+                var response = await chargingStation1.NotifySettlement(
+
+                                   PaymentReference:      PaymentReference.Parse("pref_123"),
+                                   PaymentStatus:         PaymentStatus.Settled,
+                                   SettlementAmount:      23.5m,
+                                   SettlementTimestamp:   Timestamp.Now,
+
+                                   TransactionId:         Transaction_Id.Parse("1234"),
+                                   StatusInfo:            "status...infoo!",
+                                   ReceiptId:             ReceiptId.Parse("rid123"),
+                                   ReceiptURL:            URL.Parse("https://example.org/payments/123"),
+                                   InvoiceNumber:         InvoiceNumber.Parse("inum123"),
+
+                                   CustomData:            null
+
                                );
 
 

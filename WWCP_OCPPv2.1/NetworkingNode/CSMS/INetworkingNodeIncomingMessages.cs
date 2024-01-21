@@ -248,6 +248,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #endregion
 
+        #region OnNotifySettlement
+
+        /// <summary>
+        /// An event sent whenever a NotifySettlement was received.
+        /// </summary>
+        event OnNotifySettlementDelegate                 OnNotifySettlement;
+
+        #endregion
+
         #region OnPullDynamicScheduleUpdate
 
         /// <summary>

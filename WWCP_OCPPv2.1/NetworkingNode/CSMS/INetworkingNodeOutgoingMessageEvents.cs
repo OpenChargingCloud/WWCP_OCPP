@@ -346,6 +346,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         event OnNotifyPriorityChargingResponseSentDelegate               OnNotifyPriorityChargingResponseSent;
 
         /// <summary>
+        /// An event sent whenever a response to a NotifySettlement request was sent.
+        /// </summary>
+        event OnNotifySettlementResponseSentDelegate                     OnNotifySettlementResponseSent;
+
+        /// <summary>
         /// An event sent whenever a response to a PullDynamicScheduleUpdate request was sent.
         /// </summary>
         event OnPullDynamicScheduleUpdateResponseSentDelegate            OnPullDynamicScheduleUpdateResponseSent;
