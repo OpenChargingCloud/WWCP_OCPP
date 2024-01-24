@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The reason the charging station sends this message.
         /// </summary>
         [Mandatory]
-        public TriggerReason           TriggerReason            { get; }
+        public TriggerReason            TriggerReason            { get; }
 
         /// <summary>
         /// This incremental sequence number, helps to determine whether all messages of a transaction have been received.
@@ -166,36 +166,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public TransactionEventRequest(NetworkingNode_Id         NetworkingNodeId,
-                                       TransactionEvents         EventType,
-                                       DateTime                  Timestamp,
-                                       TriggerReason             TriggerReason,
-                                       UInt32                    SequenceNumber,
-                                       Transaction               TransactionInfo,
+        public TransactionEventRequest(NetworkingNode_Id             DestinationNodeId,
+                                       TransactionEvents             EventType,
+                                       DateTime                      Timestamp,
+                                       TriggerReason                 TriggerReason,
+                                       UInt32                        SequenceNumber,
+                                       Transaction                   TransactionInfo,
 
-                                       Boolean?                  Offline                 = null,
-                                       Byte?                     NumberOfPhasesUsed      = null,
-                                       Ampere?                   CableMaxCurrent         = null,
-                                       Reservation_Id?           ReservationId           = null,
-                                       IdToken?                  IdToken                 = null,
-                                       EVSE?                     EVSE                    = null,
-                                       IEnumerable<MeterValue>?  MeterValues             = null,
-                                       PreconditioningStatus?    PreconditioningStatus   = null,
+                                       Boolean?                      Offline                 = null,
+                                       Byte?                         NumberOfPhasesUsed      = null,
+                                       Ampere?                       CableMaxCurrent         = null,
+                                       Reservation_Id?               ReservationId           = null,
+                                       IdToken?                      IdToken                 = null,
+                                       EVSE?                         EVSE                    = null,
+                                       IEnumerable<MeterValue>?      MeterValues             = null,
+                                       PreconditioningStatus?        PreconditioningStatus   = null,
 
-                                       IEnumerable<KeyPair>?     SignKeys                = null,
-                                       IEnumerable<SignInfo>?    SignInfos               = null,
-                                       IEnumerable<OCPP.Signature>?   Signatures              = null,
+                                       IEnumerable<KeyPair>?         SignKeys                = null,
+                                       IEnumerable<SignInfo>?        SignInfos               = null,
+                                       IEnumerable<OCPP.Signature>?  Signatures              = null,
 
-                                       CustomData?               CustomData              = null,
+                                       CustomData?                   CustomData              = null,
 
-                                       Request_Id?               RequestId               = null,
-                                       DateTime?                 RequestTimestamp        = null,
-                                       TimeSpan?                 RequestTimeout          = null,
-                                       EventTracking_Id?         EventTrackingId         = null,
-                                       NetworkPath?              NetworkPath             = null,
-                                       CancellationToken         CancellationToken       = default)
+                                       Request_Id?                   RequestId               = null,
+                                       DateTime?                     RequestTimestamp        = null,
+                                       TimeSpan?                     RequestTimeout          = null,
+                                       EventTracking_Id?             EventTrackingId         = null,
+                                       NetworkPath?                  NetworkPath             = null,
+                                       CancellationToken             CancellationToken       = default)
 
-            : base(NetworkingNodeId,
+            : base(DestinationNodeId,
                    nameof(TransactionEventRequest)[..^7],
 
                    SignKeys,
