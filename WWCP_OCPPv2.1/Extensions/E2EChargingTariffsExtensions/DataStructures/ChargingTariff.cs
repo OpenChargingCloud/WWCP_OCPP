@@ -190,7 +190,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                   IHasId<ChargingTariff_Id>,
                                   IEquatable<ChargingTariff>,
                                   IComparable<ChargingTariff>,
-                                  IComparable
+                                  IComparable,
+                                  INotBeforeNotAfter
     {
 
         #region Data
@@ -317,17 +318,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public   IEnumerable<TariffElement>     TariffElements        { get; }
 
         /// <summary>
-        /// The timestamp when this tariff becomes active (UTC).
-        /// Typically used for a new tariff that is already given with the charging location,
-        /// before it becomes active.
+        /// The optional timestamp when this charging tariff becomes active/valid.
+        /// Typically used for a new charging tariff that already exists within a
+        /// charging station, CSMS or EMP system, before it becomes active/valid.
         /// </summary>
-        [Mandatory]
-        public   DateTime                       NotBefore             { get; }
+        [Optional]
+        public   DateTime?                      NotBefore             { get; }
 
         /// <summary>
-        /// The optional timestamp after which this tariff is no longer valid (UTC).
-        /// Typically used when this tariff is going to be replaced with a different tariff
-        /// in the near future.
+        /// The optional timestamp after which this charging tariff is no longer active/valid.
+        /// Typically used when a charging tariff is replaced automatically with a new version
+        /// of the tariff after this timestamp has passed.
         /// </summary>
         [Optional]
         public   DateTime?                      NotAfter              { get; }
@@ -357,8 +358,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// 
         /// <param name="MinPrice">When this optional field is set, a charging session with this tariff will at least cost this amount.</param>
         /// <param name="MaxPrice">When this optional field is set, a charging session with this tariff will NOT cost more than this amount.</param>
-        /// <param name="NotBefore">An optional timestamp when this tariff becomes active (UTC).</param>
-        /// <param name="NotAfter">An optional timestamp after which this tariff is no longer valid (UTC).</param>
+        /// <param name="NotBefore">An optional timestamp when this object becomes active/valid. Typically used for a new object that already exists, before it becomes active/valid.</param>
+        /// <param name="NotAfter">An optional timestamp after which this object is no longer active/valid. Typically used when an object is is replaced automatically with a new version of the object after this timestamp has passed.</param>
         /// <param name="EnergyMix">Optional details on the energy supplied with this tariff.</param>
         /// 
         /// <param name="SignKeys">An optional enumeration of keys to be used for signing this charging tariff.</param>
@@ -423,7 +424,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             this.MinPrice        = MinPrice;
             this.MaxPrice        = MaxPrice;
-            this.NotBefore       = NotBefore     ?? this.Created;
+            this.NotBefore       = NotBefore;
             this.NotAfter        = NotAfter;
 
 
@@ -955,17 +956,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
                            MinPrice.HasValue
-                               ? new JProperty("minPrice",       MinPrice.Value.  ToJSON(CustomPriceSerializer))
+                               ? new JProperty("minPrice",       MinPrice.  Value.ToJSON(CustomPriceSerializer))
                                : null,
 
                            MaxPrice.HasValue
-                               ? new JProperty("maxPrice",       MaxPrice.Value.  ToJSON(CustomPriceSerializer))
+                               ? new JProperty("maxPrice",       MaxPrice.  Value.ToJSON(CustomPriceSerializer))
                                : null,
 
-                                 new JProperty("notBefore",      NotBefore.       ToIso8601()),
+                           NotBefore.HasValue
+                               ? new JProperty("notBefore",      NotBefore. Value.ToIso8601())
+                               : null,
 
                            NotAfter.HasValue
-                               ? new JProperty("notAftere",      NotAfter.Value.  ToIso8601())
+                               ? new JProperty("notAftere",      NotAfter.  Value.ToIso8601())
                                : null,
 
 
