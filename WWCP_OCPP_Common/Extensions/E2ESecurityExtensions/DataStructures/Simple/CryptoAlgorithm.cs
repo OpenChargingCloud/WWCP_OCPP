@@ -197,19 +197,19 @@ namespace cloud.charging.open.protocols.OCPP
         /// <summary>
         /// secp256r1
         /// </summary>
-        public static CryptoAlgorithm secp256r1    { get; }
+        public static CryptoAlgorithm  secp256r1    { get; }
             = Register("secp256r1");
 
         /// <summary>
         /// secp384r1
         /// </summary>
-        public static CryptoAlgorithm secp384r1    { get; }
+        public static CryptoAlgorithm  secp384r1    { get; }
             = Register("secp384r1");
 
         /// <summary>
         /// secp521r1
         /// </summary>
-        public static CryptoAlgorithm secp521r1    { get; }
+        public static CryptoAlgorithm  secp521r1    { get; }
             = Register("secp521r1");
 
 #pragma warning restore IDE1006 // Naming Styles

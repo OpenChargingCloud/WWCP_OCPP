@@ -192,15 +192,17 @@ namespace cloud.charging.open.protocols.OCPP
 
         #region Static definitions
 
-#pragma warning disable IDE1006 // Naming Styles
-
         /// <summary>
-        /// base64
+        /// BASE64
         /// </summary>
-        public static CryptoEncoding base64    { get; }
+        public static CryptoEncoding  BASE64    { get; }
             = Register("base64");
 
-#pragma warning restore IDE1006 // Naming Styles
+        /// <summary>
+        /// Hexadecimal
+        /// </summary>
+        public static CryptoEncoding  HEX       { get; }
+            = Register("hex");
 
         #endregion
 

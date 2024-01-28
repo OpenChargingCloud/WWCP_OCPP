@@ -19,8 +19,6 @@
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using cloud.charging.open.protocols.OCPP;
-
 #endregion
 
 namespace cloud.charging.open.protocols.OCPP.WebSockets

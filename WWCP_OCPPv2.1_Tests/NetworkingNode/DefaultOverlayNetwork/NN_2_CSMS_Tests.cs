@@ -382,7 +382,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     // Networking Node JSON Request OUT
                     Assert.That(nnJSONMessageRequestsSent.      Count,                    Is.EqualTo(1), "The DataTransfer JSON request did not leave the networking node!");
                     var nnJSONMessageRequestSent = nnJSONMessageRequestsSent.First();
-                    Assert.That(nnJSONMessageRequestSent.DestinationNodeId,               Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(nnJSONMessageRequestSent.DestinationId,               Is.EqualTo(NetworkingNode_Id.CSMS));
                     Assert.That(nnJSONMessageRequestSent.NetworkPath.Length,              Is.EqualTo(1));
                     Assert.That(nnJSONMessageRequestSent.NetworkPath.Source,              Is.EqualTo(networkingNode.Id));  // Because of "standard" networking mode!
                     Assert.That(nnJSONMessageRequestSent.NetworkPath.Last,                Is.EqualTo(networkingNode.Id));  // Because of "standard" networking mode!

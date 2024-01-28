@@ -245,7 +245,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     // Networking Node JSON Request IN
                     Assert.That(nnJSONMessageRequestsReceived.  Count,                    Is.EqualTo(1), "The DataTransfer JSON request did not reach the networking node!");
                     var nnJSONMessageRequest = nnJSONMessageRequestsReceived.First();
-                    Assert.That(nnJSONMessageRequest.DestinationNodeId,                   Is.EqualTo(networkingNode.Id));
+                    Assert.That(nnJSONMessageRequest.DestinationId,                   Is.EqualTo(networkingNode.Id));
                     Assert.That(nnJSONMessageRequest.NetworkPath.Length,                  Is.EqualTo(1));
                     Assert.That(nnJSONMessageRequest.NetworkPath.Source,                  Is.EqualTo(NetworkingNode_Id.CSMS));  // Because of "standard" networking mode!
                     Assert.That(nnJSONMessageRequest.NetworkPath.Last,                    Is.EqualTo(NetworkingNode_Id.CSMS));  // Because of "standard" networking mode!
@@ -394,7 +394,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     // Networking Node JSON Request IN
                     Assert.That(nnJSONMessageRequestsReceived.  Count,                    Is.EqualTo(1), "The SecureDataTransfer JSON request did not reach the networking node!");
                     var nnJSONMessageRequest = nnJSONMessageRequestsReceived.First();
-                    Assert.That(nnJSONMessageRequest.DestinationNodeId,                   Is.EqualTo(networkingNode.Id));
+                    Assert.That(nnJSONMessageRequest.DestinationId,                   Is.EqualTo(networkingNode.Id));
                     Assert.That(nnJSONMessageRequest.NetworkPath.Length,                  Is.EqualTo(1));
                     Assert.That(nnJSONMessageRequest.NetworkPath.Source,                  Is.EqualTo(NetworkingNode_Id.CSMS));  // Because of "standard" networking mode!
                     Assert.That(nnJSONMessageRequest.NetworkPath.Last,                    Is.EqualTo(NetworkingNode_Id.CSMS));  // Because of "standard" networking mode!

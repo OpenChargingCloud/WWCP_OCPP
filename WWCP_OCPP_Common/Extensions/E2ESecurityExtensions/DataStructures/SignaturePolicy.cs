@@ -770,7 +770,7 @@ namespace cloud.charging.open.protocols.OCPP
                                                 Value:           signature,
                                                 Algorithm:       signInfo.Algorithm,
                                                 SigningMethod:   null,
-                                                EncodingMethod:  signInfo.Encoding,
+                                                Encoding:  signInfo.Encoding,
                                                 Name:            signInfo.SignerName?. Invoke(SignableMessage),
                                                 Description:     signInfo.Description?.Invoke(SignableMessage),
                                                 Timestamp:       signInfo.Timestamp?.  Invoke(SignableMessage)
@@ -969,7 +969,7 @@ namespace cloud.charging.open.protocols.OCPP
                                                 Value:           signature,
                                                 Algorithm:       signInfo.Algorithm,
                                                 SigningMethod:   null,
-                                                EncodingMethod:  signInfo.Encoding,
+                                                Encoding:  signInfo.Encoding,
                                                 Name:            signInfo.SignerName?. Invoke(SignableMessage),
                                                 Description:     signInfo.Description?.Invoke(SignableMessage),
                                                 Timestamp:       signInfo.Timestamp?.  Invoke(SignableMessage)

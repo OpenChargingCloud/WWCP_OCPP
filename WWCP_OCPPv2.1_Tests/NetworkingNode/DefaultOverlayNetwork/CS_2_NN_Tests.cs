@@ -132,7 +132,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     // Networking Node JSON Request IN
                     Assert.That(nnJSONMessageRequestsReceived.      Count,                    Is.EqualTo(1), "The BootNotification JSON request did not reach the networking node!");
                     var nnJSONMessageRequest = nnJSONMessageRequestsReceived.First();
-                    Assert.That(nnJSONMessageRequest.DestinationNodeId,                       Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(nnJSONMessageRequest.DestinationId,                       Is.EqualTo(NetworkingNode_Id.CSMS));
                     Assert.That(nnJSONMessageRequest.NetworkPath.Length,                      Is.EqualTo(1));
                     Assert.That(nnJSONMessageRequest.NetworkPath.Source,                      Is.EqualTo(chargingStation.Id));
                     Assert.That(nnJSONMessageRequest.NetworkPath.Last,                        Is.EqualTo(chargingStation.Id));
@@ -291,7 +291,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     // Networking Node JSON Request IN
                     Assert.That(nnJSONMessageRequestsReceived.  Count,                    Is.EqualTo(1), "The DataTransfer JSON request did not reach the networking node!");
                     var nnJSONMessageRequest = nnJSONMessageRequestsReceived.First();
-                    Assert.That(nnJSONMessageRequest.DestinationNodeId,                   Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(nnJSONMessageRequest.DestinationId,                   Is.EqualTo(NetworkingNode_Id.CSMS));
                     Assert.That(nnJSONMessageRequest.NetworkPath.Length,                  Is.EqualTo(1));
                     Assert.That(nnJSONMessageRequest.NetworkPath.Source,                  Is.EqualTo(chargingStation.Id));
                     Assert.That(nnJSONMessageRequest.NetworkPath.Last,                    Is.EqualTo(chargingStation.Id));

@@ -836,7 +836,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task<SendOCPPMessageResult> SendJSONRequest(OCPP_JSONRequestMessage JSONRequestMessage)
         {
 
-            if (LookupNetworkingNode(JSONRequestMessage.DestinationNodeId, out var reachability) &&
+            if (LookupNetworkingNode(JSONRequestMessage.DestinationId, out var reachability) &&
                 reachability is not null)
             {
 
@@ -869,7 +869,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 requests.TryAdd(JSONRequestMessage.RequestId,
                                 SendRequestState.FromJSONRequest(
                                     Timestamp.Now,
-                                    JSONRequestMessage.DestinationNodeId,
+                                    JSONRequestMessage.DestinationId,
                                     JSONRequestMessage.RequestTimeout,
                                     JSONRequestMessage
                                 ));
@@ -942,7 +942,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             return SendRequestState.FromJSONRequest(
 
                        RequestTimestamp:         JSONRequestMessage.RequestTimestamp,
-                       DestinationNodeId:        JSONRequestMessage.DestinationNodeId,
+                       DestinationNodeId:        JSONRequestMessage.DestinationId,
                        Timeout:                  JSONRequestMessage.RequestTimeout,
                        JSONRequest:              JSONRequestMessage,
                        ResponseTimestamp:        Timestamp.Now,
@@ -971,7 +971,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task<SendOCPPMessageResult> SendJSONResponse(OCPP_JSONResponseMessage JSONResponseMessage)
         {
 
-            if (LookupNetworkingNode(JSONResponseMessage.DestinationNodeId, out var reachability) &&
+            if (LookupNetworkingNode(JSONResponseMessage.DestinationId, out var reachability) &&
                 reachability is not null)
             {
 

@@ -51,8 +51,8 @@ namespace cloud.charging.open.protocols.OCPP
     /// A cryptographic signing method.
     /// </summary>
     public readonly struct CryptoSigningMethod : IId,
-                                             IEquatable<CryptoSigningMethod>,
-                                             IComparable<CryptoSigningMethod>
+                                                 IEquatable<CryptoSigningMethod>,
+                                                 IComparable<CryptoSigningMethod>
     {
 
         #region Data
@@ -192,27 +192,23 @@ namespace cloud.charging.open.protocols.OCPP
 
         #region Static definitions
 
-#pragma warning disable IDE1006 // Naming Styles
-
         /// <summary>
         /// JSON
         /// </summary>
-        public static CryptoSigningMethod json         { get; }
+        public static CryptoSigningMethod  JSON         { get; }
             = Register("json");
 
         /// <summary>
         /// binary
         /// </summary>
-        public static CryptoSigningMethod binary       { get; }
+        public static CryptoSigningMethod  Binary       { get; }
             = Register("binary");
 
         /// <summary>
         /// binary - Type Length Value
         /// </summary>
-        public static CryptoSigningMethod binaryTLV    { get; }
-            = Register("binary");
-
-#pragma warning restore IDE1006 // Naming Styles
+        public static CryptoSigningMethod  BinaryTLV    { get; }
+            = Register("binaryTLV");
 
         #endregion
 

@@ -829,7 +829,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                var webSocketConnections = LookupNetworkingNode(JSONRequestMessage.DestinationNodeId).ToArray();
+                var webSocketConnections = LookupNetworkingNode(JSONRequestMessage.DestinationId).ToArray();
 
                 if (webSocketConnections.Length != 0)
                 {
@@ -926,7 +926,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                var webSocketConnections = LookupNetworkingNode(JSONResponseMessage.DestinationNodeId).ToArray();
+                var webSocketConnections = LookupNetworkingNode(JSONResponseMessage.DestinationId).ToArray();
 
                 if (webSocketConnections.Length != 0)
                 {

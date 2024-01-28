@@ -166,7 +166,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #region Fix DestinationNodeId and network path for standard networking connections
 
                     if (jsonRequest.NetworkingMode    == NetworkingMode.Standard &&
-                        jsonRequest.DestinationNodeId == NetworkingNode_Id.Zero  &&
+                        jsonRequest.DestinationId == NetworkingNode_Id.Zero  &&
                         sourceNodeId.HasValue)
                     {
                         switch (WebSocketConnection)
@@ -219,12 +219,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
                     // When not for this node, send it to the FORWARD processor...
-                    if (jsonRequest.DestinationNodeId != parentNetworkingNode.Id)
+                    if (jsonRequest.DestinationId != parentNetworkingNode.Id)
                         await parentNetworkingNode.OCPP.FORWARD.ProcessJSONRequestMessage(jsonRequest);
 
                     // Directly for this node OR an anycast message for this node...
-                    if (jsonRequest.DestinationNodeId == parentNetworkingNode.Id ||
-                        parentNetworkingNode.OCPP.IN.AnycastIds.Contains(jsonRequest.DestinationNodeId))
+                    if (jsonRequest.DestinationId == parentNetworkingNode.Id ||
+                        parentNetworkingNode.OCPP.IN.AnycastIds.Contains(jsonRequest.DestinationId))
                     {
 
                         #region Try to call the matching 'incoming message processor'...
@@ -237,7 +237,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                             var result = methodInfo.Invoke(this,
                                                            [ jsonRequest.RequestTimestamp,
                                                              WebSocketConnection,
-                                                             jsonRequest.DestinationNodeId,
+                                                             jsonRequest.DestinationId,
                                                              jsonRequest.NetworkPath,
                                                              jsonRequest.EventTrackingId,
                                                              jsonRequest.RequestId,
@@ -342,7 +342,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #region Fix DestinationNodeId and network path for standard networking connections
 
                     if (jsonResponse.NetworkingMode    == NetworkingMode.Standard &&
-                        jsonResponse.DestinationNodeId == NetworkingNode_Id.Zero  &&
+                        jsonResponse.DestinationId == NetworkingNode_Id.Zero  &&
                         sourceNodeId.HasValue)
                     {
                         switch (WebSocketConnection)
@@ -395,12 +395,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
                     // When not for this node, send it to the FORWARD processor...
-                    if (jsonResponse.DestinationNodeId != parentNetworkingNode.Id)
+                    if (jsonResponse.DestinationId != parentNetworkingNode.Id)
                         await parentNetworkingNode.OCPP.FORWARD.ProcessJSONResponseMessage(jsonResponse);
 
                     // Directly for this node OR an anycast message for this node...
-                    if (jsonResponse.DestinationNodeId == parentNetworkingNode.Id ||
-                        parentNetworkingNode.OCPP.IN.AnycastIds.Contains(jsonResponse.DestinationNodeId))
+                    if (jsonResponse.DestinationId == parentNetworkingNode.Id ||
+                        parentNetworkingNode.OCPP.IN.AnycastIds.Contains(jsonResponse.DestinationId))
                     {
                         parentNetworkingNode.OCPP.ReceiveJSONResponse(jsonResponse);
                     }

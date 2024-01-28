@@ -56,16 +56,16 @@ namespace cloud.charging.open.protocols.OCPP
         public CryptoAlgorithm?      Algorithm         { get; }
 
         /// <summary>
-        /// The optional method used to create the digital signature.
+        /// The optional data representation used to generate the digital signature.
         /// </summary>
         [Optional]
         public CryptoSigningMethod?  SigningMethod     { get; }
 
         /// <summary>
-        /// The optional encoding method.
+        /// The optional encoding method used.
         /// </summary>
         [Optional]
-        public CryptoEncoding?       EncodingMethod    { get; }
+        public CryptoEncoding?       Encoding          { get; }
 
         /// <summary>
         /// The optional name of a person or process signing the message.
@@ -100,21 +100,21 @@ namespace cloud.charging.open.protocols.OCPP
         /// </summary>
         /// <param name="KeyId">An unique key identification, e.g. a prefix of a public key.</param>
         /// <param name="Value">A signature value.</param>
-        /// <param name="SigningMethod">An optional method used to create the digital signature.</param>
-        /// <param name="EncodingMethod">An optional encoding method.</param>
+        /// <param name="SigningMethod">An optional data representation used to generate the digital signature.</param>
+        /// <param name="Encoding">An optional encoding method used.</param>
         /// <param name="Name">An optional name of a person or process signing the message.</param>
         /// <param name="Description">An optional multi-language description or explanation for signing the message.</param>
         /// <param name="Timestamp">An optional timestamp of the message signature.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public Signature(Byte[]                KeyId,
                          Byte[]                Value,
-                         CryptoAlgorithm?      Algorithm        = null,
-                         CryptoSigningMethod?  SigningMethod    = null,
-                         CryptoEncoding?       EncodingMethod   = null,
-                         String?               Name             = null,
-                         I18NString?           Description      = null,
-                         DateTime?             Timestamp        = null,
-                         CustomData?           CustomData       = null)
+                         CryptoAlgorithm?      Algorithm       = null,
+                         CryptoSigningMethod?  SigningMethod   = null,
+                         CryptoEncoding?       Encoding        = null,
+                         String?               Name            = null,
+                         I18NString?           Description     = null,
+                         DateTime?             Timestamp       = null,
+                         CustomData?           CustomData      = null)
 
             : base(CustomData)
 
@@ -124,7 +124,7 @@ namespace cloud.charging.open.protocols.OCPP
             this.Value           = Value;
             this.Algorithm       = Algorithm;
             this.SigningMethod   = SigningMethod;
-            this.EncodingMethod  = EncodingMethod;
+            this.Encoding  = Encoding;
             this.Name            = Name;
             this.Description     = Description;
             this.Timestamp       = Timestamp;
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPP
                            Value.          GetHashCode()       * 19 ^
                           (Algorithm?.     GetHashCode() ?? 0) * 17 ^
                           (SigningMethod?. GetHashCode() ?? 0) * 13 ^
-                          (EncodingMethod?.GetHashCode() ?? 0) * 11 ^
+                          (Encoding?.GetHashCode() ?? 0) * 11 ^
                           (Name?.          GetHashCode() ?? 0) *  7 ^
                           (Description?.   GetHashCode() ?? 0) *  5 ^
                           (Timestamp?.     GetHashCode() ?? 0) *  3 ^
@@ -480,12 +480,15 @@ namespace cloud.charging.open.protocols.OCPP
 
             var json = JSONObject.Create(
 
-                                 new JProperty("keyId",            KeyId),
-                                 new JProperty("value",            Value),
-                                 new JProperty("signingMethod",    SigningMethod),
+                                 new JProperty("keyId",            KeyId.               ToBase64()),
+                                 new JProperty("value",            Value.               ToBase64()),
 
-                           EncodingMethod.HasValue
-                               ? new JProperty("encodingMethod",   EncodingMethod.ToString())
+                           SigningMethod.HasValue
+                               ? new JProperty("signingMethod",    SigningMethod. Value.ToString())
+                               : null,
+
+                           Encoding.HasValue
+                               ? new JProperty("encodingMethod",   Encoding.Value.ToString())
                                : null,
 
                            Algorithm.HasValue && Algorithm.Value != CryptoAlgorithm.secp256r1
@@ -497,7 +500,7 @@ namespace cloud.charging.open.protocols.OCPP
                                : null,
 
                            Description is not null && Description.IsNotNullOrEmpty()
-                               ? new JProperty("description",      Description.ToJSON())
+                               ? new JProperty("description",      Description.    ToJSON())
                                : null,
 
                            Timestamp.HasValue
@@ -505,7 +508,7 @@ namespace cloud.charging.open.protocols.OCPP
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",       CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",       CustomData.     ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
@@ -569,7 +572,7 @@ namespace cloud.charging.open.protocols.OCPP
 
                    Algorithm?.     Clone,
                    SigningMethod?. Clone,
-                   EncodingMethod?.Clone,
+                   Encoding?.Clone,
 
                    Name,
                    Description,
@@ -660,8 +663,8 @@ namespace cloud.charging.open.protocols.OCPP
             ((!SigningMethod. HasValue && !Signature.SigningMethod. HasValue) ||
               (SigningMethod. HasValue &&  Signature.SigningMethod. HasValue && SigningMethod. Value.Equals(Signature.SigningMethod. Value))) &&
 
-            ((!EncodingMethod.HasValue && !Signature.EncodingMethod.HasValue) ||
-              (EncodingMethod.HasValue &&  Signature.EncodingMethod.HasValue && EncodingMethod.Value.Equals(Signature.EncodingMethod.Value))) &&
+            ((!Encoding.HasValue && !Signature.Encoding.HasValue) ||
+              (Encoding.HasValue &&  Signature.Encoding.HasValue && Encoding.Value.Equals(Signature.Encoding.Value))) &&
 
                // Name
                // Description

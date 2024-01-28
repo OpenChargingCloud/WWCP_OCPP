@@ -234,7 +234,7 @@ namespace cloud.charging.open.protocols.OCPP
                                  Value:           signature,
                                  Algorithm:       KeyPair.Algorithm,
                                  SigningMethod:   null,
-                                 EncodingMethod:  KeyPair.Encoding,
+                                 Encoding:  KeyPair.Encoding,
                                  Name:            SignerName,
                                  Description:     Description,
                                  Timestamp:       Timestamp
@@ -326,7 +326,7 @@ namespace cloud.charging.open.protocols.OCPP
                                  Value:           signature,
                                  Algorithm:       KeyPair.Algorithm,
                                  SigningMethod:   null,
-                                 EncodingMethod:  KeyPair.Encoding,
+                                 Encoding:  KeyPair.Encoding,
                                  Name:            SignerName,
                                  Description:     Description,
                                  Timestamp:       Timestamp

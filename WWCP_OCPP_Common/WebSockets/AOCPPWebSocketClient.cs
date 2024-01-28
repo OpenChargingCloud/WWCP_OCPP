@@ -242,7 +242,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
                         var result = methodInfo.Invoke(this,
                                                        [ jsonRequestMessage.RequestTimestamp,
                                                          Connection,
-                                                         jsonRequestMessage.DestinationNodeId,
+                                                         jsonRequestMessage.DestinationId,
                                                          jsonRequestMessage.NetworkPath,
                                                          jsonRequestMessage.EventTrackingId,
                                                          jsonRequestMessage.RequestId,

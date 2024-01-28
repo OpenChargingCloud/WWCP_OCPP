@@ -702,7 +702,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                                                                                   Timestamp.Now,
                                                                                   this,
                                                                                   Connection,
-                                                                                  jsonRequestMessage.DestinationNodeId,
+                                                                                  jsonRequestMessage.DestinationId,
                                                                                   jsonRequestMessage.NetworkPath,
                                                                                   EventTrackingId,
                                                                                   Timestamp.Now,
@@ -730,7 +730,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                         var result = methodInfo.Invoke(this,
                                                        [ jsonRequestMessage.RequestTimestamp,
                                                          Connection,
-                                                         jsonRequestMessage.DestinationNodeId,
+                                                         jsonRequestMessage.DestinationId,
                                                          jsonRequestMessage.NetworkPath,
                                                          jsonRequestMessage.EventTrackingId,
                                                          jsonRequestMessage.RequestId,
@@ -746,7 +746,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
 
                         if (OCPPResponse is not null &&
                             OCPPResponse.NetworkingMode == NetworkingMode.Unknown &&
-                           !connectedNetworkingNodes.ContainsKey(OCPPResponse.DestinationNodeId))
+                           !connectedNetworkingNodes.ContainsKey(OCPPResponse.DestinationId))
                         {
                             OCPPResponse.NetworkingMode = NetworkingMode.OverlayNetwork;
                         }
@@ -800,7 +800,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                                                                                       now,
                                                                                       this,
                                                                                       Connection,
-                                                                                      jsonRequestMessage.DestinationNodeId,
+                                                                                      jsonRequestMessage.DestinationId,
                                                                                       jsonRequestMessage.NetworkPath,
                                                                                       EventTrackingId,
                                                                                       RequestTimestamp,
@@ -850,7 +850,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                                                                                       Timestamp.Now,
                                                                                       this,
                                                                                       Connection,
-                                                                                      jsonResponseMessage.DestinationNodeId,
+                                                                                      jsonResponseMessage.DestinationId,
                                                                                       jsonResponseMessage.NetworkPath,
                                                                                       EventTrackingId,
                                                                                       sendRequestState.RequestTimestamp,

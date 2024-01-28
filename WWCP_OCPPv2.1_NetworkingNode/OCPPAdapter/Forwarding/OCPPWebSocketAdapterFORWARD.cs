@@ -120,10 +120,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task ProcessJSONRequestMessage(OCPP_JSONRequestMessage JSONRequestMessage)
         {
 
-            if (AnycastIdsAllowed.Count > 0 && !AnycastIdsAllowed.Contains(JSONRequestMessage.DestinationNodeId))
+            if (AnycastIdsAllowed.Count > 0 && !AnycastIdsAllowed.Contains(JSONRequestMessage.DestinationId))
                 return;
 
-            if (AnycastIdsDenied. Count > 0 &&  AnycastIdsDenied. Contains(JSONRequestMessage.DestinationNodeId))
+            if (AnycastIdsDenied. Count > 0 &&  AnycastIdsDenied. Contains(JSONRequestMessage.DestinationId))
                 return;
 
 
@@ -314,9 +314,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
 
                     var newJSONResponseMessage  = JSONResponseMessage.ChangeNetworking(
-                                                      JSONResponseMessage.DestinationNodeId == NetworkingNode_Id.Zero
+                                                      JSONResponseMessage.DestinationId == NetworkingNode_Id.Zero
                                                           ? responseInfo.       SourceNodeId
-                                                          : JSONResponseMessage.DestinationNodeId,
+                                                          : JSONResponseMessage.DestinationId,
                                                       JSONResponseMessage.NetworkPath.Append(parentNetworkingNode.Id)
                                                   );
 

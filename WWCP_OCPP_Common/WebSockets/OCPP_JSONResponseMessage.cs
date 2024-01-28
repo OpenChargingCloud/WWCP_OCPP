@@ -34,7 +34,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
     /// <param name="ResponseTimestamp">The response time stamp.</param>
     /// <param name="EventTrackingId">The event tracking identification.</param>
     /// <param name="NetworkingMode">The OCPP networking mode to use.</param>
-    /// <param name="DestinationNodeId">The networking node identification of the message destination.</param>
+    /// <param name="DestinationId">The networking node identification or Any- or Multicast address of the message destination.</param>
     /// <param name="NetworkPath">The optional (recorded) path of the request through the overlay network.</param>
     /// <param name="RequestId">An unique request identification.</param>
     /// <param name="Payload">A JSON response message payload.</param>
@@ -42,7 +42,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
     public class OCPP_JSONResponseMessage(DateTime           ResponseTimestamp,
                                           EventTracking_Id   EventTrackingId,
                                           NetworkingMode     NetworkingMode,
-                                          NetworkingNode_Id  DestinationNodeId,
+                                          NetworkingNode_Id  DestinationId,
                                           NetworkPath        NetworkPath,
                                           Request_Id         RequestId,
                                           JObject            Payload,
@@ -67,9 +67,9 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         public NetworkingMode     NetworkingMode       { get; set; } = NetworkingMode;
 
         /// <summary>
-        /// The networking node identification of the message destination.
+        /// The networking node identification or Any- or Multicast address of the message destination.
         /// </summary>
-        public NetworkingNode_Id  DestinationNodeId    { get; }      = DestinationNodeId;
+        public NetworkingNode_Id  DestinationId        { get; }      = DestinationId;
 
         /// <summary>
         /// The (recorded) path of the request through the overlay network.
@@ -272,11 +272,11 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
             => NetworkingMode switch {
 
-                   #region OCPP standard mode
+                   #region OCPP Standard Mode
 
                    // [
-                   //     3,                         // MessageType: CALLRESULT (Server-to-Client)
-                   //    "19223201",                 // RequestId copied from request
+                   //     3,           // MessageType: CALLRESULT (Server-to-Client)
+                   //    "19223201",   // RequestId copied from request
                    //    {
                    //        "status":            "Accepted",
                    //        "currentTime":       "2013-02-01T20:53:32.486Z",
@@ -290,13 +290,13 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
                    #endregion
 
-                   #region OCPP Overlay Network mode
+                   #region OCPP Overlay Network Mode
 
                    // [
-                   //     3,                         // MessageType: CALLRESULT (Server-to-Client)
-                   //     "CSMS",
-                   //     [ "CS01", "NN01" ],
-                   //    "19223201",                 // RequestId copied from request
+                   //     3,                    // MessageType: CALLRESULT (Server-to-Client)
+                   //     "CSMS",               // Destination Identification/Any-/Multicast
+                   //     [ "CS01", "NN01" ],   // Network Source Path
+                   //    "19223201",            // RequestId copied from request
                    //    {
                    //        "status":            "Accepted",
                    //        "currentTime":       "2013-02-01T20:53:32.486Z",
@@ -305,7 +305,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                    // ]
 
                    _ => new (3,
-                             DestinationNodeId.ToString(),
+                             DestinationId.ToString(),
                              NetworkPath.      ToJSON(),
                              RequestId.        ToString(),
                              Payload)
@@ -360,7 +360,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
             => new (ResponseTimestamp,
                     EventTrackingId,
                     NewNetworkingMode    ?? NetworkingMode,
-                    NewDestinationNodeId ?? DestinationNodeId,
+                    NewDestinationNodeId ?? DestinationId,
                     NewNetworkPath       ?? NetworkPath,
                     RequestId,
                     Payload,
@@ -368,18 +368,18 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
         #endregion
 
-        #region ChangeDestionationNodeId(NewDestinationNodeId)
+        #region ChangeDestionationId(NewDestinationId)
 
         /// <summary>
-        /// Change the destination node identification.
+        /// Change the destination identification.
         /// </summary>
-        /// <param name="NewDestinationNodeId">A new destination node identification.</param>
-        public OCPP_JSONResponseMessage ChangeDestionationNodeId(NetworkingNode_Id NewDestinationNodeId)
+        /// <param name="NewDestinationId">A new destination identification.</param>
+        public OCPP_JSONResponseMessage ChangeDestionationId(NetworkingNode_Id NewDestinationId)
 
             => new (ResponseTimestamp,
                     EventTrackingId,
                     NetworkingMode,
-                    NewDestinationNodeId,
+                    NewDestinationId,
                     NetworkPath,
                     RequestId,
                     Payload,
@@ -398,7 +398,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
             => new (ResponseTimestamp,
                     EventTrackingId,
                     NetworkingMode,
-                    DestinationNodeId,
+                    DestinationId,
                     NetworkPath.Append(NetworkingNodeId),
                     RequestId,
                     Payload,
@@ -406,7 +406,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
         #endregion
 
-        #region AppendToNetworkPath(NewNetworkingMode)
+        #region ChangeNetworkingMode(NewNetworkingMode)
 
         /// <summary>
         /// Change the networking mode.
@@ -417,7 +417,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
             => new (ResponseTimestamp,
                     EventTrackingId,
                     NewNetworkingMode,
-                    DestinationNodeId,
+                    DestinationId,
                     NetworkPath,
                     RequestId,
                     Payload,

@@ -55,7 +55,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             if (!PublishFirmwareRequest.TryParse(JSONRequestMessage.Payload,
                                                  JSONRequestMessage.RequestId,
-                                                 JSONRequestMessage.DestinationNodeId,
+                                                 JSONRequestMessage.DestinationId,
                                                  JSONRequestMessage.NetworkPath,
                                                  out var Request,
                                                  out var errorResponse,
