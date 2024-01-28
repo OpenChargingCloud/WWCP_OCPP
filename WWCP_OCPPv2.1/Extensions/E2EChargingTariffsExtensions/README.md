@@ -9,7 +9,7 @@ Charging Tariffs might be part of OCPP v2.1 Draft 3++, but the current approach 
 
 ## Differences to OCPI and OCPP
 
-The charging tariff data structure is based on OCPI v2.2.1 and OCPP v2.1 draft 2 v0.44, but has many advantages over it:
+The charging tariff data structure is based on OCPI v2.2.1 and OCPP v2.1 draft 3 v0.47, but has many advantages over it:
 
 1. It is digitally signed, so that the EV driver can be sure that the tariff was not manipulated.
 2. The charging tariff has a **well-defined read-only globally unique** and **unique over time** **identification**, so that it can be referenced by other data structures like *charging tickets* easily.
