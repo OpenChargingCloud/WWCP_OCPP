@@ -460,7 +460,7 @@ namespace cloud.charging.open.protocols.OCPP
                                ? new JProperty("serialization",   Serialization)
                                : null,
 
-                           Encoding.     HasValue && Encoding.     Value != CryptoEncoding.     base64
+                           Encoding.     HasValue && Encoding.     Value != CryptoEncoding.     BASE64
                                ? new JProperty("encoding",        Encoding)
                                : null,
 
