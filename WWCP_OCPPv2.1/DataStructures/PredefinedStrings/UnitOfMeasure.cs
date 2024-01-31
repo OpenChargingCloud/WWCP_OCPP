@@ -290,6 +290,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public static UnitOfMeasure Percent       { get; }
             = Register("Percent");
 
+        /// <summary>
+        /// TimeSpan
+        /// </summary>
+        public static UnitOfMeasure TimeSpan      { get; }
+            = Register("TimeSpan");
+
 #pragma warning restore IDE1006 // Naming Styles
 
         #endregion

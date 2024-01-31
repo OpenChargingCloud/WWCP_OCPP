@@ -17,19 +17,23 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
-namespace cloud.charging.open.protocols.OCPP
+namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// Extension methods for signature informations.
+    /// Extension methods for user roles.
     /// </summary>
     public static class UserRoleExtensions
     {
@@ -53,6 +57,7 @@ namespace cloud.charging.open.protocols.OCPP
                     KeyPair.Algorithm,
                     KeyPair.Serialization,
                     KeyPair.Encoding,
+                    null,
                     Name        is not null ? (signableMessage) => Name            : null,
                     Description is not null ? (signableMessage) => Description     : null,
                     Timestamp.HasValue      ? (signableMessage) => Timestamp.Value : null,
@@ -79,6 +84,7 @@ namespace cloud.charging.open.protocols.OCPP
                     KeyPair.Algorithm,
                     KeyPair.Serialization,
                     KeyPair.Encoding,
+                    null,
                     NameGenerator,
                     DescriptionGenerator,
                     TimestampGenerator,
@@ -105,6 +111,7 @@ namespace cloud.charging.open.protocols.OCPP
                             keyPair.Algorithm,
                             keyPair.Serialization,
                             keyPair.Encoding,
+                            null,
                             SignaturePolicyEntry.UserIdGenerator,
                             SignaturePolicyEntry.DescriptionGenerator,
                             SignaturePolicyEntry.TimestampGenerator,
@@ -122,31 +129,19 @@ namespace cloud.charging.open.protocols.OCPP
 
 
     /// <summary>
-    /// An OCPP CSE asymmetric cryptographic signature information.
+    /// An user role.
     /// </summary>
-    public class UserRole : KeyPair,
+    public class UserRole : AUserRole,
                             IEquatable<UserRole>
     {
 
         #region Properties
 
         /// <summary>
-        /// The optional name of a person or process signing the message.
+        /// The optional access rights on device model components.
         /// </summary>
         [Optional]
-        public Func<ISignableMessage, String>?      SignerName     { get; }
-
-        /// <summary>
-        /// The optional multi-language description or explanation for signing the message.
-        /// </summary>
-        [Optional]
-        public Func<ISignableMessage, I18NString>?  Description    { get; }
-
-        /// <summary>
-        /// The optional timestamp of the message signature.
-        /// </summary>
-        [Optional]
-        public Func<ISignableMessage, DateTime>?    Timestamp      { get; }
+        public IEnumerable<ComponentAccessRights>  ComponentAccessRights    { get; }
 
         #endregion
 
@@ -164,28 +159,34 @@ namespace cloud.charging.open.protocols.OCPP
         /// <param name="Description">An optional multi-language description or explanation for signing the message.</param>
         /// <param name="Timestamp">An optional timestamp of the message signature.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public UserRole(Byte[]                               Private,
-                        Byte[]                               Public,
-                        CryptoAlgorithm?                     Algorithm       = null,
-                        CryptoSerialization?                 Serialization   = null,
-                        CryptoEncoding?                      Encoding        = null,
-                        Func<ISignableMessage, String>?      SignerName      = null,
-                        Func<ISignableMessage, I18NString>?  Description     = null,
-                        Func<ISignableMessage, DateTime>?    Timestamp       = null,
-                        CustomData?                          CustomData      = null)
+        public UserRole(Byte[]                               Public,
 
-            : base(Private,
-                   Public,
+                        Byte[]?                              Private                 = null,
+                        CryptoAlgorithm?                     Algorithm               = null,
+                        CryptoSerialization?                 Serialization           = null,
+                        CryptoEncoding?                      Encoding                = null,
+
+                        IEnumerable<ComponentAccessRights>?  ComponentAccessRights   = null,
+
+                        Func<ISignableMessage, String>?      SignerName              = null,
+                        Func<ISignableMessage, I18NString>?  Description             = null,
+                        Func<ISignableMessage, DateTime>?    Timestamp               = null,
+
+                        CustomData?                          CustomData              = null)
+
+            : base(Public,
+                   Private,
                    Algorithm,
                    Serialization,
                    Encoding,
+                   SignerName,
+                   Description,
+                   Timestamp,
                    CustomData)
 
         {
 
-            this.SignerName   = SignerName;
-            this.Description  = Description;
-            this.Timestamp    = Timestamp;
+            this.ComponentAccessRights = ComponentAccessRights?.Distinct() ?? [];
 
             unchecked
             {
@@ -259,9 +260,9 @@ namespace cloud.charging.open.protocols.OCPP
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="UserRole">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject        JSON,
-                                       out UserRole?  UserRole,
-                                       out String?    ErrorResponse)
+        public static Boolean TryParse(JObject                             JSON,
+                                       [NotNullWhen(true)]  out UserRole?  UserRole,
+                                       [NotNullWhen(false)] out String?    ErrorResponse)
 
             => TryParse(JSON,
                         out UserRole,
@@ -277,8 +278,8 @@ namespace cloud.charging.open.protocols.OCPP
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomUserRoleParser">A delegate to parse custom signature informations.</param>
         public static Boolean TryParse(JObject                                 JSON,
-                                       out UserRole?                           UserRole,
-                                       out String?                             ErrorResponse,
+                                       [NotNullWhen(true)]  out UserRole?      UserRole,
+                                       [NotNullWhen(false)] out String?        ErrorResponse,
                                        CustomJObjectParserDelegate<UserRole>?  CustomUserRoleParser   = null)
         {
 
@@ -310,6 +311,7 @@ namespace cloud.charging.open.protocols.OCPP
                 }
 
                 #endregion
+
 
                 #region Algorithm         [optional]
 
@@ -356,6 +358,22 @@ namespace cloud.charging.open.protocols.OCPP
 
                 #endregion
 
+
+                #region Encoding          [optional]
+
+                if (JSON.ParseOptionalHashSet("encoding",
+                                              "encoding method",
+                                              OCPPv2_1.ComponentAccessRights.TryParse,
+                                              out HashSet<ComponentAccessRights> ComponentAccessRights,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+
                 #region SignerName        [optional]
 
                 var SignerName     = JSON.GetString("signerName");
@@ -389,6 +407,7 @@ namespace cloud.charging.open.protocols.OCPP
 
                 #endregion
 
+
                 #region CustomData        [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
@@ -410,6 +429,9 @@ namespace cloud.charging.open.protocols.OCPP
                                Algorithm,
                                Serialization,
                                Encoding,
+
+                               ComponentAccessRights,
+
                                SignerName  is not null ? (signableMessage) => SignerName      : null,
                                Description is not null ? (signableMessage) => Description     : null,
                                Timestamp.HasValue      ? (signableMessage) => Timestamp.Value : null,
@@ -475,6 +497,34 @@ namespace cloud.charging.open.protocols.OCPP
                        : json;
 
         }
+
+        #endregion
+
+        #region Clone()
+
+        /// <summary>
+        /// Clone this object.
+        /// </summary>
+        public new UserRole Clone()
+
+            => new (
+
+                   (Byte[]) Private.Clone(),
+                   (Byte[]) Public. Clone(),
+
+                   Algorithm?.    Clone,
+                   Serialization?.Clone,
+                   Encoding?.     Clone,
+
+                   ComponentAccessRights.Select(componentAccessRights => componentAccessRights.Clone()),
+
+                   SignerName,
+                   Description,
+                   Timestamp,
+
+                   CustomData
+
+               );
 
         #endregion
 

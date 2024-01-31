@@ -452,7 +452,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                    GeneratedAt:             Timestamp.Now,
                                    ReportData:              new[] {
                                                                 new ReportData(
-                                                                    Component:                new Component(
+                                                                    Component:                 new Component(
                                                                                                    Name:                 "Alert System!",
                                                                                                    Instance:             "Alert System #1",
                                                                                                    EVSE:                 new EVSE(
@@ -462,7 +462,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                                                                                                          ),
                                                                                                    CustomData:           null
                                                                                                ),
-                                                                     Variable:                 new Variable(
+                                                                    Variable:                  new Variable(
                                                                                                    Name:                 "Temperature Sensors",
                                                                                                    Instance:             "Temperature Sensor #1",
                                                                                                    CustomData:           null
@@ -541,21 +541,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                    GeneratedAt:                       Timestamp.Now,
                                    MonitoringData:                    new[] {
                                                                           new MonitoringData(
-                                                                              Component:              new Component(
-                                                                                                          Name:             "Alert System!",
-                                                                                                          Instance:         "Alert System #1",
-                                                                                                          EVSE:             new EVSE(
-                                                                                                                                Id:            EVSE_Id.Parse(1),
-                                                                                                                                ConnectorId:   Connector_Id.Parse(1),
-                                                                                                                                CustomData:    null
-                                                                                                                            ),
-                                                                                                          CustomData:       null
-                                                                                                      ),
-                                                                              Variable:               new Variable(
-                                                                                                          Name:             "Temperature Sensors",
-                                                                                                          Instance:         "Temperature Sensor #1",
-                                                                                                          CustomData:       null
-                                                                                                      ),
+                                                                              Component:             new Component(
+                                                                                                         Name:             "Alert System!",
+                                                                                                         Instance:         "Alert System #1",
+                                                                                                         EVSE:             new EVSE(
+                                                                                                                               Id:            EVSE_Id.Parse(1),
+                                                                                                                               ConnectorId:   Connector_Id.Parse(1),
+                                                                                                                               CustomData:    null
+                                                                                                                           ),
+                                                                                                         CustomData:       null
+                                                                                                     ),
+                                                                              Variable:              new Variable(
+                                                                                                         Name:             "Temperature Sensors",
+                                                                                                         Instance:         "Temperature Sensor #1",
+                                                                                                         CustomData:       null
+                                                                                                     ),
                                                                               VariableMonitorings:   new[] {
                                                                                                          new VariableMonitoring(
                                                                                                              Id:            VariableMonitoring_Id.NewRandom,

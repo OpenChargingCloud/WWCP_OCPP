@@ -296,6 +296,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     Multiplier,
                     CustomData);
 
+
         /// <summary>
         /// Degrees (temperature).
         /// </summary>
@@ -305,6 +306,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             => new (UnitOfMeasure.Fahrenheit,
                     Multiplier,
                     CustomData);
+
 
         /// <summary>
         /// Watt-hours (energy).
@@ -316,6 +318,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     Multiplier,
                     CustomData);
 
+
         /// <summary>
         /// kiloWatt-hours (energy).
         /// </summary>
@@ -325,6 +328,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             => new (UnitOfMeasure.kWh,
                     Multiplier,
                     CustomData);
+
 
         /// <summary>
         /// Var-hours (reactive energy).
@@ -336,6 +340,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     Multiplier,
                     CustomData);
 
+
         /// <summary>
         /// kilovar-hours (reactive energy).
         /// </summary>
@@ -345,6 +350,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             => new (UnitOfMeasure.kvarh,
                     Multiplier,
                     CustomData);
+
 
         /// <summary>
         /// Watts (power).
@@ -356,6 +362,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     Multiplier,
                     CustomData);
 
+
         /// <summary>
         /// kiloWatts (power).
         /// </summary>
@@ -365,6 +372,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             => new (UnitOfMeasure.kW,
                     Multiplier,
                     CustomData);
+
 
         /// <summary>
         /// VoltAmpere (apparent power).
@@ -376,6 +384,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     Multiplier,
                     CustomData);
 
+
         /// <summary>
         /// kiloVolt Ampere (apparent power).
         /// </summary>
@@ -385,6 +394,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             => new (UnitOfMeasure.kVA,
                     Multiplier,
                     CustomData);
+
 
         /// <summary>
         /// Vars (reactive power).
@@ -396,6 +406,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     Multiplier,
                     CustomData);
 
+
         /// <summary>
         /// kilovars (reactive power).
         /// </summary>
@@ -405,6 +416,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             => new (UnitOfMeasure.kvar,
                     Multiplier,
                     CustomData);
+
 
         /// <summary>
         /// Amperes (current).
@@ -416,6 +428,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     Multiplier,
                     CustomData);
 
+
         /// <summary>
         /// Voltage (r.m.s. AC).
         /// </summary>
@@ -425,6 +438,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             => new (UnitOfMeasure.Voltage,
                     Multiplier,
                     CustomData);
+
 
         /// <summary>
         /// Degrees Kelvin (temperature).
@@ -436,6 +450,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     Multiplier,
                     CustomData);
 
+
         /// <summary>
         /// Percentage.
         /// </summary>
@@ -443,6 +458,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                              CustomData?  CustomData   = null)
 
             => new (UnitOfMeasure.Percent,
+                    Multiplier,
+                    CustomData);
+
+
+        /// <summary>
+        /// TimeSpan (default: Seconds).
+        /// </summary>
+        public static UnitsOfMeasure TimeSpan(Int32        Multiplier   = 0,
+                                              CustomData?  CustomData   = null)
+
+            => new (UnitOfMeasure.TimeSpan,
                     Multiplier,
                     CustomData);
 

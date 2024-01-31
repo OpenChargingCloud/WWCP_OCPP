@@ -33,8 +33,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// <summary>
     /// A variable.
     /// </summary>
-    public class Variable : ACustomData,
-                            IEquatable<Variable>
+    public class VariableConfig : ACustomData,
+                                  IEquatable<VariableConfig>
     {
 
         #region Properties
@@ -44,14 +44,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// [max 50]
         /// </summary>
         [Mandatory]
-        public String   Name        { get; }
+        public String                                Name               { get; }
 
         /// <summary>
         /// The optional case insensitive name of the instance in case the variable exists as multiple instances.
         /// [max 50]
         /// </summary>
         [Optional]
-        public String?  Instance    { get; }
+        public String?                               Instance           { get; }
+
+
+        [Optional]
+        public IEnumerable<VariableAttribute>        Attributes         { get; }
+
+
+        [Optional]
+        public IEnumerable<VariableCharacteristics>  Characteristics    { get; }
+
+
+        [Optional]
+        public IEnumerable<VariableMonitoring>       Monitorings        { get; }
+
+
+        [Optional]
+        public I18NString?                           Description        { get; }
 
         #endregion
 
@@ -63,16 +79,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Name">The case insensitive name of the variable. Name should be taken from the list of standardized variable names whenever possible.</param>
         /// <param name="Instance">The optional case insensitive name of the instance in case the variable exists as multiple instances.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public Variable(String       Name,
-                        String?      Instance     = null,
-                        CustomData?  CustomData   = null)
+        public VariableConfig(String                                 Name,
+                              String?                                Instance          = null,
+
+                              IEnumerable<VariableAttribute>?        Attributes        = null,
+                              IEnumerable<VariableCharacteristics>?  Characteristics   = null,
+                              IEnumerable<VariableMonitoring>?       Monitorings       = null,
+                              I18NString?                            Description       = null,
+
+                              CustomData?                            CustomData        = null)
 
             : base(CustomData)
 
         {
 
-            this.Name      = Name.     Trim();
-            this.Instance  = Instance?.Trim();
+            this.Name             = Name.            Trim();
+            this.Instance         = Instance?.       Trim();
+
+            this.Attributes       = Attributes?.     Distinct() ?? [];
+            this.Characteristics  = Characteristics?.Distinct() ?? [];
+            this.Monitorings      = Monitorings?.    Distinct() ?? [];
+            this.Description      = Description;
 
             if (this.Name.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(Name), "The given name must not be null or empty!");
@@ -87,7 +114,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// An invalid variable.
         /// </summary>
-        public static Variable Invalid
+        public static VariableConfig Invalid
 
             => new ("<invalid!>");
 
@@ -96,9 +123,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Documentation
 
-        // "VariableType": {
+        // "VariableConfigType": {
         //   "description": "Reference key to a component-variable.\r\n",
-        //   "javaType": "Variable",
+        //   "javaType": "VariableConfig",
         //   "type": "object",
         //   "additionalProperties": false,
         //   "properties": {
@@ -123,21 +150,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region (static) Parse   (JSON, CustomVariableParser = null)
+        #region (static) Parse   (JSON, CustomVariableConfigParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a variable.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomVariableParser">A delegate to parse custom variable JSON objects.</param>
-        public static Variable Parse(JObject                                 JSON,
-                                     CustomJObjectParserDelegate<Variable>?  CustomVariableParser   = null)
+        /// <param name="CustomVariableConfigParser">A delegate to parse custom variable JSON objects.</param>
+        public static VariableConfig Parse(JObject                                 JSON,
+                                     CustomJObjectParserDelegate<VariableConfig>?  CustomVariableConfigParser   = null)
         {
 
             if (TryParse(JSON,
                          out var variable,
                          out var errorResponse,
-                         CustomVariableParser) &&
+                         CustomVariableConfigParser) &&
                 variable is not null)
             {
                 return variable;
@@ -150,7 +177,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region (static) TryParse(JSON, out Variable, CustomVariableParser = null)
+        #region (static) TryParse(JSON, out VariableConfig, CustomVariableConfigParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -158,14 +185,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Try to parse the given JSON representation of a variable.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="Variable">The parsed variable.</param>
+        /// <param name="VariableConfig">The parsed variable.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                             JSON,
-                                       [NotNullWhen(true)]  out Variable?  Variable,
-                                       [NotNullWhen(false)] out String?    ErrorResponse)
+        public static Boolean TryParse(JObject                                   JSON,
+                                       [NotNullWhen(true)]  out VariableConfig?  VariableConfig,
+                                       [NotNullWhen(false)] out String?          ErrorResponse)
 
             => TryParse(JSON,
-                        out Variable,
+                        out VariableConfig,
                         out ErrorResponse,
                         null);
 
@@ -174,21 +201,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Try to parse the given JSON representation of a variable.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="Variable">The parsed variable.</param>
+        /// <param name="VariableConfig">The parsed variable.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomVariableParser">A delegate to parse custom variable JSON objects.</param>
-        public static Boolean TryParse(JObject                                 JSON,
-                                       [NotNullWhen(true)]  out Variable?      Variable,
-                                       [NotNullWhen(false)] out String?        ErrorResponse,
-                                       CustomJObjectParserDelegate<Variable>?  CustomVariableParser)
+        /// <param name="CustomVariableConfigParser">A delegate to parse custom variable JSON objects.</param>
+        public static Boolean TryParse(JObject                                       JSON,
+                                       [NotNullWhen(true)]  out VariableConfig?      VariableConfig,
+                                       [NotNullWhen(false)] out String?              ErrorResponse,
+                                       CustomJObjectParserDelegate<VariableConfig>?  CustomVariableConfigParser)
         {
 
             try
             {
 
-                Variable = default;
+                VariableConfig = default;
 
-                #region Name          [mandatory]
+                #region Name               [mandatory]
 
                 if (!JSON.ParseMandatoryText("name",
                                              "variable name",
@@ -200,13 +227,71 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region Type          [optional]
+                #region Type               [optional]
 
                 var Instance = JSON.GetString("type");
 
                 #endregion
 
-                #region CustomData    [optional]
+
+                #region Attributes         [optional]
+
+                if (JSON.ParseOptionalHashSet("attributes",
+                                              "variable attributes",
+                                              VariableAttribute.TryParse,
+                                              out HashSet<VariableAttribute> Attributes,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region Characteristics    [optional]
+
+                if (JSON.ParseOptionalHashSet("characteristics",
+                                              "variable characteristics",
+                                              OCPPv2_1.VariableCharacteristics.TryParse,
+                                              out HashSet<VariableCharacteristics> Characteristics,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region Monitorings        [optional]
+
+                if (JSON.ParseOptionalHashSet("monitorings",
+                                              "variable monitorings",
+                                              VariableMonitoring.TryParse,
+                                              out HashSet<VariableMonitoring> Monitorings,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region Description        [optional]
+
+                if (JSON.ParseOptional("description",
+                                       "variable description",
+                                       I18NString.TryParse,
+                                       out I18NString? Description,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+
+                #region CustomData         [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
@@ -221,21 +306,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                Variable = new Variable(Name,
-                                        Instance,
-                                        CustomData);
+                VariableConfig = new VariableConfig(
 
-                if (CustomVariableParser is not null)
-                    Variable = CustomVariableParser(JSON,
-                                                    Variable);
+                                     Name,
+                                     Instance,
+
+                                     Attributes,
+                                     Characteristics,
+                                     Monitorings,
+                                     Description,
+
+                                     CustomData
+
+                                 );
+
+                if (CustomVariableConfigParser is not null)
+                    VariableConfig = CustomVariableConfigParser(JSON,
+                                                                VariableConfig);
 
                 return true;
 
             }
             catch (Exception e)
             {
-                Variable       = default;
-                ErrorResponse  = "The given JSON representation of a variable is invalid: " + e.Message;
+                VariableConfig  = default;
+                ErrorResponse   = "The given JSON representation of a variable is invalid: " + e.Message;
                 return false;
             }
 
@@ -243,14 +338,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region ToJSON(CustomVariableSerializer = null, CustomCustomDataSerializer = null)
+        #region ToJSON(CustomVariableConfigSerializer = null, CustomCustomDataSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomVariableSerializer">A delegate to serialize custom variables.</param>
+        /// <param name="CustomVariableConfigSerializer">A delegate to serialize custom variables.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<Variable>?    CustomVariableSerializer     = null,
+        public JObject ToJSON(CustomJObjectSerializerDelegate<VariableConfig>?    CustomVariableConfigSerializer     = null,
                               CustomJObjectSerializerDelegate<CustomData>?  CustomCustomDataSerializer   = null)
         {
 
@@ -268,8 +363,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                        );
 
-            return CustomVariableSerializer is not null
-                       ? CustomVariableSerializer(this, json)
+            return CustomVariableConfigSerializer is not null
+                       ? CustomVariableConfigSerializer(this, json)
                        : json;
 
         }
@@ -281,7 +376,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Clone this object.
         /// </summary>
-        public Variable Clone()
+        public VariableConfig Clone()
 
             => new (
 
@@ -290,6 +385,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    Instance is not null
                        ? new String(Instance.ToCharArray())
                        : null,
+
+                   Attributes.     Select(variableattribute      => variableattribute.     Clone()),
+                   Characteristics.Select(variableCharacteristic => variableCharacteristic.Clone()),
+                   Monitorings.    Select(variableMonitoring     => variableMonitoring.    Clone()),
+
+                   Description?.Clone(),
 
                    CustomData
 
@@ -300,50 +401,50 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Operator overloading
 
-        #region Operator == (Variable1, Variable2)
+        #region Operator == (VariableConfig1, VariableConfig2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="Variable1">A variable.</param>
-        /// <param name="Variable2">Another variable.</param>
+        /// <param name="VariableConfig1">A variable.</param>
+        /// <param name="VariableConfig2">Another variable.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (Variable? Variable1,
-                                           Variable? Variable2)
+        public static Boolean operator == (VariableConfig? VariableConfig1,
+                                           VariableConfig? VariableConfig2)
         {
 
             // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(Variable1, Variable2))
+            if (ReferenceEquals(VariableConfig1, VariableConfig2))
                 return true;
 
             // If one is null, but not both, return false.
-            if (Variable1 is null || Variable2 is null)
+            if (VariableConfig1 is null || VariableConfig2 is null)
                 return false;
 
-            return Variable1.Equals(Variable2);
+            return VariableConfig1.Equals(VariableConfig2);
 
         }
 
         #endregion
 
-        #region Operator != (Variable1, Variable2)
+        #region Operator != (VariableConfig1, VariableConfig2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="Variable1">A variable.</param>
-        /// <param name="Variable2">Another variable.</param>
+        /// <param name="VariableConfig1">A variable.</param>
+        /// <param name="VariableConfig2">Another variable.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (Variable? Variable1,
-                                           Variable? Variable2)
+        public static Boolean operator != (VariableConfig? VariableConfig1,
+                                           VariableConfig? VariableConfig2)
 
-            => !(Variable1 == Variable2);
-
-        #endregion
+            => !(VariableConfig1 == VariableConfig2);
 
         #endregion
 
-        #region IEquatable<Variable> Members
+        #endregion
+
+        #region IEquatable<VariableConfig> Members
 
         #region Equals(Object)
 
@@ -353,25 +454,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Object">A variable to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is Variable variable &&
+            => Object is VariableConfig variable &&
                    Equals(variable);
 
         #endregion
 
-        #region Equals(Variable)
+        #region Equals(VariableConfig)
 
         /// <summary>
         /// Compares two variables for equality.
         /// </summary>
-        /// <param name="Variable">A variable to compare with.</param>
-        public Boolean Equals(Variable? Variable)
+        /// <param name="VariableConfig">A variable to compare with.</param>
+        public Boolean Equals(VariableConfig? VariableConfig)
 
-            => Variable is not null &&
+            => VariableConfig is not null &&
 
-               String.Equals(Name,     Variable.Name,     StringComparison.OrdinalIgnoreCase) &&
-               String.Equals(Instance, Variable.Instance, StringComparison.OrdinalIgnoreCase) &&
+               String.Equals(Name,     VariableConfig.Name,     StringComparison.OrdinalIgnoreCase) &&
+               String.Equals(Instance, VariableConfig.Instance, StringComparison.OrdinalIgnoreCase) &&
 
-               base.  Equals(Variable);
+               base.  Equals(VariableConfig);
 
         #endregion
 

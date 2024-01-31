@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -182,9 +184,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="VariableMonitoring">The parsed variable monitoring.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                  JSON,
-                                       out VariableMonitoring?  VariableMonitoring,
-                                       out String?              ErrorResponse)
+        public static Boolean TryParse(JObject                                       JSON,
+                                       [NotNullWhen(true)]  out VariableMonitoring?  VariableMonitoring,
+                                       [NotNullWhen(false)] out String?              ErrorResponse)
 
             => TryParse(JSON,
                         out VariableMonitoring,
@@ -200,8 +202,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomVariableMonitoringParser">A delegate to parse custom variable monitoring JSON objects.</param>
         public static Boolean TryParse(JObject                                           JSON,
-                                       out VariableMonitoring?                           VariableMonitoring,
-                                       out String?                                       ErrorResponse,
+                                       [NotNullWhen(true)]  out VariableMonitoring?      VariableMonitoring,
+                                       [NotNullWhen(false)] out String?                  ErrorResponse,
                                        CustomJObjectParserDelegate<VariableMonitoring>?  CustomVariableMonitoringParser)
         {
 
@@ -349,6 +351,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                        : json;
 
         }
+
+        #endregion
+
+        #region Clone()
+
+        /// <summary>
+        /// Clone this object.
+        /// </summary>
+        public VariableMonitoring Clone()
+
+            => new(
+
+                   Id,
+                   Transaction,
+                   Value,
+                   Type,
+                   Severity,
+
+                   CustomData
+
+               );
 
         #endregion
 

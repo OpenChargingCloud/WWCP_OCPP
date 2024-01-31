@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Styx;
@@ -98,12 +100,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ValuesList">The optional CSV list of allowed values when variable is Option/Member/SequenceList.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public VariableCharacteristics(DataTypes             DataType,
-                                       Boolean               SupportsMonitoring,
-                                       UnitsOfMeasure?       Unit,
-                                       Decimal?              MinLimit,
-                                       Decimal?              MaxLimit,
-                                       IEnumerable<String>?  ValuesList,
-                                       CustomData?           CustomData   = null)
+                                       Boolean               SupportsMonitoring   = false,
+                                       UnitsOfMeasure?       Unit                 = null,
+                                       Decimal?              MinLimit             = null,
+                                       Decimal?              MaxLimit             = null,
+                                       IEnumerable<String>?  ValuesList           = null,
+                                       CustomData?           CustomData           = null)
 
             : base(CustomData)
 
@@ -114,7 +116,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.Unit                = Unit;
             this.MinLimit            = MinLimit;
             this.MaxLimit            = MaxLimit;
-            this.ValuesList          = ValuesList?.Distinct() ?? Array.Empty<String>();
+            this.ValuesList          = ValuesList?.Distinct() ?? [];
 
         }
 
@@ -203,9 +205,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="VariableCharacteristics">The parsed variable characteristics.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                       JSON,
-                                       out VariableCharacteristics?  VariableCharacteristics,
-                                       out String?                   ErrorResponse)
+        public static Boolean TryParse(JObject                                            JSON,
+                                       [NotNullWhen(true)]  out VariableCharacteristics?  VariableCharacteristics,
+                                       [NotNullWhen(false)] out String?                   ErrorResponse)
 
             => TryParse(JSON,
                         out VariableCharacteristics,
@@ -221,8 +223,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomVariableCharacteristicsParser">A delegate to parse custom variable characteristics JSON objects.</param>
         public static Boolean TryParse(JObject                                                JSON,
-                                       out VariableCharacteristics?                           VariableCharacteristics,
-                                       out String?                                            ErrorResponse,
+                                       [NotNullWhen(true)]  out VariableCharacteristics?      VariableCharacteristics,
+                                       [NotNullWhen(false)] out String?                       ErrorResponse,
                                        CustomJObjectParserDelegate<VariableCharacteristics>?  CustomVariableCharacteristicsParser)
         {
 
@@ -400,6 +402,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                        : json;
 
         }
+
+        #endregion
+
+        #region Clone()
+
+        /// <summary>
+        /// Clone this object.
+        /// </summary>
+        public VariableCharacteristics Clone()
+
+            => new(
+
+                   DataType,
+                   SupportsMonitoring,
+                   Unit?.Clone(),
+                   MinLimit,
+                   MaxLimit,
+                   ValuesList.Any() ? ValuesList.Select(value => new String(value.ToCharArray())) : [],
+
+                   CustomData
+
+               );
 
         #endregion
 

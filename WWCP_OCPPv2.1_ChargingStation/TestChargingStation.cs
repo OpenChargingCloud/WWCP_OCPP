@@ -35,6 +35,7 @@ using org.GraphDefined.Vanaheimr.Hermod.Logging;
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
+using Org.BouncyCastle.Asn1.Cms;
 
 #endregion
 
@@ -401,6 +402,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             }
 
         }
+
+
+        public List<ComponentConfig> ComponentConfigs = [];
+
+        public List<UserRole> UserRoles = [];
 
 
         // Controlled by the CSMS!
@@ -2155,6 +2161,40 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.signaturePolicies.Add(SignaturePolicy ?? new SignaturePolicy());
 
             this.EnqueuedRequests         = [];
+
+
+            #region Register Component Configurations
+
+            ComponentConfigs.Add(new OCPPCommCtrlr("Instance #1"));
+            ComponentConfigs.Add(new SecurityCtrlr(Id.ToString(), "GraphDefined", "Instance #1"));
+
+            // A CSMS can request a report of the CustomizationCtrlr component to get a list of all customizations that are supported by the charging station.
+
+            #endregion
+
+            #region Register User Roles
+
+            UserRoles.Add(new UserRole(
+
+                              Private:                 new Byte[0],
+                              Public:                  new Byte[0],
+
+                              Algorithm:               null,
+                              Serialization:           null,
+                              Encoding:                null,
+
+                              ComponentAccessRights:   null,
+
+                              SignerName:              null,
+                              Description:             null,
+                              Timestamp:               null,
+
+                              CustomData:              null
+
+                          ));
+
+            #endregion
+
 
         }
 

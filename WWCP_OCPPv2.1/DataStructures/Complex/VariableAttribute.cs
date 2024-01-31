@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -86,11 +88,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Persistent">Optional persistency of the attribute across system reboots or power down. Default when omitted: false (no persistency).</param>
         /// <param name="Constant">Optional constancy of the attribute at runtime. Default when omitted: false.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public VariableAttribute(AttributeTypes?   Type,
-                                 String?           Value,
-                                 MutabilityTypes?  Mutability,
-                                 Boolean?          Persistent,
-                                 Boolean?          Constant,
+        public VariableAttribute(AttributeTypes?   Type         = null,
+                                 String?           Value        = null,
+                                 MutabilityTypes?  Mutability   = null,
+                                 Boolean?          Persistent   = null,
+                                 Boolean?          Constant     = null,
                                  CustomData?       CustomData   = null)
 
             : base(CustomData)
@@ -182,9 +184,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="VariableAttribute">The parsed variable attribute.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                 JSON,
-                                       out VariableAttribute?  VariableAttribute,
-                                       out String?             ErrorResponse)
+        public static Boolean TryParse(JObject                                      JSON,
+                                       [NotNullWhen(true)]  out VariableAttribute?  VariableAttribute,
+                                       [NotNullWhen(false)] out String?             ErrorResponse)
 
             => TryParse(JSON,
                         out VariableAttribute,
@@ -200,8 +202,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomVariableAttributeParser">A delegate to parse custom variable attribute JSON objects.</param>
         public static Boolean TryParse(JObject                                          JSON,
-                                       out VariableAttribute?                           VariableAttribute,
-                                       out String?                                      ErrorResponse,
+                                       [NotNullWhen(true)]  out VariableAttribute?      VariableAttribute,
+                                       [NotNullWhen(false)] out String?                 ErrorResponse,
                                        CustomJObjectParserDelegate<VariableAttribute>?  CustomVariableAttributeParser)
         {
 
@@ -354,6 +356,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                        : json;
 
         }
+
+        #endregion
+
+        #region Clone()
+
+        /// <summary>
+        /// Clone this object.
+        /// </summary>
+        public VariableAttribute Clone()
+
+            => new (
+
+                   Type,
+                   Value,
+                   Mutability,
+                   Persistent,
+                   Constant,
+
+                   CustomData
+
+               );
 
         #endregion
 

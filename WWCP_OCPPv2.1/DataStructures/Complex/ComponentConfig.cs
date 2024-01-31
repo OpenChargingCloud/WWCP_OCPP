@@ -31,10 +31,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// A component.
+    /// A component configuration.
     /// </summary>
-    public class Component : ACustomData,
-                             IEquatable<Component>
+    public class ComponentConfig : ACustomData,
+                                   IEquatable<ComponentConfig>
     {
 
         #region Properties
@@ -44,20 +44,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// [max 50]
         /// </summary>
         [Mandatory]
-        public String   Name        { get; }
+        public String                       Name               { get; }
 
         /// <summary>
         /// The optional case insensitive name of the instance in case the component exists as multiple instances.
         /// [max 50]
         /// </summary>
         [Optional]
-        public String?  Instance    { get; }
+        public String?                      Instance           { get; }
 
         /// <summary>
         /// The optional EVSE when component is located at EVSE level, also specifies the connector when component is located at connector level.
         /// </summary>
         [Optional]
-        public EVSE?    EVSE        { get; }
+        public EVSE?                        EVSE               { get; }
+
+
+        [Optional]
+        public IEnumerable<VariableConfig>  VariableConfigs    { get; }
+
+
+        [Optional]
+        public I18NString?                  Description        { get; }
 
         #endregion
 
@@ -69,19 +77,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Name">The case insensitive name of the component. Name should be taken from the list of standardized component names whenever possible.</param>
         /// <param name="Instance">The optional case insensitive name of the instance in case the component exists as multiple instances.</param>
         /// <param name="EVSE">An optional EVSE when component is located at EVSE level, also specifies the connector when component is located at connector level.</param>
+        /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public Component(String       Name,
-                         String?      Instance     = null,
-                         EVSE?        EVSE         = null,
-                         CustomData?  CustomData   = null)
+        public ComponentConfig(String                        Name,
+                               String?                       Instance          = null,
+                               EVSE?                         EVSE              = null,
+
+                               IEnumerable<VariableConfig>?  VariableConfigs   = null,
+                               I18NString?                   Description       = null,
+
+                               CustomData?                   CustomData        = null)
 
             : base(CustomData)
 
         {
 
-            this.Name      = Name.     Trim();
-            this.Instance  = Instance?.Trim();
-            this.EVSE      = EVSE;
+            this.Name             = Name.            Trim();
+            this.Instance         = Instance?.       Trim();
+            this.EVSE             = EVSE;
+
+            this.VariableConfigs  = VariableConfigs?.Distinct() ?? [];
+            this.Description      = Description;
 
             if (this.Name.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(Name), "The given name must not be null or empty!");
@@ -96,7 +112,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// An invalid component.
         /// </summary>
-        public static Component Invalid
+        public static ComponentConfig Invalid
 
             => new ("<invalid!>");
 
@@ -105,9 +121,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Documentation
 
-        // "ComponentType": {
+        // "ComponentConfigType": {
         //   "description": "A physical or logical component\r\n",
-        //   "javaType": "Component",
+        //   "javaType": "ComponentConfig",
         //   "type": "object",
         //   "additionalProperties": false,
         //   "properties": {
@@ -135,21 +151,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region (static) Parse   (JSON, CustomComponentParser = null)
+        #region (static) Parse   (JSON, CustomComponentConfigParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a component.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomComponentParser">A delegate to parse custom component JSON objects.</param>
-        public static Component Parse(JObject                                  JSON,
-                                      CustomJObjectParserDelegate<Component>?  CustomComponentParser   = null)
+        /// <param name="CustomComponentConfigParser">A delegate to parse custom component JSON objects.</param>
+        public static ComponentConfig Parse(JObject                                  JSON,
+                                      CustomJObjectParserDelegate<ComponentConfig>?  CustomComponentConfigParser   = null)
         {
 
             if (TryParse(JSON,
                          out var component,
                          out var errorResponse,
-                         CustomComponentParser) &&
+                         CustomComponentConfigParser) &&
                 component is not null)
             {
                 return component;
@@ -162,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region (static) TryParse(JSON, out Component, CustomComponentParser = null)
+        #region (static) TryParse(JSON, out ComponentConfig, CustomComponentConfigParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -170,14 +186,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Try to parse the given JSON representation of a component.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="Component">The parsed component.</param>
+        /// <param name="ComponentConfig">The parsed component.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                              JSON,
-                                       [NotNullWhen(true)]  out Component?  Component,
-                                       [NotNullWhen(false)] out String?     ErrorResponse)
+        public static Boolean TryParse(JObject                                    JSON,
+                                       [NotNullWhen(true)]  out ComponentConfig?  ComponentConfig,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
 
             => TryParse(JSON,
-                        out Component,
+                        out ComponentConfig,
                         out ErrorResponse,
                         null);
 
@@ -186,21 +202,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Try to parse the given JSON representation of a component.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="Component">The parsed component.</param>
+        /// <param name="ComponentConfig">The parsed component.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomComponentParser">A delegate to parse custom component JSON objects.</param>
-        public static Boolean TryParse(JObject                                  JSON,
-                                       [NotNullWhen(true)]  out Component?      Component,
-                                       [NotNullWhen(false)] out String?         ErrorResponse,
-                                       CustomJObjectParserDelegate<Component>?  CustomComponentParser)
+        /// <param name="CustomComponentConfigParser">A delegate to parse custom component JSON objects.</param>
+        public static Boolean TryParse(JObject                                        JSON,
+                                       [NotNullWhen(true)]  out ComponentConfig?      ComponentConfig,
+                                       [NotNullWhen(false)] out String?               ErrorResponse,
+                                       CustomJObjectParserDelegate<ComponentConfig>?  CustomComponentConfigParser)
         {
 
             try
             {
 
-                Component = default;
+                ComponentConfig = default;
 
-                #region Name          [mandatory]
+                #region Name               [mandatory]
 
                 if (!JSON.ParseMandatoryText("name",
                                              "component name",
@@ -212,13 +228,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region Type          [optional]
+                #region Type               [optional]
 
                 var Instance = JSON.GetString("type");
 
                 #endregion
 
-                #region EVSE          [optional]
+                #region EVSE               [optional]
 
                 if (JSON.ParseOptionalJSON("evse",
                                            "custom data",
@@ -232,7 +248,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region CustomData    [optional]
+
+                #region VariableConfigs    [optional]
+
+                if (JSON.ParseOptionalHashSet("variableConfigs",
+                                              "variable configs",
+                                              VariableConfig.TryParse,
+                                              out HashSet<VariableConfig> VariableConfigs,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region Description        [optional]
+
+                if (JSON.ParseOptional("description",
+                                       "variable description",
+                                       I18NString.TryParse,
+                                       out I18NString? Description,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+
+                #region CustomData         [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
@@ -247,22 +293,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                Component = new Component(Name,
-                                          Instance,
-                                          EVSE,
-                                          CustomData);
+                ComponentConfig = new ComponentConfig(
 
-                if (CustomComponentParser is not null)
-                    Component = CustomComponentParser(JSON,
-                                                      Component);
+                                      Name,
+                                      Instance,
+                                      EVSE,
+
+                                      VariableConfigs,
+                                      Description,
+
+                                      CustomData
+
+                                  );
+
+                if (CustomComponentConfigParser is not null)
+                    ComponentConfig = CustomComponentConfigParser(JSON,
+                                                                  ComponentConfig);
 
                 return true;
 
             }
             catch (Exception e)
             {
-                Component      = default;
-                ErrorResponse  = "The given JSON representation of a component is invalid: " + e.Message;
+                ComponentConfig  = default;
+                ErrorResponse    = "The given JSON representation of a component is invalid: " + e.Message;
                 return false;
             }
 
@@ -270,15 +324,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region ToJSON(CustomComponentSerializer = null, CustomEVSESerializer = null, ...)
+        #region ToJSON(CustomComponentConfigSerializer = null, CustomEVSESerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomComponentSerializer">A delegate to serialize custom components.</param>
+        /// <param name="CustomComponentConfigSerializer">A delegate to serialize custom components.</param>
         /// <param name="CustomEVSESerializer">A delegate to serialize custom EVSEs.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<Component>?   CustomComponentSerializer    = null,
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ComponentConfig>?   CustomComponentConfigSerializer    = null,
                               CustomJObjectSerializerDelegate<EVSE>?        CustomEVSESerializer         = null,
                               CustomJObjectSerializerDelegate<CustomData>?  CustomCustomDataSerializer   = null)
         {
@@ -302,8 +356,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                        );
 
-            return CustomComponentSerializer is not null
-                       ? CustomComponentSerializer(this, json)
+            return CustomComponentConfigSerializer is not null
+                       ? CustomComponentConfigSerializer(this, json)
                        : json;
 
         }
@@ -315,7 +369,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Clone this object.
         /// </summary>
-        public Component Clone()
+        public ComponentConfig Clone()
 
             => new (
 
@@ -327,6 +381,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                    EVSE?.Clone(),
 
+                   VariableConfigs.Select(variableConfig => variableConfig.Clone()),
+
+                   Description?.Clone(),
+
                    CustomData
 
                );
@@ -336,50 +394,50 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Operator overloading
 
-        #region Operator == (Component1, Component2)
+        #region Operator == (ComponentConfig1, ComponentConfig2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="Component1">A component.</param>
-        /// <param name="Component2">Another component.</param>
+        /// <param name="ComponentConfig1">A component.</param>
+        /// <param name="ComponentConfig2">Another component.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (Component? Component1,
-                                           Component? Component2)
+        public static Boolean operator == (ComponentConfig? ComponentConfig1,
+                                           ComponentConfig? ComponentConfig2)
         {
 
             // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(Component1, Component2))
+            if (ReferenceEquals(ComponentConfig1, ComponentConfig2))
                 return true;
 
             // If one is null, but not both, return false.
-            if (Component1 is null || Component2 is null)
+            if (ComponentConfig1 is null || ComponentConfig2 is null)
                 return false;
 
-            return Component1.Equals(Component2);
+            return ComponentConfig1.Equals(ComponentConfig2);
 
         }
 
         #endregion
 
-        #region Operator != (Component1, Component2)
+        #region Operator != (ComponentConfig1, ComponentConfig2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="Component1">A component.</param>
-        /// <param name="Component2">Another component.</param>
+        /// <param name="ComponentConfig1">A component.</param>
+        /// <param name="ComponentConfig2">Another component.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (Component? Component1,
-                                           Component? Component2)
+        public static Boolean operator != (ComponentConfig? ComponentConfig1,
+                                           ComponentConfig? ComponentConfig2)
 
-            => !(Component1 == Component2);
-
-        #endregion
+            => !(ComponentConfig1 == ComponentConfig2);
 
         #endregion
 
-        #region IEquatable<Component> Members
+        #endregion
+
+        #region IEquatable<ComponentConfig> Members
 
         #region Equals(Object)
 
@@ -389,28 +447,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Object">A component to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is Component component &&
+            => Object is ComponentConfig component &&
                    Equals(component);
 
         #endregion
 
-        #region Equals(Component)
+        #region Equals(ComponentConfig)
 
         /// <summary>
         /// Compares two components for equality.
         /// </summary>
-        /// <param name="Component">A component to compare with.</param>
-        public Boolean Equals(Component? Component)
+        /// <param name="ComponentConfig">A component to compare with.</param>
+        public Boolean Equals(ComponentConfig? ComponentConfig)
 
-            => Component is not null &&
+            => ComponentConfig is not null &&
 
-               String.Equals(Name,     Component.Name,     StringComparison.OrdinalIgnoreCase) &&
-               String.Equals(Instance, Component.Instance, StringComparison.OrdinalIgnoreCase) &&
+               String.Equals(Name,     ComponentConfig.Name,     StringComparison.OrdinalIgnoreCase) &&
+               String.Equals(Instance, ComponentConfig.Instance, StringComparison.OrdinalIgnoreCase) &&
 
-             ((EVSE is     null && Component.EVSE is     null) ||
-              (EVSE is not null && Component.EVSE is not null && EVSE.Equals(Component.EVSE))) &&
+             ((EVSE is     null && ComponentConfig.EVSE is     null) ||
+              (EVSE is not null && ComponentConfig.EVSE is not null && EVSE.Equals(ComponentConfig.EVSE))) &&
 
-               base.  Equals(Component);
+               base.  Equals(ComponentConfig);
 
         #endregion
 

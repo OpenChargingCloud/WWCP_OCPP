@@ -41,44 +41,44 @@ namespace cloud.charging.open.protocols.OCPP
         #region Properties
 
         /// <summary>
-        /// The cryptographic private key.
-        /// </summary>
-        [Mandatory]
-        public   Byte[]                  Private               { get; }
-
-        /// <summary>
         /// The cryptographic public key.
         /// </summary>
         [Mandatory]
-        public   Byte[]                  Public                { get; }
+        public   Byte[]                   Public                { get; }
+
+        /// <summary>
+        /// The optional cryptographic private key.
+        /// </summary>
+        [Optional]
+        public   Byte[]                   Private               { get; }
 
         /// <summary>
         /// The optional cryptographic algorithm of the keys. Default is 'secp256r1'.
         /// </summary>
         [Optional]
-        public   CryptoAlgorithm?        Algorithm             { get; }
+        public   CryptoAlgorithm?         Algorithm             { get; }
 
         /// <summary>
         /// The optional serialization of the cryptographic keys. Default is 'raw'.
         /// </summary>
         [Optional]
-        public CryptoSerialization?      Serialization         { get; }
+        public CryptoSerialization?       Serialization         { get; }
 
         /// <summary>
         /// The optional encoding of the cryptographic keys. Default is 'base64'.
         /// </summary>
         [Optional]
-        public   CryptoEncoding?         Encoding              { get; }
+        public   CryptoEncoding?          Encoding              { get; }
 
 
-        public   X9ECParameters          ECParameters          { get; }
+        public   X9ECParameters           ECParameters          { get; }
 
-        public   ECDomainParameters      ECDomainParameters    { get; }
+        public   ECDomainParameters       ECDomainParameters    { get; }
 
 
-        internal ECPrivateKeyParameters  PrivateKey            { get; }
+        internal ECPrivateKeyParameters?  PrivateKey            { get; }
 
-        internal ECPublicKeyParameters   PublicKey             { get; }
+        internal ECPublicKeyParameters    PublicKey             { get; }
 
         #endregion
 
@@ -93,8 +93,8 @@ namespace cloud.charging.open.protocols.OCPP
         /// <param name="Serialization">The optional serialization of the cryptographic keys. Default is 'raw'.</param>
         /// <param name="Encoding">The optional encoding of the cryptographic keys. Default is 'base64'.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public KeyPair(Byte[]                Private,
-                       Byte[]                Public,
+        public KeyPair(Byte[]                Public,
+                       Byte[]?               Private         = null,
                        CryptoAlgorithm?      Algorithm       = null,
                        CryptoSerialization?  Serialization   = null,
                        CryptoEncoding?       Encoding        = null,
@@ -104,8 +104,8 @@ namespace cloud.charging.open.protocols.OCPP
 
         {
 
-            this.Private             = Private;
             this.Public              = Public;
+            this.Private             = Private ?? [];
             this.Algorithm           = Algorithm;
             this.Serialization       = Serialization;
             this.Encoding            = Encoding;
@@ -122,24 +122,6 @@ namespace cloud.charging.open.protocols.OCPP
                                            ECParameters.H,
                                            ECParameters.GetSeed()
                                        );
-
-            #region Try to parse the private key
-
-            try
-            {
-
-                this.PrivateKey      = new ECPrivateKeyParameters(
-                                           new BigInteger(this.Private),
-                                           ECDomainParameters
-                                       );
-
-            }
-            catch (Exception e)
-            {
-                throw new ArgumentException("The given private key is invalid!", nameof(Private), e);
-            }
-
-            #endregion
 
             #region Try to parse the public key
 
@@ -160,12 +142,35 @@ namespace cloud.charging.open.protocols.OCPP
 
             #endregion
 
+            #region Try to parse the private key
+
+            if (this.Private.Length > 0)
+            {
+
+                try
+                {
+
+                    this.PrivateKey = new ECPrivateKeyParameters(
+                                          new BigInteger(this.Private),
+                                          ECDomainParameters
+                                      );
+
+                }
+                catch (Exception e)
+                {
+                    throw new ArgumentException("The given private key is invalid!", nameof(Private), e);
+                }
+
+            }
+
+            #endregion
+
 
             unchecked
             {
 
-                hashCode = this.Private.      GetHashCode()       * 13 ^
-                           this.Public.       GetHashCode()       * 11 ^
+                hashCode = this.Public.       GetHashCode()       * 13 ^
+                           this.Private.      GetHashCode()       * 11 ^
                           (this.Algorithm?.   GetHashCode() ?? 0) *  7 ^
                            this.Serialization.GetHashCode()       *  5 ^
                           (this.Encoding?.    GetHashCode() ?? 0) *  3 ^
