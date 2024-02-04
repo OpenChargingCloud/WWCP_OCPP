@@ -2116,7 +2116,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             this.evses                    = EVSEs is not null && EVSEs.Any()
                                                 ? EVSEs.ToDictionary(evse => evse.Id, evse => evse)
-                                                : new Dictionary<EVSE_Id, ChargingStationEVSE>();
+                                                : [];
 
             //this.Configuration = new Dictionary<String, ConfigurationData> {
             //    { "hello",          new ConfigurationData("world",    AccessRights.ReadOnly,  false) },
@@ -2174,20 +2174,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region Register User Roles
 
+            var ur1 = KeyPair.GenerateKeys()!;
+
             UserRoles.Add(new UserRole(
 
-                              Private:                 new Byte[0],
-                              Public:                  new Byte[0],
-
-                              Algorithm:               null,
-                              Serialization:           null,
-                              Encoding:                null,
-
+                              KeyPair:                 ur1,
                               ComponentAccessRights:   null,
 
-                              SignerName:              null,
-                              Description:             null,
-                              Timestamp:               null,
+                              //SignerName:              null,
+                              //Description:             null,
+                              //Timestamp:               null,
 
                               CustomData:              null
 

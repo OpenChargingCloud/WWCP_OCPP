@@ -215,8 +215,8 @@ namespace cloud.charging.open.protocols.OCPP
             var keyPair = g.GenerateKeyPair();
 
             return new KeyPair(
-                       (keyPair.Private as ECPrivateKeyParameters)!.D.ToByteArray(),
-                       (keyPair.Public  as ECPublicKeyParameters)!. Q.GetEncoded()
+                       (keyPair.Public  as ECPublicKeyParameters)?. Q.GetEncoded() ?? [],
+                       (keyPair.Private as ECPrivateKeyParameters)?.D.ToByteArray()
                    );
 
         }

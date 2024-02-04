@@ -174,8 +174,8 @@ namespace cloud.charging.open.protocols.OCPP
                         Func<ISignableMessage, DateTime>?    Timestamp       = null,
                         CustomData?                          CustomData      = null)
 
-            : base(Private,
-                   Public,
+            : base(Public,
+                   Private,
                    Algorithm,
                    Serialization,
                    Encoding,
@@ -193,7 +193,6 @@ namespace cloud.charging.open.protocols.OCPP
                 hashCode = (this.SignerName?. GetHashCode() ?? 0) * 7 ^
                            (this.Description?.GetHashCode() ?? 0) * 5 ^
                            (this.Timestamp?.  GetHashCode() ?? 0) * 3 ^
-
                             base.             GetHashCode();
 
             }

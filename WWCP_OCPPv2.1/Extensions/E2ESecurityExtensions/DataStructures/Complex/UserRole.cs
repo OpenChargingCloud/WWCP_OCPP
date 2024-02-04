@@ -159,6 +159,50 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Description">An optional multi-language description or explanation for signing the message.</param>
         /// <param name="Timestamp">An optional timestamp of the message signature.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        public UserRole(KeyPair                              KeyPair,
+                        IEnumerable<ComponentAccessRights>?  ComponentAccessRights   = null,
+                        CustomData?                          CustomData              = null)
+
+            : base(KeyPair.Public,
+                   KeyPair.Private,
+                   KeyPair.Algorithm,
+                   KeyPair.Serialization,
+                   KeyPair.Encoding,
+                   null, //KeyPair.SignerName,
+                   null, //KeyPair.Description,
+                   null, //KeyPair.Timestamp,
+                   CustomData)
+
+        {
+
+            this.ComponentAccessRights = ComponentAccessRights?.Distinct() ?? [];
+
+            unchecked
+            {
+
+                hashCode = (this.SignerName?. GetHashCode() ?? 0) * 7 ^
+                           (this.Description?.GetHashCode() ?? 0) * 5 ^
+                           (this.Timestamp?.  GetHashCode() ?? 0) * 3 ^
+
+                            base.             GetHashCode();
+
+            }
+
+        }
+
+
+        /// <summary>
+        /// Create a new OCPP CSE asymmetric cryptographic signature information.
+        /// </summary>
+        /// <param name="Private">The private key.</param>
+        /// <param name="Public">The public key.</param>
+        /// <param name="Algorithm">The optional cryptographic algorithm of the keys. Default is 'secp256r1'.</param>
+        /// <param name="Serialization">The optional serialization of the cryptographic keys. Default is 'raw'.</param>
+        /// <param name="Encoding">The optional encoding of the cryptographic keys. Default is 'base64'.</param>
+        /// <param name="SignerName">An optional name of a person or process signing the message.</param>
+        /// <param name="Description">An optional multi-language description or explanation for signing the message.</param>
+        /// <param name="Timestamp">An optional timestamp of the message signature.</param>
+        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public UserRole(Byte[]                               Public,
 
                         Byte[]?                              Private                 = null,
