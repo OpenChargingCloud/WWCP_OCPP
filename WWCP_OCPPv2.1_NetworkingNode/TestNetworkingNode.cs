@@ -480,32 +480,41 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 // MessageId
                 // Data
 
-                var responseSecureData = request.Ciphertext;
-
-                var xx2 = request.Decrypt(GetDecryptionKey(request.NetworkPath.Source, request.KeyId)).ToUTF8String();
-
-
-                //if (request.Data is not null)
-                //    responseSecureData = request.Data.Reverse();
+                var secureData          = request.Decrypt(GetDecryptionKey(request.NetworkPath.Source, request.KeyId)).ToUTF8String();
+                var responseSecureData  = secureData?.Reverse();
+                var keyId               = (UInt16) 1;
 
                 return Task.FromResult(
                            request.Ciphertext is not null
 
-                               ? new SecureDataTransferResponse(
-                                       Request:                request,
-                                       NetworkPath:            NetworkPath.From(Id),
-                                       Status:                 SecureDataTransferStatus.Accepted,
-                                       AdditionalStatusInfo:   null,
-                                       Ciphertext:             responseSecureData
-                                   )
+                               ? SecureDataTransferResponse.Encrypt(
+                                     Request:                request,
+                                     Status:                 SecureDataTransferStatus.Accepted,
+                                     DestinationNodeId:      request.NetworkPath.Source,
+                                     Parameter:              0,
+                                     KeyId:                  keyId,
+                                     Key:                    GetEncryptionKey    (request.NetworkPath.Source, keyId),
+                                     Nonce:                  GetEncryptionNonce  (request.NetworkPath.Source, keyId),
+                                     Counter:                GetEncryptionCounter(request.NetworkPath.Source, keyId),
+                                     Payload:                responseSecureData?.ToUTF8Bytes() ?? [],
+                                     AdditionalStatusInfo:   null,
+
+                                     SignKeys:               null,
+                                     SignInfos:              null,
+                                     Signatures:             null,
+
+                                     EventTrackingId:        request.EventTrackingId,
+                                     NetworkPath:            NetworkPath.From(Id)
+
+                                 )
 
                                : new SecureDataTransferResponse(
-                                       Request:                request,
-                                       NetworkPath:            NetworkPath.From(Id),
-                                       Status:                 SecureDataTransferStatus.Rejected,
-                                       AdditionalStatusInfo:   null,
-                                       Ciphertext:             responseSecureData
-                                   )
+                                     Request:                request,
+                                     NetworkPath:            NetworkPath.From(Id),
+                                     Status:                 SecureDataTransferStatus.Rejected,
+                                     AdditionalStatusInfo:   null,
+                                     Ciphertext:             responseSecureData?.ToUTF8Bytes()
+                                 )
                        );
 
             };

@@ -330,10 +330,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
             {
 
                 var csmsSecureDataTransferRequestsSent       = new ConcurrentList<SecureDataTransferRequest>();
-                var nnJSONMessageRequestsReceived            = new ConcurrentList<OCPP_JSONRequestMessage>();
+                var nnBinaryMessageRequestsReceived          = new ConcurrentList<OCPP_BinaryRequestMessage>();
                 var nnSecureDataTransferRequestsReceived     = new ConcurrentList<SecureDataTransferRequest>();
                 var nnSecureDataTransferResponsesSent        = new ConcurrentList<SecureDataTransferResponse>();
-                var nnJSONResponseMessagesSent               = new ConcurrentList<OCPP_JSONResponseMessage>();
+                var nnBinaryResponseMessagesSent             = new ConcurrentList<OCPP_BinaryResponseMessage>();
                 var csmsSecureDataTransferResponsesReceived  = new ConcurrentList<SecureDataTransferResponse>();
 
                 CSMS.OnSecureDataTransferRequest                           += (timestamp, sender, dataTransferRequest) => {
@@ -341,8 +341,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     return Task.CompletedTask;
                 };
 
-                networkingNode.OCPP.IN.OnJSONMessageRequestReceived        += (timestamp, sender, jsonRequestMessage) => {
-                    nnJSONMessageRequestsReceived.  TryAdd(jsonRequestMessage);
+                networkingNode.OCPP.IN.OnBinaryMessageRequestReceived      += (timestamp, sender, binaryRequestMessage) => {
+                    nnBinaryMessageRequestsReceived.  TryAdd(binaryRequestMessage);
                     return Task.CompletedTask;
                 };
 
@@ -356,8 +356,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     return Task.CompletedTask;
                 };
 
-                networkingNode.OCPP.OUT.OnJSONMessageResponseSent          += (timestamp, sender, jsonResponseMessage) => {
-                    nnJSONResponseMessagesSent.     TryAdd(jsonResponseMessage);
+                networkingNode.OCPP.OUT.OnBinaryMessageResponseSent        += (timestamp, sender, binaryResponseMessage) => {
+                    nnBinaryResponseMessagesSent.     TryAdd(binaryResponseMessage);
                     return Task.CompletedTask;
                 };
 
@@ -367,13 +367,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                 };
 
 
-                var data      = "Hello world!".ToUTF8Bytes();
-                var response  = await CSMS.TransferSecureData(
-                                          DestinationNodeId:  networkingNode.Id,
-                                          Parameter:          0,
-                                          KeyId:              1,
-                                          Payload:            data
-                                      );
+                var data        = "Hello world!";
+                var response    = await CSMS.TransferSecureData(
+                                            DestinationNodeId:  networkingNode.Id,
+                                            Parameter:          0,
+                                            KeyId:              1,
+                                            Payload:            data.ToUTF8Bytes()
+                                        );
+
+                var secureData  = response.Decrypt(CSMS.GetDecryptionKey(response.NetworkPath.Source, response.KeyId)).ToUTF8String();
 
 
                 Assert.Multiple(() => {
@@ -391,13 +393,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     Assert.That(csmsSecureDataTransferRequest.Signatures.Any(),                 Is.True, "The outgoing SecureDataTransfer request is not signed!");
 
 
-                    // Networking Node JSON Request IN
-                    Assert.That(nnJSONMessageRequestsReceived.  Count,                    Is.EqualTo(1), "The SecureDataTransfer JSON request did not reach the networking node!");
-                    var nnJSONMessageRequest = nnJSONMessageRequestsReceived.First();
-                    Assert.That(nnJSONMessageRequest.DestinationId,                   Is.EqualTo(networkingNode.Id));
-                    Assert.That(nnJSONMessageRequest.NetworkPath.Length,                  Is.EqualTo(1));
-                    Assert.That(nnJSONMessageRequest.NetworkPath.Source,                  Is.EqualTo(NetworkingNode_Id.CSMS));  // Because of "standard" networking mode!
-                    Assert.That(nnJSONMessageRequest.NetworkPath.Last,                    Is.EqualTo(NetworkingNode_Id.CSMS));  // Because of "standard" networking mode!
+                    // Networking Node Binary Request IN
+                    Assert.That(nnBinaryMessageRequestsReceived.  Count,                    Is.EqualTo(1), "The SecureDataTransfer JSON request did not reach the networking node!");
+                    var nnBinaryMessageRequest = nnBinaryMessageRequestsReceived.First();
+                    Assert.That(nnBinaryMessageRequest.DestinationId,                       Is.EqualTo(networkingNode.Id));
+                    Assert.That(nnBinaryMessageRequest.NetworkPath.Length,                  Is.EqualTo(1));
+                    Assert.That(nnBinaryMessageRequest.NetworkPath.Source,                  Is.EqualTo(NetworkingNode_Id.CSMS));  // Because of "standard" networking mode!
+                    Assert.That(nnBinaryMessageRequest.NetworkPath.Last,                    Is.EqualTo(NetworkingNode_Id.CSMS));  // Because of "standard" networking mode!
 
 
                     // Networking Node Request IN
@@ -428,8 +430,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     Assert.That(nnSecureDataTransferResponseSent.Signatures.Any(),              Is.True, "The SecureDataTransfer response is not signed!");
 
 
-                    // Networking Node JSON Response OUT
-                    Assert.That(nnJSONResponseMessagesSent.     Count,                    Is.EqualTo(1), "The SecureDataTransfer JSON response did not leave the networking node!");
+                    // Networking Node Binary Response OUT
+                    Assert.That(nnBinaryResponseMessagesSent.     Count,                    Is.EqualTo(1), "The SecureDataTransfer JSON response did not leave the networking node!");
 
 
                     // Charging Station Response IN
@@ -445,7 +447,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     // Result
                     Assert.That(response.Result.ResultCode,                               Is.EqualTo(ResultCode.OK));
                     Assert.That(response.Status,                                          Is.EqualTo(SecureDataTransferStatus.Accepted));
-             //       Assert.That(response.SecureData?.ToString(),                                Is.EqualTo(data.Reverse()));
+                    Assert.That(secureData,                                               Is.EqualTo(data.Reverse()));
 
 
                 });

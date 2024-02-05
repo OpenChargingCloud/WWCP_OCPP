@@ -18,8 +18,12 @@
 #region Usings
 
 using System.Diagnostics.CodeAnalysis;
-
+using org.GraphDefined.Vanaheimr.Hermod.Modbus;
 using org.GraphDefined.Vanaheimr.Illias;
+using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.Crypto.Engines;
+using Org.BouncyCastle.Crypto.Modes;
+using Org.BouncyCastle.Crypto.Parameters;
 
 #endregion
 
@@ -195,70 +199,256 @@ namespace cloud.charging.open.protocols.OCPP
         #endregion
 
 
+        #region Encrypt(...)
+
+        /// <summary>
+        /// Create a new SecureDataTransferRequest and encrypt the given plaintext
+        /// using the given cryptographic key.
+        /// </summary>
+        /// <param name="DestinationNodeId"></param>
+        /// <param name="Parameter"></param>
+        /// <param name="KeyId"></param>
+        /// <param name="Key"></param>
+        /// <param name="Nonce"></param>
+        /// <param name="Counter"></param>
+        /// <param name="Payload"></param>
+        /// 
+        /// <param name="SignKeys"></param>
+        /// <param name="SignInfos"></param>
+        /// <param name="Signatures"></param>
+        /// 
+        /// <param name="RequestId"></param>
+        /// <param name="RequestTimestamp"></param>
+        /// <param name="RequestTimeout"></param>
+        /// <param name="EventTrackingId"></param>
+        /// <param name="NetworkPath"></param>
+        /// <param name="CancellationToken"></param>
+        public static SecureDataTransferResponse Encrypt(SecureDataTransferRequest  Request,
+                                                         SecureDataTransferStatus   Status,
+                                                         NetworkingNode_Id          DestinationNodeId,
+                                                         UInt16                     Parameter,
+                                                         UInt16                     KeyId,
+                                                         Byte[]                     Key,
+                                                         UInt64                     Nonce,
+                                                         UInt64                     Counter,
+                                                         Byte[]                     Payload,
+
+                                                         String?                    AdditionalStatusInfo   = null,
+
+                                                         IEnumerable<KeyPair>?      SignKeys               = null,
+                                                         IEnumerable<SignInfo>?     SignInfos              = null,
+                                                         IEnumerable<Signature>?    Signatures             = null,
+
+                                                         DateTime?                  ResponseTimestamp      = null,
+                                                         EventTracking_Id?          EventTrackingId        = null,
+                                                         NetworkPath?               NetworkPath            = null)
+        {
+
+            try
+            {
+
+                var nonce = new Byte[16]; // 128-bit Nonce
+                Array.Copy(BitConverter.GetBytes(Nonce),   0, nonce, 0, 8);
+                Array.Copy(BitConverter.GetBytes(Counter), 0, nonce, 8, 8);
+
+                var cipher = new BufferedBlockCipher(new SicBlockCipher(new AesEngine()));
+                cipher.Init(true, new ParametersWithIV(new KeyParameter(Key), nonce));
+
+                var ciphertext = new Byte[cipher.GetOutputSize(Payload.Length)];
+                int length = cipher.ProcessBytes(Payload, 0, Payload.Length, ciphertext, 0);
+                cipher.DoFinal(ciphertext, length);
+
+                return new SecureDataTransferResponse(
+
+                           Request,
+                           Status,
+                           AdditionalStatusInfo,
+
+                           Parameter,
+                           KeyId,
+                           Nonce,
+                           Counter,
+                           ciphertext,
+
+                           ResponseTimestamp,
+                           DestinationNodeId,
+                           NetworkPath,
+
+                           SignKeys,
+                           SignInfos,
+                           Signatures
+
+                       );
+
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Could not encrypt payload!", e);
+            }
+
+        }
+
+        #endregion
+
+        #region Decrypt(Key)
+
+        /// <summary>
+        /// Decrypt the ciphertext using the given cryptographic key.
+        /// </summary>
+        /// <param name="Key">A cryptographic key</param>
+        public Byte[] Decrypt(Byte[] Key)
+        {
+
+            var nonce = new Byte[16]; // 128-bit Nonce
+            Array.Copy(BitConverter.GetBytes(Nonce   ?? 0), 0, nonce, 0, 8);
+            Array.Copy(BitConverter.GetBytes(Counter ?? 0), 0, nonce, 8, 8);
+
+            var cipher = new BufferedBlockCipher(new SicBlockCipher(new AesEngine()));
+            cipher.Init(false, new ParametersWithIV(new KeyParameter(Key), nonce));
+
+            var plaintext = new Byte[cipher.GetOutputSize(Ciphertext.Length)];
+            var length    = cipher.ProcessBytes(Ciphertext, 0, Ciphertext.Length, plaintext, 0);
+            cipher.DoFinal(plaintext, length);
+
+            return plaintext;
+
+        }
+
+        #endregion
+
+
+
         #region Documentation
 
         // tba.
 
         #endregion
 
-        #region (static) Parse   (Request, Secure, CustomSecureDataTransferResponseSerializer = null)
+        #region (static) Parse   (Request, SecureData, CustomSecureDataTransferResponseSerializer = null)
 
         /// <summary>
         /// Parse the given JSON representation of a binary data transfer response.
         /// </summary>
         /// <param name="Request">The SecureDataTransfer request leading to this response.</param>
-        /// <param name="Secure">The binary to be parsed.</param>
+        /// <param name="SecureData">The binary to be parsed.</param>
         /// <param name="CustomSecureDataTransferResponseParser">A delegate to parse custom binary data transfer responses.</param>
         public static SecureDataTransferResponse Parse(SecureDataTransferRequest                                Request,
-                                                       Byte[]                                                   Secure,
+                                                       Byte[]                                                   SecureData,
+                                                       NetworkingNode_Id                                        DestinationNodeId,
+                                                       NetworkPath                                              NetworkPath,
+                                                       DateTime?                                                ResponseTimestamp                       = null,
                                                        CustomBinaryParserDelegate<SecureDataTransferResponse>?  CustomSecureDataTransferResponseParser  = null)
         {
 
             if (TryParse(Request,
-                         Secure,
+                         SecureData,
+                         DestinationNodeId,
+                         NetworkPath,
                          out var secureDataTransferResponse,
                          out var errorResponse,
+                         ResponseTimestamp,
                          CustomSecureDataTransferResponseParser))
             {
                 return secureDataTransferResponse;
             }
 
             throw new ArgumentException("The given binary representation of a binary data transfer response is invalid: " + errorResponse,
-                                        nameof(Secure));
+                                        nameof(SecureData));
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, Secure, out SecureDataTransferResponse, out ErrorResponse, CustomSecureDataTransferResponseParser = null)
+        #region (static) TryParse(Request, SecureData, out SecureDataTransferResponse, out ErrorResponse, CustomSecureDataTransferResponseParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a binary data transfer response.
         /// </summary>
         /// <param name="Request">The SecureDataTransfer request leading to this response.</param>
-        /// <param name="Secure">The binary to be parsed.</param>
+        /// <param name="SecureData">The binary to be parsed.</param>
         /// <param name="SecureDataTransferResponse">The parsed binary data transfer response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomSecureDataTransferResponseParser">A delegate to parse custom binary data transfer responses.</param>
         public static Boolean TryParse(SecureDataTransferRequest                                Request,
-                                       Byte[]                                                   Secure,
+                                       Byte[]                                                   SecureData,
+                                       NetworkingNode_Id                                        DestinationNodeId,
+                                       NetworkPath                                              NetworkPath,
                                        [NotNullWhen(true)]  out SecureDataTransferResponse?     SecureDataTransferResponse,
                                        [NotNullWhen(false)] out String?                         ErrorResponse,
+                                       DateTime?                                                ResponseTimestamp                        = null,
                                        CustomBinaryParserDelegate<SecureDataTransferResponse>?  CustomSecureDataTransferResponseParser   = null)
         {
 
             try
             {
 
-                SecureDataTransferResponse = null;
+                SecureDataTransferResponse      = null;
 
-                var stream  = new MemoryStream(Secure);
+                var stream                      = new MemoryStream(SecureData);
+
+                var status                      = SecureDataTransferStatus.TryParse(stream.ReadUInt16());
+
+                var additionalStatusInfoLength  = stream.ReadUInt32();
+                var additionalStatusInfo        = additionalStatusInfoLength > 0
+                                                      ? stream.ReadBytes(additionalStatusInfoLength)?.ToUTF8String()?.Trim()
+                                                      : null;
+
+                var parameter                   = stream.ReadUInt16();
+                var keyId                       = stream.ReadUInt16();
+                var nonce                       = stream.ReadUInt64();
+                var counter                     = stream.ReadUInt64();
+
+                var ciphertextLength            = stream.ReadUInt64();
+                var ciphertext                  = ciphertextLength > 0
+                                                      ? stream.ReadBytes(ciphertextLength)
+                                                      : [];
+
+                #region Signatures
+
+                var signatures            = new HashSet<Signature>();
+                var signaturesCount       = stream.ReadByte();
+                for (var i = 0; i < signaturesCount; i++)
+                {
+
+                    var signatureLength   = stream.ReadUInt16();
+                    var signatureBytes    = stream.ReadBytes((UInt64) signatureLength);
+
+                    if (!Signature.TryParse(signatureBytes, out var signature, out ErrorResponse))
+                        return false;
+
+                    signatures.Add(signature);
+
+                }
+
+                #endregion
+
+
+                SecureDataTransferResponse      = new SecureDataTransferResponse(
+
+                                                      Request,
+                                                      status,
+                                                      additionalStatusInfo,
+                                                      parameter,
+                                                      keyId,
+                                                      nonce,
+                                                      counter,
+                                                      ciphertext,
+                                                      ResponseTimestamp,
+
+                                                      DestinationNodeId,
+                                                      NetworkPath,
+
+                                                      null,
+                                                      null,
+                                                      signatures
+
+                                                  );
 
 
                 ErrorResponse = null;
 
                 if (CustomSecureDataTransferResponseParser is not null)
-                    SecureDataTransferResponse = CustomSecureDataTransferResponseParser(Secure,
+                    SecureDataTransferResponse = CustomSecureDataTransferResponseParser(SecureData,
                                                                                         SecureDataTransferResponse);
 
                 return true;
@@ -275,20 +465,52 @@ namespace cloud.charging.open.protocols.OCPP
 
         #endregion
 
-        #region ToBinary(CustomSecureDataTransferResponseSerializer = null, CustomStatusInfoSerializer = null, ...)
+        #region ToBinary(CustomSecureDataTransferResponseSerializer = null, CustomSignatureSerializer = null, ...)
 
         /// <summary>
         /// Return a binary representation of this object.
         /// </summary>
         /// <param name="CustomSecureDataTransferResponseSerializer">A delegate to serialize custom binary data transfer responses.</param>
-        /// <param name="CustomSecureSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="IncludeSignatures">Whether to include the digital signatures (default), or not.</param>
         public Byte[] ToBinary(CustomBinarySerializerDelegate<SecureDataTransferResponse>?  CustomSecureDataTransferResponseSerializer   = null,
-                               CustomBinarySerializerDelegate<Signature>?                   CustomSecureSignatureSerializer              = null,
+                               CustomBinarySerializerDelegate<Signature>?                   CustomSignatureSerializer                    = null,
                                Boolean                                                      IncludeSignatures                            = true)
         {
 
             var binaryStream = new MemoryStream();
+
+            binaryStream.WriteUInt16(Status.NumericId);
+            binaryStream.WriteUInt32((UInt16) (AdditionalStatusInfo?.Length ?? 0));
+
+            if (AdditionalStatusInfo.IsNotNullOrEmpty())
+                binaryStream.Write(AdditionalStatusInfo.ToUTF8Bytes());
+
+            binaryStream.WriteUInt16(Parameter ?? 0);
+            binaryStream.WriteUInt16(KeyId     ?? 0);
+            binaryStream.WriteUInt64(Nonce     ?? 0);
+            binaryStream.WriteUInt64(Counter   ?? 0);
+
+            var ciphertextLength = (UInt64) (Ciphertext?.LongLength ?? 0);
+            binaryStream.WriteUInt64(ciphertextLength);
+            if (ciphertextLength > 0)
+                binaryStream.Write      (Ciphertext);
+
+            #region Signatures
+
+            var signaturesCount = (UInt16) (IncludeSignatures ? Signatures.Count() : 0);
+            binaryStream.WriteByte((Byte) signaturesCount);
+
+            if (IncludeSignatures) {
+                foreach (var signature in Signatures)
+                {
+                    var binarySignature = signature.ToBinary(CustomSignatureSerializer);
+                    binaryStream.WriteUInt16((UInt16) binarySignature.Length);
+                    binaryStream.Write(binarySignature);
+                }
+            }
+
+            #endregion
 
             var binary = binaryStream.ToArray();
 

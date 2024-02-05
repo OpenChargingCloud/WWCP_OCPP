@@ -406,9 +406,9 @@ namespace cloud.charging.open.protocols.OCPP
         /// <param name="Binary">The binary to be parsed.</param>
         /// <param name="Signature">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(Byte[]          Binary,
-                                       out Signature?  Signature,
-                                       out String?     ErrorResponse)
+        public static Boolean TryParse(Byte[]                               Binary,
+                                       [NotNullWhen(true)]  out Signature?  Signature,
+                                       [NotNullWhen(false)] out String?     ErrorResponse)
 
             => TryParse(Binary,
                         out Signature,
@@ -424,8 +424,8 @@ namespace cloud.charging.open.protocols.OCPP
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomSignatureParser">A delegate to parse custom signatures.</param>
         public static Boolean TryParse(Byte[]                                  Binary,
-                                       out Signature?                          Signature,
-                                       out String?                             ErrorResponse,
+                                       [NotNullWhen(true)]  out Signature?     Signature,
+                                       [NotNullWhen(false)] out String?        ErrorResponse,
                                        CustomBinaryParserDelegate<Signature>?  CustomSignatureParser   = null)
         {
 

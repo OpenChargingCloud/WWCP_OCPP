@@ -1041,7 +1041,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task<SendOCPPMessageResult> SendBinaryRequest(OCPP_BinaryRequestMessage BinaryRequestMessage)
         {
 
-            if (LookupNetworkingNode(BinaryRequestMessage.DestinationNodeId, out var reachability) &&
+            if (LookupNetworkingNode(BinaryRequestMessage.DestinationId, out var reachability) &&
                 reachability is not null)
             {
 
@@ -1074,7 +1074,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 requests.TryAdd(BinaryRequestMessage.RequestId,
                                 SendRequestState.FromBinaryRequest(
                                     Timestamp.Now,
-                                    BinaryRequestMessage.DestinationNodeId,
+                                    BinaryRequestMessage.DestinationId,
                                     BinaryRequestMessage.RequestTimeout,
                                     BinaryRequestMessage
                                 ));
@@ -1147,7 +1147,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             return SendRequestState.FromBinaryRequest(
 
                        RequestTimestamp:         BinaryRequestMessage.RequestTimestamp,
-                       NetworkingNodeId:         BinaryRequestMessage.DestinationNodeId,
+                       NetworkingNodeId:         BinaryRequestMessage.DestinationId,
                        Timeout:                  BinaryRequestMessage.RequestTimeout,
                        BinaryRequest:            BinaryRequestMessage,
                        ResponseTimestamp:        Timestamp.Now,

@@ -397,10 +397,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task ProcessBinaryRequestMessage(OCPP_BinaryRequestMessage BinaryRequestMessage)
         {
 
-            if (AnycastIdsAllowed.Count > 0 && !AnycastIdsAllowed.Contains(BinaryRequestMessage.DestinationNodeId))
+            if (AnycastIdsAllowed.Count > 0 && !AnycastIdsAllowed.Contains(BinaryRequestMessage.DestinationId))
                 return;
 
-            if (AnycastIdsDenied. Count > 0 &&  AnycastIdsDenied. Contains(BinaryRequestMessage.DestinationNodeId))
+            if (AnycastIdsDenied. Count > 0 &&  AnycastIdsDenied. Contains(BinaryRequestMessage.DestinationId))
                 return;
 
             await parentNetworkingNode.OCPP.SendBinaryRequest(BinaryRequestMessage);

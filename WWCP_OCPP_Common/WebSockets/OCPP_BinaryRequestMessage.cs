@@ -79,7 +79,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         /// <summary>
         /// The networking node identification of the message destination.
         /// </summary>
-        public NetworkingNode_Id  DestinationNodeId    { get; }      = DestinationNodeId;
+        public NetworkingNode_Id  DestinationId    { get; }      = DestinationNodeId;
 
         /// <summary>
         /// The (recorded) path of the request through the overlay network.
@@ -324,7 +324,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
             else if (NetworkingMode == NetworkingMode.OverlayNetwork)
             {
 
-                var destinationNodeIdBytes = DestinationNodeId.ToString().ToUTF8Bytes();
+                var destinationNodeIdBytes = DestinationId.ToString().ToUTF8Bytes();
                 binaryStream.WriteUInt16((UInt16) destinationNodeIdBytes.Length);
                 binaryStream.Write      (destinationNodeIdBytes);
 

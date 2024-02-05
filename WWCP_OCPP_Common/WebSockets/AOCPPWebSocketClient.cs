@@ -517,7 +517,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
                         var result = methodInfo.Invoke(this,
                                                        [ binaryRequest.RequestTimestamp,
                                                          Connection,
-                                                         binaryRequest.DestinationNodeId,
+                                                         binaryRequest.DestinationId,
                                                          binaryRequest.NetworkPath,
                                                          binaryRequest.EventTrackingId,
                                                          binaryRequest.RequestId,

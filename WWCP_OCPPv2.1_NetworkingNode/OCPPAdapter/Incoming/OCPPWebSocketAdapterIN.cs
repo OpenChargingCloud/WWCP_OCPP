@@ -546,7 +546,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #region Fix DestinationNodeId and network path for standard networking connections
 
                     if (binaryRequest.NetworkingMode    == NetworkingMode.Standard &&
-                        binaryRequest.DestinationNodeId == NetworkingNode_Id.Zero  &&
+                        binaryRequest.DestinationId == NetworkingNode_Id.Zero  &&
                         sourceNodeId.HasValue)
                     {
                         switch (WebSocketConnection)
@@ -601,12 +601,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
                     // When not for this node, send it to the FORWARD processor...
-                    if (binaryRequest.DestinationNodeId != parentNetworkingNode.Id)
+                    if (binaryRequest.DestinationId != parentNetworkingNode.Id)
                         await parentNetworkingNode.OCPP.FORWARD.ProcessBinaryRequestMessage(binaryRequest);
 
                     // Directly for this node OR an anycast message for this node...
-                    if (binaryRequest.DestinationNodeId == parentNetworkingNode.Id ||
-                        parentNetworkingNode.OCPP.IN.AnycastIds.Contains(binaryRequest.DestinationNodeId))
+                    if (binaryRequest.DestinationId == parentNetworkingNode.Id ||
+                        parentNetworkingNode.OCPP.IN.AnycastIds.Contains(binaryRequest.DestinationId))
                     {
 
                         #region Try to call the matching 'incoming message processor'
@@ -618,7 +618,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                             var result = methodInfo.Invoke(this,
                                                            [ binaryRequest.RequestTimestamp,
                                                              WebSocketConnection,
-                                                             binaryRequest.DestinationNodeId,
+                                                             binaryRequest.DestinationId,
                                                              binaryRequest.NetworkPath,
                                                              binaryRequest.EventTrackingId,
                                                              binaryRequest.RequestId,

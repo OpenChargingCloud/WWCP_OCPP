@@ -105,8 +105,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                     if (!SecureDataTransferResponse.TryParse(Request,
                                                              sendRequestState.BinaryResponse.Payload,
+                                                             sendRequestState.DestinationNodeId,
+                                                             sendRequestState.NetworkPath,
                                                              out response,
                                                              out var errorResponse,
+                                                             sendRequestState.ResponseTimestamp,
                                                              CustomSecureDataTransferResponseParser))
                     {
                         response = new SecureDataTransferResponse(

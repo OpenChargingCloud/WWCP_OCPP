@@ -22,10 +22,9 @@ using System.Diagnostics.CodeAnalysis;
 using org.GraphDefined.Vanaheimr.Illias;
 
 using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Crypto.Parameters;
-using Org.BouncyCastle.Crypto.Engines;
 using Org.BouncyCastle.Crypto.Modes;
-using Org.BouncyCastle.Security;
+using Org.BouncyCastle.Crypto.Engines;
+using Org.BouncyCastle.Crypto.Parameters;
 
 #endregion
 
@@ -306,6 +305,9 @@ namespace cloud.charging.open.protocols.OCPP
                                                       Request_Id                                              RequestId,
                                                       NetworkingNode_Id                                       NetworkingNodeId,
                                                       NetworkPath                                             NetworkPath,
+                                                      DateTime?                                               RequestTimestamp                  = null,
+                                                      TimeSpan?                                               RequestTimeout                    = null,
+                                                      EventTracking_Id?                                       EventTrackingId                   = null,
                                                       CustomBinaryParserDelegate<SecureDataTransferRequest>?  CustomDataTransferRequestParser   = null)
         {
 
@@ -315,6 +317,9 @@ namespace cloud.charging.open.protocols.OCPP
                          NetworkPath,
                          out var secureDataTransferRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomDataTransferRequestParser))
             {
                 return secureDataTransferRequest;
@@ -345,44 +350,66 @@ namespace cloud.charging.open.protocols.OCPP
                                        NetworkPath                                             NetworkPath,
                                        [NotNullWhen(true)]  out SecureDataTransferRequest?     SecureDataTransferRequest,
                                        [NotNullWhen(false)] out String?                        ErrorResponse,
+                                       DateTime?                                               RequestTimestamp                        = null,
+                                       TimeSpan?                                               RequestTimeout                          = null,
+                                       EventTracking_Id?                                       EventTrackingId                         = null,
                                        CustomBinaryParserDelegate<SecureDataTransferRequest>?  CustomSecureDataTransferRequestParser   = null)
         {
 
             try
             {
 
-                SecureDataTransferRequest = null;
+                SecureDataTransferRequest  = null;
 
-                var stream            = new MemoryStream(Secure);
+                var stream                 = new MemoryStream(Secure);
 
-                var parameter         = stream.ReadUInt16();
-                var keyId             = stream.ReadUInt16();
-                var nonce             = stream.ReadUInt64();
-                var counter           = stream.ReadUInt64();
-                var ciphertextLength  = stream.ReadUInt64();
-                var ciphertext        = stream.ReadBytes(ciphertextLength);
+                var parameter              = stream.ReadUInt16();
+                var keyId                  = stream.ReadUInt16();
+                var nonce                  = stream.ReadUInt64();
+                var counter                = stream.ReadUInt64();
+                var ciphertextLength       = stream.ReadUInt64();
+                var ciphertext             = stream.ReadBytes(ciphertextLength);
+
+                #region Signatures
+
+                var signatures             = new HashSet<Signature>();
+                var signaturesCount        = stream.ReadByte();
+                for (var i = 0; i < signaturesCount; i++)
+                {
+
+                    var signatureLength    = stream.ReadUInt16();
+                    var signatureBytes     = stream.ReadBytes((UInt64) signatureLength);
+
+                    if (!Signature.TryParse(signatureBytes, out var signature, out ErrorResponse))
+                        return false;
+
+                    signatures.Add(signature);
+
+                }
+
+                #endregion
 
 
-                SecureDataTransferRequest = new SecureDataTransferRequest(
+                SecureDataTransferRequest  = new SecureDataTransferRequest(
 
-                                                NetworkingNodeId,
-                                                parameter,
-                                                keyId,
-                                                nonce,
-                                                counter,
-                                                ciphertext,
+                                                 NetworkingNodeId,
+                                                 parameter,
+                                                 keyId,
+                                                 nonce,
+                                                 counter,
+                                                 ciphertext,
 
-                                                null,
-                                                null,
-                                                null, //signatures,
+                                                 null,
+                                                 null,
+                                                 signatures,
 
-                                                RequestId,
-                                                null,
-                                                null,
-                                                null,
-                                                NetworkPath
+                                                 RequestId,
+                                                 RequestTimestamp,
+                                                 RequestTimeout,
+                                                 EventTrackingId,
+                                                 NetworkPath
 
-                                            );
+                                             );
 
                 ErrorResponse = null;
 
@@ -404,16 +431,16 @@ namespace cloud.charging.open.protocols.OCPP
 
         #endregion
 
-        #region ToBinary(CustomSecureDataTransferRequestSerializer = null, CustomSecureSignatureSerializer = null, ...)
+        #region ToBinary(CustomSecureDataTransferRequestSerializer = null, CustomSignatureSerializer = null, ...)
 
         /// <summary>
         /// Return a binary representation of this object.
         /// </summary>
         /// <param name="CustomSecureDataTransferRequestSerializer">A delegate to serialize custom SecureDataTransfer requests.</param>
-        /// <param name="CustomSecureSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="IncludeSignatures">Whether to include the digital signatures (default), or not.</param>
         public Byte[] ToBinary(CustomBinarySerializerDelegate<SecureDataTransferRequest>?  CustomSecureDataTransferRequestSerializer   = null,
-                               CustomBinarySerializerDelegate<Signature>?                  CustomSecureSignatureSerializer             = null,
+                               CustomBinarySerializerDelegate<Signature>?                  CustomSignatureSerializer                   = null,
                                Boolean                                                     IncludeSignatures                           = true)
         {
 
@@ -425,6 +452,22 @@ namespace cloud.charging.open.protocols.OCPP
             binaryStream.WriteUInt64(Counter);
             binaryStream.WriteUInt64((UInt64) Ciphertext.LongLength);
             binaryStream.Write      (Ciphertext);
+
+            #region Signatures
+
+            var signaturesCount = (UInt16) (IncludeSignatures ? Signatures.Count() : 0);
+            binaryStream.WriteByte((Byte) signaturesCount);
+
+            if (IncludeSignatures) {
+                foreach (var signature in Signatures)
+                {
+                    var binarySignature = signature.ToBinary(CustomSignatureSerializer);
+                    binaryStream.WriteUInt16((UInt16) binarySignature.Length);
+                    binaryStream.Write(binarySignature);
+                }
+            }
+
+            #endregion
 
             var binary = binaryStream.ToArray();
 

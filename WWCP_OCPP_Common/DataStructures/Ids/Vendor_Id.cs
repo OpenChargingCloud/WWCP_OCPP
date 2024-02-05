@@ -57,7 +57,8 @@ namespace cloud.charging.open.protocols.OCPP
 
         #region Data
 
-        private readonly static Dictionary<String, Vendor_Id>  lookup = new (StringComparer.OrdinalIgnoreCase);
+        private readonly static Dictionary<String, Vendor_Id>  textLookup    = new (StringComparer.OrdinalIgnoreCase);
+        private readonly static Dictionary<UInt32, Vendor_Id>  numericLookup = [];
 
         #endregion
 
@@ -93,29 +94,44 @@ namespace cloud.charging.open.protocols.OCPP
         /// <summary>
         /// Create a new vendor identification based on the given text and optional number.
         /// </summary>
-        /// <param name="Text">A text representation of a vendor identification.</param>
+        /// <param name="TextId">A text representation of a vendor identification.</param>
         /// <param name="NumericId">An optional numeric representation of a vendor identification.</param>
-        private Vendor_Id(String  Text,
+        private Vendor_Id(String  TextId,
                           UInt32  NumericId   = 0)
         {
 
-            this.TextId  = Text;
-            this.NumericId   = NumericId;
+            this.TextId     = TextId;
+            this.NumericId  = NumericId;
 
         }
 
         #endregion
 
 
-        #region (private static) Register(Text, NumericId = 0)
+        #region (private static) Register(TextId, NumericId = 0)
 
-        private static Vendor_Id Register(String  Text,
+        private static Vendor_Id Register(String  TextId,
                                           UInt32  NumericId   = 0)
+        {
 
-            => lookup.AddAndReturnValue(
-                   Text,
-                   new Vendor_Id(Text, NumericId)
-               );
+            var vendorId = new Vendor_Id(
+                               TextId,
+                               NumericId
+                           );
+
+            textLookup.AddAndReturnValue(
+                TextId,
+                vendorId
+            );
+
+            numericLookup.AddAndReturnValue(
+                NumericId,
+                vendorId
+            );
+
+            return vendorId;
+
+        }
 
         #endregion
 
@@ -208,7 +224,7 @@ namespace cloud.charging.open.protocols.OCPP
             if (Text.IsNotNullOrEmpty())
             {
 
-                if (!lookup.TryGetValue(Text, out VendorId))
+                if (!textLookup.TryGetValue(Text, out VendorId))
                     VendorId = Register(Text, NumericId);
 
                 return true;
@@ -271,7 +287,7 @@ namespace cloud.charging.open.protocols.OCPP
                                        out Vendor_Id  VendorId)
         {
 
-            var matches = lookup.Values.Where(vendorId => vendorId.NumericId == Number);
+            var matches = numericLookup.Values.Where(vendorId => vendorId.NumericId == Number);
 
             if (matches.Any())
             {

@@ -57,30 +57,35 @@ namespace cloud.charging.open.protocols.OCPP
 
         #region Data
 
-        private readonly static Dictionary<String, SecureDataTransferStatus>  lookup = new(StringComparer.OrdinalIgnoreCase);
-        private readonly        String                                    InternalId;
+        private readonly static Dictionary<String, SecureDataTransferStatus>  textLookup    = new (StringComparer.OrdinalIgnoreCase);
+        private readonly static Dictionary<UInt16, SecureDataTransferStatus>  numericLookup = [];
 
         #endregion
 
         #region Properties
 
+        public String  TextId       { get; }
+
+        public UInt16  NumericId    { get; }
+
+
         /// <summary>
         /// Indicates whether this secure data transfer status is null or empty.
         /// </summary>
         public readonly Boolean  IsNullOrEmpty
-            => InternalId.IsNullOrEmpty();
+            => TextId.IsNullOrEmpty();
 
         /// <summary>
         /// Indicates whether this secure data transfer status is NOT null or empty.
         /// </summary>
         public readonly Boolean  IsNotNullOrEmpty
-            => InternalId.IsNotNullOrEmpty();
+            => TextId.IsNotNullOrEmpty();
 
         /// <summary>
         /// The length of the secure data transfer status.
         /// </summary>
         public readonly UInt64   Length
-            => (UInt64) (InternalId?.Length ?? 0);
+            => (UInt64) (TextId?.Length ?? 0);
 
         #endregion
 
@@ -89,23 +94,44 @@ namespace cloud.charging.open.protocols.OCPP
         /// <summary>
         /// Create a new secure data transfer status based on the given text.
         /// </summary>
-        /// <param name="Text">The text representation of a secure data transfer status.</param>
-        private SecureDataTransferStatus(String Text)
+        /// <param name="TextId">The text representation of a secure data transfer status.</param>
+        /// <param name="NumericId">The numeric representation of a secure data transfer status.</param>
+        private SecureDataTransferStatus(String  TextId,
+                                         UInt16  NumericId)
         {
-            this.InternalId = Text;
+
+            this.TextId     = TextId;
+            this.NumericId  = NumericId;
+
         }
 
         #endregion
 
 
-        #region (private static) Register(Text)
+        #region (private static) Register(NumericId, Text)
 
-        private static SecureDataTransferStatus Register(String Text)
+        private static SecureDataTransferStatus Register(UInt16  NumericId,
+                                                         String  TextId)
+        {
 
-            => lookup.AddAndReturnValue(
-                   Text,
-                   new SecureDataTransferStatus(Text)
-               );
+            var secureDataTransferStatus = new SecureDataTransferStatus(
+                                               TextId,
+                                               NumericId
+                                           );
+
+            textLookup.AddAndReturnValue(
+                TextId,
+                secureDataTransferStatus
+            );
+
+            numericLookup.AddAndReturnValue(
+                NumericId,
+                secureDataTransferStatus
+            );
+
+            return secureDataTransferStatus;
+
+        }
 
         #endregion
 
@@ -113,16 +139,16 @@ namespace cloud.charging.open.protocols.OCPP
         #region (static) Parse   (Text)
 
         /// <summary>
-        /// Parse the given string as a secure data transfer status.
+        /// Parse the given text as a SecureDataTransferStatus.
         /// </summary>
-        /// <param name="Text">A text representation of a secure data transfer status.</param>
+        /// <param name="Text">A text representation of a SecureDataTransferStatus.</param>
         public static SecureDataTransferStatus Parse(String Text)
         {
 
             if (TryParse(Text, out var secureDataTransferStatus))
                 return secureDataTransferStatus;
 
-            throw new ArgumentException($"Invalid text representation of a secure data transfer status: '{Text}'!",
+            throw new ArgumentException($"Invalid text representation of a SecureDataTransferStatus: '{Text}'!",
                                         nameof(Text));
 
         }
@@ -132,9 +158,9 @@ namespace cloud.charging.open.protocols.OCPP
         #region (static) TryParse(Text)
 
         /// <summary>
-        /// Try to parse the given text as secure data transfer status.
+        /// Try to parse the given text as a SecureDataTransferStatus.
         /// </summary>
-        /// <param name="Text">A text representation of a secure data transfer status.</param>
+        /// <param name="Text">A text representation of a SecureDataTransferStatus.</param>
         public static SecureDataTransferStatus? TryParse(String Text)
         {
 
@@ -150,10 +176,10 @@ namespace cloud.charging.open.protocols.OCPP
         #region (static) TryParse(Text, out SecureDataTransferStatus)
 
         /// <summary>
-        /// Try to parse the given text as secure data transfer status.
+        /// Try to parse the given text as a SecureDataTransferStatus.
         /// </summary>
-        /// <param name="Text">A text representation of a secure data transfer status.</param>
-        /// <param name="SecureDataTransferStatus">The parsed secure data transfer status.</param>
+        /// <param name="Text">A text representation of a SecureDataTransferStatus.</param>
+        /// <param name="SecureDataTransferStatus">The parsed SecureDataTransferStatus.</param>
         public static Boolean TryParse(String Text, out SecureDataTransferStatus SecureDataTransferStatus)
         {
 
@@ -162,8 +188,8 @@ namespace cloud.charging.open.protocols.OCPP
             if (Text.IsNotNullOrEmpty())
             {
 
-                if (!lookup.TryGetValue(Text, out SecureDataTransferStatus))
-                    SecureDataTransferStatus = Register(Text);
+                if (!textLookup.TryGetValue(Text, out SecureDataTransferStatus))
+                    SecureDataTransferStatus = Register(0, Text);
 
                 return true;
 
@@ -171,6 +197,64 @@ namespace cloud.charging.open.protocols.OCPP
 
             SecureDataTransferStatus = default;
             return false;
+
+        }
+
+        #endregion
+
+
+        #region (static) Parse   (Number)
+
+        /// <summary>
+        /// Parse the given number as a SecureDataTransferStatus.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a SecureDataTransferStatus.</param>
+        public static SecureDataTransferStatus Parse(UInt16 Number)
+        {
+
+            if (TryParse(Number, out var secureDataTransferStatus))
+                return secureDataTransferStatus;
+
+            throw new ArgumentException($"Invalid numeric representation of a SecureDataTransferStatus: '{Number}'!",
+                                        nameof(Number));
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(Number)
+
+        /// <summary>
+        /// Try to parse the given number as a SecureDataTransferStatus.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a SecureDataTransferStatus.</param>
+        public static SecureDataTransferStatus TryParse(UInt16 Number)
+        {
+
+            if (TryParse(Number, out var secureDataTransferStatus))
+                return secureDataTransferStatus;
+
+            return default;
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(Number, out SecureDataTransferStatus)
+
+        /// <summary>
+        /// Try to parse the given number as a SecureDataTransferStatus.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a SecureDataTransferStatus.</param>
+        /// <param name="SecureDataTransferStatus">The parsed SecureDataTransferStatus.</param>
+        public static Boolean TryParse(UInt16 Number, out SecureDataTransferStatus SecureDataTransferStatus)
+        {
+
+            if (!numericLookup.TryGetValue(Number, out SecureDataTransferStatus))
+                SecureDataTransferStatus = Register(Number,
+                                                    Number.ToString());
+
+            return true;
 
         }
 
@@ -184,7 +268,8 @@ namespace cloud.charging.open.protocols.OCPP
         public SecureDataTransferStatus Clone
 
             => new(
-                   new String(InternalId?.ToCharArray())
+                   new String(TextId?.ToCharArray()),
+                   NumericId
                );
 
         #endregion
@@ -195,32 +280,36 @@ namespace cloud.charging.open.protocols.OCPP
         /// <summary>
         /// Message has been accepted, and the contained request is accepted.
         /// </summary>
-        public static SecureDataTransferStatus Accepted            { get; }
-            = Register("Accepted");
+        public static SecureDataTransferStatus  Accepted            { get; }
+            = Register(1, "Accepted");
+
 
         /// <summary>
         /// Message has been accepted, but the contained request is rejected.
         /// </summary>
-        public static SecureDataTransferStatus Rejected            { get; }
-            = Register("Rejected");
+        public static SecureDataTransferStatus  Rejected            { get; }
+            = Register(2, "Rejected");
+
 
         /// <summary>
         /// Message could not be interpreted due to unknown MessageId string.
         /// </summary>
-        public static SecureDataTransferStatus UnknownMessageId    { get; }
-            = Register("UnknownMessageId");
+        public static SecureDataTransferStatus  UnknownMessageId    { get; }
+            = Register(3, "UnknownMessageId");
+
 
         /// <summary>
         /// Message could not be interpreted due to unknown VendorId string.
         /// </summary>
-        public static SecureDataTransferStatus UnknownVendorId     { get; }
-            = Register("UnknownVendorId");
+        public static SecureDataTransferStatus  UnknownVendorId     { get; }
+            = Register(4, "UnknownVendorId");
+
 
         /// <summary>
         /// The digital signature(s) of the message is/are invalid.
         /// </summary>
-        public static SecureDataTransferStatus InvalidSignature    { get; }
-            = Register("InvalidSignature");
+        public static SecureDataTransferStatus  InvalidSignature    { get; }
+            = Register(5, "InvalidSignature");
 
         #endregion
 
@@ -344,8 +433,8 @@ namespace cloud.charging.open.protocols.OCPP
         /// <param name="SecureDataTransferStatus">A secure data transfer status to compare with.</param>
         public Int32 CompareTo(SecureDataTransferStatus SecureDataTransferStatus)
 
-            => String.Compare(InternalId,
-                              SecureDataTransferStatus.InternalId,
+            => String.Compare(TextId,
+                              SecureDataTransferStatus.TextId,
                               StringComparison.OrdinalIgnoreCase);
 
         #endregion
@@ -375,8 +464,8 @@ namespace cloud.charging.open.protocols.OCPP
         /// <param name="SecureDataTransferStatus">A secure data transfer status to compare with.</param>
         public Boolean Equals(SecureDataTransferStatus SecureDataTransferStatus)
 
-            => String.Equals(InternalId,
-                             SecureDataTransferStatus.InternalId,
+            => String.Equals(TextId,
+                             SecureDataTransferStatus.TextId,
                              StringComparison.OrdinalIgnoreCase);
 
         #endregion
@@ -391,7 +480,7 @@ namespace cloud.charging.open.protocols.OCPP
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
 
-            => InternalId?.ToLower().GetHashCode() ?? 0;
+            => TextId?.ToLower().GetHashCode() ?? 0;
 
         #endregion
 
@@ -402,7 +491,7 @@ namespace cloud.charging.open.protocols.OCPP
         /// </summary>
         public override String ToString()
 
-            => InternalId ?? "";
+            => TextId ?? "";
 
         #endregion
 

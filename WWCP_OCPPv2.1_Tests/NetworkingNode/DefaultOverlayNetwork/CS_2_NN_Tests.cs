@@ -439,7 +439,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     // Networking Node Binary Request IN
                     Assert.That(nnBinaryMessageRequestsReceived.      Count,                Is.EqualTo(1), "The BinaryDataTransfer Binary request did not reach the networking node!");
                     var nnBinaryMessageRequest = nnBinaryMessageRequestsReceived.First();
-                    Assert.That(nnBinaryMessageRequest.DestinationNodeId,                   Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(nnBinaryMessageRequest.DestinationId,                   Is.EqualTo(NetworkingNode_Id.CSMS));
                     Assert.That(nnBinaryMessageRequest.NetworkPath.Length,                  Is.EqualTo(1));
                     Assert.That(nnBinaryMessageRequest.NetworkPath.Source,                  Is.EqualTo(chargingStation.Id));
                     Assert.That(nnBinaryMessageRequest.NetworkPath.Last,                    Is.EqualTo(chargingStation.Id));

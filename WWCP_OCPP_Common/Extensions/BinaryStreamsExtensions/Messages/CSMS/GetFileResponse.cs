@@ -356,11 +356,8 @@ namespace cloud.charging.open.protocols.OCPP.CS
                     var signatureLength   = stream.ReadUInt16();
                     var signatureBytes    = stream.ReadBytes((UInt64) signatureLength);
 
-                    if (!Signature.TryParse(signatureBytes, out var signature, out ErrorResponse) ||
-                        signature is null)
-                    {
+                    if (!Signature.TryParse(signatureBytes, out var signature, out ErrorResponse))
                         return false;
-                    }
 
                     signatures.Add(signature);
 
