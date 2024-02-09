@@ -22,12 +22,6 @@ using NUnit.Framework;
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.GermanCalibrationLaw;
-using Org.BouncyCastle.Asn1.Nist;
-using Org.BouncyCastle.Asn1.X9;
-using Org.BouncyCastle.Crypto.Parameters;
-using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Security;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 #endregion
 
@@ -154,15 +148,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.GermanCalibrationLaw
 
             var signedMeterValueStart  = "CQFFTUgAAH+IOlW9mmAI82zoACgAAAABAAERAP8e/++VAQAAAAAAAIEEEABqNFuEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFS9mmAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=".FromBase64();  // 320
             var signatureStart         = "QMKRFnfb18l9fOMcnsF7hDItf6h7GGbt9aXY2PlnBslgHN5pit5ruAYx7tpJ8dPSAIE=".FromBase64();  // 50
+                                       // 40c2911677dbd7c97d7ce31c9ec17b84322d7fa87b1866edf5 a5d8d8f96706c9601cde698ade6bb80631eeda49f1d3d2 0081
+
+            // 10,3919 kWh
+            // 11.05.2021 17:22:29
+
+            // Vertrags-ID:                 04 10 00 6A 34 5B 84
+            // Sekunden-Index:              F3 6C E8 00
+            // Logbuch:                     0 -127
+            // Einheit:                     1E
+            // OBIS Kennzahl:               01 00 01 11 00 FF
+            // Scaler:                      FF
+            // Server ID:                   09 01 45 4D 48 00 00 7F 88 3A
+            // Signatur:                    40 C2 91 16 77 DB D7 C9 7D 7C E3 1C 9E C1 7B 84 32 2D 7F A8 7B 18 66 E D F5 A5 D8 D8 F9 67 06 C9 60 1C DE 69 8A DE 6B B8 06 31 EE DA 49 F1 D3 D2 00 81
+            // Status:                      08
+            // Zeitstempel (Kundennummer):  11.05.2021 17:22:28
+            // Paginierung:                 40
+
 
             var signedMeterValueStop   = "CQFFTUgAAH+IOp69mmAIPG3oACkAAAABAAERAP8e/++VAQAAAAAAAIEEEABqNFuEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFS9mmAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=".FromBase64();  // 320
+            var signatureStop          = "mKWHdtSeMHUZRSF2BxI3/U2KdePDTie4tTJuFlkI6hmMzVZknLh20vN/f3njf3ccAIE=".FromBase64();  // 50
+            // 10,3919 kWh
+            // 11.05.2021 17:23:42
+
+            // Vertrags-ID:                 04 10 00 6A 34 5B 84
+            // Sekunden-Index:              3C 6D E8 00
+            // Logbuch:                     0 -127
+            // Einheit:                     1E
+            // OBIS Kennzahl:               01 00 01 11 00 FF
+            // Scaler:                      FF
+            // Server ID:                   09 01 45 4D 48 00 00 7F 88 3A
+            // Signatur:                    98 A5 87 76 D4 9E 30 75 19 45 21 76 07 12 37 FD 4D 8A 75 E3 C3 4E 27 B 8 B5 32 6E 16 59 08 EA 19 8C CD 56 64 9C B8 76 D2 F3 7F 7F 79 E3 7F 77 1C 00 81
+            // Status:                      08
+            // Zeitstempel (Kundennummer):  11.05.2021 17:22:28
+            // Paginierung:                 41
+
             var unixTimestampBytes = new Byte[4];
             Array.Copy(signedMeterValueStop, 169, unixTimestampBytes, 0, unixTimestampBytes.Length);
             var dateTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(BitConverter.ToInt32(unixTimestampBytes, 0));
 
-            var signatureStop          = "mKWHdtSeMHUZRSF2BxI3/U2KdePDTie4tTJuFlkI6hmMzVZknLh20vN/f3njf3ccAIE=".FromBase64();  // 50
 
             var publicKey              = "vEa0GLtowJDpNDLm7JJ3l0CBe+MjlLDj0CTb0zfr8+s+gCTyubzGqSrM5LH5BG2o".FromBase64();      // 48
+
 
             var startVerification      = new EMHCrypt01(null, null).VerifyMeasurement(signedMeterValueStart, publicKey, signatureStart);
             var stopVerification       = new EMHCrypt01(null, null).VerifyMeasurement(signedMeterValueStop,  publicKey, signatureStop);

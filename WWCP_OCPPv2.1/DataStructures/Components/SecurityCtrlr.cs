@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                              String?      Instance     = null,
                              CustomData?  CustomData   = null)
 
-            : base("SecurityCtrlr",
+            : base(nameof(SecurityCtrlr),
                    Instance,
                    null,
                    new[] {

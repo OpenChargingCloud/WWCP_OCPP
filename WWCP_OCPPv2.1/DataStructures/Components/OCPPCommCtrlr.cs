@@ -55,7 +55,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public OCPPCommCtrlr(String?      Instance     = null,
                              CustomData?  CustomData   = null)
 
-            : base("OCPPCommCtrlr",
+            : base(nameof(OCPPCommCtrlr),
                    Instance,
                    null,
                    new[] {
