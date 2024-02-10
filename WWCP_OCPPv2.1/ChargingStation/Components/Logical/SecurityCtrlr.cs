@@ -29,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// <summary>
     /// HTTP Basic Authentication security settings between the charging station and the CSMS.
     /// </summary>
-    public class SecurityCtrlr : ComponentConfig
+    public class SecurityCtrlr : ALogicalComponentConfig
     {
 
         #region Properties
@@ -51,11 +51,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-
         #region Constructor(s)
 
         /// <summary>
-        /// Create new constant stream data.
+        /// Create a new security controller.
         /// </summary>
         /// <param name="Identity">The charging station identity.</param>
         /// <param name="BasicAuthPassword">The HTTP Basic Authentication password</param>
@@ -72,7 +71,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             : base(nameof(SecurityCtrlr),
                    Instance,
-                   null,
                    new[] {
 
                        #region Identity

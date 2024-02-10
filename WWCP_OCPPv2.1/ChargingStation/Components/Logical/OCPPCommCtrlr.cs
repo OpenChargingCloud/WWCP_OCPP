@@ -29,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// <summary>
     /// HTTP Web Socket client behaviour.
     /// </summary>
-    public class OCPPCommCtrlr : ComponentConfig
+    public class OCPPCommCtrlr : ALogicalComponentConfig
     {
 
         #region Properties
@@ -44,11 +44,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-
         #region Constructor(s)
 
         /// <summary>
-        /// Create new constant stream data.
+        /// Create a new OCPP communication controller.
         /// </summary>
         /// <param name="Instance">The optional case insensitive name of the instance in case the component exists as multiple instances.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
@@ -57,7 +56,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             : base(nameof(OCPPCommCtrlr),
                    Instance,
-                   null,
                    new[] {
 
                        #region RetryBackOffRepeatTimes

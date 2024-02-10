@@ -27,9 +27,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// HTTP Basic Authentication security settings between the charging station and the CSMS.
+    /// Logical Component responsible for configuration relating to the reporting of clock-aligned meter data.
     /// </summary>
-    public class AlignedDataCtrlr : ComponentConfig
+    public class AlignedDataCtrlr : ALogicalComponentConfig
     {
 
         #region Properties
@@ -37,71 +37,75 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// If this variable reports a value of true, Clock-Aligned Data is supported.
         /// </summary>
-        public Boolean       Enabled              { get; set; }
+        public Boolean?                Enabled              { get; set; }
 
         /// <summary>
         /// If this variable reports a value of true, Aligned Data is supported.
         /// </summary>
-        public Boolean       Available            { get; set; }
+        public Boolean?                Available            { get; set; }
 
         /// <summary>
         /// Size (in seconds) of the clock-aligned data interval, intended to be transmitted in the MeterValuesRequest message.
         /// </summary>
-        public UInt32        Interval             { get; set; }
+        public UInt32?                 Interval             { get; set; }
 
         /// <summary>
         /// Clock-aligned measurand(s) to be included in MeterValuesRequest, every AlignedDataInterval seconds.
         /// </summary>
-        public List<Object>  Measurands           { get; set; }
+        public IEnumerable<Measurand>  Measurands           { get; set; }
 
         /// <summary>
         /// If set to true, the Charging Station SHALL not send clock aligned meter values when a transaction is ongoing.
         /// </summary>
-        public Boolean       SendDuringIdle       { get; set; }
+        public Boolean?                SendDuringIdle       { get; set; }
 
         /// <summary>
         /// If set to true, the Charging Station SHALL include signed meter values in the TransactionEventRequest to the CSMS.
         /// </summary>
-        public Boolean       SignReadings         { get; set; }
+        public Boolean?                SignReadings         { get; set; }
 
         /// <summary>
         /// Size (in seconds) of the clock-aligned data interval, intended to be transmitted in the TransactionEventRequest (eventType = Ended) message.
         /// </summary>
-        public UInt32        TxEndedInterval      { get; set; }
+        public UInt32?                 TxEndedInterval      { get; set; }
 
         /// <summary>
         /// Clock-aligned periodic measurand(s) to be included in the meterValues element of TransactionEventRequest (eventType = Ended) for every TxEndedAlignedDataInterval of the transaction.
         /// </summary>
-        public List<Object>  TxEndedMeasurands    { get; set; }
+        public IEnumerable<Measurand>  TxEndedMeasurands    { get; set; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create new constant stream data.
+        /// Create a new aligned data controller.
         /// </summary>
-        /// <param name="Identity">The charging station identity.</param>
-        /// <param name="BasicAuthPassword">The HTTP Basic Authentication password</param>
-        /// <param name="OrganizationName">The organization name that is to be used for checking a security certificate.</param>
+        /// <param name="Enabled">If this variable reports a value of true, Clock-Aligned Data is supported.</param>
+        /// <param name="Available">If this variable reports a value of true, Aligned Data is supported.</param>
+        /// <param name="Interval">Size (in seconds) of the clock-aligned data interval, intended to be transmitted in the MeterValuesRequest message.</param>
+        /// <param name="Measurands">Clock-aligned measurand(s) to be included in MeterValuesRequest, every AlignedDataInterval seconds.</param>
+        /// <param name="SendDuringIdle">If set to true, the Charging Station SHALL not send clock aligned meter values when a transaction is ongoing.</param>
+        /// <param name="SignReadings">If set to true, the Charging Station SHALL include signed meter values in the TransactionEventRequest to the CSMS.</param>
+        /// <param name="TxEndedInterval">Size (in seconds) of the clock-aligned data interval, intended to be transmitted in the TransactionEventRequest (eventType = Ended) message.</param>
+        /// <param name="TxEndedMeasurands">Clock-aligned periodic measurand(s) to be included in the meterValues element of TransactionEventRequest (eventType = Ended) for every TxEndedAlignedDataInterval of the transaction.</param>
         /// 
         /// <param name="Instance">The optional case insensitive name of the instance in case the component exists as multiple instances.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public AlignedDataCtrlr(Boolean       Enabled,
-                                Boolean       Available,
-                                UInt32        Interval,
-                                List<Object>  Measurands,
-                                Boolean       SendDuringIdle,
-                                Boolean       SignReadings,
-                                UInt32        TxEndedInterval,
-                                List<Object>  TxEndedMeasurands,
+        public AlignedDataCtrlr(Boolean?                 Enabled             = null,
+                                Boolean?                 Available           = null,
+                                UInt32?                  Interval            = null,
+                                IEnumerable<Measurand>?  Measurands          = null,
+                                Boolean?                 SendDuringIdle      = null,
+                                Boolean?                 SignReadings        = null,
+                                UInt32?                  TxEndedInterval     = null,
+                                IEnumerable<Measurand>?  TxEndedMeasurands   = null,
 
-                                String?       Instance     = null,
-                                CustomData?   CustomData   = null)
+                                String?                  Instance            = null,
+                                CustomData?              CustomData          = null)
 
             : base(nameof(AlignedDataCtrlr),
                    Instance,
-                   null,
                    new[] {
 
                        #region Enabled
@@ -329,11 +333,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.Enabled            = Enabled;
             this.Available          = Available;
             this.Interval           = Interval;
-            this.Measurands         = Measurands;
+            this.Measurands         = Measurands?.       Distinct() ?? [];
             this.SendDuringIdle     = SendDuringIdle;
             this.SignReadings       = SignReadings;
             this.TxEndedInterval    = TxEndedInterval;
-            this.TxEndedMeasurands  = TxEndedMeasurands;
+            this.TxEndedMeasurands  = TxEndedMeasurands?.Distinct() ?? [];
 
         }
 
