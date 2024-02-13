@@ -27,58 +27,58 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// Logical Component responsible for configuration relating to security of communications between charging station and CSMS
-    /// (HTTP Basic Authentication settings).
+    /// Logical Component responsible for configuration relating to reservations.
     /// </summary>
-    public class SecurityCtrlr : ALogicalComponentConfig
+    public class ReservationCtrlr : ALogicalComponentConfig
     {
 
         #region Properties
 
         /// <summary>
-        /// The charging station identity.
+        /// Whether reservation is enabled.
         /// </summary>
-        public String  Identity             { get; set; }
+        public Boolean?  Enabled            { get; set; }
 
         /// <summary>
-        /// The HTTP Basic Authentication password.
+        /// Whether reservation is supported.
         /// </summary>
-        public String  BasicAuthPassword    { get; set; }
+        public Boolean?  Available          { get; set; }
 
         /// <summary>
-        /// The organization name that is to be used for checking a security certificate.
+        /// If this configuration variable is present and set to true:
+        /// The charging station supports reservation without specifying an EVSE.
         /// </summary>
-        public String  OrganizationName     { get; set; }
+        public Boolean?  NonEvseSpecific    { get; set; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new security controller.
+        /// Create a new reservation controller.
         /// </summary>
-        /// <param name="Identity">The charging station identity.</param>
-        /// <param name="BasicAuthPassword">The HTTP Basic Authentication password</param>
-        /// <param name="OrganizationName">The organization name that is to be used for checking a security certificate.</param>
+        /// <param name="Enabled">Whether reservation is enabled.</param>
+        /// <param name="Available">Whether reservation is supported.</param>
+        /// <param name="NonEvseSpecific">If this configuration variable is present and set to true: The charging station supports reservation without specifying an EVSE.</param>
         /// 
         /// <param name="Instance">The optional case insensitive name of the instance in case the component exists as multiple instances.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public SecurityCtrlr(String       Identity,
-                             String       BasicAuthPassword,
-                             String       OrganizationName,
+        public ReservationCtrlr(Boolean?     Enabled,
+                                Boolean?     Available,
+                                Boolean?     NonEvseSpecific,
 
-                             String?      Instance     = null,
-                             CustomData?  CustomData   = null)
+                                String?      Instance     = null,
+                                CustomData?  CustomData   = null)
 
-            : base(nameof(SecurityCtrlr),
+            : base(nameof(ReservationCtrlr),
                    Instance,
                    new[] {
 
-                       #region Identity
+                       #region Enabled
 
                        new VariableConfig(
 
-                           Name:              "Identity",
+                           Name:              "Enabled",
                            Instance:          null,
 
                            Attributes:        new[] {
@@ -89,11 +89,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                            Characteristics:   new[] {
                                                    new VariableCharacteristics(
-                                                       DataType:    DataTypes.String
+                                                       DataType:    DataTypes.Boolean
                                                    )
                                                },
 
-                           Description:       I18NString.Create("The charging station identity (identifierString)."),
+                           Description:       I18NString.Create("Whether reservation is enabled."),
 
                            CustomData:        null
 
@@ -101,11 +101,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                        #endregion
 
-                       #region BasicAuthPassword
+                       #region Available
 
                        new VariableConfig(
 
-                           Name:              "BasicAuthPassword",
+                           Name:              "Available",
                            Instance:          null,
 
                            Attributes:        new[] {
@@ -116,11 +116,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                            Characteristics:   new[] {
                                                    new VariableCharacteristics(
-                                                       DataType:    DataTypes.String
+                                                       DataType:    DataTypes.Boolean
                                                    )
                                                },
 
-                           Description:       I18NString.Create("The HTTP Basic Authentication password (16-40 alpha-numeric and special characters allowed bypasswordString). This configuration variable is write-only, sothat it cannot be accidentally stored in plaintext by the CSMS when it reads out allconfiguration variables. This configuration variable is required unless only \"security profile 3 - TLS withclient side certificates\" is implemented."),
+                           Description:       I18NString.Create("Whether reservation is supported."),
 
                            CustomData:        null
 
@@ -128,11 +128,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                        #endregion
 
-                       #region OrganizationName
+                       #region NonEvseSpecific
 
                        new VariableConfig(
 
-                           Name:              "OrganizationName",
+                           Name:              "NonEvseSpecific",
                            Instance:          null,
 
                            Attributes:        new[] {
@@ -143,27 +143,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                            Characteristics:   new[] {
                                                    new VariableCharacteristics(
-                                                       DataType:    DataTypes.String
+                                                       DataType:    DataTypes.Boolean
                                                    )
                                                },
 
-                           Description:       I18NString.Create("Organization name that is to be used for checking a security certificate."),
+                           Description:       I18NString.Create("If this configuration variable is present and set to true: The charging station supports reservation without specifying an EVSE."),
 
                            CustomData:        null
 
-                       )
+                       ),
 
                        #endregion
 
                    },
-                   I18NString.Create("Logical Component responsible for configuration relating to security of communications between charging station and CSMS (HTTP Basic Authentication settings)."),
+                   I18NString.Create("Logical Component responsible for configuration relating to reservations."),
                    CustomData)
 
         {
 
-            this.BasicAuthPassword  = BasicAuthPassword;
-            this.Identity           = Identity;
-            this.OrganizationName   = OrganizationName;
+            this.Enabled          = Enabled;
+            this.Available        = Available;
+            this.NonEvseSpecific  = NonEvseSpecific;
 
         }
 

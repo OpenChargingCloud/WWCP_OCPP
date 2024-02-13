@@ -20,6 +20,9 @@
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.OCPP;
+using System.Runtime.InteropServices;
+using org.GraphDefined.Vanaheimr.Hermod.Mail;
+using System.Drawing;
 
 #endregion
 
@@ -35,20 +38,98 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Properties
 
-        /// <summary>
-        /// Message Size (in bytes) - maxLimit used to report constraint on message size. Which message is specified in the instance.
-        /// </summary>
-        public UInt32?  BytesPerMessage    { get; set; }
+        #region BytesPerMessage
 
         /// <summary>
-        /// Maximum number of entries that can be sent in one message. Which entries in which message is specified in the instance.
+        /// Maximum number of entries that can be sent in one message.
         /// </summary>
-        public UInt32?  ItemsPerMessage    { get; set; }
+        [Mandatory]
+        public BytesPerMessageClass  BytesPerMessage    { get; }
+
+        public class BytesPerMessageClass
+        {
+
+            /// <summary>
+            /// Message Size (in bytes) - puts constraint on GetReportRequest message size.
+            /// </summary>
+            [Mandatory]
+            public UInt32  GetReport       { get; set; }
+
+            /// <summary>
+            /// Message Size (in bytes) - puts constraint on GetVariablesRequest message size.
+            /// </summary>
+            [Mandatory]
+            public UInt32  GetVariables    { get; set; }
+
+            /// <summary>
+            /// Message Size (in bytes) - puts constraint on SetVariablesRequest message size.
+            /// </summary>
+            [Mandatory]
+            public UInt32  SetVariables    { get; set; }
+
+        }
+
+        #endregion
+
+        #region ItemsPerMessage
 
         /// <summary>
-        /// Can be used to limit the following fields: SetVariableData.attributeValue, GetVariableResult.attributeValue, VariableAttribute.value, VariableCharacteristics.valueList and EventData.actualValue.
+        /// Maximum number of entries that can be sent in one message.
         /// </summary>
-        public UInt32?  ValueSize          { get; set; }
+        [Mandatory]
+        public ItemsPerMessageClass  ItemsPerMessage    { get; }
+
+        public class ItemsPerMessageClass
+        {
+
+            /// <summary>
+            /// Maximum number of ComponentVariable entries that can be sent in one GetReportRequest message.
+            /// </summary>
+            [Mandatory]
+            public UInt32  GetReport       { get; set; }
+
+            /// <summary>
+            /// Maximum number of GetVariableData objects in GetVariablesRequest.
+            /// </summary>
+            [Mandatory]
+            public UInt32  GetVariables    { get; set; }
+
+            /// <summary>
+            /// Maximum number of SetVariableData objects in SetVariablesRequest.
+            /// </summary>
+            [Mandatory]
+            public UInt32  SetVariables    { get; set; }
+
+        }
+
+        #endregion
+
+        #region ValueSize
+
+        /// <summary>
+        /// Limit a field.
+        /// </summary>
+        [Mandatory]
+        public ValueSizeClass ValueSize { get; }
+
+        public class ValueSizeClass
+        {
+
+            /// <summary>
+            /// This Configuration Variable can be used to limit the following fields: SetVariableData.attributeValue and VariableCharacteristics.valueList.
+            /// The max size of these values will always remain equal.
+            /// </summary>
+            public UInt32?  Configuration    { get; }
+
+            /// <summary>
+            /// This Configuration Variable can be used to limit the following fields: GetVariableResult.attributeValue, VariableAttribute.value and EventData.actualValue.
+            /// The max size of these values will always remain equal.
+            /// </summary>
+            public UInt32?  Reporting        { get; }
+
+        }
+
+        #endregion
 
         #endregion
 
@@ -57,29 +138,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Create a new device data controller.
         /// </summary>
-        /// <param name="BytesPerMessage">Message Size (in bytes) - maxLimit used to report constraint on message size. Which message is specified in the instance.</param>
-        /// <param name="ItemsPerMessage">Maximum number of entries that can be sent in one message. Which entries in which message is specified in the instance.</param>
+        /// <param name="BytesPerMessage">Message Size (in bytes) - maxLimit used to report constraint on message size.</param>
+        /// <param name="ItemsPerMessage">Maximum number of entries that can be sent in one message.</param>
         /// <param name="ValueSize">Can be used to limit the following fields: SetVariableData.attributeValue, GetVariableResult.attributeValue, VariableAttribute.value, VariableCharacteristics.valueList and EventData.actualValue.</param>
         /// 
         /// <param name="Instance">The optional case insensitive name of the instance in case the component exists as multiple instances.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public DeviceDataCtrlr(UInt32?      BytesPerMessage   = null,
-                               UInt32?      ItemsPerMessage   = null,
-                               UInt32?      ValueSize         = null,
+        public DeviceDataCtrlr(BytesPerMessageClass  BytesPerMessage,
+                               ItemsPerMessageClass  ItemsPerMessage,
+                               ValueSizeClass        ValueSize,
 
-                               String?      Instance          = null,
-                               CustomData?  CustomData        = null)
+                               String?               Instance     = null,
+                               CustomData?           CustomData   = null)
 
             : base(nameof(DeviceDataCtrlr),
                    Instance,
                    new[] {
 
-                       #region BytesPerMessage
+                       #region BytesPerMessage (GetReport)
 
                        new VariableConfig(
 
                            Name:              "BytesPerMessage",
-                           Instance:          null,
+                           Instance:          "GetReport",
 
                            Attributes:        new[] {
                                                    new VariableAttribute(
@@ -93,7 +174,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                    )
                                                },
 
-                           Description:       I18NString.Create("Message Size (in bytes) - maxLimit used to report constraint on message size. Which message is specified in the instance."),
+                           Description:       I18NString.Create("Message Size (in bytes) - puts constraint on GetReportRequest message size."),
 
                            CustomData:        null
 
@@ -101,12 +182,67 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                        #endregion
 
-                       #region ItemsPerMessage
+                       #region BytesPerMessage (GetVariables)
+
+                       new VariableConfig(
+
+                           Name:              "BytesPerMessage",
+                           Instance:          "GetVariables",
+
+                           Attributes:        new[] {
+                                                   new VariableAttribute(
+                                                       Mutability:  MutabilityTypes.ReadOnly
+                                                   )
+                                               },
+
+                           Characteristics:   new[] {
+                                                   new VariableCharacteristics(
+                                                       DataType:    DataTypes.Integer
+                                                   )
+                                               },
+
+                           Description:       I18NString.Create("Message Size (in bytes) - puts constraint on GetVariablesRequest message size."),
+
+                           CustomData:        null
+
+                       ),
+
+                       #endregion
+
+                       #region BytesPerMessage (GetVariables)
+
+                       new VariableConfig(
+
+                           Name:              "BytesPerMessage",
+                           Instance:          "SetVariables",
+
+                           Attributes:        new[] {
+                                                   new VariableAttribute(
+                                                       Mutability:  MutabilityTypes.ReadOnly
+                                                   )
+                                               },
+
+                           Characteristics:   new[] {
+                                                   new VariableCharacteristics(
+                                                       DataType:    DataTypes.Integer
+                                                   )
+                                               },
+
+                           Description:       I18NString.Create("Message Size (in bytes) - puts constraint on SetVariablesRequest message size."),
+
+                           CustomData:        null
+
+                       ),
+
+                       #endregion
+
+
+                       #region ItemsPerMessage (GetReport)
 
                        new VariableConfig(
 
                            Name:              "ItemsPerMessage",
-                           Instance:          null,
+                           Instance:          "GetReport",
 
                            Attributes:        new[] {
                                                    new VariableAttribute(
@@ -120,7 +256,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                    )
                                                },
 
-                           Description:       I18NString.Create("Maximum number of entries that can be sent in one message. Which entries in which message is specified in the instance."),
+                           Description:       I18NString.Create("Maximum number of ComponentVariable entries that can be sent in one GetReportRequest message."),
 
                            CustomData:        null
 
@@ -128,12 +264,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                        #endregion
 
-                       #region ValueSize
+                       #region ItemsPerMessage (GetVariables)
 
                        new VariableConfig(
 
-                           Name:              "ValueSize",
-                           Instance:          null,
+                           Name:              "ItemsPerMessage",
+                           Instance:          "GetVariables",
 
                            Attributes:        new[] {
                                                    new VariableAttribute(
@@ -147,7 +283,91 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                    )
                                                },
 
-                           Description:       I18NString.Create("Can be used to limit the following fields: SetVariableData.attributeValue, GetVariableResult.attributeValue, VariableAttribute.value, VariableCharacteristics.valueList and EventData.actualValue."),
+                           Description:       I18NString.Create("Maximum number of GetVariableData objects in GetVariablesRequest."),
+
+                           CustomData:        null
+
+                       ),
+
+                       #endregion
+
+                       #region ItemsPerMessage (SetVariables)
+
+                       new VariableConfig(
+
+                           Name:              "ItemsPerMessage",
+                           Instance:          "SetVariables",
+
+                           Attributes:        new[] {
+                                                   new VariableAttribute(
+                                                       Mutability:  MutabilityTypes.ReadOnly
+                                                   )
+                                               },
+
+                           Characteristics:   new[] {
+                                                   new VariableCharacteristics(
+                                                       DataType:    DataTypes.Integer
+                                                   )
+                                               },
+
+                           Description:       I18NString.Create("Maximum number of SetVariableData objects in SetVariablesRequest."),
+
+                           CustomData:        null
+
+                       ),
+
+                       #endregion
+
+
+                       #region ValueSize (Configuration)
+
+                       new VariableConfig(
+
+                           Name:              "ConfigurationValueSize",
+                           Instance:          null,
+
+                           Attributes:        new[] {
+                                                   new VariableAttribute(
+                                                       Mutability:  MutabilityTypes.ReadOnly
+                                                   )
+                                               },
+
+                           Characteristics:   new[] {
+                                                   new VariableCharacteristics(
+                                                       DataType:    DataTypes.Integer,
+                                                       MaxLimit:    1000
+                                                   )
+                                               },
+
+                           Description:       I18NString.Create("This Configuration Variable can be used to limit the following fields: SetVariableData.attributeValue and\r\nVariableCharacteristics.valueList. The max size of these values will always remain equal."),
+
+                           CustomData:        null
+
+                       ),
+
+                       #endregion
+
+                       #region ValueSize (Reporting)
+
+                       new VariableConfig(
+
+                           Name:              "ReportingValueSize",
+                           Instance:          null,
+
+                           Attributes:        new[] {
+                                                   new VariableAttribute(
+                                                       Mutability:  MutabilityTypes.ReadOnly
+                                                   )
+                                               },
+
+                           Characteristics:   new[] {
+                                                   new VariableCharacteristics(
+                                                       DataType:    DataTypes.Integer,
+                                                       MaxLimit:    2500
+                                                   )
+                                               },
+
+                           Description:       I18NString.Create("This Configuration Variable can be used to limit the following fields: GetVariableResult.attributeValue,\r\nVariableAttribute.value and EventData.actualValue. The max size of these values will always remain equal.\r\n"),
 
                            CustomData:        null
 
