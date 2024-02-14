@@ -41,7 +41,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region BytesPerMessage
 
         /// <summary>
-        /// Maximum number of entries that can be sent in one message.
+        /// Message Size (in bytes) - puts constraint on message size.
         /// </summary>
         [Mandatory]
         public BytesPerMessageClass  BytesPerMessage    { get; }
@@ -153,229 +153,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             : base(nameof(DeviceDataCtrlr),
                    Instance,
-                   new[] {
-
-                       #region BytesPerMessage (GetReport)
-
-                       new VariableConfig(
-
-                           Name:              "BytesPerMessage",
-                           Instance:          "GetReport",
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadOnly
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Integer
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("Message Size (in bytes) - puts constraint on GetReportRequest message size."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region BytesPerMessage (GetVariables)
-
-                       new VariableConfig(
-
-                           Name:              "BytesPerMessage",
-                           Instance:          "GetVariables",
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadOnly
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Integer
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("Message Size (in bytes) - puts constraint on GetVariablesRequest message size."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region BytesPerMessage (GetVariables)
-
-                       new VariableConfig(
-
-                           Name:              "BytesPerMessage",
-                           Instance:          "SetVariables",
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadOnly
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Integer
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("Message Size (in bytes) - puts constraint on SetVariablesRequest message size."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-
-                       #region ItemsPerMessage (GetReport)
-
-                       new VariableConfig(
-
-                           Name:              "ItemsPerMessage",
-                           Instance:          "GetReport",
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadOnly
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Integer
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("Maximum number of ComponentVariable entries that can be sent in one GetReportRequest message."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region ItemsPerMessage (GetVariables)
-
-                       new VariableConfig(
-
-                           Name:              "ItemsPerMessage",
-                           Instance:          "GetVariables",
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadOnly
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Integer
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("Maximum number of GetVariableData objects in GetVariablesRequest."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region ItemsPerMessage (SetVariables)
-
-                       new VariableConfig(
-
-                           Name:              "ItemsPerMessage",
-                           Instance:          "SetVariables",
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadOnly
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Integer
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("Maximum number of SetVariableData objects in SetVariablesRequest."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-
-                       #region ValueSize (Configuration)
-
-                       new VariableConfig(
-
-                           Name:              "ConfigurationValueSize",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadOnly
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Integer,
-                                                       MaxLimit:    1000
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("This Configuration Variable can be used to limit the following fields: SetVariableData.attributeValue and\r\nVariableCharacteristics.valueList. The max size of these values will always remain equal."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region ValueSize (Reporting)
-
-                       new VariableConfig(
-
-                           Name:              "ReportingValueSize",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadOnly
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Integer,
-                                                       MaxLimit:    2500
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("This Configuration Variable can be used to limit the following fields: GetVariableResult.attributeValue,\r\nVariableAttribute.value and EventData.actualValue. The max size of these values will always remain equal.\r\n"),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                   },
                    I18NString.Create("Logical Component responsible for configuration relating to the exchange and storage of charging station device model data."),
                    CustomData)
 
@@ -384,6 +161,208 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.BytesPerMessage  = BytesPerMessage;
             this.ItemsPerMessage  = ItemsPerMessage;
             this.ValueSize        = ValueSize;
+
+
+            #region BytesPerMessage (GetReport)
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "BytesPerMessage",
+                    Instance:         "GetReport",
+                    ValueGetter:      this.BytesPerMessage.GetReport.ToString,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadOnly
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Integer
+                                      ),
+
+                    Description:      I18NString.Create("Message Size (in bytes) - puts constraint on GetReportRequest message size.")
+
+                )
+            );
+
+            #endregion
+
+            #region BytesPerMessage (GetVariables)
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "BytesPerMessage",
+                    Instance:         "GetVariables",
+                    ValueGetter:      this.BytesPerMessage.GetVariables.ToString,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadOnly
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Integer
+                                      ),
+
+                    Description:      I18NString.Create("Message Size (in bytes) - puts constraint on GetVariablesRequest message size.")
+
+                )
+            );
+
+            #endregion
+
+            #region BytesPerMessage (GetVariables)
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "BytesPerMessage",
+                    Instance:         "SetVariables",
+                    ValueGetter:      this.BytesPerMessage.SetVariables.ToString,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadOnly
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Integer
+                                      ),
+
+                    Description:      I18NString.Create("Message Size (in bytes) - puts constraint on SetVariablesRequest message size.")
+
+                )
+            );
+
+            #endregion
+
+
+            #region ItemsPerMessage (GetReport)
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "ItemsPerMessage",
+                    Instance:         "GetReport",
+                    ValueGetter:      this.ItemsPerMessage.GetReport.ToString,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadOnly
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Integer
+                                      ),
+
+                    Description:      I18NString.Create("Maximum number of ComponentVariable entries that can be sent in one GetReportRequest message.")
+
+                )
+            );
+
+            #endregion
+
+            #region ItemsPerMessage (GetVariables)
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "ItemsPerMessage",
+                    Instance:         "GetVariables",
+                    ValueGetter:      this.ItemsPerMessage.GetVariables.ToString,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadOnly
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Integer
+                                      ),
+
+                    Description:      I18NString.Create("Maximum number of GetVariableData objects in GetVariablesRequest.")
+
+                )
+            );
+
+            #endregion
+
+            #region ItemsPerMessage (SetVariables)
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "ItemsPerMessage",
+                    Instance:         "SetVariables",
+                    ValueGetter:      this.ItemsPerMessage.SetVariables.ToString,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadOnly
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Integer
+                                      ),
+
+                    Description:      I18NString.Create("Maximum number of SetVariableData objects in SetVariablesRequest.")
+
+                )
+            );
+
+            #endregion
+
+
+            #region ValueSize (Configuration)
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "ConfigurationValueSize",
+                    ValueGetter:      () => this.ValueSize.Configuration?.ToString(),
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadOnly
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Integer,
+                                          MaxLimit:    1000
+                                      ),
+
+                    Description:      I18NString.Create(
+                                          "This Configuration Variable can be used to limit the following fields: SetVariableData.attributeValue and VariableCharacteristics.valueList. " +
+                                          "The max size of these values will always remain equal."
+                                      )
+
+                )
+            );
+
+            #endregion
+
+            #region ValueSize (Reporting)
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "ReportingValueSize",
+                    ValueGetter:      () => this.ValueSize.Reporting?.ToString(),
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadOnly
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Integer,
+                                          MaxLimit:    2500
+                                      ),
+
+                    Description:      I18NString.Create(
+                                          "This Configuration Variable can be used to limit the following fields: GetVariableResult.attributeValue, VariableAttribute.value and EventData.actualValue. " +
+                                          "The max size of these values will always remain equal."
+                                      )
+
+                )
+            );
+
+            #endregion
+
 
         }
 

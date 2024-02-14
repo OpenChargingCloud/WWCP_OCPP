@@ -38,27 +38,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Whether this display message controller is enabled.
         /// </summary>
-        public Boolean?                    Enabled                { get; set; }
+        public Boolean?                      Enabled                { get; set; }
 
         /// <summary>
         /// Whether the display of messages is supported.
         /// </summary>
-        public Boolean?                    Available              { get; set; }
+        public Boolean?                      Available              { get; set; }
 
         /// <summary>
         /// The number of different messages that are currently configured in this charging station, via SetDisplayMessageRequest.
         /// </summary>
-        public UInt32?                     DisplayMessages        { get; set; }
+        [Mandatory]
+        public UInt16                        DisplayMessages        { get; set; }
 
         /// <summary>
         /// The max size (in characters) of the personal message element of the IdTokenInfo data (0 specifies no personal data may be stored).
         /// </summary>
-        public UInt32?                     PersonalMessageSize    { get; set; }
+        public UInt32?                       PersonalMessageSize    { get; set; }
 
         /// <summary>
         /// The enumeration of supported message formats by this charging station.
         /// </summary>
-        public IEnumerable<MessageFormat>  SupportedFormats       { get; set; }
+        [Mandatory]
+        public IEnumerable<MessageFormat>    SupportedFormats       { get; set; }
+
+        /// <summary>
+        /// The enumeration of supported message priorities by this charging station.
+        /// </summary>
+        [Mandatory]
+        public IEnumerable<MessagePriority>  SupportedPriorities    { get; set; }
 
         #endregion
 
@@ -67,173 +75,201 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Create a new customization controller.
         /// </summary>
+        /// <param name="DisplayMessages">The number of different messages that are currently configured in this charging station, via SetDisplayMessageRequest.</param>
+        /// <param name="SupportedFormats">An enumeration of supported message formats by this charging station.</param>
+        /// <param name="SupportedPriorities">An enumeration of supported message priorities by this charging station.</param>
+        /// 
         /// <param name="Enabled">Whether this display message controller is enabled.</param>
         /// <param name="Available">Whether the display of messages is supported.</param>
-        /// <param name="DisplayMessages">The number of different messages that are currently configured in this charging station, via SetDisplayMessageRequest.</param>
         /// <param name="PersonalMessageSize">The max size (in characters) of the personal message element of the IdTokenInfo data (0 specifies no personal data may be stored).</param>
-        /// <param name="SupportedFormats">An enumeration of supported message formats by this charging station.</param>
         /// 
         /// <param name="Instance">The optional case insensitive name of the instance in case the component exists as multiple instances.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public DisplayMessageCtrlr(Boolean?                     Enabled               = null,
-                                   Boolean?                     Available             = null,
-                                   UInt32?                      DisplayMessages       = null,
-                                   UInt32?                      PersonalMessageSize   = null,
-                                   IEnumerable<MessageFormat>?  SupportedFormats      = null,
+        public DisplayMessageCtrlr(UInt16                        DisplayMessages,
+                                   IEnumerable<MessageFormat>    SupportedFormats,
+                                   IEnumerable<MessagePriority>  SupportedPriorities,
 
-                                   String?                      Instance              = null,
-                                   CustomData?                  CustomData            = null)
+                                   Boolean?                      Enabled               = null,
+                                   Boolean?                      Available             = null,
+                                   UInt32?                       PersonalMessageSize   = null,
+
+                                   String?                       Instance              = null,
+                                   CustomData?                   CustomData            = null)
 
             : base(nameof(DisplayMessageCtrlr),
                    Instance,
-                   new[] {
-
-                       #region Enabled
-
-                       new VariableConfig(
-
-                           Name:              "Enabled",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Boolean
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("Whether this display message controller is enabled."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region Available
-
-                       new VariableConfig(
-
-                           Name:              "Available",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadOnly
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Boolean
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("Whether the display of messages is supported."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region DisplayMessages
-
-                       new VariableConfig(
-
-                           Name:              "DisplayMessages",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadOnly
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Integer
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("The number of different messages that are currently configured in this charging station, via SetDisplayMessageRequest."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region PersonalMessageSize
-
-                       new VariableConfig(
-
-                           Name:              "PersonalMessageSize",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadOnly
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Integer
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("The max size (in characters) of the personal message element of the IdTokenInfo data (0 specifies no personal data may be stored)."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region SupportedFormats
-
-                       new VariableConfig(
-
-                           Name:              "SupportedFormats",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadOnly
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.MemberList
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("The list of message formats supported by this charging station. Possible values: See MessageFormatEnumType."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                   },
                    I18NString.Create("Logical Component responsible for configuration relating to the display of messages to charging station users."),
                    CustomData)
 
         {
 
+            this.DisplayMessages      = DisplayMessages;
+            this.SupportedFormats     = SupportedFormats.   Distinct();
+            this.SupportedPriorities  = SupportedPriorities.Distinct();
+
             this.Enabled              = Enabled;
             this.Available            = Available;
-            this.DisplayMessages      = DisplayMessages;
-            this.PersonalMessageSize  = PersonalMessageSize;
-            this.SupportedFormats     = SupportedFormats?.Distinct() ?? [];
+            this.PersonalMessageSize  = PersonalMessageSize;    // Where did this go in OCPP v2.1?
+
+
+            #region Enabled
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "Enabled",
+                    ValueGetter:      () => this.Enabled.HasValue
+                                                ? this.Enabled.Value
+                                                      ? "true"
+                                                      : "false"
+                                                : null,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadWrite
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Boolean
+                                      ),
+
+                    Description:      I18NString.Create("Whether this display message controller is enabled.")
+
+                )
+            );
+
+            #endregion
+
+            #region Available
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "Available",
+                    Instance:         null,
+                    ValueGetter:      () => this.Available.HasValue
+                                                ? this.Available.Value
+                                                      ? "true"
+                                                      : "false"
+                                                : null,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadOnly
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Boolean
+                                      ),
+
+                    Description:      I18NString.Create("Whether the display of messages is supported.")
+
+                )
+            );
+
+            #endregion
+
+            #region DisplayMessages
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "DisplayMessages",
+                    Instance:         null,
+                    ValueGetter:      () => this.DisplayMessages.ToString(),
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadOnly
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Integer,
+                                          MaxLimit:    9999 // Not specified by OCPP!
+                                      ),
+
+                    Description:      I18NString.Create("The number of different messages that are currently configured in this charging station, via SetDisplayMessageRequest.")
+
+                )
+            );
+
+            #endregion
+
+            #region PersonalMessageSize  (Where did this go in OCPP v2.1?)
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "PersonalMessageSize",
+                    Instance:         null,
+                    ValueGetter:      () => this.PersonalMessageSize?.ToString(),
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadOnly
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Integer
+                                      ),
+
+                    Description:      I18NString.Create("The max size (in characters) of the personal message element of the IdTokenInfo data (0 specifies no personal data may be stored).")
+
+                )
+            );
+
+            #endregion
+
+            #region SupportedFormats
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "SupportedFormats",
+                    Instance:         null,
+                    ValueGetter:      () => this.SupportedFormats.Any()
+                                                ? this.SupportedFormats.AggregateWith(',')
+                                                : null,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadOnly
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.MemberList,
+                                          ValuesList:  MessageFormat.Values.Select(messageFormat => messageFormat.ToString())
+                                      ),
+
+                    Description:      I18NString.Create("The enumeration of supported message formats by this charging station.")
+
+                )
+            );
+
+            #endregion
+
+            #region SupportedPriorities
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "SupportedPriorities",
+                    Instance:         null,
+                    ValueGetter:      () => this.SupportedPriorities.Any()
+                                                ? this.SupportedPriorities.AggregateWith(',')
+                                                : null,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadOnly
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.MemberList,
+                                          ValuesList:  MessagePriority.Values.Select(messagePriority => messagePriority.ToString())
+                                      ),
+
+                    Description:      I18NString.Create("The enumeration of supported message priorities by this charging station.")
+
+                )
+            );
+
+            #endregion
+
 
         }
 

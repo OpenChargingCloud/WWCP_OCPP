@@ -38,17 +38,44 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// The charging station identity.
         /// </summary>
-        public String  Identity             { get; set; }
+        public String?           Identity                          { get; set; }
 
         /// <summary>
         /// The HTTP Basic Authentication password.
         /// </summary>
-        public String  BasicAuthPassword    { get; set; }
+        public String?           BasicAuthPassword                 { get; set; }
 
         /// <summary>
-        /// The organization name that is to be used for checking a security certificate.
+        /// This configuration variable is used to set the organization name of the CSO or an organization trusted by the CSO.
+        /// This organization name is used to specify the subject field in the client certificate.
         /// </summary>
-        public String  OrganizationName     { get; set; }
+        [Mandatory]
+        public String            OrganizationName                  { get; set; }
+
+        /// <summary>
+        /// Amount of certificates currently installed on the charging station.
+        /// </summary>
+        [Mandatory]
+        public UInt16            CertificateEntries                { get; set; }
+
+        /// <summary>
+        /// This configuration variable is used to report the security profile used by the charging station.
+        /// </summary>
+        [Mandatory]
+        public SecurityProfiles  SecurityProfile                   { get; set; }
+
+        /// <summary>
+        /// When set to true, only one certificate (plus a temporarily fallback certificate) of certificateType CSMSRootCertificate is allowed to be installed at a time.
+        /// When installing a new CSMS Root certificate, the new certificate SHALL replace the old one AND the new CSMS Root Certificate MUST be signed by the old CSMS Root Certificate it is replacing.
+        /// </summary>
+        public Boolean?          AdditionalRootCertificateCheck    { get; set; }
+
+        /// <summary>
+        /// This configuration variable can be used to limit the size of the 'certificateChain' field from the CertificateSignedRequest PDU.
+        /// This value SHOULD NOT be set too small. The smaller this value, the less security architectures the Charging Station will support.
+        /// It is RECOMMENDED to set at least a size of 5600. This will allow the Charging Station to support most security architectures.
+        /// </summary>
+        public UInt32?           MaxCertificateChainSize           { get; set; }
 
         #endregion
 
@@ -57,113 +84,235 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Create a new security controller.
         /// </summary>
+        /// <param name="OrganizationName">This configuration variable is used to set the organization name of the CSO or an organization trusted by the CSO. This organization name is used to specify the subject field in the client certificate.</param>
+        /// <param name="CertificateEntries">Amount of certificates currently installed on the charging station.</param>
+        /// <param name="SecurityProfile">This configuration variable is used to report the security profile used by the charging station.</param>
+        /// 
         /// <param name="Identity">The charging station identity.</param>
         /// <param name="BasicAuthPassword">The HTTP Basic Authentication password</param>
-        /// <param name="OrganizationName">The organization name that is to be used for checking a security certificate.</param>
+        /// <param name="AdditionalRootCertificateCheck">When set to true, only one certificate (plus a temporarily fallback certificate) of certificateType CSMSRootCertificate is allowed to be installed at a time. When installing a new CSMS Root certificate, the new certificate SHALL replace the old one AND the new CSMS Root Certificate MUST be signed by the old CSMS Root Certificate it is replacing.</param>
+        /// <param name="MaxCertificateChainSize">This configuration variable can be used to limit the size of the 'certificateChain' field from the CertificateSignedRequest PDU.</param>
         /// 
         /// <param name="Instance">The optional case insensitive name of the instance in case the component exists as multiple instances.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public SecurityCtrlr(String       Identity,
-                             String       BasicAuthPassword,
-                             String       OrganizationName,
+        public SecurityCtrlr(String            OrganizationName,
+                             UInt16            CertificateEntries,
+                             SecurityProfiles  SecurityProfile,
 
-                             String?      Instance     = null,
-                             CustomData?  CustomData   = null)
+                             String?           Identity                         = null,
+                             String?           BasicAuthPassword                = null,
+                             Boolean?          AdditionalRootCertificateCheck   = null,
+                             UInt32?           MaxCertificateChainSize          = null,
+
+                             String?           Instance                         = null,
+                             CustomData?       CustomData                       = null)
 
             : base(nameof(SecurityCtrlr),
                    Instance,
-                   new[] {
-
-                       #region Identity
-
-                       new VariableConfig(
-
-                           Name:              "Identity",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.String
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("The charging station identity (identifierString)."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region BasicAuthPassword
-
-                       new VariableConfig(
-
-                           Name:              "BasicAuthPassword",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.String
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("The HTTP Basic Authentication password (16-40 alpha-numeric and special characters allowed bypasswordString). This configuration variable is write-only, sothat it cannot be accidentally stored in plaintext by the CSMS when it reads out allconfiguration variables. This configuration variable is required unless only \"security profile 3 - TLS withclient side certificates\" is implemented."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region OrganizationName
-
-                       new VariableConfig(
-
-                           Name:              "OrganizationName",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.String
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("Organization name that is to be used for checking a security certificate."),
-
-                           CustomData:        null
-
-                       )
-
-                       #endregion
-
-                   },
-                   I18NString.Create("Logical Component responsible for configuration relating to security of communications between charging station and CSMS (HTTP Basic Authentication settings)."),
+                   I18NString.Create(
+                       "Logical Component responsible for configuration relating to security of " +
+                       "communications between charging station and CSMS (HTTP Basic Authentication settings)."
+                   ),
                    CustomData)
 
         {
 
-            this.BasicAuthPassword  = BasicAuthPassword;
-            this.Identity           = Identity;
-            this.OrganizationName   = OrganizationName;
+            this.OrganizationName                = OrganizationName;
+            this.CertificateEntries              = CertificateEntries;
+            this.SecurityProfile                 = SecurityProfile;
+
+            this.Identity                        = Identity;
+            this.BasicAuthPassword               = BasicAuthPassword;
+            this.AdditionalRootCertificateCheck  = AdditionalRootCertificateCheck;
+            this.MaxCertificateChainSize         = MaxCertificateChainSize;
+
+
+            #region Identity
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "Identity",
+                    ValueGetter:      () => this.Identity,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadWrite
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.String,
+                                          MaxLimit:    48
+                                      ),
+
+                    Description:      I18NString.Create("The charging station identity (identifierString).")
+
+                )
+            );
+
+            #endregion
+
+            #region BasicAuthPassword
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "BasicAuthPassword",
+                    ValueGetter:      () => this.BasicAuthPassword,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.WriteOnly
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.String,
+                                          MaxLimit:    40
+                                      ),
+
+                    Description:      I18NString.Create(
+                                          "The HTTP Basic Authentication password (16-40 alpha-numeric and special characters allowed " +
+                                          "bypasswordString). This configuration variable is write-only, sothat it cannot be accidentally " +
+                                          "stored in plaintext by the CSMS when it reads out allconfiguration variables. This configuration " +
+                                          "variable is required unless only \"security profile 3 - TLS withclient side certificates\" is implemented."
+                                      )
+
+                )
+            );
+
+            #endregion
+
+            #region OrganizationName
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "OrganizationName",
+                    ValueGetter:      () => this.OrganizationName,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadWrite
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.String
+                                      ),
+
+                    Description:      I18NString.Create(
+                                          "This configuration variable is used to set the organization name of the CSO or an organization trusted by the CSO. " +
+                                          "This organization name is used to specify the subject field in the client certificate."
+                                      )
+
+                )
+            );
+
+            #endregion
+
+            #region CertificateEntries
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "CertificateEntries",
+                    ValueGetter:      () => this.CertificateEntries.ToString(),
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadOnly
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Integer
+                                      ),
+
+                    Description:      I18NString.Create("Amount of certificates currently installed on the charging station.")
+
+                )
+            );
+
+            #endregion
+
+            #region SecurityProfile
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "SecurityProfile",
+                    ValueGetter:      () => this.SecurityProfile.AsNumber().ToString(),
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadOnly
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Integer
+                                      ),
+
+                    Description:      I18NString.Create("This configuration variable is used to report the security profile used by the charging station.")
+
+                )
+            );
+
+            #endregion
+
+            #region AdditionalRootCertificateCheck
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "AdditionalRootCertificateCheck",
+                    ValueGetter:      () => this.AdditionalRootCertificateCheck.HasValue
+                                                ? this.AdditionalRootCertificateCheck.Value
+                                                      ? "true"
+                                                      : "false"
+                                                : null,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadOnly
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Boolean
+                                      ),
+
+                    Description:      I18NString.Create(
+                                          "When set to true, only one certificate (plus a temporarily fallback certificate) of certificateType " +
+                                          "CSMSRootCertificate is allowed to be installed at a time. When installing a new CSMS Root certificate, " +
+                                          "the new certificate SHALL replace the old one AND the new CSMS Root Certificate MUST be signed by the " +
+                                          "old CSMS Root Certificate it is replacing."
+                                      )
+
+                )
+            );
+
+            #endregion
+
+            #region MaxCertificateChainSize
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "MaxCertificateChainSize",
+                    ValueGetter:      () => this.MaxCertificateChainSize?.ToString(),
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadOnly
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Integer,
+                                          MaxLimit:    10000
+                                      ),
+
+                    Description:      I18NString.Create(
+                                          "When set to true, only one certificate (plus a temporarily fallback certificate) of certificateType " +
+                                          "CSMSRootCertificate is allowed to be installed at a time. When installing a new CSMS Root certificate, " +
+                                          "the new certificate SHALL replace the old one AND the new CSMS Root Certificate MUST be signed by the " +
+                                          "old CSMS Root Certificate it is replacing."
+                                      )
+
+                )
+            );
+
+            #endregion
+
 
         }
 

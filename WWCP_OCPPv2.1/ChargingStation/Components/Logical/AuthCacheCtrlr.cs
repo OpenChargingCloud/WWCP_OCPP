@@ -35,22 +35,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Properties
 
         /// <summary>
-        /// If this variable exists, the Charging Station supports an Authorization Cache.
+        /// If this variable exists and reports a value of true, Authorization Cache is enabled.
         /// </summary>
         public Boolean?                      Enabled                 { get; set; }
 
         /// <summary>
-        /// If this variable reports a value of true, Authorization Cache is supported.
+        /// If this variable exists and reports a value of true, Authorization Cache is supported, but not necessarily enabled.
         /// </summary>
         public Boolean?                      Available               { get; set; }
 
         /// <summary>
         /// Indicates in seconds how long it takes until a token expires in the authorization cache since it is last used.
         /// </summary>
-        public UInt32?                       LifeTime                { get; set; }
+        public TimeSpan?                     LifeTime                { get; set; }
 
         /// <summary>
-        /// Cache Entry Replacement Policy: (LRU,LFU) LeastRecentlyUsed or LeastFrequentlyUsed. Allowed values: LRU, LFU.
+        /// Indicates the number of bytes currently used by the Authorization Cache.
+        /// MaxLimit indicates the maximum number of bytes that can be used by the Authorization Cache.
+        /// </summary>
+        public UInt32?                       Storage                 { get; set; }
+
+        /// <summary>
+        /// Cache Entry Replacement Policy: least recently used, least frequently used, first in first out, other custom mechanism.
         /// </summary>
         public CacheEntryReplacementPolicy?  Policy                  { get; set; }
 
@@ -66,18 +72,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Create a new authorization cache controller.
         /// </summary>
-        /// 
-        /// <param name="Enabled">If this variable exists, the Charging Station supports an authorization cache.</param>
-        /// <param name="Available">If this variable reports a value of true, authorization cache is supported.</param>
+        /// <param name="Enabled">If this variable exists and reports a value of true, Authorization Cache is enabled.</param>
+        /// <param name="Available">If this variable exists and reports a value of true, Authorization Cache is supported, but not necessarily enabled.</param>
         /// <param name="LifeTime">Indicates in seconds how long it takes until a token expires in the authorization cache since it is last used.</param>
-        /// <param name="Policy">Cache Entry Replacement Policy: (LRU,LFU) LeastRecentlyUsed or LeastFrequentlyUsed. Allowed values: LRU, LFU.</param>
+        /// <param name="Storage">Indicates the number of bytes currently used by the Authorization Cache. MaxLimit indicates the maximum number of bytes that can be used by the Authorization Cache.</param>
+        /// <param name="Policy">Cache Entry Replacement Policy: least recently used, least frequently used, first in first out, other custom mechanism.</param>
         /// <param name="DisablePostAuthorize">When set to true this variable disables the behavior to request authorization for an idToken that is stored in the cache with a status other than Accepted, as stated in C10.FR.03 and C12.FR.05.</param>
         /// 
         /// <param name="Instance">The optional case insensitive name of the instance in case the component exists as multiple instances.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public AuthCacheCtrlr(Boolean?                      Enabled                = null,
                               Boolean?                      Available              = null,
-                              UInt32?                       LifeTime               = null,
+                              TimeSpan?                     LifeTime               = null,
+                              UInt32?                       Storage                = null,
                               CacheEntryReplacementPolicy?  Policy                 = null,
                               Boolean?                      DisablePostAuthorize   = null,
 
@@ -86,144 +93,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             : base(nameof(AuthCacheCtrlr),
                    Instance,
-                   new[] {
-
-                       #region Enabled
-
-                       new VariableConfig(
-
-                           Name:              "Enabled",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Boolean
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("If this variable exists, the Charging Station supports an Authorization Cache."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region Available
-
-                       new VariableConfig(
-
-                           Name:              "Available",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Boolean
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("If this variable reports a value of true, Authorization Cache is supported."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region LifeTime
-
-                       new VariableConfig(
-
-                           Name:              "LifeTime",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Integer
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("Indicates in seconds how long it takes until a token expires in the authorization cache since it is last used."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region Policy
-
-                       new VariableConfig(
-
-                           Name:              "Policy",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.OptionList
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("Cache Entry Replacement Policy: (LRU,LFU) LeastRecentlyUsed or LeastFrequentlyUsed. Allowed values: LRU, LFU."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region DisablePostAuthorize
-
-                       new VariableConfig(
-
-                           Name:              "DisablePostAuthorize",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Boolean
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("When set to true this variable disables the behavior to request authorization for an idToken that is stored in the cache with a status other than Accepted, as stated in C10.FR.03 and C12.FR.05."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                   },
                    I18NString.Create("Logical Component responsible for configuration relating to the use of a local cache for authorization for Charging Station use."),
                    CustomData)
 
@@ -232,8 +101,170 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.Enabled               = Enabled;
             this.Available             = Available;
             this.LifeTime              = LifeTime;
+            this.Storage               = Storage;
             this.Policy                = Policy;
             this.DisablePostAuthorize  = DisablePostAuthorize;
+
+
+            #region Enabled
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "Enabled",
+                    ValueGetter:      () => this.Enabled.HasValue
+                                                ? this.Enabled.Value
+                                                      ? "true"
+                                                      : "false"
+                                                : null,
+                    Instance:         null,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadWrite
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Boolean
+                                      ),
+
+                    Description:      I18NString.Create("If this variable exists and reports a value of true, Authorization Cache is enabled.")
+
+                )
+            );
+
+            #endregion
+
+            #region Available
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "Available",
+                    ValueGetter:      () => this.Available.HasValue
+                                                ? this.Available.Value
+                                                      ? "true"
+                                                      : "false"
+                                                : null,
+                    Instance:         null,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadWrite
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Boolean
+                                      ),
+
+                    Description:      I18NString.Create("If this variable exists and reports a value of true, Authorization Cache is supported, but not necessarily enabled.")
+
+                )
+            );
+
+            #endregion
+
+            #region LifeTime
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "LifeTime",
+                    ValueGetter:      () => this.LifeTime.HasValue
+                                                ? ((UInt32) Math.Round(this.LifeTime.Value.TotalSeconds)).ToString()
+                                                : null,
+                    Instance:         null,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadWrite
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          Unit:        UnitsOfMeasure.TimeSpan(),
+                                          DataType:    DataTypes.Integer
+                                      ),
+
+                    Description:      I18NString.Create("Indicates in seconds how long it takes until a token expires in the authorization cache since it is last used.")
+
+                )
+            );
+
+            #endregion
+
+            #region Storage
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "Storage",
+                    ValueGetter:      () => this.Storage?.ToString(),
+                    Instance:         null,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadOnly
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Integer
+                                      ),
+
+                    Description:      I18NString.Create("Indicates the number of bytes currently used by the Authorization Cache. MaxLimit indicates the maximum number of bytes that can be used by the Authorization Cache.")
+
+                )
+            );
+
+            #endregion
+
+            #region Policy
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "Policy",
+                    ValueGetter:      () => this.Policy?.ToString(),
+                    Instance:         null,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadWrite
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.OptionList
+                                      ),
+
+                    Description:      I18NString.Create("Cache Entry Replacement Policy: least recently used, least frequently used, first in first out, other custom mechanism.")
+
+                )
+            );
+
+            #endregion
+
+            #region DisablePostAuthorize   (Does this still exist in OCPP v2.1?)
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "DisablePostAuthorize",
+                    ValueGetter:      () => this.DisablePostAuthorize.HasValue
+                                                ? this.DisablePostAuthorize.Value
+                                                      ? "true"
+                                                      : "false"
+                                                : null,
+                    Instance:         null,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadWrite
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Boolean
+                                      ),
+
+                    Description:      I18NString.Create("When set to true this variable disables the behavior to request authorization for an idToken that is stored in the cache with a status other than Accepted, as stated in C10.FR.03 and C12.FR.05.")
+
+                )
+            );
+
+            #endregion
+
 
         }
 

@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a GetVariables request was received.
         /// </summary>
-        public event OnGetVariablesRequestReceivedDelegate?                OnGetVariablesRequest;
+        public event OnGetVariablesRequestReceivedDelegate?        OnGetVariablesRequest;
 
         /// <summary>
         /// An event sent whenever a GetVariables request was received.
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a response to a GetVariables request was sent.
         /// </summary>
-        public event OnGetVariablesResponseSentDelegate?               OnGetVariablesResponse;
+        public event OnGetVariablesResponseSentDelegate?           OnGetVariablesResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a GetVariables request was sent.
@@ -118,8 +118,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             #endregion
 
-            OCPP_JSONResponseMessage?  OCPPResponse        = null;
-            OCPP_JSONRequestErrorMessage?     OCPPErrorResponse   = null;
+            OCPP_JSONResponseMessage?      OCPPResponse        = null;
+            OCPP_JSONRequestErrorMessage?  OCPPErrorResponse   = null;
 
             try
             {
@@ -261,7 +261,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             return new Tuple<OCPP_JSONResponseMessage?,
                              OCPP_JSONRequestErrorMessage?>(OCPPResponse,
-                                                     OCPPErrorResponse);
+                                                            OCPPErrorResponse);
 
         }
 

@@ -189,9 +189,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     return false;
                 }
 
-                if (Component is null)
-                    return false;
-
                 #endregion
 
                 #region Variable         [optional]
@@ -204,9 +201,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 {
                     return false;
                 }
-
-                if (Variable is null)
-                    return false;
 
                 #endregion
 
@@ -239,10 +233,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                GetVariableData = new GetVariableData(Component,
-                                                      Variable,
-                                                      AttributeType,
-                                                      CustomData);
+                GetVariableData = new GetVariableData(
+                                      Component,
+                                      Variable,
+                                      AttributeType,
+                                      CustomData
+                                  );
 
                 if (CustomGetVariableDataParser is not null)
                     GetVariableData = CustomGetVariableDataParser(JSON,

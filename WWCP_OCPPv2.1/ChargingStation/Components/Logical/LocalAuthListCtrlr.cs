@@ -35,7 +35,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Properties
 
         /// <summary>
-        /// Whether Local Authorization List is enabled.
+        /// If this variable exists and reports a value of true, Local Authorization List is enabled.
         /// </summary>
         public Boolean?  Enabled                 { get; set; }
 
@@ -46,7 +46,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public UInt32?   Entries                 { get; set; }
 
         /// <summary>
-        /// Whether Local Authorization List is supported.
+        /// If this variable exists and reports a value of true, Local Authorization List is supported.
         /// </summary>
         public Boolean?  Available               { get; set; }
 
@@ -78,9 +78,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Create a new local authorization list controller.
         /// </summary>
-        /// <param name="Enabled">Whether Local Authorization List is enabled.</param>
+        /// <param name="Enabled">If this variable exists and reports a value of true, Local Authorization List is enabled.</param>
         /// <param name="Entries">Amount of IdTokens currently in the Local Authorization List. The maxLimit of this variable SHALL be provided to report the maximum number of IdTokens that can be stored in the Local Authorization List.</param>
-        /// <param name="Available">Whether Local Authorization List is supported.</param>
+        /// <param name="Available">If this variable exists and reports a value of true, Local Authorization List is supported.</param>
         /// <param name="ItemsPerMessage">Maximum number of identifications that can be sent in a single SendLocalListRequest.</param>
         /// <param name="BytesPerMessage">Message Size (in bytes) - puts a constraint on SendLocalListRequest message size.</param>
         /// <param name="Storage">Indicates the number of bytes currently used by the Local Authorization List. MaxLimit indicates the maximum number of bytes that can be used by the Local Authorization List.</param>
@@ -88,211 +88,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// 
         /// <param name="Instance">The optional case insensitive name of the instance in case the component exists as multiple instances.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public LocalAuthListCtrlr(Boolean?     Enabled,
-                                  UInt32?      Entries,
-                                  Boolean?     Available,
-                                  UInt32?      ItemsPerMessage,
-                                  UInt32?      BytesPerMessage,
-                                  UInt32?      Storage,
-                                  Boolean?     DisablePostAuthorize,
+        public LocalAuthListCtrlr(Boolean?     Enabled                = null,
+                                  UInt32?      Entries                = null,
+                                  Boolean?     Available              = null,
+                                  UInt32?      ItemsPerMessage        = null,
+                                  UInt32?      BytesPerMessage        = null,
+                                  UInt32?      Storage                = null,
+                                  Boolean?     DisablePostAuthorize   = null,
 
-                                  String?      Instance     = null,
-                                  CustomData?  CustomData   = null)
+                                  String?      Instance               = null,
+                                  CustomData?  CustomData             = null)
 
             : base(nameof(LocalAuthListCtrlr),
                    Instance,
-                   new[] {
-
-                       #region Enabled
-
-                       new VariableConfig(
-
-                           Name:              "Enabled",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Boolean
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("Whether Local Authorization List is enabled."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region Entries
-
-                       new VariableConfig(
-
-                           Name:              "Entries",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Integer
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("Amount of IdTokens currently in the Local Authorization List. The maxLimit of this variable SHALL be provided to report the maximum number of IdTokens that can be stored in the Local Authorization List."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region Available
-
-                       new VariableConfig(
-
-                           Name:              "Available",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Boolean
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("Whether Local Authorization List is supported."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region ItemsPerMessage
-
-                       new VariableConfig(
-
-                           Name:              "ItemsPerMessage",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Integer
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("Maximum number of identifications that can be sent in a single SendLocalListRequest."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region BytesPerMessage
-
-                       new VariableConfig(
-
-                           Name:              "BytesPerMessage",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Integer
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("Message Size (in bytes) - puts a constraint on SendLocalListRequest message size."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region Storage
-
-                       new VariableConfig(
-
-                           Name:              "Storage",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Integer
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("Indicates the number of bytes currently used by the Local Authorization List. MaxLimit indicates the maximum number of bytes that can be used by the Local Authorization List."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region DisablePostAuthorize
-
-                       new VariableConfig(
-
-                           Name:              "DisablePostAuthorize",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Boolean
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("When set to true this variable disables the behavior to request authorization for an idToken that is stored in the local authorization list with a status other than Accepted, as stated in C14.FR.03."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                   },
                    I18NString.Create("Logical Component responsible for configuration relating to the use of Local Authorization Lists for charging station use."),
                    CustomData)
 
@@ -305,6 +113,196 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.BytesPerMessage       = BytesPerMessage;
             this.Storage               = Storage;
             this.DisablePostAuthorize  = DisablePostAuthorize;
+
+
+            #region Enabled
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "Enabled",
+                    ValueGetter:      () => this.Enabled.HasValue
+                                                ? this.Enabled.Value
+                                                      ? "true"
+                                                      : "false"
+                                                : null,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadWrite
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Boolean
+                                      ),
+
+                    Description:      I18NString.Create(
+                                          "If this variable exists and reports a value of true, " +
+                                          "Local Authorization List is enabled."
+                                      )
+
+                )
+            );
+
+            #endregion
+
+            #region Entries
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "Entries",
+                    ValueGetter:      () => this.Entries?.ToString(),
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadOnly
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Integer,
+                                          MaxLimit:    1000 // Not specified by OCPP!
+                                      ),
+
+                    Description:      I18NString.Create(
+                                          "Amount of IdTokens currently in the Local Authorization List. " +
+                                          "The maxLimit of this variable SHALL be provided to report the maximum " +
+                                          "number of IdTokens that can be stored in the Local Authorization List."
+                                      )
+
+                )
+            );
+
+            #endregion
+
+            #region Available
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "Available",
+                    ValueGetter:      () => this.Available.HasValue
+                                                ? this.Available.Value
+                                                      ? "true"
+                                                      : "false"
+                                                : null,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadOnly
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Boolean
+                                      ),
+
+                    Description:      I18NString.Create("If this variable exists and reports a value of true, Local Authorization List is supported.")
+
+                )
+            );
+
+            #endregion
+
+            #region ItemsPerMessage
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "ItemsPerMessage",
+                    ValueGetter:      () => this.ItemsPerMessage?.ToString(),
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadOnly
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Integer
+                                      ),
+
+                    Description:      I18NString.Create("Maximum number of identifications that can be sent in a single SendLocalListRequest.")
+
+                )
+            );
+
+            #endregion
+
+            #region BytesPerMessage
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "BytesPerMessage",
+                    ValueGetter:      () => this.BytesPerMessage?.ToString(),
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadOnly
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Integer
+                                      ),
+
+                    Description:      I18NString.Create("Message Size (in bytes) - puts a constraint on SendLocalListRequest message size.")
+
+                )
+            );
+
+            #endregion
+
+            #region Storage
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "Storage",
+                    ValueGetter:      () => this.Storage?.ToString(),
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadOnly
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Integer,
+                                          MaxLimit:    9999 // Not specified by OCPP!
+                                      ),
+
+                    Description:      I18NString.Create(
+                                          "Indicates the number of bytes currently used by the Local Authorization List. " +
+                                          "MaxLimit indicates the maximum number of bytes that can be used by the Local Authorization List."
+                                      )
+
+                )
+            );
+
+            #endregion
+
+            #region DisablePostAuthorize   (Does this still exist in OCPP v2.1?)
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "DisablePostAuthorize",
+                    ValueGetter:      () => this.DisablePostAuthorize.HasValue
+                                                ? this.DisablePostAuthorize.Value
+                                                      ? "true"
+                                                      : "false"
+                                                : null,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadWrite
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Boolean
+                                      ),
+
+                    Description:      I18NString.Create(
+                                          "When set to true this variable disables the behavior to request authorization for an idToken " +
+                                          "that is stored in the local authorization list with a status other than Accepted, as stated in C14.FR.03."
+                                      )
+
+                )
+            );
+
+            #endregion
+
 
         }
 

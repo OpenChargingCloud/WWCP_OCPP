@@ -36,6 +36,8 @@ using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
 using Org.BouncyCastle.Asn1.Cms;
+using System.Security.Principal;
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
 
@@ -2165,8 +2167,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region Register Component Configurations
 
-            ComponentConfigs.Add(new OCPPCommCtrlr("Instance #1"));
-            ComponentConfigs.Add(new SecurityCtrlr(Id.ToString(), "GraphDefined", "Instance #1"));
+            ComponentConfigs.Add(new OCPPCommCtrlr(
+                                     DefaultMessageTimeout:              TimeSpan.FromSeconds(30),
+                                     FileTransferProtocols:              new[] { FileTransferProtocol.HTTPS },
+                                     NetworkConfigurationPriority:       new[] { "1" },
+                                     NetworkProfileConnectionAttempts:   3,
+                                     OfflineThreshold:                   TimeSpan.FromSeconds(30),
+                                     MessageAttempts:                    5,
+                                     MessageAttemptInterval:             TimeSpan.FromSeconds(30),
+                                     UnlockOnEVSideDisconnect:           true,
+                                     ResetRetries:                       3
+                                 ));
+
+            ComponentConfigs.Add(new SecurityCtrlr(
+                                     OrganizationName:                   "GraphDefined CSO",
+                                     CertificateEntries:                 128,
+                                     SecurityProfile:                    SecurityProfiles.SecurityProfile2,
+
+                                     Identity:                           "CS001",
+                                     BasicAuthPassword:                  "s3cur3!",
+                                     AdditionalRootCertificateCheck:     false,
+                                     MaxCertificateChainSize:            128
+                                 ));
 
             // A CSMS can request a report of the CustomizationCtrlr component to get a list of all customizations that are supported by the charging station.
 
@@ -3564,20 +3586,107 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     DebugX.Log($"Charging station '{Id}': Incoming GetVariables request accepted.");
 
-                    // VariableData
+                    var getVariableResults = new List<GetVariableResult>();
+
+                    foreach (var getVariableData in request.VariableData)
+                    {
+
+                        var componentFound          = false;
+                        var componentInstanceFound  = false;
+                        var variableFound           = false;
+                        var variableInstanceFound   = false;
+
+                        foreach (var componentConfig in ComponentConfigs)
+                        {
+
+                            if (componentConfig.Name == getVariableData.Component.Name)
+                            {
+
+                                componentFound = true;
+
+                                if (componentConfig.Instance == getVariableData.Component.Instance)
+                                {
+
+                                    componentInstanceFound = true;
+
+                                    foreach (var variableConfig in componentConfig.VariableConfigs)
+                                    {
+
+                                        if (variableConfig.Name == getVariableData.Variable.Name)
+                                        {
+
+                                            variableFound = true;
+
+                                            if (variableConfig.Instance == getVariableData.Variable.Instance)
+                                            {
+
+                                                variableInstanceFound = true;
+
+                                                getVariableResults.Add(new GetVariableResult(
+                                                                           AttributeStatus:       GetVariableStatus.Accepted,
+                                                                           Component:             getVariableData.Component,
+                                                                           Variable:              getVariableData.Variable,
+                                                                           AttributeValue:        variableConfig.Value,
+                                                                           AttributeType:         variableConfig.Attributes?.Type,
+                                                                           AttributeStatusInfo:   null,
+                                                                           CustomData:            null
+                                                                       ));
+
+                                            }
+
+                                        }
+
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                        if (!componentFound)
+                            getVariableResults.Add(
+                                new GetVariableResult(
+                                    AttributeStatus:  GetVariableStatus.UnknownComponent,
+                                    Component:        getVariableData.Component,
+                                    Variable:         getVariableData.Variable
+                                )
+                            );
+
+                        else if (!componentInstanceFound)
+                            getVariableResults.Add(
+                                new GetVariableResult(
+                                    AttributeStatus:  GetVariableStatus.UnknownComponent,
+                                    Component:        getVariableData.Component,
+                                    Variable:         getVariableData.Variable
+                                )
+                            );
+
+                        else if (!variableFound)
+                            getVariableResults.Add(
+                                new GetVariableResult(
+                                    AttributeStatus:  GetVariableStatus.UnknownVariable,
+                                    Component:        getVariableData.Component,
+                                    Variable:         getVariableData.Variable
+                                )
+                            );
+
+                        else if (!variableInstanceFound)
+                            getVariableResults.Add(
+                                new GetVariableResult(
+                                    AttributeStatus:  GetVariableStatus.UnknownVariable,
+                                    Component:        getVariableData.Component,
+                                    Variable:         getVariableData.Variable
+                                )
+                            );
+
+                    }
+
 
                     response = new GetVariablesResponse(
-                                   Request:      request,
-                                   Results:      request.VariableData.Select(variableData => new GetVariableResult(
-                                                                                                 AttributeStatus:       GetVariableStatus.Accepted,
-                                                                                                 Component:             variableData.Component,
-                                                                                                 Variable:              variableData.Variable,
-                                                                                                 AttributeValue:        "",
-                                                                                                 AttributeType:         variableData.AttributeType,
-                                                                                                 AttributeStatusInfo:   null,
-                                                                                                 CustomData:            null
-                                                                                             )),
-                                   CustomData:   null
+                                   Request:     request,
+                                   Results:     getVariableResults,
+                                   CustomData:  null
                                );
 
                 }

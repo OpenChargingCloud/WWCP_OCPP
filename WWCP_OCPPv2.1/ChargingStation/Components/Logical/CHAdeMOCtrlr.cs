@@ -148,361 +148,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             : base(nameof(CHAdeMOCtrlr),
                    Instance,
-                   new[] {
-
-                       #region Enabled
-
-                       new VariableConfig(
-
-                           Name:              "Enabled",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Boolean
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("CHAdeMO controller enabled"),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region Active
-
-                       new VariableConfig(
-
-                           Name:              "Active",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Boolean
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("Connected"),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region Complete
-
-                       new VariableConfig(
-
-                           Name:              "Complete",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Boolean
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("Protocol session ended normally"),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region Tripped
-
-                       new VariableConfig(
-
-                           Name:              "Tripped",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Boolean
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("CHAdeMO protocol terminated abnormally"),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region Problem
-
-                       new VariableConfig(
-
-                           Name:              "Problem",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Boolean
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("CHAdeMO controller fault"),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region SelftestActiveSet
-
-                       new VariableConfig(
-
-                           Name:              "SelftestActiveSet",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Boolean
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("Start self-test by setting to true"),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region SelftestActive
-
-                       new VariableConfig(
-
-                           Name:              "SelftestActive",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadOnly
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Boolean
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("Self-test running when reported as true"),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-
-                       #region CHAdeMOProtocolNumber
-
-                       new VariableConfig(
-
-                           Name:              "CHAdeMOProtocolNumber",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadOnly
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Integer
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("CHAdeMO protocol number (H'102.0)"),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region VehicleStatus
-
-                       new VariableConfig(
-
-                           Name:              "VehicleStatus",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadOnly
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Boolean
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("Vehicle status (H'102.5.3)"),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region DynamicControl
-
-                       new VariableConfig(
-
-                           Name:              "DynamicControl",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadOnly
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Boolean
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("Vehicle is compatible with dynamic control (H'110.0.0)"),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region HighCurrentControl
-
-                       new VariableConfig(
-
-                           Name:              "HighCurrentControl",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadOnly
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Boolean
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("Vehicle is compatible with high current control (H'110.0.1)"),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region HighVoltageControl
-
-                       new VariableConfig(
-
-                           Name:              "HighVoltageControl",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadOnly
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Boolean
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("Vehicle is compatible with high voltage control (H'110.1.2)"),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region AutoManufacturerCode
-
-                       new VariableConfig(
-
-                           Name:              "AutoManufacturerCode",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadOnly
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Boolean
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("Auto manufacturer code (H'700.0) A single byte manufacturer code assigned by CHAdeMO association"),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                   },
                    I18NString.Create("A CHAdeMO Controller component communicates with an EV using the wired CANbus protocol to exchange information and control charging using the CHAdeMO protocol."),
                    CustomData)
 
@@ -522,6 +167,356 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.HighCurrentControl      = HighCurrentControl;
             this.HighVoltageControl      = HighVoltageControl;
             this.AutoManufacturerCode    = AutoManufacturerCode;
+
+
+            #region Enabled
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "Enabled",
+                    ValueGetter:      () => this.Enabled.HasValue
+                                                ? this.Enabled.Value
+                                                      ? "true"
+                                                      : "false"
+                                                : null,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadWrite
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Boolean
+                                      ),
+
+                    Description:      I18NString.Create("CHAdeMO controller enabled")
+
+                )
+            );
+
+            #endregion
+
+            #region Active
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "Active",
+                    ValueGetter:      () => this.Active.HasValue
+                                                ? this.Active.Value
+                                                      ? "true"
+                                                      : "false"
+                                                : null,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadWrite
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Boolean
+                                      ),
+
+                    Description:      I18NString.Create("Connected")
+
+                )
+            );
+
+            #endregion
+
+            #region Complete
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "Complete",
+                    ValueGetter:      () => this.Complete.HasValue
+                                                ? this.Complete.Value
+                                                      ? "true"
+                                                      : "false"
+                                                : null,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadWrite
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Boolean
+                                      ),
+
+                    Description:      I18NString.Create("Protocol session ended normally")
+
+                )
+            );
+
+            #endregion
+
+            #region Tripped
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "Tripped",
+                    ValueGetter:      () => this.Tripped.HasValue
+                                                ? this.Tripped.Value
+                                                      ? "true"
+                                                      : "false"
+                                                : null,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadWrite
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Boolean
+                                      ),
+
+                    Description:      I18NString.Create("CHAdeMO protocol terminated abnormally")
+
+                )
+            );
+
+            #endregion
+
+            #region Problem
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "Problem",
+                    ValueGetter:      () => this.Problem.HasValue
+                                                ? this.Problem.Value
+                                                      ? "true"
+                                                      : "false"
+                                                : null,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadWrite
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Boolean
+                                      ),
+
+                    Description:      I18NString.Create("CHAdeMO controller fault")
+
+                )
+            );
+
+            #endregion
+
+            #region SelftestActiveSet
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "SelftestActiveSet",
+                    ValueGetter:      () => this.SelftestActiveSet.HasValue
+                                                ? this.SelftestActiveSet.Value
+                                                      ? "true"
+                                                      : "false"
+                                                : null,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadWrite
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Boolean
+                                      ),
+
+                    Description:      I18NString.Create("Start self-test by setting to true")
+
+                )
+            );
+
+            #endregion
+
+            #region SelftestActive
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "SelftestActive",
+                    ValueGetter:      () => this.SelftestActive.HasValue
+                                                ? this.SelftestActive.Value
+                                                      ? "true"
+                                                      : "false"
+                                                : null,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadOnly
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Boolean
+                                      ),
+
+                    Description:      I18NString.Create("Self-test running when reported as true")
+
+                )
+            );
+
+            #endregion
+
+
+            #region CHAdeMOProtocolNumber
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "CHAdeMOProtocolNumber",
+                    ValueGetter:      () => this.CHAdeMOProtocolNumber?.ToString(),
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadOnly
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Integer
+                                      ),
+
+                    Description:      I18NString.Create("CHAdeMO protocol number (H'102.0)")
+
+                )
+            );
+
+            #endregion
+
+            #region VehicleStatus
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "VehicleStatus",
+                    ValueGetter:      () => this.VehicleStatus.HasValue
+                                                ? this.VehicleStatus.Value
+                                                      ? "true"
+                                                      : "false"
+                                                : null,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadOnly
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Boolean
+                                      ),
+
+                    Description:      I18NString.Create("Vehicle status (H'102.5.3)")
+
+                )
+            );
+
+            #endregion
+
+            #region DynamicControl
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "DynamicControl",
+                    ValueGetter:      () => this.DynamicControl.HasValue
+                                                ? this.DynamicControl.Value
+                                                      ? "true"
+                                                      : "false"
+                                                : null,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadOnly
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Boolean
+                                      ),
+
+                    Description:      I18NString.Create("Vehicle is compatible with dynamic control (H'110.0.0)")
+
+                )
+            );
+
+            #endregion
+
+            #region HighCurrentControl
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "HighCurrentControl",
+                    ValueGetter:      () => this.HighCurrentControl.HasValue
+                                                ? this.HighCurrentControl.Value
+                                                      ? "true"
+                                                      : "false"
+                                                : null,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadOnly
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Boolean
+                                      ),
+
+                    Description:      I18NString.Create("Vehicle is compatible with high current control (H'110.0.1)")
+
+                )
+            );
+
+            #endregion
+
+            #region HighVoltageControl
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "HighVoltageControl",
+                    ValueGetter:      () => this.HighVoltageControl.HasValue
+                                                ? this.HighVoltageControl.Value
+                                                      ? "true"
+                                                      : "false"
+                                                : null,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadOnly
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Boolean
+                                      ),
+
+                    Description:      I18NString.Create("Vehicle is compatible with high voltage control (H'110.1.2)")
+
+                )
+            );
+
+            #endregion
+
+            #region AutoManufacturerCode
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "AutoManufacturerCode",
+                    ValueGetter:      () => this.HighVoltageControl.HasValue
+                                                ? this.HighVoltageControl.Value
+                                                      ? "true"
+                                                      : "false"
+                                                : null,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadOnly
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Boolean
+                                      ),
+
+                    Description:      I18NString.Create("Auto manufacturer code (H'700.0) A single byte manufacturer code assigned by CHAdeMO association")
+
+                )
+            );
+
+            #endregion
+
 
         }
 

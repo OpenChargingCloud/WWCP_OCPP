@@ -60,8 +60,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public EVSE?                        EVSE               { get; }
 
 
+        protected readonly List<VariableConfig> variableConfigs = [];
+
         [Optional]
-        public IEnumerable<VariableConfig>  VariableConfigs    { get; }
+        public IEnumerable<VariableConfig>  VariableConfigs
+            => variableConfigs;
 
 
         [Optional]
@@ -77,7 +80,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Name">The case insensitive name of the component. Name should be taken from the list of standardized component names whenever possible.</param>
         /// <param name="Instance">The optional case insensitive name of the instance in case the component exists as multiple instances.</param>
         /// <param name="EVSE">An optional EVSE when component is located at EVSE level, also specifies the connector when component is located at connector level.</param>
-        /// 
+        /// <param name="VariableConfigs">An optional enumeration of variable configurations.</param>
+        /// <param name="Description">An optional multi-language description of the component.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public ComponentConfig(String                        Name,
                                String?                       Instance          = null,
@@ -92,11 +96,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         {
 
-            this.Name             = Name.            Trim();
-            this.Instance         = Instance?.       Trim();
+            this.Name             = Name.     Trim();
+            this.Instance         = Instance?.Trim();
             this.EVSE             = EVSE;
 
-            this.VariableConfigs  = VariableConfigs?.Distinct() ?? [];
+            this.variableConfigs.AddRange(VariableConfigs?.Distinct() ?? []);
             this.Description      = Description;
 
             if (this.Name.IsNullOrEmpty())

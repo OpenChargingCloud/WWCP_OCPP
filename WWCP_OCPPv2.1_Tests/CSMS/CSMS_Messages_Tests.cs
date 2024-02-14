@@ -653,25 +653,45 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 var response = await testCSMS01.GetVariables(
                                    DestinationNodeId:   chargingStation1.Id,
                                    VariableData:        new[] {
+
                                                             new GetVariableData(
                                                                 Component:       new Component(
-                                                                                     Name:         "Alert System!",
-                                                                                     Instance:     "Alert System #1",
-                                                                                     EVSE:         new EVSE(
-                                                                                                       Id:            EVSE_Id.     Parse(1),
-                                                                                                       ConnectorId:   Connector_Id.Parse(1),
-                                                                                                       CustomData:    null
-                                                                                                   ),
-                                                                                     CustomData:   null
+                                                                                     Name:         "OCPPCommCtrlr"
                                                                                  ),
                                                                 Variable:        new Variable(
-                                                                                     Name:         "Temperature Sensors",
-                                                                                     Instance:     "Temperature Sensor #1",
-                                                                                     CustomData:   null
+                                                                                     Name:         "FileTransferProtocols"
+                                                                                 )
+                                                            ),
+
+                                                            new GetVariableData(
+                                                                Component:       new Component(
+                                                                                     Name:         "SecurityCtrlr"
                                                                                  ),
-                                                                AttributeType:   AttributeTypes.Actual,
-                                                                CustomData:      null
+                                                                Variable:        new Variable(
+                                                                                     Name:         "OrganizationName"
+                                                                                 )
                                                             )
+
+                                                            //new GetVariableData(
+                                                            //    Component:       new Component(
+                                                            //                         Name:         "Alert System!",
+                                                            //                         Instance:     "Alert System #1",
+                                                            //                         EVSE:         new EVSE(
+                                                            //                                           Id:            EVSE_Id.     Parse(1),
+                                                            //                                           ConnectorId:   Connector_Id.Parse(1),
+                                                            //                                           CustomData:    null
+                                                            //                                       ),
+                                                            //                         CustomData:   null
+                                                            //                     ),
+                                                            //    Variable:        new Variable(
+                                                            //                         Name:         "Temperature Sensors",
+                                                            //                         Instance:     "Temperature Sensor #1",
+                                                            //                         CustomData:   null
+                                                            //                     ),
+                                                            //    AttributeType:   AttributeTypes.Actual,
+                                                            //    CustomData:      null
+                                                            //)
+
                                                         },
                                    CustomData:          null
                                );
@@ -679,6 +699,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 ClassicAssert.AreEqual(ResultCode.OK,        response.Result.ResultCode);
 
                 ClassicAssert.AreEqual(1,                    getLogRequests.Count);
+
+
+                Assert.That(response.Results.Count, Is.EqualTo(2));
+
+                var firstResult = response.Results.First();
+
+                Assert.That(firstResult.AttributeValue, Is.EqualTo("HTTPS"));
+
+
 
             }
 

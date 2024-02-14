@@ -88,9 +88,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     GetVariableStatus = GetVariableStatus.UnknownVariable;
                     return true;
 
-                case "NotSupportedAttributeType":
-                    GetVariableStatus = GetVariableStatus.NotSupportedAttributeType;
-                    return true;
+                //case "NotSupportedAttributeType":
+                //    GetVariableStatus = GetVariableStatus.NotSupportedAttributeType;
+                //    return true;
 
                 default:
                     GetVariableStatus = GetVariableStatus.Unknown;
@@ -107,11 +107,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public static String AsText(this GetVariableStatus GetVariableStatus)
 
             => GetVariableStatus switch {
-                   GetVariableStatus.Accepted                   => "UnknownComponent",
+                   GetVariableStatus.Accepted                   => "Accepted",
                    GetVariableStatus.Rejected                   => "Rejected",
                    GetVariableStatus.UnknownComponent           => "UnknownComponent",
                    GetVariableStatus.UnknownVariable            => "UnknownVariable",
-                   GetVariableStatus.NotSupportedAttributeType  => "NotFound",
+                   //GetVariableStatus.NotSupportedAttributeType  => "NotFound",
                    _                                            => "Unknown"
                };
 
@@ -132,7 +132,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         Unknown,
 
         /// <summary>
-        /// The variable was set successfully.
+        /// The variable found.
         /// </summary>
         Accepted,
 
@@ -149,12 +149,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// The requested variable is not known.
         /// </summary>
-        UnknownVariable,
+        UnknownVariable
 
-        /// <summary>
-        /// The attribute type is not supported.
-        /// </summary>
-        NotSupportedAttributeType
+        ///// <summary>
+        ///// The attribute type is not supported.
+        ///// </summary>
+        //NotSupportedAttributeType
 
     }
 

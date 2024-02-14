@@ -82,6 +82,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public readonly UInt64 Length
             => (UInt64) (InternalId?.Length ?? 0);
 
+        /// <summary>
+        /// All registered measurands.
+        /// </summary>
+        public static IEnumerable<Measurand> Values
+            => lookup.Values;
+
         #endregion
 
         #region Constructor(s)
@@ -411,7 +417,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Numerical value read from the "apparent electrical energy" (VAh or kVAh) register.
         /// </summary>
         public static Measurand Energy_Apparent_Net                  { get; }
-            = new("Energy.Apparent.Net");
+            = Register("Energy.Apparent.Net");
 
         /// <summary>
         /// Numerical value read from the "apparent electrical import energy" (VAh or kVAh) register.

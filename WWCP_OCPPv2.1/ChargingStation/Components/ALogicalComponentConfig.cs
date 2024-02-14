@@ -40,10 +40,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Name">The case insensitive name of the component. Name should be taken from the list of standardized component names whenever possible.</param>
         /// <param name="Instance">The optional case insensitive name of the instance in case the component exists as multiple instances.</param>
         /// 
-        /// <param name="VariableConfigs"></param>
-        /// <param name="Description"></param>
+        /// <param name="VariableConfigs">An optional enumeration of variable configurations.</param>
+        /// <param name="Description">An optional multi-language description of the logical component.</param>
         /// 
-        /// <param name="Instance">The optional case insensitive name of the instance in case the component exists as multiple instances.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public ALogicalComponentConfig(String                        Name,
                                        String?                       Instance          = null,
@@ -57,6 +56,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    Instance,
                    null,
                    VariableConfigs,
+                   Description,
+                   CustomData)
+
+        { }
+
+
+        /// <summary>
+        /// Create a new abstract logical component configuration.
+        /// </summary>
+        /// <param name="Name">The case insensitive name of the component. Name should be taken from the list of standardized component names whenever possible.</param>
+        /// <param name="Instance">The optional case insensitive name of the instance in case the component exists as multiple instances.</param>
+        /// 
+        /// <param name="Description">An optional multi-language description of the logical component.</param>
+        /// 
+        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        public ALogicalComponentConfig(String       Name,
+                                       String?      Instance          = null,
+                                       I18NString?  Description       = null,
+
+                                       CustomData?  CustomData        = null)
+
+            : base(Name,
+                   Instance,
+                   null,
+                   null,
                    Description,
                    CustomData)
 

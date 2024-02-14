@@ -82,6 +82,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public readonly UInt64 Length
             => (UInt64) (InternalId?.Length ?? 0);
 
+
+        /// <summary>
+        /// All registered message priorities.
+        /// </summary>
+        public static IEnumerable<MessagePriority> Values
+            => lookup.Values;
+
         #endregion
 
         #region Constructor(s)

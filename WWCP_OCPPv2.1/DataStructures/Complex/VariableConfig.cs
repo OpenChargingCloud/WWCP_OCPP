@@ -37,6 +37,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                   IEquatable<VariableConfig>
     {
 
+        #region Data
+
+        public readonly Func<String> ValueGetter;
+
+        #endregion
+
         #region Properties
 
         /// <summary>
@@ -44,30 +50,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// [max 50]
         /// </summary>
         [Mandatory]
-        public String                                Name               { get; }
+        public String                    Name               { get; }
 
         /// <summary>
         /// The optional case insensitive name of the instance in case the variable exists as multiple instances.
         /// [max 50]
         /// </summary>
         [Optional]
-        public String?                               Instance           { get; }
+        public String?                   Instance           { get; }
 
 
         [Optional]
-        public IEnumerable<VariableAttribute>        Attributes         { get; }
+        public VariableAttribute?        Attributes         { get; }
 
 
         [Optional]
-        public IEnumerable<VariableCharacteristics>  Characteristics    { get; }
+        public VariableCharacteristics?  Characteristics    { get; }
 
 
         [Optional]
-        public IEnumerable<VariableMonitoring>       Monitorings        { get; }
+        public VariableMonitoring?       Monitorings        { get; }
 
 
         [Optional]
-        public I18NString?                           Description        { get; }
+        public I18NString?               Description        { get; }
+
+
+        public String? Value
+            => ValueGetter();
 
         #endregion
 
@@ -79,26 +89,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Name">The case insensitive name of the variable. Name should be taken from the list of standardized variable names whenever possible.</param>
         /// <param name="Instance">The optional case insensitive name of the instance in case the variable exists as multiple instances.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public VariableConfig(String                                 Name,
-                              String?                                Instance          = null,
+        public VariableConfig(String                    Name,
+                              Func<String?>             ValueGetter,
+                              String?                   Instance          = null,
 
-                              IEnumerable<VariableAttribute>?        Attributes        = null,
-                              IEnumerable<VariableCharacteristics>?  Characteristics   = null,
-                              IEnumerable<VariableMonitoring>?       Monitorings       = null,
-                              I18NString?                            Description       = null,
+                              VariableAttribute?        Attributes        = null,
+                              VariableCharacteristics?  Characteristics   = null,
+                              VariableMonitoring?       Monitorings       = null,
+                              I18NString?               Description       = null,
 
-                              CustomData?                            CustomData        = null)
+                              CustomData?               CustomData        = null)
 
             : base(CustomData)
 
         {
 
-            this.Name             = Name.            Trim();
-            this.Instance         = Instance?.       Trim();
+            this.Name             = Name.     Trim();
+            this.ValueGetter      = ValueGetter;
+            this.Instance         = Instance?.Trim();
 
-            this.Attributes       = Attributes?.     Distinct() ?? [];
-            this.Characteristics  = Characteristics?.Distinct() ?? [];
-            this.Monitorings      = Monitorings?.    Distinct() ?? [];
+            this.Attributes       = Attributes;
+            this.Characteristics  = Characteristics;
+            this.Monitorings      = Monitorings;
             this.Description      = Description;
 
             if (this.Name.IsNullOrEmpty())
@@ -116,7 +128,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public static VariableConfig Invalid
 
-            => new ("<invalid!>");
+            => new ("<invalid!>", () => "");
 
         #endregion
 
@@ -219,7 +231,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatoryText("name",
                                              "variable name",
-                                             out String Name,
+                                             out String? Name,
                                              out ErrorResponse))
                 {
                     return false;
@@ -236,11 +248,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Attributes         [optional]
 
-                if (JSON.ParseOptionalHashSet("attributes",
-                                              "variable attributes",
-                                              VariableAttribute.TryParse,
-                                              out HashSet<VariableAttribute> Attributes,
-                                              out ErrorResponse))
+                if (JSON.ParseOptionalJSON("attributes",
+                                           "variable attributes",
+                                           VariableAttribute.TryParse,
+                                           out VariableAttribute? Attributes,
+                                           out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
@@ -250,11 +262,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Characteristics    [optional]
 
-                if (JSON.ParseOptionalHashSet("characteristics",
-                                              "variable characteristics",
-                                              OCPPv2_1.VariableCharacteristics.TryParse,
-                                              out HashSet<VariableCharacteristics> Characteristics,
-                                              out ErrorResponse))
+                if (JSON.ParseOptionalJSON("characteristics",
+                                           "variable characteristics",
+                                           VariableCharacteristics.TryParse,
+                                           out VariableCharacteristics? Characteristics,
+                                           out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
@@ -264,11 +276,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Monitorings        [optional]
 
-                if (JSON.ParseOptionalHashSet("monitorings",
-                                              "variable monitorings",
-                                              VariableMonitoring.TryParse,
-                                              out HashSet<VariableMonitoring> Monitorings,
-                                              out ErrorResponse))
+                if (JSON.ParseOptionalJSON("monitorings",
+                                           "variable monitorings",
+                                           VariableMonitoring.TryParse,
+                                           out VariableMonitoring? Monitorings,
+                                           out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
@@ -309,6 +321,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 VariableConfig = new VariableConfig(
 
                                      Name,
+                                     () => "",
                                      Instance,
 
                                      Attributes,
@@ -345,8 +358,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="CustomVariableConfigSerializer">A delegate to serialize custom variables.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<VariableConfig>?    CustomVariableConfigSerializer     = null,
-                              CustomJObjectSerializerDelegate<CustomData>?  CustomCustomDataSerializer   = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<VariableConfig>?  CustomVariableConfigSerializer   = null,
+                              CustomJObjectSerializerDelegate<CustomData>?      CustomCustomDataSerializer       = null)
         {
 
             var json = JSONObject.Create(
@@ -381,16 +394,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             => new (
 
                    new String(Name.ToCharArray()),
+                   ValueGetter,
 
                    Instance is not null
                        ? new String(Instance.ToCharArray())
                        : null,
 
-                   Attributes.     Select(variableattribute      => variableattribute.     Clone()),
-                   Characteristics.Select(variableCharacteristic => variableCharacteristic.Clone()),
-                   Monitorings.    Select(variableMonitoring     => variableMonitoring.    Clone()),
+                   Attributes?.     Clone(),
+                   Characteristics?.Clone(),
+                   Monitorings?.    Clone(),
 
-                   Description?.Clone(),
+                   Description?.    Clone(),
 
                    CustomData
 

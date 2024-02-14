@@ -20,7 +20,6 @@
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.OCPP;
-using System;
 
 #endregion
 
@@ -38,65 +37,65 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// ISO 15118 controller enabled.
         /// </summary>
-        public Boolean?                          Enabled                             { get; set; }
+        public Boolean?             Enabled                             { get; set; }
 
         /// <summary>
         /// Connected.
         /// </summary>
-        public Boolean?                          Active                              { get; set; }
+        public Boolean?             Active                              { get; set; }
 
         /// <summary>
         /// ISO 15118 communication session aborted.
         /// </summary>
-        public Boolean?                          Tripped                             { get; set; }
+        public Boolean?             Tripped                             { get; set; }
 
         /// <summary>
         /// ISO 15118 communication session ended.
         /// </summary>
-        public Boolean?                          Complete                            { get; set; }
+        public Boolean?             Complete                            { get; set; }
 
         /// <summary>
         /// ISO 15118 controller fault.
         /// </summary>
-        public Boolean?                          Problem                             { get; set; }
+        public Boolean?             Problem                             { get; set; }
 
         /// <summary>
         /// Start self-test by setting to true.
         /// </summary>
-        public Boolean?                          SelftestActiveSet                   { get; set; }
+        public Boolean?             SelftestActiveSet                   { get; set; }
 
         /// <summary>
         /// Self-test running when reported as true.
         /// </summary>
-        public Boolean?                          SelftestActive                      { get; set; }
+        public Boolean?             SelftestActive                      { get; set; }
 
         /// <summary>
         /// Supports validation of a contract certificate when offline.
         /// </summary>
-        public Boolean?                          ContractValidationOffline           { get; set; }
+        public Boolean?             ContractValidationOffline           { get; set; }
 
         /// <summary>
         /// Contract certificates can be validated by the CSMS.
         /// </summary>
-        public Boolean?                          CentralContractValidationAllowed    { get; set; }
+        public Boolean?             CentralContractValidationAllowed    { get; set; }
 
         /// <summary>
         /// The name of the EVSE in the string format as required by ISO 15118 and IEC 63119-2.
         /// </summary>
-        public String?                           EvseId                              { get; set; }
+        public String?              EvseId                              { get; set; }
 
         /// <summary>
         /// If this variable is true, then ISO 15118 plug and charge is enabled.
         /// If this variable is false, then the Charging Station won’t initiate ISO 15118 CSRs.
         /// </summary>
-        public Boolean?                          PnCEnabled                          { get; set; }
+        public Boolean?             PnCEnabled                          { get; set; }
 
         /// <summary>
         /// A string with the following comma-separated items: “<uri>,<major>,<minor>”.
         /// This is the protocol uri and version information that was agreed upon between EV and EVSE in the supportedAppProtocolReq handshake from ISO 15118.
         /// Example: "urn:iso:15118:2:2013:MsgDef,2,0"
         /// </summary>
-        public String?                           ProtocolAgreed                      { get; set; }
+        public String?              ProtocolAgreed                      { get; set; }
 
         /// <summary>
         /// A string with the following comma-separated items: “<uri>,<major>,<minor>”.
@@ -104,23 +103,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Variable has multiple instances, one for each priority.
         /// Example: "urn:iso:15118:2:2013:MsgDef,2,0"
         /// </summary>
-        public String?                           ProtocolSupportedByEV               { get; set; }
+        public String?              ProtocolSupportedByEV               { get; set; }
 
         /// <summary>
         /// If this variable is true, then Charging Station shall request a metering receipt from EV before sending a fiscal meter value to CSMS.
         /// </summary>
-        public Boolean?                          RequestMeteringReceipt              { get; set; }
+        public Boolean?             RequestMeteringReceipt              { get; set; }
 
 
         /// <summary>
         /// MaxEntriesSAScheduleType (15118-2) or MaximumSupportingPoints (15118-20) Number of allowed schedule periods.
         /// </summary>
-        public UInt32?                           MaxScheduleEntries                  { get; set; }
+        public UInt32?              MaxScheduleEntries                  { get; set; }
 
         /// <summary>
         /// RequestedEnergyTransferMode "AC_single_phase_core", "AC_three_phase_core", "DC_core, "DC_extended", "DC_combo_core", "DC_unique".
         /// </summary>
-        public IEnumerable<EnergyTransferMode>?  RequestedEnergyTransferMode         { get; set; }
+        public EnergyTransferMode?  RequestedEnergyTransferMode         { get; set; }
 
         #endregion
 
@@ -149,468 +148,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// 
         /// <param name="Instance">The optional case insensitive name of the instance in case the component exists as multiple instances.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public ISO15118Ctrlr(Boolean?                          Enabled                            = null,
-                             Boolean?                          Active                             = null,
-                             Boolean?                          Tripped                            = null,
-                             Boolean?                          Complete                           = null,
-                             Boolean?                          Problem                            = null,
-                             Boolean?                          SelftestActiveSet                  = null,
-                             Boolean?                          SelftestActive                     = null,
-                             Boolean?                          ContractValidationOffline          = null,
-                             Boolean?                          CentralContractValidationAllowed   = null,
-                             String?                           EvseId                             = null,
-                             Boolean?                          PnCEnabled                         = null,
-                             String?                           ProtocolAgreed                     = null,
-                             String?                           ProtocolSupportedByEV              = null,
-                             Boolean?                          RequestMeteringReceipt             = null,
+        public ISO15118Ctrlr(Boolean?             Enabled                            = null,
+                             Boolean?             Active                             = null,
+                             Boolean?             Tripped                            = null,
+                             Boolean?             Complete                           = null,
+                             Boolean?             Problem                            = null,
+                             Boolean?             SelftestActiveSet                  = null,
+                             Boolean?             SelftestActive                     = null,
+                             Boolean?             ContractValidationOffline          = null,
+                             Boolean?             CentralContractValidationAllowed   = null,
+                             String?              EvseId                             = null,
+                             Boolean?             PnCEnabled                         = null,
+                             String?              ProtocolAgreed                     = null,
+                             String?              ProtocolSupportedByEV              = null,
+                             Boolean?             RequestMeteringReceipt             = null,
 
-                             UInt32?                           MaxScheduleEntries                 = null,
-                             IEnumerable<EnergyTransferMode>?  RequestedEnergyTransferMode        = null,
+                             UInt32?              MaxScheduleEntries                 = null,
+                             EnergyTransferMode?  RequestedEnergyTransferMode        = null,
 
-                             String?                           Instance                           = null,
-                             CustomData?                       CustomData                         = null)
+                             String?              Instance                           = null,
+                             CustomData?          CustomData                         = null)
 
             : base(nameof(ISO15118Ctrlr),
                    Instance,
-                   new[] {
-
-                       #region Enabled
-
-                       new VariableConfig(
-
-                           Name:              "Enabled",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Boolean
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("ISO 15118 controller enabled."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region Active
-
-                       new VariableConfig(
-
-                           Name:              "Active",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Boolean
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("Connected."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region Tripped
-
-                       new VariableConfig(
-
-                           Name:              "Tripped",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Boolean
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("ISO 15118 communication session aborted."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region Complete
-
-                       new VariableConfig(
-
-                           Name:              "Complete",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Boolean
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("ISO 15118 communication session ended."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region Problem
-
-                       new VariableConfig(
-
-                           Name:              "Problem",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Boolean
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("ISO 15118 controller fault."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region SelftestActiveSet
-
-                       new VariableConfig(
-
-                           Name:              "SelftestActiveSet",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Boolean
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("Start self-test by setting to true."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region SelftestActive
-
-                       new VariableConfig(
-
-                           Name:              "SelftestActive",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Boolean
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("Self-test running when reported as true."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region ContractValidationOffline
-
-                       new VariableConfig(
-
-                           Name:              "ContractValidationOffline",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Boolean
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("Supports validation of a contract certificate when offline."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region CentralContractValidationAllowed
-
-                       new VariableConfig(
-
-                           Name:              "CentralContractValidationAllowed",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Boolean
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("Contract certificates can be validated by the CSMS."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region EvseId
-
-                       new VariableConfig(
-
-                           Name:              "EvseId",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.String
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("The name of the EVSE in the string format as required by ISO 15118 and IEC 63119-2."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region PnCEnabled
-
-                       new VariableConfig(
-
-                           Name:              "PnCEnabled",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Boolean
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("If this variable is true, then ISO 15118 plug and charge is enabled. If this variable is false, then the Charging Station won’t initiate ISO 15118 CSRs."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region ProtocolAgreed
-
-                       new VariableConfig(
-
-                           Name:              "ProtocolAgreed",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.String
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("A string with the following comma-separated items: “<uri>,<major>,<minor>”. This is the protocol uri and version information that was agreed upon between EV and EVSE in the supportedAppProtocolReq handshake from ISO 15118. Example: \"urn:iso:15118:2:2013:MsgDef,2,0\""),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region ProtocolSupportedByEV
-
-                       new VariableConfig(
-
-                           Name:              "ProtocolSupportedByEV",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.String
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("A string with the following comma-separated items: “<uri>,<major>,<minor>”. This is information from the supportedAppProtocolReq message from ISO 15118. Variable has multiple instances, one for each priority. Example: \"urn:iso:15118:2:2013:MsgDef,2,0\""),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region RequestMeteringReceipt
-
-                       new VariableConfig(
-
-                           Name:              "RequestMeteringReceipt",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Boolean
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("If this variable is true, then Charging Station shall request a metering receipt from EV before sending a fiscal meter value to CSMS."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-
-                       // Specific ISO15118 interface data from vehicle:
-
-                       #region MaxScheduleEntries
-
-                       new VariableConfig(
-
-                           Name:              "MaxScheduleEntries",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Integer
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("MaxEntriesSAScheduleType (15118-2) or MaximumSupportingPoints (15118-20) Number of allowed schedule periods."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region RequestedEnergyTransferMode
-
-                       new VariableConfig(
-
-                           Name:              "RequestedEnergyTransferMode",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Boolean
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("RequestedEnergyTransferMode \"AC_single_phase_core\", \"AC_three_phase_core\", \"DC_core, \"DC_extended\", \"DC_combo_core\", \"DC_unique\"."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-
-                   },
                    I18NString.Create("Communicates with an EV to exchange information and control charging using the ISO 15118 protocol."),
                    CustomData)
 
@@ -632,7 +192,437 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.RequestMeteringReceipt            = RequestMeteringReceipt;
 
             this.MaxScheduleEntries                = MaxScheduleEntries;
-            this.RequestedEnergyTransferMode       = RequestedEnergyTransferMode;
+            this.RequestedEnergyTransferMode       = RequestedEnergyTransferMode;       //ToDo: How does this list fit to ISO 15118?
+
+
+            #region Enabled
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "Enabled",
+                    ValueGetter:      () => this.Enabled.HasValue
+                                                ? this.Enabled.Value
+                                                      ? "true"
+                                                      : "false"
+                                                : null,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadWrite
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Boolean
+                                      ),
+
+                    Description:      I18NString.Create("ISO 15118 controller enabled.")
+
+                )
+            );
+
+            #endregion
+
+            #region Active
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "Active",
+                    ValueGetter:      () => this.Active.HasValue
+                                                ? this.Active.Value
+                                                      ? "true"
+                                                      : "false"
+                                                : null,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadWrite
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Boolean
+                                      ),
+
+                    Description:      I18NString.Create("Connected.")
+
+                )
+            );
+
+            #endregion
+
+            #region Tripped
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "Tripped",
+                    ValueGetter:      () => this.Tripped.HasValue
+                                                ? this.Tripped.Value
+                                                      ? "true"
+                                                      : "false"
+                                                : null,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadWrite
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Boolean
+                                      ),
+
+                    Description:      I18NString.Create("ISO 15118 communication session aborted.")
+
+                )
+            );
+
+            #endregion
+
+            #region Complete
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "Complete",
+                    ValueGetter:      () => this.Complete.HasValue
+                                                ? this.Complete.Value
+                                                      ? "true"
+                                                      : "false"
+                                                : null,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadWrite
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Boolean
+                                      ),
+
+                    Description:      I18NString.Create("ISO 15118 communication session ended.")
+
+                )
+            );
+
+            #endregion
+
+            #region Problem
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "Problem",
+                    ValueGetter:      () => this.Problem.HasValue
+                                                ? this.Problem.Value
+                                                      ? "true"
+                                                      : "false"
+                                                : null,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadWrite
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Boolean
+                                      ),
+
+                    Description:      I18NString.Create("ISO 15118 controller fault.")
+
+                )
+            );
+
+            #endregion
+
+            #region SelftestActiveSet
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "SelftestActiveSet",
+                    ValueGetter:      () => this.SelftestActiveSet.HasValue
+                                                ? this.SelftestActiveSet.Value
+                                                      ? "true"
+                                                      : "false"
+                                                : null,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadWrite
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Boolean
+                                      ),
+
+                    Description:      I18NString.Create("Start self-test by setting to true.")
+
+                )
+            );
+
+            #endregion
+
+            #region SelftestActive
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "SelftestActive",
+                    ValueGetter:      () => this.SelftestActive.HasValue
+                                                ? this.SelftestActive.Value
+                                                      ? "true"
+                                                      : "false"
+                                                : null,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadWrite
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Boolean
+                                      ),
+
+                    Description:      I18NString.Create("Self-test running when reported as true.")
+
+                )
+            );
+
+            #endregion
+
+            #region ContractValidationOffline
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "ContractValidationOffline",
+                    ValueGetter:      () => this.ContractValidationOffline.HasValue
+                                                ? this.ContractValidationOffline.Value
+                                                      ? "true"
+                                                      : "false"
+                                                : null,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadWrite
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Boolean
+                                      ),
+
+                    Description:      I18NString.Create("Supports validation of a contract certificate when offline.")
+
+                )
+            );
+
+            #endregion
+
+            #region CentralContractValidationAllowed
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "CentralContractValidationAllowed",
+                    ValueGetter:      () => this.CentralContractValidationAllowed.HasValue
+                                                ? this.CentralContractValidationAllowed.Value
+                                                      ? "true"
+                                                      : "false"
+                                                : null,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadWrite
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Boolean
+                                      ),
+
+                    Description:      I18NString.Create("Contract certificates can be validated by the CSMS.")
+
+                )
+            );
+
+            #endregion
+
+            #region EvseId
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "EvseId",
+                    ValueGetter:      () => this.EvseId?.ToString(),
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadWrite
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.String
+                                      ),
+
+                    Description:      I18NString.Create("The name of the EVSE in the string format as required by ISO 15118 and IEC 63119-2.")
+
+                )
+            );
+
+            #endregion
+
+            #region PnCEnabled
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "PnCEnabled",
+                    ValueGetter:      () => this.PnCEnabled.HasValue
+                                                ? this.PnCEnabled.Value
+                                                      ? "true"
+                                                      : "false"
+                                                : null,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadWrite
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Boolean
+                                      ),
+
+                    Description:      I18NString.Create(
+                                          "If this variable is true, then ISO 15118 plug and charge is enabled. " +
+                                          "If this variable is false, then the Charging Station won’t initiate ISO 15118 CSRs."
+                                      )
+
+                )
+            );
+
+            #endregion
+
+            #region ProtocolAgreed
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "ProtocolAgreed",
+                    ValueGetter:      () => this.ProtocolAgreed?.ToString(),
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadWrite
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.String
+                                      ),
+
+                    Description:      I18NString.Create(
+                                          "A string with the following comma-separated items: “<uri>,<major>,<minor>”. " +
+                                          "This is the protocol uri and version information that was agreed upon between " +
+                                          "EV and EVSE in the supportedAppProtocolReq handshake from ISO 15118. " +
+                                          "Example: \"urn:iso:15118:2:2013:MsgDef,2,0\""
+                                      )
+
+                )
+            );
+
+            #endregion
+
+            #region ProtocolSupportedByEV
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "ProtocolSupportedByEV",
+                    ValueGetter:      () => this.ProtocolSupportedByEV?.ToString(),
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadWrite
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.String
+                                      ),
+
+                    Description:      I18NString.Create(
+                                          "A string with the following comma-separated items: “<uri>,<major>,<minor>”. " +
+                                          "This is information from the supportedAppProtocolReq message from ISO 15118. " +
+                                          "Variable has multiple instances, one for each priority. " +
+                                          "Example: \"urn:iso:15118:2:2013:MsgDef,2,0\""
+                                      )
+
+                )
+            );
+
+            #endregion
+
+            #region RequestMeteringReceipt
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "RequestMeteringReceipt",
+                    ValueGetter:      () => this.RequestMeteringReceipt.HasValue
+                                                ? this.RequestMeteringReceipt.Value
+                                                      ? "true"
+                                                      : "false"
+                                                : null,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadWrite
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Boolean
+                                      ),
+
+                    Description:      I18NString.Create("If this variable is true, then Charging Station shall request a metering receipt from EV before sending a fiscal meter value to CSMS.")
+
+                )
+            );
+
+            #endregion
+
+
+            // Specific ISO15118 interface data from vehicle:
+
+            #region MaxScheduleEntries
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "MaxScheduleEntries",
+                    ValueGetter:      () => this.MaxScheduleEntries?.ToString(),
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadWrite
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Integer
+                                      ),
+
+                    Description:      I18NString.Create("MaxEntriesSAScheduleType (15118-2) or MaximumSupportingPoints (15118-20) Number of allowed schedule periods.")
+
+                )
+            );
+
+            #endregion
+
+            #region RequestedEnergyTransferMode     (How does this list fit to ISO 15118)?
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "RequestedEnergyTransferMode",
+                    ValueGetter:      () => this.RequestedEnergyTransferMode?.ToString(),
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadWrite
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.OptionList
+                                      ),
+
+                    Description:      I18NString.Create("RequestedEnergyTransferMode \"AC_single_phase_core\", \"AC_three_phase_core\", \"DC_core, \"DC_extended\", \"DC_combo_core\", \"DC_unique\".")
+
+                )
+            );
+
+            #endregion
+
 
         }
 

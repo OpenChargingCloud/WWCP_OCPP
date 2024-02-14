@@ -195,14 +195,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Least Recently Used (LRU)
         /// </summary>
-        public static CacheEntryReplacementPolicy  LRU    { get; }
+        public static CacheEntryReplacementPolicy  LRU       { get; }
             = Register("LRU");
 
         /// <summary>
         /// LeastFrequentlyUsed (LFU)
         /// </summary>
-        public static CacheEntryReplacementPolicy  LFU    { get; }
+        public static CacheEntryReplacementPolicy  LFU       { get; }
             = Register("LFU");
+
+        /// <summary>
+        /// First-In First-Out (FIFO)
+        /// </summary>
+        public static CacheEntryReplacementPolicy  FIFO      { get; }
+            = Register("FIFO");
+
+        /// <summary>
+        /// CUSTOM
+        /// </summary>
+        public static CacheEntryReplacementPolicy  CUSTOM    { get; }
+            = Register("CUSTOM");
 
         #endregion
 

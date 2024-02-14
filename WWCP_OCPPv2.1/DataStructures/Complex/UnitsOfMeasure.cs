@@ -289,7 +289,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Degrees (temperature).
         /// </summary>
-        public static UnitsOfMeasure Celsius(Int32        Multiplier,
+        public static UnitsOfMeasure Celsius(Int32        Multiplier   = 1,
                                              CustomData?  CustomData   = null)
 
             => new (UnitOfMeasure.Celsius,
@@ -300,7 +300,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Degrees (temperature).
         /// </summary>
-        public static UnitsOfMeasure Fahrenheit(Int32        Multiplier,
+        public static UnitsOfMeasure Fahrenheit(Int32        Multiplier   = 1,
                                                 CustomData?  CustomData   = null)
 
             => new (UnitOfMeasure.Fahrenheit,
@@ -311,7 +311,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Watt-hours (energy).
         /// </summary>
-        public static UnitsOfMeasure Wh(Int32        Multiplier,
+        public static UnitsOfMeasure Wh(Int32        Multiplier   = 1,
                                         CustomData?  CustomData   = null)
 
             => new (UnitOfMeasure.Wh,
@@ -322,7 +322,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// kiloWatt-hours (energy).
         /// </summary>
-        public static UnitsOfMeasure kWh(Int32        Multiplier,
+        public static UnitsOfMeasure kWh(Int32        Multiplier   = 1,
                                          CustomData?  CustomData   = null)
 
             => new (UnitOfMeasure.kWh,
@@ -333,7 +333,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Var-hours (reactive energy).
         /// </summary>
-        public static UnitsOfMeasure varh(Int32        Multiplier,
+        public static UnitsOfMeasure varh(Int32        Multiplier   = 1,
                                           CustomData?  CustomData   = null)
 
             => new (UnitOfMeasure.varh,
@@ -344,7 +344,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// kilovar-hours (reactive energy).
         /// </summary>
-        public static UnitsOfMeasure kvarh(Int32        Multiplier,
+        public static UnitsOfMeasure kvarh(Int32        Multiplier   = 1,
                                            CustomData?  CustomData   = null)
 
             => new (UnitOfMeasure.kvarh,
@@ -355,7 +355,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Watts (power).
         /// </summary>
-        public static UnitsOfMeasure Watts(Int32        Multiplier,
+        public static UnitsOfMeasure Watts(Int32        Multiplier   = 1,
                                            CustomData?  CustomData   = null)
 
             => new (UnitOfMeasure.Watts,
@@ -366,7 +366,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// kiloWatts (power).
         /// </summary>
-        public static UnitsOfMeasure kW(Int32        Multiplier,
+        public static UnitsOfMeasure kW(Int32        Multiplier   = 1,
                                         CustomData?  CustomData   = null)
 
             => new (UnitOfMeasure.kW,
@@ -377,7 +377,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// VoltAmpere (apparent power).
         /// </summary>
-        public static UnitsOfMeasure VoltAmpere(Int32        Multiplier,
+        public static UnitsOfMeasure VoltAmpere(Int32        Multiplier   = 1,
                                                 CustomData?  CustomData   = null)
 
             => new (UnitOfMeasure.VoltAmpere,
@@ -388,7 +388,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// kiloVolt Ampere (apparent power).
         /// </summary>
-        public static UnitsOfMeasure kVA(Int32        Multiplier,
+        public static UnitsOfMeasure kVA(Int32        Multiplier   = 1,
                                          CustomData?  CustomData   = null)
 
             => new (UnitOfMeasure.kVA,
@@ -399,7 +399,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Vars (reactive power).
         /// </summary>
-        public static UnitsOfMeasure var(Int32        Multiplier,
+        public static UnitsOfMeasure var(Int32        Multiplier   = 1,
                                          CustomData?  CustomData   = null)
 
             => new (UnitOfMeasure.var,
@@ -410,7 +410,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// kilovars (reactive power).
         /// </summary>
-        public static UnitsOfMeasure kvar(Int32        Multiplier,
+        public static UnitsOfMeasure kvar(Int32        Multiplier   = 1,
                                           CustomData?  CustomData   = null)
 
             => new (UnitOfMeasure.kvar,
@@ -421,7 +421,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Amperes (current).
         /// </summary>
-        public static UnitsOfMeasure Amperes(Int32        Multiplier,
+        public static UnitsOfMeasure Amperes(Int32        Multiplier   = 1,
                                              CustomData?  CustomData   = null)
 
             => new (UnitOfMeasure.Amperes,
@@ -432,7 +432,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Voltage (r.m.s. AC).
         /// </summary>
-        public static UnitsOfMeasure Voltage(Int32        Multiplier,
+        public static UnitsOfMeasure Voltage(Int32        Multiplier   = 1,
                                              CustomData?  CustomData   = null)
 
             => new (UnitOfMeasure.Voltage,
@@ -443,7 +443,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Degrees Kelvin (temperature).
         /// </summary>
-        public static UnitsOfMeasure Kelvin(Int32        Multiplier,
+        public static UnitsOfMeasure Kelvin(Int32        Multiplier   = 1,
                                             CustomData?  CustomData   = null)
 
             => new (UnitOfMeasure.Kelvin,
@@ -454,7 +454,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Percentage.
         /// </summary>
-        public static UnitsOfMeasure Percent(Int32        Multiplier,
+        public static UnitsOfMeasure Percent(Int32        Multiplier   = 1,
                                              CustomData?  CustomData   = null)
 
             => new (UnitOfMeasure.Percent,
@@ -465,7 +465,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// TimeSpan (default: Seconds).
         /// </summary>
-        public static UnitsOfMeasure TimeSpan(Int32        Multiplier   = 0,
+        public static UnitsOfMeasure TimeSpan(Int32        Multiplier   = 1,
                                               CustomData?  CustomData   = null)
 
             => new (UnitOfMeasure.TimeSpan,

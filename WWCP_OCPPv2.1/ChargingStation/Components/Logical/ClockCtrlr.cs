@@ -117,252 +117,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             : base(nameof(ClockCtrlr),
                    Instance,
-                   new[] {
-
-                       #region DateTime
-
-                       new VariableConfig(
-
-                           Name:              "DateTime",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Boolean
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("Contains the current date and time."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region NtpServerUri
-
-                       new VariableConfig(
-
-                           Name:              "NtpServerUri",
-                           Instance:          null,     // Single digit, multiple servers allowed, primary NtpServer has instance '1', the secondary has instance '2'. etc
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.String
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("This contains the address of the NTP server. Multiple NTP servers can be configured as backups, etc. If the NTP client supports it, it can also connect to multiple NTP servers simultaneous to get a more reliable time source. Variable instance value is single digit NTP priority (1=highest)."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region NtpSource
-
-                       new VariableConfig(
-
-                           Name:              "NtpSource",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.String
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("When an NTP client is implemented, this variable can be used to configure the client: Use the NTP server provided via DHCP, or use the manually configured NTP server."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region TimeOffset
-
-                       new VariableConfig(
-
-                           Name:              "TimeOffset",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.String
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("Configured local time offset in the format: \"+01:00\", \"-02:00\" etc. When a TimeOffset is used, it is advised not to implement: TimeZone. If a Charging Station has implemented both TimeOffset and TimeZone it is RECOMMENDED to not use both at the same time."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region NextTimeOffsetTransitionDateTime
-
-                       new VariableConfig(
-
-                           Name:              "NextTimeOffsetTransitionDateTime",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.DateTime
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("Date time of the next time offset transition. On this date time, the clock displayed to the EV driver will be given the new offset as configured via 'TimeOffsetNextTransition'. This can be used to manually configure the next start or end of a daylight saving time period."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region TimeOffsetNextTransition
-
-                       new VariableConfig(
-
-                           Name:              "TimeOffsetNextTransition",
-                           Instance:          "NextTransition",
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.String
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("Next local time offset in the format: \"+01:00\", \"-02:00\" etc. New offset that will be set on the next time offset transition as configured via 'NextTimeOffsetTransitionDateTime'. This can be used to manually configure the offset for the start or end of the daylight saving time period."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region TimeSource
-
-                       new VariableConfig(
-
-                           Name:              "TimeSource",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.String
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("Via this variable, the Charging Station provides the CSMS with the option to configure a clock source, if more than 1 are implemented. \"NTP,Heartbeat\" means, use NTP, but when none of the NTP servers responses, use time synchronization via\r\nHeartbeat."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region TimeZone
-
-                       new VariableConfig(
-
-                           Name:              "TimeZone",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.String
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("Configured current local time zone in the format: \"Europe/Oslo\", \"Asia/Singapore\" etc."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region TimeAdjustmentReportingThreshold
-
-                       new VariableConfig(
-
-                           Name:              "TimeAdjustmentReportingThreshold",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.String
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("If set, then time adjustments with an absolute value in seconds larger than this need to be reported as a security event SettingSystemTime."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                   },
                    I18NString.Create("Provides a means to configure management of time tracking by charging station."),
                    CustomData)
 
@@ -378,6 +132,247 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.NextTimeOffsetTransition          = NextTimeOffsetTransition;
             this.TimeZone                          = TimeZone;
             this.TimeAdjustmentReportingThreshold  = TimeAdjustmentReportingThreshold;
+
+
+            #region DateTime
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "DateTime",
+                    ValueGetter:      () => this.DateTime.ToIso8601(),
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadWrite
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.DateTime
+                                      ),
+
+                    Description:      I18NString.Create("Contains the current date and time.")
+
+                )
+            );
+
+            #endregion
+
+            #region TimeSource
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "TimeSource",
+                    ValueGetter:      () => this.TimeSource.Any()
+                                                ? this.TimeSource.AggregateWith(',')
+                                                : null,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadWrite
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.String
+                                      ),
+
+                    Description:      I18NString.Create(
+                                          "Via this variable, the Charging Station provides the CSMS with the option to configure a clock source, if more than 1 are implemented. " +
+                                          "\"NTP,Heartbeat\" means, use NTP, but when none of the NTP servers responses, use time synchronization via Heartbeat."
+                                      )
+
+                )
+            );
+
+            #endregion
+
+            #region NtpServerUri
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    // Single digit, multiple servers allowed, primary NtpServer has instance '1', the secondary has instance '2'. etc
+                    Name:             "NtpServerUri",
+                    ValueGetter:      () => this.NtpServerUri,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadWrite
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.String
+                                      ),
+
+                    Description:      I18NString.Create(
+                                          "This contains the address of the NTP server. Multiple NTP servers can be configured as backups, etc. " +
+                                          "If the NTP client supports it, it can also connect to multiple NTP servers simultaneous to get a " +
+                                          "more reliable time source. Variable instance value is single digit NTP priority (1=highest)."
+                                      )
+
+                )
+            );
+
+            #endregion
+
+            #region NtpSource
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "NtpSource",
+                    ValueGetter:      () => this.NtpSource.HasValue
+                                                ? this.NtpSource.Value.AsText()
+                                                : null,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadWrite
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.String
+                                      ),
+
+                    Description:      I18NString.Create(
+                                          "When an NTP client is implemented, this variable can be used to configure the client: " +
+                                          "Use the NTP server provided via DHCP, or use the manually configured NTP server."
+                                      )
+
+                )
+            );
+
+            #endregion
+
+            #region TimeOffset
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "TimeOffset",
+                    ValueGetter:      () => this.TimeOffset,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadWrite
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.String
+                                      ),
+
+                    Description:      I18NString.Create(
+                                          "Configured local time offset in the format: \"+01:00\", \"-02:00\" etc. " +
+                                          "When a TimeOffset is used, it is advised not to implement: TimeZone. " +
+                                          "If a Charging Station has implemented both TimeOffset and TimeZone it is RECOMMENDED to not use both at the same time."
+                                      )
+
+                )
+            );
+
+            #endregion
+
+            #region NextTimeOffsetTransitionDateTime
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "NextTimeOffsetTransitionDateTime",
+                    ValueGetter:      () => this.NextTimeOffsetTransitionDateTime.HasValue
+                                                ? this.NextTimeOffsetTransitionDateTime.Value.ToIso8601()
+                                                : null,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadWrite
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.DateTime
+                                      ),
+
+                    Description:      I18NString.Create(
+                                          "Date time of the next time offset transition. On this date time, the clock displayed to the EV driver " +
+                                          "will be given the new offset as configured via 'TimeOffsetNextTransition'. " +
+                                          "This can be used to manually configure the next start or end of a daylight saving time period."
+                                      )
+
+                )
+            );
+
+            #endregion
+
+            #region TimeOffsetNextTransition
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "TimeOffsetNextTransition",
+                    Instance:         "NextTransition",
+                    ValueGetter:      () => this.NextTimeOffsetTransition,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadWrite
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.String
+                                      ),
+
+                    Description:      I18NString.Create(
+                                          "Next local time offset in the format: \"+01:00\", \"-02:00\" etc. New offset that will be set on the next time " +
+                                          "offset transition as configured via 'NextTimeOffsetTransitionDateTime'. " +
+                                          "This can be used to manually configure the offset for the start or end of the daylight saving time period."
+                                      )
+
+                )
+            );
+
+            #endregion
+
+            #region TimeZone
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "TimeZone",
+                    ValueGetter:      () => this.TimeZone,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadWrite
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.String
+                                      ),
+
+                    Description:      I18NString.Create("Configured current local time zone in the format: \"Europe/Oslo\", \"Asia/Singapore\" etc.")
+
+                )
+            );
+
+            #endregion
+
+            #region TimeAdjustmentReportingThreshold
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "TimeAdjustmentReportingThreshold",
+                    ValueGetter:      () => this.TimeAdjustmentReportingThreshold.HasValue
+                                                ? this.TimeAdjustmentReportingThreshold.Value.ToString()
+                                                : null,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadWrite
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.String
+                                      ),
+
+                    Description:      I18NString.Create("If set, then time adjustments with an absolute value in seconds larger than this need to be reported as a security event SettingSystemTime.")
+
+                )
+            );
+
+            #endregion
+
 
         }
 

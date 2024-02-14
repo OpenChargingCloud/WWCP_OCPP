@@ -61,42 +61,44 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             : base(nameof(CustomizationCtrlr),
                    Instance,
-                   new[] {
-
-                       #region Enabled
-
-                       new VariableConfig(
-
-                           Name:              "Enabled",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Boolean
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("This standard configuration variable can be used to enable/disable custom implementations that the Charging Station supports.The instance name of the variable matches the vendorId of the customization in CustomData or DataTransfer messages."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                   },
                    I18NString.Create("Logical Component responsible for configuration relating to custom vendor-specific implementations, using the DataTransfer message and CustomData extensions."),
                    CustomData)
 
         {
 
             this.CustomImplementationEnabled = CustomImplementationEnabled;
+
+
+            #region Enabled
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "Enabled",
+                    ValueGetter:      () => this.CustomImplementationEnabled.HasValue
+                                                ? this.CustomImplementationEnabled.Value
+                                                      ? "true"
+                                                      : "false"
+                                                : null,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadWrite
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Boolean
+                                      ),
+
+                    Description:      I18NString.Create(
+                                          "This standard configuration variable can be used to enable/disable custom implementations that " +
+                                          "the charging station supports. The instance name of the variable matches the vendorId of the " +
+                                          "customization in CustomData or DataTransfer messages."
+                                      )
+
+                )
+            );
+
+            #endregion
 
         }
 

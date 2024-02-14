@@ -37,62 +37,69 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Whether Smart Charging is enabled.
         /// </summary>
-        public Boolean?            Enabled                             { get; set; }
+        public Boolean?                        Enabled                             { get; set; }
 
         /// <summary>
         /// Whether Smart Charging is supported.
         /// </summary>
-        public Boolean?            Available                           { get; set; }
+        public Boolean?                        Available                           { get; set; }
 
         /// <summary>
         /// If defined and true, this EVSE supports the selection of which phase to use for 1 phase AC charging.
         /// </summary>
-        public Boolean?            ACPhaseSwitchingSupported           { get; set; }
+        public Boolean?                        ACPhaseSwitchingSupported           { get; set; }
 
         /// <summary>
-        /// Max StackLevel of a ChargingProfile. The number defined also indicates the max allowed number of installed charging schedules per Charging Profile Purposes.
+        /// Max stack level of a charging profile.
+        /// The number defined also indicates the max allowed number of installed charging schedules per charging profile purpose.
         /// </summary>
-        public Int16?              ProfileStackLevel                   { get; set; }
+        [Mandatory]
+        public UInt16                          ProfileStackLevel                   { get; set; }
 
         /// <summary>
-        /// A list of supported quantities for use in a ChargingSchedule. Allowed values: 'A' and 'W'.
+        /// A list of supported quantities for use in a charging schedule.
         /// </summary>
-        public IEnumerable<Char>?  RateUnit                            { get; set; }
+        [Mandatory]
+        public IEnumerable<ChargingRateUnits>  RateUnit                            { get; set; }
 
         /// <summary>
-        /// Maximum number of periods that may be defined per ChargingSchedule.
+        /// Maximum number of periods that may be defined per charging schedule.
         /// </summary>
-        public UInt16?             PeriodsPerSchedule                  { get; set; }
+        [Mandatory]
+        public UInt16                          PeriodsPerSchedule                  { get; set; }
 
         /// <summary>
-        /// Indicates whether a Charging Station should respond to external control signals that influence charging.
+        /// Indicates whether a charging station should respond to external control signals that influence charging.
         /// </summary>
-        public Boolean?            ExternalControlSignalsEnabled       { get; set; }
+        public Boolean?                        ExternalControlSignalsEnabled       { get; set; }
 
         /// <summary>
-        /// Indicates if the Charging Station should include the externally set charging limit/schedule in the message when it sends a NotifyChargingLimitRequest message.
+        /// Indicates if the charging station should include the externally set charging limit/schedule in the message when it sends a NotifyChargingLimitRequest message.
         /// This might increase the data usage significantly, especially when an external system sends new profiles/limits with a short interval.
         /// Default is false when omitted.
         /// </summary>
-        public Boolean?            NotifyChargingLimitWithSchedules    { get; set; }
+        public Boolean?                        NotifyChargingLimitWithSchedules    { get; set; }
 
         /// <summary>
-        /// If defined and true, this Charging Station supports switching from 3 to 1 phase during a transaction.
+        /// If defined and true, this charging station supports switching from 3 to 1 phase during a transaction.
         /// </summary>
-        public Boolean?            Phases3to1                          { get; set; }
+        public Boolean?                        Phases3to1                          { get; set; }
 
         /// <summary>
-        /// Amount of Charging profiles currently installed on the Charging Station.
-        /// MaxLimit used to limit number of Charging profiles installed at any time.
+        /// Amount of charging profiles currently installed on the charging station.
+        /// MaxLimit used to limit number of charging profiles installed at any time.
         /// </summary>
-        public Byte?               Entries                             { get; set; }
+        [Mandatory]
+        public UInt16                          Entries                             { get; set; }
 
         /// <summary>
-        /// If at the Charging Station side a change in the limit in a ChargingProfile is lower than this percentage, the Charging Station MAY skip sending a NotifyChargingLimitRequest or a TransactionEventRequest message to the CSMS.
+        /// If at the charging station side a change in the limit in a charging profile is lower than this percentage,
+        /// the charging station MAY skip sending a NotifyChargingLimitRequest or a TransactionEventRequest message to the CSMS.
         /// It is RECOMMENDED to set this key to a low value.
-        /// See Smart Charging signals to a Charging Station from multiple actors.
+        /// See Smart Charging signals to a charging station from multiple actors.
         /// </summary>
-        public Byte?               LimitChangeSignificance             { get; set; }
+        [Mandatory]
+        public Percentage                      LimitChangeSignificance             { get; set; }
 
         #endregion
 
@@ -104,334 +111,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Enabled">Whether Smart Charging is enabled.</param>
         /// <param name="Available">Whether Smart Charging is supported.</param>
         /// <param name="ACPhaseSwitchingSupported">If defined and true, this EVSE supports the selection of which phase to use for 1 phase AC charging.</param>
-        /// <param name="ProfileStackLevel">Max StackLevel of a ChargingProfile. The number defined also indicates the max allowed number of installed charging schedules per Charging Profile Purposes.</param>
-        /// <param name="RateUnit">A list of supported quantities for use in a ChargingSchedule. Allowed values: 'A' and 'W'.</param>
-        /// <param name="PeriodsPerSchedule">Maximum number of periods that may be defined per ChargingSchedule.</param>
-        /// <param name="ExternalControlSignalsEnabled">Indicates whether a Charging Station should respond to external control signals that influence charging.</param>
-        /// <param name="NotifyChargingLimitWithSchedules">Indicates if the Charging Station should include the externally set charging limit/schedule in the message when it sends a NotifyChargingLimitRequest message. This might increase the data usage significantly, especially when an external system sends new profiles/limits with a short interval. Default is false when omitted.</param>
-        /// <param name="Phases3to1">If defined and true, this Charging Station supports switching from 3 to 1 phase during a transaction.</param>
-        /// <param name="Entries">Amount of Charging profiles currently installed on the Charging Station. MaxLimit used to limit number of Charging profiles installed at any time.</param>
+        /// <param name="ProfileStackLevel">Max StackLevel of a charging profile. The number defined also indicates the max allowed number of installed charging schedules per charging profile Purposes.</param>
+        /// <param name="RateUnit">A list of supported quantities for use in a charging schedule.</param>
+        /// <param name="PeriodsPerSchedule">Maximum number of periods that may be defined per charging schedule.</param>
+        /// <param name="ExternalControlSignalsEnabled">Indicates whether a charging station should respond to external control signals that influence charging.</param>
+        /// <param name="NotifyChargingLimitWithSchedules">Indicates if the charging station should include the externally set charging limit/schedule in the message when it sends a NotifyChargingLimitRequest message. This might increase the data usage significantly, especially when an external system sends new profiles/limits with a short interval. Default is false when omitted.</param>
+        /// <param name="Phases3to1">If defined and true, this charging station supports switching from 3 to 1 phase during a transaction.</param>
+        /// <param name="Entries">Amount of charging profiles currently installed on the charging station. MaxLimit used to limit number of charging profiles installed at any time.</param>
         /// <param name="LimitChangeSignificance"></param>
         /// 
         /// <param name="Instance">The optional case insensitive name of the instance in case the component exists as multiple instances.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public SmartChargingCtrlr(Boolean?            Enabled                            = null,
-                                  Boolean?            Available                          = null,
-                                  Boolean?            ACPhaseSwitchingSupported          = null,
-                                  Int16?              ProfileStackLevel                  = null,
-                                  IEnumerable<Char>?  RateUnit                           = null,
-                                  UInt16?             PeriodsPerSchedule                 = null,
-                                  Boolean?            ExternalControlSignalsEnabled      = null,
-                                  Boolean?            NotifyChargingLimitWithSchedules   = null,
-                                  Boolean?            Phases3to1                         = null,
-                                  Byte?               Entries                            = null,
-                                  Byte?               LimitChangeSignificance            = null,
+        public SmartChargingCtrlr(IEnumerable<ChargingRateUnits>  RateUnit,
+                                  UInt16                          PeriodsPerSchedule,
+                                  UInt16                          ProfileStackLevel,
+                                  UInt16                          Entries,
+                                  Percentage                      LimitChangeSignificance,
 
-                                  String?             Instance                           = null,
-                                  CustomData?         CustomData                         = null)
+                                  Boolean?                        Enabled                            = null,
+                                  Boolean?                        Available                          = null,
+                                  Boolean?                        ACPhaseSwitchingSupported          = null,
+                                  Boolean?                        ExternalControlSignalsEnabled      = null,
+                                  Boolean?                        NotifyChargingLimitWithSchedules   = null,
+                                  Boolean?                        Phases3to1                         = null,
+
+                                  String?                         Instance                           = null,
+                                  CustomData?                     CustomData                         = null)
 
             : base(nameof(SmartChargingCtrlr),
                    Instance,
-                   new[] {
-
-                       #region Enabled
-
-                       new VariableConfig(
-
-                           Name:              "Enabled",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Boolean
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("Whether Smart Charging is enabled."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region Available
-
-                       new VariableConfig(
-
-                           Name:              "Available",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Boolean
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("Whether Smart Charging is supported."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region ACPhaseSwitchingSupported
-
-                       new VariableConfig(
-
-                           Name:              "ACPhaseSwitchingSupported",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Boolean
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("If defined and true, this EVSE supports the selection of which phase to use for 1 phase AC charging."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region ProfileStackLevel
-
-                       new VariableConfig(
-
-                           Name:              "ProfileStackLevel",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Integer
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("Max StackLevel of a ChargingProfile. The number defined also indicates the max allowed number of installed charging schedules per Charging Profile Purposes."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region RateUnit
-
-                       new VariableConfig(
-
-                           Name:              "RateUnit",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.MemberList
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("A list of supported quantities for use in a ChargingSchedule. Allowed values: 'A' and 'W'."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region PeriodsPerSchedule
-
-                       new VariableConfig(
-
-                           Name:              "PeriodsPerSchedule",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Integer
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("Maximum number of periods that may be defined per ChargingSchedule."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region ExternalControlSignalsEnabled
-
-                       new VariableConfig(
-
-                           Name:              "ExternalControlSignalsEnabled",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Boolean
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("Indicates whether a Charging Station should respond to external control signals that influence charging."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region NotifyChargingLimitWithSchedules
-
-                       new VariableConfig(
-
-                           Name:              "NotifyChargingLimitWithSchedules",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Boolean
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("Indicates if the Charging Station should include the externally set charging limit/schedule in the message when it sends a NotifyChargingLimitRequest message. This might increase the data usage significantly, especially when an external system sends new profiles/limits with a short interval. Default is false when omitted."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region Phases3to1
-
-                       new VariableConfig(
-
-                           Name:              "Phases3to1",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Boolean
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("If defined and true, this Charging Station supports switching from 3 to 1 phase during a transaction."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region Entries
-
-                       new VariableConfig(
-
-                           Name:              "Entries",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Integer
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("Amount of Charging profiles currently installed on the Charging Station. MaxLimit used to limit number of Charging profiles installed at any time."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region LimitChangeSignificance
-
-                       new VariableConfig(
-
-                           Name:              "LimitChangeSignificance",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Boolean
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("If at the Charging Station side a change in the limit in a ChargingProfile is lower than this percentage, the Charging Station MAY skip sending a NotifyChargingLimitRequest or a TransactionEventRequest message to the CSMS. It is RECOMMENDED to set this key to a low value. See Smart Charging signals to a Charging Station from multiple actors."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                   },
                    I18NString.Create("Logical Component responsible for configuration relating to smart charging."),
                    CustomData)
 
@@ -448,6 +156,301 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.Phases3to1                        = Phases3to1;
             this.Entries                           = Entries;
             this.LimitChangeSignificance           = LimitChangeSignificance;
+
+
+            #region Enabled
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "Enabled",
+                    ValueGetter:      () => this.Enabled.HasValue
+                                                ? this.Enabled.Value
+                                                      ? "true"
+                                                      : "false"
+                                                : null,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadWrite
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Boolean
+                                      ),
+
+                    Description:      I18NString.Create("Whether Smart Charging is enabled.")
+
+                )
+            );
+
+            #endregion
+
+            #region Available
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "Available",
+                    ValueGetter:      () => this.Available.HasValue
+                                                ? this.Available.Value
+                                                      ? "true"
+                                                      : "false"
+                                                : null,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadOnly
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Boolean
+                                      ),
+
+                    Description:      I18NString.Create("Whether Smart Charging is supported.")
+
+                )
+            );
+
+            #endregion
+
+            #region ACPhaseSwitchingSupported
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "ACPhaseSwitchingSupported",
+                    ValueGetter:      () => this.ACPhaseSwitchingSupported.HasValue
+                                                ? this.ACPhaseSwitchingSupported.Value
+                                                      ? "true"
+                                                      : "false"
+                                                : null,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadOnly
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Boolean
+                                      ),
+
+                    Description:      I18NString.Create("If defined and true, this EVSE supports the selection of which phase to use for 1 phase AC charging.")
+
+                )
+            );
+
+            #endregion
+
+            #region ProfileStackLevel
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "ProfileStackLevel",
+                    ValueGetter:      () => this.ProfileStackLevel.ToString(),
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadOnly
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Integer
+                                      ),
+
+                    Description:      I18NString.Create(
+                                           "Max stack level of a charging profile. " +
+                                           "The number defined also indicates the max allowed number of installed charging schedules per charging profile purpose."
+                                       )
+
+                )
+            );
+
+            #endregion
+
+            #region RateUnit
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "RateUnit",
+                    ValueGetter:      () => this.RateUnit.AggregateWith(','),
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadOnly
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.MemberList,
+                                          ValuesList:  new[] { "A", "W" }
+                                      ),
+
+                    Description:      I18NString.Create("A list of supported quantities for use in a charging schedule.")
+
+                )
+            );
+
+            #endregion
+
+            #region PeriodsPerSchedule
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "PeriodsPerSchedule",
+                    ValueGetter:      () => this.PeriodsPerSchedule.ToString(),
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadOnly
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Integer
+                                      ),
+
+                    Description:      I18NString.Create("Maximum number of periods that may be defined per charging schedule.")
+
+                )
+            );
+
+            #endregion
+
+            #region ExternalControlSignalsEnabled
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "ExternalControlSignalsEnabled",
+                    ValueGetter:      () => this.ExternalControlSignalsEnabled.HasValue
+                                                ? this.ExternalControlSignalsEnabled.Value
+                                                      ? "true"
+                                                      : "false"
+                                                : null,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadWrite
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Boolean
+                                      ),
+
+                    Description:      I18NString.Create("Indicates whether a charging station should respond to external control signals that influence charging.")
+
+                )
+            );
+
+            #endregion
+
+            #region NotifyChargingLimitWithSchedules
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "NotifyChargingLimitWithSchedules",
+                    ValueGetter:      () => this.NotifyChargingLimitWithSchedules.HasValue
+                                                ? this.NotifyChargingLimitWithSchedules.Value
+                                                      ? "true"
+                                                      : "false"
+                                                : null,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadWrite
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Boolean
+                                      ),
+
+                    Description:      I18NString.Create(
+                                           "Indicates if the charging station should include the externally set charging limit/schedule in the message when it sends a NotifyChargingLimitRequest message. " +
+                                           "This might increase the data usage significantly, especially when an external system sends new profiles/limits with a short interval. " +
+                                           "Default is false when omitted."
+                                       )
+
+                )
+            );
+
+            #endregion
+
+            #region Phases3to1
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "Phases3to1",
+                    ValueGetter:      () => this.Phases3to1.HasValue
+                                                ? this.Phases3to1.Value
+                                                      ? "true"
+                                                      : "false"
+                                                : null,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadOnly
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Boolean
+                                      ),
+
+                    Description:      I18NString.Create("If defined and true, this charging station supports switching from 3 to 1 phase during a transaction.")
+
+                )
+            );
+
+            #endregion
+
+            #region Entries
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "Entries",
+                    ValueGetter:      () => this.Entries.ToString(),
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadWrite
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Integer
+                                      ),
+
+                    Description:      I18NString.Create(
+                                           "Amount of charging profiles currently installed on the charging station. " +
+                                           "MaxLimit used to limit number of charging profiles installed at any time."
+                                       )
+
+                )
+            );
+
+            #endregion
+
+            #region LimitChangeSignificance
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "LimitChangeSignificance",
+                    ValueGetter:      () => this.LimitChangeSignificance.Value.ToString(),
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadWrite
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Boolean
+                                      ),
+
+                    Description:      I18NString.Create(
+                                           "If at the charging station side a change in the limit in a charging profile is lower than this percentage, " +
+                                           "the charging station MAY skip sending a NotifyChargingLimitRequest or a TransactionEventRequest message to the CSMS. " +
+                                           "It is RECOMMENDED to set this key to a low value. " +
+                                           "See Smart Charging signals to a charging station from multiple actors."
+                                       )
+
+                )
+            );
+
+            #endregion
+
 
         }
 

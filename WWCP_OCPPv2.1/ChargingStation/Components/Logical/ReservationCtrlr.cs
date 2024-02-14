@@ -45,8 +45,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public Boolean?  Available          { get; set; }
 
         /// <summary>
-        /// If this configuration variable is present and set to true:
-        /// The charging station supports reservation without specifying an EVSE.
+        /// When this configuration variable is present and set to true:
+        /// The charging station supports reservation without a specified EVSE Id.
         /// </summary>
         public Boolean?  NonEvseSpecific    { get; set; }
 
@@ -59,7 +59,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="Enabled">Whether reservation is enabled.</param>
         /// <param name="Available">Whether reservation is supported.</param>
-        /// <param name="NonEvseSpecific">If this configuration variable is present and set to true: The charging station supports reservation without specifying an EVSE.</param>
+        /// <param name="NonEvseSpecific">When this configuration variable is present and set to true: The charging station supports reservation without a specified EVSE Id.</param>
         /// 
         /// <param name="Instance">The optional case insensitive name of the instance in case the component exists as multiple instances.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
@@ -72,90 +72,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             : base(nameof(ReservationCtrlr),
                    Instance,
-                   new[] {
-
-                       #region Enabled
-
-                       new VariableConfig(
-
-                           Name:              "Enabled",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Boolean
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("Whether reservation is enabled."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region Available
-
-                       new VariableConfig(
-
-                           Name:              "Available",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Boolean
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("Whether reservation is supported."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                       #region NonEvseSpecific
-
-                       new VariableConfig(
-
-                           Name:              "NonEvseSpecific",
-                           Instance:          null,
-
-                           Attributes:        new[] {
-                                                   new VariableAttribute(
-                                                       Mutability:  MutabilityTypes.ReadWrite
-                                                   )
-                                               },
-
-                           Characteristics:   new[] {
-                                                   new VariableCharacteristics(
-                                                       DataType:    DataTypes.Boolean
-                                                   )
-                                               },
-
-                           Description:       I18NString.Create("If this configuration variable is present and set to true: The charging station supports reservation without specifying an EVSE."),
-
-                           CustomData:        null
-
-                       ),
-
-                       #endregion
-
-                   },
                    I18NString.Create("Logical Component responsible for configuration relating to reservations."),
                    CustomData)
 
@@ -164,6 +80,92 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.Enabled          = Enabled;
             this.Available        = Available;
             this.NonEvseSpecific  = NonEvseSpecific;
+
+
+            #region Enabled
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "Enabled",
+                    ValueGetter:      () => this.Enabled.HasValue
+                                                ? this.Enabled.Value
+                                                      ? "true"
+                                                      : "false"
+                                                : null,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadWrite
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Boolean
+                                      ),
+
+                    Description:      I18NString.Create("Whether reservation is enabled.")
+
+                )
+            );
+
+            #endregion
+
+            #region Available
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "Available",
+                    ValueGetter:      () => this.Available.HasValue
+                                                ? this.Available.Value
+                                                      ? "true"
+                                                      : "false"
+                                                : null,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadOnly
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Boolean
+                                      ),
+
+                    Description:      I18NString.Create("Whether reservation is supported.")
+
+                )
+            );
+
+            #endregion
+
+            #region NonEvseSpecific
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "NonEvseSpecific",
+                    ValueGetter:      () => this.NonEvseSpecific.HasValue
+                                                ? this.NonEvseSpecific.Value
+                                                      ? "true"
+                                                      : "false"
+                                                : null,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadOnly
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Boolean
+                                      ),
+
+                    Description:      I18NString.Create(
+                                          "When this configuration variable is present and set to true: " +
+                                          "The charging station supports reservation without a specified EVSE Id."
+                                      )
+
+                )
+            );
+
+            #endregion
+
 
         }
 

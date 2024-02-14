@@ -82,6 +82,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public readonly UInt64 Length
             => (UInt64) (InternalId?.Length ?? 0);
 
+
+        /// <summary>
+        /// All registered message formats.
+        /// </summary>
+        public static IEnumerable<MessageFormat> Values
+            => lookup.Values;
+
         #endregion
 
         #region Constructor(s)
