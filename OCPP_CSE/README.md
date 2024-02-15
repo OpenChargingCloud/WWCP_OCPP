@@ -23,6 +23,11 @@ The *HTTP Web Sockets* standard supports an efficient way to transport binary da
 - As binary data is often very large compared to normal OCPP requests/responses an additional priority scheduling of message transmission is required to prioritize *"normal"* OCPP requests/responses over binary background transmissions.
 
 
+## Distributed Systems Extensions
+- Adding support for conditional SetVariables requests for data integrity via optimistic concurrency control. By using this extension e.g. the CSMS allows updates of variables only if they haven't been modified since this CSMS last fetched them, preventing accidental overwrites of concurrent changes within complex charging infrastructure.
+- Multiple SetVariableData "subrequests" of a single SetVariables request can now handles as a single "database" transaction, allowing safety- and security critical data manipulations.
+
+
 ## Overlay Networking Extensions
 - Loosely related to the OCA internal *"OCPP Local CSMS"* and *"Routing Node"* concept, but not based on *Source Routing*, as this is known to not scale well.
 - Every charging station, networking node, CSMS backend has an unique networking node identification.
