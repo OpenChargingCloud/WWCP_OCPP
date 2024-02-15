@@ -186,7 +186,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 new VariableConfig(
 
                     Name:             "OrganizationName",
-                    ValueGetter:      () => this.OrganizationName,
+                    ValueGetter:      ()                   => this.OrganizationName,
+                    ValueSetter:      (newValue, oldValue) => {
+
+                                                                  if (newValue is null)
+                                                                      return new ValueSetterResponse(this.OrganizationName, "The new OrganizationName must not be null!");
+
+                                                                  if (oldValue is not null && oldValue != this.OrganizationName)
+                                                                      return new ValueSetterResponse(this.OrganizationName, "The old OrganizationName is no longer valid!");
+
+                                                                  this.OrganizationName = newValue;
+                                                                  return new ValueSetterResponse(this.OrganizationName);
+
+                                                              },
 
                     Attributes:       new VariableAttribute(
                                           Mutability:  MutabilityTypes.ReadWrite

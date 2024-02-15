@@ -3434,17 +3434,139 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     // VariableData
 
+                    var setVariableResults = new List<SetVariableResult>();
+
+                    foreach (var setVariableData in request.VariableData)
+                    {
+
+                        var componentFound          = false;
+                        var componentInstanceFound  = false;
+                        var variableFound           = false;
+                        var variableInstanceFound   = false;
+
+                        foreach (var componentConfig in ComponentConfigs)
+                        {
+
+                            if (componentConfig.Name == setVariableData.Component.Name)
+                            {
+
+                                componentFound = true;
+
+                                if (componentConfig.Instance == setVariableData.Component.Instance)
+                                {
+
+                                    componentInstanceFound = true;
+
+                                    foreach (var variableConfig in componentConfig.VariableConfigs)
+                                    {
+
+                                        if (variableConfig.Name == setVariableData.Variable.Name)
+                                        {
+
+                                            variableFound = true;
+
+                                            if (variableConfig.Instance == setVariableData.Variable.Instance)
+                                            {
+
+                                                variableInstanceFound = true;
+
+                                                if (variableConfig.Attributes?.Mutability == MutabilityTypes.ReadOnly)
+                                                    setVariableResults.Add(new SetVariableResult(
+                                                                               Status:                SetVariableStatus.Rejected,
+                                                                               Component:             setVariableData.Component,
+                                                                               Variable:              setVariableData.Variable,
+                                                                               AttributeType:         variableConfig.Attributes?.Type,
+                                                                               AttributeStatusInfo:   new StatusInfo(
+                                                                                                          "error",
+                                                                                                          $"{setVariableData.Component.Name}{(setVariableData.Component.Instance is not null ? $"({setVariableData.Component.Instance})" : "")}/" +
+                                                                                                          $"{setVariableData.Variable.Name}{(setVariableData.Variable.Instance is not null ? $"({setVariableData.Variable.Instance})" : "")} is read-only!"
+                                                                                                      )
+                                                                           ));
+
+                                                else // Mutability == ReadWrite | WriteOnly
+                                                {
+
+                                                    //ToDo: Check User Access Rights!
+
+                                                    var rr = variableConfig.Set(setVariableData.AttributeValue,
+                                                                                setVariableData.OldAttributeValue);
+
+                                                    if (rr.ErrorMessage is not null)
+                                                        setVariableResults.Add(new SetVariableResult(
+                                                                               Status:                SetVariableStatus.Rejected,
+                                                                               Component:             setVariableData.Component,
+                                                                               Variable:              setVariableData.Variable,
+                                                                               AttributeType:         variableConfig.Attributes?.Type,
+                                                                               AttributeStatusInfo:   new StatusInfo("error", rr.ErrorMessage),
+                                                                               CustomData:            null
+                                                                           ));
+
+                                                    else
+                                                        setVariableResults.Add(new SetVariableResult(
+                                                                               Status:                SetVariableStatus.Accepted,
+                                                                               Component:             setVariableData.Component,
+                                                                               Variable:              setVariableData.Variable,
+                                                                               AttributeType:         variableConfig.Attributes?.Type,
+                                                                               AttributeStatusInfo:   null,
+                                                                               CustomData:            null
+                                                                           ));
+
+                                                }
+
+                                            }
+
+                                        }
+
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                        if (!componentFound)
+                            setVariableResults.Add(
+                                new SetVariableResult(
+                                    Status:      SetVariableStatus.UnknownComponent,
+                                    Component:   setVariableData.Component,
+                                    Variable:    setVariableData.Variable
+                                )
+                            );
+
+                        else if (!componentInstanceFound)
+                            setVariableResults.Add(
+                                new SetVariableResult(
+                                    Status:      SetVariableStatus.UnknownComponent,
+                                    Component:   setVariableData.Component,
+                                    Variable:    setVariableData.Variable
+                                )
+                            );
+
+                        else if (!variableFound)
+                            setVariableResults.Add(
+                                new SetVariableResult(
+                                    Status:      SetVariableStatus.UnknownVariable,
+                                    Component:   setVariableData.Component,
+                                    Variable:    setVariableData.Variable
+                                )
+                            );
+
+                        else if (!variableInstanceFound)
+                            setVariableResults.Add(
+                                new SetVariableResult(
+                                    Status:      SetVariableStatus.UnknownVariable,
+                                    Component:   setVariableData.Component,
+                                    Variable:    setVariableData.Variable
+                                )
+                            );
+
+                    }
+
                     response = new SetVariablesResponse(
-                                   Request:              request,
-                                   SetVariableResults:   request.VariableData.Select(variableData => new SetVariableResult(
-                                                                                                         Status:                SetVariableStatus.Accepted,
-                                                                                                         Component:             variableData.Component,
-                                                                                                         Variable:              variableData.Variable,
-                                                                                                         AttributeType:         variableData.AttributeType,
-                                                                                                         AttributeStatusInfo:   null,
-                                                                                                         CustomData:            null
-                                                                                                     )),
-                                   CustomData:           null
+                                   Request:             request,
+                                   SetVariableResults:  setVariableResults,
+                                   CustomData:          null
                                );
 
                 }

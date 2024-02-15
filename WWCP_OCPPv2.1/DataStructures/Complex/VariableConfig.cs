@@ -30,6 +30,16 @@ using cloud.charging.open.protocols.OCPP;
 namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
+    public class ValueSetterResponse(String?  NewValue,
+                                     String?  ErrorMessage   = null)
+    {
+
+        public String?  NewValue        { get; } = NewValue;
+        public String?  ErrorMessage    { get; } = ErrorMessage;
+
+    }
+
+
     /// <summary>
     /// A variable.
     /// </summary>
@@ -39,7 +49,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Data
 
-        public readonly Func<String> ValueGetter;
+        public readonly Func<String?>?                                ValueGetter;
+        public readonly Func<String?, String?, ValueSetterResponse>?  ValueSetter;
 
         #endregion
 
@@ -76,8 +87,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public I18NString?               Description        { get; }
 
 
-        public String? Value
-            => ValueGetter();
+        /// <summary>
+        /// The last time this variable was set/updated.
+        /// </summary>
+        public DateTime?                 LastUpdate         { get; private set; }
+
+        /// <summary>
+        /// The value of the variable.
+        /// </summary>
+        public String?                   Value
+            => ValueGetter?.Invoke();
 
         #endregion
 
@@ -87,18 +106,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Create a new variable.
         /// </summary>
         /// <param name="Name">The case insensitive name of the variable. Name should be taken from the list of standardized variable names whenever possible.</param>
+        /// <param name="ValueGetter">A delegate to return the value of the variable. In some rare cases of WriteOnly variables this might be null!</param>
+        /// <param name="ValueSetter">A delegate to set the value of the variable. The old value can optionally be passed as second parameter. This is null for all ReadOnly variables.</param>
+        /// 
         /// <param name="Instance">The optional case insensitive name of the instance in case the variable exists as multiple instances.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public VariableConfig(String                    Name,
-                              Func<String?>             ValueGetter,
-                              String?                   Instance          = null,
+        public VariableConfig(String                                        Name,
+                              Func<String?>?                                ValueGetter       = null,
+                              Func<String?, String?, ValueSetterResponse>?  ValueSetter       = null,
+                              String?                                       Instance          = null,
 
-                              VariableAttribute?        Attributes        = null,
-                              VariableCharacteristics?  Characteristics   = null,
-                              VariableMonitoring?       Monitorings       = null,
-                              I18NString?               Description       = null,
+                              VariableAttribute?                            Attributes        = null,
+                              VariableCharacteristics?                      Characteristics   = null,
+                              VariableMonitoring?                           Monitorings       = null,
+                              I18NString?                                   Description       = null,
 
-                              CustomData?               CustomData        = null)
+                              CustomData?                                   CustomData        = null)
 
             : base(CustomData)
 
@@ -106,6 +129,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             this.Name             = Name.     Trim();
             this.ValueGetter      = ValueGetter;
+            this.ValueSetter      = ValueSetter;
             this.Instance         = Instance?.Trim();
 
             this.Attributes       = Attributes;
@@ -322,6 +346,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                      Name,
                                      () => "",
+                                     null,
                                      Instance,
 
                                      Attributes,
@@ -395,6 +420,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                    new String(Name.ToCharArray()),
                    ValueGetter,
+                   ValueSetter,
 
                    Instance is not null
                        ? new String(Instance.ToCharArray())
@@ -411,6 +437,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                );
 
         #endregion
+
+
+        public ValueSetterResponse Set(String? NewValue,
+                                       String? OldValue = null)
+
+        {
+
+            var response = ValueSetter?.Invoke(NewValue,
+                                               OldValue)
+
+                               ?? new ValueSetterResponse(
+                                      "error",
+                                      "Internal error!"
+                                  );
+
+            if (response.ErrorMessage is null)
+                LastUpdate = Timestamp.Now;
+
+            return response;
+
+        }
+
 
 
         #region Operator overloading

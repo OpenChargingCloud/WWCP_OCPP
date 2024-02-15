@@ -737,10 +737,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 chargingStation3        is not null)
             {
 
-                var getLogRequests = new ConcurrentList<SetVariablesRequest>();
+                var setLogRequests = new ConcurrentList<SetVariablesRequest>();
 
-                chargingStation1.OnSetVariablesRequest += (timestamp, sender, connection, getLogRequest) => {
-                    getLogRequests.TryAdd(getLogRequest);
+                chargingStation1.OnSetVariablesRequest += (timestamp, sender, connection, setLogRequest) => {
+                    setLogRequests.TryAdd(setLogRequest);
                     return Task.CompletedTask;
                 };
 
@@ -748,7 +748,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                                      DestinationNodeId:   chargingStation1.Id,
                                                      VariableData:        [
 
-                                                                              #region Known component & component instance...                  [must pass!]
+                                                                              #region Correct old value...     [must pass!]
 
                                                                               new SetVariableData(
                                                                                   Component:           new Component(
@@ -769,7 +769,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                                                                               #endregion
 
-                                                                              #region Known component & component instance...                  [must fail!]
+                                                                              #region Outdated old value...    [must fail!]
 
                                                                               new SetVariableData(
                                                                                   Component:           new Component(
@@ -790,13 +790,45 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                                                                               #endregion
 
+                                                                              #region Correct updated value... [must pass!]
+
+                                                                              new SetVariableData(
+                                                                                  Component:           new Component(
+                                                                                                           Name:        "SecurityCtrlr",
+                                                                                                           Instance:     null,
+                                                                                                           CustomData:   null
+                                                                                                       ),
+                                                                                  Variable:            new Variable(
+                                                                                                           Name:        "OrganizationName",
+                                                                                                           Instance:     null,
+                                                                                                           CustomData:   null
+                                                                                                       ),
+                                                                                  AttributeValue:      "Open Charging Cloud #2 by GraphDefined GmbH",
+                                                                                  OldAttributeValue:   "Open Charging Cloud #1 by GraphDefined GmbH",
+                                                                                  AttributeType:       null,
+                                                                                  CustomData:          null
+                                                                              ),
+
+                                                                              #endregion
+
                                                                           ],
                                                      CustomData:          null
                                                  );
 
-                ClassicAssert.AreEqual(ResultCode.OK,        setVariablesResponse.Result.ResultCode);
+                Assert.That(setVariablesResponse.Result.ResultCode,            Is.EqualTo(ResultCode.OK));
+                Assert.That(setLogRequests.Count,                              Is.EqualTo(1));
 
-                ClassicAssert.AreEqual(1,                    getLogRequests.Count);
+
+                Assert.That(setVariablesResponse.SetVariableResults.Count(),   Is.EqualTo(3));
+
+                var firstResult  = setVariablesResponse.SetVariableResults.First();
+                Assert.That(firstResult.Status,                                Is.EqualTo(SetVariableStatus.Accepted));
+
+                var secondResult = setVariablesResponse.SetVariableResults.Skip(1).First();
+                Assert.That(secondResult.Status,                               Is.EqualTo(SetVariableStatus.Rejected));
+
+                var thirdResult  = setVariablesResponse.SetVariableResults.Skip(2).First();
+                Assert.That(thirdResult.Status,                                Is.EqualTo(SetVariableStatus.Accepted));
 
             }
 
