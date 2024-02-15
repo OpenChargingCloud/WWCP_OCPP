@@ -211,7 +211,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// Parse the given JSON representation of DC charging parameters.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomDCChargingParametersParser">A delegate to parse custom DC charging parameters JSON objects.</param>
+        /// <param name="CustomDCChargingParametersParser">An optional delegate to parse custom DC charging parameters JSON objects.</param>
         public static DCChargingParameters Parse(JObject                                             JSON,
                                                  CustomJObjectParserDelegate<DCChargingParameters>?  CustomDCChargingParametersParser   = null)
         {
@@ -257,7 +257,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="DCChargingParameters">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomDCChargingParametersParser">A delegate to parse custom DC charging parameters JSON objects.</param>
+        /// <param name="CustomDCChargingParametersParser">An optional delegate to parse custom DC charging parameters JSON objects.</param>
         public static Boolean TryParse(JObject                                             JSON,
                                        out DCChargingParameters?                           DCChargingParameters,
                                        out String?                                         ErrorResponse,

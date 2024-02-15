@@ -113,7 +113,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// </summary>
         /// <param name="Request">The cleared charging limit request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomClearedChargingLimitResponseParser">A delegate to parse custom cleared charging limit responses.</param>
+        /// <param name="CustomClearedChargingLimitResponseParser">An optional delegate to parse custom cleared charging limit responses.</param>
         public static ClearedChargingLimitResponse Parse(CS.ClearedChargingLimitRequest                              Request,
                                                          JObject                                                     JSON,
                                                          CustomJObjectParserDelegate<ClearedChargingLimitResponse>?  CustomClearedChargingLimitResponseParser   = null)
@@ -144,7 +144,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ClearedChargingLimitResponse">The parsed cleared charging limit response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomClearedChargingLimitResponseParser">A delegate to parse custom cleared charging limit responses.</param>
+        /// <param name="CustomClearedChargingLimitResponseParser">An optional delegate to parse custom cleared charging limit responses.</param>
         public static Boolean TryParse(CS.ClearedChargingLimitRequest                              Request,
                                        JObject                                                     JSON,
                                        out ClearedChargingLimitResponse?                           ClearedChargingLimitResponse,

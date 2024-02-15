@@ -148,7 +148,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="CustomCostUpdatedRequestParser">A delegate to parse custom cost updated requests.</param>
+        /// <param name="CustomCostUpdatedRequestParser">An optional delegate to parse custom cost updated requests.</param>
         public static CostUpdatedRequest Parse(JObject                                           JSON,
                                                Request_Id                                        RequestId,
                                                ChargeBox_Id                                      ChargeBoxId,
@@ -206,7 +206,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="CostUpdatedRequest">The parsed cost updated request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomCostUpdatedRequestParser">A delegate to parse custom cost updated requests.</param>
+        /// <param name="CustomCostUpdatedRequestParser">An optional delegate to parse custom cost updated requests.</param>
         public static Boolean TryParse(JObject                                           JSON,
                                        Request_Id                                        RequestId,
                                        ChargeBox_Id                                      ChargeBoxId,

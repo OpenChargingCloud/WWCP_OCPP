@@ -130,7 +130,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="CustomGetTransactionStatusRequestParser">A delegate to parse custom get transaction status requests.</param>
+        /// <param name="CustomGetTransactionStatusRequestParser">An optional delegate to parse custom get transaction status requests.</param>
         public static GetTransactionStatusRequest Parse(JObject                                                    JSON,
                                                         Request_Id                                                 RequestId,
                                                         ChargeBox_Id                                               ChargeBoxId,
@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="GetTransactionStatusRequest">The parsed get transaction status request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomGetTransactionStatusRequestParser">A delegate to parse custom get transaction status requests.</param>
+        /// <param name="CustomGetTransactionStatusRequestParser">An optional delegate to parse custom get transaction status requests.</param>
         public static Boolean TryParse(JObject                                                    JSON,
                                        Request_Id                                                 RequestId,
                                        ChargeBox_Id                                               ChargeBoxId,

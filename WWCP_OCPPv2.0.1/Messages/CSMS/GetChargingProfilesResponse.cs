@@ -212,7 +212,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="GetChargingProfilesResponse">The parsed get charging profiles response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomGetChargingProfilesResponseParser">A delegate to parse custom get charging profiles responses.</param>
+        /// <param name="CustomGetChargingProfilesResponseParser">An optional delegate to parse custom get charging profiles responses.</param>
         public static Boolean TryParse(CSMS.GetChargingProfilesRequest                            Request,
                                        JObject                                                    JSON,
                                        out GetChargingProfilesResponse?                           GetChargingProfilesResponse,

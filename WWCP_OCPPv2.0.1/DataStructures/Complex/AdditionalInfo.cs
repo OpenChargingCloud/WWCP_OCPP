@@ -117,7 +117,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// Parse the given JSON representation of an additional info.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomAdditionalInfoParser">A delegate to parse custom additional info JSON objects.</param>
+        /// <param name="CustomAdditionalInfoParser">An optional delegate to parse custom additional info JSON objects.</param>
         public static AdditionalInfo Parse(JObject                                       JSON,
                                            CustomJObjectParserDelegate<AdditionalInfo>?  CustomAdditionalInfoParser   = null)
         {
@@ -163,7 +163,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="AdditionalInfo">The parsed additional info.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomAdditionalInfoParser">A delegate to parse custom additional info JSON objects.</param>
+        /// <param name="CustomAdditionalInfoParser">An optional delegate to parse custom additional info JSON objects.</param>
         public static Boolean TryParse(JObject                                       JSON,
                                        out AdditionalInfo?                           AdditionalInfo,
                                        out String?                                   ErrorResponse,

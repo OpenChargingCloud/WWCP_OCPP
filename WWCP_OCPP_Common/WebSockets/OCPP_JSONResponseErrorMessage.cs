@@ -35,7 +35,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
     /// A OCPP Web Socket JSON response error message (OCPP v2.1 draft!)
     /// </summary>
     /// <param name="ResponseTimestamp">The response time stamp.</param>
-    /// <param name="EventTrackingId">The event tracking identification.</param>
+    /// <param name="EventTrackingId">An optional event tracking identification.</param>
     /// <param name="NetworkingMode">The OCPP networking mode to use.</param>
     /// <param name="DestinationNodeId">The networking node identification of the message destination.</param>
     /// <param name="NetworkPath">The optional (recorded) path of the request through the overlay network.</param>

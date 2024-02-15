@@ -396,7 +396,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="RequestId">The request identification.</param>
         /// <param name="NetworkingNodeId">The unique identification of the sending charge point/networking node.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomMeterValuesRequestParser">A delegate to parse custom MeterValues requests.</param>
+        /// <param name="CustomMeterValuesRequestParser">An optional delegate to parse custom MeterValues requests.</param>
         public static MeterValuesRequest Parse(JObject                                           JSON,
                                                Request_Id                                        RequestId,
                                                NetworkingNode_Id                                 NetworkingNodeId,
@@ -513,7 +513,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="MeterValuesRequest">The parsed MeterValues request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomMeterValuesRequestParser">A delegate to parse custom BootNotification requests.</param>
+        /// <param name="CustomMeterValuesRequestParser">An optional delegate to parse custom BootNotification requests.</param>
         public static Boolean TryParse(JObject                                           JSON,
                                        Request_Id                                        RequestId,
                                        NetworkingNode_Id                                 NetworkingNodeId,

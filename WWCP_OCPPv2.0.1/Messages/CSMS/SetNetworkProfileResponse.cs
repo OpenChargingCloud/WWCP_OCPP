@@ -182,7 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// </summary>
         /// <param name="Request">The set network profile request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomSetNetworkProfileResponseParser">A delegate to parse custom set network profile responses.</param>
+        /// <param name="CustomSetNetworkProfileResponseParser">An optional delegate to parse custom set network profile responses.</param>
         public static SetNetworkProfileResponse Parse(CSMS.SetNetworkProfileRequest                            Request,
                                                       JObject                                                  JSON,
                                                       CustomJObjectParserDelegate<SetNetworkProfileResponse>?  CustomSetNetworkProfileResponseParser   = null)
@@ -213,7 +213,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="SetNetworkProfileResponse">The parsed set network profile response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomSetNetworkProfileResponseParser">A delegate to parse custom set network profile responses.</param>
+        /// <param name="CustomSetNetworkProfileResponseParser">An optional delegate to parse custom set network profile responses.</param>
         public static Boolean TryParse(CSMS.SetNetworkProfileRequest                            Request,
                                        JObject                                                  JSON,
                                        out SetNetworkProfileResponse?                           SetNetworkProfileResponse,

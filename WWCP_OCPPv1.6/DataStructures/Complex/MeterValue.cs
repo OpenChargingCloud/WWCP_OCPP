@@ -272,7 +272,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Parse the given JSON representation of a meter value.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomMeterValueParser">A delegate to parse custom MeterValues.</param>
+        /// <param name="CustomMeterValueParser">An optional delegate to parse custom MeterValues.</param>
         public static MeterValue Parse(JObject                                   JSON,
                                        CustomJObjectParserDelegate<MeterValue>?  CustomMeterValueParser   = null)
         {
@@ -361,7 +361,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="MeterValue">The parsed meter value.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomMeterValueParser">A delegate to parse custom MeterValues.</param>
+        /// <param name="CustomMeterValueParser">An optional delegate to parse custom MeterValues.</param>
         public static Boolean TryParse(JObject                                   JSON,
                                        out MeterValue?                           MeterValue,
                                        out String?                               ErrorResponse,

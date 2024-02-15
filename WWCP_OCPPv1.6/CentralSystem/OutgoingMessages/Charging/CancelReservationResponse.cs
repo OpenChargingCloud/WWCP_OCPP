@@ -200,7 +200,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <param name="Request">The cancel reservation request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomCancelReservationResponseParser">A delegate to parse custom cancel reservation responses.</param>
+        /// <param name="CustomCancelReservationResponseParser">An optional delegate to parse custom cancel reservation responses.</param>
         public static CancelReservationResponse Parse(CS.CancelReservationRequest                              Request,
                                                       JObject                                                  JSON,
                                                       CustomJObjectParserDelegate<CancelReservationResponse>?  CustomCancelReservationResponseParser   = null)
@@ -274,7 +274,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CancelReservationResponse">The parsed cancel reservation response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomCancelReservationResponseParser">A delegate to parse custom cancel reservation responses.</param>
+        /// <param name="CustomCancelReservationResponseParser">An optional delegate to parse custom cancel reservation responses.</param>
         public static Boolean TryParse(CS.CancelReservationRequest                              Request,
                                        JObject                                                  JSON,
                                        out CancelReservationResponse?                           CancelReservationResponse,

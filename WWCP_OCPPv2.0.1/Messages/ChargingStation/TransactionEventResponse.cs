@@ -362,7 +362,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// </summary>
         /// <param name="Request">The transaction event request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomTransactionEventResponseParser">A delegate to parse custom transaction event responses.</param>
+        /// <param name="CustomTransactionEventResponseParser">An optional delegate to parse custom transaction event responses.</param>
         public static TransactionEventResponse Parse(CS.TransactionEventRequest                              Request,
                                                      JObject                                                 JSON,
                                                      CustomJObjectParserDelegate<TransactionEventResponse>?  CustomTransactionEventResponseParser   = null)
@@ -393,7 +393,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="Request">The transaction event request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="TransactionEventResponse">The parsed transaction event response.</param>
-        /// <param name="CustomTransactionEventResponseParser">A delegate to parse custom transaction event responses.</param>
+        /// <param name="CustomTransactionEventResponseParser">An optional delegate to parse custom transaction event responses.</param>
         public static Boolean TryParse(CS.TransactionEventRequest                              Request,
                                        JObject                                                 JSON,
                                        out TransactionEventResponse?                           TransactionEventResponse,

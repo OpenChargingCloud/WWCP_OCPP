@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// </summary>
         /// <param name="Request">The unpublish firmware request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomUnpublishFirmwareResponseParser">A delegate to parse custom unpublish firmware responses.</param>
+        /// <param name="CustomUnpublishFirmwareResponseParser">An optional delegate to parse custom unpublish firmware responses.</param>
         public static UnpublishFirmwareResponse Parse(CSMS.UnpublishFirmwareRequest                            Request,
                                                       JObject                                                  JSON,
                                                       CustomJObjectParserDelegate<UnpublishFirmwareResponse>?  CustomUnpublishFirmwareResponseParser   = null)
@@ -176,7 +176,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="UnpublishFirmwareResponse">The parsed unpublish firmware response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomUnpublishFirmwareResponseParser">A delegate to parse custom unpublish firmware responses.</param>
+        /// <param name="CustomUnpublishFirmwareResponseParser">An optional delegate to parse custom unpublish firmware responses.</param>
         public static Boolean TryParse(CSMS.UnpublishFirmwareRequest                            Request,
                                        JObject                                                  JSON,
                                        out UnpublishFirmwareResponse?                           UnpublishFirmwareResponse,

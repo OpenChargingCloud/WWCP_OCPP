@@ -182,7 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// </summary>
         /// <param name="Request">The install certificate request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomInstallCertificateResponseParser">A delegate to parse custom install certificate responses.</param>
+        /// <param name="CustomInstallCertificateResponseParser">An optional delegate to parse custom install certificate responses.</param>
         public static InstallCertificateResponse Parse(CSMS.InstallCertificateRequest                            Request,
                                                        JObject                                                   JSON,
                                                        CustomJObjectParserDelegate<InstallCertificateResponse>?  CustomInstallCertificateResponseParser   = null)
@@ -213,7 +213,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="InstallCertificateResponse">The parsed install certificate response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomInstallCertificateResponseParser">A delegate to parse custom install certificate responses.</param>
+        /// <param name="CustomInstallCertificateResponseParser">An optional delegate to parse custom install certificate responses.</param>
         public static Boolean TryParse(CSMS.InstallCertificateRequest                            Request,
                                        JObject                                                   JSON,
                                        out InstallCertificateResponse?                           InstallCertificateResponse,

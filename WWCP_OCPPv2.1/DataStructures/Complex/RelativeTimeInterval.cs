@@ -108,7 +108,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Parse the given JSON representation of a relative time interval.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomRelativeTimeIntervalParser">A delegate to parse custom relative time intervals.</param>
+        /// <param name="CustomRelativeTimeIntervalParser">An optional delegate to parse custom relative time intervals.</param>
         public static RelativeTimeInterval Parse(JObject                                             JSON,
                                                  CustomJObjectParserDelegate<RelativeTimeInterval>?  CustomRelativeTimeIntervalParser   = null)
         {
@@ -153,7 +153,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RelativeTimeInterval">The parsed relative time interval.</param>
-        /// <param name="CustomRelativeTimeIntervalParser">A delegate to parse custom relative time intervals.</param>
+        /// <param name="CustomRelativeTimeIntervalParser">An optional delegate to parse custom relative time intervals.</param>
         public static Boolean TryParse(JObject                                             JSON,
                                        out RelativeTimeInterval?                           RelativeTimeInterval,
                                        out String?                                         ErrorResponse,

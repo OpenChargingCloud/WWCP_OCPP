@@ -112,7 +112,7 @@ namespace cloud.charging.open.protocols.OCPP
         /// Parse the given JSON representation of a network routing information.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomNetworkRoutingInformationParser">A delegate to parse custom network routing information.</param>
+        /// <param name="CustomNetworkRoutingInformationParser">An optional delegate to parse custom network routing information.</param>
         public static NetworkRoutingInformation Parse(JObject                                                  JSON,
                                                       CustomJObjectParserDelegate<NetworkRoutingInformation>?  CustomNetworkRoutingInformationParser   = null)
         {
@@ -159,7 +159,7 @@ namespace cloud.charging.open.protocols.OCPP
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="NetworkRoutingInformation">Network routing information.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomNetworkRoutingInformationParser">A delegate to parse custom network routing information.</param>
+        /// <param name="CustomNetworkRoutingInformationParser">An optional delegate to parse custom network routing information.</param>
         public static Boolean TryParse(JObject                                                  JSON,
                                        out NetworkRoutingInformation?                           NetworkRoutingInformation,
                                        out String?                                              ErrorResponse,

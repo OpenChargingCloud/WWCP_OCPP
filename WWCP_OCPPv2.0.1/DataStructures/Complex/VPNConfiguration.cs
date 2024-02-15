@@ -167,7 +167,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// Parse the given JSON representation of a VPN configuration.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomVPNConfigurationParser">A delegate to parse custom VPN configuration JSON objects.</param>
+        /// <param name="CustomVPNConfigurationParser">An optional delegate to parse custom VPN configuration JSON objects.</param>
         public static VPNConfiguration Parse(JObject                                         JSON,
                                              CustomJObjectParserDelegate<VPNConfiguration>?  CustomVPNConfigurationParser   = null)
         {
@@ -213,7 +213,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="VPNConfiguration">The parsed VPN configuration.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomVPNConfigurationParser">A delegate to parse custom VPN configuration JSON objects.</param>
+        /// <param name="CustomVPNConfigurationParser">An optional delegate to parse custom VPN configuration JSON objects.</param>
         public static Boolean TryParse(JObject                                         JSON,
                                        out VPNConfiguration?                           VPNConfiguration,
                                        out String?                                     ErrorResponse,

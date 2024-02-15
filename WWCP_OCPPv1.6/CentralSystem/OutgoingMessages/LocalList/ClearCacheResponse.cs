@@ -179,7 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <param name="Request">The clear cache request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomClearCacheResponseParser">A delegate to parse custom clear cache responses.</param>
+        /// <param name="CustomClearCacheResponseParser">An optional delegate to parse custom clear cache responses.</param>
         public static ClearCacheResponse Parse(CS.ClearCacheRequest                              Request,
                                                JObject                                           JSON,
                                                CustomJObjectParserDelegate<ClearCacheResponse>?  CustomClearCacheResponseParser   = null)
@@ -253,7 +253,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ClearCacheResponse">The parsed clear cache response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomClearCacheResponseParser">A delegate to parse custom clear cache responses.</param>
+        /// <param name="CustomClearCacheResponseParser">An optional delegate to parse custom clear cache responses.</param>
         public static Boolean TryParse(CS.ClearCacheRequest                              Request,
                                        JObject                                           JSON,
                                        out ClearCacheResponse?                           ClearCacheResponse,

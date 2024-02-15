@@ -168,7 +168,7 @@ namespace cloud.charging.open.protocols.OCPP
         /// Parse the given JSON representation of a network topology information.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomNetworkTopologyInformationParser">A delegate to parse custom network topology information.</param>
+        /// <param name="CustomNetworkTopologyInformationParser">An optional delegate to parse custom network topology information.</param>
         public static NetworkTopologyInformation Parse(JObject                                                   JSON,
                                                        CustomJObjectParserDelegate<NetworkTopologyInformation>?  CustomNetworkTopologyInformationParser   = null)
         {
@@ -215,7 +215,7 @@ namespace cloud.charging.open.protocols.OCPP
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="NetworkTopologyInformation">Network topology information.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomNetworkTopologyInformationParser">A delegate to parse custom network topology information.</param>
+        /// <param name="CustomNetworkTopologyInformationParser">An optional delegate to parse custom network topology information.</param>
         public static Boolean TryParse(JObject                                                   JSON,
                                        out NetworkTopologyInformation?                           NetworkTopologyInformation,
                                        out String?                                               ErrorResponse,

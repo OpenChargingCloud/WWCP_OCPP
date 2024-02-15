@@ -182,7 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// Parse the given JSON representation of id token information.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomIdTokenInfoParser">A delegate to parse custom id token information.</param>
+        /// <param name="CustomIdTokenInfoParser">An optional delegate to parse custom id token information.</param>
         public static IdTokenInfo Parse(JObject                                    JSON,
                                         CustomJObjectParserDelegate<IdTokenInfo>?  CustomIdTokenInfoParser   = null)
         {
@@ -228,7 +228,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="IdTokenInfo">The parsed id token information.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomIdTokenInfoParser">A delegate to parse custom id token information.</param>
+        /// <param name="CustomIdTokenInfoParser">An optional delegate to parse custom id token information.</param>
         public static Boolean TryParse(JObject                                    JSON,
                                        out IdTokenInfo?                           IdTokenInfo,
                                        out String?                                ErrorResponse,

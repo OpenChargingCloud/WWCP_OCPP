@@ -190,7 +190,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// Parse the given JSON representation of an absolute price schedule.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomAbsolutePriceScheduleParser">A delegate to parse custom absolute price schedules.</param>
+        /// <param name="CustomAbsolutePriceScheduleParser">An optional delegate to parse custom absolute price schedules.</param>
         public static AbsolutePriceSchedule Parse(JObject                                              JSON,
                                                   CustomJObjectParserDelegate<AbsolutePriceSchedule>?  CustomAbsolutePriceScheduleParser   = null)
         {
@@ -237,7 +237,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="AbsolutePriceSchedule">The parsed absolute price schedule.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomAbsolutePriceScheduleParser">A delegate to parse custom contract certificates.</param>
+        /// <param name="CustomAbsolutePriceScheduleParser">An optional delegate to parse custom contract certificates.</param>
         public static Boolean TryParse(JObject                                              JSON,
                                        out AbsolutePriceSchedule?                           AbsolutePriceSchedule,
                                        out String?                                          ErrorResponse,

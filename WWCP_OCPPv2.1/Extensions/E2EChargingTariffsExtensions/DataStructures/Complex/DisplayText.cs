@@ -159,7 +159,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Parse the given JSON representation of a multi-language text.
         /// </summary>
         /// <param name="JSON">The JSON to parse.</param>
-        /// <param name="CustomDisplayTextParser">A delegate to parse custom multi-language text JSON objects.</param>
+        /// <param name="CustomDisplayTextParser">An optional delegate to parse custom multi-language text JSON objects.</param>
         public static DisplayText Parse(JObject                                    JSON,
                                         CustomJObjectParserDelegate<DisplayText>?  CustomDisplayTextParser   = null)
         {
@@ -205,7 +205,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSON">The JSON to parse.</param>
         /// <param name="DisplayText">The parsed multi-language text.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomDisplayTextParser">A delegate to parse custom multi-language text JSON objects.</param>
+        /// <param name="CustomDisplayTextParser">An optional delegate to parse custom multi-language text JSON objects.</param>
         public static Boolean TryParse(JObject                                    JSON,
                                        out DisplayText                            DisplayText,
                                        out String?                                ErrorResponse,

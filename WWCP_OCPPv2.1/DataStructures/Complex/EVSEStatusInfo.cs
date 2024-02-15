@@ -116,7 +116,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Parse the given JSON representation of status information.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomEVSEStatusInfoParser">A delegate to parse custom status information.</param>
+        /// <param name="CustomEVSEStatusInfoParser">An optional delegate to parse custom status information.</param>
         public static EVSEStatusInfo<T> Parse(JObject                                          JSON,
                                               TryParser<T>                                     StatusParser,
                                               CustomJObjectParserDelegate<EVSEStatusInfo<T>>?  CustomEVSEStatusInfoParser   = null)
@@ -167,7 +167,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="EVSEStatusInfo">The parsed status information.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomEVSEStatusInfoParser">A delegate to parse custom status information.</param>
+        /// <param name="CustomEVSEStatusInfoParser">An optional delegate to parse custom status information.</param>
         public static Boolean TryParse(JObject                                      JSON,
                                        out EVSEStatusInfo<T>?                           EVSEStatusInfo,
                                        out String?                                  ErrorResponse,

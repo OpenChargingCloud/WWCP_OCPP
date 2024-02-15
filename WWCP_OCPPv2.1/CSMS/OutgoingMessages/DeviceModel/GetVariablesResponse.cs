@@ -110,6 +110,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             this.Results = Results.Distinct();
 
+            unchecked
+            {
+
+                hashCode = this.Results.CalcHashCode() * 3 ^
+                           base.        GetHashCode();
+
+            }
+
         }
 
         #endregion
@@ -129,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         {
 
-            this.Results = Array.Empty<GetVariableResult>();
+            this.Results = [];
 
         }
 
@@ -348,7 +356,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The reset request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomGetVariablesResponseParser">A delegate to parse custom get variables responses.</param>
+        /// <param name="CustomGetVariablesResponseParser">An optional delegate to parse custom get variables responses.</param>
         public static GetVariablesResponse Parse(CSMS.GetVariablesRequest                            Request,
                                                  JObject                                             JSON,
                                                  CustomJObjectParserDelegate<GetVariablesResponse>?  CustomGetVariablesResponseParser   = null)
@@ -379,7 +387,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="GetVariablesResponse">The parsed get variables response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomGetVariablesResponseParser">A delegate to parse custom get variables responses.</param>
+        /// <param name="CustomGetVariablesResponseParser">An optional delegate to parse custom get variables responses.</param>
         public static Boolean TryParse(CSMS.GetVariablesRequest                            Request,
                                        JObject                                             JSON,
                                        [NotNullWhen(true)]  out GetVariablesResponse?      GetVariablesResponse,
@@ -424,7 +432,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
                                            OCPP.CustomData.TryParse,
-                                           out CustomData CustomData,
+                                           out CustomData? CustomData,
                                            out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -609,20 +617,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Results.CalcHashCode() * 3 ^
-                       base.GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 
@@ -633,7 +634,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         public override String ToString()
 
-            => Results.Count() + " result(s)";
+            => $"{Results.Count()} result(s)";
 
         #endregion
 

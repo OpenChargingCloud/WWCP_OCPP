@@ -105,7 +105,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// Parse the given JSON representation of a communication module.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomModemParser">A delegate to parse custom modem values.</param>
+        /// <param name="CustomModemParser">An optional delegate to parse custom modem values.</param>
         public static Modem Parse(JObject                              JSON,
                                   CustomJObjectParserDelegate<Modem>?  CustomModemParser   = null)
         {
@@ -149,7 +149,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="Modem">The parsed communication module.</param>
-        /// <param name="CustomModemParser">A delegate to parse custom modem values.</param>
+        /// <param name="CustomModemParser">An optional delegate to parse custom modem values.</param>
         public static Boolean TryParse(JObject                              JSON,
                                        out Modem?                           Modem,
                                        out String?                          ErrorResponse,

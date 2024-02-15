@@ -113,7 +113,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// </summary>
         /// <param name="Request">The publish firmware status notification request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomPublishFirmwareStatusNotificationResponseParser">A delegate to parse custom publish firmware status notification responses.</param>
+        /// <param name="CustomPublishFirmwareStatusNotificationResponseParser">An optional delegate to parse custom publish firmware status notification responses.</param>
         public static PublishFirmwareStatusNotificationResponse Parse(CS.PublishFirmwareStatusNotificationRequest                              Request,
                                                                       JObject                                                                  JSON,
                                                                       CustomJObjectParserDelegate<PublishFirmwareStatusNotificationResponse>?  CustomPublishFirmwareStatusNotificationResponseParser   = null)
@@ -144,7 +144,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="PublishFirmwareStatusNotificationResponse">The parsed publish firmware status notification response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomPublishFirmwareStatusNotificationResponseParser">A delegate to parse custom publish firmware status notification responses.</param>
+        /// <param name="CustomPublishFirmwareStatusNotificationResponseParser">An optional delegate to parse custom publish firmware status notification responses.</param>
         public static Boolean TryParse(CS.PublishFirmwareStatusNotificationRequest                              Request,
                                        JObject                                                                  JSON,
                                        out PublishFirmwareStatusNotificationResponse?                           PublishFirmwareStatusNotificationResponse,

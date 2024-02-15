@@ -204,7 +204,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
         /// </summary>
         /// <param name="Request">The get file request leading to this response.</param>
         /// <param name="Binary">The binary to be parsed.</param>
-        /// <param name="CustomGetFileResponseParser">A delegate to parse custom get file responses.</param>
+        /// <param name="CustomGetFileResponseParser">An optional delegate to parse custom get file responses.</param>
         public static GetFileResponse Parse(CSMS.GetFileRequest                           Request,
                                             Byte[]                                        Binary,
                                             CustomBinaryParserDelegate<GetFileResponse>?  CustomGetFileResponseParser  = null)
@@ -235,7 +235,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
         /// <param name="Binary">The binary to be parsed.</param>
         /// <param name="GetFileResponse">The parsed get file response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomGetFileResponseParser">A delegate to parse custom get file responses.</param>
+        /// <param name="CustomGetFileResponseParser">An optional delegate to parse custom get file responses.</param>
         public static Boolean TryParse(CSMS.GetFileRequest                           Request,
                                        Byte[]                                        Binary,
                                        [NotNullWhen(true)]  out GetFileResponse?     GetFileResponse,

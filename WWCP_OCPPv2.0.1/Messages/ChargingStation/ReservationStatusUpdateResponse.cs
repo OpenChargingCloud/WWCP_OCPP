@@ -113,7 +113,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// </summary>
         /// <param name="Request">The reservation status update request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomReservationStatusUpdateResponseParser">A delegate to parse custom reservation status update responses.</param>
+        /// <param name="CustomReservationStatusUpdateResponseParser">An optional delegate to parse custom reservation status update responses.</param>
         public static ReservationStatusUpdateResponse Parse(CS.ReservationStatusUpdateRequest                              Request,
                                                             JObject                                                        JSON,
                                                             CustomJObjectParserDelegate<ReservationStatusUpdateResponse>?  CustomReservationStatusUpdateResponseParser   = null)
@@ -144,7 +144,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ReservationStatusUpdateResponse">The parsed reservation status update response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomReservationStatusUpdateResponseParser">A delegate to parse custom reservation status update responses.</param>
+        /// <param name="CustomReservationStatusUpdateResponseParser">An optional delegate to parse custom reservation status update responses.</param>
         public static Boolean TryParse(CS.ReservationStatusUpdateRequest                              Request,
                                        JObject                                                        JSON,
                                        out ReservationStatusUpdateResponse?                           ReservationStatusUpdateResponse,

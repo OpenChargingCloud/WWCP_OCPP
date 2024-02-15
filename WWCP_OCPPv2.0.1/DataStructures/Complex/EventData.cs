@@ -285,7 +285,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// Parse the given JSON representation of event data.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomEventDataParser">A delegate to parse custom event data JSON objects.</param>
+        /// <param name="CustomEventDataParser">An optional delegate to parse custom event data JSON objects.</param>
         public static EventData Parse(JObject                                  JSON,
                                       CustomJObjectParserDelegate<EventData>?  CustomEventDataParser   = null)
         {
@@ -331,7 +331,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="EventData">The parsed eventData.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomEventDataParser">A delegate to parse custom event data JSON objects.</param>
+        /// <param name="CustomEventDataParser">An optional delegate to parse custom event data JSON objects.</param>
         public static Boolean TryParse(JObject                                  JSON,
                                        out EventData?                           EventData,
                                        out String?                              ErrorResponse,

@@ -121,7 +121,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Parse the given JSON representation of a consumption cost.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomConsumptionCostParser">A delegate to parse custom consumption costs.</param>
+        /// <param name="CustomConsumptionCostParser">An optional delegate to parse custom consumption costs.</param>
         public static ConsumptionCost Parse(JObject                                        JSON,
                                             CustomJObjectParserDelegate<ConsumptionCost>?  CustomConsumptionCostParser   = null)
         {
@@ -166,7 +166,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ConsumptionCost">The parsed consumption cost.</param>
-        /// <param name="CustomConsumptionCostParser">A delegate to parse custom consumption costs.</param>
+        /// <param name="CustomConsumptionCostParser">An optional delegate to parse custom consumption costs.</param>
         public static Boolean TryParse(JObject                                        JSON,
                                        out ConsumptionCost?                           ConsumptionCost,
                                        out String?                                    ErrorResponse,

@@ -183,7 +183,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// </summary>
         /// <param name="Request">The set monitoring base request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomSetMonitoringBaseResponseParser">A delegate to parse custom set monitoring base responses.</param>
+        /// <param name="CustomSetMonitoringBaseResponseParser">An optional delegate to parse custom set monitoring base responses.</param>
         public static SetMonitoringBaseResponse Parse(CSMS.SetMonitoringBaseRequest                            Request,
                                                       JObject                                                  JSON,
                                                       CustomJObjectParserDelegate<SetMonitoringBaseResponse>?  CustomSetMonitoringBaseResponseParser   = null)
@@ -214,7 +214,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="SetMonitoringBaseResponse">The parsed set monitoring base response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomSetMonitoringBaseResponseParser">A delegate to parse custom set monitoring base responses.</param>
+        /// <param name="CustomSetMonitoringBaseResponseParser">An optional delegate to parse custom set monitoring base responses.</param>
         public static Boolean TryParse(CSMS.SetMonitoringBaseRequest                            Request,
                                        JObject                                                  JSON,
                                        out SetMonitoringBaseResponse?                           SetMonitoringBaseResponse,

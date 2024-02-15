@@ -113,7 +113,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// </summary>
         /// <param name="Request">The meter values request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomMeterValuesResponseParser">A delegate to parse custom meter values responses.</param>
+        /// <param name="CustomMeterValuesResponseParser">An optional delegate to parse custom meter values responses.</param>
         public static MeterValuesResponse Parse(CS.MeterValuesRequest                              Request,
                                                 JObject                                            JSON,
                                                 CustomJObjectParserDelegate<MeterValuesResponse>?  CustomMeterValuesResponseParser   = null)
@@ -144,7 +144,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="MeterValuesResponse">The parsed meter values response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomMeterValuesResponseParser">A delegate to parse custom meter values responses.</param>
+        /// <param name="CustomMeterValuesResponseParser">An optional delegate to parse custom meter values responses.</param>
         public static Boolean TryParse(CS.MeterValuesRequest                              Request,
                                        JObject                                            JSON,
                                        out MeterValuesResponse?                           MeterValuesResponse,

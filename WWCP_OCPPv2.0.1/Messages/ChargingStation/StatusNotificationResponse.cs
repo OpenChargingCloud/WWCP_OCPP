@@ -113,7 +113,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// </summary>
         /// <param name="Request">The status notification request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomStatusNotificationResponseParser">A delegate to parse custom status notification responses.</param>
+        /// <param name="CustomStatusNotificationResponseParser">An optional delegate to parse custom status notification responses.</param>
         public static StatusNotificationResponse Parse(CS.StatusNotificationRequest                              Request,
                                                        JObject                                                   JSON,
                                                        CustomJObjectParserDelegate<StatusNotificationResponse>?  CustomStatusNotificationResponseParser   = null)
@@ -144,7 +144,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="StatusNotificationResponse">The parsed status notification response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomStatusNotificationResponseParser">A delegate to parse custom status notification responses.</param>
+        /// <param name="CustomStatusNotificationResponseParser">An optional delegate to parse custom status notification responses.</param>
         public static Boolean TryParse(CS.StatusNotificationRequest                              Request,
                                        JObject                                                   JSON,
                                        out StatusNotificationResponse?                           StatusNotificationResponse,

@@ -202,7 +202,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <param name="Request">The change configuration request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomChangeConfigurationResponseParser">A delegate to parse custom change configuration responses.</param>
+        /// <param name="CustomChangeConfigurationResponseParser">An optional delegate to parse custom change configuration responses.</param>
         public static ChangeConfigurationResponse Parse(CS.ChangeConfigurationRequest                              Request,
                                                         JObject                                                    JSON,
                                                         CustomJObjectParserDelegate<ChangeConfigurationResponse>?  CustomChangeConfigurationResponseParser   = null)
@@ -276,7 +276,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ChangeConfigurationResponse">The parsed change configuration response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomChangeConfigurationResponseParser">A delegate to parse custom change configuration responses.</param>
+        /// <param name="CustomChangeConfigurationResponseParser">An optional delegate to parse custom change configuration responses.</param>
         public static Boolean TryParse(CS.ChangeConfigurationRequest                              Request,
                                        JObject                                                    JSON,
                                        out ChangeConfigurationResponse?                           ChangeConfigurationResponse,

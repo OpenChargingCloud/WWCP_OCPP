@@ -149,7 +149,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Parse the given JSON representation of image links.
         /// </summary>
         /// <param name="JSONArray">The JSON array to parse.</param>
-        /// <param name="CustomImageLinkParser">A delegate to parse custom image link JSON objects.</param>
+        /// <param name="CustomImageLinkParser">An optional delegate to parse custom image link JSON objects.</param>
         public static ImageLinks Parse(JArray                                   JSONArray,
                                        CustomJObjectParserDelegate<ImageLink>?  CustomImageLinkParser   = null)
         {
@@ -196,7 +196,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSONArray">The JSON array to parse.</param>
         /// <param name="ImageLinks">The parsed image links.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomImageLinkParser">A delegate to parse custom image link JSON objects.</param>
+        /// <param name="CustomImageLinkParser">An optional delegate to parse custom image link JSON objects.</param>
         public static Boolean TryParse(JArray                                   JSONArray,
                                        out ImageLinks?                          ImageLinks,
                                        out String?                              ErrorResponse,

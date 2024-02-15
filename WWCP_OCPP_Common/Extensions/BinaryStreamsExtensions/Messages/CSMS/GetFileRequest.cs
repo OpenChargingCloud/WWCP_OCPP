@@ -149,7 +149,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         /// <param name="RequestId">The request identification.</param>
         /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomGetFileRequestParser">A delegate to parse custom GetFileRequest requests.</param>
+        /// <param name="CustomGetFileRequestParser">An optional delegate to parse custom GetFileRequest requests.</param>
         public static GetFileRequest Parse(JObject                                       JSON,
                                            Request_Id                                    RequestId,
                                            NetworkingNode_Id                             NetworkingNodeId,
@@ -187,7 +187,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="GetFileRequest">The parsed GetFileRequest request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomGetFileRequestParser">A delegate to parse custom GetFileRequest requests.</param>
+        /// <param name="CustomGetFileRequestParser">An optional delegate to parse custom GetFileRequest requests.</param>
         public static Boolean TryParse(JObject                                       JSON,
                                        Request_Id                                    RequestId,
                                        NetworkingNode_Id                             NetworkingNodeId,

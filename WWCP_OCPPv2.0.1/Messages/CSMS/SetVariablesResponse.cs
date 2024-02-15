@@ -298,7 +298,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// </summary>
         /// <param name="Request">The set variables request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomSetVariablesResponseParser">A delegate to parse custom set variables responses.</param>
+        /// <param name="CustomSetVariablesResponseParser">An optional delegate to parse custom set variables responses.</param>
         public static SetVariablesResponse Parse(CSMS.SetVariablesRequest                            Request,
                                                  JObject                                             JSON,
                                                  CustomJObjectParserDelegate<SetVariablesResponse>?  CustomSetVariablesResponseParser   = null)
@@ -329,7 +329,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="SetVariablesResponse">The parsed set variables response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomSetVariablesResponseParser">A delegate to parse custom set variables responses.</param>
+        /// <param name="CustomSetVariablesResponseParser">An optional delegate to parse custom set variables responses.</param>
         public static Boolean TryParse(CSMS.SetVariablesRequest                            Request,
                                        JObject                                             JSON,
                                        out SetVariablesResponse?                           SetVariablesResponse,

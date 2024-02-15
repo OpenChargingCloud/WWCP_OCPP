@@ -167,7 +167,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         /// <param name="Request">The diagnostics status notification request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomBootNotificationResponseParser">A delegate to parse custom diagnostics status notification responses.</param>
+        /// <param name="CustomBootNotificationResponseParser">An optional delegate to parse custom diagnostics status notification responses.</param>
         public static DiagnosticsStatusNotificationResponse Parse(CP.DiagnosticsStatusNotificationRequest                              Request,
                                                                   JObject                                                              JSON,
                                                                   CustomJObjectParserDelegate<DiagnosticsStatusNotificationResponse>?  CustomBootNotificationResponseParser   = null)
@@ -234,7 +234,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="DiagnosticsStatusNotificationResponse">The parsed diagnostics status notification response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomBootNotificationResponseParser">A delegate to parse custom diagnostics status notification responses.</param>
+        /// <param name="CustomBootNotificationResponseParser">An optional delegate to parse custom diagnostics status notification responses.</param>
         public static Boolean TryParse(CP.DiagnosticsStatusNotificationRequest                              Request,
                                        JObject                                                              JSON,
                                        out DiagnosticsStatusNotificationResponse?                           DiagnosticsStatusNotificationResponse,

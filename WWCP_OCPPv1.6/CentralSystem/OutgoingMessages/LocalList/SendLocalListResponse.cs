@@ -202,7 +202,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <param name="Request">The send local list request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomSendLocalListResponseParser">A delegate to parse custom send local list responses.</param>
+        /// <param name="CustomSendLocalListResponseParser">An optional delegate to parse custom send local list responses.</param>
         public static SendLocalListResponse Parse(CS.SendLocalListRequest                              Request,
                                                   JObject                                              JSON,
                                                   CustomJObjectParserDelegate<SendLocalListResponse>?  CustomSendLocalListResponseParser   = null)
@@ -276,7 +276,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="SendLocalListResponse">The parsed send local list response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomSendLocalListResponseParser">A delegate to parse custom send local list responses.</param>
+        /// <param name="CustomSendLocalListResponseParser">An optional delegate to parse custom send local list responses.</param>
         public static Boolean TryParse(CS.SendLocalListRequest                              Request,
                                        JObject                                              JSON,
                                        out SendLocalListResponse?                           SendLocalListResponse,

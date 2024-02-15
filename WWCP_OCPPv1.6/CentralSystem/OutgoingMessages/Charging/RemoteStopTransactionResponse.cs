@@ -200,7 +200,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <param name="Request">The remote stop transaction request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomRemoteStopTransactionResponseParser">A delegate to parse custom remote stop transaction responses.</param>
+        /// <param name="CustomRemoteStopTransactionResponseParser">An optional delegate to parse custom remote stop transaction responses.</param>
         public static RemoteStopTransactionResponse Parse(CS.RemoteStopTransactionRequest                              Request,
                                                           JObject                                                      JSON,
                                                           CustomJObjectParserDelegate<RemoteStopTransactionResponse>?  CustomRemoteStopTransactionResponseParser   = null)
@@ -274,7 +274,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RemoteStopTransactionResponse">The parsed remote stop transaction response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomRemoteStopTransactionResponseParser">A delegate to parse custom remote stop transaction responses.</param>
+        /// <param name="CustomRemoteStopTransactionResponseParser">An optional delegate to parse custom remote stop transaction responses.</param>
         public static Boolean TryParse(CS.RemoteStopTransactionRequest                              Request,
                                        JObject                                                      JSON,
                                        out RemoteStopTransactionResponse?                           RemoteStopTransactionResponse,

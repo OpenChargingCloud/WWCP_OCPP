@@ -135,7 +135,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         /// <param name="Request">The signed firmware status notification request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomSignedFirmwareStatusNotificationResponseResponseParser">A delegate to parse custom signed firmware status notification responses.</param>
+        /// <param name="CustomSignedFirmwareStatusNotificationResponseResponseParser">An optional delegate to parse custom signed firmware status notification responses.</param>
         public static SignedFirmwareStatusNotificationResponse Parse(CP.SignedFirmwareStatusNotificationRequest                              Request,
                                                                      JObject                                                                 JSON,
                                                                      CustomJObjectParserDelegate<SignedFirmwareStatusNotificationResponse>?  CustomSignedFirmwareStatusNotificationResponseResponseParser   = null)
@@ -167,7 +167,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="SignedFirmwareStatusNotificationResponse">The parsed signed firmware status notification response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomSignedFirmwareStatusNotificationResponseResponseParser">A delegate to parse custom signed firmware status notification responses.</param>
+        /// <param name="CustomSignedFirmwareStatusNotificationResponseResponseParser">An optional delegate to parse custom signed firmware status notification responses.</param>
         public static Boolean TryParse(CP.SignedFirmwareStatusNotificationRequest                              Request,
                                        JObject                                                                 JSON,
                                        out SignedFirmwareStatusNotificationResponse?                           SignedFirmwareStatusNotificationResponse,

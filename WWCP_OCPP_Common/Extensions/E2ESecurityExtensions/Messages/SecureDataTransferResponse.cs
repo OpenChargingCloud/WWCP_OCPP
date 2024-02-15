@@ -331,7 +331,7 @@ namespace cloud.charging.open.protocols.OCPP
         /// </summary>
         /// <param name="Request">The SecureDataTransfer request leading to this response.</param>
         /// <param name="SecureData">The binary to be parsed.</param>
-        /// <param name="CustomSecureDataTransferResponseParser">A delegate to parse custom binary data transfer responses.</param>
+        /// <param name="CustomSecureDataTransferResponseParser">An optional delegate to parse custom binary data transfer responses.</param>
         public static SecureDataTransferResponse Parse(SecureDataTransferRequest                                Request,
                                                        Byte[]                                                   SecureData,
                                                        NetworkingNode_Id                                        DestinationNodeId,
@@ -368,7 +368,7 @@ namespace cloud.charging.open.protocols.OCPP
         /// <param name="SecureData">The binary to be parsed.</param>
         /// <param name="SecureDataTransferResponse">The parsed binary data transfer response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomSecureDataTransferResponseParser">A delegate to parse custom binary data transfer responses.</param>
+        /// <param name="CustomSecureDataTransferResponseParser">An optional delegate to parse custom binary data transfer responses.</param>
         public static Boolean TryParse(SecureDataTransferRequest                                Request,
                                        Byte[]                                                   SecureData,
                                        NetworkingNode_Id                                        DestinationNodeId,

@@ -175,7 +175,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <param name="Request">The update firmware request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomUpdateFirmwareResponseParser">A delegate to parse custom update firmware responses.</param>
+        /// <param name="CustomUpdateFirmwareResponseParser">An optional delegate to parse custom update firmware responses.</param>
         public static UpdateFirmwareResponse Parse(CS.UpdateFirmwareRequest                              Request,
                                                    JObject                                               JSON,
                                                    CustomJObjectParserDelegate<UpdateFirmwareResponse>?  CustomUpdateFirmwareResponseParser   = null)
@@ -242,7 +242,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="UpdateFirmwareResponse">The parsed update firmware response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomUpdateFirmwareResponseParser">A delegate to parse custom update firmware responses.</param>
+        /// <param name="CustomUpdateFirmwareResponseParser">An optional delegate to parse custom update firmware responses.</param>
         public static Boolean TryParse(CS.UpdateFirmwareRequest                              Request,
                                        JObject                                               JSON,
                                        out UpdateFirmwareResponse?                           UpdateFirmwareResponse,

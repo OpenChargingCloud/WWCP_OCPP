@@ -176,7 +176,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="CustomChangeAvailabilityRequestSerializer">A delegate to parse custom ChangeAvailability requests.</param>
+        /// <param name="CustomChangeAvailabilityRequestSerializer">An optional delegate to parse custom ChangeAvailability requests.</param>
         public static ChangeAvailabilityRequest Parse(JObject                                                  JSON,
                                                       Request_Id                                               RequestId,
                                                       ChargeBox_Id                                             ChargeBoxId,
@@ -234,7 +234,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="ChangeAvailabilityRequest">The parsed ChangeAvailability request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomChangeAvailabilityRequestParser">A delegate to parse custom ChangeAvailability requests.</param>
+        /// <param name="CustomChangeAvailabilityRequestParser">An optional delegate to parse custom ChangeAvailability requests.</param>
         public static Boolean TryParse(JObject                                                  JSON,
                                        Request_Id                                               RequestId,
                                        ChargeBox_Id                                             ChargeBoxId,

@@ -132,7 +132,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Parse the given JSON representation of tax rates.
         /// </summary>
         /// <param name="JSONArray">The JSON array to parse.</param>
-        /// <param name="CustomTaxRateParser">A delegate to parse custom tax rate JSON objects.</param>
+        /// <param name="CustomTaxRateParser">An optional delegate to parse custom tax rate JSON objects.</param>
         public static TaxRates Parse(JArray                                 JSONArray,
                                      CustomJObjectParserDelegate<TaxRate>?  CustomTaxRateParser   = null)
         {
@@ -179,7 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSONArray">The JSON array to parse.</param>
         /// <param name="TaxRates">The parsed tax rates.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomTaxRateParser">A delegate to parse custom tax rate JSON objects.</param>
+        /// <param name="CustomTaxRateParser">An optional delegate to parse custom tax rate JSON objects.</param>
         public static Boolean TryParse(JArray                                 JSONArray,
                                        out TaxRates?                          TaxRates,
                                        out String?                            ErrorResponse,

@@ -273,7 +273,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Parse the given JSON representation of a cryptographic signature information.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomUserRoleParser">A delegate to parse custom cryptographic signature informations.</param>
+        /// <param name="CustomUserRoleParser">An optional delegate to parse custom cryptographic signature informations.</param>
         public static UserRole Parse(JObject                                 JSON,
                                      CustomJObjectParserDelegate<UserRole>?  CustomUserRoleParser   = null)
         {
@@ -320,7 +320,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="UserRole">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomUserRoleParser">A delegate to parse custom signature informations.</param>
+        /// <param name="CustomUserRoleParser">An optional delegate to parse custom signature informations.</param>
         public static Boolean TryParse(JObject                                 JSON,
                                        [NotNullWhen(true)]  out UserRole?      UserRole,
                                        [NotNullWhen(false)] out String?        ErrorResponse,
@@ -457,7 +457,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
                                            OCPP.CustomData.TryParse,
-                                           out CustomData CustomData,
+                                           out CustomData? CustomData,
                                            out ErrorResponse))
                 {
                     if (ErrorResponse is not null)

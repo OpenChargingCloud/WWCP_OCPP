@@ -204,7 +204,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <param name="Request">The reserve now request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomReserveNowResponseParser">A delegate to parse custom reserve now responses.</param>
+        /// <param name="CustomReserveNowResponseParser">An optional delegate to parse custom reserve now responses.</param>
         public static ReserveNowResponse Parse(CS.ReserveNowRequest                              Request,
                                                JObject                                           JSON,
                                                CustomJObjectParserDelegate<ReserveNowResponse>?  CustomReserveNowResponseParser   = null)
@@ -278,7 +278,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ReserveNowResponse">The parsed reserve now response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomReserveNowResponseParser">A delegate to parse custom reserve now responses.</param>
+        /// <param name="CustomReserveNowResponseParser">An optional delegate to parse custom reserve now responses.</param>
         public static Boolean TryParse(CS.ReserveNowRequest                              Request,
                                        JObject                                           JSON,
                                        out ReserveNowResponse?                           ReserveNowResponse,

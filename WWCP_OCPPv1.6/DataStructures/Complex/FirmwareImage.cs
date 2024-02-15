@@ -102,7 +102,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Parse the given JSON representation of firmware image.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomFirmwareImageParser">A delegate to parse custom firmware images.</param>
+        /// <param name="CustomFirmwareImageParser">An optional delegate to parse custom firmware images.</param>
         public static FirmwareImage Parse(JObject                                      JSON,
                                           CustomJObjectParserDelegate<FirmwareImage>?  CustomFirmwareImageParser   = null)
         {
@@ -148,7 +148,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="FirmwareImage">The parsed firmware image.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomFirmwareImageParser">A delegate to parse custom FirmwareImages.</param>
+        /// <param name="CustomFirmwareImageParser">An optional delegate to parse custom FirmwareImages.</param>
         public static Boolean TryParse(JObject                                      JSON,
                                        out FirmwareImage?                           FirmwareImage,
                                        out String?                                  ErrorResponse,

@@ -93,7 +93,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// Parse the given JSON representation of a price rule stack.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomPriceRuleStackParser">A delegate to parse custom price rule stacks.</param>
+        /// <param name="CustomPriceRuleStackParser">An optional delegate to parse custom price rule stacks.</param>
         public static PriceRuleStack Parse(JObject                                       JSON,
                                            CustomJObjectParserDelegate<PriceRuleStack>?  CustomPriceRuleStackParser   = null)
         {
@@ -140,7 +140,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="PriceRuleStack">The parsed price rule stack.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomPriceRuleStackParser">A delegate to parse custom contract certificates.</param>
+        /// <param name="CustomPriceRuleStackParser">An optional delegate to parse custom contract certificates.</param>
         public static Boolean TryParse(JObject                                       JSON,
                                        out PriceRuleStack?                           PriceRuleStack,
                                        out String?                                   ErrorResponse,

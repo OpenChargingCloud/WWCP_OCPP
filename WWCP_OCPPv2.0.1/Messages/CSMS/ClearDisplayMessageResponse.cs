@@ -181,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// </summary>
         /// <param name="Request">The clear display message request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomClearDisplayMessageResponseParser">A delegate to parse custom clear display message responses.</param>
+        /// <param name="CustomClearDisplayMessageResponseParser">An optional delegate to parse custom clear display message responses.</param>
         public static ClearDisplayMessageResponse Parse(CSMS.ClearDisplayMessageRequest                            Request,
                                                         JObject                                                    JSON,
                                                         CustomJObjectParserDelegate<ClearDisplayMessageResponse>?  CustomClearDisplayMessageResponseParser   = null)
@@ -212,7 +212,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ClearDisplayMessageResponse">The parsed clear display message response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomClearDisplayMessageResponseParser">A delegate to parse custom clear display message responses.</param>
+        /// <param name="CustomClearDisplayMessageResponseParser">An optional delegate to parse custom clear display message responses.</param>
         public static Boolean TryParse(CSMS.ClearDisplayMessageRequest                            Request,
                                        JObject                                                    JSON,
                                        out ClearDisplayMessageResponse?                           ClearDisplayMessageResponse,

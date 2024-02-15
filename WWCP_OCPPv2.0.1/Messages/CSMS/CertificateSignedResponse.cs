@@ -181,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// </summary>
         /// <param name="Request">The certificate signed request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomCertificateSignedResponseParser">A delegate to parse custom certificate signed responses.</param>
+        /// <param name="CustomCertificateSignedResponseParser">An optional delegate to parse custom certificate signed responses.</param>
         public static CertificateSignedResponse Parse(CSMS.CertificateSignedRequest                            Request,
                                                       JObject                                                  JSON,
                                                       CustomJObjectParserDelegate<CertificateSignedResponse>?  CustomCertificateSignedResponseParser   = null)
@@ -212,7 +212,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CertificateSignedResponse">The parsed certificate signed response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomCertificateSignedResponseParser">A delegate to parse custom certificate signed responses.</param>
+        /// <param name="CustomCertificateSignedResponseParser">An optional delegate to parse custom certificate signed responses.</param>
         public static Boolean TryParse(CSMS.CertificateSignedRequest                            Request,
                                        JObject                                                  JSON,
                                        out CertificateSignedResponse?                           CertificateSignedResponse,

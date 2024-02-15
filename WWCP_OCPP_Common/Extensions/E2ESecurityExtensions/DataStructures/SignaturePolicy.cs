@@ -252,7 +252,7 @@ namespace cloud.charging.open.protocols.OCPP
         /// Parse the given JSON representation of a signature policy.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomSignaturePolicyParser">A delegate to parse custom signature policies.</param>
+        /// <param name="CustomSignaturePolicyParser">An optional delegate to parse custom signature policies.</param>
         public static SignaturePolicy Parse(JObject                                        JSON,
                                             CustomJObjectParserDelegate<SignaturePolicy>?  CustomSignaturePolicyParser   = null)
         {
@@ -299,7 +299,7 @@ namespace cloud.charging.open.protocols.OCPP
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="SignaturePolicy">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomSignaturePolicyParser">A delegate to parse custom signature policies.</param>
+        /// <param name="CustomSignaturePolicyParser">An optional delegate to parse custom signature policies.</param>
         public static Boolean TryParse(JObject                                        JSON,
                                        out SignaturePolicy?                           SignaturePolicy,
                                        out String?                                    ErrorResponse,

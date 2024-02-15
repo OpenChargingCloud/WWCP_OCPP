@@ -248,7 +248,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestId">The request identification.</param>
         /// <param name="NetworkingNodeId">The unique identification of the destination charge point/networking node.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomUpdateFirmwareRequestParser">A delegate to parse custom update firmware requests.</param>
+        /// <param name="CustomUpdateFirmwareRequestParser">An optional delegate to parse custom update firmware requests.</param>
         public static UpdateFirmwareRequest Parse(JObject JSON,
                                                   Request_Id RequestId,
                                                   NetworkingNode_Id NetworkingNodeId,
@@ -369,7 +369,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="UpdateFirmwareRequest">The parsed update firmware request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomUpdateFirmwareRequestParser">A delegate to parse custom update firmware requests.</param>
+        /// <param name="CustomUpdateFirmwareRequestParser">An optional delegate to parse custom update firmware requests.</param>
         public static Boolean TryParse(JObject JSON,
                                        Request_Id RequestId,
                                        NetworkingNode_Id NetworkingNodeId,

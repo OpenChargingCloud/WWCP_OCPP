@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// Parse the given JSON representation of a network connection profile.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomNetworkConnectionProfileParser">A delegate to parse custom network connection profile JSON objects.</param>
+        /// <param name="CustomNetworkConnectionProfileParser">An optional delegate to parse custom network connection profile JSON objects.</param>
         public static NetworkConnectionProfile Parse(JObject                                                 JSON,
                                                      CustomJObjectParserDelegate<NetworkConnectionProfile>?  CustomNetworkConnectionProfileParser   = null)
         {
@@ -234,7 +234,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="NetworkConnectionProfile">The parsed network connection profile.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomNetworkConnectionProfileParser">A delegate to parse custom network connection profile JSON objects.</param>
+        /// <param name="CustomNetworkConnectionProfileParser">An optional delegate to parse custom network connection profile JSON objects.</param>
         public static Boolean TryParse(JObject                                                 JSON,
                                        out NetworkConnectionProfile?                           NetworkConnectionProfile,
                                        out String?                                             ErrorResponse,

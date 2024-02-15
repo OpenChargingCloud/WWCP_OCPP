@@ -113,7 +113,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// </summary>
         /// <param name="Request">The notify event request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomNotifyEventResponseParser">A delegate to parse custom notify event responses.</param>
+        /// <param name="CustomNotifyEventResponseParser">An optional delegate to parse custom notify event responses.</param>
         public static NotifyEventResponse Parse(CS.NotifyEventRequest                              Request,
                                                 JObject                                            JSON,
                                                 CustomJObjectParserDelegate<NotifyEventResponse>?  CustomNotifyEventResponseParser   = null)
@@ -144,7 +144,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="NotifyEventResponse">The parsed notify event response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomNotifyEventResponseParser">A delegate to parse custom notify event responses.</param>
+        /// <param name="CustomNotifyEventResponseParser">An optional delegate to parse custom notify event responses.</param>
         public static Boolean TryParse(CS.NotifyEventRequest                              Request,
                                        JObject                                            JSON,
                                        out NotifyEventResponse?                           NotifyEventResponse,

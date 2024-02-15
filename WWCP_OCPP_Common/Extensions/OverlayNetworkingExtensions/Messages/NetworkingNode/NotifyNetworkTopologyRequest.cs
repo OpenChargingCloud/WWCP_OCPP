@@ -139,7 +139,7 @@ namespace cloud.charging.open.protocols.OCPP.NN
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationNodeId">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomNotifyNetworkTopologyRequestParser">A delegate to parse custom NotifyNetworkTopology requests.</param>
+        /// <param name="CustomNotifyNetworkTopologyRequestParser">An optional delegate to parse custom NotifyNetworkTopology requests.</param>
         public static NotifyNetworkTopologyRequest Parse(JObject                                                     JSON,
                                                          Request_Id                                                  RequestId,
                                                          NetworkingNode_Id                                           NetworkingNodeId,
@@ -177,7 +177,7 @@ namespace cloud.charging.open.protocols.OCPP.NN
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="NotifyNetworkTopologyRequest">The parsed NotifyNetworkTopology request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomNotifyNetworkTopologyRequestParser">A delegate to parse custom NotifyNetworkTopology requests.</param>
+        /// <param name="CustomNotifyNetworkTopologyRequestParser">An optional delegate to parse custom NotifyNetworkTopology requests.</param>
         public static Boolean TryParse(JObject                                                     JSON,
                                        Request_Id                                                  RequestId,
                                        NetworkingNode_Id                                           NetworkingNodeId,

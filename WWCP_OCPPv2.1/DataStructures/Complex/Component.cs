@@ -86,6 +86,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (this.Name.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(Name), "The given name must not be null or empty!");
 
+            if (this.Instance == "")
+                this.Instance = null;
+
+            unchecked
+            {
+
+                hashCode = this.Name.     ToLower().GetHashCode()       * 7 ^
+                          (this.Instance?.ToLower().GetHashCode() ?? 0) * 5 ^
+                          (this.EVSE?.              GetHashCode() ?? 0) * 3 ^
+                           base.                    GetHashCode();
+
+            }
+
         }
 
         #endregion
@@ -237,7 +250,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
                                            OCPP.CustomData.TryParse,
-                                           out CustomData CustomData,
+                                           out CustomData? CustomData,
                                            out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -247,10 +260,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                Component = new Component(Name,
-                                          Instance,
-                                          EVSE,
-                                          CustomData);
+                Component = new Component(
+                                Name,
+                                Instance,
+                                EVSE,
+                                CustomData
+                            );
 
                 if (CustomComponentParser is not null)
                     Component = CustomComponentParser(JSON,
@@ -418,23 +433,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Name.     ToLower().GetHashCode()       * 7 ^
-                      (Instance?.ToLower().GetHashCode() ?? 0) * 5 ^
-                      (EVSE?.              GetHashCode() ?? 0) * 3 ^
-
-                       base.             GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 
@@ -450,11 +455,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    Name,
 
                    Instance is not null && Instance.IsNotNullOrEmpty()
-                       ? " (" + Instance + ")"
+                       ? $" ({Instance})"
                        : null,
 
                    EVSE is not null
-                       ? " [" + EVSE.ToString() + "]"
+                       ? $" [EVSE {EVSE}]"
                        : null
 
                );

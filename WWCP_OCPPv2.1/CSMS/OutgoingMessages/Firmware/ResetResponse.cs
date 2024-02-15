@@ -226,7 +226,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The reset request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomResetResponseParser">A delegate to parse custom reset responses.</param>
+        /// <param name="CustomResetResponseParser">An optional delegate to parse custom reset responses.</param>
         public static ResetResponse Parse(CSMS.ResetRequest                             Request,
                                           JObject                                       JSON,
                                           NetworkingNode_Id                             DestinationNodeId,
@@ -269,7 +269,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ResetResponse">The parsed reset response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomResetResponseParser">A delegate to parse custom reset responses.</param>
+        /// <param name="CustomResetResponseParser">An optional delegate to parse custom reset responses.</param>
         public static Boolean TryParse(CSMS.ResetRequest                             Request,
                                        JObject                                       JSON,
                                        NetworkingNode_Id                             DestinationNodeId,

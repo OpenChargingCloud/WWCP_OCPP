@@ -173,7 +173,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <param name="Request">The trigger message request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomExtendedTriggerMessageResponseParser">A delegate to parse custom extended trigger message responses.</param>
+        /// <param name="CustomExtendedTriggerMessageResponseParser">An optional delegate to parse custom extended trigger message responses.</param>
         public static ExtendedTriggerMessageResponse Parse(CS.ExtendedTriggerMessageRequest                              Request,
                                                            JObject                                                       JSON,
                                                            CustomJObjectParserDelegate<ExtendedTriggerMessageResponse>?  CustomExtendedTriggerMessageResponseParser   = null)
@@ -205,7 +205,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ExtendedTriggerMessageResponse">The parsed extended trigger message response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomExtendedTriggerMessageResponseParser">A delegate to parse custom extended trigger message responses.</param>
+        /// <param name="CustomExtendedTriggerMessageResponseParser">An optional delegate to parse custom extended trigger message responses.</param>
         public static Boolean TryParse(CS.ExtendedTriggerMessageRequest                              Request,
                                        JObject                                                       JSON,
                                        out ExtendedTriggerMessageResponse?                           ExtendedTriggerMessageResponse,

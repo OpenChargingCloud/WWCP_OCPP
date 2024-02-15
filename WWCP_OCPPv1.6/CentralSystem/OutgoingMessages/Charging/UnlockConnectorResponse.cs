@@ -201,7 +201,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <param name="Request">The unlock connector request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomUnlockConnectorResponseParser">A delegate to parse custom unlock connector responses.</param>
+        /// <param name="CustomUnlockConnectorResponseParser">An optional delegate to parse custom unlock connector responses.</param>
         public static UnlockConnectorResponse Parse(CS.UnlockConnectorRequest                              Request,
                                                     JObject                                                JSON,
                                                     CustomJObjectParserDelegate<UnlockConnectorResponse>?  CustomUnlockConnectorResponseParser   = null)
@@ -275,7 +275,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="UnlockConnectorResponse">The parsed unlock connector response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomUnlockConnectorResponseParser">A delegate to parse custom unlock connector responses.</param>
+        /// <param name="CustomUnlockConnectorResponseParser">An optional delegate to parse custom unlock connector responses.</param>
         public static Boolean TryParse(CS.UnlockConnectorRequest                              Request,
                                        JObject                                                JSON,
                                        out UnlockConnectorResponse?                           UnlockConnectorResponse,

@@ -184,7 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestId">The request identification.</param>
         /// <param name="NetworkingNodeId">The unique identification of the destination charge point/networking node.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomDeleteCertificateRequestParser">A delegate to parse custom delete certificate requests.</param>
+        /// <param name="CustomDeleteCertificateRequestParser">An optional delegate to parse custom delete certificate requests.</param>
         public static DeleteCertificateRequest Parse(JObject                                                 JSON,
                                                      Request_Id                                              RequestId,
                                                      NetworkingNode_Id                                       NetworkingNodeId,
@@ -249,7 +249,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="DeleteCertificateRequest">The parsed delete certificate request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomDeleteCertificateRequestParser">A delegate to parse custom delete certificate requests.</param>
+        /// <param name="CustomDeleteCertificateRequestParser">An optional delegate to parse custom delete certificate requests.</param>
         public static Boolean TryParse(JObject                                                 JSON,
                                        Request_Id                                              RequestId,
                                        NetworkingNode_Id                                       NetworkingNodeId,

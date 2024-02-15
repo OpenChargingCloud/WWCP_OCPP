@@ -118,7 +118,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// Parse the given JSON representation of a clear monitoring result.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomClearMonitoringResultParser">A delegate to parse custom clear monitoring results.</param>
+        /// <param name="CustomClearMonitoringResultParser">An optional delegate to parse custom clear monitoring results.</param>
         public static ClearMonitoringResult Parse(JObject                                             JSON,
                                                   CustomJObjectParserDelegate<ClearMonitoringResult>?  CustomClearMonitoringResultParser   = null)
         {
@@ -164,7 +164,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ClearMonitoringResult">The parsed clear monitoring result.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomClearMonitoringResultParser">A delegate to parse custom clear monitoring result JSON objects.</param>
+        /// <param name="CustomClearMonitoringResultParser">An optional delegate to parse custom clear monitoring result JSON objects.</param>
         public static Boolean TryParse(JObject                                              JSON,
                                        out ClearMonitoringResult?                           ClearMonitoringResult,
                                        out String?                                          ErrorResponse,

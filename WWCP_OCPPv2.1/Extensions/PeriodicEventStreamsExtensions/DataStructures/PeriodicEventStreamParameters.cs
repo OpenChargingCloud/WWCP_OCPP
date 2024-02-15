@@ -90,7 +90,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Parse the given JSON representation of a periodic event stream parameters.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomPeriodicEventStreamParametersParser">A delegate to parse custom periodic event stream parameterss.</param>
+        /// <param name="CustomPeriodicEventStreamParametersParser">An optional delegate to parse custom periodic event stream parameterss.</param>
         public static PeriodicEventStreamParameters Parse(JObject                                                      JSON,
                                                           CustomJObjectParserDelegate<PeriodicEventStreamParameters>?  CustomPeriodicEventStreamParametersParser   = null)
         {
@@ -135,7 +135,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="PeriodicEventStreamParameters">The parsed periodic event stream parameters.</param>
-        /// <param name="CustomPeriodicEventStreamParametersParser">A delegate to parse custom periodic event stream parameterss.</param>
+        /// <param name="CustomPeriodicEventStreamParametersParser">An optional delegate to parse custom periodic event stream parameterss.</param>
         public static Boolean TryParse(JObject                                                      JSON,
                                        [NotNullWhen(true)]  out PeriodicEventStreamParameters?      PeriodicEventStreamParameters,
                                        [NotNullWhen(false)] out String?                             ErrorResponse,

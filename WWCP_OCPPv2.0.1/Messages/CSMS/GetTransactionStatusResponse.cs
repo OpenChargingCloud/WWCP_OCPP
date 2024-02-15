@@ -149,7 +149,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// </summary>
         /// <param name="Request">The reset request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomGetTransactionStatusResponseParser">A delegate to parse custom get transaction status responses.</param>
+        /// <param name="CustomGetTransactionStatusResponseParser">An optional delegate to parse custom get transaction status responses.</param>
         public static GetTransactionStatusResponse Parse(CSMS.GetTransactionStatusRequest                            Request,
                                                          JObject                                                     JSON,
                                                          CustomJObjectParserDelegate<GetTransactionStatusResponse>?  CustomGetTransactionStatusResponseParser   = null)
@@ -180,7 +180,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="GetTransactionStatusResponse">The parsed get transaction status response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomGetTransactionStatusResponseParser">A delegate to parse custom get transaction status responses.</param>
+        /// <param name="CustomGetTransactionStatusResponseParser">An optional delegate to parse custom get transaction status responses.</param>
         public static Boolean TryParse(CSMS.GetTransactionStatusRequest                            Request,
                                        JObject                                                     JSON,
                                        out GetTransactionStatusResponse?                           GetTransactionStatusResponse,

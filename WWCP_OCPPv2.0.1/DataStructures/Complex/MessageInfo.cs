@@ -180,7 +180,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// Parse the given JSON representation of message info.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomMessageInfoParser">A delegate to parse custom message info.</param>
+        /// <param name="CustomMessageInfoParser">An optional delegate to parse custom message info.</param>
         public static MessageInfo Parse(JObject                                    JSON,
                                         CustomJObjectParserDelegate<MessageInfo>?  CustomMessageInfoParser   = null)
         {
@@ -226,7 +226,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="MessageInfo">The parsed message info.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomMessageInfoParser">A delegate to parse custom message info.</param>
+        /// <param name="CustomMessageInfoParser">An optional delegate to parse custom message info.</param>
         public static Boolean TryParse(JObject                                    JSON,
                                        out MessageInfo?                           MessageInfo,
                                        out String?                                ErrorResponse,

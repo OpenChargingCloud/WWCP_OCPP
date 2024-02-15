@@ -396,7 +396,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Parse the given JSON representation of tariff restrictions.
         /// </summary>
         /// <param name="JSON">The JSON to parse.</param>
-        /// <param name="CustomTariffRestrictionsParser">A delegate to parse custom tariff restrictions JSON objects.</param>
+        /// <param name="CustomTariffRestrictionsParser">An optional delegate to parse custom tariff restrictions JSON objects.</param>
         public static TariffRestrictions Parse(JObject                                            JSON,
                                                CustomJObjectParserDelegate<TariffRestrictions?>?  CustomTariffRestrictionsParser   = null)
         {
@@ -443,7 +443,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSON">The JSON to parse.</param>
         /// <param name="TariffRestrictions">The parsed tariff restrictions.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomTariffRestrictionsParser">A delegate to parse custom tariff restrictions JSON objects.</param>
+        /// <param name="CustomTariffRestrictionsParser">An optional delegate to parse custom tariff restrictions JSON objects.</param>
         public static Boolean TryParse(JObject                                            JSON,
                                        out TariffRestrictions?                            TariffRestrictions,
                                        out String?                                        ErrorResponse,

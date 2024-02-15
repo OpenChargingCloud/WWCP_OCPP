@@ -198,7 +198,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="CustomGetDisplayMessagesRequestParser">A delegate to parse custom get display messages requests.</param>
+        /// <param name="CustomGetDisplayMessagesRequestParser">An optional delegate to parse custom get display messages requests.</param>
         public static GetDisplayMessagesRequest Parse(JObject                                                  JSON,
                                                       Request_Id                                               RequestId,
                                                       ChargeBox_Id                                             ChargeBoxId,
@@ -256,7 +256,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="GetDisplayMessagesRequest">The parsed get display messages request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomGetDisplayMessagesRequestParser">A delegate to parse custom get display messages requests.</param>
+        /// <param name="CustomGetDisplayMessagesRequestParser">An optional delegate to parse custom get display messages requests.</param>
         public static Boolean TryParse(JObject                                                  JSON,
                                        Request_Id                                               RequestId,
                                        ChargeBox_Id                                             ChargeBoxId,

@@ -147,7 +147,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// Parse the given JSON representation of a sales tariff.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomSalesTariffParser">A delegate to parse custom sales tariffs.</param>
+        /// <param name="CustomSalesTariffParser">An optional delegate to parse custom sales tariffs.</param>
         public static SalesTariff Parse(JObject                                    JSON,
                                         CustomJObjectParserDelegate<SalesTariff>?  CustomSalesTariffParser   = null)
         {
@@ -191,7 +191,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="SalesTariff">The parsed connector type.</param>
-        /// <param name="CustomSalesTariffParser">A delegate to parse custom sales tariffs.</param>
+        /// <param name="CustomSalesTariffParser">An optional delegate to parse custom sales tariffs.</param>
         public static Boolean TryParse(JObject                                    JSON,
                                        out SalesTariff?                           SalesTariff,
                                        out String?                                ErrorResponse,

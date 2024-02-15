@@ -165,7 +165,7 @@ namespace cloud.charging.open.protocols.OCPP
         /// <param name="RequestId">The request identification.</param>
         /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomDataTransferRequestParser">A delegate to parse custom BinaryDataTransfer requests.</param>
+        /// <param name="CustomDataTransferRequestParser">An optional delegate to parse custom BinaryDataTransfer requests.</param>
         public static BinaryDataTransferRequest Parse(Byte[]                                                  Binary,
                                                       Request_Id                                              RequestId,
                                                       NetworkingNode_Id                                       NetworkingNodeId,
@@ -202,7 +202,7 @@ namespace cloud.charging.open.protocols.OCPP
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="BinaryDataTransferRequest">The parsed BinaryDataTransfer request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomBinaryDataTransferRequestParser">A delegate to parse custom BinaryDataTransfer requests.</param>
+        /// <param name="CustomBinaryDataTransferRequestParser">An optional delegate to parse custom BinaryDataTransfer requests.</param>
         public static Boolean TryParse(Byte[]                                                  Binary,
                                        Request_Id                                              RequestId,
                                        NetworkingNode_Id                                       NetworkingNodeId,

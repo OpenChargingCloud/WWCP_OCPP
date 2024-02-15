@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// The set variables request.
+    /// The SetVariables request.
     /// </summary>
     public class SetVariablesRequest : ARequest<SetVariablesRequest>,
                                        IRequest
@@ -58,17 +58,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The enumeration of set variable data.
         /// </summary>
         [Mandatory]
-        public IEnumerable<SetVariableData>  VariableData    { get; }
+        public IEnumerable<SetVariableData>  VariableData            { get; }
+
+        /// <summary>
+        /// The optional data consistency model for this request.
+        /// </summary>
+        [Optional, DistributedSystemsExtensions]
+        public DataConsistencyModels?        DataConsistencyModel    { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new set variables request.
+        /// Create a new SetVariables request.
         /// </summary>
         /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
         /// <param name="VariableData">An enumeration of variable data to set/change.</param>
+        /// <param name="DataConsistencyModel">An optional data consistency model for this request.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
@@ -81,19 +88,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public SetVariablesRequest(NetworkingNode_Id             NetworkingNodeId,
                                    IEnumerable<SetVariableData>  VariableData,
+                                   DataConsistencyModels?        DataConsistencyModel   = null,
 
-                                   IEnumerable<KeyPair>?         SignKeys            = null,
-                                   IEnumerable<SignInfo>?        SignInfos           = null,
-                                   IEnumerable<OCPP.Signature>?  Signatures          = null,
+                                   IEnumerable<KeyPair>?         SignKeys               = null,
+                                   IEnumerable<SignInfo>?        SignInfos              = null,
+                                   IEnumerable<OCPP.Signature>?  Signatures             = null,
 
-                                   CustomData?                   CustomData          = null,
+                                   CustomData?                   CustomData             = null,
 
-                                   Request_Id?                   RequestId           = null,
-                                   DateTime?                     RequestTimestamp    = null,
-                                   TimeSpan?                     RequestTimeout      = null,
-                                   EventTracking_Id?             EventTrackingId     = null,
-                                   NetworkPath?                  NetworkPath         = null,
-                                   CancellationToken             CancellationToken   = default)
+                                   Request_Id?                   RequestId              = null,
+                                   DateTime?                     RequestTimestamp       = null,
+                                   TimeSpan?                     RequestTimeout         = null,
+                                   EventTracking_Id?             EventTrackingId        = null,
+                                   NetworkPath?                  NetworkPath            = null,
+                                   CancellationToken             CancellationToken      = default)
 
             : base(NetworkingNodeId,
                    nameof(SetVariablesRequest)[..^7],
@@ -117,12 +125,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 throw new ArgumentException("The given enumeration of variable data must not be empty!",
                                             nameof(VariableData));
 
-            this.VariableData = VariableData.Distinct();
+            this.VariableData          = VariableData.Distinct();
+            this.DataConsistencyModel  = DataConsistencyModel;
 
             unchecked
             {
-                hashCode = this.VariableData.CalcHashCode() * 3 ^
-                           base.             GetHashCode();
+                hashCode = this.VariableData.         CalcHashCode()      * 5 ^
+                          (this.DataConsistencyModel?.GetHashCode() ?? 0) * 3 ^
+                           base.                      GetHashCode();
             }
 
         }
@@ -289,20 +299,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomSetVariablesRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, ..., CustomSetVariablesRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a set variables request.
+        /// Parse the given JSON representation of a SetVariables request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomSetVariablesRequestParser">A delegate to parse custom set variables requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomSetVariablesRequestParser">An optional delegate to parse custom SetVariables requests.</param>
         public static SetVariablesRequest Parse(JObject                                            JSON,
                                                 Request_Id                                         RequestId,
                                                 NetworkingNode_Id                                  NetworkingNodeId,
                                                 NetworkPath                                        NetworkPath,
+                                                DateTime?                                          RequestTimestamp                  = null,
+                                                TimeSpan?                                          RequestTimeout                    = null,
+                                                EventTracking_Id?                                  EventTrackingId                   = null,
                                                 CustomJObjectParserDelegate<SetVariablesRequest>?  CustomSetVariablesRequestParser   = null)
         {
 
@@ -312,37 +328,46 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          NetworkPath,
                          out var setVariableRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomSetVariablesRequestParser))
             {
                 return setVariableRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a set variables request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a SetVariables request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out SetVariablesRequest, out ErrorResponse, CustomBootNotificationResponseParser = null)
+        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out SetVariablesRequest, out ErrorResponse, ..., CustomSetVariablesRequestParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a set variables request.
+        /// Try to parse the given JSON representation of a SetVariables request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="SetVariablesRequest">The parsed set variables request.</param>
+        /// <param name="SetVariablesRequest">The parsed SetVariables request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomSetVariablesRequestParser">A delegate to parse custom set variables requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomSetVariablesRequestParser">An optional delegate to parse custom SetVariables requests.</param>
         public static Boolean TryParse(JObject                                            JSON,
                                        Request_Id                                         RequestId,
                                        NetworkingNode_Id                                  NetworkingNodeId,
                                        NetworkPath                                        NetworkPath,
                                        [NotNullWhen(true)]  out SetVariablesRequest?      SetVariablesRequest,
                                        [NotNullWhen(false)] out String?                   ErrorResponse,
-                                       CustomJObjectParserDelegate<SetVariablesRequest>?  CustomSetVariablesRequestParser)
+                                       DateTime?                                          RequestTimestamp                  = null,
+                                       TimeSpan?                                          RequestTimeout                    = null,
+                                       EventTracking_Id?                                  EventTrackingId                   = null,
+                                       CustomJObjectParserDelegate<SetVariablesRequest>?  CustomSetVariablesRequestParser   = null)
         {
 
             try
@@ -350,7 +375,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 SetVariablesRequest = null;
 
-                #region VariableData         [mandatory]
+                #region VariableData            [mandatory]
 
                 if (!JSON.ParseMandatoryHashSet("setVariableData",
                                                 "set variable data",
@@ -363,7 +388,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region Signatures           [optional, OCPP_CSE]
+                #region DataConsistencyModel    [optional, OCPP_CSE]
+
+                if (JSON.ParseOptional("dataConsistencyModel",
+                                       "data consistency model",
+                                       DataConsistencyModelsExtensions.TryParse,
+                                       out DataConsistencyModels? DataConsistencyModel,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region Signatures              [optional, OCPP_CSE]
 
                 if (JSON.ParseOptionalHashSet("signatures",
                                               "cryptographic signatures",
@@ -377,12 +416,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region CustomData           [optional]
+                #region CustomData              [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
                                            OCPP.CustomData.TryParse,
-                                           out CustomData CustomData,
+                                           out CustomData? CustomData,
                                            out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -396,6 +435,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                           NetworkingNodeId,
                                           VariableData,
+                                          DataConsistencyModel,
 
                                           null,
                                           null,
@@ -404,9 +444,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                           CustomData,
 
                                           RequestId,
-                                          null,
-                                          null,
-                                          null,
+                                          RequestTimestamp,
+                                          RequestTimeout,
+                                          EventTrackingId,
                                           NetworkPath
 
                                       );
@@ -421,7 +461,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 SetVariablesRequest  = null;
-                ErrorResponse        = "The given JSON representation of a set variables request is invalid: " + e.Message;
+                ErrorResponse        = "The given JSON representation of a SetVariables request is invalid: " + e.Message;
                 return false;
             }
 
@@ -434,7 +474,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomSetVariablesRequestSerializer">A delegate to serialize custom set variables requests.</param>
+        /// <param name="CustomSetVariablesRequestSerializer">A delegate to serialize custom SetVariables requests.</param>
         /// <param name="CustomSetVariableDataSerializer">A delegate to serialize custom set variable data.</param>
         /// <param name="CustomComponentSerializer">A delegate to serialize custom components.</param>
         /// <param name="CustomEVSESerializer">A delegate to serialize custom EVSEs.</param>
@@ -452,19 +492,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("setVariableData",   new JArray(VariableData.Select(variableData => variableData.ToJSON(CustomSetVariableDataSerializer,
-                                                                                                                                       CustomComponentSerializer,
-                                                                                                                                       CustomEVSESerializer,
-                                                                                                                                       CustomVariableSerializer,
-                                                                                                                                       CustomCustomDataSerializer)))),
+                                 new JProperty("setVariableData",         new JArray(VariableData.Select(variableData => variableData.ToJSON(CustomSetVariableDataSerializer,
+                                                                                                                                             CustomComponentSerializer,
+                                                                                                                                             CustomEVSESerializer,
+                                                                                                                                             CustomVariableSerializer,
+                                                                                                                                             CustomCustomDataSerializer)))),
+
+                           DataConsistencyModel.HasValue
+                               ? new JProperty("dataConsistencyModel",    DataConsistencyModel.Value.AsText())
+                               : null,
 
                            Signatures.Any()
-                               ? new JProperty("signatures",        new JArray(Signatures.  Select(signature    => signature.   ToJSON(CustomSignatureSerializer,
-                                                                                                                                       CustomCustomDataSerializer))))
+                               ? new JProperty("signatures",              new JArray(Signatures.  Select(signature    => signature.   ToJSON(CustomSignatureSerializer,
+                                                                                                                                             CustomCustomDataSerializer))))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",        CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",              CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
@@ -483,10 +527,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator == (SetVariablesRequest1, SetVariablesRequest2)
 
         /// <summary>
-        /// Compares two set variables requests for equality.
+        /// Compares two SetVariables requests for equality.
         /// </summary>
-        /// <param name="SetVariablesRequest1">A set variables request.</param>
-        /// <param name="SetVariablesRequest2">Another set variables request.</param>
+        /// <param name="SetVariablesRequest1">A SetVariables request.</param>
+        /// <param name="SetVariablesRequest2">Another SetVariables request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (SetVariablesRequest? SetVariablesRequest1,
                                            SetVariablesRequest? SetVariablesRequest2)
@@ -509,10 +553,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator != (SetVariablesRequest1, SetVariablesRequest2)
 
         /// <summary>
-        /// Compares two set variables requests for inequality.
+        /// Compares two SetVariables requests for inequality.
         /// </summary>
-        /// <param name="SetVariablesRequest1">A set variables request.</param>
-        /// <param name="SetVariablesRequest2">Another set variables request.</param>
+        /// <param name="SetVariablesRequest1">A SetVariables request.</param>
+        /// <param name="SetVariablesRequest2">Another SetVariables request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (SetVariablesRequest? SetVariablesRequest1,
                                            SetVariablesRequest? SetVariablesRequest2)
@@ -528,9 +572,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two set variables requests for equality.
+        /// Compares two SetVariables requests for equality.
         /// </summary>
-        /// <param name="Object">A set variables request to compare with.</param>
+        /// <param name="Object">A SetVariables request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is SetVariablesRequest setVariableRequest &&
@@ -541,15 +585,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(SetVariablesRequest)
 
         /// <summary>
-        /// Compares two set variables requests for equality.
+        /// Compares two SetVariables requests for equality.
         /// </summary>
-        /// <param name="SetVariablesRequest">A set variables request to compare with.</param>
+        /// <param name="SetVariablesRequest">A SetVariables request to compare with.</param>
         public override Boolean Equals(SetVariablesRequest? SetVariablesRequest)
 
             => SetVariablesRequest is not null &&
 
                VariableData.Count().Equals(SetVariablesRequest.VariableData.Count())     &&
                VariableData.All(data => SetVariablesRequest.VariableData.Contains(data)) &&
+
+            ((!DataConsistencyModel.HasValue && !SetVariablesRequest.DataConsistencyModel.HasValue) ||
+              (DataConsistencyModel.HasValue &&  SetVariablesRequest.DataConsistencyModel.HasValue && DataConsistencyModel.Value.Equals(SetVariablesRequest.DataConsistencyModel.Value))) &&
 
                base.GenericEquals(SetVariablesRequest);
 
@@ -576,7 +623,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         public override String ToString()
 
-            => $"{VariableData.Count()} variable data set(s)";
+            => String.Concat(
+
+                   $"{VariableData.Count()} variable data set(s)",
+
+                   DataConsistencyModel.HasValue
+                       ? $" ({DataConsistencyModel})"
+                       : ""
+
+               );
 
         #endregion
 

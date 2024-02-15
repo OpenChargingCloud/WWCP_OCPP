@@ -177,7 +177,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
         /// </summary>
         /// <param name="Request">The list directory request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomListDirectoryResponseParser">A delegate to parse custom list directory responses.</param>
+        /// <param name="CustomListDirectoryResponseParser">An optional delegate to parse custom list directory responses.</param>
         public static ListDirectoryResponse Parse(CSMS.ListDirectoryRequest                            Request,
                                                   JObject                                              JSON,
                                                   CustomJObjectParserDelegate<ListDirectoryResponse>?  CustomListDirectoryResponseParser   = null)
@@ -209,7 +209,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ListDirectoryResponse">The parsed list directory response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomListDirectoryResponseParser">A delegate to parse custom list directory responses.</param>
+        /// <param name="CustomListDirectoryResponseParser">An optional delegate to parse custom list directory responses.</param>
         public static Boolean TryParse(CSMS.ListDirectoryRequest                            Request,
                                        JObject                                              JSON,
                                        [NotNullWhen(true)]  out ListDirectoryResponse?      ListDirectoryResponse,

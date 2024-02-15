@@ -109,7 +109,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="CustomHeartbeatRequestParser">A delegate to parse custom heartbeat requests.</param>
+        /// <param name="CustomHeartbeatRequestParser">An optional delegate to parse custom heartbeat requests.</param>
         public static HeartbeatRequest Parse(JObject                                         JSON,
                                              Request_Id                                      RequestId,
                                              ChargeBox_Id                                    ChargeBoxId,
@@ -143,7 +143,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="HeartbeatRequest">The parsed heartbeat request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomHeartbeatRequestParser">A delegate to parse custom heartbeat requests.</param>
+        /// <param name="CustomHeartbeatRequestParser">An optional delegate to parse custom heartbeat requests.</param>
         public static Boolean TryParse(JObject                                         JSON,
                                        Request_Id                                      RequestId,
                                        ChargeBox_Id                                    ChargeBoxId,

@@ -234,7 +234,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         /// <param name="Request">The stop transaction request leading to this response.</param>
         /// <param name="JSON">The text to be parsed.</param>
-        /// <param name="CustomStopTransactionResponseParser">A delegate to parse custom stop transaction responses.</param>
+        /// <param name="CustomStopTransactionResponseParser">An optional delegate to parse custom stop transaction responses.</param>
         public static StopTransactionResponse Parse(CP.StopTransactionRequest                              Request,
                                                     JObject                                                JSON,
                                                     CustomJObjectParserDelegate<StopTransactionResponse>?  CustomStopTransactionResponseParser   = null)
@@ -308,7 +308,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="JSON">The text to be parsed.</param>
         /// <param name="StopTransactionResponse">The parsed stop transaction response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomStopTransactionResponseParser">A delegate to parse custom stop transaction responses.</param>
+        /// <param name="CustomStopTransactionResponseParser">An optional delegate to parse custom stop transaction responses.</param>
         public static Boolean TryParse(CP.StopTransactionRequest                              Request,
                                        JObject                                                JSON,
                                        out StopTransactionResponse?                           StopTransactionResponse,

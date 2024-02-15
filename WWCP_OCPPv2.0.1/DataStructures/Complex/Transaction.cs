@@ -146,7 +146,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// Parse the given JSON representation of a transaction.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomTransactionParser">A delegate to parse custom transaction JSON objects.</param>
+        /// <param name="CustomTransactionParser">An optional delegate to parse custom transaction JSON objects.</param>
         public static Transaction Parse(JObject                                    JSON,
                                         CustomJObjectParserDelegate<Transaction>?  CustomTransactionParser   = null)
         {
@@ -192,7 +192,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="Transaction">The parsed transaction.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomTransactionParser">A delegate to parse custom transaction JSON objects.</param>
+        /// <param name="CustomTransactionParser">An optional delegate to parse custom transaction JSON objects.</param>
         public static Boolean TryParse(JObject                                    JSON,
                                        out Transaction?                           Transaction,
                                        out String?                                ErrorResponse,

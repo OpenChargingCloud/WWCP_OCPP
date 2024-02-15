@@ -141,7 +141,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="CustomClearVariableMonitoringRequestParser">A delegate to parse custom clear variable monitoring requests.</param>
+        /// <param name="CustomClearVariableMonitoringRequestParser">An optional delegate to parse custom clear variable monitoring requests.</param>
         public static ClearVariableMonitoringRequest Parse(JObject                                                       JSON,
                                                            Request_Id                                                    RequestId,
                                                            ChargeBox_Id                                                  ChargeBoxId,
@@ -199,7 +199,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="ClearVariableMonitoringRequest">The parsed ClearVariableMonitoring request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomClearVariableMonitoringRequestParser">A delegate to parse custom clear variable monitoring requests.</param>
+        /// <param name="CustomClearVariableMonitoringRequestParser">An optional delegate to parse custom clear variable monitoring requests.</param>
         public static Boolean TryParse(JObject                                                       JSON,
                                        Request_Id                                                    RequestId,
                                        ChargeBox_Id                                                  ChargeBoxId,

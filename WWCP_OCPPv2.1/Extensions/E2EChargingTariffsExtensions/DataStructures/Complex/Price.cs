@@ -75,7 +75,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Parse the given JSON representation of a price.
         /// </summary>
         /// <param name="JSON">The JSON to parse.</param>
-        /// <param name="CustomPriceParser">A delegate to parse custom price JSON objects.</param>
+        /// <param name="CustomPriceParser">An optional delegate to parse custom price JSON objects.</param>
         public static Price Parse(JObject                              JSON,
                                   CustomJObjectParserDelegate<Price>?  CustomPriceParser   = null)
         {
@@ -101,7 +101,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Try to parse the given JSON representation of a price.
         /// </summary>
         /// <param name="JSON">The JSON to parse.</param>
-        /// <param name="CustomPriceParser">A delegate to parse custom price JSON objects.</param>
+        /// <param name="CustomPriceParser">An optional delegate to parse custom price JSON objects.</param>
         public static Price? TryParse(JObject                              JSON,
                                       CustomJObjectParserDelegate<Price>?  CustomPriceParser   = null)
         {
@@ -146,7 +146,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSON">The JSON to parse.</param>
         /// <param name="Price">The parsed price.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomPriceParser">A delegate to parse custom price JSON objects.</param>
+        /// <param name="CustomPriceParser">An optional delegate to parse custom price JSON objects.</param>
         public static Boolean TryParse(JObject                              JSON,
                                        out Price                            Price,
                                        out String?                          ErrorResponse,

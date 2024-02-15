@@ -2094,7 +2094,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="RequestTimestamp">The timestamp of the request.</param>
         /// <param name="Connection">The WebSocket connection.</param>
         /// <param name="OCPPTextMessage">The received OCPP message.</param>
-        /// <param name="EventTrackingId">The event tracking identification.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification.</param>
         /// <param name="CancellationToken">The cancellation token.</param>
         public override async Task<WebSocketTextMessageResponse> ProcessTextMessage(DateTime                   RequestTimestamp,
                                                                                     WebSocketServerConnection  Connection,

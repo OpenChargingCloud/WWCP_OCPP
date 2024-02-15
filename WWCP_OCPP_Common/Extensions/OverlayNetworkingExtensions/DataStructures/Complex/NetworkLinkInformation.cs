@@ -121,7 +121,7 @@ namespace cloud.charging.open.protocols.OCPP
         /// Parse the given JSON representation of a network link information.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomNetworkLinkInformationParser">A delegate to parse custom network link information.</param>
+        /// <param name="CustomNetworkLinkInformationParser">An optional delegate to parse custom network link information.</param>
         public static NetworkLinkInformation Parse(JObject                                               JSON,
                                                    CustomJObjectParserDelegate<NetworkLinkInformation>?  CustomNetworkLinkInformationParser   = null)
         {
@@ -168,7 +168,7 @@ namespace cloud.charging.open.protocols.OCPP
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="LinkInformation">Network link information.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomLinkInformationParser">A delegate to parse custom network link information.</param>
+        /// <param name="CustomLinkInformationParser">An optional delegate to parse custom network link information.</param>
         public static Boolean TryParse(JObject                                               JSON,
                                        out NetworkLinkInformation?                           LinkInformation,
                                        out String?                                           ErrorResponse,

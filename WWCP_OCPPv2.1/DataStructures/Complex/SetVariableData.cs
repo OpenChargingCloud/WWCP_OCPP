@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -29,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// Set variable data.
+    /// A data structure for setting variable data.
     /// </summary>
     public class SetVariableData : ACustomData,
                                    IEquatable<SetVariableData>
@@ -38,56 +40,78 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Properties
 
         /// <summary>
-        /// The value to be assigned to the attribute of the variable.
-        /// </summary>
-        [Mandatory]
-        public String           AttributeValue    { get; }
-
-        /// <summary>
         /// The component for which the variable monitor is created or updated.
         /// </summary>
         [Mandatory]
-        public Component        Component         { get; }
+        public Component        Component            { get; }
 
         /// <summary>
         /// The variable for which the variable monitor is created or updated.
         /// </summary>
         [Mandatory]
-        public Variable         Variable          { get; }
+        public Variable         Variable             { get; }
+
+        /// <summary>
+        /// The value to be assigned to the attribute of the variable.
+        /// </summary>
+        [Mandatory]
+        public String           AttributeValue       { get; }
+
+        /// <summary>
+        /// The optional old attribute value of the variable for safe
+        /// conditional changes within a distributed system.
+        /// </summary>
+        [Optional]
+        public String?          OldAttributeValue    { get; }
 
         /// <summary>
         /// The optional type of the attribute: Actual, Target, MinSet, MaxSet.
         /// [Default: actual]
         /// </summary>
         [Optional]
-        public AttributeTypes?  AttributeType     { get; }
+        public AttributeTypes?  AttributeType        { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new variable data.
+        /// Create a new SetVariableData request.
         /// </summary>
-        /// <param name="AttributeValue">The value to be assigned to the attribute of the variable.</param>
         /// <param name="Component">The component for which the variable monitor is created or updated.</param>
         /// <param name="Variable">The variable for which the variable monitor is created or updated.</param>
+        /// <param name="AttributeValue">The value to be assigned to the attribute of the variable.</param>
+        /// <param name="OldAttributeValue">An optional old attribute value of the variable for safe conditional changes within a distributed system.</param>
         /// <param name="AttributeType">An optional type of the attribute: Actual, Target, MinSet, MaxSet [Default: actual]</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public SetVariableData(String           AttributeValue,
-                               Component        Component,
+        public SetVariableData(Component        Component,
                                Variable         Variable,
-                               AttributeTypes?  AttributeType   = null,
-                               CustomData?      CustomData      = null)
+                               String           AttributeValue,
+                               String?          OldAttributeValue   = null,
+                               AttributeTypes?  AttributeType       = null,
+                               CustomData?      CustomData          = null)
 
             : base(CustomData)
 
         {
 
-            this.AttributeValue  = AttributeValue;
-            this.Component       = Component;
-            this.Variable        = Variable;
-            this.AttributeType   = AttributeType;
+            this.Component          = Component;
+            this.Variable           = Variable;
+            this.AttributeValue     = AttributeValue;
+            this.OldAttributeValue  = OldAttributeValue;
+            this.AttributeType      = AttributeType;
+
+            unchecked
+            {
+
+                hashCode = this.Component.         GetHashCode()       * 13 ^
+                           this.Variable.          GetHashCode()       * 11 ^
+                           this.AttributeValue.    GetHashCode()       *  7 ^
+                          (this.OldAttributeValue?.GetHashCode() ?? 0) *  5 ^
+                          (this.AttributeType?.    GetHashCode() ?? 0) *  3 ^
+                           base.                   GetHashCode();
+
+            }
 
         }
 
@@ -108,7 +132,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //       "$ref": "#/definitions/AttributeEnumType"
         //     },
         //     "attributeValue": {
-        //       "description": "Value to be assigned to attribute of variable.\r\n\r\nThe Configuration Variable &lt;&lt;configkey-configuration-value-size,ConfigurationValueSize&gt;&gt; can be used to limit SetVariableData.attributeValue and VariableCharacteristics.valueList. The max size of these values will always remain equal. \r\n",
+        //       "description":
+        //           "Value to be assigned to attribute of variable.
+        //            The Configuration Variable <<configkey-configuration-value-size, ConfigurationValueSize>>; can be used to limit SetVariableData.attributeValue and VariableCharacteristics.valueList.
+        //            The max size of these values will always remain equal.",
         //       "type": "string",
         //       "maxLength": 1000
         //     },
@@ -131,10 +158,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region (static) Parse   (JSON, CustomVariableDataParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of set variable data.
+        /// Parse the given JSON representation of SetVariableData.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomVariableDataParser">A delegate to parse custom set variable data JSON objects.</param>
+        /// <param name="CustomVariableDataParser">An optional delegate to parse custom SetVariableData JSON objects.</param>
         public static SetVariableData Parse(JObject                                        JSON,
                                             CustomJObjectParserDelegate<SetVariableData>?  CustomVariableDataParser   = null)
         {
@@ -148,7 +175,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 return setVariableData;
             }
 
-            throw new ArgumentException("The given JSON representation of set variable data is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of SetVariableData is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -160,14 +187,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
-        /// Try to parse the given JSON representation of set variable data.
+        /// Try to parse the given JSON representation of SetVariableData.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="VariableData">The parsed set variable data.</param>
+        /// <param name="VariableData">The parsed SetVariableData.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject               JSON,
-                                       out SetVariableData?  VariableData,
-                                       out String?           ErrorResponse)
+        public static Boolean TryParse(JObject                                    JSON,
+                                       [NotNullWhen(true)]  out SetVariableData?  VariableData,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
 
             => TryParse(JSON,
                         out VariableData,
@@ -176,15 +203,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
         /// <summary>
-        /// Try to parse the given JSON representation of set variable data.
+        /// Try to parse the given JSON representation of SetVariableData.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="VariableData">The parsed set variable data.</param>
+        /// <param name="VariableData">The parsed SetVariableData.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomVariableDataParser">A delegate to parse custom set variable data JSON objects.</param>
+        /// <param name="CustomVariableDataParser">An optional delegate to parse custom SetVariableData JSON objects.</param>
         public static Boolean TryParse(JObject                                        JSON,
-                                       out SetVariableData?                           VariableData,
-                                       out String?                                    ErrorResponse,
+                                       [NotNullWhen(true)]  out SetVariableData?      VariableData,
+                                       [NotNullWhen(false)] out String?               ErrorResponse,
                                        CustomJObjectParserDelegate<SetVariableData>?  CustomVariableDataParser)
         {
 
@@ -193,11 +220,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 VariableData = default;
 
-                #region AttributeValue    [mandatory]
+                #region Component            [mandatory]
 
-                if (!JSON.ParseMandatoryText("attributeValue",
-                                             "attribute value",
-                                             out String AttributeValue,
+                if (!JSON.ParseMandatoryJSON("component",
+                                             "component",
+                                             OCPPv2_1.Component.TryParse,
+                                             out Component? Component,
                                              out ErrorResponse))
                 {
                     return false;
@@ -205,35 +233,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region Component         [mandatory]
-
-                if (!JSON.ParseMandatoryJSON("component",
-                                             "component",
-                                             OCPPv2_1.Component.TryParse,
-                                             out Component? Component,
-                                             out ErrorResponse) ||
-                     Component is null)
-                {
-                    return false;
-                }
-
-                #endregion
-
-                #region Variable          [mandatory]
+                #region Variable             [mandatory]
 
                 if (!JSON.ParseMandatoryJSON("variable",
                                              "variable",
                                              OCPPv2_1.Variable.TryParse,
                                              out Variable? Variable,
-                                             out ErrorResponse) ||
-                     Variable is null)
+                                             out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region AttributeType     [optional]
+                #region AttributeValue       [mandatory]
+
+                if (!JSON.ParseMandatoryText("attributeValue",
+                                             "attribute value",
+                                             out String? AttributeValue,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region OldAttributeValue    [optional, OCPP_CSE]
+
+                var OldAttributeValue = JSON["oldAttributeValue"]?.Value<String>();
+
+                #endregion
+
+                #region AttributeType        [optional]
 
                 if (JSON.ParseOptional("attributeType",
                                        "attribute type",
@@ -247,12 +278,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region CustomData        [optional]
+                #region CustomData           [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
                                            OCPP.CustomData.TryParse,
-                                           out CustomData CustomData,
+                                           out CustomData? CustomData,
                                            out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -262,11 +293,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                VariableData = new SetVariableData(AttributeValue,
-                                                   Component,
-                                                   Variable,
-                                                   AttributeType,
-                                                   CustomData);
+                VariableData = new SetVariableData(
+                                   Component,
+                                   Variable,
+                                   AttributeValue,
+                                   OldAttributeValue,
+                                   AttributeType,
+                                   CustomData
+                               );
 
                 if (CustomVariableDataParser is not null)
                     VariableData = CustomVariableDataParser(JSON,
@@ -278,7 +312,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             catch (Exception e)
             {
                 VariableData   = default;
-                ErrorResponse  = "The given JSON representation of set variable data is invalid: " + e.Message;
+                ErrorResponse  = "The given JSON representation of SetVariableData is invalid: " + e.Message;
                 return false;
             }
 
@@ -305,21 +339,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var json = JSONObject.Create(
 
-                                 new JProperty("attributeValue",   AttributeValue),
+                                 new JProperty("component",           Component.          ToJSON(CustomComponentSerializer,
+                                                                                                 CustomEVSESerializer,
+                                                                                                 CustomCustomDataSerializer)),
 
-                                 new JProperty("component",        Component.          ToJSON(CustomComponentSerializer,
-                                                                                              CustomEVSESerializer,
-                                                                                              CustomCustomDataSerializer)),
+                                 new JProperty("variable",            Variable.           ToJSON(CustomVariableSerializer,
+                                                                                                 CustomCustomDataSerializer)),
 
-                                 new JProperty("variable",         Variable.           ToJSON(CustomVariableSerializer,
-                                                                                              CustomCustomDataSerializer)),
+                                 new JProperty("attributeValue",      AttributeValue),
+
+                           OldAttributeValue is not null
+                               ? new JProperty("oldAttributeValue",   OldAttributeValue)
+                               : null,
 
                            AttributeType.HasValue
-                               ? new JProperty("attributeType",    AttributeType.Value.AsText())
+                               ? new JProperty("attributeType",       AttributeType.Value.AsText())
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",       CustomData.         ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",          CustomData.         ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
@@ -340,8 +378,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="VariableData1">A set variable data.</param>
-        /// <param name="VariableData2">Another set variable data.</param>
+        /// <param name="VariableData1">A SetVariableData.</param>
+        /// <param name="VariableData2">Another SetVariableData.</param>
         /// <returns>true|false</returns>
         public static Boolean operator == (SetVariableData? VariableData1,
                                            SetVariableData? VariableData2)
@@ -366,8 +404,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="VariableData1">A set variable data.</param>
-        /// <param name="VariableData2">Another set variable data.</param>
+        /// <param name="VariableData1">A SetVariableData.</param>
+        /// <param name="VariableData2">Another SetVariableData.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (SetVariableData? VariableData1,
                                            SetVariableData? VariableData2)
@@ -383,9 +421,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two set variable data for equality.
+        /// Compares two SetVariableData for equality.
         /// </summary>
-        /// <param name="Object">A set variable data to compare with.</param>
+        /// <param name="Object">A SetVariableData to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is SetVariableData setVariableData &&
@@ -396,9 +434,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Equals(VariableData)
 
         /// <summary>
-        /// Compares two set variable data for equality.
+        /// Compares two SetVariableData for equality.
         /// </summary>
-        /// <param name="VariableData">A set variable data to compare with.</param>
+        /// <param name="VariableData">A SetVariableData to compare with.</param>
         public Boolean Equals(SetVariableData? VariableData)
 
             => VariableData is not null &&
@@ -418,24 +456,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return AttributeValue.GetHashCode()       * 11 ^
-                       Component.     GetHashCode()       *  7 ^
-                       Variable.      GetHashCode()       *  5 ^
-                      (AttributeType?.GetHashCode() ?? 0) *  3 ^
-
-                       base.          GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 
@@ -448,14 +475,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => String.Concat(
 
-                   AttributeValue.Substring(30),
-                   " for component/variable: '",
-                   Component.ToString(),
-                   "' / '",
-                   Variable.ToString(), "'",
+                   $"'{Component}' / '{Variable}' => {AttributeValue.SubstringMax(30)}",
 
                    AttributeType.HasValue
-                       ? " [" + AttributeType.Value.AsText() + "]"
+                       ? $" ({AttributeType.Value.AsText()})"
+                       : "",
+
+                   OldAttributeValue is not null
+                       ? $", only when old value == '{OldAttributeValue}'"
                        : ""
 
                );

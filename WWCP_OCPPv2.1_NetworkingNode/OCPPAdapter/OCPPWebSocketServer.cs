@@ -49,7 +49,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="NetworkingNodeChannel">The HTTP Web Socket channel.</param>
     /// <param name="NewConnection">The new HTTP Web Socket connection.</param>
     /// <param name="NetworkingNodeId">The sending OCPP networking node/charging station identification.</param>
-    /// <param name="EventTrackingId">The event tracking identification for correlating this request with other events.</param>
+    /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
     /// <param name="SharedSubprotocols">An enumeration of shared HTTP Web Sockets subprotocols.</param>
     /// <param name="CancellationToken">A token to cancel the processing.</param>
     public delegate Task OnNetworkingNodeNewWebSocketConnectionDelegate        (DateTime                           Timestamp,
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="NetworkingNodeChannel">The HTTP Web Socket channel.</param>
     /// <param name="Connection">The HTTP Web Socket connection to be closed.</param>
     /// <param name="NetworkingNodeId">The sending OCPP networking node/charging station identification.</param>
-    /// <param name="EventTrackingId">The event tracking identification for correlating this request with other events.</param>
+    /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
     /// <param name="StatusCode">The HTTP Web Socket Closing Status Code.</param>
     /// <param name="Reason">An optional HTTP Web Socket closing reason.</param>
     /// <param name="CancellationToken">A token to cancel the processing.</param>
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="NetworkingNodeChannel">The HTTP Web Socket channel.</param>
     /// <param name="Connection">The HTTP Web Socket connection to be closed.</param>
     /// <param name="NetworkingNodeId">The sending OCPP networking node/charging station identification.</param>
-    /// <param name="EventTrackingId">The event tracking identification for correlating this request with other events.</param>
+    /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
     /// <param name="Reason">An optional closing reason.</param>
     /// <param name="CancellationToken">A token to cancel the processing.</param>
     public delegate Task OnNetworkingNodeTCPConnectionClosedDelegate           (DateTime                           Timestamp,
@@ -715,7 +715,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="RequestTimestamp">The timestamp of the request.</param>
         /// <param name="ServerConnection">The WebSocket connection.</param>
         /// <param name="TextMessage">The received text message.</param>
-        /// <param name="EventTrackingId">The event tracking identification.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification.</param>
         /// <param name="CancellationToken">The cancellation token.</param>
         public override async Task<WebSocketTextMessageResponse> ProcessTextMessage(DateTime                   RequestTimestamp,
                                                                                     WebSocketServerConnection  ServerConnection,
@@ -770,7 +770,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="RequestTimestamp">The timestamp of the request.</param>
         /// <param name="Connection">The WebSocket connection.</param>
         /// <param name="BinaryMessage">The received binary message.</param>
-        /// <param name="EventTrackingId">The event tracking identification.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification.</param>
         /// <param name="CancellationToken">The cancellation token.</param>
         public override async Task<WebSocketBinaryMessageResponse> ProcessBinaryMessage(DateTime RequestTimestamp,
                                                                                         WebSocketServerConnection ServerConnection,

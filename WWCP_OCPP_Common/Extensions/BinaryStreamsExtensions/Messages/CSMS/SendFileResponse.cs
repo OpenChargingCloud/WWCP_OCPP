@@ -177,7 +177,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
         /// </summary>
         /// <param name="Request">The send file request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomSendFileResponseParser">A delegate to parse custom send file responses.</param>
+        /// <param name="CustomSendFileResponseParser">An optional delegate to parse custom send file responses.</param>
         public static SendFileResponse Parse(CSMS.SendFileRequest                            Request,
                                              JObject                                         JSON,
                                              CustomJObjectParserDelegate<SendFileResponse>?  CustomSendFileResponseParser   = null)
@@ -209,7 +209,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="SendFileResponse">The parsed send file response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomSendFileResponseParser">A delegate to parse custom send file responses.</param>
+        /// <param name="CustomSendFileResponseParser">An optional delegate to parse custom send file responses.</param>
         public static Boolean TryParse(CSMS.SendFileRequest                            Request,
                                        JObject                                         JSON,
                                        [NotNullWhen(true)]  out SendFileResponse?      SendFileResponse,

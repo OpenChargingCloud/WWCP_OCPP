@@ -245,7 +245,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <param name="Request">The get configuration request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomGetConfigurationResponseParser">A delegate to parse custom get configuration responses.</param>
+        /// <param name="CustomGetConfigurationResponseParser">An optional delegate to parse custom get configuration responses.</param>
         public static GetConfigurationResponse Parse(CS.GetConfigurationRequest                              Request,
                                                      JObject                                                 JSON,
                                                      CustomJObjectParserDelegate<GetConfigurationResponse>?  CustomGetConfigurationResponseParser   = null)
@@ -321,7 +321,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="GetConfigurationResponse">The parsed get configuration response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomGetConfigurationResponseParser">A delegate to parse custom get configuration responses.</param>
+        /// <param name="CustomGetConfigurationResponseParser">An optional delegate to parse custom get configuration responses.</param>
         public static Boolean TryParse(CS.GetConfigurationRequest                              Request,
                                        JObject                                                 JSON,
                                        out GetConfigurationResponse?                           GetConfigurationResponse,

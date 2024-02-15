@@ -197,7 +197,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// </summary>
         /// <param name="Request">The get 15118 EV certificate request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomGet15118EVCertificateResponseParser">A delegate to parse custom get 15118 EV certificate responses.</param>
+        /// <param name="CustomGet15118EVCertificateResponseParser">An optional delegate to parse custom get 15118 EV certificate responses.</param>
         public static Get15118EVCertificateResponse Parse(CS.Get15118EVCertificateRequest                              Request,
                                                           JObject                                                      JSON,
                                                           CustomJObjectParserDelegate<Get15118EVCertificateResponse>?  CustomGet15118EVCertificateResponseParser   = null)
@@ -228,7 +228,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="Get15118EVCertificateResponse">The parsed get 15118 EV certificate response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomGet15118EVCertificateResponseParser">A delegate to parse custom get 15118 EV certificate responses.</param>
+        /// <param name="CustomGet15118EVCertificateResponseParser">An optional delegate to parse custom get 15118 EV certificate responses.</param>
         public static Boolean TryParse(CS.Get15118EVCertificateRequest                              Request,
                                        JObject                                                      JSON,
                                        out Get15118EVCertificateResponse?                           Get15118EVCertificateResponse,

@@ -107,7 +107,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// Parse the given JSON representation of authorization data.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomAuthorizationDataParser">A delegate to parse custom AuthorizationData JSON objects.</param>
+        /// <param name="CustomAuthorizationDataParser">An optional delegate to parse custom AuthorizationData JSON objects.</param>
         public static AuthorizationData Parse(JObject                                          JSON,
                                               CustomJObjectParserDelegate<AuthorizationData>?  CustomAuthorizationDataParser   = null)
         {
@@ -153,7 +153,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="AuthorizationData">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomAuthorizationDataParser">A delegate to parse custom AuthorizationData JSON objects.</param>
+        /// <param name="CustomAuthorizationDataParser">An optional delegate to parse custom AuthorizationData JSON objects.</param>
         public static Boolean TryParse(JObject                                          JSON,
                                        out AuthorizationData?                           AuthorizationData,
                                        out String?                                      ErrorResponse,

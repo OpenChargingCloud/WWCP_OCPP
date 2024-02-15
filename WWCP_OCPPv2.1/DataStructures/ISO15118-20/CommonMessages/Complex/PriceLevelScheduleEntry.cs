@@ -90,7 +90,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// Parse the given JSON representation of a price level schedule entry.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomPriceLevelScheduleEntryParser">A delegate to parse custom price level schedule entries.</param>
+        /// <param name="CustomPriceLevelScheduleEntryParser">An optional delegate to parse custom price level schedule entries.</param>
         public static PriceLevelScheduleEntry Parse(JObject                                                JSON,
                                                     CustomJObjectParserDelegate<PriceLevelScheduleEntry>?  CustomPriceLevelScheduleEntryParser   = null)
         {
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="PriceLevelScheduleEntry">The parsed price level schedule entry.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomPriceLevelScheduleEntryParser">A delegate to parse custom price level schedule entries.</param>
+        /// <param name="CustomPriceLevelScheduleEntryParser">An optional delegate to parse custom price level schedule entries.</param>
         public static Boolean TryParse(JObject                                                JSON,
                                        out PriceLevelScheduleEntry?                           PriceLevelScheduleEntry,
                                        out String?                                            ErrorResponse,

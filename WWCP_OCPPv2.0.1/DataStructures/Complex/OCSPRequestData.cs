@@ -161,7 +161,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// Parse the given JSON representation of a communication module.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomOCSPRequestDataParser">A delegate to parse custom OCSP request data.</param>
+        /// <param name="CustomOCSPRequestDataParser">An optional delegate to parse custom OCSP request data.</param>
         public static OCSPRequestData Parse(JObject                                        JSON,
                                             CustomJObjectParserDelegate<OCSPRequestData>?  CustomOCSPRequestDataParser   = null)
         {
@@ -207,7 +207,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="OCSPRequestData">The parsed OCSP request data.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomOCSPRequestDataParser">A delegate to parse custom OCSP request data.</param>
+        /// <param name="CustomOCSPRequestDataParser">An optional delegate to parse custom OCSP request data.</param>
         public static Boolean TryParse(JObject                                        JSON,
                                        out OCSPRequestData?                           OCSPRequestData,
                                        out String?                                    ErrorResponse,

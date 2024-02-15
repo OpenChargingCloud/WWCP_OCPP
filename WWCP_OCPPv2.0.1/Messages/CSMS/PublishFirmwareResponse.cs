@@ -181,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// </summary>
         /// <param name="Request">The publish firmware request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomPublishFirmwareResponseParser">A delegate to parse custom publish firmware responses.</param>
+        /// <param name="CustomPublishFirmwareResponseParser">An optional delegate to parse custom publish firmware responses.</param>
         public static PublishFirmwareResponse Parse(CSMS.PublishFirmwareRequest                            Request,
                                                     JObject                                                JSON,
                                                     CustomJObjectParserDelegate<PublishFirmwareResponse>?  CustomPublishFirmwareResponseParser   = null)
@@ -212,7 +212,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="PublishFirmwareResponse">The parsed publish firmware response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomPublishFirmwareResponseParser">A delegate to parse custom publish firmware responses.</param>
+        /// <param name="CustomPublishFirmwareResponseParser">An optional delegate to parse custom publish firmware responses.</param>
         public static Boolean TryParse(CSMS.PublishFirmwareRequest                            Request,
                                        JObject                                                JSON,
                                        out PublishFirmwareResponse?                           PublishFirmwareResponse,

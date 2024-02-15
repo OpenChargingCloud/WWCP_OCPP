@@ -155,7 +155,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// Parse the given JSON representation of a composite schedule.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomCompositeScheduleParser">A delegate to parse custom composite schedules.</param>
+        /// <param name="CustomCompositeScheduleParser">An optional delegate to parse custom composite schedules.</param>
         public static CompositeSchedule Parse(JObject                                          JSON,
                                               CustomJObjectParserDelegate<CompositeSchedule>?  CustomCompositeScheduleParser   = null)
         {
@@ -201,7 +201,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CompositeSchedule">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomCompositeScheduleParser">A delegate to parse custom Authorize requests.</param>
+        /// <param name="CustomCompositeScheduleParser">An optional delegate to parse custom Authorize requests.</param>
         public static Boolean TryParse(JObject                                          JSON,
                                        out CompositeSchedule?                           CompositeSchedule,
                                        out String?                                      ErrorResponse,

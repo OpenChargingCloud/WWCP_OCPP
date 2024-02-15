@@ -234,7 +234,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         /// <param name="Request">The authorize request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomAuthorizeResponseParser">A delegate to parse custom authorize responses.</param>
+        /// <param name="CustomAuthorizeResponseParser">An optional delegate to parse custom authorize responses.</param>
         public static AuthorizeResponse Parse(CP.AuthorizeRequest                              Request,
                                               JObject                                          JSON,
                                               CustomJObjectParserDelegate<AuthorizeResponse>?  CustomAuthorizeResponseParser   = null)
@@ -314,7 +314,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="AuthorizeResponse">The parsed authorize response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomAuthorizeResponseParser">A delegate to parse custom authorize responses.</param>
+        /// <param name="CustomAuthorizeResponseParser">An optional delegate to parse custom authorize responses.</param>
         public static Boolean TryParse(CP.AuthorizeRequest                              Request,
                                        JObject                                          JSON,
                                        out AuthorizeResponse?                           AuthorizeResponse,

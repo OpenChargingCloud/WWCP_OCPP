@@ -162,7 +162,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="CustomSecurityEventNotificationRequestParser">A delegate to parse custom security event notification requests.</param>
+        /// <param name="CustomSecurityEventNotificationRequestParser">An optional delegate to parse custom security event notification requests.</param>
         public static SecurityEventNotificationRequest Parse(JObject                                                         JSON,
                                                              Request_Id                                                      RequestId,
                                                              ChargeBox_Id                                                    ChargeBoxId,
@@ -220,7 +220,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="SecurityEventNotificationRequest">The parsed security event notification request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomSecurityEventNotificationRequestParser">A delegate to parse custom security event notification requests.</param>
+        /// <param name="CustomSecurityEventNotificationRequestParser">An optional delegate to parse custom security event notification requests.</param>
         public static Boolean TryParse(JObject                                                         JSON,
                                        Request_Id                                                      RequestId,
                                        ChargeBox_Id                                                    ChargeBoxId,

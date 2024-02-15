@@ -147,7 +147,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="RequestId">The request identification.</param>
         /// <param name="NetworkingNodeId">The unique identification of the sending charge point/networking node.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomSignCertificateRequestParser">A delegate to parse custom SignCertificate requests.</param>
+        /// <param name="CustomSignCertificateRequestParser">An optional delegate to parse custom SignCertificate requests.</param>
         public static SignCertificateRequest Parse(JObject                                               JSON,
                                                    Request_Id                                            RequestId,
                                                    NetworkingNode_Id                                     NetworkingNodeId,
@@ -212,7 +212,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="SignCertificateRequest">The parsed sign certificate request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomSignCertificateRequestParser">A delegate to parse custom sign certificate requests.</param>
+        /// <param name="CustomSignCertificateRequestParser">An optional delegate to parse custom sign certificate requests.</param>
         public static Boolean TryParse(JObject                                               JSON,
                                        Request_Id                                            RequestId,
                                        NetworkingNode_Id                                     NetworkingNodeId,

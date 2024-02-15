@@ -229,7 +229,7 @@ namespace cloud.charging.open.protocols.OCPP
         /// Parse the given JSON representation of a cryptographic key pair.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomKeyPairParser">A delegate to parse custom cryptographic key pairs.</param>
+        /// <param name="CustomKeyPairParser">An optional delegate to parse custom cryptographic key pairs.</param>
         public static KeyPair Parse(JObject                                  JSON,
                                       CustomJObjectParserDelegate<KeyPair>?  CustomKeyPairParser   = null)
         {
@@ -276,7 +276,7 @@ namespace cloud.charging.open.protocols.OCPP
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="KeyPair">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomKeyPairParser">A delegate to parse custom key pairs.</param>
+        /// <param name="CustomKeyPairParser">An optional delegate to parse custom key pairs.</param>
         public static Boolean TryParse(JObject                                JSON,
                                        out KeyPair?                           KeyPair,
                                        out String?                            ErrorResponse,

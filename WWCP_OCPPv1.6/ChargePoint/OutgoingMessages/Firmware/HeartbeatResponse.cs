@@ -200,7 +200,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         /// <param name="Request">The heartbeat request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomHeartbeatResponseParser">A delegate to parse custom heartbeat responses.</param>
+        /// <param name="CustomHeartbeatResponseParser">An optional delegate to parse custom heartbeat responses.</param>
         public static HeartbeatResponse Parse(CP.HeartbeatRequest                              Request,
                                               JObject                                          JSON,
                                               CustomJObjectParserDelegate<HeartbeatResponse>?  CustomHeartbeatResponseParser   = null)
@@ -273,7 +273,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="HeartbeatResponse">The parsed heartbeat response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomHeartbeatResponseParser">A delegate to parse custom heartbeat responses.</param>
+        /// <param name="CustomHeartbeatResponseParser">An optional delegate to parse custom heartbeat responses.</param>
         public static Boolean TryParse(CP.HeartbeatRequest                              Request,
                                        JObject                                          JSON,
                                        out HeartbeatResponse?                           HeartbeatResponse,

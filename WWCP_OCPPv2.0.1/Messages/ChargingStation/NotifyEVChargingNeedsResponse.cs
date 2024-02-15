@@ -183,7 +183,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// </summary>
         /// <param name="Request">The notify EV charging needs request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomNotifyEVChargingNeedsResponseParser">A delegate to parse custom notify EV charging needs responses.</param>
+        /// <param name="CustomNotifyEVChargingNeedsResponseParser">An optional delegate to parse custom notify EV charging needs responses.</param>
         public static NotifyEVChargingNeedsResponse Parse(CS.NotifyEVChargingNeedsRequest                              Request,
                                                           JObject                                                      JSON,
                                                           CustomJObjectParserDelegate<NotifyEVChargingNeedsResponse>?  CustomNotifyEVChargingNeedsResponseParser   = null)
@@ -214,7 +214,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="NotifyEVChargingNeedsResponse">The parsed notify EV charging needs response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomNotifyEVChargingNeedsResponseParser">A delegate to parse custom notify EV charging needs responses.</param>
+        /// <param name="CustomNotifyEVChargingNeedsResponseParser">An optional delegate to parse custom notify EV charging needs responses.</param>
         public static Boolean TryParse(CS.NotifyEVChargingNeedsRequest                              Request,
                                        JObject                                                      JSON,
                                        out NotifyEVChargingNeedsResponse?                           NotifyEVChargingNeedsResponse,

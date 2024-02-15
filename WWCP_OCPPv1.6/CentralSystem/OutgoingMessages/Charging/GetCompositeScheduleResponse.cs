@@ -319,7 +319,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <param name="Request">The get composite schedule request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomGetCompositeScheduleResponseParser">A delegate to parse custom get composite schedule responses.</param>
+        /// <param name="CustomGetCompositeScheduleResponseParser">An optional delegate to parse custom get composite schedule responses.</param>
         public static GetCompositeScheduleResponse Parse(CS.GetCompositeScheduleRequest                              Request,
                                                          JObject                                                     JSON,
                                                          CustomJObjectParserDelegate<GetCompositeScheduleResponse>?  CustomGetCompositeScheduleResponseParser   = null)
@@ -402,7 +402,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="GetCompositeScheduleResponse">The parsed get composite schedule response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomGetCompositeScheduleResponseParser">A delegate to parse custom get composite schedule responses.</param>
+        /// <param name="CustomGetCompositeScheduleResponseParser">An optional delegate to parse custom get composite schedule responses.</param>
         public static Boolean TryParse(CS.GetCompositeScheduleRequest                              Request,
                                        JObject                                                     JSON,
                                        out GetCompositeScheduleResponse?                           GetCompositeScheduleResponse,

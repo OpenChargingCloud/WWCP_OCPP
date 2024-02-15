@@ -247,7 +247,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         /// <param name="RequestId">The request identification.</param>
         /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomAddUserRoleRequestParser">A delegate to parse custom boot notification requests.</param>
+        /// <param name="CustomAddUserRoleRequestParser">An optional delegate to parse custom boot notification requests.</param>
         public static AddUserRoleRequest Parse(JObject                                           JSON,
                                                Request_Id                                        RequestId,
                                                NetworkingNode_Id                                 NetworkingNodeId,
@@ -285,7 +285,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="AddUserRoleRequest">The parsed boot notification request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomAddUserRoleRequestParser">A delegate to parse custom boot notification requests.</param>
+        /// <param name="CustomAddUserRoleRequestParser">An optional delegate to parse custom boot notification requests.</param>
         public static Boolean TryParse(JObject                                           JSON,
                                        Request_Id                                        RequestId,
                                        NetworkingNode_Id                                 NetworkingNodeId,

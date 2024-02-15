@@ -259,7 +259,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
         /// </summary>
         /// <param name="Request">The boot notification request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomDeleteSignaturePolicyResponseParser">A delegate to parse custom boot notification responses.</param>
+        /// <param name="CustomDeleteSignaturePolicyResponseParser">An optional delegate to parse custom boot notification responses.</param>
         public static DeleteSignaturePolicyResponse Parse(CSMS.DeleteSignaturePolicyRequest                            Request,
                                                           JObject                                                      JSON,
                                                           CustomJObjectParserDelegate<DeleteSignaturePolicyResponse>?  CustomDeleteSignaturePolicyResponseParser   = null)
@@ -291,7 +291,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="DeleteSignaturePolicyResponse">The parsed boot notification response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomDeleteSignaturePolicyResponseParser">A delegate to parse custom boot notification responses.</param>
+        /// <param name="CustomDeleteSignaturePolicyResponseParser">An optional delegate to parse custom boot notification responses.</param>
         public static Boolean TryParse(CSMS.DeleteSignaturePolicyRequest                            Request,
                                        JObject                                                      JSON,
                                        [NotNullWhen(true)]  out DeleteSignaturePolicyResponse?      DeleteSignaturePolicyResponse,

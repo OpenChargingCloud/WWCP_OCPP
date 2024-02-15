@@ -112,7 +112,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// </summary>
         /// <param name="Request">The firmware status notification request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomFirmwareStatusNotificationResponseResponseParser">A delegate to parse custom firmware status notification responses.</param>
+        /// <param name="CustomFirmwareStatusNotificationResponseResponseParser">An optional delegate to parse custom firmware status notification responses.</param>
         public static FirmwareStatusNotificationResponse Parse(CS.FirmwareStatusNotificationRequest                              Request,
                                                                JObject                                                           JSON,
                                                                CustomJObjectParserDelegate<FirmwareStatusNotificationResponse>?  CustomFirmwareStatusNotificationResponseResponseParser   = null)
@@ -143,7 +143,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="FirmwareStatusNotificationResponse">The parsed firmware status notification response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomFirmwareStatusNotificationResponseResponseParser">A delegate to parse custom firmware status notification responses.</param>
+        /// <param name="CustomFirmwareStatusNotificationResponseResponseParser">An optional delegate to parse custom firmware status notification responses.</param>
         public static Boolean TryParse(CS.FirmwareStatusNotificationRequest                              Request,
                                        JObject                                                           JSON,
                                        out FirmwareStatusNotificationResponse?                           FirmwareStatusNotificationResponse,

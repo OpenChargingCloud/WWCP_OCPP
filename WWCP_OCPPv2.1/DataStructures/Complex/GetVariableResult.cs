@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -107,6 +109,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.AttributeType        = AttributeType;
             this.AttributeStatusInfo  = AttributeStatusInfo;
 
+
+            unchecked
+            {
+
+                hashCode = this.AttributeStatus.     GetHashCode()       * 17 ^
+                           this.Component.           GetHashCode()       * 13 ^
+                           this.Variable.            GetHashCode()       * 11 ^
+                          (this.AttributeValue?.     GetHashCode() ?? 0) *  7 ^
+                          (this.AttributeType?.      GetHashCode() ?? 0) *  5 ^
+                          (this.AttributeStatusInfo?.GetHashCode() ?? 0) *  3 ^
+                           base.                     GetHashCode();
+
+            }
+
         }
 
         #endregion
@@ -133,7 +149,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //       "$ref": "#/definitions/AttributeEnumType"
         //     },
         //     "attributeValue": {
-        //       "description": "Value of requested attribute type of component-variable. This field can only be empty when the given status is NOT accepted.\r\n\r\nThe Configuration Variable &lt;&lt;configkey-reporting-value-size,ReportingValueSize&gt;&gt; can be used to limit GetVariableResult.attributeValue, VariableAttribute.value and EventData.actualValue. The max size of these values will always remain equal. \r\n\r\n",
+        //       "description":
+        //           "Value of requested attribute type of component-variable.
+        //            This field can only be empty when the given status is NOT accepted.
+        //            The Configuration Variable <<configkey-reporting-value-size,ReportingValueSize>> can be used to limit
+        //            GetVariableResult.attributeValue, VariableAttribute.value and EventData.actualValue.
+        //            The max size of these values will always remain equal.",
         //       "type": "string",
         //       "maxLength": 2500
         //     },
@@ -159,7 +180,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Parse the given JSON representation of a get variable result.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomGetVariableResultParser">A delegate to parse custom get variable results.</param>
+        /// <param name="CustomGetVariableResultParser">An optional delegate to parse custom get variable results.</param>
         public static GetVariableResult Parse(JObject                                          JSON,
                                               CustomJObjectParserDelegate<GetVariableResult>?  CustomGetVariableResultParser   = null)
         {
@@ -190,9 +211,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="GetVariableResult">The parsed get variable result.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                 JSON,
-                                       out GetVariableResult?  GetVariableResult,
-                                       out String?             ErrorResponse)
+        public static Boolean TryParse(JObject                                      JSON,
+                                       [NotNullWhen(true)]  out GetVariableResult?  GetVariableResult,
+                                       [NotNullWhen(false)] out String?             ErrorResponse)
 
             => TryParse(JSON,
                         out GetVariableResult,
@@ -206,10 +227,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="GetVariableResult">The parsed get variable result.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomGetVariableResultParser">A delegate to parse custom get variable results.</param>
+        /// <param name="CustomGetVariableResultParser">An optional delegate to parse custom get variable results.</param>
         public static Boolean TryParse(JObject                                          JSON,
-                                       out GetVariableResult?                           GetVariableResult,
-                                       out String?                                      ErrorResponse,
+                                       [NotNullWhen(true)]  out GetVariableResult?      GetVariableResult,
+                                       [NotNullWhen(false)] out String?                 ErrorResponse,
                                        CustomJObjectParserDelegate<GetVariableResult>?  CustomGetVariableResultParser   = null)
         {
 
@@ -242,9 +263,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     return false;
                 }
 
-                if (Component is null)
-                    return false;
-
                 #endregion
 
                 #region Variable               [mandatory]
@@ -257,9 +275,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 {
                     return false;
                 }
-
-                if (Variable is null)
-                    return false;
 
                 #endregion
 
@@ -309,7 +324,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
                                            OCPP.CustomData.TryParse,
-                                           out CustomData CustomData,
+                                           out CustomData? CustomData,
                                            out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -319,13 +334,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                GetVariableResult = new GetVariableResult(AttributeStatus,
-                                                          Component,
-                                                          Variable,
-                                                          AttributeValue,
-                                                          AttributeType,
-                                                          AttributeStatusInfo,
-                                                          CustomData);
+                GetVariableResult = new GetVariableResult(
+                                        AttributeStatus,
+                                        Component,
+                                        Variable,
+                                        AttributeValue,
+                                        AttributeType,
+                                        AttributeStatusInfo,
+                                        CustomData
+                                    );
 
                 if (CustomGetVariableResultParser is not null)
                     GetVariableResult = CustomGetVariableResultParser(JSON,
@@ -494,26 +511,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return AttributeStatus.     GetHashCode()       * 17 ^
-                       Component.           GetHashCode()       * 13 ^
-                       Variable.            GetHashCode()       * 11 ^
-                      (AttributeValue?.     GetHashCode() ?? 0) *  7 ^
-                      (AttributeType?.      GetHashCode() ?? 0) *  5 ^
-                      (AttributeStatusInfo?.GetHashCode() ?? 0) *  3 ^
-
-                       base.                GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 
@@ -529,12 +533,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    AttributeStatus,
 
                    AttributeValue is not null
-                       ? " => " + AttributeValue.SubstringMax(30)
+                       ? $" => {AttributeValue.SubstringMax(30)}"
+                       : "",
+
+                   AttributeType.HasValue
+                       ? $" [{AttributeType}]"
+                       : "",
+
+                   AttributeStatusInfo is not null
+                       ? $", {AttributeStatusInfo}"
                        : ""
 
                );
 
         #endregion
+
 
     }
 

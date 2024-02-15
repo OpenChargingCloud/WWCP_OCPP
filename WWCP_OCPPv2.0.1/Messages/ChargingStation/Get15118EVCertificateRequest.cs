@@ -173,7 +173,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="CustomGet15118EVCertificateRequestParser">A delegate to parse custom get 15118 EV certificate requests.</param>
+        /// <param name="CustomGet15118EVCertificateRequestParser">An optional delegate to parse custom get 15118 EV certificate requests.</param>
         public static Get15118EVCertificateRequest Parse(JObject                                                     JSON,
                                                          Request_Id                                                  RequestId,
                                                          ChargeBox_Id                                                ChargeBoxId,
@@ -231,7 +231,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="Get15118EVCertificateRequest">The parsed Get15118EVCertificate request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomGet15118EVCertificateRequestParser">A delegate to parse custom Get15118EVCertificate requests.</param>
+        /// <param name="CustomGet15118EVCertificateRequestParser">An optional delegate to parse custom Get15118EVCertificate requests.</param>
         public static Boolean TryParse(JObject                                                     JSON,
                                        Request_Id                                                  RequestId,
                                        ChargeBox_Id                                                ChargeBoxId,

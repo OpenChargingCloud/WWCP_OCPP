@@ -214,7 +214,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="GetBaseReportResponse">The parsed get base report response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomGetBaseReportResponseParser">A delegate to parse custom get base report responses.</param>
+        /// <param name="CustomGetBaseReportResponseParser">An optional delegate to parse custom get base report responses.</param>
         public static Boolean TryParse(CSMS.GetBaseReportRequest                            Request,
                                        JObject                                              JSON,
                                        out GetBaseReportResponse?                           GetBaseReportResponse,

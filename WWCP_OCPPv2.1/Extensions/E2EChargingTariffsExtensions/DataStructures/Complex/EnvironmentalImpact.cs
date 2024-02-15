@@ -75,7 +75,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Parse the given JSON representation of a hour.
         /// </summary>
         /// <param name="JSON">The JSON to parse.</param>
-        /// <param name="CustomEnvironmentalImpactParser">A delegate to parse custom environmental impact JSON objects.</param>
+        /// <param name="CustomEnvironmentalImpactParser">An optional delegate to parse custom environmental impact JSON objects.</param>
         public static EnvironmentalImpact Parse(JObject                                            JSON,
                                                 CustomJObjectParserDelegate<EnvironmentalImpact>?  CustomEnvironmentalImpactParser   = null)
         {
@@ -121,7 +121,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSON">The JSON to parse.</param>
         /// <param name="EnvironmentalImpact">The parsed connector.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomEnvironmentalImpactParser">A delegate to parse custom environmental impact JSON objects.</param>
+        /// <param name="CustomEnvironmentalImpactParser">An optional delegate to parse custom environmental impact JSON objects.</param>
         public static Boolean TryParse(JObject                                            JSON,
                                        out EnvironmentalImpact                            EnvironmentalImpact,
                                        out String?                                        ErrorResponse,

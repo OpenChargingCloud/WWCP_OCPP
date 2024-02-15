@@ -142,7 +142,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="RequestTimestamp">The timestamp of the request.</param>
         /// <param name="WebSocketConnection">The WebSocket connection.</param>
         /// <param name="JSONMessage">The received JSON message.</param>
-        /// <param name="EventTrackingId">The event tracking identification.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification.</param>
         /// <param name="CancellationToken">The cancellation token.</param>
         public async Task<WebSocketTextMessageResponse> ProcessJSONMessage(DateTime              RequestTimestamp,
                                                                            IWebSocketConnection  WebSocketConnection,

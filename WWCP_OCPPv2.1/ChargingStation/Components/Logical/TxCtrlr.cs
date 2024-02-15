@@ -39,13 +39,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The Charging Station SHALL go back to the original state, probably: 'Available'.
         /// "Starting" might be the swiping of the RFID, pressing a start button, a RequestStartTransactionRequest being received etc.
         /// </summary>
-        public TimeSpan                       EVConnectionTimeOut         { get; set; }
+        public TimeSpan                   EVConnectionTimeOut         { get; set; }
 
         /// <summary>
         /// With this configuration variable the Charging Station can be configured to allow charging before having received a BootNotificationResponse with RegistrationStatus: Accepted.
         /// See: Transactions before being accepted by a CSMS.
         /// </summary>
-        public Boolean?                       TxBeforeAcceptedEnabled     { get; set; }
+        public Boolean?                   TxBeforeAcceptedEnabled     { get; set; }
 
         /// <summary>
         /// Defines when the Charging Station starts a new transaction: first transactioneventRequest: eventType = Started.
@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Which ever comes first will then cause a transaction to be started.
         /// For example: EVConnected, Authorized would mean that a transaction is started when an EV is detected (Cable is connected), or when an EV Driver swipes his RFID card and the CSMS successfully authorizes the ID for charging.
         /// </summary>
-        public IEnumerable<TxStartStopPoint>  TxStartPoint                { get; set; }
+        public IEnumerable<TxStartPoint>  TxStartPoint                { get; set; }
 
         /// <summary>
         /// Defines when the Charging Station ends a transaction: last transactioneventRequest: eventType = Ended.
@@ -64,22 +64,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The Charging Station SHALL only send the Ended event once for every transaction.
         /// MaxEnergyOnInvalidId integer Maximum amount of energy in Wh delivered when an identifier is deauthorized by the CSMS after start of a transaction.
         /// </summary>
-        public IEnumerable<TxStartStopPoint>  TxStopPoint                 { get; set; }
+        public IEnumerable<TxStopPoint>   TxStopPoint                 { get; set; }
 
         /// <summary>
         /// Whether the Charging Station will stop an ongoing transaction when it receives a non-accepted authorization status in TransactionEventResponse for this transaction.
         /// </summary>
-        public Boolean?                       StopTxOnInvalidId           { get; set; }
+        public Boolean?                   StopTxOnInvalidId           { get; set; }
 
         /// <summary>
         /// Maximum amount of energy in Wh delivered when an identifier is deauthorized by the CSMS after start of a transaction.
         /// </summary>
-        public WattHour?                      MaxEnergyOnInvalidId        { get; set; }
+        public WattHour?                  MaxEnergyOnInvalidId        { get; set; }
 
         /// <summary>
         /// When set to true, the Charging Station SHALL administratively stop the transaction when the cable is unplugged from the EV.
         /// </summary>
-        public Boolean                        StopTxOnEVSideDisconnect    { get; set; }
+        public Boolean                    StopTxOnEVSideDisconnect    { get; set; }
 
         #endregion
 
@@ -98,17 +98,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// 
         /// <param name="Instance">The optional case insensitive name of the instance in case the component exists as multiple instances.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public TxCtrlr(TimeSpan                       EVConnectionTimeOut,
-                       Boolean                        StopTxOnEVSideDisconnect,
-                       IEnumerable<TxStartStopPoint>  TxStartPoint,
-                       IEnumerable<TxStartStopPoint>  TxStopPoint,
+        public TxCtrlr(TimeSpan                   EVConnectionTimeOut,
+                       Boolean                    StopTxOnEVSideDisconnect,
+                       IEnumerable<TxStartPoint>  TxStartPoint,
+                       IEnumerable<TxStopPoint>   TxStopPoint,
 
-                       Boolean?                       TxBeforeAcceptedEnabled    = null,
-                       Boolean?                       StopTxOnInvalidId          = null,
-                       WattHour?                      MaxEnergyOnInvalidId       = null,
+                       Boolean?                   TxBeforeAcceptedEnabled   = null,
+                       Boolean?                   StopTxOnInvalidId         = null,
+                       WattHour?                  MaxEnergyOnInvalidId      = null,
 
-                       String?                        Instance                   = null,
-                       CustomData?                    CustomData                 = null)
+                       String?                    Instance                  = null,
+                       CustomData?                CustomData                = null)
 
             : base(nameof(TxCtrlr),
                    Instance,

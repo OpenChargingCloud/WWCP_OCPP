@@ -139,7 +139,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// Parse the given JSON representation of report data.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomReportDataParser">A delegate to parse custom report data JSON objects.</param>
+        /// <param name="CustomReportDataParser">An optional delegate to parse custom report data JSON objects.</param>
         public static ReportData Parse(JObject                                   JSON,
                                        CustomJObjectParserDelegate<ReportData>?  CustomReportDataParser   = null)
         {
@@ -185,7 +185,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ReportData">The parsed report data.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomReportDataParser">A delegate to parse custom report data JSON objects.</param>
+        /// <param name="CustomReportDataParser">An optional delegate to parse custom report data JSON objects.</param>
         public static Boolean TryParse(JObject                                   JSON,
                                        out ReportData?                           ReportData,
                                        out String?                               ErrorResponse,

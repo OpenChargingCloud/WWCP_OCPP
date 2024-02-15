@@ -109,7 +109,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// Parse the given JSON representation of status information.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomStatusInfoParser">A delegate to parse custom status information.</param>
+        /// <param name="CustomStatusInfoParser">An optional delegate to parse custom status information.</param>
         public static StatusInfo Parse(JObject                                   JSON,
                                        CustomJObjectParserDelegate<StatusInfo>?  CustomStatusInfoParser   = null)
         {
@@ -155,7 +155,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="StatusInfo">The parsed status information.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomStatusInfoParser">A delegate to parse custom status information.</param>
+        /// <param name="CustomStatusInfoParser">An optional delegate to parse custom status information.</param>
         public static Boolean TryParse(JObject                                   JSON,
                                        out StatusInfo?                           StatusInfo,
                                        out String?                               ErrorResponse,

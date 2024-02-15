@@ -149,7 +149,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// Parse the given JSON representation of AC charging parameters.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomACChargingParametersParser">A delegate to parse custom AC charging parameters JSON objects.</param>
+        /// <param name="CustomACChargingParametersParser">An optional delegate to parse custom AC charging parameters JSON objects.</param>
         public static ACChargingParameters Parse(JObject                                             JSON,
                                                  CustomJObjectParserDelegate<ACChargingParameters>?  CustomACChargingParametersParser   = null)
         {
@@ -195,7 +195,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ACChargingParameters">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomACChargingParametersParser">A delegate to parse custom AC charging parameters JSON objects.</param>
+        /// <param name="CustomACChargingParametersParser">An optional delegate to parse custom AC charging parameters JSON objects.</param>
         public static Boolean TryParse(JObject                                             JSON,
                                        out ACChargingParameters?                           ACChargingParameters,
                                        out String?                                         ErrorResponse,

@@ -157,7 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="CustomSignCertificateRequestParser">A delegate to parse custom SignCertificate requests.</param>
+        /// <param name="CustomSignCertificateRequestParser">An optional delegate to parse custom SignCertificate requests.</param>
         public static SignCertificateRequest Parse(JObject                                               JSON,
                                                    Request_Id                                            RequestId,
                                                    ChargeBox_Id                                          ChargeBoxId,
@@ -215,7 +215,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="SignCertificateRequest">The parsed sign certificate request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomSignCertificateRequestParser">A delegate to parse custom sign certificate requests.</param>
+        /// <param name="CustomSignCertificateRequestParser">An optional delegate to parse custom sign certificate requests.</param>
         public static Boolean TryParse(JObject                                               JSON,
                                        Request_Id                                            RequestId,
                                        ChargeBox_Id                                          ChargeBoxId,

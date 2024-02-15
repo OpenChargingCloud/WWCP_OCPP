@@ -185,7 +185,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// Parse the given JSON representation of a sampled value.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomSampledValueParser">A delegate to parse custom sampled values.</param>
+        /// <param name="CustomSampledValueParser">An optional delegate to parse custom sampled values.</param>
         public static SampledValue Parse(JObject                                     JSON,
                                          CustomJObjectParserDelegate<SampledValue>?  CustomSampledValueParser   = null)
         {
@@ -231,7 +231,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="SampledValue">The parsed sampled value.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomSampledValueParser">A delegate to parse custom sampled values.</param>
+        /// <param name="CustomSampledValueParser">An optional delegate to parse custom sampled values.</param>
         public static Boolean TryParse(JObject                                     JSON,
                                        out SampledValue?                           SampledValue,
                                        out String?                                 ErrorResponse,

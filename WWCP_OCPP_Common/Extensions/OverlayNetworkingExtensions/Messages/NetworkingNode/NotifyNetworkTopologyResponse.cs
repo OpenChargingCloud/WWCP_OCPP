@@ -143,7 +143,7 @@ namespace cloud.charging.open.protocols.OCPP.NN
         /// </summary>
         /// <param name="Request">The notify network topology request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomNotifyNetworkTopologyResponseParser">A delegate to parse custom notify network topology responses.</param>
+        /// <param name="CustomNotifyNetworkTopologyResponseParser">An optional delegate to parse custom notify network topology responses.</param>
         public static NotifyNetworkTopologyResponse Parse(NotifyNetworkTopologyRequest                                 Request,
                                                           JObject                                                      JSON,
                                                           CustomJObjectParserDelegate<NotifyNetworkTopologyResponse>?  CustomNotifyNetworkTopologyResponseParser   = null)
@@ -174,7 +174,7 @@ namespace cloud.charging.open.protocols.OCPP.NN
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="NotifyNetworkTopologyResponse">The parsed notify network topology response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomNotifyNetworkTopologyResponseParser">A delegate to parse custom notify network topology responses.</param>
+        /// <param name="CustomNotifyNetworkTopologyResponseParser">An optional delegate to parse custom notify network topology responses.</param>
         public static Boolean TryParse(NotifyNetworkTopologyRequest                                 Request,
                                        JObject                                                      JSON,
                                        [NotNullWhen(true)]  out NotifyNetworkTopologyResponse?      NotifyNetworkTopologyResponse,

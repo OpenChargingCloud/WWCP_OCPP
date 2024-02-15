@@ -177,7 +177,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
         /// </summary>
         /// <param name="Request">The delete file request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomDeleteFileResponseParser">A delegate to parse custom delete file responses.</param>
+        /// <param name="CustomDeleteFileResponseParser">An optional delegate to parse custom delete file responses.</param>
         public static DeleteFileResponse Parse(CSMS.DeleteFileRequest                            Request,
                                                JObject                                           JSON,
                                                CustomJObjectParserDelegate<DeleteFileResponse>?  CustomDeleteFileResponseParser   = null)
@@ -209,7 +209,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="DeleteFileResponse">The parsed delete file response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomDeleteFileResponseParser">A delegate to parse custom delete file responses.</param>
+        /// <param name="CustomDeleteFileResponseParser">An optional delegate to parse custom delete file responses.</param>
         public static Boolean TryParse(CSMS.DeleteFileRequest                            Request,
                                        JObject                                           JSON,
                                        [NotNullWhen(true)]  out DeleteFileResponse?      DeleteFileResponse,

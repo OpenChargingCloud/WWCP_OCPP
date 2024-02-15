@@ -182,7 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// </summary>
         /// <param name="Request">The customer information request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomCustomerInformationResponseParser">A delegate to parse custom customer information responses.</param>
+        /// <param name="CustomCustomerInformationResponseParser">An optional delegate to parse custom customer information responses.</param>
         public static CustomerInformationResponse Parse(CSMS.CustomerInformationRequest                            Request,
                                                         JObject                                                    JSON,
                                                         CustomJObjectParserDelegate<CustomerInformationResponse>?  CustomCustomerInformationResponseParser   = null)
@@ -213,7 +213,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomerInformationResponse">The parsed customer information response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomCustomerInformationResponseParser">A delegate to parse custom customer information responses.</param>
+        /// <param name="CustomCustomerInformationResponseParser">An optional delegate to parse custom customer information responses.</param>
         public static Boolean TryParse(CSMS.CustomerInformationRequest                            Request,
                                        JObject                                                    JSON,
                                        out CustomerInformationResponse?                           CustomerInformationResponse,

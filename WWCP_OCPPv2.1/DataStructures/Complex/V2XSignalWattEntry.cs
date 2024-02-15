@@ -88,7 +88,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Parse the given JSON representation of a V2X Signal-Watt entry.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomV2XSignalWattEntryParser">A delegate to parse custom sales tariff entries.</param>
+        /// <param name="CustomV2XSignalWattEntryParser">An optional delegate to parse custom sales tariff entries.</param>
         public static V2XSignalWattEntry Parse(JObject                                           JSON,
                                                CustomJObjectParserDelegate<V2XSignalWattEntry>?  CustomV2XSignalWattEntryParser   = null)
         {
@@ -133,7 +133,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="V2XSignalWattEntry">The parsed connector type.</param>
-        /// <param name="CustomV2XSignalWattEntryParser">A delegate to parse custom sales tariff entries.</param>
+        /// <param name="CustomV2XSignalWattEntryParser">An optional delegate to parse custom sales tariff entries.</param>
         public static Boolean TryParse(JObject                                           JSON,
                                        out V2XSignalWattEntry?                           V2XSignalWattEntry,
                                        out String?                                       ErrorResponse,

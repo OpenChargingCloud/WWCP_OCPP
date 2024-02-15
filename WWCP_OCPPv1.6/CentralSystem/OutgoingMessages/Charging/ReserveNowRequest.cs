@@ -263,7 +263,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestId">The request identification.</param>
         /// <param name="NetworkingNodeId">The unique identification of the destination charge point/networking node.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomReserveNowRequestParser">A delegate to parse custom reserve now requests.</param>
+        /// <param name="CustomReserveNowRequestParser">An optional delegate to parse custom reserve now requests.</param>
         public static ReserveNowRequest Parse(JObject                                          JSON,
                                               Request_Id                                       RequestId,
                                               NetworkingNode_Id                                NetworkingNodeId,
@@ -389,7 +389,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="ReserveNowRequest">The parsed reserve now request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomReserveNowRequestParser">A delegate to parse custom ReserveNowRequest requests.</param>
+        /// <param name="CustomReserveNowRequestParser">An optional delegate to parse custom ReserveNowRequest requests.</param>
         public static Boolean TryParse(JObject                                          JSON,
                                        Request_Id                                       RequestId,
                                        NetworkingNode_Id                                NetworkingNodeId,

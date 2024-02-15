@@ -181,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// </summary>
         /// <param name="Request">The set monitoring level request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomSetMonitoringLevelResponseParser">A delegate to parse custom set monitoring level responses.</param>
+        /// <param name="CustomSetMonitoringLevelResponseParser">An optional delegate to parse custom set monitoring level responses.</param>
         public static SetMonitoringLevelResponse Parse(CSMS.SetMonitoringLevelRequest                            Request,
                                                        JObject                                                   JSON,
                                                        CustomJObjectParserDelegate<SetMonitoringLevelResponse>?  CustomSetMonitoringLevelResponseParser   = null)
@@ -212,7 +212,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="SetMonitoringLevelResponse">The parsed set monitoring level response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomSetMonitoringLevelResponseParser">A delegate to parse custom set monitoring level responses.</param>
+        /// <param name="CustomSetMonitoringLevelResponseParser">An optional delegate to parse custom set monitoring level responses.</param>
         public static Boolean TryParse(CSMS.SetMonitoringLevelRequest                            Request,
                                        JObject                                                   JSON,
                                        out SetMonitoringLevelResponse?                           SetMonitoringLevelResponse,

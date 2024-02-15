@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -29,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// An object for requesting variable data.
+    /// A data structure for requesting variable data.
     /// </summary>
     public class GetVariableData : ACustomData,
                                    IEquatable<GetVariableData>
@@ -60,7 +62,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new additional case insensitive authorization identifier.
+        /// Create a new GetVariableData data structure.
         /// </summary>
         /// <param name="Component">A component for which the variable is requested.</param>
         /// <param name="Variable">A variable for which the attribute value is requested.</param>
@@ -78,6 +80,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.Component      = Component;
             this.Variable       = Variable;
             this.AttributeType  = AttributeType;
+
+            unchecked
+            {
+
+                hashCode = this.Component.     GetHashCode()       * 7 ^
+                           this.Variable.      GetHashCode()       * 5 ^
+                          (this.AttributeType?.GetHashCode() ?? 0) * 3 ^
+                           base.               GetHashCode();
+
+            }
 
         }
 
@@ -116,24 +128,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region (static) Parse   (JSON, CustomGetVariableDataParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a component variable.
+        /// Parse the given JSON representation of a GetVariableData data structure.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomGetVariableDataParser">A delegate to parse custom component variable JSON objects.</param>
+        /// <param name="CustomGetVariableDataParser">An optional delegate to parse custom GetVariableData data structure JSON objects.</param>
         public static GetVariableData Parse(JObject                                        JSON,
                                             CustomJObjectParserDelegate<GetVariableData>?  CustomGetVariableDataParser   = null)
         {
 
             if (TryParse(JSON,
-                         out var componentVariable,
+                         out var getVariableData,
                          out var errorResponse,
                          CustomGetVariableDataParser) &&
-                componentVariable is not null)
+                getVariableData is not null)
             {
-                return componentVariable;
+                return getVariableData;
             }
 
-            throw new ArgumentException("The given JSON representation of a component variable is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a GetVariableData data structure is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -145,14 +157,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
-        /// Try to parse the given JSON representation of a component variable.
+        /// Try to parse the given JSON representation of a GetVariableData data structure.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="GetVariableData">The parsed component variable.</param>
+        /// <param name="GetVariableData">The parsed GetVariableData data structure.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject               JSON,
-                                       out GetVariableData?  GetVariableData,
-                                       out String?           ErrorResponse)
+        public static Boolean TryParse(JObject                                    JSON,
+                                       [NotNullWhen(true)]  out GetVariableData?  GetVariableData,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
 
             => TryParse(JSON,
                         out GetVariableData,
@@ -161,15 +173,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
         /// <summary>
-        /// Try to parse the given JSON representation of a component variable.
+        /// Try to parse the given JSON representation of a GetVariableData data structure.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="GetVariableData">The parsed component variable.</param>
+        /// <param name="GetVariableData">The parsed GetVariableData data structure.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomGetVariableDataParser">A delegate to parse custom component variable JSON objects.</param>
+        /// <param name="CustomGetVariableDataParser">An optional delegate to parse custom GetVariableData data structure JSON objects.</param>
         public static Boolean TryParse(JObject                                        JSON,
-                                       out GetVariableData?                           GetVariableData,
-                                       out String?                                    ErrorResponse,
+                                       [NotNullWhen(true)]  out GetVariableData?      GetVariableData,
+                                       [NotNullWhen(false)] out String?               ErrorResponse,
                                        CustomJObjectParserDelegate<GetVariableData>?  CustomGetVariableDataParser)
         {
 
@@ -223,7 +235,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
                                            OCPP.CustomData.TryParse,
-                                           out CustomData CustomData,
+                                           out CustomData? CustomData,
                                            out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -250,7 +262,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             catch (Exception e)
             {
                 GetVariableData  = default;
-                ErrorResponse    = "The given JSON representation of a component variable is invalid: " + e.Message;
+                ErrorResponse    = "The given JSON representation of a GetVariableData data structure is invalid: " + e.Message;
                 return false;
             }
 
@@ -263,7 +275,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomGetVariableDataSerializer">A delegate to serialize custom get variable data objects.</param>
+        /// <param name="CustomGetVariableDataSerializer">A delegate to serialize custom GetVariableData data structures.</param>
         /// <param name="CustomComponentSerializer">A delegate to serialize custom components.</param>
         /// <param name="CustomEVSESerializer">A delegate to serialize custom EVSEs.</param>
         /// <param name="CustomVariableSerializer">A delegate to serialize custom variables.</param>
@@ -310,8 +322,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="GetVariableData1">An component variable.</param>
-        /// <param name="GetVariableData2">Another component variable.</param>
+        /// <param name="GetVariableData1">An GetVariableData data structure.</param>
+        /// <param name="GetVariableData2">Another GetVariableData data structure.</param>
         /// <returns>true|false</returns>
         public static Boolean operator == (GetVariableData? GetVariableData1,
                                            GetVariableData? GetVariableData2)
@@ -336,8 +348,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="GetVariableData1">An component variable.</param>
-        /// <param name="GetVariableData2">Another component variable.</param>
+        /// <param name="GetVariableData1">An GetVariableData data structure.</param>
+        /// <param name="GetVariableData2">Another GetVariableData data structure.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (GetVariableData? GetVariableData1,
                                            GetVariableData? GetVariableData2)
@@ -353,22 +365,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two component variables for equality.
+        /// Compares two GetVariableData data structures for equality.
         /// </summary>
-        /// <param name="Object">An component variable to compare with.</param>
+        /// <param name="Object">An GetVariableData data structure to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is GetVariableData componentVariable &&
-                   Equals(componentVariable);
+            => Object is GetVariableData getVariableData &&
+                   Equals(getVariableData);
 
         #endregion
 
         #region Equals(GetVariableData)
 
         /// <summary>
-        /// Compares two component variables for equality.
+        /// Compares two GetVariableData data structures for equality.
         /// </summary>
-        /// <param name="GetVariableData">An component variable to compare with.</param>
+        /// <param name="GetVariableData">An GetVariableData data structure to compare with.</param>
         public Boolean Equals(GetVariableData? GetVariableData)
 
             => GetVariableData is not null &&
@@ -387,23 +399,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Component.     GetHashCode()       * 7 ^
-                       Variable.      GetHashCode()       * 5 ^
-                      (AttributeType?.GetHashCode() ?? 0) * 3 ^
-
-                       base.          GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 
@@ -416,13 +418,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => String.Concat(
 
-                   Component.ToString(),
-                   " / ",
-                   Variable. ToString(),
+                   $"'{Component}' / '{Variable}'",
 
                    AttributeType.HasValue
-                       ? " (" + AttributeType.Value.AsText() + ")"
-                       : null
+                       ? $" ({AttributeType.Value.AsText()})"
+                       : ""
 
                );
 

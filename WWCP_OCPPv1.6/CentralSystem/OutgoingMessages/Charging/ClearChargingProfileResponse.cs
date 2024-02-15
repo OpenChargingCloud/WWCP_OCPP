@@ -179,7 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <param name="Request">The clear charging profile request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomClearChargingProfileResponseParser">A delegate to parse custom clear charging profile responses.</param>
+        /// <param name="CustomClearChargingProfileResponseParser">An optional delegate to parse custom clear charging profile responses.</param>
         public static ClearChargingProfileResponse Parse(CS.ClearChargingProfileRequest                              Request,
                                                          JObject                                                     JSON,
                                                          CustomJObjectParserDelegate<ClearChargingProfileResponse>?  CustomClearChargingProfileResponseParser   = null)
@@ -253,7 +253,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ClearChargingProfileResponse">The parsed clear charging profile response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomClearChargingProfileResponseParser">A delegate to parse custom clear charging profile responses.</param>
+        /// <param name="CustomClearChargingProfileResponseParser">An optional delegate to parse custom clear charging profile responses.</param>
         public static Boolean TryParse(CS.ClearChargingProfileRequest                              Request,
                                        JObject                                                     JSON,
                                        out ClearChargingProfileResponse?                           ClearChargingProfileResponse,

@@ -172,7 +172,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// Parse the given JSON representation of a set monitoring result.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomSetMonitoringResultParser">A delegate to parse custom set monitoring result JSON objects.</param>
+        /// <param name="CustomSetMonitoringResultParser">An optional delegate to parse custom set monitoring result JSON objects.</param>
         public static SetMonitoringResult Parse(JObject                                            JSON,
                                                 CustomJObjectParserDelegate<SetMonitoringResult>?  CustomSetMonitoringResultParser   = null)
         {
@@ -218,7 +218,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="SetMonitoringResult">The parsed set monitoring result.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomSetMonitoringResultParser">A delegate to parse custom set monitoring result JSON objects.</param>
+        /// <param name="CustomSetMonitoringResultParser">An optional delegate to parse custom set monitoring result JSON objects.</param>
         public static Boolean TryParse(JObject                                            JSON,
                                        out SetMonitoringResult?                           SetMonitoringResult,
                                        out String?                                        ErrorResponse,

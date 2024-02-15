@@ -27,7 +27,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// Logical Component responsible for configuration relating to the use of a local cache for authorization for Charging Station use.
+    /// Logical Component responsible for configuration relating to the use of
+    /// a local cache for authorization for charging station use.
     /// </summary>
     public class AuthCacheCtrlr : ALogicalComponentConfig
     {
@@ -35,14 +36,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Properties
 
         /// <summary>
-        /// If this variable exists and reports a value of true, Authorization Cache is enabled.
-        /// </summary>
-        public Boolean?                      Enabled                 { get; set; }
-
-        /// <summary>
-        /// If this variable exists and reports a value of true, Authorization Cache is supported, but not necessarily enabled.
+        /// If this variable exists and reports a value of true, authorization cache is supported, but not necessarily enabled.
         /// </summary>
         public Boolean?                      Available               { get; set; }
+
+        /// <summary>
+        /// If this variable exists and reports a value of true, authorization cache is enabled.
+        /// </summary>
+        public Boolean?                      Enabled                 { get; set; }
 
         /// <summary>
         /// Indicates in seconds how long it takes until a token expires in the authorization cache since it is last used.
@@ -50,8 +51,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public TimeSpan?                     LifeTime                { get; set; }
 
         /// <summary>
-        /// Indicates the number of bytes currently used by the Authorization Cache.
-        /// MaxLimit indicates the maximum number of bytes that can be used by the Authorization Cache.
+        /// Indicates the number of bytes currently used by the authorization cache.
+        /// MaxLimit indicates the maximum number of bytes that can be used by the authorization cache.
         /// </summary>
         public UInt32?                       Storage                 { get; set; }
 
@@ -61,7 +62,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public CacheEntryReplacementPolicy?  Policy                  { get; set; }
 
         /// <summary>
-        /// When set to true this variable disables the behavior to request authorization for an idToken that is stored in the cache with a status other than Accepted, as stated in C10.FR.03 and C12.FR.05.
+        /// When set to true this variable disables the behavior to request authorization for an idToken that is stored in the cache with a status other than accepted, as stated in C10.FR.03 and C12.FR.05.
         /// </summary>
         public Boolean?                      DisablePostAuthorize    { get; set; }
 
@@ -72,17 +73,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Create a new authorization cache controller.
         /// </summary>
-        /// <param name="Enabled">If this variable exists and reports a value of true, Authorization Cache is enabled.</param>
-        /// <param name="Available">If this variable exists and reports a value of true, Authorization Cache is supported, but not necessarily enabled.</param>
+        /// <param name="Available">If this variable exists and reports a value of true, authorization cache is supported, but not necessarily enabled.</param>
+        /// <param name="Enabled">If this variable exists and reports a value of true, authorization cache is enabled.</param>
         /// <param name="LifeTime">Indicates in seconds how long it takes until a token expires in the authorization cache since it is last used.</param>
-        /// <param name="Storage">Indicates the number of bytes currently used by the Authorization Cache. MaxLimit indicates the maximum number of bytes that can be used by the Authorization Cache.</param>
+        /// <param name="Storage">Indicates the number of bytes currently used by the authorization cache. MaxLimit indicates the maximum number of bytes that can be used by the authorization cache.</param>
         /// <param name="Policy">Cache Entry Replacement Policy: least recently used, least frequently used, first in first out, other custom mechanism.</param>
-        /// <param name="DisablePostAuthorize">When set to true this variable disables the behavior to request authorization for an idToken that is stored in the cache with a status other than Accepted, as stated in C10.FR.03 and C12.FR.05.</param>
+        /// <param name="DisablePostAuthorize">When set to true this variable disables the behavior to request authorization for an idToken that is stored in the cache with a status other than accepted, as stated in C10.FR.03 and C12.FR.05.</param>
         /// 
         /// <param name="Instance">The optional case insensitive name of the instance in case the component exists as multiple instances.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public AuthCacheCtrlr(Boolean?                      Enabled                = null,
-                              Boolean?                      Available              = null,
+        public AuthCacheCtrlr(Boolean?                      Available              = null,
+                              Boolean?                      Enabled                = null,
                               TimeSpan?                     LifeTime               = null,
                               UInt32?                       Storage                = null,
                               CacheEntryReplacementPolicy?  Policy                 = null,
@@ -93,7 +94,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             : base(nameof(AuthCacheCtrlr),
                    Instance,
-                   I18NString.Create("Logical Component responsible for configuration relating to the use of a local cache for authorization for Charging Station use."),
+                   I18NString.Create("Logical Component responsible for configuration relating to the use of a local cache for authorization for charging station use."),
                    CustomData)
 
         {
@@ -105,34 +106,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.Policy                = Policy;
             this.DisablePostAuthorize  = DisablePostAuthorize;
 
-
-            #region Enabled
-
-            variableConfigs.Add(
-                new VariableConfig(
-
-                    Name:             "Enabled",
-                    ValueGetter:      () => this.Enabled.HasValue
-                                                ? this.Enabled.Value
-                                                      ? "true"
-                                                      : "false"
-                                                : null,
-                    Instance:         null,
-
-                    Attributes:       new VariableAttribute(
-                                          Mutability:  MutabilityTypes.ReadWrite
-                                      ),
-
-                    Characteristics:  new VariableCharacteristics(
-                                          DataType:    DataTypes.Boolean
-                                      ),
-
-                    Description:      I18NString.Create("If this variable exists and reports a value of true, Authorization Cache is enabled.")
-
-                )
-            );
-
-            #endregion
 
             #region Available
 
@@ -155,7 +128,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                           DataType:    DataTypes.Boolean
                                       ),
 
-                    Description:      I18NString.Create("If this variable exists and reports a value of true, Authorization Cache is supported, but not necessarily enabled.")
+                    Description:      I18NString.Create("If this variable exists and reports a value of true, authorization cache is supported, but not necessarily enabled.")
+
+                )
+            );
+
+            #endregion
+
+            #region Enabled
+
+            variableConfigs.Add(
+                new VariableConfig(
+
+                    Name:             "Enabled",
+                    ValueGetter:      () => this.Enabled.HasValue
+                                                ? this.Enabled.Value
+                                                      ? "true"
+                                                      : "false"
+                                                : null,
+                    Instance:         null,
+
+                    Attributes:       new VariableAttribute(
+                                          Mutability:  MutabilityTypes.ReadWrite
+                                      ),
+
+                    Characteristics:  new VariableCharacteristics(
+                                          DataType:    DataTypes.Boolean
+                                      ),
+
+                    Description:      I18NString.Create("If this variable exists and reports a value of true, authorization cache is enabled.")
 
                 )
             );
@@ -206,7 +207,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                           DataType:    DataTypes.Integer
                                       ),
 
-                    Description:      I18NString.Create("Indicates the number of bytes currently used by the Authorization Cache. MaxLimit indicates the maximum number of bytes that can be used by the Authorization Cache.")
+                    Description:      I18NString.Create("Indicates the number of bytes currently used by the authorization cache. MaxLimit indicates the maximum number of bytes that can be used by the authorization cache.")
 
                 )
             );

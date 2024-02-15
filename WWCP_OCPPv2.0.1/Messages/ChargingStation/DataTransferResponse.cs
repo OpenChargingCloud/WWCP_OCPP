@@ -200,7 +200,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// </summary>
         /// <param name="Request">The data transfer request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomDataTransferResponseParser">A delegate to parse custom data transfer responses.</param>
+        /// <param name="CustomDataTransferResponseParser">An optional delegate to parse custom data transfer responses.</param>
         public static DataTransferResponse Parse(CS.DataTransferRequest                              Request,
                                                  JObject                                             JSON,
                                                  CustomJObjectParserDelegate<DataTransferResponse>?  CustomDataTransferResponseParser  = null)
@@ -231,7 +231,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="DataTransferResponse">The parsed data transfer response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomDataTransferResponseParser">A delegate to parse custom data transfer responses.</param>
+        /// <param name="CustomDataTransferResponseParser">An optional delegate to parse custom data transfer responses.</param>
         public static Boolean TryParse(CS.DataTransferRequest                              Request,
                                        JObject                                             JSON,
                                        out DataTransferResponse?                           DataTransferResponse,

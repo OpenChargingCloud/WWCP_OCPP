@@ -104,7 +104,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// Parse the given JSON representation of an EVSE.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomEVSEParser">A delegate to parse custom EVSEs.</param>
+        /// <param name="CustomEVSEParser">An optional delegate to parse custom EVSEs.</param>
         public static EVSE Parse(JObject                             JSON,
                                  CustomJObjectParserDelegate<EVSE>?  CustomEVSEParser   = null)
         {
@@ -150,7 +150,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="EVSE">The parsed EVSE.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomEVSEParser">A delegate to parse custom EVSEs.</param>
+        /// <param name="CustomEVSEParser">An optional delegate to parse custom EVSEs.</param>
         public static Boolean TryParse(JObject                             JSON,
                                        out EVSE?                           EVSE,
                                        out String?                         ErrorResponse,

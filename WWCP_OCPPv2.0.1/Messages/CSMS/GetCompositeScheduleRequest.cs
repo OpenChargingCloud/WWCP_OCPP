@@ -170,7 +170,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="CustomGetCompositeScheduleRequestParser">A delegate to parse custom get composite schedule requests.</param>
+        /// <param name="CustomGetCompositeScheduleRequestParser">An optional delegate to parse custom get composite schedule requests.</param>
         public static GetCompositeScheduleRequest Parse(JObject                                                    JSON,
                                                         Request_Id                                                 RequestId,
                                                         ChargeBox_Id                                               ChargeBoxId,
@@ -228,7 +228,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="GetCompositeScheduleRequest">The parsed get composite schedule request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomGetCompositeScheduleRequestParser">A delegate to parse custom get composite schedule requests.</param>
+        /// <param name="CustomGetCompositeScheduleRequestParser">An optional delegate to parse custom get composite schedule requests.</param>
         public static Boolean TryParse(JObject                                                    JSON,
                                        Request_Id                                                 RequestId,
                                        ChargeBox_Id                                               ChargeBoxId,

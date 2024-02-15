@@ -130,6 +130,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                  NetworkPath,
                                                  out var request,
                                                  out var errorResponse,
+                                                 null, //RequestTimestamp
+                                                 null, //RequestTimeout
+                                                 null, //EventTrackingId
                                                  CustomGetVariablesRequestParser) && request is not null) {
 
                     #region Send OnGetVariablesRequest event

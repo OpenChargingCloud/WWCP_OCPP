@@ -147,7 +147,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// Parse the given JSON representation of a charging station.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomChargingStationParser">A delegate to parse custom charging stations.</param>
+        /// <param name="CustomChargingStationParser">An optional delegate to parse custom charging stations.</param>
         public static ChargingStation Parse(JObject                                        JSON,
                                             CustomJObjectParserDelegate<ChargingStation>?  CustomChargingStationParser   = null)
         {
@@ -193,7 +193,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ChargingStation">The parsed charging station.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomChargingStationParser">A delegate to parse custom charging stations.</param>
+        /// <param name="CustomChargingStationParser">An optional delegate to parse custom charging stations.</param>
         public static Boolean TryParse(JObject                                        JSON,
                                        out ChargingStation?                           ChargingStation,
                                        out String?                                    ErrorResponse,

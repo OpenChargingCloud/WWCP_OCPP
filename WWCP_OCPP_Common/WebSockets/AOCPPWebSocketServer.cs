@@ -667,7 +667,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         /// <param name="RequestTimestamp">The timestamp of the request.</param>
         /// <param name="Connection">The WebSocket connection.</param>
         /// <param name="TextMessage">The received text message.</param>
-        /// <param name="EventTrackingId">The event tracking identification.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification.</param>
         /// <param name="CancellationToken">The cancellation token.</param>
         public override async Task<WebSocketTextMessageResponse> ProcessTextMessage(DateTime                   RequestTimestamp,
                                                                                     WebSocketServerConnection  Connection,
@@ -1032,7 +1032,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         /// <param name="RequestTimestamp">The timestamp of the request.</param>
         /// <param name="Connection">The WebSocket connection.</param>
         /// <param name="BinaryMessage">The received binary message.</param>
-        /// <param name="EventTrackingId">The event tracking identification.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification.</param>
         /// <param name="CancellationToken">The cancellation token.</param>
         public override async Task<WebSocketBinaryMessageResponse> ProcessBinaryMessage(DateTime                   RequestTimestamp,
                                                                                         WebSocketServerConnection  Connection,

@@ -179,7 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// Parse the given JSON representation of a APN configuration.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomAPNConfigurationParser">A delegate to parse custom APN configuration JSON objects.</param>
+        /// <param name="CustomAPNConfigurationParser">An optional delegate to parse custom APN configuration JSON objects.</param>
         public static APNConfiguration Parse(JObject                                         JSON,
                                              CustomJObjectParserDelegate<APNConfiguration>?  CustomAPNConfigurationParser   = null)
         {
@@ -225,7 +225,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="APNConfiguration">The parsed APN configuration.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomAPNConfigurationParser">A delegate to parse custom APN configuration JSON objects.</param>
+        /// <param name="CustomAPNConfigurationParser">An optional delegate to parse custom APN configuration JSON objects.</param>
         public static Boolean TryParse(JObject                                         JSON,
                                        out APNConfiguration?                           APNConfiguration,
                                        out String?                                     ErrorResponse,

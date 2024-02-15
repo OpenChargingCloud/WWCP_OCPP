@@ -28,6 +28,8 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation;
+using org.GraphDefined.Vanaheimr.Hermod.DNS;
+using static System.Collections.Specialized.BitVector32;
 
 #endregion
 
@@ -555,13 +557,260 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
         #endregion
 
-        #region SetVariables_Test()
+
+        // Notes: - When no variableInstance is provided, then the default or only instance of a variable is referenced.
+        //
+        //        - Each variable, in addition to its primary ("Actual") value, can have a set of associated secondary data
+        //          that is linked to the same primary variable name and variableInstance.
+        //
+        //            • Variable characteristics meta-data (read-only)
+        //                ◦ Unit of measure(V, W, kW, kWh, etc.)
+        //                ◦ Data type(Integer, Decimal, String, Date, OptionList, etc.)
+        //                ◦ Lower limit
+        //                ◦ Upper limit
+        //                ◦ List of allowed values for enumerated variables
+
+        //            • Variable attributes(read-write):
+        //                ◦ Actual value
+        //                ◦ Target value
+        //                ◦ Configured lower limit
+        //                ◦ Configured upper limit
+        //                ◦ Mutability  (whether the value can be altered or not, e.g.ReadOnly or ReadWrite)
+        //                ◦ Persistence (whether the value is preserved in case of a reboot or power loss)
+        //
+        //        - The CSMS SHALL NOT send more SetVariableData elements in a SetVariablesRequest than reported by the Charging Station via ItemsPerMessageSetVariables.
+        //        - When the Charging Station receives a SetVariablesRequest without an attributeType => Actual
+        //        - The CSMS SHALL NOT include multiple SetVariableData elements, in a single SetVariablesRequest, with the same
+        //          Component, Variable and AttributeType combination. Note that an omitted AttributeType counts as the value Actual.
+        //
+
+        #region SetVariables_Tests()
+
+        /// <summary>
+        /// Tests for setting variables of a charging station.
+        /// </summary>
+        [Test]
+        public async Task SetVariables_Tests()
+        {
+
+            Assert.That(testCSMS01,                Is.Not.Null);
+            Assert.That(testBackendWebSockets01,   Is.Not.Null);
+            Assert.That(chargingStation1,          Is.Not.Null);
+            Assert.That(chargingStation2,          Is.Not.Null);
+            Assert.That(chargingStation3,          Is.Not.Null);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var getLogRequests = new ConcurrentList<SetVariablesRequest>();
+
+                chargingStation1.OnSetVariablesRequest += (timestamp, sender, connection, getLogRequest) => {
+                    getLogRequests.TryAdd(getLogRequest);
+                    return Task.CompletedTask;
+                };
+
+                var setVariablesResponse = await testCSMS01.SetVariables(
+                                                     DestinationNodeId:   chargingStation1.Id,
+                                                     VariableData:        [
+
+                                                                              #region Known component & component instance...                  [must pass!]
+
+                                                                              new SetVariableData(
+                                                                                  Component:           new Component(
+                                                                                                           Name:        "SecurityCtrlr",
+                                                                                                           Instance:     null,
+                                                                                                           CustomData:   null
+                                                                                                       ),
+                                                                                  Variable:            new Variable(
+                                                                                                           Name:        "OrganizationName",
+                                                                                                           Instance:     null,
+                                                                                                           CustomData:   null
+                                                                                                       ),
+                                                                                  AttributeValue:      "Open Charging Cloud by GraphDefined GmbH",
+                                                                                  OldAttributeValue:   null,
+                                                                                  AttributeType:       null,
+                                                                                  CustomData:          null
+                                                                              ),
+
+                                                                              #endregion
+
+                                                                              #region Known component, unkown component instance...            [must fail!]
+
+                                                                              new SetVariableData(
+                                                                                  Component:           new Component(
+                                                                                                           Name:        "SecurityCtrlr",
+                                                                                                           Instance:    "Alert System!",
+                                                                                                           CustomData:   null
+                                                                                                       ),
+                                                                                  Variable:            new Variable(
+                                                                                                           Name:        "OrganizationName",
+                                                                                                           Instance:     null,
+                                                                                                           CustomData:   null
+                                                                                                       ),
+                                                                                  AttributeValue:      "Open Charging Cloud by GraphDefined GmbH",
+                                                                                  OldAttributeValue:   null,
+                                                                                  AttributeType:       null,
+                                                                                  CustomData:          null
+                                                                              ),
+
+                                                                              #endregion
+
+                                                                              #region Known component, unknown variable...                     [must fail!]
+
+                                                                              new SetVariableData(
+                                                                                  Component:           new Component(
+                                                                                                           Name:        "SecurityCtrlr",
+                                                                                                           Instance:     null,
+                                                                                                           CustomData:   null
+                                                                                                       ),
+                                                                                  Variable:            new Variable(
+                                                                                                           Name:        "Temperature Sensors",
+                                                                                                           Instance:     null,
+                                                                                                           CustomData:   null
+                                                                                                       ),
+                                                                                  AttributeValue:      "Open Charging Cloud by GraphDefined GmbH",
+                                                                                  OldAttributeValue:   null,
+                                                                                  AttributeType:       null,
+                                                                                  CustomData:          null
+                                                                              ),
+
+                                                                              #endregion
+
+                                                                              #region Known component & variable, unknown variable instance... [must fail!]
+
+                                                                              new SetVariableData(
+                                                                                  Component:           new Component(
+                                                                                                           Name:        "SecurityCtrlr",
+                                                                                                           Instance:     null,
+                                                                                                           CustomData:   null
+                                                                                                       ),
+                                                                                  Variable:            new Variable(
+                                                                                                           Name:        "OrganizationName",
+                                                                                                           Instance:    "Section31CodeName",
+                                                                                                           CustomData:   null
+                                                                                                       ),
+                                                                                  AttributeValue:      "Open Charging Cloud by GraphDefined GmbH",
+                                                                                  OldAttributeValue:   null,
+                                                                                  AttributeType:       null,
+                                                                                  CustomData:          null
+                                                                              )
+
+                                                                              #endregion
+
+                                                                          ],
+                                                     CustomData:          null
+                                                 );
+
+                ClassicAssert.AreEqual(ResultCode.OK,        setVariablesResponse.Result.ResultCode);
+
+                ClassicAssert.AreEqual(1,                    getLogRequests.Count);
+
+            }
+
+        }
+
+        #endregion
+
+        #region SetVariables_Conditional_Tests()
+
+        /// <summary>
+        /// Tests for setting variables of a charging station via safe conditional requests.
+        /// </summary>
+        [Test]
+        public async Task SetVariables_Conditional_Test()
+        {
+
+            Assert.That(testCSMS01,                Is.Not.Null);
+            Assert.That(testBackendWebSockets01,   Is.Not.Null);
+            Assert.That(chargingStation1,          Is.Not.Null);
+            Assert.That(chargingStation2,          Is.Not.Null);
+            Assert.That(chargingStation3,          Is.Not.Null);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var getLogRequests = new ConcurrentList<SetVariablesRequest>();
+
+                chargingStation1.OnSetVariablesRequest += (timestamp, sender, connection, getLogRequest) => {
+                    getLogRequests.TryAdd(getLogRequest);
+                    return Task.CompletedTask;
+                };
+
+                var setVariablesResponse = await testCSMS01.SetVariables(
+                                                     DestinationNodeId:   chargingStation1.Id,
+                                                     VariableData:        [
+
+                                                                              #region Known component & component instance...                  [must pass!]
+
+                                                                              new SetVariableData(
+                                                                                  Component:           new Component(
+                                                                                                           Name:        "SecurityCtrlr",
+                                                                                                           Instance:     null,
+                                                                                                           CustomData:   null
+                                                                                                       ),
+                                                                                  Variable:            new Variable(
+                                                                                                           Name:        "OrganizationName",
+                                                                                                           Instance:     null,
+                                                                                                           CustomData:   null
+                                                                                                       ),
+                                                                                  AttributeValue:      "Open Charging Cloud #1 by GraphDefined GmbH",
+                                                                                  OldAttributeValue:   "GraphDefined CSO",
+                                                                                  AttributeType:       null,
+                                                                                  CustomData:          null
+                                                                              ),
+
+                                                                              #endregion
+
+                                                                              #region Known component & component instance...                  [must fail!]
+
+                                                                              new SetVariableData(
+                                                                                  Component:           new Component(
+                                                                                                           Name:        "SecurityCtrlr",
+                                                                                                           Instance:     null,
+                                                                                                           CustomData:   null
+                                                                                                       ),
+                                                                                  Variable:            new Variable(
+                                                                                                           Name:        "OrganizationName",
+                                                                                                           Instance:     null,
+                                                                                                           CustomData:   null
+                                                                                                       ),
+                                                                                  AttributeValue:      "Open Charging Cloud #2 by GraphDefined GmbH",
+                                                                                  OldAttributeValue:   "GraphDefined CSO",
+                                                                                  AttributeType:       null,
+                                                                                  CustomData:          null
+                                                                              ),
+
+                                                                              #endregion
+
+                                                                          ],
+                                                     CustomData:          null
+                                                 );
+
+                ClassicAssert.AreEqual(ResultCode.OK,        setVariablesResponse.Result.ResultCode);
+
+                ClassicAssert.AreEqual(1,                    getLogRequests.Count);
+
+            }
+
+        }
+
+        #endregion
+
+        #region SetVariables_Conditional_WithinSameRequest_Passes_Test()
 
         /// <summary>
         /// A test for setting variables of a charging station.
         /// </summary>
         [Test]
-        public async Task SetVariables_Test()
+        public async Task SetVariables_Conditional_WithinSameRequest_Test()
         {
 
             ClassicAssert.IsNotNull(testCSMS01);
@@ -586,7 +835,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var response = await testCSMS01.SetVariables(
                                    DestinationNodeId:   chargingStation1.Id,
-                                   VariableData:        new[] {
+                                   VariableData:        [
                                                             new SetVariableData(
                                                                 AttributeValue:   "123",
                                                                 Component:        new Component(
@@ -607,7 +856,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                                                 AttributeType:    AttributeTypes.Actual,
                                                                 CustomData:       null
                                                             )
-                                                        },
+                                                        ],
                                    CustomData:          null
                                );
 
@@ -620,6 +869,73 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         }
 
         #endregion
+
+        #region SetVariables_Conditional_WithinSameRequest_Fails_Test()
+
+        /// <summary>
+        /// A test for setting variables of a charging station.
+        /// </summary>
+        [Test]
+        public async Task SetVariables_Conditional_WithinSameRequest_Fails_Test()
+        {
+
+            ClassicAssert.IsNotNull(testCSMS01);
+            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(chargingStation1);
+            ClassicAssert.IsNotNull(chargingStation2);
+            ClassicAssert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var getLogRequests = new ConcurrentList<SetVariablesRequest>();
+
+                chargingStation1.OnSetVariablesRequest += (timestamp, sender, connection, getLogRequest) => {
+                    getLogRequests.TryAdd(getLogRequest);
+                    return Task.CompletedTask;
+                };
+
+                var response = await testCSMS01.SetVariables(
+                                   DestinationNodeId:   chargingStation1.Id,
+                                   VariableData:        [
+                                                            new SetVariableData(
+                                                                AttributeValue:   "123",
+                                                                Component:        new Component(
+                                                                                      Name:         "Alert System!",
+                                                                                      Instance:     "Alert System #1",
+                                                                                      EVSE:         new EVSE(
+                                                                                                        Id:            EVSE_Id.     Parse(1),
+                                                                                                        ConnectorId:   Connector_Id.Parse(1),
+                                                                                                        CustomData:    null
+                                                                                                    ),
+                                                                                      CustomData:   null
+                                                                                  ),
+                                                                Variable:         new Variable(
+                                                                                      Name:         "Temperature Sensors",
+                                                                                      Instance:     "Temperature Sensor #1",
+                                                                                      CustomData:   null
+                                                                                  ),
+                                                                AttributeType:    AttributeTypes.Actual,
+                                                                CustomData:       null
+                                                            )
+                                                        ],
+                                   CustomData:          null
+                               );
+
+                ClassicAssert.AreEqual(ResultCode.OK,        response.Result.ResultCode);
+
+                ClassicAssert.AreEqual(1,                    getLogRequests.Count);
+
+            }
+
+        }
+
+        #endregion
+
 
         #region GetVariables_Test()
 
@@ -651,50 +967,50 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 };
 
                 var response = await testCSMS01.GetVariables(
-                                   DestinationNodeId:   chargingStation1.Id,
-                                   VariableData:        new[] {
+                                         DestinationNodeId:   chargingStation1.Id,
+                                         VariableData:        [
 
-                                                            new GetVariableData(
-                                                                Component:       new Component(
-                                                                                     Name:         "OCPPCommCtrlr"
-                                                                                 ),
-                                                                Variable:        new Variable(
-                                                                                     Name:         "FileTransferProtocols"
-                                                                                 )
-                                                            ),
+                                                                  new GetVariableData(
+                                                                      Component:       new Component(
+                                                                                           Name:         "OCPPCommCtrlr"
+                                                                                       ),
+                                                                      Variable:        new Variable(
+                                                                                           Name:         "FileTransferProtocols"
+                                                                                       )
+                                                                  ),
 
-                                                            new GetVariableData(
-                                                                Component:       new Component(
-                                                                                     Name:         "SecurityCtrlr"
-                                                                                 ),
-                                                                Variable:        new Variable(
-                                                                                     Name:         "OrganizationName"
-                                                                                 )
-                                                            )
+                                                                  new GetVariableData(
+                                                                      Component:       new Component(
+                                                                                           Name:         "SecurityCtrlr"
+                                                                                       ),
+                                                                      Variable:        new Variable(
+                                                                                           Name:         "OrganizationName"
+                                                                                       )
+                                                                  )
 
-                                                            //new GetVariableData(
-                                                            //    Component:       new Component(
-                                                            //                         Name:         "Alert System!",
-                                                            //                         Instance:     "Alert System #1",
-                                                            //                         EVSE:         new EVSE(
-                                                            //                                           Id:            EVSE_Id.     Parse(1),
-                                                            //                                           ConnectorId:   Connector_Id.Parse(1),
-                                                            //                                           CustomData:    null
-                                                            //                                       ),
-                                                            //                         CustomData:   null
-                                                            //                     ),
-                                                            //    Variable:        new Variable(
-                                                            //                         Name:         "Temperature Sensors",
-                                                            //                         Instance:     "Temperature Sensor #1",
-                                                            //                         CustomData:   null
-                                                            //                     ),
-                                                            //    AttributeType:   AttributeTypes.Actual,
-                                                            //    CustomData:      null
-                                                            //)
+                                                                  //new GetVariableData(
+                                                                  //    Component:       new Component(
+                                                                  //                         Name:         "Alert System!",
+                                                                  //                         Instance:     "Alert System #1",
+                                                                  //                         EVSE:         new EVSE(
+                                                                  //                                           Id:            EVSE_Id.     Parse(1),
+                                                                  //                                           ConnectorId:   Connector_Id.Parse(1),
+                                                                  //                                           CustomData:    null
+                                                                  //                                       ),
+                                                                  //                         CustomData:   null
+                                                                  //                     ),
+                                                                  //    Variable:        new Variable(
+                                                                  //                         Name:         "Temperature Sensors",
+                                                                  //                         Instance:     "Temperature Sensor #1",
+                                                                  //                         CustomData:   null
+                                                                  //                     ),
+                                                                  //    AttributeType:   AttributeTypes.Actual,
+                                                                  //    CustomData:      null
+                                                                  //)
 
-                                                        },
-                                   CustomData:          null
-                               );
+                                                              ],
+                                         CustomData:          null
+                                     );
 
                 ClassicAssert.AreEqual(ResultCode.OK,        response.Result.ResultCode);
 
@@ -714,6 +1030,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         }
 
         #endregion
+
 
         #region SetMonitoringBase_Test()
 

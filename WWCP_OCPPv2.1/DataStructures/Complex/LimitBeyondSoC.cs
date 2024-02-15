@@ -88,7 +88,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Parse the given JSON representation of a limit beyond state-of-charge.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomLimitBeyondSoCParser">A delegate to parse custom sales tariff entries.</param>
+        /// <param name="CustomLimitBeyondSoCParser">An optional delegate to parse custom sales tariff entries.</param>
         public static LimitBeyondSoC Parse(JObject                                       JSON,
                                            CustomJObjectParserDelegate<LimitBeyondSoC>?  CustomLimitBeyondSoCParser   = null)
         {
@@ -133,7 +133,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="LimitBeyondSoC">The parsed connector type.</param>
-        /// <param name="CustomLimitBeyondSoCParser">A delegate to parse custom sales tariff entries.</param>
+        /// <param name="CustomLimitBeyondSoCParser">An optional delegate to parse custom sales tariff entries.</param>
         public static Boolean TryParse(JObject                                       JSON,
                                        out LimitBeyondSoC?                           LimitBeyondSoC,
                                        out String?                                   ErrorResponse,

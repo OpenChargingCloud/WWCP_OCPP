@@ -456,7 +456,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="RequestId">The request identification.</param>
         /// <param name="NetworkingNodeId">The unique identification of the sending charge point/networking node.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomStopTransactionRequestParser">A delegate to parse custom stop transaction requests.</param>
+        /// <param name="CustomStopTransactionRequestParser">An optional delegate to parse custom stop transaction requests.</param>
         public static StopTransactionRequest Parse(JObject                                               JSON,
                                                    Request_Id                                            RequestId,
                                                    NetworkingNode_Id                                     NetworkingNodeId,
@@ -582,7 +582,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="StopTransactionRequest">The parsed StopTransaction request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomStopTransactionRequestParser">A delegate to parse custom stop transaction requests.</param>
+        /// <param name="CustomStopTransactionRequestParser">An optional delegate to parse custom stop transaction requests.</param>
         public static Boolean TryParse(JObject                                               JSON,
                                        Request_Id                                            RequestId,
                                        NetworkingNode_Id                                     NetworkingNodeId,

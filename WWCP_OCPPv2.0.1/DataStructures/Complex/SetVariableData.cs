@@ -132,7 +132,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// Parse the given JSON representation of set variable data.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomVariableDataParser">A delegate to parse custom set variable data JSON objects.</param>
+        /// <param name="CustomVariableDataParser">An optional delegate to parse custom set variable data JSON objects.</param>
         public static SetVariableData Parse(JObject                                        JSON,
                                             CustomJObjectParserDelegate<SetVariableData>?  CustomVariableDataParser   = null)
         {
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="VariableData">The parsed set variable data.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomVariableDataParser">A delegate to parse custom set variable data JSON objects.</param>
+        /// <param name="CustomVariableDataParser">An optional delegate to parse custom set variable data JSON objects.</param>
         public static Boolean TryParse(JObject                                        JSON,
                                        out SetVariableData?                           VariableData,
                                        out String?                                    ErrorResponse,

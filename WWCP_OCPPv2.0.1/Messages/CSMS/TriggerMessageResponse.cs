@@ -180,7 +180,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// </summary>
         /// <param name="Request">The trigger message request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomTriggerMessageResponseParser">A delegate to parse custom trigger message responses.</param>
+        /// <param name="CustomTriggerMessageResponseParser">An optional delegate to parse custom trigger message responses.</param>
         public static TriggerMessageResponse Parse(CSMS.TriggerMessageRequest                            Request,
                                                    JObject                                               JSON,
                                                    CustomJObjectParserDelegate<TriggerMessageResponse>?  CustomTriggerMessageResponseParser   = null)
@@ -211,7 +211,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="TriggerMessageResponse">The parsed trigger message response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomTriggerMessageResponseParser">A delegate to parse custom trigger message responses.</param>
+        /// <param name="CustomTriggerMessageResponseParser">An optional delegate to parse custom trigger message responses.</param>
         public static Boolean TryParse(CSMS.TriggerMessageRequest                            Request,
                                        JObject                                               JSON,
                                        out TriggerMessageResponse?                           TriggerMessageResponse,

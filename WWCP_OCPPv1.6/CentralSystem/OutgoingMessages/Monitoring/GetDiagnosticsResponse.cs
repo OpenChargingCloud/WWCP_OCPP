@@ -204,7 +204,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <param name="Request">The get diagnostics request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomGetDiagnosticsResponseParser">A delegate to parse custom get diagnostics responses.</param>
+        /// <param name="CustomGetDiagnosticsResponseParser">An optional delegate to parse custom get diagnostics responses.</param>
         public static GetDiagnosticsResponse Parse(CS.GetDiagnosticsRequest                              Request,
                                                    JObject                                               JSON,
                                                    CustomJObjectParserDelegate<GetDiagnosticsResponse>?  CustomGetDiagnosticsResponseParser   = null)
@@ -277,7 +277,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="GetDiagnosticsResponse">The parsed get diagnostics response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomGetDiagnosticsResponseParser">A delegate to parse custom get diagnostics responses.</param>
+        /// <param name="CustomGetDiagnosticsResponseParser">An optional delegate to parse custom get diagnostics responses.</param>
         public static Boolean TryParse(CS.GetDiagnosticsRequest                              Request,
                                        JObject                                               JSON,
                                        out GetDiagnosticsResponse?                           GetDiagnosticsResponse,

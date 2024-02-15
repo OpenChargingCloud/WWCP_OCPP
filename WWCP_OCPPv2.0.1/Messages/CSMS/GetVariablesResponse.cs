@@ -307,7 +307,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// </summary>
         /// <param name="Request">The reset request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomGetVariablesResponseParser">A delegate to parse custom get variables responses.</param>
+        /// <param name="CustomGetVariablesResponseParser">An optional delegate to parse custom get variables responses.</param>
         public static GetVariablesResponse Parse(CSMS.GetVariablesRequest                            Request,
                                                  JObject                                             JSON,
                                                  CustomJObjectParserDelegate<GetVariablesResponse>?  CustomGetVariablesResponseParser   = null)
@@ -338,7 +338,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="GetVariablesResponse">The parsed get variables response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomGetVariablesResponseParser">A delegate to parse custom get variables responses.</param>
+        /// <param name="CustomGetVariablesResponseParser">An optional delegate to parse custom get variables responses.</param>
         public static Boolean TryParse(CSMS.GetVariablesRequest                            Request,
                                        JObject                                             JSON,
                                        out GetVariablesResponse?                           GetVariablesResponse,

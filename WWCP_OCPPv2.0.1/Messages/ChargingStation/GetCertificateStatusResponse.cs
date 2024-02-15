@@ -196,7 +196,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// </summary>
         /// <param name="Request">The get certificate status request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomGetCertificateStatusResponseParser">A delegate to parse custom get certificate status responses.</param>
+        /// <param name="CustomGetCertificateStatusResponseParser">An optional delegate to parse custom get certificate status responses.</param>
         public static GetCertificateStatusResponse Parse(CS.GetCertificateStatusRequest                              Request,
                                                          JObject                                                     JSON,
                                                          CustomJObjectParserDelegate<GetCertificateStatusResponse>?  CustomGetCertificateStatusResponseParser   = null)
@@ -227,7 +227,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="GetCertificateStatusResponse">The parsed get certificate status response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomGetCertificateStatusResponseParser">A delegate to parse custom get certificate status responses.</param>
+        /// <param name="CustomGetCertificateStatusResponseParser">An optional delegate to parse custom get certificate status responses.</param>
         public static Boolean TryParse(CS.GetCertificateStatusRequest                              Request,
                                        JObject                                                     JSON,
                                        out GetCertificateStatusResponse?                           GetCertificateStatusResponse,

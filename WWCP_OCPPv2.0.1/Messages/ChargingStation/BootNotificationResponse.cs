@@ -221,7 +221,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// </summary>
         /// <param name="Request">The boot notification request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomBootNotificationResponseParser">A delegate to parse custom boot notification responses.</param>
+        /// <param name="CustomBootNotificationResponseParser">An optional delegate to parse custom boot notification responses.</param>
         public static BootNotificationResponse Parse(CS.BootNotificationRequest                              Request,
                                                      JObject                                                 JSON,
                                                      CustomJObjectParserDelegate<BootNotificationResponse>?  CustomBootNotificationResponseParser   = null)
@@ -253,7 +253,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="BootNotificationResponse">The parsed boot notification response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomBootNotificationResponseParser">A delegate to parse custom boot notification responses.</param>
+        /// <param name="CustomBootNotificationResponseParser">An optional delegate to parse custom boot notification responses.</param>
         public static Boolean TryParse(CS.BootNotificationRequest                              Request,
                                        JObject                                                 JSON,
                                        out BootNotificationResponse?                           BootNotificationResponse,

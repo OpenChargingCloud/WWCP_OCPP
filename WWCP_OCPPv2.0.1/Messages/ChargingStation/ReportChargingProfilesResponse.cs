@@ -113,7 +113,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// </summary>
         /// <param name="Request">The report charging profiles request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomReportChargingProfilesResponseParser">A delegate to parse custom report charging profiles responses.</param>
+        /// <param name="CustomReportChargingProfilesResponseParser">An optional delegate to parse custom report charging profiles responses.</param>
         public static ReportChargingProfilesResponse Parse(CS.ReportChargingProfilesRequest                              Request,
                                                            JObject                                                       JSON,
                                                            CustomJObjectParserDelegate<ReportChargingProfilesResponse>?  CustomReportChargingProfilesResponseParser   = null)
@@ -144,7 +144,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ReportChargingProfilesResponse">The parsed report charging profiles response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomReportChargingProfilesResponseParser">A delegate to parse custom report charging profiles responses.</param>
+        /// <param name="CustomReportChargingProfilesResponseParser">An optional delegate to parse custom report charging profiles responses.</param>
         public static Boolean TryParse(CS.ReportChargingProfilesRequest                              Request,
                                        JObject                                                       JSON,
                                        out ReportChargingProfilesResponse?                           ReportChargingProfilesResponse,

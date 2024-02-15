@@ -113,7 +113,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// </summary>
         /// <param name="Request">The notify charging limit request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomNotifyChargingLimitResponseParser">A delegate to parse custom notify charging limit responses.</param>
+        /// <param name="CustomNotifyChargingLimitResponseParser">An optional delegate to parse custom notify charging limit responses.</param>
         public static NotifyChargingLimitResponse Parse(CS.NotifyChargingLimitRequest                              Request,
                                                         JObject                                                    JSON,
                                                         CustomJObjectParserDelegate<NotifyChargingLimitResponse>?  CustomNotifyChargingLimitResponseParser   = null)
@@ -144,7 +144,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="NotifyChargingLimitResponse">The parsed notify charging limit response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomNotifyChargingLimitResponseParser">A delegate to parse custom notify charging limit responses.</param>
+        /// <param name="CustomNotifyChargingLimitResponseParser">An optional delegate to parse custom notify charging limit responses.</param>
         public static Boolean TryParse(CS.NotifyChargingLimitRequest                              Request,
                                        JObject                                                    JSON,
                                        out NotifyChargingLimitResponse?                           NotifyChargingLimitResponse,

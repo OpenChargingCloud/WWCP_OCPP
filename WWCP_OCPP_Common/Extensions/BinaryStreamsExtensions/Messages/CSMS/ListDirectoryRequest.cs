@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         /// <param name="RequestId">The request identification.</param>
         /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomListDirectoryRequestParser">A delegate to parse custom ListDirectoryRequest requests.</param>
+        /// <param name="CustomListDirectoryRequestParser">An optional delegate to parse custom ListDirectoryRequest requests.</param>
         public static ListDirectoryRequest Parse(JObject                                             JSON,
                                                  Request_Id                                          RequestId,
                                                  NetworkingNode_Id                                   NetworkingNodeId,
@@ -226,7 +226,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="ListDirectoryRequest">The parsed ListDirectoryRequest request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomListDirectoryRequestParser">A delegate to parse custom ListDirectoryRequest requests.</param>
+        /// <param name="CustomListDirectoryRequestParser">An optional delegate to parse custom ListDirectoryRequest requests.</param>
         public static Boolean TryParse(JObject                                             JSON,
                                        Request_Id                                          RequestId,
                                        NetworkingNode_Id                                   NetworkingNodeId,

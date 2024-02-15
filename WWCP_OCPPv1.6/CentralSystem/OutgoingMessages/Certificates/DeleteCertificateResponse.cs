@@ -166,7 +166,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <param name="Request">The delete certificate request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomDeleteCertificateResponseParser">A delegate to parse custom delete certificate responses.</param>
+        /// <param name="CustomDeleteCertificateResponseParser">An optional delegate to parse custom delete certificate responses.</param>
         public static DeleteCertificateResponse Parse(CS.DeleteCertificateRequest                              Request,
                                                       JObject                                                  JSON,
                                                       CustomJObjectParserDelegate<DeleteCertificateResponse>?  CustomDeleteCertificateResponseParser   = null)
@@ -198,7 +198,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="DeleteCertificateResponse">The parsed delete certificate response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomDeleteCertificateResponseParser">A delegate to parse custom delete certificate responses.</param>
+        /// <param name="CustomDeleteCertificateResponseParser">An optional delegate to parse custom delete certificate responses.</param>
         public static Boolean TryParse(CS.DeleteCertificateRequest                              Request,
                                        JObject                                                  JSON,
                                        out DeleteCertificateResponse?                           DeleteCertificateResponse,

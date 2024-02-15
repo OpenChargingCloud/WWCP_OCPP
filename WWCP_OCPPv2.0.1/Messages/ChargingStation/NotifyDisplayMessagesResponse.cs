@@ -113,7 +113,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// </summary>
         /// <param name="Request">The notify display messages request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomNotifyDisplayMessagesResponseParser">A delegate to parse custom notify display messages responses.</param>
+        /// <param name="CustomNotifyDisplayMessagesResponseParser">An optional delegate to parse custom notify display messages responses.</param>
         public static NotifyDisplayMessagesResponse Parse(CS.NotifyDisplayMessagesRequest                              Request,
                                                           JObject                                                      JSON,
                                                           CustomJObjectParserDelegate<NotifyDisplayMessagesResponse>?  CustomNotifyDisplayMessagesResponseParser   = null)
@@ -144,7 +144,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="NotifyDisplayMessagesResponse">The parsed notify display messages response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomNotifyDisplayMessagesResponseParser">A delegate to parse custom notify display messages responses.</param>
+        /// <param name="CustomNotifyDisplayMessagesResponseParser">An optional delegate to parse custom notify display messages responses.</param>
         public static Boolean TryParse(CS.NotifyDisplayMessagesRequest                              Request,
                                        JObject                                                      JSON,
                                        out NotifyDisplayMessagesResponse?                           NotifyDisplayMessagesResponse,

@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// The get variables request.
+    /// The GetVariables request.
     /// </summary>
     public class GetVariablesRequest : ARequest<GetVariablesRequest>,
                                        IRequest
@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new get variables request.
+        /// Create a new GetVariables request.
         /// </summary>
         /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
         /// <param name="VariableData">An enumeration of requested variable data sets.</param>
@@ -284,20 +284,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomGetVariablesRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, ..., CustomGetVariablesRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a get variables request.
+        /// Parse the given JSON representation of a GetVariables request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomGetVariablesRequestParser">A delegate to parse custom get variables requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomGetVariablesRequestParser">An optional delegate to parse custom GetVariables requests.</param>
         public static GetVariablesRequest Parse(JObject                                            JSON,
                                                 Request_Id                                         RequestId,
                                                 NetworkingNode_Id                                  NetworkingNodeId,
                                                 NetworkPath                                        NetworkPath,
+                                                DateTime?                                          RequestTimestamp                  = null,
+                                                TimeSpan?                                          RequestTimeout                    = null,
+                                                EventTracking_Id?                                  EventTrackingId                   = null,
                                                 CustomJObjectParserDelegate<GetVariablesRequest>?  CustomGetVariablesRequestParser   = null)
         {
 
@@ -307,37 +313,46 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          NetworkPath,
                          out var getVariablesRequest,
                          out var errorResponse,
+                         RequestTimestamp,
+                         RequestTimeout,
+                         EventTrackingId,
                          CustomGetVariablesRequestParser))
             {
                 return getVariablesRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a get variables request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a GetVariables request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out GetVariablesRequest, out ErrorResponse, CustomGetVariablesRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out GetVariablesRequest, out ErrorResponse, ..., CustomGetVariablesRequestParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a get variables request.
+        /// Try to parse the given JSON representation of a GetVariables request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="GetVariablesRequest">The parsed get variables request.</param>
+        /// <param name="GetVariablesRequest">The parsed GetVariables request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomGetVariablesRequestParser">A delegate to parse custom get variables requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomGetVariablesRequestParser">An optional delegate to parse custom GetVariables requests.</param>
         public static Boolean TryParse(JObject                                            JSON,
                                        Request_Id                                         RequestId,
                                        NetworkingNode_Id                                  NetworkingNodeId,
                                        NetworkPath                                        NetworkPath,
                                        [NotNullWhen(true)]  out GetVariablesRequest?      GetVariablesRequest,
                                        [NotNullWhen(false)] out String?                   ErrorResponse,
-                                       CustomJObjectParserDelegate<GetVariablesRequest>?  CustomGetVariablesRequestParser)
+                                       DateTime?                                          RequestTimestamp                  = null,
+                                       TimeSpan?                                          RequestTimeout                    = null,
+                                       EventTracking_Id?                                  EventTrackingId                   = null,
+                                       CustomJObjectParserDelegate<GetVariablesRequest>?  CustomGetVariablesRequestParser   = null)
         {
 
             try
@@ -345,7 +360,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 GetVariablesRequest = null;
 
-                #region VariableData         [optional]
+                #region VariableData    [optional]
 
                 if (!JSON.ParseMandatoryJSON("getVariableData",
                                              "get variable data",
@@ -358,7 +373,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region Signatures           [optional, OCPP_CSE]
+                #region Signatures      [optional, OCPP_CSE]
 
                 if (JSON.ParseOptionalHashSet("signatures",
                                               "cryptographic signatures",
@@ -372,12 +387,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region CustomData           [optional]
+                #region CustomData      [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
                                            OCPP.CustomData.TryParse,
-                                           out CustomData CustomData,
+                                           out CustomData? CustomData,
                                            out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -399,9 +414,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                           CustomData,
 
                                           RequestId,
-                                          null,
-                                          null,
-                                          null,
+                                          RequestTimestamp,
+                                          RequestTimeout,
+                                          EventTrackingId,
                                           NetworkPath
 
                                       );
@@ -416,7 +431,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 GetVariablesRequest  = null;
-                ErrorResponse        = "The given JSON representation of a get variables request is invalid: " + e.Message;
+                ErrorResponse        = "The given JSON representation of a GetVariables request is invalid: " + e.Message;
                 return false;
             }
 
@@ -429,7 +444,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomGetVariablesRequestSerializer">A delegate to serialize custom get variables requests.</param>
+        /// <param name="CustomGetVariablesRequestSerializer">A delegate to serialize custom GetVariables requests.</param>
         /// <param name="CustomGetVariableDataSerializer">A delegate to serialize custom get variable data objects.</param>
         /// <param name="CustomComponentSerializer">A delegate to serialize custom components.</param>
         /// <param name="CustomEVSESerializer">A delegate to serialize custom EVSEs.</param>
@@ -478,10 +493,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator == (GetVariablesRequest1, GetVariablesRequest2)
 
         /// <summary>
-        /// Compares two get variables requests for equality.
+        /// Compares two GetVariables requests for equality.
         /// </summary>
-        /// <param name="GetVariablesRequest1">A get variables request.</param>
-        /// <param name="GetVariablesRequest2">Another get variables request.</param>
+        /// <param name="GetVariablesRequest1">A GetVariables request.</param>
+        /// <param name="GetVariablesRequest2">Another GetVariables request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (GetVariablesRequest? GetVariablesRequest1,
                                            GetVariablesRequest? GetVariablesRequest2)
@@ -504,10 +519,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator != (GetVariablesRequest1, GetVariablesRequest2)
 
         /// <summary>
-        /// Compares two get variables requests for inequality.
+        /// Compares two GetVariables requests for inequality.
         /// </summary>
-        /// <param name="GetVariablesRequest1">A get variables request.</param>
-        /// <param name="GetVariablesRequest2">Another get variables request.</param>
+        /// <param name="GetVariablesRequest1">A GetVariables request.</param>
+        /// <param name="GetVariablesRequest2">Another GetVariables request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (GetVariablesRequest? GetVariablesRequest1,
                                            GetVariablesRequest? GetVariablesRequest2)
@@ -523,9 +538,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two get variables requests for equality.
+        /// Compares two GetVariables requests for equality.
         /// </summary>
-        /// <param name="Object">A get variables request to compare with.</param>
+        /// <param name="Object">A GetVariables request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is GetVariablesRequest getVariablesRequest &&
@@ -536,9 +551,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(GetVariablesRequest)
 
         /// <summary>
-        /// Compares two get variables requests for equality.
+        /// Compares two GetVariables requests for equality.
         /// </summary>
-        /// <param name="GetVariablesRequest">A get variables request to compare with.</param>
+        /// <param name="GetVariablesRequest">A GetVariables request to compare with.</param>
         public override Boolean Equals(GetVariablesRequest? GetVariablesRequest)
 
             => GetVariablesRequest is not null &&

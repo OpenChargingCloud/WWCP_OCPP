@@ -952,22 +952,22 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
                                     var response = await testCSMSv2_1.SetVariables(
                                                        new OCPPv2_1.CSMS.SetVariablesRequest(
-                                                           NetworkingNodeId:     NetworkingNode_Id.Parse(chargingStationId),
-                                                           VariableData:   new[] {
-                                                                               new OCPPv2_1.SetVariableData(
-                                                                                   commandArray[3],
-                                                                                   new OCPPv2_1.Component(
-                                                                                       Name:       commandArray[1],
-                                                                                       Instance:   null,
-                                                                                       EVSE:       null
-                                                                                   ),
-                                                                                   new OCPPv2_1.Variable(
-                                                                                       Name:       commandArray[2],
-                                                                                       Instance:   null
+                                                           NetworkingNodeId:   NetworkingNode_Id.Parse(chargingStationId),
+                                                           VariableData:       new[] {
+                                                                                   new OCPPv2_1.SetVariableData(
+                                                                                       new OCPPv2_1.Component(
+                                                                                           Name:       commandArray[1],
+                                                                                           Instance:   null,
+                                                                                           EVSE:       null
+                                                                                       ),
+                                                                                       new OCPPv2_1.Variable(
+                                                                                           Name:       commandArray[2],
+                                                                                           Instance:   null
+                                                                                       ),
+                                                                                       commandArray[3]
+                                                                                       //OCPPv2_1.AttributeTypes.Actual
                                                                                    )
-                                                                                   //OCPPv2_1.AttributeTypes.Actual
-                                                                               )
-                                                                           }
+                                                                               }
                                                        )
                                                    );
 

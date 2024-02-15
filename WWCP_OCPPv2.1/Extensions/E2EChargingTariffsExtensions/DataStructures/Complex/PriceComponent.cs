@@ -98,7 +98,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Parse the given JSON representation of a price component.
         /// </summary>
         /// <param name="JSON">The JSON to parse.</param>
-        /// <param name="CustomPriceComponentParser">A delegate to parse custom price component JSON objects.</param>
+        /// <param name="CustomPriceComponentParser">An optional delegate to parse custom price component JSON objects.</param>
         public static PriceComponent Parse(JObject                                       JSON,
                                            CustomJObjectParserDelegate<PriceComponent>?  CustomPriceComponentParser   = null)
         {
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSON">The JSON to parse.</param>
         /// <param name="PriceComponent">The parsed price component.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomPriceComponentParser">A delegate to parse custom price component JSON objects.</param>
+        /// <param name="CustomPriceComponentParser">An optional delegate to parse custom price component JSON objects.</param>
         public static Boolean TryParse(JObject                                       JSON,
                                        out PriceComponent?                           PriceComponent,
                                        out String?                                   ErrorResponse,

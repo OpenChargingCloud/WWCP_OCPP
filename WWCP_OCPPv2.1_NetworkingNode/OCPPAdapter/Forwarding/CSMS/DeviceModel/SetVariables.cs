@@ -58,6 +58,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                               JSONRequestMessage.NetworkPath,
                                               out var Request,
                                               out var errorResponse,
+                                              null, //RequestTimestamp
+                                              null, //RequestTimeout
+                                              null, //EventTrackingId
                                               parentNetworkingNode.OCPP.CustomSetVariablesRequestParser))
             {
                 return ForwardingDecision.REJECT(errorResponse);

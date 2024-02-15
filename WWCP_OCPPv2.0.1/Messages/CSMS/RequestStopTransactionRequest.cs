@@ -134,7 +134,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="CustomRequestStopTransactionRequestParser">A delegate to parse custom request stop transaction requests.</param>
+        /// <param name="CustomRequestStopTransactionRequestParser">An optional delegate to parse custom request stop transaction requests.</param>
         public static RequestStopTransactionRequest Parse(JObject                                                      JSON,
                                                           Request_Id                                                   RequestId,
                                                           ChargeBox_Id                                                 ChargeBoxId,
@@ -192,7 +192,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="RequestStopTransactionRequest">The parsed request stop transaction request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomRequestStopTransactionRequestParser">A delegate to parse custom request stop transaction requests.</param>
+        /// <param name="CustomRequestStopTransactionRequestParser">An optional delegate to parse custom request stop transaction requests.</param>
         public static Boolean TryParse(JObject                                                      JSON,
                                        Request_Id                                                   RequestId,
                                        ChargeBox_Id                                                 ChargeBoxId,

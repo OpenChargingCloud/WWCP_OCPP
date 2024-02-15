@@ -113,7 +113,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// </summary>
         /// <param name="Request">The cost updated request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomCostUpdatedResponseParser">A delegate to parse custom cost updated responses.</param>
+        /// <param name="CustomCostUpdatedResponseParser">An optional delegate to parse custom cost updated responses.</param>
         public static CostUpdatedResponse Parse(CSMS.CostUpdatedRequest                            Request,
                                                 JObject                                            JSON,
                                                 CustomJObjectParserDelegate<CostUpdatedResponse>?  CustomCostUpdatedResponseParser   = null)
@@ -144,7 +144,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CostUpdatedResponse">The parsed cost updated response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomCostUpdatedResponseParser">A delegate to parse custom cost updated responses.</param>
+        /// <param name="CustomCostUpdatedResponseParser">An optional delegate to parse custom cost updated responses.</param>
         public static Boolean TryParse(CSMS.CostUpdatedRequest                            Request,
                                        JObject                                            JSON,
                                        out CostUpdatedResponse?                           CostUpdatedResponse,

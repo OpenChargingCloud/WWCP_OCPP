@@ -146,7 +146,7 @@ namespace cloud.charging.open.protocols.OCPP
         /// Parse the given JSON representation of a cryptographic signature.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomSigningRuleParser">A delegate to parse custom cryptographic signatures.</param>
+        /// <param name="CustomSigningRuleParser">An optional delegate to parse custom cryptographic signatures.</param>
         public static SigningRule Parse(JObject                                    JSON,
                                         CustomJObjectParserDelegate<SigningRule>?  CustomSigningRuleParser   = null)
         {
@@ -193,7 +193,7 @@ namespace cloud.charging.open.protocols.OCPP
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="SigningRule">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomSigningRuleParser">A delegate to parse custom signatures.</param>
+        /// <param name="CustomSigningRuleParser">An optional delegate to parse custom signatures.</param>
         public static Boolean TryParse(JObject                                    JSON,
                                        out SigningRule?                           SigningRule,
                                        out String?                                ErrorResponse,

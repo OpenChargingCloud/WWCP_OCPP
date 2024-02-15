@@ -212,7 +212,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ClearCacheResponse">The parsed clear cache response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomClearCacheResponseParser">A delegate to parse custom clear cache responses.</param>
+        /// <param name="CustomClearCacheResponseParser">An optional delegate to parse custom clear cache responses.</param>
         public static Boolean TryParse(CSMS.ClearCacheRequest                            Request,
                                        JObject                                           JSON,
                                        out ClearCacheResponse?                           ClearCacheResponse,

@@ -185,7 +185,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="CustomPublishFirmwareStatusNotificationRequestParser">A delegate to parse custom publish firmware status notification requests.</param>
+        /// <param name="CustomPublishFirmwareStatusNotificationRequestParser">An optional delegate to parse custom publish firmware status notification requests.</param>
         public static PublishFirmwareStatusNotificationRequest Parse(JObject                                                                 JSON,
                                                                      Request_Id                                                              RequestId,
                                                                      ChargeBox_Id                                                            ChargeBoxId,
@@ -219,7 +219,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="PublishFirmwareStatusNotificationRequest">The parsed publish firmware status notification request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomPublishFirmwareStatusNotificationRequestParser">A delegate to parse custom publish firmware status notification requests.</param>
+        /// <param name="CustomPublishFirmwareStatusNotificationRequestParser">An optional delegate to parse custom publish firmware status notification requests.</param>
         public static Boolean TryParse(JObject                                                                 JSON,
                                        Request_Id                                                              RequestId,
                                        ChargeBox_Id                                                            ChargeBoxId,

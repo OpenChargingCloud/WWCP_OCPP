@@ -484,13 +484,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region SetVariables                (DestinationNodeId, VariableData, ...)
+        #region SetVariables                (DestinationNodeId, VariableData, DataConsistencyModel = null, ...)
 
         /// <summary>
         /// Set variable data on a charging station.
         /// </summary>
         /// <param name="DestinationNodeId">The networking node identification.</param>
         /// <param name="VariableData">An enumeration of variable data to set/change.</param>
+        /// <param name="DataConsistencyModel">An optional data consistency model for this request.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
@@ -505,24 +506,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             SetVariables(this ICSMS                    CSMS,
                          NetworkingNode_Id             DestinationNodeId,
                          IEnumerable<SetVariableData>  VariableData,
+                         DataConsistencyModels?        DataConsistencyModel   = null,
 
-                         IEnumerable<KeyPair>?         SignKeys            = null,
-                         IEnumerable<SignInfo>?        SignInfos           = null,
-                         IEnumerable<OCPP.Signature>?  Signatures          = null,
+                         IEnumerable<KeyPair>?         SignKeys               = null,
+                         IEnumerable<SignInfo>?        SignInfos              = null,
+                         IEnumerable<OCPP.Signature>?  Signatures             = null,
 
-                         CustomData?                   CustomData          = null,
+                         CustomData?                   CustomData             = null,
 
-                         Request_Id?                   RequestId           = null,
-                         DateTime?                     RequestTimestamp    = null,
-                         TimeSpan?                     RequestTimeout      = null,
-                         EventTracking_Id?             EventTrackingId     = null,
-                         CancellationToken             CancellationToken   = default)
+                         Request_Id?                   RequestId              = null,
+                         DateTime?                     RequestTimestamp       = null,
+                         TimeSpan?                     RequestTimeout         = null,
+                         EventTracking_Id?             EventTrackingId        = null,
+                         CancellationToken             CancellationToken      = default)
 
 
                 => CSMS.SetVariables(
                        new SetVariablesRequest(
                            DestinationNodeId,
                            VariableData,
+                           DataConsistencyModel,
 
                            SignKeys,
                            SignInfos,

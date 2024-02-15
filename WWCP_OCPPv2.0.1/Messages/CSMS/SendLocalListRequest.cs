@@ -380,7 +380,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="CustomSendLocalListRequestParser">A delegate to parse custom send local list requests.</param>
+        /// <param name="CustomSendLocalListRequestParser">An optional delegate to parse custom send local list requests.</param>
         public static SendLocalListRequest Parse(JObject                                             JSON,
                                                  Request_Id                                          RequestId,
                                                  ChargeBox_Id                                        ChargeBoxId,
@@ -438,7 +438,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="SendLocalListRequest">The parsed send local list request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomSendLocalListRequestParser">A delegate to parse custom send local list requests.</param>
+        /// <param name="CustomSendLocalListRequestParser">An optional delegate to parse custom send local list requests.</param>
         public static Boolean TryParse(JObject                                             JSON,
                                        Request_Id                                          RequestId,
                                        ChargeBox_Id                                        ChargeBoxId,

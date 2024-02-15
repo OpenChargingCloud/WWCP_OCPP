@@ -157,7 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// Parse the given JSON representation of a get variable result.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomGetVariableResultParser">A delegate to parse custom get variable results.</param>
+        /// <param name="CustomGetVariableResultParser">An optional delegate to parse custom get variable results.</param>
         public static GetVariableResult Parse(JObject                                          JSON,
                                               CustomJObjectParserDelegate<GetVariableResult>?  CustomGetVariableResultParser   = null)
         {
@@ -203,7 +203,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="GetVariableResult">The parsed get variable result.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomGetVariableResultParser">A delegate to parse custom get variable results.</param>
+        /// <param name="CustomGetVariableResultParser">An optional delegate to parse custom get variable results.</param>
         public static Boolean TryParse(JObject                                          JSON,
                                        out GetVariableResult?                           GetVariableResult,
                                        out String?                                      ErrorResponse,

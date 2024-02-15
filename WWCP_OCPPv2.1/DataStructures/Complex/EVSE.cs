@@ -70,6 +70,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.Id           = Id;
             this.ConnectorId  = ConnectorId;
 
+            unchecked
+            {
+
+                hashCode = this.Id.          GetHashCode()       * 5 ^
+                          (this.ConnectorId?.GetHashCode() ?? 0) * 3 ^
+                           base.GetHashCode();
+
+            }
+
         }
 
         #endregion
@@ -199,7 +208,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
                                            OCPP.CustomData.TryParse,
-                                           out CustomData CustomData,
+                                           out CustomData? CustomData,
                                            out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -364,23 +373,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Id.           GetHashCode()       * 5 ^
-
-                       (ConnectorId?.GetHashCode() ?? 0) * 3 ^
-
-                       base.         GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 
@@ -391,15 +390,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public override String ToString()
 
-            => String.Concat(
-
-                   Id,
-
-                   ConnectorId.HasValue
-                       ? $" ({ConnectorId.Value})"
-                       : ""
-
-               );
+            => ConnectorId.HasValue
+                   ? $"{Id} ({ConnectorId.Value})"
+                   : Id.ToString();
 
         #endregion
 

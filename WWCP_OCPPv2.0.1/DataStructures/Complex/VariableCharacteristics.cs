@@ -170,7 +170,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// Parse the given JSON representation of variable characteristics.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomVariableCharacteristicsParser">A delegate to parse custom variable characteristics JSON objects.</param>
+        /// <param name="CustomVariableCharacteristicsParser">An optional delegate to parse custom variable characteristics JSON objects.</param>
         public static VariableCharacteristics Parse(JObject                                                JSON,
                                                     CustomJObjectParserDelegate<VariableCharacteristics>?  CustomVariableCharacteristicsParser   = null)
         {
@@ -216,7 +216,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="VariableCharacteristics">The parsed variable characteristics.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomVariableCharacteristicsParser">A delegate to parse custom variable characteristics JSON objects.</param>
+        /// <param name="CustomVariableCharacteristicsParser">An optional delegate to parse custom variable characteristics JSON objects.</param>
         public static Boolean TryParse(JObject                                                JSON,
                                        out VariableCharacteristics?                           VariableCharacteristics,
                                        out String?                                            ErrorResponse,

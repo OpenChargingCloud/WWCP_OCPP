@@ -113,7 +113,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// </summary>
         /// <param name="Request">The notify report request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomNotifyReportResponseParser">A delegate to parse custom notify report responses.</param>
+        /// <param name="CustomNotifyReportResponseParser">An optional delegate to parse custom notify report responses.</param>
         public static NotifyReportResponse Parse(CS.NotifyReportRequest                              Request,
                                                  JObject                                             JSON,
                                                  CustomJObjectParserDelegate<NotifyReportResponse>?  CustomNotifyReportResponseParser   = null)
@@ -144,7 +144,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="NotifyReportResponse">The parsed notify report response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomNotifyReportResponseParser">A delegate to parse custom notify report responses.</param>
+        /// <param name="CustomNotifyReportResponseParser">An optional delegate to parse custom notify report responses.</param>
         public static Boolean TryParse(CS.NotifyReportRequest                              Request,
                                        JObject                                             JSON,
                                        out NotifyReportResponse?                           NotifyReportResponse,

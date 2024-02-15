@@ -78,7 +78,7 @@ namespace cloud.charging.open.protocols.OCPP
         /// Parse the given JSON representation of custom data.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomCustomDataParser">A delegate to parse custom custom data.</param>
+        /// <param name="CustomCustomDataParser">An optional delegate to parse custom custom data.</param>
         public static CustomData Parse(JObject                                   JSON,
                                        CustomJObjectParserDelegate<CustomData>?  CustomCustomDataParser   = null)
         {
@@ -125,7 +125,7 @@ namespace cloud.charging.open.protocols.OCPP
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomData">The parsed custom data object.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomCustomDataParser">A delegate to parse custom custom data.</param>
+        /// <param name="CustomCustomDataParser">An optional delegate to parse custom custom data.</param>
         public static Boolean TryParse(JObject                                   JSON,
                                                             out CustomData?      CustomData,
                                        [NotNullWhen(false)] out String?          ErrorResponse,

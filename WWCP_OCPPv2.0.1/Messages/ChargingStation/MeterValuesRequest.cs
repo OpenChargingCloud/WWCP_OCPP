@@ -359,7 +359,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="CustomMeterValuesRequestParser">A delegate to parse custom MeterValues requests.</param>
+        /// <param name="CustomMeterValuesRequestParser">An optional delegate to parse custom MeterValues requests.</param>
         public static MeterValuesRequest Parse(JObject                                           JSON,
                                                Request_Id                                        RequestId,
                                                ChargeBox_Id                                      ChargeBoxId,
@@ -417,7 +417,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="MeterValuesRequest">The parsed MeterValues request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomMeterValuesRequestParser">A delegate to parse custom BootNotification requests.</param>
+        /// <param name="CustomMeterValuesRequestParser">An optional delegate to parse custom BootNotification requests.</param>
         public static Boolean TryParse(JObject                                           JSON,
                                        Request_Id                                        RequestId,
                                        ChargeBox_Id                                      ChargeBoxId,

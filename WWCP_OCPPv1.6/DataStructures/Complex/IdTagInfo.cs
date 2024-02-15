@@ -153,7 +153,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Parse the given JSON representation of an identification tag info.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomIdTagInfoParser">A delegate to parse custom IdTagInfo JSON objects.</param>
+        /// <param name="CustomIdTagInfoParser">An optional delegate to parse custom IdTagInfo JSON objects.</param>
         public static IdTagInfo Parse(JObject                                  JSON,
                                       CustomJObjectParserDelegate<IdTagInfo>?  CustomIdTagInfoParser   = null)
         {
@@ -243,7 +243,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="IdTagInfo">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomIdTagInfoParser">A delegate to parse custom IdTagInfo JSON objects.</param>
+        /// <param name="CustomIdTagInfoParser">An optional delegate to parse custom IdTagInfo JSON objects.</param>
         public static Boolean TryParse(JObject                                  JSON,
                                        out IdTagInfo                            IdTagInfo,
                                        out String?                              ErrorResponse,

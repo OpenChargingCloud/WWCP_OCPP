@@ -125,7 +125,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// Parse the given JSON representation of a variable.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomVariableParser">A delegate to parse custom variable JSON objects.</param>
+        /// <param name="CustomVariableParser">An optional delegate to parse custom variable JSON objects.</param>
         public static Variable Parse(JObject                                 JSON,
                                      CustomJObjectParserDelegate<Variable>?  CustomVariableParser   = null)
         {
@@ -171,7 +171,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="Variable">The parsed variable.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomVariableParser">A delegate to parse custom variable JSON objects.</param>
+        /// <param name="CustomVariableParser">An optional delegate to parse custom variable JSON objects.</param>
         public static Boolean TryParse(JObject                                 JSON,
                                        out Variable?                           Variable,
                                        out String?                             ErrorResponse,

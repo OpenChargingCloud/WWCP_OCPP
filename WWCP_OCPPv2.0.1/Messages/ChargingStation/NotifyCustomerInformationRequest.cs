@@ -194,7 +194,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="CustomNotifyCustomerInformationRequestParser">A delegate to parse custom notify customer information requests.</param>
+        /// <param name="CustomNotifyCustomerInformationRequestParser">An optional delegate to parse custom notify customer information requests.</param>
         public static NotifyCustomerInformationRequest Parse(JObject                                                         JSON,
                                                              Request_Id                                                      RequestId,
                                                              ChargeBox_Id                                                    ChargeBoxId,
@@ -228,7 +228,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="NotifyCustomerInformationRequest">The parsed notify customer information request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomNotifyCustomerInformationRequestParser">A delegate to parse custom notify customer information requests.</param>
+        /// <param name="CustomNotifyCustomerInformationRequestParser">An optional delegate to parse custom notify customer information requests.</param>
         public static Boolean TryParse(JObject                                                         JSON,
                                        Request_Id                                                      RequestId,
                                        ChargeBox_Id                                                    ChargeBoxId,

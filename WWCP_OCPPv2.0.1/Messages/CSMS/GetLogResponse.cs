@@ -149,7 +149,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// </summary>
         /// <param name="Request">The reset request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomGetLogResponseParser">A delegate to parse custom get log responses.</param>
+        /// <param name="CustomGetLogResponseParser">An optional delegate to parse custom get log responses.</param>
         public static GetLogResponse Parse(CSMS.GetLogRequest                            Request,
                                            JObject                                       JSON,
                                            CustomJObjectParserDelegate<GetLogResponse>?  CustomGetLogResponseParser   = null)
@@ -180,7 +180,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="GetLogResponse">The parsed get log response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomGetLogResponseParser">A delegate to parse custom get log responses.</param>
+        /// <param name="CustomGetLogResponseParser">An optional delegate to parse custom get log responses.</param>
         public static Boolean TryParse(CSMS.GetLogRequest                            Request,
                                        JObject                                       JSON,
                                        out GetLogResponse?                           GetLogResponse,

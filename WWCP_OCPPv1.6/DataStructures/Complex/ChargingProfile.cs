@@ -326,7 +326,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Parse the given JSON representation of a charging profile.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomChargingProfileParser">A delegate to parse custom charging profiles.</param>
+        /// <param name="CustomChargingProfileParser">An optional delegate to parse custom charging profiles.</param>
         public static ChargingProfile Parse(JObject                                        JSON,
                                             CustomJObjectParserDelegate<ChargingProfile>?  CustomChargingProfileParser   = null)
         {
@@ -436,7 +436,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ChargingProfile">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomChargingProfileParser">A delegate to parse custom charging profiles.</param>
+        /// <param name="CustomChargingProfileParser">An optional delegate to parse custom charging profiles.</param>
         public static Boolean TryParse(JObject                                        JSON,
                                        out ChargingProfile?                           ChargingProfile,
                                        out String?                                    ErrorResponse,

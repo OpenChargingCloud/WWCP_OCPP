@@ -259,7 +259,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
         /// </summary>
         /// <param name="Request">The boot notification request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomUpdateUserRoleResponseParser">A delegate to parse custom boot notification responses.</param>
+        /// <param name="CustomUpdateUserRoleResponseParser">An optional delegate to parse custom boot notification responses.</param>
         public static UpdateUserRoleResponse Parse(CSMS.UpdateUserRoleRequest                            Request,
                                                    JObject                                               JSON,
                                                    CustomJObjectParserDelegate<UpdateUserRoleResponse>?  CustomUpdateUserRoleResponseParser   = null)
@@ -291,7 +291,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="UpdateUserRoleResponse">The parsed boot notification response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomUpdateUserRoleResponseParser">A delegate to parse custom boot notification responses.</param>
+        /// <param name="CustomUpdateUserRoleResponseParser">An optional delegate to parse custom boot notification responses.</param>
         public static Boolean TryParse(CSMS.UpdateUserRoleRequest                            Request,
                                        JObject                                               JSON,
                                        [NotNullWhen(true)]  out UpdateUserRoleResponse?      UpdateUserRoleResponse,

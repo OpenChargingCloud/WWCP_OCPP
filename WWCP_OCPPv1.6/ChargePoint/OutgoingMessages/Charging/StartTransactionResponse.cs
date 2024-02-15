@@ -248,7 +248,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomStartTransactionResponseParser">A delegate to parse custom start transaction responses.</param>
+        /// <param name="CustomStartTransactionResponseParser">An optional delegate to parse custom start transaction responses.</param>
         public static StartTransactionResponse Parse(CP.StartTransactionRequest                              Request,
                                                      JObject                                                 JSON,
                                                      CustomJObjectParserDelegate<StartTransactionResponse>?  CustomStartTransactionResponseParser   = null)
@@ -334,7 +334,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="StartTransactionResponse">The parsed start transaction response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomStartTransactionResponseParser">A delegate to parse custom start transaction responses.</param>
+        /// <param name="CustomStartTransactionResponseParser">An optional delegate to parse custom start transaction responses.</param>
         public static Boolean TryParse(CP.StartTransactionRequest                              Request,
                                        JObject                                                 JSON,
                                        out StartTransactionResponse?                           StartTransactionResponse,

@@ -153,7 +153,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// Parse the given JSON representation of a tax rule.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomTaxRuleParser">A delegate to parse custom tax rules.</param>
+        /// <param name="CustomTaxRuleParser">An optional delegate to parse custom tax rules.</param>
         public static TaxRule Parse(JObject                                JSON,
                                     CustomJObjectParserDelegate<TaxRule>?  CustomTaxRuleParser   = null)
         {
@@ -200,7 +200,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="TaxRule">The parsed tax rule.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomTaxRuleParser">A delegate to parse custom contract certificates.</param>
+        /// <param name="CustomTaxRuleParser">An optional delegate to parse custom contract certificates.</param>
         public static Boolean TryParse(JObject                                JSON,
                                        out TaxRule?                           TaxRule,
                                        out String?                            ErrorResponse,

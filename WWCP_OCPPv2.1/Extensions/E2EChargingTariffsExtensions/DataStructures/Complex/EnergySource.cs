@@ -75,7 +75,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Parse the given JSON representation of an energy source.
         /// </summary>
         /// <param name="JSON">The JSON to parse.</param>
-        /// <param name="CustomEnergySourceParser">A delegate to parse custom energy source JSON objects.</param>
+        /// <param name="CustomEnergySourceParser">An optional delegate to parse custom energy source JSON objects.</param>
         public static EnergySource Parse(JObject                                     JSON,
                                          CustomJObjectParserDelegate<EnergySource>?  CustomEnergySourceParser   = null)
         {
@@ -121,7 +121,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSON">The JSON to parse.</param>
         /// <param name="EnergySource">The parsed connector.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomEnergySourceParser">A delegate to parse custom energy source JSON objects.</param>
+        /// <param name="CustomEnergySourceParser">An optional delegate to parse custom energy source JSON objects.</param>
         public static Boolean TryParse(JObject                                     JSON,
                                        out EnergySource                            EnergySource,
                                        out String?                                 ErrorResponse,

@@ -155,7 +155,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="CustomReservationStatusUpdateRequestParser">A delegate to parse custom reservation status update requests.</param>
+        /// <param name="CustomReservationStatusUpdateRequestParser">An optional delegate to parse custom reservation status update requests.</param>
         public static ReservationStatusUpdateRequest Parse(JObject                                                       JSON,
                                                            Request_Id                                                    RequestId,
                                                            ChargeBox_Id                                                  ChargeBoxId,
@@ -189,7 +189,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="ReservationStatusUpdateRequest">The parsed reservation status update request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomReservationStatusUpdateRequestParser">A delegate to parse custom reservation status update requests.</param>
+        /// <param name="CustomReservationStatusUpdateRequestParser">An optional delegate to parse custom reservation status update requests.</param>
         public static Boolean TryParse(JObject                                                       JSON,
                                        Request_Id                                                    RequestId,
                                        ChargeBox_Id                                                  ChargeBoxId,

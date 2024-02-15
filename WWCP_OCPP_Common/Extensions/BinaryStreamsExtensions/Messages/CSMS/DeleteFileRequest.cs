@@ -161,7 +161,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         /// <param name="RequestId">The request identification.</param>
         /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomDeleteFileRequestParser">A delegate to parse custom DeleteFileRequest requests.</param>
+        /// <param name="CustomDeleteFileRequestParser">An optional delegate to parse custom DeleteFileRequest requests.</param>
         public static DeleteFileRequest Parse(JObject                                          JSON,
                                               Request_Id                                       RequestId,
                                               NetworkingNode_Id                                NetworkingNodeId,
@@ -199,7 +199,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="DeleteFileRequest">The parsed DeleteFileRequest request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomDeleteFileRequestParser">A delegate to parse custom DeleteFileRequest requests.</param>
+        /// <param name="CustomDeleteFileRequestParser">An optional delegate to parse custom DeleteFileRequest requests.</param>
         public static Boolean TryParse(JObject                                          JSON,
                                        Request_Id                                       RequestId,
                                        NetworkingNode_Id                                NetworkingNodeId,

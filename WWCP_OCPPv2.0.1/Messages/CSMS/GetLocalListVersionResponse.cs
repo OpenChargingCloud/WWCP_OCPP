@@ -136,7 +136,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// </summary>
         /// <param name="Request">The get local list version request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomGetLocalListVersionResponseParser">A delegate to parse custom get local list version responses.</param>
+        /// <param name="CustomGetLocalListVersionResponseParser">An optional delegate to parse custom get local list version responses.</param>
         public static GetLocalListVersionResponse Parse(CSMS.GetLocalListVersionRequest                            Request,
                                                         JObject                                                    JSON,
                                                         CustomJObjectParserDelegate<GetLocalListVersionResponse>?  CustomGetLocalListVersionResponseParser   = null)
@@ -167,7 +167,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="GetLocalListVersionResponse">The parsed get local list version response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomGetLocalListVersionResponseParser">A delegate to parse custom get local list version responses.</param>
+        /// <param name="CustomGetLocalListVersionResponseParser">An optional delegate to parse custom get local list version responses.</param>
         public static Boolean TryParse(CSMS.GetLocalListVersionRequest                            Request,
                                        JObject                                                    JSON,
                                        out GetLocalListVersionResponse?                           GetLocalListVersionResponse,

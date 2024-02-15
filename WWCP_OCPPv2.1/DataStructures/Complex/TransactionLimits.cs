@@ -110,7 +110,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Parse the given JSON representation of transaction limits.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomTransactionLimitsParser">A delegate to parse custom transaction limits.</param>
+        /// <param name="CustomTransactionLimitsParser">An optional delegate to parse custom transaction limits.</param>
         public static TransactionLimits Parse(JObject                                          JSON,
                                               CustomJObjectParserDelegate<TransactionLimits>?  CustomTransactionLimitsParser   = null)
         {
@@ -155,7 +155,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="TransactionLimits">The parsed transactionLimits.</param>
-        /// <param name="CustomTransactionLimitsParser">A delegate to parse custom transaction limits.</param>
+        /// <param name="CustomTransactionLimitsParser">An optional delegate to parse custom transaction limits.</param>
         public static Boolean TryParse(JObject                                          JSON,
                                        out TransactionLimits?                           TransactionLimits,
                                        out String?                                      ErrorResponse,

@@ -2327,13 +2327,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
         #endregion
 
 
-        #region SetVariables                (DestinationNodeId, VariableData, ...)
+        #region SetVariables                (DestinationNodeId, VariableData, DataConsistencyModel = null, ...)
 
         /// <summary>
         /// Set variable data on a charging station.
         /// </summary>
         /// <param name="DestinationNodeId">The networking node identification.</param>
         /// <param name="VariableData">An enumeration of variable data to set/change.</param>
+        /// <param name="DataConsistencyModel">An optional data consistency model for this request.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
@@ -2348,26 +2349,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
             SetVariables(this INetworkingNode          NetworkingNode,
                          NetworkingNode_Id             DestinationNodeId,
                          IEnumerable<SetVariableData>  VariableData,
+                         DataConsistencyModels?        DataConsistencyModel   = null,
 
-                         CustomData?                   CustomData          = null,
+                         CustomData?                   CustomData             = null,
 
-                         NetworkPath?                  NetworkPath         = null,
+                         NetworkPath?                  NetworkPath            = null,
 
-                         IEnumerable<KeyPair>?         SignKeys            = null,
-                         IEnumerable<SignInfo>?        SignInfos           = null,
-                         IEnumerable<OCPP.Signature>?  Signatures          = null,
+                         IEnumerable<KeyPair>?         SignKeys               = null,
+                         IEnumerable<SignInfo>?        SignInfos              = null,
+                         IEnumerable<OCPP.Signature>?  Signatures             = null,
 
-                         Request_Id?                   RequestId           = null,
-                         DateTime?                     RequestTimestamp    = null,
-                         TimeSpan?                     RequestTimeout      = null,
-                         EventTracking_Id?             EventTrackingId     = null,
-                         CancellationToken             CancellationToken   = default)
+                         Request_Id?                   RequestId              = null,
+                         DateTime?                     RequestTimestamp       = null,
+                         TimeSpan?                     RequestTimeout         = null,
+                         EventTracking_Id?             EventTrackingId        = null,
+                         CancellationToken             CancellationToken      = default)
 
 
                 => NetworkingNode.OCPP.OUT.SetVariables(
                        new SetVariablesRequest(
                            DestinationNodeId,
                            VariableData,
+                           DataConsistencyModel,
 
                            SignKeys,
                            SignInfos,

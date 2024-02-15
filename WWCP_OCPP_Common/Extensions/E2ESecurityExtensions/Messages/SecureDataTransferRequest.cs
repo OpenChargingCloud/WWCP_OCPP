@@ -300,7 +300,7 @@ namespace cloud.charging.open.protocols.OCPP
         /// <param name="RequestId">The request identification.</param>
         /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomDataTransferRequestParser">A delegate to parse custom SecureDataTransfer requests.</param>
+        /// <param name="CustomDataTransferRequestParser">An optional delegate to parse custom SecureDataTransfer requests.</param>
         public static SecureDataTransferRequest Parse(Byte[]                                                  Secure,
                                                       Request_Id                                              RequestId,
                                                       NetworkingNode_Id                                       NetworkingNodeId,
@@ -343,7 +343,10 @@ namespace cloud.charging.open.protocols.OCPP
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="SecureDataTransferRequest">The parsed SecureDataTransfer request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomSecureDataTransferRequestParser">A delegate to parse custom SecureDataTransfer requests.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomSecureDataTransferRequestParser">An optional delegate to parse custom SecureDataTransfer requests.</param>
         public static Boolean TryParse(Byte[]                                                  Secure,
                                        Request_Id                                              RequestId,
                                        NetworkingNode_Id                                       NetworkingNodeId,

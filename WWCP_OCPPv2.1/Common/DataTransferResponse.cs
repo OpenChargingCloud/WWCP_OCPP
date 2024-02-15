@@ -258,7 +258,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="Request">The data transfer request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomDataTransferResponseParser">A delegate to parse custom data transfer responses.</param>
+        /// <param name="CustomDataTransferResponseParser">An optional delegate to parse custom data transfer responses.</param>
         public static DataTransferResponse Parse(DataTransferRequest                                 Request,
                                                  JObject                                             JSON,
                                                  NetworkingNode_Id                                   DestinationNodeId,
@@ -304,7 +304,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="DataTransferResponse">The parsed data transfer response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
-        /// <param name="CustomDataTransferResponseParser">A delegate to parse custom data transfer responses.</param>
+        /// <param name="CustomDataTransferResponseParser">An optional delegate to parse custom data transfer responses.</param>
         public static Boolean TryParse(DataTransferRequest                                 Request,
                                        JObject                                             JSON,
                                        NetworkingNode_Id                                   DestinationNodeId,

@@ -199,7 +199,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestId">The request identification.</param>
         /// <param name="NetworkingNodeId">The unique identification of the destination charge point/networking node.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomCancelReservationRequestParser">A delegate to parse custom CancelReservation requests.</param>
+        /// <param name="CustomCancelReservationRequestParser">An optional delegate to parse custom CancelReservation requests.</param>
         public static CancelReservationRequest Parse(JObject                                                 JSON,
                                                      Request_Id                                              RequestId,
                                                      NetworkingNode_Id                                       NetworkingNodeId,
@@ -313,7 +313,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancelReservationRequest">The parsed CancelReservation request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomCancelReservationRequestParser">A delegate to parse custom cancel reservation requests.</param>
+        /// <param name="CustomCancelReservationRequestParser">An optional delegate to parse custom cancel reservation requests.</param>
         public static Boolean TryParse(JObject                                                 JSON,
                                        Request_Id                                              RequestId,
                                        NetworkingNode_Id                                       NetworkingNodeId,

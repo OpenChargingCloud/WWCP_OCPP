@@ -136,7 +136,7 @@ namespace cloud.charging.open.protocols.OCPP
         /// Parse the given JSON array representation of a network path.
         /// </summary>
         /// <param name="JSONArray">The JSON array to be parsed.</param>
-        /// <param name="CustomNetworkPathParser">A delegate to parse custom NetworkPath JSON objects.</param>
+        /// <param name="CustomNetworkPathParser">An optional delegate to parse custom NetworkPath JSON objects.</param>
         public static NetworkPath Parse(JArray                                    JSONArray,
                                         CustomJArrayParserDelegate<NetworkPath>?  CustomNetworkPathParser   = null)
         {
@@ -183,7 +183,7 @@ namespace cloud.charging.open.protocols.OCPP
         /// <param name="JSONArray">The JSON array to be parsed.</param>
         /// <param name="NetworkPath">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomNetworkPathParser">A delegate to parse custom network path JSON objects.</param>
+        /// <param name="CustomNetworkPathParser">An optional delegate to parse custom network path JSON objects.</param>
         public static Boolean TryParse(JArray                                    JSONArray,
                                        out NetworkPath?                          NetworkPath,
                                        out String?                               ErrorResponse,

@@ -122,7 +122,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Parse the given JSON representation of a cost.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomCostParser">A delegate to parse custom costs.</param>
+        /// <param name="CustomCostParser">An optional delegate to parse custom costs.</param>
         public static Cost Parse(JObject                             JSON,
                                  CustomJObjectParserDelegate<Cost>?  CustomCostParser   = null)
         {
@@ -167,7 +167,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="Cost">The parsed cost.</param>
-        /// <param name="CustomCostParser">A delegate to parse custom costs.</param>
+        /// <param name="CustomCostParser">An optional delegate to parse custom costs.</param>
         public static Boolean TryParse(JObject                             JSON,
                                        out Cost?                           Cost,
                                        out String?                         ErrorResponse,

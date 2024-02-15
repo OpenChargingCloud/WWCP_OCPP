@@ -15,6 +15,12 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using cloud.charging.open.protocols.OCPP;
+
+#endregion
+
 namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
@@ -150,6 +156,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The requested attribute type is not supported.
         /// </summary>
         NotSupportedAttributeTypes,
+
+        /// <summary>
+        /// Missing access rights to set the variable.
+        /// </summary>
+        [DistributedSystemsExtensions]
+        SecurityAccessViolation,
+
+        /// <summary>
+        /// Creating the database transaction failed.
+        /// </summary>
+        [DistributedSystemsExtensions]
+        DatabaseTransactionFailed,
+
+        /// <summary>
+        /// The request was part of a database transaction
+        /// which failed and was rolled back.
+        /// </summary>
+        [DistributedSystemsExtensions]
+        Rolledback,
 
         /// <summary>
         /// The request was rejected.

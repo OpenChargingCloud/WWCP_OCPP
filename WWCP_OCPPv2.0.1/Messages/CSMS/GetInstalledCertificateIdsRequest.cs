@@ -146,7 +146,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="CustomGetInstalledCertificateIdsRequestParser">A delegate to parse custom get installed certificate ids requests.</param>
+        /// <param name="CustomGetInstalledCertificateIdsRequestParser">An optional delegate to parse custom get installed certificate ids requests.</param>
         public static GetInstalledCertificateIdsRequest Parse(JObject                                                          JSON,
                                                               Request_Id                                                       RequestId,
                                                               ChargeBox_Id                                                     ChargeBoxId,
@@ -204,7 +204,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="GetInstalledCertificateIdsRequest">The parsed get installed certificate ids request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomGetInstalledCertificateIdsRequestParser">A delegate to parse custom get installed certificate ids requests.</param>
+        /// <param name="CustomGetInstalledCertificateIdsRequestParser">An optional delegate to parse custom get installed certificate ids requests.</param>
         public static Boolean TryParse(JObject                                                          JSON,
                                        Request_Id                                                       RequestId,
                                        ChargeBox_Id                                                     ChargeBoxId,

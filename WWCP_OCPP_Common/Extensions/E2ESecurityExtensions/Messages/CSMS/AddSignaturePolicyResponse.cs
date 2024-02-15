@@ -157,7 +157,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
         /// </summary>
         /// <param name="Request">The add signature policy request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomAddSignaturePolicyResponseParser">A delegate to parse custom add signature policy responses.</param>
+        /// <param name="CustomAddSignaturePolicyResponseParser">An optional delegate to parse custom add signature policy responses.</param>
         public static AddSignaturePolicyResponse Parse(CSMS.AddSignaturePolicyRequest                            Request,
                                                        JObject                                                   JSON,
                                                        CustomJObjectParserDelegate<AddSignaturePolicyResponse>?  CustomAddSignaturePolicyResponseParser   = null)
@@ -189,7 +189,7 @@ namespace cloud.charging.open.protocols.OCPP.CS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="AddSignaturePolicyResponse">The parsed add signature policy response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomAddSignaturePolicyResponseParser">A delegate to parse custom add signature policy responses.</param>
+        /// <param name="CustomAddSignaturePolicyResponseParser">An optional delegate to parse custom add signature policy responses.</param>
         public static Boolean TryParse(CSMS.AddSignaturePolicyRequest                            Request,
                                        JObject                                                   JSON,
                                        [NotNullWhen(true)]  out AddSignaturePolicyResponse?      AddSignaturePolicyResponse,

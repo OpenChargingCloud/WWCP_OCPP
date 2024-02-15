@@ -113,7 +113,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// </summary>
         /// <param name="Request">The security event notification request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomSecurityEventNotificationResponseParser">A delegate to parse custom security event notification responses.</param>
+        /// <param name="CustomSecurityEventNotificationResponseParser">An optional delegate to parse custom security event notification responses.</param>
         public static SecurityEventNotificationResponse Parse(CS.SecurityEventNotificationRequest                              Request,
                                                               JObject                                                          JSON,
                                                               CustomJObjectParserDelegate<SecurityEventNotificationResponse>?  CustomSecurityEventNotificationResponseParser   = null)
@@ -144,7 +144,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="SecurityEventNotificationResponse">The parsed security event notification response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomSecurityEventNotificationResponseParser">A delegate to parse custom security event notification responses.</param>
+        /// <param name="CustomSecurityEventNotificationResponseParser">An optional delegate to parse custom security event notification responses.</param>
         public static Boolean TryParse(CS.SecurityEventNotificationRequest                              Request,
                                        JObject                                                          JSON,
                                        out SecurityEventNotificationResponse?                           SecurityEventNotificationResponse,

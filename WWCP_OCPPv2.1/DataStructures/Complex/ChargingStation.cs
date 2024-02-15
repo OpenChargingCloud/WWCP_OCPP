@@ -151,8 +151,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Parse the given JSON representation of a charging station.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomChargingStationParser">A delegate to parse custom charging stations.</param>
-        /// <param name="CustomCustomDataParser">A delegate to parse custom CustomData objects.</param>
+        /// <param name="CustomChargingStationParser">An optional delegate to parse custom charging stations.</param>
+        /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
         public static ChargingStation Parse(JObject                                        JSON,
                                             CustomJObjectParserDelegate<ChargingStation>?  CustomChargingStationParser   = null,
                                             CustomJObjectParserDelegate<CustomData>?       CustomCustomDataParser        = null)
@@ -182,8 +182,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ChargingStation">The parsed charging station.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomChargingStationParser">A delegate to parse custom charging stations.</param>
-        /// <param name="CustomCustomDataParser">A delegate to parse custom CustomData objects.</param>
+        /// <param name="CustomChargingStationParser">An optional delegate to parse custom charging stations.</param>
+        /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
         public static Boolean TryParse(JObject                                        JSON,
                                        [NotNullWhen(true)]  out ChargingStation?      ChargingStation,
                                        [NotNullWhen(false)] out String?               ErrorResponse,

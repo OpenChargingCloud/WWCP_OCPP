@@ -200,7 +200,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <param name="Request">The reset request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomResetResponseParser">A delegate to parse custom reset responses.</param>
+        /// <param name="CustomResetResponseParser">An optional delegate to parse custom reset responses.</param>
         public static ResetResponse Parse(CS.ResetRequest                              Request,
                                           JObject                                      JSON,
                                           CustomJObjectParserDelegate<ResetResponse>?  CustomResetResponseParser   = null)
@@ -274,7 +274,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ResetResponse">The parsed reset response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomResetResponseParser">A delegate to parse custom reset responses.</param>
+        /// <param name="CustomResetResponseParser">An optional delegate to parse custom reset responses.</param>
         public static Boolean TryParse(CS.ResetRequest                              Request,
                                        JObject                                      JSON,
                                        out ResetResponse?                           ResetResponse,

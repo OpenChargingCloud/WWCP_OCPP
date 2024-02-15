@@ -162,7 +162,7 @@ namespace cloud.charging.open.protocols.OCPP
         /// Parse the given JSON representation of a cryptographic signature.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomSignatureParser">A delegate to parse custom cryptographic signatures.</param>
+        /// <param name="CustomSignatureParser">An optional delegate to parse custom cryptographic signatures.</param>
         public static Signature Parse(JObject                                  JSON,
                                       CustomJObjectParserDelegate<Signature>?  CustomSignatureParser   = null)
         {
@@ -189,7 +189,7 @@ namespace cloud.charging.open.protocols.OCPP
         /// Parse the given binary representation of a cryptographic signature.
         /// </summary>
         /// <param name="Binary">The binary to be parsed.</param>
-        /// <param name="CustomSignatureParser">A delegate to parse custom cryptographic signatures.</param>
+        /// <param name="CustomSignatureParser">An optional delegate to parse custom cryptographic signatures.</param>
         public static Signature Parse(Byte[]                                  Binary,
                                       CustomBinaryParserDelegate<Signature>?  CustomSignatureParser   = null)
         {
@@ -237,8 +237,8 @@ namespace cloud.charging.open.protocols.OCPP
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="Signature">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomSignatureParser">A delegate to parse custom signatures.</param>
-        /// <param name="CustomCustomDataParser">A delegate to parse custom CustomData objects.</param>
+        /// <param name="CustomSignatureParser">An optional delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
         public static Boolean TryParse(JObject                                   JSON,
                                        [NotNullWhen(true)]  out Signature?       Signature,
                                        [NotNullWhen(false)] out String?          ErrorResponse,
@@ -422,7 +422,7 @@ namespace cloud.charging.open.protocols.OCPP
         /// <param name="Binary">The binary to be parsed.</param>
         /// <param name="Signature">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomSignatureParser">A delegate to parse custom signatures.</param>
+        /// <param name="CustomSignatureParser">An optional delegate to parse custom signatures.</param>
         public static Boolean TryParse(Byte[]                                  Binary,
                                        [NotNullWhen(true)]  out Signature?     Signature,
                                        [NotNullWhen(false)] out String?        ErrorResponse,

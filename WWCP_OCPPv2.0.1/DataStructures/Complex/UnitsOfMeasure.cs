@@ -109,7 +109,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// Parse the given JSON representation of a unit of measure.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomUnitsOfMeasureParser">A delegate to parse custom units of measure.</param>
+        /// <param name="CustomUnitsOfMeasureParser">An optional delegate to parse custom units of measure.</param>
         public static UnitsOfMeasure Parse(JObject                                       JSON,
                                            CustomJObjectParserDelegate<UnitsOfMeasure>?  CustomUnitsOfMeasureParser   = null)
         {
@@ -155,7 +155,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="UnitsOfMeasure">The parsed unit of measure.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomUnitsOfMeasureParser">A delegate to parse custom units of measure.</param>
+        /// <param name="CustomUnitsOfMeasureParser">An optional delegate to parse custom units of measure.</param>
         public static Boolean TryParse(JObject                                       JSON,
                                        out UnitsOfMeasure?                           UnitsOfMeasure,
                                        out String?                                   ErrorResponse,

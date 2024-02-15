@@ -200,7 +200,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <param name="Request">The remote start transaction request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomRemoteStartTransactionResponseParser">A delegate to parse custom remote start transaction responses.</param>
+        /// <param name="CustomRemoteStartTransactionResponseParser">An optional delegate to parse custom remote start transaction responses.</param>
         public static RemoteStartTransactionResponse Parse(CS.RemoteStartTransactionRequest                              Request,
                                                            JObject                                                       JSON,
                                                            CustomJObjectParserDelegate<RemoteStartTransactionResponse>?  CustomRemoteStartTransactionResponseParser   = null)
@@ -274,7 +274,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RemoteStartTransactionResponse">The parsed remote start transaction response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomRemoteStartTransactionResponseParser">A delegate to parse custom remote start transaction responses.</param>
+        /// <param name="CustomRemoteStartTransactionResponseParser">An optional delegate to parse custom remote start transaction responses.</param>
         public static Boolean TryParse(CS.RemoteStartTransactionRequest                              Request,
                                        JObject                                                       JSON,
                                        out RemoteStartTransactionResponse?                           RemoteStartTransactionResponse,

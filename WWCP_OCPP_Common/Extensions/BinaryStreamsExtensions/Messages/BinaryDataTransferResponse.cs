@@ -166,7 +166,7 @@ namespace cloud.charging.open.protocols.OCPP
         /// </summary>
         /// <param name="Request">The BinaryDataTransfer request leading to this response.</param>
         /// <param name="Binary">The binary to be parsed.</param>
-        /// <param name="CustomBinaryDataTransferResponseParser">A delegate to parse custom binary data transfer responses.</param>
+        /// <param name="CustomBinaryDataTransferResponseParser">An optional delegate to parse custom binary data transfer responses.</param>
         public static BinaryDataTransferResponse Parse(BinaryDataTransferRequest                                Request,
                                                        Byte[]                                                   Binary,
                                                        CustomBinaryParserDelegate<BinaryDataTransferResponse>?  CustomBinaryDataTransferResponseParser  = null)
@@ -197,7 +197,7 @@ namespace cloud.charging.open.protocols.OCPP
         /// <param name="Binary">The binary to be parsed.</param>
         /// <param name="BinaryDataTransferResponse">The parsed binary data transfer response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomBinaryDataTransferResponseParser">A delegate to parse custom binary data transfer responses.</param>
+        /// <param name="CustomBinaryDataTransferResponseParser">An optional delegate to parse custom binary data transfer responses.</param>
         public static Boolean TryParse(BinaryDataTransferRequest                                Request,
                                        Byte[]                                                   Binary,
                                        [NotNullWhen(true)]  out BinaryDataTransferResponse?     BinaryDataTransferResponse,

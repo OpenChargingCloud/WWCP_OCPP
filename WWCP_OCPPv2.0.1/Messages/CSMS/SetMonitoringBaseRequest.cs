@@ -142,7 +142,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="CustomSetMonitoringBaseRequestParser">A delegate to parse custom set monitoring base requests.</param>
+        /// <param name="CustomSetMonitoringBaseRequestParser">An optional delegate to parse custom set monitoring base requests.</param>
         public static SetMonitoringBaseRequest Parse(JObject                                                 JSON,
                                                      Request_Id                                              RequestId,
                                                      ChargeBox_Id                                            ChargeBoxId,
@@ -200,7 +200,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="SetMonitoringBaseRequest">The parsed set monitoring base request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomSetMonitoringBaseRequestParser">A delegate to parse custom set monitoring base requests.</param>
+        /// <param name="CustomSetMonitoringBaseRequestParser">An optional delegate to parse custom set monitoring base requests.</param>
         public static Boolean TryParse(JObject                                                 JSON,
                                        Request_Id                                              RequestId,
                                        ChargeBox_Id                                            ChargeBoxId,

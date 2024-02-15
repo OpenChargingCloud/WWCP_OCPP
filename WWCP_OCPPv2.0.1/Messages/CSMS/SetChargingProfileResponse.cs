@@ -181,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// </summary>
         /// <param name="Request">The set charging profile request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomSetChargingProfileResponseParser">A delegate to parse custom set charging profile responses.</param>
+        /// <param name="CustomSetChargingProfileResponseParser">An optional delegate to parse custom set charging profile responses.</param>
         public static SetChargingProfileResponse Parse(CSMS.SetChargingProfileRequest                            Request,
                                                        JObject                                                   JSON,
                                                        CustomJObjectParserDelegate<SetChargingProfileResponse>?  CustomSetChargingProfileResponseParser   = null)
@@ -212,7 +212,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="SetChargingProfileResponse">The parsed set charging profile response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomSetChargingProfileResponseParser">A delegate to parse custom set charging profile responses.</param>
+        /// <param name="CustomSetChargingProfileResponseParser">An optional delegate to parse custom set charging profile responses.</param>
         public static Boolean TryParse(CSMS.SetChargingProfileRequest                            Request,
                                        JObject                                                   JSON,
                                        out SetChargingProfileResponse?                           SetChargingProfileResponse,

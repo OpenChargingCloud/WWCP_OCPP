@@ -288,7 +288,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="CustomAuthorizeRequestParser">A delegate to parse custom authorize requests.</param>
+        /// <param name="CustomAuthorizeRequestParser">An optional delegate to parse custom authorize requests.</param>
         public static AuthorizeRequest Parse(JObject                                         JSON,
                                              Request_Id                                      RequestId,
                                              ChargeBox_Id                                    ChargeBoxId,
@@ -322,7 +322,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="AuthorizeRequest">The parsed authorize request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomAuthorizeRequestParser">A delegate to parse custom authorize requests.</param>
+        /// <param name="CustomAuthorizeRequestParser">An optional delegate to parse custom authorize requests.</param>
         public static Boolean TryParse(JObject                                         JSON,
                                        Request_Id                                      RequestId,
                                        ChargeBox_Id                                    ChargeBoxId,

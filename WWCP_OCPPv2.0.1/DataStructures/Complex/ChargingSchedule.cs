@@ -187,7 +187,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// Parse the given JSON representation of a charging schedule.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomChargingScheduleParser">A delegate to parse custom charging schedules.</param>
+        /// <param name="CustomChargingScheduleParser">An optional delegate to parse custom charging schedules.</param>
         public static ChargingSchedule Parse(JObject                                         JSON,
                                              CustomJObjectParserDelegate<ChargingSchedule>?  CustomChargingScheduleParser   = null)
         {
@@ -233,7 +233,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ChargingSchedule">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomChargingScheduleParser">A delegate to parse custom charging schedules.</param>
+        /// <param name="CustomChargingScheduleParser">An optional delegate to parse custom charging schedules.</param>
         public static Boolean TryParse(JObject                                         JSON,
                                        out ChargingSchedule?                           ChargingSchedule,
                                        out String?                                     ErrorResponse,

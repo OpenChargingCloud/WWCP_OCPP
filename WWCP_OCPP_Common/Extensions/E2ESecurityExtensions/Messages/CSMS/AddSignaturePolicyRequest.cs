@@ -139,7 +139,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         /// <param name="RequestId">The request identification.</param>
         /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomAddSignaturePolicyRequestParser">A delegate to parse custom AddSignaturePolicy requests.</param>
+        /// <param name="CustomAddSignaturePolicyRequestParser">An optional delegate to parse custom AddSignaturePolicy requests.</param>
         public static AddSignaturePolicyRequest Parse(JObject                                                  JSON,
                                                       Request_Id                                               RequestId,
                                                       NetworkingNode_Id                                        NetworkingNodeId,
@@ -177,7 +177,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="AddSignaturePolicyRequest">The parsed AddSignaturePolicy request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomAddSignaturePolicyRequestParser">A delegate to parse custom AddSignaturePolicy requests.</param>
+        /// <param name="CustomAddSignaturePolicyRequestParser">An optional delegate to parse custom AddSignaturePolicy requests.</param>
         public static Boolean TryParse(JObject                                                  JSON,
                                        Request_Id                                               RequestId,
                                        NetworkingNode_Id                                        NetworkingNodeId,

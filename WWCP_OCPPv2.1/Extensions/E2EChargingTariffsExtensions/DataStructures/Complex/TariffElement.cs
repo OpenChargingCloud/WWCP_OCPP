@@ -113,7 +113,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Parse the given JSON representation of a tariff element.
         /// </summary>
         /// <param name="JSON">The JSON to parse.</param>
-        /// <param name="CustomTariffElementParser">A delegate to parse custom tariff element JSON objects.</param>
+        /// <param name="CustomTariffElementParser">An optional delegate to parse custom tariff element JSON objects.</param>
         public static TariffElement Parse(JObject                                      JSON,
                                           CustomJObjectParserDelegate<TariffElement>?  CustomTariffElementParser   = null)
         {
@@ -140,7 +140,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Try to parse the given JSON representation of a tariff element.
         /// </summary>
         /// <param name="JSON">The JSON to parse.</param>
-        /// <param name="CustomTariffElementParser">A delegate to parse custom tariff element JSON objects.</param>
+        /// <param name="CustomTariffElementParser">An optional delegate to parse custom tariff element JSON objects.</param>
         public static TariffElement? TryParse(JObject                                      JSON,
                                               CustomJObjectParserDelegate<TariffElement>?  CustomTariffElementParser   = null)
         {
@@ -185,7 +185,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSON">The JSON to parse.</param>
         /// <param name="TariffElement">The parsed tariff element.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomTariffElementParser">A delegate to parse custom tariff element JSON objects.</param>
+        /// <param name="CustomTariffElementParser">An optional delegate to parse custom tariff element JSON objects.</param>
         public static Boolean TryParse(JObject                                      JSON,
                                        out TariffElement?                           TariffElement,
                                        out String?                                  ErrorResponse,

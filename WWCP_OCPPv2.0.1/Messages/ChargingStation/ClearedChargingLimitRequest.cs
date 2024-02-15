@@ -156,7 +156,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="CustomClearedChargingLimitRequestParser">A delegate to parse custom cleared charging limit requests.</param>
+        /// <param name="CustomClearedChargingLimitRequestParser">An optional delegate to parse custom cleared charging limit requests.</param>
         public static ClearedChargingLimitRequest Parse(JObject                                                    JSON,
                                                         Request_Id                                                 RequestId,
                                                         ChargeBox_Id                                               ChargeBoxId,
@@ -190,7 +190,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="ClearedChargingLimitRequest">The parsed cleared charging limit request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomClearedChargingLimitRequestParser">A delegate to parse custom cleared charging limit requests.</param>
+        /// <param name="CustomClearedChargingLimitRequestParser">An optional delegate to parse custom cleared charging limit requests.</param>
         public static Boolean TryParse(JObject                                                    JSON,
                                        Request_Id                                                 RequestId,
                                        ChargeBox_Id                                               ChargeBoxId,

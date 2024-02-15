@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// Parse the given JSON representation of certificate hash data.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomCertificateHashDataParser">A delegate to parse custom certificate hash datas.</param>
+        /// <param name="CustomCertificateHashDataParser">An optional delegate to parse custom certificate hash datas.</param>
         public static CertificateHashData Parse(JObject                                            JSON,
                                                 CustomJObjectParserDelegate<CertificateHashData>?  CustomCertificateHashDataParser   = null)
         {
@@ -183,7 +183,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CertificateHashData">The parsed certificate hash data.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomCertificateHashDataParser">A delegate to parse custom CertificateHashDatas.</param>
+        /// <param name="CustomCertificateHashDataParser">An optional delegate to parse custom CertificateHashDatas.</param>
         public static Boolean TryParse(JObject                                            JSON,
                                        out CertificateHashData?                           CertificateHashData,
                                        out String?                                        ErrorResponse,

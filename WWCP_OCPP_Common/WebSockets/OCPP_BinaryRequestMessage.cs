@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
     /// An OCPP HTTP Web Socket binary request message.
     /// </summary>
     /// <param name="RequestTimestamp">The request time stamp.</param>
-    /// <param name="EventTrackingId">The event tracking identification.</param>
+    /// <param name="EventTrackingId">An optional event tracking identification.</param>
     /// <param name="NetworkingMode">The networking mode to use.</param>
     /// <param name="DestinationNodeId">The networking node identification of the message destination.</param>
     /// <param name="NetworkPath">The (recorded) path of the request through the overlay network.</param>

@@ -128,7 +128,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Parse the given string as a PEM encoded X.509 certificate.
         /// </summary>
         /// <param name="Text">A text representation of a PEM encoded X.509 certificate.</param>
-        /// <param name="CustomCertificateParser">A delegate to parse custom PEM encoded X.509 certificates.</param>
+        /// <param name="CustomCertificateParser">An optional delegate to parse custom PEM encoded X.509 certificates.</param>
         public static Certificate Parse(String                                  Text,
                                         CustomTextParserDelegate<Certificate>?  CustomCertificateParser   = null)
         {
@@ -154,7 +154,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Parse the given string as a PEM encoded X.509 certificate.
         /// </summary>
         /// <param name="Lines">An enumeration of text lines of a PEM encoded X.509 certificate.</param>
-        /// <param name="CustomCertificateParser">A delegate to parse custom PEM encoded X.509 certificates.</param>
+        /// <param name="CustomCertificateParser">An optional delegate to parse custom PEM encoded X.509 certificates.</param>
         public static Certificate Parse(IEnumerable<String>                     Lines,
                                         CustomTextParserDelegate<Certificate>?  CustomCertificateParser   = null)
         {
@@ -180,7 +180,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Try to parse the given text as a PEM encoded X.509 certificate.
         /// </summary>
         /// <param name="Text">A text representation of a PEM encoded X.509 certificate.</param>
-        /// <param name="CustomCertificateParser">A delegate to parse custom PEM encoded X.509 certificates.</param>
+        /// <param name="CustomCertificateParser">An optional delegate to parse custom PEM encoded X.509 certificates.</param>
         public static Certificate? TryParse(String                                  Text,
                                             CustomTextParserDelegate<Certificate>?  CustomCertificateParser   = null)
         {
@@ -205,7 +205,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Try to parse the given text lines as a PEM encoded X.509 certificate.
         /// </summary>
         /// <param name="Lines">An enumeration of text lines of a PEM encoded X.509 certificate.</param>
-        /// <param name="CustomCertificateParser">A delegate to parse custom PEM encoded X.509 certificates.</param>
+        /// <param name="CustomCertificateParser">An optional delegate to parse custom PEM encoded X.509 certificates.</param>
         public static Certificate? TryParse(IEnumerable<String>                     Lines,
                                             CustomTextParserDelegate<Certificate>?  CustomCertificateParser   = null)
         {
@@ -250,7 +250,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="Text">A text representation of a PEM encoded X.509 certificate.</param>
         /// <param name="Certificate">The parsed PEM encoded X.509 certificate.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomCertificateParser">A delegate to parse custom PEM encoded X.509 certificates.</param>
+        /// <param name="CustomCertificateParser">An optional delegate to parse custom PEM encoded X.509 certificates.</param>
         public static Boolean TryParse(String                                  Text,
                                        out Certificate?                        Certificate,
                                        out String?                             ErrorResponse,

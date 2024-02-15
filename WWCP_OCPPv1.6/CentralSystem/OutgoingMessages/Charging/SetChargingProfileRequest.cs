@@ -366,7 +366,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestId">The request identification.</param>
         /// <param name="NetworkingNodeId">The unique identification of the destination charge point/networking node.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomSetChargingProfileRequestParser">A delegate to parse custom set charging profile requests.</param>
+        /// <param name="CustomSetChargingProfileRequestParser">An optional delegate to parse custom set charging profile requests.</param>
         public static SetChargingProfileRequest Parse(JObject                                                  JSON,
                                                       Request_Id                                               RequestId,
                                                       NetworkingNode_Id                                        NetworkingNodeId,
@@ -483,7 +483,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="SetChargingProfileRequest">The parsed set charging profile request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomSetChargingProfileRequestParser">A delegate to parse custom set charging profile requests.</param>
+        /// <param name="CustomSetChargingProfileRequestParser">An optional delegate to parse custom set charging profile requests.</param>
         public static Boolean TryParse(JObject                                                  JSON,
                                        Request_Id                                               RequestId,
                                        NetworkingNode_Id                                        NetworkingNodeId,

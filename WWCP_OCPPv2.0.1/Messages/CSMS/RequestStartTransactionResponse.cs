@@ -199,7 +199,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// </summary>
         /// <param name="Request">The request start transaction request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomRequestStartTransactionResponseParser">A delegate to parse custom request start transaction responses.</param>
+        /// <param name="CustomRequestStartTransactionResponseParser">An optional delegate to parse custom request start transaction responses.</param>
         public static RequestStartTransactionResponse Parse(CSMS.RequestStartTransactionRequest                            Request,
                                                             JObject                                                        JSON,
                                                             CustomJObjectParserDelegate<RequestStartTransactionResponse>?  CustomRequestStartTransactionResponseParser   = null)
@@ -230,7 +230,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestStartTransactionResponse">The parsed request start transaction response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomRequestStartTransactionResponseParser">A delegate to parse custom request start transaction responses.</param>
+        /// <param name="CustomRequestStartTransactionResponseParser">An optional delegate to parse custom request start transaction responses.</param>
         public static Boolean TryParse(CSMS.RequestStartTransactionRequest                            Request,
                                        JObject                                                        JSON,
                                        out RequestStartTransactionResponse?                           RequestStartTransactionResponse,

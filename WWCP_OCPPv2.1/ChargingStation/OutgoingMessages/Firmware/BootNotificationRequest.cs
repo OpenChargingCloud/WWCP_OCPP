@@ -268,10 +268,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="RequestId">The request identification.</param>
         /// <param name="DestinationNodeId">The destination networking node identification.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="CustomBootNotificationRequestParser">A delegate to parse custom BootNotification requests.</param>
-        /// <param name="CustomChargingStationParser">A delegate to parse custom charging stations.</param>
-        /// <param name="CustomSignatureParser">A delegate to parse custom signatures.</param>
-        /// <param name="CustomCustomDataParser">A delegate to parse custom CustomData objects.</param>
+        /// <param name="CustomBootNotificationRequestParser">An optional delegate to parse custom BootNotification requests.</param>
+        /// <param name="CustomChargingStationParser">An optional delegate to parse custom charging stations.</param>
+        /// <param name="CustomSignatureParser">An optional delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
         public static BootNotificationRequest Parse(JObject                                                JSON,
                                                     Request_Id                                             RequestId,
                                                     NetworkingNode_Id                                      DestinationNodeId,
@@ -315,10 +315,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="BootNotificationRequest">The parsed BootNotification request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomBootNotificationRequestParser">A delegate to parse custom BootNotification requests.</param>
-        /// <param name="CustomChargingStationParser">A delegate to parse custom charging stations.</param>
-        /// <param name="CustomSignatureParser">A delegate to parse custom signatures.</param>
-        /// <param name="CustomCustomDataParser">A delegate to parse custom CustomData objects.</param>
+        /// <param name="CustomBootNotificationRequestParser">An optional delegate to parse custom BootNotification requests.</param>
+        /// <param name="CustomChargingStationParser">An optional delegate to parse custom charging stations.</param>
+        /// <param name="CustomSignatureParser">An optional delegate to parse custom signatures.</param>
+        /// <param name="CustomCustomDataParser">An optional delegate to parse custom CustomData objects.</param>
         public static Boolean TryParse(JObject                                                JSON,
                                        Request_Id                                             RequestId,
                                        NetworkingNode_Id                                      DestinationNodeId,

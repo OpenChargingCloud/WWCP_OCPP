@@ -182,7 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// </summary>
         /// <param name="Request">The get display messages request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomGetDisplayMessagesResponseParser">A delegate to parse custom get display messages responses.</param>
+        /// <param name="CustomGetDisplayMessagesResponseParser">An optional delegate to parse custom get display messages responses.</param>
         public static GetDisplayMessagesResponse Parse(CSMS.GetDisplayMessagesRequest                            Request,
                                                        JObject                                                   JSON,
                                                        CustomJObjectParserDelegate<GetDisplayMessagesResponse>?  CustomGetDisplayMessagesResponseParser   = null)
@@ -213,7 +213,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="GetDisplayMessagesResponse">The parsed get display messages response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomGetDisplayMessagesResponseParser">A delegate to parse custom get display messages responses.</param>
+        /// <param name="CustomGetDisplayMessagesResponseParser">An optional delegate to parse custom get display messages responses.</param>
         public static Boolean TryParse(CSMS.GetDisplayMessagesRequest                            Request,
                                        JObject                                                   JSON,
                                        out GetDisplayMessagesResponse?                           GetDisplayMessagesResponse,

@@ -75,7 +75,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Parse the given JSON representation of a cost dimension volume.
         /// </summary>
         /// <param name="JSON">The JSON to parse.</param>
-        /// <param name="CustomCostDimensionValueParser">A delegate to parse custom cost dimension volume JSON objects.</param>
+        /// <param name="CustomCostDimensionValueParser">An optional delegate to parse custom cost dimension volume JSON objects.</param>
         public static CostDimensionVolume Parse(JObject                                            JSON,
                                                 CustomJObjectParserDelegate<CostDimensionVolume>?  CustomCostDimensionValueParser   = null)
         {
@@ -121,7 +121,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSON">The JSON to parse.</param>
         /// <param name="CostDimensionValue">The parsed connector.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomCostDimensionValueParser">A delegate to parse custom cost dimension volume JSON objects.</param>
+        /// <param name="CustomCostDimensionValueParser">An optional delegate to parse custom cost dimension volume JSON objects.</param>
         public static Boolean TryParse(JObject                                            JSON,
                                        out CostDimensionVolume                            CostDimensionValue,
                                        out String?                                        ErrorResponse,

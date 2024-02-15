@@ -222,7 +222,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <param name="Request">The get installed certificate ids request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomGetInstalledCertificateIdsResponseParser">A delegate to parse custom get installed certificate ids responses.</param>
+        /// <param name="CustomGetInstalledCertificateIdsResponseParser">An optional delegate to parse custom get installed certificate ids responses.</param>
         public static GetInstalledCertificateIdsResponse Parse(CS.GetInstalledCertificateIdsRequest                              Request,
                                                                JObject                                                           JSON,
                                                                CustomJObjectParserDelegate<GetInstalledCertificateIdsResponse>?  CustomGetInstalledCertificateIdsResponseParser   = null)
@@ -254,7 +254,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="GetInstalledCertificateIdsResponse">The parsed get installed certificate ids response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomGetInstalledCertificateIdsResponseParser">A delegate to parse custom get installed certificate ids responses.</param>
+        /// <param name="CustomGetInstalledCertificateIdsResponseParser">An optional delegate to parse custom get installed certificate ids responses.</param>
         public static Boolean TryParse(CS.GetInstalledCertificateIdsRequest                              Request,
                                        JObject                                                           JSON,
                                        out GetInstalledCertificateIdsResponse?                           GetInstalledCertificateIdsResponse,

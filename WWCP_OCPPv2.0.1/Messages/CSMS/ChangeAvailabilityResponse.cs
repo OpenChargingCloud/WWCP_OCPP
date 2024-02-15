@@ -182,7 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// </summary>
         /// <param name="Request">The change availability request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomChangeAvailabilityResponseParser">A delegate to parse custom change availability responses.</param>
+        /// <param name="CustomChangeAvailabilityResponseParser">An optional delegate to parse custom change availability responses.</param>
         public static ChangeAvailabilityResponse Parse(CSMS.ChangeAvailabilityRequest                            Request,
                                                        JObject                                                   JSON,
                                                        CustomJObjectParserDelegate<ChangeAvailabilityResponse>?  CustomChangeAvailabilityResponseParser   = null)
@@ -213,7 +213,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ChangeAvailabilityResponse">The parsed change availability response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomChangeAvailabilityResponseParser">A delegate to parse custom change availability responses.</param>
+        /// <param name="CustomChangeAvailabilityResponseParser">An optional delegate to parse custom change availability responses.</param>
         public static Boolean TryParse(CSMS.ChangeAvailabilityRequest                            Request,
                                        JObject                                                   JSON,
                                        out ChangeAvailabilityResponse?                           ChangeAvailabilityResponse,

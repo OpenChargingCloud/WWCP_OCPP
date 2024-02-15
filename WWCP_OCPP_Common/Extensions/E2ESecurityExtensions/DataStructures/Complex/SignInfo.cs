@@ -227,7 +227,7 @@ namespace cloud.charging.open.protocols.OCPP
         /// Parse the given JSON representation of a cryptographic signature information.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomSignInfoParser">A delegate to parse custom cryptographic signature informations.</param>
+        /// <param name="CustomSignInfoParser">An optional delegate to parse custom cryptographic signature informations.</param>
         public static SignInfo Parse(JObject                                 JSON,
                                      CustomJObjectParserDelegate<SignInfo>?  CustomSignInfoParser   = null)
         {
@@ -274,7 +274,7 @@ namespace cloud.charging.open.protocols.OCPP
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="SignInfo">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomSignInfoParser">A delegate to parse custom signature informations.</param>
+        /// <param name="CustomSignInfoParser">An optional delegate to parse custom signature informations.</param>
         public static Boolean TryParse(JObject                                 JSON,
                                        out SignInfo?                           SignInfo,
                                        out String?                             ErrorResponse,

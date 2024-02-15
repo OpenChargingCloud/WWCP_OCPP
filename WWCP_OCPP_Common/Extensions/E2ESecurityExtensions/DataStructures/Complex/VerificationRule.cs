@@ -119,7 +119,7 @@ namespace cloud.charging.open.protocols.OCPP
         /// Parse the given JSON representation of a cryptographic verificationRule.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomVerificationRuleParser">A delegate to parse custom cryptographic verification rules.</param>
+        /// <param name="CustomVerificationRuleParser">An optional delegate to parse custom cryptographic verification rules.</param>
         public static VerificationRule Parse(JObject                                         JSON,
                                              CustomJObjectParserDelegate<VerificationRule>?  CustomVerificationRuleParser   = null)
         {
@@ -166,7 +166,7 @@ namespace cloud.charging.open.protocols.OCPP
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="VerificationRule">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomVerificationRuleParser">A delegate to parse custom verification rules.</param>
+        /// <param name="CustomVerificationRuleParser">An optional delegate to parse custom verification rules.</param>
         public static Boolean TryParse(JObject                                         JSON,
                                        out VerificationRule?                           VerificationRule,
                                        out String?                                     ErrorResponse,

@@ -82,7 +82,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Parse the given JSON representation of a stream data element.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomStreamDataElementParser">A delegate to parse custom stream data elements.</param>
+        /// <param name="CustomStreamDataElementParser">An optional delegate to parse custom stream data elements.</param>
         public static StreamDataElement Parse(JObject                                          JSON,
                                               CustomJObjectParserDelegate<StreamDataElement>?  CustomStreamDataElementParser   = null)
         {
@@ -127,7 +127,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="StreamDataElement">The parsed stream data element.</param>
-        /// <param name="CustomStreamDataElementParser">A delegate to parse custom stream data elements.</param>
+        /// <param name="CustomStreamDataElementParser">An optional delegate to parse custom stream data elements.</param>
         public static Boolean TryParse(JObject                                          JSON,
                                        out StreamDataElement?                           StreamDataElement,
                                        out String?                                      ErrorResponse,
