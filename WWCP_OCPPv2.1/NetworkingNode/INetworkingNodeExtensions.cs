@@ -2349,7 +2349,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
             SetVariables(this INetworkingNode          NetworkingNode,
                          NetworkingNode_Id             DestinationNodeId,
                          IEnumerable<SetVariableData>  VariableData,
-                         DataConsistencyModels?        DataConsistencyModel   = null,
+                         DataConsistencyModel?         DataConsistencyModel   = null,
 
                          CustomData?                   CustomData             = null,
 

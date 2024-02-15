@@ -606,10 +606,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 chargingStation3        is not null)
             {
 
-                var getLogRequests = new ConcurrentList<SetVariablesRequest>();
+                var setVariablesRequests = new ConcurrentList<SetVariablesRequest>();
 
-                chargingStation1.OnSetVariablesRequest += (timestamp, sender, connection, getLogRequest) => {
-                    getLogRequests.TryAdd(getLogRequest);
+                chargingStation1.OnSetVariablesRequest += (timestamp, sender, connection, setLogRequest) => {
+                    setVariablesRequests.TryAdd(setLogRequest);
                     return Task.CompletedTask;
                 };
 
@@ -617,7 +617,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                                      DestinationNodeId:   chargingStation1.Id,
                                                      VariableData:        [
 
-                                                                              #region Known component & component instance...                  [must pass!]
+                                                                              #region 1. Known component & component instance...                  [must pass!]
 
                                                                               new SetVariableData(
                                                                                   Component:           new Component(
@@ -638,7 +638,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                                                                               #endregion
 
-                                                                              #region Known component, unkown component instance...            [must fail!]
+                                                                              #region 2. Unknown component...                                     [must fail!]
+
+                                                                              new SetVariableData(
+                                                                                  Component:           new Component(
+                                                                                                           Name:        "SecurityCtrlXXXX",
+                                                                                                           Instance:    "Alert System!",
+                                                                                                           CustomData:   null
+                                                                                                       ),
+                                                                                  Variable:            new Variable(
+                                                                                                           Name:        "OrganizationName",
+                                                                                                           Instance:     null,
+                                                                                                           CustomData:   null
+                                                                                                       ),
+                                                                                  AttributeValue:      "Open Charging Cloud by GraphDefined GmbH",
+                                                                                  OldAttributeValue:   null,
+                                                                                  AttributeType:       null,
+                                                                                  CustomData:          null
+                                                                              ),
+
+                                                                              #endregion
+
+                                                                              #region 3. Known component, unkown component instance...            [must fail!]
 
                                                                               new SetVariableData(
                                                                                   Component:           new Component(
@@ -659,7 +680,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                                                                               #endregion
 
-                                                                              #region Known component, unknown variable...                     [must fail!]
+                                                                              #region 4. Known component, unknown variable...                     [must fail!]
 
                                                                               new SetVariableData(
                                                                                   Component:           new Component(
@@ -680,7 +701,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                                                                               #endregion
 
-                                                                              #region Known component & variable, unknown variable instance... [must fail!]
+                                                                              #region 5. Known component & variable, unknown variable instance... [must fail!]
 
                                                                               new SetVariableData(
                                                                                   Component:           new Component(
@@ -705,9 +726,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                                      CustomData:          null
                                                  );
 
-                ClassicAssert.AreEqual(ResultCode.OK,        setVariablesResponse.Result.ResultCode);
+                Assert.That(setVariablesResponse.Result.ResultCode,            Is.EqualTo(ResultCode.OK));
+                Assert.That(setVariablesRequests.Count,                        Is.EqualTo(1));
 
-                ClassicAssert.AreEqual(1,                    getLogRequests.Count);
+                Assert.That(setVariablesResponse.SetVariableResults.Count,     Is.EqualTo(5));
+
+                var firstResult  = setVariablesResponse.SetVariableResults.First();
+                Assert.That(firstResult. Status,                               Is.EqualTo(SetVariableStatus.Accepted));
+
+                var secondResult = setVariablesResponse.SetVariableResults.Skip(1).First();
+                Assert.That(secondResult.Status,                               Is.EqualTo(SetVariableStatus.UnknownComponent));
+
+                var thirdResult  = setVariablesResponse.SetVariableResults.Skip(2).First();
+                Assert.That(thirdResult. Status,                               Is.EqualTo(SetVariableStatus.UnknownComponent));
+
+                var fourthResult = setVariablesResponse.SetVariableResults.Skip(3).First();
+                Assert.That(fourthResult.Status,                               Is.EqualTo(SetVariableStatus.UnknownVariable));
+
+                var fifthResult  = setVariablesResponse.SetVariableResults.Skip(4).First();
+                Assert.That(fifthResult. Status,                               Is.EqualTo(SetVariableStatus.UnknownVariable));
+
 
             }
 
@@ -737,10 +775,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 chargingStation3        is not null)
             {
 
-                var setLogRequests = new ConcurrentList<SetVariablesRequest>();
+                var setVariablesRequests = new ConcurrentList<SetVariablesRequest>();
 
                 chargingStation1.OnSetVariablesRequest += (timestamp, sender, connection, setLogRequest) => {
-                    setLogRequests.TryAdd(setLogRequest);
+                    setVariablesRequests.TryAdd(setLogRequest);
                     return Task.CompletedTask;
                 };
 
@@ -816,19 +854,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                                  );
 
                 Assert.That(setVariablesResponse.Result.ResultCode,            Is.EqualTo(ResultCode.OK));
-                Assert.That(setLogRequests.Count,                              Is.EqualTo(1));
+                Assert.That(setVariablesRequests.Count,                        Is.EqualTo(1));
 
 
                 Assert.That(setVariablesResponse.SetVariableResults.Count(),   Is.EqualTo(3));
 
                 var firstResult  = setVariablesResponse.SetVariableResults.First();
-                Assert.That(firstResult.Status,                                Is.EqualTo(SetVariableStatus.Accepted));
+                Assert.That(firstResult. Status,                               Is.EqualTo(SetVariableStatus.Accepted));
 
                 var secondResult = setVariablesResponse.SetVariableResults.Skip(1).First();
                 Assert.That(secondResult.Status,                               Is.EqualTo(SetVariableStatus.Rejected));
 
                 var thirdResult  = setVariablesResponse.SetVariableResults.Skip(2).First();
-                Assert.That(thirdResult.Status,                                Is.EqualTo(SetVariableStatus.Accepted));
+                Assert.That(thirdResult. Status,                               Is.EqualTo(SetVariableStatus.Accepted));
 
             }
 

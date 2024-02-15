@@ -217,7 +217,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatoryText("name",
                                              "component name",
-                                             out String Name,
+                                             out String? Name,
                                              out ErrorResponse))
                 {
                     return false;
@@ -225,9 +225,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region Type          [optional]
+                #region Instance      [optional]
 
-                var Instance = JSON.GetString("type");
+                var Instance = JSON.GetString("instance");
 
                 #endregion
 
@@ -300,19 +300,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var json = JSONObject.Create(
 
-                                 new JProperty("name",        Name),
+                                 new JProperty("name",         Name),
 
                            Instance is not null
-                               ? new JProperty("instance",    Instance)
+                               ? new JProperty("instance",     Instance)
                                : null,
 
                            EVSE is not null
-                               ? new JProperty("evse",        EVSE.      ToJSON(CustomEVSESerializer,
-                                                                                CustomCustomDataSerializer))
+                               ? new JProperty("evse",         EVSE.      ToJSON(CustomEVSESerializer,
+                                                                                 CustomCustomDataSerializer))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

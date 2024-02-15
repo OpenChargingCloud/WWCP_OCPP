@@ -113,6 +113,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                       sendRequestState.JSONResponse.Payload,
                                                       out var setVariablesResponse,
                                                       out var errorResponse,
+                                                      sendRequestState.ResponseTimestamp,
                                                       CustomSetVariablesResponseParser) &&
                         setVariablesResponse is not null)
                     {

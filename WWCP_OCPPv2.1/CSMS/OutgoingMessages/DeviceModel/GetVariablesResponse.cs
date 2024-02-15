@@ -349,16 +349,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (Request, JSON, CustomGetVariablesResponseParser = null)
+        #region (static) Parse   (Request, JSON, ..., CustomGetVariablesResponseParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a get variables response.
         /// </summary>
         /// <param name="Request">The reset request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// <param name="CustomGetVariablesResponseParser">An optional delegate to parse custom get variables responses.</param>
         public static GetVariablesResponse Parse(CSMS.GetVariablesRequest                            Request,
                                                  JObject                                             JSON,
+                                                 DateTime?                                           ResponseTimestamp                  = null,
                                                  CustomJObjectParserDelegate<GetVariablesResponse>?  CustomGetVariablesResponseParser   = null)
         {
 
@@ -366,6 +368,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var getVariablesResponse,
                          out var errorResponse,
+                         ResponseTimestamp,
                          CustomGetVariablesResponseParser))
             {
                 return getVariablesResponse;
@@ -378,7 +381,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(Request, JSON, out GetVariablesResponse, out ErrorResponse, CustomGetVariablesResponseParser = null)
+        #region (static) TryParse(Request, JSON, out GetVariablesResponse, out ErrorResponse, ..., CustomGetVariablesResponseParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a get variables response.
@@ -387,11 +390,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="GetVariablesResponse">The parsed get variables response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// <param name="CustomGetVariablesResponseParser">An optional delegate to parse custom get variables responses.</param>
         public static Boolean TryParse(CSMS.GetVariablesRequest                            Request,
                                        JObject                                             JSON,
                                        [NotNullWhen(true)]  out GetVariablesResponse?      GetVariablesResponse,
                                        [NotNullWhen(false)] out String?                    ErrorResponse,
+                                       DateTime?                                           ResponseTimestamp                  = null,
                                        CustomJObjectParserDelegate<GetVariablesResponse>?  CustomGetVariablesResponseParser   = null)
         {
 
@@ -402,11 +407,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #region Results       [mandatory]
 
-                if (!JSON.ParseMandatoryHashSet("getVariableResult",
-                                                "get variable results",
-                                                GetVariableResult.TryParse,
-                                                out HashSet<GetVariableResult> Results,
-                                                out ErrorResponse))
+                if (!JSON.ParseMandatoryJSON("getVariableResult",
+                                             "get variable results",
+                                             GetVariableResult.TryParse,
+                                             out IEnumerable<GetVariableResult> Results,
+                                             out ErrorResponse))
                 {
                     return false;
                 }
@@ -443,13 +448,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
                 GetVariablesResponse = new GetVariablesResponse(
+
                                            Request,
                                            Results,
-                                           null,
+                                           ResponseTimestamp,
+
                                            null,
                                            null,
                                            Signatures,
+
                                            CustomData
+
                                        );
 
                 if (CustomGetVariablesResponseParser is not null)

@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -97,6 +99,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.Variable             = Variable;
             this.AttributeType        = AttributeType;
             this.AttributeStatusInfo  = AttributeStatusInfo;
+
+
+            unchecked
+            {
+
+                hashCode = this.Status.              GetHashCode()       * 13 ^
+                           this.Component.           GetHashCode()       * 11 ^
+                           this.Variable.            GetHashCode()       *  7 ^
+                          (this.AttributeType?.      GetHashCode() ?? 0) *  5 ^
+                          (this.AttributeStatusInfo?.GetHashCode() ?? 0) *  3 ^
+                           base.                     GetHashCode();
+
+            }
 
         }
 
@@ -186,9 +201,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="SetVariableResult">The parsed set variable result.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                 JSON,
-                                       out SetVariableResult?  SetVariableResult,
-                                       out String?             ErrorResponse)
+        public static Boolean TryParse(JObject                                      JSON,
+                                       [NotNullWhen(true)]  out SetVariableResult?  SetVariableResult,
+                                       [NotNullWhen(false)] out String?             ErrorResponse)
 
             => TryParse(JSON,
                         out SetVariableResult,
@@ -204,8 +219,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomSetVariableResultParser">A delegate to parse custom set variable result JSON objects.</param>
         public static Boolean TryParse(JObject                                          JSON,
-                                       out SetVariableResult?                           SetVariableResult,
-                                       out String?                                      ErrorResponse,
+                                       [NotNullWhen(true)]  out SetVariableResult?      SetVariableResult,
+                                       [NotNullWhen(false)] out String?                 ErrorResponse,
                                        CustomJObjectParserDelegate<SetVariableResult>?  CustomSetVariableResultParser)
         {
 
@@ -302,12 +317,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                SetVariableResult = new SetVariableResult(Status,
-                                                          Component,
-                                                          Variable,
-                                                          AttributeType,
-                                                          AttributeStatusInfo,
-                                                          CustomData);
+                SetVariableResult = new SetVariableResult(
+                                        Status,
+                                        Component,
+                                        Variable,
+                                        AttributeType,
+                                        AttributeStatusInfo,
+                                        CustomData
+                                    );
 
                 if (CustomSetVariableResultParser is not null)
                     SetVariableResult = CustomSetVariableResultParser(JSON,
@@ -469,25 +486,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Status.              GetHashCode()       * 13 ^
-                       Component.           GetHashCode()       * 11 ^
-                       Variable.            GetHashCode()       *  7 ^
-                      (AttributeType?.      GetHashCode() ?? 0) *  5 ^
-                      (AttributeStatusInfo?.GetHashCode() ?? 0) *  3 ^
-
-                       base.                GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

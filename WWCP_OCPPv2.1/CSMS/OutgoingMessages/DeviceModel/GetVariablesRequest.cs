@@ -117,12 +117,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 throw new ArgumentException("The given enumeration of variable data must not be empty!",
                                             nameof(VariableData));
 
-            this.VariableData = VariableData.Distinct();
+            this.VariableData = VariableData;
 
             unchecked
             {
                 hashCode = this.VariableData.CalcHashCode() * 3 ^
-                           base.GetHashCode();
+                           base.             GetHashCode();
             }
 
         }

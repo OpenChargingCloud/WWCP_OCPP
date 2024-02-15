@@ -111,6 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                       sendRequestState.JSONResponse.Payload,
                                                       out var getVariablesResponse,
                                                       out var errorResponse,
+                                                      sendRequestState.ResponseTimestamp,
                                                       CustomGetVariablesResponseParser) &&
                         getVariablesResponse is not null)
                     {

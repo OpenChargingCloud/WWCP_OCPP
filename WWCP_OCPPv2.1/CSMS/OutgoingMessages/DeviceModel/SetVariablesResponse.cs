@@ -332,16 +332,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (Request, JSON, CustomSetVariablesResponseParser = null)
+        #region (static) Parse   (Request, JSON, ..., CustomSetVariablesResponseParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a set variables response.
         /// </summary>
         /// <param name="Request">The set variables request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// <param name="CustomSetVariablesResponseParser">A delegate to parse custom set variables responses.</param>
         public static SetVariablesResponse Parse(CSMS.SetVariablesRequest                            Request,
                                                  JObject                                             JSON,
+                                                 DateTime?                                           ResponseTimestamp                  = null,
                                                  CustomJObjectParserDelegate<SetVariablesResponse>?  CustomSetVariablesResponseParser   = null)
         {
 
@@ -349,6 +351,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var setVariablesResponse,
                          out var errorResponse,
+                         ResponseTimestamp,
                          CustomSetVariablesResponseParser))
             {
                 return setVariablesResponse;
@@ -361,7 +364,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(Request, JSON, out SetVariablesResponse, out ErrorResponse, CustomBootNotificationResponseParser = null)
+        #region (static) TryParse(Request, JSON, out SetVariablesResponse, out ErrorResponse, ..., CustomBootNotificationResponseParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a set variables response.
@@ -370,11 +373,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="SetVariablesResponse">The parsed set variables response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// <param name="CustomSetVariablesResponseParser">A delegate to parse custom set variables responses.</param>
         public static Boolean TryParse(CSMS.SetVariablesRequest                            Request,
                                        JObject                                             JSON,
                                        [NotNullWhen(true)]  out SetVariablesResponse?      SetVariablesResponse,
                                        [NotNullWhen(false)] out String?                    ErrorResponse,
+                                       DateTime?                                           ResponseTimestamp                  = null,
                                        CustomJObjectParserDelegate<SetVariablesResponse>?  CustomSetVariablesResponseParser   = null)
         {
 
@@ -385,11 +390,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #region SetVariableResults    [mandatory]
 
-                if (!JSON.ParseMandatoryHashSet("setVariableResult",
-                                                "set variable results",
-                                                SetVariableResult.TryParse,
-                                                out HashSet<SetVariableResult> SetVariableResults,
-                                                out ErrorResponse))
+                if (!JSON.ParseMandatoryJSON("setVariableResult",
+                                             "set variable results",
+                                             SetVariableResult.TryParse,
+                                             out IEnumerable<SetVariableResult> SetVariableResults,
+                                             out ErrorResponse))
                 {
                     return false;
                 }
@@ -426,13 +431,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
                 SetVariablesResponse = new SetVariablesResponse(
+
                                            Request,
                                            SetVariableResults,
-                                           null,
+                                           ResponseTimestamp,
+
                                            null,
                                            null,
                                            Signatures,
+
                                            CustomData
+
                                        );
 
                 if (CustomSetVariablesResponseParser is not null)

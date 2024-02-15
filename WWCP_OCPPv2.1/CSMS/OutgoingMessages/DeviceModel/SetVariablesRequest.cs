@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The optional data consistency model for this request.
         /// </summary>
         [Optional, DistributedSystemsExtensions]
-        public DataConsistencyModels?        DataConsistencyModel    { get; }
+        public DataConsistencyModel?         DataConsistencyModel    { get; }
 
         #endregion
 
@@ -88,7 +88,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public SetVariablesRequest(NetworkingNode_Id             NetworkingNodeId,
                                    IEnumerable<SetVariableData>  VariableData,
-                                   DataConsistencyModels?        DataConsistencyModel   = null,
+                                   DataConsistencyModel?         DataConsistencyModel   = null,
 
                                    IEnumerable<KeyPair>?         SignKeys               = null,
                                    IEnumerable<SignInfo>?        SignInfos              = null,
@@ -125,14 +125,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 throw new ArgumentException("The given enumeration of variable data must not be empty!",
                                             nameof(VariableData));
 
-            this.VariableData          = VariableData.Distinct();
+            this.VariableData          = VariableData;
             this.DataConsistencyModel  = DataConsistencyModel;
+
 
             unchecked
             {
+
                 hashCode = this.VariableData.         CalcHashCode()      * 5 ^
                           (this.DataConsistencyModel?.GetHashCode() ?? 0) * 3 ^
                            base.                      GetHashCode();
+
             }
 
         }
@@ -377,11 +380,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #region VariableData            [mandatory]
 
-                if (!JSON.ParseMandatoryHashSet("setVariableData",
-                                                "set variable data",
-                                                SetVariableData.TryParse,
-                                                out HashSet<SetVariableData> VariableData,
-                                                out ErrorResponse))
+                if (!JSON.ParseMandatoryJSON("setVariableData",
+                                             "set variable data",
+                                             SetVariableData.TryParse,
+                                             out IEnumerable<SetVariableData> VariableData,
+                                             out ErrorResponse))
                 {
                     return false;
                 }
@@ -392,8 +395,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 if (JSON.ParseOptional("dataConsistencyModel",
                                        "data consistency model",
-                                       DataConsistencyModelsExtensions.TryParse,
-                                       out DataConsistencyModels? DataConsistencyModel,
+                                       OCPP.DataConsistencyModel.TryParse,
+                                       out DataConsistencyModel? DataConsistencyModel,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -492,23 +495,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("setVariableData",         new JArray(VariableData.Select(variableData => variableData.ToJSON(CustomSetVariableDataSerializer,
-                                                                                                                                             CustomComponentSerializer,
-                                                                                                                                             CustomEVSESerializer,
-                                                                                                                                             CustomVariableSerializer,
-                                                                                                                                             CustomCustomDataSerializer)))),
+                                 new JProperty("setVariableData",        new JArray(VariableData.Select(variableData => variableData.ToJSON(CustomSetVariableDataSerializer,
+                                                                                                                                            CustomComponentSerializer,
+                                                                                                                                            CustomEVSESerializer,
+                                                                                                                                            CustomVariableSerializer,
+                                                                                                                                            CustomCustomDataSerializer)))),
 
                            DataConsistencyModel.HasValue
-                               ? new JProperty("dataConsistencyModel",    DataConsistencyModel.Value.AsText())
+                               ? new JProperty("dataConsistencyModel",   DataConsistencyModel.Value.ToString())
                                : null,
 
                            Signatures.Any()
-                               ? new JProperty("signatures",              new JArray(Signatures.  Select(signature    => signature.   ToJSON(CustomSignatureSerializer,
-                                                                                                                                             CustomCustomDataSerializer))))
+                               ? new JProperty("signatures",             new JArray(Signatures.  Select(signature    => signature.   ToJSON(CustomSignatureSerializer,
+                                                                                                                                            CustomCustomDataSerializer))))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",              CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",             CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
