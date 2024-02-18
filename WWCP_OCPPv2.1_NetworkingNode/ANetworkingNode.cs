@@ -206,8 +206,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public NetworkingNode_Id           Id                         { get; }
 
-        
-
 
         /// <summary>
         /// The networking node vendor identification.
@@ -619,9 +617,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="HTTPServiceName">An optional identification string for the HTTP server.</param>
         /// <param name="IPAddress">An IP address to listen on.</param>
         /// <param name="TCPPort">An optional TCP port for the HTTP server.</param>
-        /// <param name="DNSClient">An optional DNS client to use.</param>
         /// <param name="AutoStart">Start the server immediately.</param>
-        public OCPPWebSocketServer AttachWebSocketServer(String                               HTTPServiceName              = null,
+        public OCPPWebSocketServer AttachWebSocketServer(String?                              HTTPServiceName              = null,
                                                          IIPAddress?                          IPAddress                    = null,
                                                          IPPort?                              TCPPort                      = null,
 
@@ -644,7 +641,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                          TimeSpan?                            ConnectionTimeout            = null,
                                                          UInt32?                              MaxClientConnections         = null,
 
-                                                         DNSClient?                           DNSClient                    = null,
                                                          Boolean                              AutoStart                    = false)
         {
 
@@ -675,7 +671,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           ConnectionTimeout,
                                           MaxClientConnections,
 
-                                          DNSClient ?? this.DNSClient,
+                                          DNSClient,
                                           AutoStart: false
 
                                       );
@@ -991,6 +987,69 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+        #region AttachWebAPI(...)
+
+        /// <summary>
+        /// Create a new central system for testing using HTTP/WebSocket.
+        /// </summary>
+        /// <param name="HTTPServiceName">An optional identification string for the HTTP server.</param>
+        /// <param name="AutoStart">Start the server immediately.</param>
+        public NetworkingNodeWebAPI AttachWebAPI(HTTPHostname?                               HTTPHostname            = null,
+                                                 String?                                     ExternalDNSName         = null,
+                                                 IPPort?                                     HTTPServerPort          = null,
+                                                 HTTPPath?                                   BasePath                = null,
+                                                 String?                                     HTTPServerName          = null,
+
+                                                 HTTPPath?                                   URLPathPrefix           = null,
+                                                 String?                                     HTTPServiceName         = null,
+
+                                                 String                                      HTTPRealm               = "...",
+                                                 Boolean                                     RequireAuthentication   = true,
+                                                 IEnumerable<KeyValuePair<String, String>>?  HTTPLogins              = null,
+
+                                                 String?                                     HTMLTemplate            = null,
+                                                 Boolean                                     AutoStart               = false)
+        {
+
+            var httpAPI  = new HTTPExtAPI(
+
+                               HTTPHostname,
+                               ExternalDNSName,
+                               HTTPServerPort,
+                               BasePath,
+                               HTTPServerName,
+
+                               URLPathPrefix,
+                               HTTPServiceName,
+
+                               DNSClient: DNSClient,
+                               AutoStart: false
+
+                           );
+
+            var webAPI   = new NetworkingNodeWebAPI(
+
+                               this,
+                               httpAPI,
+
+                               HTTPServerName,
+                               URLPathPrefix,
+                               BasePath,
+                               HTTPRealm,
+                               HTTPLogins,
+                               HTMLTemplate
+
+                           );
+
+            if (AutoStart)
+                httpAPI.Start();
+
+            return webAPI;
+
+        }
+
+        #endregion
 
 
         public string? ClientCloseMessage => throw new NotImplementedException();

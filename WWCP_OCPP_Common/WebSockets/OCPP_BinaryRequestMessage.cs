@@ -32,7 +32,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
     /// <param name="RequestTimestamp">The request time stamp.</param>
     /// <param name="EventTrackingId">An optional event tracking identification.</param>
     /// <param name="NetworkingMode">The networking mode to use.</param>
-    /// <param name="DestinationNodeId">The networking node identification of the message destination.</param>
+    /// <param name="DestinationId">The networking node identification of the message destination.</param>
     /// <param name="NetworkPath">The (recorded) path of the request through the overlay network.</param>
     /// <param name="RequestId">An unique request identification.</param>
     /// <param name="Action">An OCPP action/method name.</param>
@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
     public class OCPP_BinaryRequestMessage(DateTime           RequestTimestamp,
                                            EventTracking_Id   EventTrackingId,
                                            NetworkingMode     NetworkingMode,
-                                           NetworkingNode_Id  DestinationNodeId,
+                                           NetworkingNode_Id  DestinationId,
                                            NetworkPath        NetworkPath,
                                            Request_Id         RequestId,
                                            String             Action,
@@ -79,7 +79,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         /// <summary>
         /// The networking node identification of the message destination.
         /// </summary>
-        public NetworkingNode_Id  DestinationId    { get; }      = DestinationNodeId;
+        public NetworkingNode_Id  DestinationId        { get; }      = DestinationId;
 
         /// <summary>
         /// The (recorded) path of the request through the overlay network.

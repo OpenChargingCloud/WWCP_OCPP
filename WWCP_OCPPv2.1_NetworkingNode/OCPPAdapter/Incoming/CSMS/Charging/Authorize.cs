@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever an Authorize request was received.
         /// </summary>
-        public event OCPPv2_1.CSMS.OnAuthorizeRequestReceivedDelegate?     OnAuthorizeRequest;
+        public event OCPPv2_1.CSMS.OnAuthorizeRequestReceivedDelegate?     OnAuthorizeRequestReceived;
 
         /// <summary>
         /// An event sent whenever an Authorize request was received.
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     try
                     {
 
-                        OnAuthorizeRequest?.Invoke(Timestamp.Now,
+                        OnAuthorizeRequestReceived?.Invoke(Timestamp.Now,
                                                    parentNetworkingNode,
                                                    WebSocketConnection,
                                                    request);
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnAuthorizeRequest));
+                        DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnAuthorizeRequestReceived));
                     }
 
                     #endregion

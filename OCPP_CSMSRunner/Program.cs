@@ -559,7 +559,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
             testCSMSv2_1.OnBinaryMessageResponseSent      += async (timestamp, server, connection, destinationNodeId, networkPath, eventTrackingId, requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, binaryResponseMessage, cancellationToken) => {
 
                 await DebugLog(
-                    $"Sent a JSON web socket response to '{destinationNodeId}': '{binaryResponseMessage.ToBase64()}'!",
+                    $"Sent a binary web socket response to '{destinationNodeId}': '{binaryResponseMessage.ToBase64()}'!",
                     cancellationToken
                 );
 
@@ -1928,14 +1928,32 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                 if (command == "clearcache"             && commandArray.Length == 2)
                                 {
 
-                                    var response = await testCentralSystemV1_6.ClearCache(
-                                                       new OCPPv1_6.CS.ClearCacheRequest(
-                                                           NetworkingNode_Id.Parse(chargingStationId)
-                                                       )
-                                                   );
+                                    if (ocppVersion == ocppVersion1_6)
+                                    {
 
-                                    DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
-                                    DebugX.Log(response.ToJSON().ToString());
+                                        var response = await testCentralSystemV1_6.ClearCache(
+                                                           new OCPPv1_6.CS.ClearCacheRequest(
+                                                               NetworkingNode_Id.Parse(chargingStationId)
+                                                           )
+                                                       );
+
+                                        DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                        DebugX.Log(response.ToJSON().ToString());
+
+                                    }
+                                    else
+                                    {
+
+                                        var response = await testCSMSv2_1.ClearCache(
+                                                           new OCPPv2_1.CSMS.ClearCacheRequest(
+                                                               NetworkingNode_Id.Parse(chargingStationId)
+                                                           )
+                                                       );
+
+                                        DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                        DebugX.Log(response.ToJSON().ToString());
+
+                                    }
 
                                 }
 

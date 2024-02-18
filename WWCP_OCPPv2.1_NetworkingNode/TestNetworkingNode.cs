@@ -55,6 +55,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     public partial class TestNetworkingNode : ANetworkingNode
     {
 
+        #region Properties
+
+
+        #endregion
+
         #region Constructor(s)
 
         /// <summary>
@@ -102,9 +107,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         {
 
             //Directory.CreateDirectory(Path.Combine(AppContext.BaseDirectory, "HTTPSSEs"));
-
-
-
 
 
 

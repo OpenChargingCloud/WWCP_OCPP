@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever an Authorize request was received.
         /// </summary>
-        event OnAuthorizeRequestReceivedDelegate                            OnAuthorizeRequest;
+        event OnAuthorizeRequestReceivedDelegate                            OnAuthorizeRequestReceived;
 
         /// <summary>
         /// An event sent whenever a ClearedChargingLimit request was received.
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a ReservationStatusUpdate request was received.
         /// </summary>
-        event OnReservationStatusUpdateRequestReceivedDelegate              OnReservationStatusUpdateReceivedRequest;
+        event OnReservationStatusUpdateRequestReceivedDelegate              OnReservationStatusUpdateRequestReceived;
 
         /// <summary>
         /// An event sent whenever a StatusNotification request was received.

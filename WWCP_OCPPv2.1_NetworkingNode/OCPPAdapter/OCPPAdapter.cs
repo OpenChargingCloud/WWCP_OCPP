@@ -1176,7 +1176,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task<SendOCPPMessageResult> SendBinaryResponse(OCPP_BinaryResponseMessage BinaryResponseMessage)
         {
 
-            if (LookupNetworkingNode(BinaryResponseMessage.DestinationNodeId, out var reachability) &&
+            if (LookupNetworkingNode(BinaryResponseMessage.DestinationId, out var reachability) &&
                 reachability is not null)
             {
 

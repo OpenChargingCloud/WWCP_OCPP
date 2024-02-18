@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
     /// <param name="ResponseTimestamp">The response time stamp.</param>
     /// <param name="EventTrackingId">An optional event tracking identification.</param>
     /// <param name="NetworkingMode">The OCPP networking mode to use.</param>
-    /// <param name="DestinationNodeId">The networking node identification of the message destination.</param>
+    /// <param name="DestinationId">The networking node identification of the message destination.</param>
     /// <param name="NetworkPath">The (recorded) path of the request through the overlay network.</param>
     /// <param name="RequestId">An unique request identification.</param>
     /// <param name="Payload">The binary response message payload.</param>
@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
     public class OCPP_BinaryResponseMessage(DateTime           ResponseTimestamp,
                                             EventTracking_Id   EventTrackingId,
                                             NetworkingMode     NetworkingMode,
-                                            NetworkingNode_Id  DestinationNodeId,
+                                            NetworkingNode_Id  DestinationId,
                                             NetworkPath        NetworkPath,
                                             Request_Id         RequestId,
                                             Byte[]             Payload,
@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         /// <summary>
         /// The networking node identification of the message destination.
         /// </summary>
-        public NetworkingNode_Id  DestinationNodeId    { get; }      = DestinationNodeId;
+        public NetworkingNode_Id  DestinationId        { get; }      = DestinationId;
 
         /// <summary>
         /// The (recorded) path of the response through the overlay network.
@@ -238,7 +238,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
             else if (NetworkingMode == NetworkingMode.OverlayNetwork)
             {
 
-                var destinationNodeIdBytes = DestinationNodeId.ToString().ToUTF8Bytes();
+                var destinationNodeIdBytes = DestinationId.ToString().ToUTF8Bytes();
                 binaryStream.WriteUInt16((UInt16) destinationNodeIdBytes.Length);
                 binaryStream.Write      (destinationNodeIdBytes);
 

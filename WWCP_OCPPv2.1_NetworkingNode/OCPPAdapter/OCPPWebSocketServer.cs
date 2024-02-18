@@ -280,7 +280,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="AutoStart">Start the server immediately.</param>
         public OCPPWebSocketServer(IOCPPAdapter                         OCPPAdapter,
 
-                                   String                               HTTPServiceName              = DefaultHTTPServiceName,
+                                   String?                              HTTPServiceName              = DefaultHTTPServiceName,
                                    IIPAddress?                          IPAddress                    = null,
                                    IPPort?                              TCPPort                      = null,
 
@@ -310,10 +310,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                    TCPPort         ?? IPPort.Parse(8000),
                    HTTPServiceName ?? DefaultHTTPServiceName,
 
-                   new[] {
+                   [
                       "ocpp2.0.1",
                        Version.WebSocketSubProtocolId
-                   },
+                   ],
                    DisableWebSocketPings,
                    WebSocketPingEvery,
                    SlowNetworkSimulationDelay,
@@ -1315,7 +1315,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             try
             {
 
-                var webSocketConnections = LookupNetworkingNode(BinaryResponseMessage.DestinationNodeId).ToArray();
+                var webSocketConnections = LookupNetworkingNode(BinaryResponseMessage.DestinationId).ToArray();
 
                 if (webSocketConnections.Length != 0)
                 {
