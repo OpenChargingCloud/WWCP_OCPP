@@ -715,7 +715,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
 
-        public CustomJObjectSerializerDelegate<ChargingStation>?                                     CustomChargingStationSerializer                              { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.ChargingStation>?                                     CustomChargingStationSerializer                              { get; set; }
         public CustomJObjectSerializerDelegate<EventData>?                                           CustomEventDataSerializer                                    { get; set; }
         public CustomJObjectSerializerDelegate<ReportData>?                                          CustomReportDataSerializer                                   { get; set; }
         public CustomJObjectSerializerDelegate<VariableAttribute>?                                   CustomVariableAttributeSerializer                            { get; set; }

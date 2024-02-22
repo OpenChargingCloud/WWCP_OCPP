@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
     /// <summary>
     /// The OCPP (diagnostics) UploadAPI.
     /// </summary>
-    public class NetworkingNodeUploadAPI : HTTPAPI
+    public class NetworkingNodeUploadAPI : org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI
     {
 
         #region Data
@@ -291,7 +291,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                                                  Server                     = DefaultHTTPServerName,
                                                  Date                       = Timestamp.Now,
                                                  AccessControlAllowOrigin   = "*",
-                                                 AccessControlAllowMethods  = new[] { "GET" },
+                                                 AccessControlAllowMethods  = [ "GET" ],
                                                  ContentType                = HTTPContentType.Application.OCTETSTREAM,
                                                  Content                    = data,
                                                  Connection                 = "close"

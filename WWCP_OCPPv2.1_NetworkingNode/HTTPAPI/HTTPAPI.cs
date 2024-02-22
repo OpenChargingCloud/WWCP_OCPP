@@ -18,11 +18,12 @@
 #region Usings
 
 using System.Reflection;
+using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
@@ -31,19 +32,151 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
     /// <summary>
-    /// OCPP Networking Node WebAPI extensions.
+    /// OCPP Networking Node HTTP API extensions.
     /// </summary>
-    public static class NetworkingNodeWebAPIExtensions
+    public static class HTTPAPIExtensions
     {
+
+        #region ParseChargingStationId(this HTTPRequest, OCPPHTTPAPI, out ChargingStationId,                out HTTPResponse)
+
+        /// <summary>
+        /// Parse the given HTTP request and return the charging station identification
+        /// for the given HTTP hostname and HTTP query parameter
+        /// or an HTTP error response.
+        /// </summary>
+        /// <param name="HTTPRequest">A HTTP request.</param>
+        /// <param name="OCPPHTTPAPI">The OCPP HTTP API.</param>
+        /// <param name="ChargingStationId">The parsed unique charging station identification.</param>
+        /// <param name="HTTPResponse">A HTTP error response.</param>
+        public static Boolean ParseChargingStationId(this HTTPRequest                                HTTPRequest,
+                                                     HTTPAPI                                         OCPPHTTPAPI,
+                                                     [NotNullWhen(true)]  out ChargingStation_Id?    ChargingStationId,
+                                                     [NotNullWhen(false)] out HTTPResponse.Builder?  HTTPResponse)
+        {
+
+            ChargingStationId  = null;
+            HTTPResponse       = null;
+
+            if (HTTPRequest.ParsedURLParameters.Length < 1)
+            {
+
+                HTTPResponse = new HTTPResponse.Builder(HTTPRequest) {
+                    HTTPStatusCode  = HTTPStatusCode.BadRequest,
+                    Server          = OCPPHTTPAPI.HTTPServiceName,
+                    Date            = Timestamp.Now,
+                    Connection      = "close"
+                };
+
+                return false;
+
+            }
+
+            ChargingStationId = ChargingStation_Id.TryParse(HTTPRequest.ParsedURLParameters[0]);
+
+            if (!ChargingStationId.HasValue)
+            {
+
+                HTTPResponse = new HTTPResponse.Builder(HTTPRequest) {
+                    HTTPStatusCode  = HTTPStatusCode.BadRequest,
+                    Server          = OCPPHTTPAPI.HTTPServiceName,
+                    Date            = Timestamp.Now,
+                    ContentType     = HTTPContentType.Application.JSON_UTF8,
+                    Content         = @"{ ""description"": ""Invalid charging station identification!"" }".ToUTF8Bytes(),
+                    Connection      = "close"
+                };
+
+                return false;
+
+            }
+
+            return true;
+
+        }
+
+        #endregion
+
+        #region ParseChargingStation  (this HTTPRequest, OCPPHTTPAPI, out ChargingStationId, out ChargingStation, out HTTPResponse)
+
+        /// <summary>
+        /// Parse the given HTTP request and return the charging station identification
+        /// for the given HTTP hostname and HTTP query parameter
+        /// or an HTTP error response.
+        /// </summary>
+        /// <param name="HTTPRequest">A HTTP request.</param>
+        /// <param name="OCPPHTTPAPI">The OCPP HTTP API.</param>
+        /// <param name="ChargingStationId">The parsed unique charging station identification.</param>
+        /// <param name="ChargingStation">The resolved charging station.</param>
+        /// <param name="HTTPResponse">A HTTP error response.</param>
+        public static Boolean ParseChargingStation(this HTTPRequest                                HTTPRequest,
+                                                   HTTPAPI                                         OCPPHTTPAPI,
+                                                   [NotNullWhen(true)]  out ChargingStation_Id?    ChargingStationId,
+                                                   [NotNullWhen(true)]  out ChargingStation?       ChargingStation,
+                                                   [NotNullWhen(false)] out HTTPResponse.Builder?  HTTPResponse)
+        {
+
+            ChargingStationId  = null;
+            ChargingStation    = null;
+            HTTPResponse       = null;
+
+            if (HTTPRequest.ParsedURLParameters.Length < 1) {
+
+                HTTPResponse = new HTTPResponse.Builder(HTTPRequest) {
+                    HTTPStatusCode  = HTTPStatusCode.BadRequest,
+                    Server          = OCPPHTTPAPI.HTTPServiceName,
+                    Date            = Timestamp.Now,
+                    Connection      = "close"
+                };
+
+                return false;
+
+            }
+
+            ChargingStationId = ChargingStation_Id.TryParse(HTTPRequest.ParsedURLParameters[0]);
+
+            if (!ChargingStationId.HasValue) {
+
+                HTTPResponse = new HTTPResponse.Builder(HTTPRequest) {
+                    HTTPStatusCode  = HTTPStatusCode.BadRequest,
+                    Server          = OCPPHTTPAPI.HTTPServiceName,
+                    Date            = Timestamp.Now,
+                    ContentType     = HTTPContentType.Application.JSON_UTF8,
+                    Content         = @"{ ""description"": ""Invalid charging station identification!"" }".ToUTF8Bytes(),
+                    Connection      = "close"
+                };
+
+                return false;
+
+            }
+
+            if (!OCPPHTTPAPI.TryGetChargingStation(ChargingStationId.Value, out ChargingStation)) {
+
+                HTTPResponse = new HTTPResponse.Builder(HTTPRequest) {
+                    HTTPStatusCode  = HTTPStatusCode.NotFound,
+                    Server          = OCPPHTTPAPI.HTTPServiceName,
+                    Date            = Timestamp.Now,
+                    ContentType     = HTTPContentType.Application.JSON_UTF8,
+                    Content         = @"{ ""description"": ""Unknown charging station identification!"" }".ToUTF8Bytes(),
+                    Connection      = "close"
+                };
+
+                return false;
+
+            }
+
+            return true;
+
+        }
+
+        #endregion
 
     }
 
 
     /// <summary>
-    /// The OCPP Networking Node WebAPI.
+    /// The OCPP Networking Node HTTP API.
     /// </summary>
-    public class NetworkingNodeWebAPI : AHTTPAPIExtension<HTTPExtAPI>,
-                                        IHTTPAPIExtension<HTTPExtAPI>
+    public class HTTPAPI : AHTTPAPIExtension<HTTPExtAPI>,
+                           IHTTPAPIExtension<HTTPExtAPI>
     {
 
         #region Data
@@ -51,17 +184,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// The default HTTP URL prefix.
         /// </summary>
-        public readonly HTTPPath                   DefaultURLPathPrefix     = HTTPPath.Parse("webapi");
+        public readonly HTTPPath                   DefaultURLPathPrefix      = HTTPPath.Parse("webapi");
+
+        /// <summary>
+        /// The default HTTP server name.
+        /// </summary>
+        public const    String                     DefaultHTTPServerName     = $"Open Charging Cloud OCPP {Version.String} Networking Node HTTP API";
 
         /// <summary>
         /// The default HTTP realm, if HTTP Basic Authentication is used.
         /// </summary>
-        public const String                        DefaultHTTPRealm         = "Open Charging Cloud OCPP WebAPI";
+        public const String                        DefaultHTTPRealm          = "Open Charging Cloud OCPP Networking Node HTTP API";
 
         /// <summary>
         /// The HTTP root for embedded ressources.
         /// </summary>
-        public const String                        HTTPRoot                 = "cloud.charging.open.protocols.OCPPv2_1.WebAPI.HTTPRoot.";
+        public const String                        HTTPRoot                  = "cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.HTTPAPI.HTTPRoot.";
 
 
         //ToDo: http://www.iana.org/form/media-types
@@ -69,42 +207,53 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// The HTTP content type for serving OCPP+ XML data.
         /// </summary>
-        public static readonly HTTPContentType     OCPPPlusJSONContentType  = new ("application", "vnd.OCPPPlus+json", "utf-8", null, null);
+        public static readonly HTTPContentType     OCPPPlusJSONContentType   = new ("application", "vnd.OCPPPlus+json", "utf-8", null, null);
 
         /// <summary>
         /// The HTTP content type for serving OCPP+ HTML data.
         /// </summary>
-        public static readonly HTTPContentType     OCPPPlusHTMLContentType  = new ("application", "vnd.OCPPPlus+html", "utf-8", null, null);
+        public static readonly HTTPContentType     OCPPPlusHTMLContentType   = new ("application", "vnd.OCPPPlus+html", "utf-8", null, null);
 
         /// <summary>
         /// The unique identification of the OCPP HTTP SSE event log.
         /// </summary>
-        public static readonly HTTPEventSource_Id  EventLogId               = HTTPEventSource_Id.Parse("OCPPEvents");
+        public static readonly HTTPEventSource_Id  EventLogId                = HTTPEventSource_Id.Parse("OCPPEvents");
+
+
+        protected readonly  List<ANetworkingNode>                                      networkingNodes   = [];
+
+        protected readonly  ConcurrentDictionary<ChargingStation_Id, ChargingStation>  chargingStations  = [];
 
         #endregion
 
         #region Properties
 
-        public ANetworkingNode                            NetworkingNode    { get; }
+        /// <summary>
+        /// An enumeration of registered networking nodes.
+        /// </summary>
+        public              IEnumerable<ANetworkingNode>                               NetworkingNodes
+            => networkingNodes;
 
         /// <summary>
         /// The HTTP realm, if HTTP Basic Authentication is used.
         /// </summary>
-        public String?                                    HTTPRealm         { get; }
+        public              String?                                                    HTTPRealm         { get; }
 
         /// <summary>
         /// An enumeration of logins for an optional HTTP Basic Authentication.
         /// </summary>
-        public IEnumerable<KeyValuePair<String, String>>  HTTPLogins        { get; }
+        public              IEnumerable<KeyValuePair<String, String>>                  HTTPLogins        { get; }
 
         /// <summary>
         /// Send debug information via HTTP Server Sent Events.
         /// </summary>
-        public HTTPEventSource<JObject>                   EventLog          { get; }
+        public              HTTPEventSource<JObject>                                   EventLog          { get; }
 
         #endregion
 
         #region Constructor(s)
+
+        #region HTTPAPI(...)
 
         /// <summary>
         /// Attach the given OCPP charging station management system WebAPI to the given HTTP API.
@@ -114,24 +263,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="URLPathPrefix">An optional prefix for the HTTP URLs.</param>
         /// <param name="HTTPRealm">The HTTP realm, if HTTP Basic Authentication is used.</param>
         /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
-        public NetworkingNodeWebAPI(ANetworkingNode                             NetworkingNode,
-                                    HTTPExtAPI                                  HTTPAPI,
-                                    String?                                     HTTPServerName   = null,
-                                    HTTPPath?                                   URLPathPrefix    = null,
-                                    HTTPPath?                                   BasePath         = null,
-                                    String                                      HTTPRealm        = DefaultHTTPRealm,
-                                    IEnumerable<KeyValuePair<String, String>>?  HTTPLogins       = null,
-                                    String?                                     HTMLTemplate     = null)
+        public HTTPAPI(HTTPExtAPI                                  HTTPAPI,
+                       String?                                     HTTPServerName   = null,
+                       HTTPPath?                                   URLPathPrefix    = null,
+                       HTTPPath?                                   BasePath         = null,
+                       String                                      HTTPRealm        = DefaultHTTPRealm,
+                       IEnumerable<KeyValuePair<String, String>>?  HTTPLogins       = null,
+                       String?                                     HTMLTemplate     = null)
 
             : base(HTTPAPI,
-                   HTTPServerName,
+                   HTTPServerName ?? DefaultHTTPServerName,
                    URLPathPrefix,
                    BasePath,
                    HTMLTemplate)
 
         {
 
-            this.NetworkingNode      = NetworkingNode;
             this.HTTPRealm           = HTTPRealm;
             this.HTTPLogins          = HTTPLogins ?? [];
 
@@ -153,13 +300,342 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             RegisterURITemplates();
 
-            #region HTTP-SSEs: ChargePoint   -> NetworkingNode
+        }
+
+        #endregion
+
+        #region HTTPAPI(CSMS, ...)
+
+        /// <summary>
+        /// Attach the given OCPP charging station management system WebAPI to the given HTTP API.
+        /// </summary>
+        /// <param name="NetworkingNode">An OCPP charging station management system.</param>
+        /// <param name="HTTPAPI">A HTTP API.</param>
+        /// <param name="URLPathPrefix">An optional prefix for the HTTP URLs.</param>
+        /// <param name="HTTPRealm">The HTTP realm, if HTTP Basic Authentication is used.</param>
+        /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
+        public HTTPAPI(ANetworkingNode                             NetworkingNode,
+                       HTTPExtAPI                                  HTTPAPI,
+                       String?                                     HTTPServerName   = null,
+                       HTTPPath?                                   URLPathPrefix    = null,
+                       HTTPPath?                                   BasePath         = null,
+                       String                                      HTTPRealm        = DefaultHTTPRealm,
+                       IEnumerable<KeyValuePair<String, String>>?  HTTPLogins       = null,
+                       String?                                     HTMLTemplate     = null)
+
+            : this(HTTPAPI,
+                   HTTPServerName,
+                   URLPathPrefix,
+                   BasePath,
+                   HTTPRealm,
+                   HTTPLogins,
+                   HTMLTemplate)
+
+        {
+
+            AttachCSMS(NetworkingNode);
+
+        }
+
+        #endregion
+
+        #endregion
+
+
+        #region AttachCSMS(NetworkingNode)
+
+        public void AttachCSMS(ANetworkingNode NetworkingNode)
+        {
+
+            networkingNodes.Add(NetworkingNode);
+
+
+            // Wire HTTP Server Sent Events
+
+            #region Generic JSON Messages
+
+            #region OnJSONMessageRequestReceived
+
+            NetworkingNode.OnJSONMessageRequestReceived += (timestamp,
+                                                            webSocketServer,
+                                                            webSocketConnection,
+                                                            networkingNodeId,
+                                                            networkPath,
+                                                            eventTrackingId,
+                                                            requestTimestamp,
+                                                            requestMessage,
+                                                            cancellationToken) =>
+
+                EventLog.SubmitEvent("OnJSONMessageRequestReceived",
+                                     JSONObject.Create(
+                                         new JProperty("timestamp",    timestamp.          ToIso8601()),
+                                         new JProperty("connection",   webSocketConnection.ToJSON()),
+                                         new JProperty("message",      requestMessage)
+                                     ));
+
+            #endregion
+
+            #region OnJSONMessageResponseSent
+
+            NetworkingNode.OnJSONMessageResponseSent += (timestamp,
+                                                         webSocketServer,
+                                                         webSocketConnection,
+                                                         networkingNodeId,
+                                                         networkPath,
+                                                         eventTrackingId,
+                                                         requestTimestamp,
+                                                         jsonRequestMessage,
+                                                         binaryRequestMessage,
+                                                         responseTimestamp,
+                                                         responseMessage,
+                                                         cancellationToken) =>
+
+                EventLog.SubmitEvent("OnJSONMessageResponseSent",
+                                     JSONObject.Create(
+                                         new JProperty("timestamp",    timestamp.          ToIso8601()),
+                                         new JProperty("connection",   webSocketConnection.ToJSON()),
+                                         new JProperty("message",      responseMessage)
+                                     ));
+
+            #endregion
+
+            #region OnJSONErrorResponseSent
+
+            NetworkingNode.OnJSONErrorResponseSent += (timestamp,
+                                                       webSocketServer,
+                                                       webSocketConnection,
+                                                       eventTrackingId,
+                                                       requestTimestamp,
+                                                       jsonRequestMessage,
+                                                       binaryRequestMessage,
+                                                       responseTimestamp,
+                                                       responseMessage,
+                                                       cancellationToken) =>
+
+                EventLog.SubmitEvent("OnJSONErrorResponseSent",
+                                     JSONObject.Create(
+                                         new JProperty("timestamp",    timestamp.          ToIso8601()),
+                                         new JProperty("connection",   webSocketConnection.ToJSON()),
+                                         new JProperty("message",      responseMessage)
+                                     ));
+
+            #endregion
+
+
+            #region OnJSONMessageRequestSent
+
+            NetworkingNode.OnJSONMessageRequestSent += (timestamp,
+                                                        webSocketServer,
+                                                        webSocketConnection,
+                                                        networkingNodeId,
+                                                        networkPath,
+                                                        eventTrackingId,
+                                                        requestTimestamp,
+                                                        requestMessage,
+                                                        cancellationToken) =>
+
+                EventLog.SubmitEvent("OnJSONMessageRequestSent",
+                                     JSONObject.Create(
+                                         new JProperty("timestamp",    timestamp.          ToIso8601()),
+                                         new JProperty("connection",   webSocketConnection.ToJSON()),
+                                         new JProperty("message",      requestMessage)
+                                     ));
+
+            #endregion
+
+            #region OnJSONMessageResponseReceived
+
+            NetworkingNode.OnJSONMessageResponseReceived += (timestamp,
+                                                             webSocketServer,
+                                                             webSocketConnection,
+                                                             networkingNodeId,
+                                                             networkPath,
+                                                             eventTrackingId,
+                                                             requestTimestamp,
+                                                             jsonRequestMessage,
+                                                             binaryRequestMessage,
+                                                             responseTimestamp,
+                                                             responseMessage,
+                                                             cancellationToken) =>
+
+                EventLog.SubmitEvent("OnJSONMessageResponseReceived",
+                                     JSONObject.Create(
+                                         new JProperty("timestamp",    timestamp.          ToIso8601()),
+                                         new JProperty("connection",   webSocketConnection.ToJSON()),
+                                         new JProperty("message",      responseMessage)
+                                     ));
+
+            #endregion
+
+            #region OnJSONErrorResponseReceived
+
+            NetworkingNode.OnJSONErrorResponseReceived += (timestamp,
+                                                           webSocketServer,
+                                                           webSocketConnection,
+                                                           eventTrackingId,
+                                                           requestTimestamp,
+                                                           jsonRequestMessage,
+                                                           binaryRequestMessage,
+                                                           responseTimestamp,
+                                                           responseMessage,
+                                                           cancellationToken) =>
+
+                EventLog.SubmitEvent("OnJSONErrorResponseReceived",
+                                     JSONObject.Create(
+                                         new JProperty("timestamp",    timestamp.          ToIso8601()),
+                                         new JProperty("connection",   webSocketConnection.ToJSON()),
+                                         new JProperty("message",      responseMessage)
+                                     ));
+
+            #endregion
+
+            #endregion
+
+            #region Generic Binary Messages
+
+            #region OnBinaryMessageRequestReceived
+
+            NetworkingNode.OnBinaryMessageRequestReceived += (timestamp,
+                                                              webSocketServer,
+                                                              webSocketConnection,
+                                                              networkingNodeId,
+                                                              networkPath,
+                                                              eventTrackingId,
+                                                              requestTimestamp,
+                                                              requestMessage,
+                                                              cancellationToken) =>
+
+                EventLog.SubmitEvent("OnBinaryMessageRequestReceived",
+                                     JSONObject.Create(
+                                         new JProperty("timestamp",    timestamp.          ToIso8601()),
+                                         new JProperty("connection",   webSocketConnection.ToJSON()),
+                                         new JProperty("message",      requestMessage)  // BASE64 encoded string!
+                                     ));
+
+            #endregion
+
+            #region OnBinaryMessageResponseSent
+
+            NetworkingNode.OnBinaryMessageResponseSent += (timestamp,
+                                                           webSocketServer,
+                                                           webSocketConnection,
+                                                           networkingNodeId,
+                                                           networkPath,
+                                                           eventTrackingId,
+                                                           requestTimestamp,
+                                                           jsonRequestMessage,
+                                                           binaryRequestMessage,
+                                                           responseTimestamp,
+                                                           responseMessage,
+                                                           cancellationToken) =>
+
+                EventLog.SubmitEvent("OnBinaryMessageResponseSent",
+                                     JSONObject.Create(
+                                         new JProperty("timestamp",    timestamp.          ToIso8601()),
+                                         new JProperty("connection",   webSocketConnection.ToJSON()),
+                                         new JProperty("message",      responseMessage)  // BASE64 encoded string!
+                                     ));
+
+            #endregion
+
+            #region OnBinaryErrorResponseSent
+
+            //NetworkingNode.OnBinaryErrorResponseSent += (timestamp,
+            //                                                  webSocketServer,
+            //                                                  webSocketConnection,
+            //                                                  eventTrackingId,
+            //                                                  requestTimestamp,
+            //                                                  jsonRequestMessage,
+            //                                                  binaryRequestMessage,
+            //                                                  responseTimestamp,
+            //                                                  responseMessage) =>
+
+            //    EventLog.SubmitEvent("OnBinaryErrorResponseSent",
+            //                         JSONObject.Create(
+            //                             new JProperty("timestamp",    timestamp.          ToIso8601()),
+            //                             new JProperty("connection",   webSocketConnection.ToJSON()),
+            //                             new JProperty("message",      responseMessage)  // BASE64 encoded string!
+            //                         ));
+
+            #endregion
+
+
+            #region OnBinaryMessageRequestSent
+
+            NetworkingNode.OnBinaryMessageRequestSent += (timestamp,
+                                                               webSocketServer,
+                                                               webSocketConnection,
+                                                               networkingNodeId,
+                                                               networkPath,
+                                                               eventTrackingId,
+                                                               requestTimestamp,
+                                                               requestMessage,
+                                                               cancellationToken) =>
+
+                EventLog.SubmitEvent("OnBinaryMessageRequestSent",
+                                     JSONObject.Create(
+                                         new JProperty("timestamp",    timestamp.          ToIso8601()),
+                                         new JProperty("connection",   webSocketConnection.ToJSON()),
+                                         new JProperty("message",      requestMessage)  // BASE64 encoded string!
+                                     ));
+
+            #endregion
+
+            #region OnBinaryMessageResponseReceived
+
+            NetworkingNode.OnBinaryMessageResponseReceived += (timestamp,
+                                                                    webSocketServer,
+                                                                    webSocketConnection,
+                                                                    networkingNodeId,
+                                                                    networkPath,
+                                                                    eventTrackingId,
+                                                                    requestTimestamp,
+                                                                    jsonRequestMessage,
+                                                                    binaryRequestMessage,
+                                                                    responseTimestamp,
+                                                                    responseMessage,
+                                                                    cancellationToken) =>
+
+                EventLog.SubmitEvent("OnBinaryMessageResponseReceived",
+                                     JSONObject.Create(
+                                         new JProperty("timestamp",    timestamp.          ToIso8601()),
+                                         new JProperty("connection",   webSocketConnection.ToJSON()),
+                                         new JProperty("message",      responseMessage)  // BASE64 encoded string!
+                                     ));
+
+            #endregion
+
+            #region OnBinaryErrorResponseReceived
+
+            //NetworkingNode.OnBinaryErrorResponseReceived += (timestamp,
+            //                                                      webSocketServer,
+            //                                                      webSocketConnection,
+            //                                                      eventTrackingId,
+            //                                                      requestTimestamp,
+            //                                                      jsonRequestMessage,
+            //                                                      binaryRequestMessage,
+            //                                                      responseTimestamp,
+            //                                                      responseMessage) =>
+
+            //    EventLog.SubmitEvent("OnBinaryErrorResponseReceived",
+            //                         JSONObject.Create(
+            //                             new JProperty("timestamp",    timestamp.          ToIso8601()),
+            //                             new JProperty("connection",   webSocketConnection.ToJSON()),
+            //                             new JProperty("message",      responseMessage)  // BASE64 encoded string!
+            //                         ));
+
+            #endregion
+
+            #endregion
+
+
+            #region ChargingStation  -> CSMS            Messages
 
             #region Certificates
 
             #region OnGet15118EVCertificate
 
-            this.NetworkingNode.OCPP.IN.OnGet15118EVCertificateRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnGet15118EVCertificateRequestReceived += (timestamp,
                                                                                    sender,
                                                                                    connection,
                                                                                    request) =>
@@ -173,7 +649,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnGet15118EVCertificateRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnGet15118EVCertificateRequestSent += (timestamp,
                                                                                 sender,
                                                                                 //connection,
                                                                                 request) =>
@@ -187,7 +663,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnGet15118EVCertificateResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnGet15118EVCertificateResponseReceived += (timestamp,
                                                                                     sender,
                                                                                     //connection,
                                                                                     request,
@@ -205,7 +681,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnGet15118EVCertificateResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnGet15118EVCertificateResponseSent += (timestamp,
                                                                                  sender,
                                                                                  connection,
                                                                                  request,
@@ -226,7 +702,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnGetCertificateStatus
 
-            this.NetworkingNode.OCPP.IN.OnGetCertificateStatusRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnGetCertificateStatusRequestReceived += (timestamp,
                                                                                   sender,
                                                                                   connection,
                                                                                   request) =>
@@ -240,7 +716,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnGetCertificateStatusRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnGetCertificateStatusRequestSent += (timestamp,
                                                                                sender,
                                                                                //connection,
                                                                                request) =>
@@ -254,7 +730,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnGetCertificateStatusResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnGetCertificateStatusResponseReceived += (timestamp,
                                                                                    sender,
                                                                                    //connection,
                                                                                    request,
@@ -272,7 +748,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnGetCertificateStatusResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnGetCertificateStatusResponseSent += (timestamp,
                                                                                 sender,
                                                                                 connection,
                                                                                 request,
@@ -293,7 +769,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnGetCRL
 
-            this.NetworkingNode.OCPP.IN.OnGetCRLRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnGetCRLRequestReceived += (timestamp,
                                                                     sender,
                                                                     connection,
                                                                     request) =>
@@ -307,7 +783,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnGetCRLRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnGetCRLRequestSent += (timestamp,
                                                                  sender,
                                                                  //connection,
                                                                  request) =>
@@ -321,7 +797,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnGetCRLResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnGetCRLResponseReceived += (timestamp,
                                                                      sender,
                                                                      //connection,
                                                                      request,
@@ -339,7 +815,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnGetCRLResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnGetCRLResponseSent += (timestamp,
                                                                   sender,
                                                                   connection,
                                                                   request,
@@ -360,7 +836,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnSignCertificate
 
-            this.NetworkingNode.OCPP.IN.OnSignCertificateRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnSignCertificateRequestReceived += (timestamp,
                                                                              sender,
                                                                              connection,
                                                                              request) =>
@@ -374,7 +850,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnSignCertificateRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnSignCertificateRequestSent += (timestamp,
                                                                           sender,
                                                                           //connection,
                                                                           request) =>
@@ -388,7 +864,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnSignCertificateResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnSignCertificateResponseReceived += (timestamp,
                                                                               sender,
                                                                               //connection,
                                                                               request,
@@ -406,7 +882,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnSignCertificateResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnSignCertificateResponseSent += (timestamp,
                                                                            sender,
                                                                            connection,
                                                                            request,
@@ -431,7 +907,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnAuthorize
 
-            this.NetworkingNode.OCPP.IN.OnAuthorizeRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnAuthorizeRequestReceived += (timestamp,
                                                                        sender,
                                                                        connection,
                                                                        request) =>
@@ -445,7 +921,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnAuthorizeRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnAuthorizeRequestSent += (timestamp,
                                                                     sender,
                                                                     //connection,
                                                                     request) =>
@@ -459,7 +935,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnAuthorizeResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnAuthorizeResponseReceived += (timestamp,
                                                                         sender,
                                                                         //connection,
                                                                         request,
@@ -477,7 +953,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnAuthorizeResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnAuthorizeResponseSent += (timestamp,
                                                                      sender,
                                                                      connection,
                                                                      request,
@@ -498,7 +974,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnClearedChargingLimit
 
-            this.NetworkingNode.OCPP.IN.OnClearedChargingLimitRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnClearedChargingLimitRequestReceived += (timestamp,
                                                                                   sender,
                                                                                   connection,
                                                                                   request) =>
@@ -512,7 +988,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnClearedChargingLimitRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnClearedChargingLimitRequestSent += (timestamp,
                                                                                sender,
                                                                                //connection,
                                                                                request) =>
@@ -526,7 +1002,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnClearedChargingLimitResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnClearedChargingLimitResponseReceived += (timestamp,
                                                                                    sender,
                                                                                    //connection,
                                                                                    request,
@@ -544,7 +1020,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnClearedChargingLimitResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnClearedChargingLimitResponseSent += (timestamp,
                                                                                 sender,
                                                                                 connection,
                                                                                 request,
@@ -565,7 +1041,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnMeterValues
 
-            this.NetworkingNode.OCPP.IN.OnMeterValuesRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnMeterValuesRequestReceived += (timestamp,
                                                                          sender,
                                                                          connection,
                                                                          request) =>
@@ -579,7 +1055,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnMeterValuesRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnMeterValuesRequestSent += (timestamp,
                                                                       sender,
                                                                       //connection,
                                                                       request) =>
@@ -593,7 +1069,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnMeterValuesResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnMeterValuesResponseReceived += (timestamp,
                                                                           sender,
                                                                           //connection,
                                                                           request,
@@ -611,7 +1087,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnMeterValuesResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnMeterValuesResponseSent += (timestamp,
                                                                        sender,
                                                                        connection,
                                                                        request,
@@ -632,7 +1108,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnNotifyChargingLimit
 
-            this.NetworkingNode.OCPP.IN.OnNotifyChargingLimitRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnNotifyChargingLimitRequestReceived += (timestamp,
                                                                                  sender,
                                                                                  connection,
                                                                                  request) =>
@@ -646,7 +1122,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnNotifyChargingLimitRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnNotifyChargingLimitRequestSent += (timestamp,
                                                                               sender,
                                                                               //connection,
                                                                               request) =>
@@ -660,7 +1136,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnNotifyChargingLimitResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnNotifyChargingLimitResponseReceived += (timestamp,
                                                                                   sender,
                                                                                   //connection,
                                                                                   request,
@@ -678,7 +1154,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnNotifyChargingLimitResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnNotifyChargingLimitResponseSent += (timestamp,
                                                                                sender,
                                                                                connection,
                                                                                request,
@@ -699,7 +1175,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnNotifyEVChargingNeeds
 
-            this.NetworkingNode.OCPP.IN.OnNotifyEVChargingNeedsRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnNotifyEVChargingNeedsRequestReceived += (timestamp,
                                                                                    sender,
                                                                                    connection,
                                                                                    request) =>
@@ -713,7 +1189,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnNotifyEVChargingNeedsRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnNotifyEVChargingNeedsRequestSent += (timestamp,
                                                                                 sender,
                                                                                 //connection,
                                                                                 request) =>
@@ -727,7 +1203,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnNotifyEVChargingNeedsResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnNotifyEVChargingNeedsResponseReceived += (timestamp,
                                                                                     sender,
                                                                                     //connection,
                                                                                     request,
@@ -745,7 +1221,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnNotifyEVChargingNeedsResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnNotifyEVChargingNeedsResponseSent += (timestamp,
                                                                                  sender,
                                                                                  connection,
                                                                                  request,
@@ -766,7 +1242,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnNotifyEVChargingSchedule
 
-            this.NetworkingNode.OCPP.IN.OnNotifyEVChargingScheduleRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnNotifyEVChargingScheduleRequestReceived += (timestamp,
                                                                                       sender,
                                                                                       connection,
                                                                                       request) =>
@@ -780,7 +1256,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnNotifyEVChargingScheduleRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnNotifyEVChargingScheduleRequestSent += (timestamp,
                                                                                    sender,
                                                                                    //connection,
                                                                                    request) =>
@@ -794,7 +1270,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnNotifyEVChargingScheduleResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnNotifyEVChargingScheduleResponseReceived += (timestamp,
                                                                                        sender,
                                                                                        //connection,
                                                                                        request,
@@ -812,7 +1288,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnNotifyEVChargingScheduleResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnNotifyEVChargingScheduleResponseSent += (timestamp,
                                                                                     sender,
                                                                                     connection,
                                                                                     request,
@@ -833,7 +1309,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnNotifyPriorityCharging
 
-            this.NetworkingNode.OCPP.IN.OnNotifyPriorityChargingRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnNotifyPriorityChargingRequestReceived += (timestamp,
                                                                                     sender,
                                                                                     connection,
                                                                                     request) =>
@@ -847,7 +1323,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnNotifyPriorityChargingRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnNotifyPriorityChargingRequestSent += (timestamp,
                                                                                  sender,
                                                                                  //connection,
                                                                                  request) =>
@@ -861,7 +1337,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnNotifyPriorityChargingResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnNotifyPriorityChargingResponseReceived += (timestamp,
                                                                                      sender,
                                                                                      //connection,
                                                                                      request,
@@ -879,7 +1355,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnNotifyPriorityChargingResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnNotifyPriorityChargingResponseSent += (timestamp,
                                                                                   sender,
                                                                                   connection,
                                                                                   request,
@@ -900,7 +1376,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnNotifySettlement
 
-            this.NetworkingNode.OCPP.IN.OnNotifySettlementRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnNotifySettlementRequestReceived += (timestamp,
                                                                               sender,
                                                                               connection,
                                                                               request) =>
@@ -914,7 +1390,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnNotifySettlementRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnNotifySettlementRequestSent += (timestamp,
                                                                            sender,
                                                                            //connection,
                                                                            request) =>
@@ -928,7 +1404,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnNotifySettlementResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnNotifySettlementResponseReceived += (timestamp,
                                                                                sender,
                                                                                //connection,
                                                                                request,
@@ -946,7 +1422,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnNotifySettlementResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnNotifySettlementResponseSent += (timestamp,
                                                                             sender,
                                                                             connection,
                                                                             request,
@@ -967,7 +1443,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnPullDynamicScheduleUpdate
 
-            this.NetworkingNode.OCPP.IN.OnPullDynamicScheduleUpdateRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnPullDynamicScheduleUpdateRequestReceived += (timestamp,
                                                                                        sender,
                                                                                        connection,
                                                                                        request) =>
@@ -981,7 +1457,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnPullDynamicScheduleUpdateRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnPullDynamicScheduleUpdateRequestSent += (timestamp,
                                                                                     sender,
                                                                                     //connection,
                                                                                     request) =>
@@ -995,7 +1471,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnPullDynamicScheduleUpdateResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnPullDynamicScheduleUpdateResponseReceived += (timestamp,
                                                                                         sender,
                                                                                         //connection,
                                                                                         request,
@@ -1013,7 +1489,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnPullDynamicScheduleUpdateResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnPullDynamicScheduleUpdateResponseSent += (timestamp,
                                                                                      sender,
                                                                                      connection,
                                                                                      request,
@@ -1034,7 +1510,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnReportChargingProfiles
 
-            this.NetworkingNode.OCPP.IN.OnReportChargingProfilesRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnReportChargingProfilesRequestReceived += (timestamp,
                                                                                     sender,
                                                                                     connection,
                                                                                     request) =>
@@ -1048,7 +1524,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnReportChargingProfilesRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnReportChargingProfilesRequestSent += (timestamp,
                                                                                  sender,
                                                                                  //connection,
                                                                                  request) =>
@@ -1062,7 +1538,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnReportChargingProfilesResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnReportChargingProfilesResponseReceived += (timestamp,
                                                                                      sender,
                                                                                      //connection,
                                                                                      request,
@@ -1080,7 +1556,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnReportChargingProfilesResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnReportChargingProfilesResponseSent += (timestamp,
                                                                                   sender,
                                                                                   connection,
                                                                                   request,
@@ -1101,7 +1577,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnReservationStatusUpdate
 
-            this.NetworkingNode.OCPP.IN.OnReservationStatusUpdateRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnReservationStatusUpdateRequestReceived += (timestamp,
                                                                                      sender,
                                                                                      connection,
                                                                                      request) =>
@@ -1115,7 +1591,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnReservationStatusUpdateRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnReservationStatusUpdateRequestSent += (timestamp,
                                                                                   sender,
                                                                                   //connection,
                                                                                   request) =>
@@ -1129,7 +1605,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnReservationStatusUpdateResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnReservationStatusUpdateResponseReceived += (timestamp,
                                                                                       sender,
                                                                                       //connection,
                                                                                       request,
@@ -1147,7 +1623,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnReservationStatusUpdateResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnReservationStatusUpdateResponseSent += (timestamp,
                                                                                    sender,
                                                                                    connection,
                                                                                    request,
@@ -1168,7 +1644,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnStatusNotification
 
-            this.NetworkingNode.OCPP.IN.OnStatusNotificationRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnStatusNotificationRequestReceived += (timestamp,
                                                                                 sender,
                                                                                 connection,
                                                                                 request) =>
@@ -1182,7 +1658,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnStatusNotificationRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnStatusNotificationRequestSent += (timestamp,
                                                                              sender,
                                                                              //connection,
                                                                              request) =>
@@ -1196,7 +1672,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnStatusNotificationResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnStatusNotificationResponseReceived += (timestamp,
                                                                                  sender,
                                                                                  //connection,
                                                                                  request,
@@ -1214,7 +1690,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnStatusNotificationResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnStatusNotificationResponseSent += (timestamp,
                                                                               sender,
                                                                               connection,
                                                                               request,
@@ -1235,7 +1711,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnTransactionEvent
 
-            this.NetworkingNode.OCPP.IN.OnTransactionEventRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnTransactionEventRequestReceived += (timestamp,
                                                                               sender,
                                                                               connection,
                                                                               request) =>
@@ -1249,7 +1725,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnTransactionEventRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnTransactionEventRequestSent += (timestamp,
                                                                            sender,
                                                                            //connection,
                                                                            request) =>
@@ -1263,7 +1739,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnTransactionEventResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnTransactionEventResponseReceived += (timestamp,
                                                                                sender,
                                                                                //connection,
                                                                                request,
@@ -1281,7 +1757,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnTransactionEventResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnTransactionEventResponseSent += (timestamp,
                                                                             sender,
                                                                             connection,
                                                                             request,
@@ -1306,7 +1782,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnNotifyCustomerInformation
 
-            this.NetworkingNode.OCPP.IN.OnNotifyCustomerInformationRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnNotifyCustomerInformationRequestReceived += (timestamp,
                                                                                        sender,
                                                                                        connection,
                                                                                        request) =>
@@ -1320,7 +1796,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnNotifyCustomerInformationRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnNotifyCustomerInformationRequestSent += (timestamp,
                                                                                     sender,
                                                                                     //connection,
                                                                                     request) =>
@@ -1334,7 +1810,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnNotifyCustomerInformationResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnNotifyCustomerInformationResponseReceived += (timestamp,
                                                                                         sender,
                                                                                         //connection,
                                                                                         request,
@@ -1352,7 +1828,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnNotifyCustomerInformationResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnNotifyCustomerInformationResponseSent += (timestamp,
                                                                                      sender,
                                                                                      connection,
                                                                                      request,
@@ -1373,7 +1849,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnNotifyDisplayMessages
 
-            this.NetworkingNode.OCPP.IN.OnNotifyDisplayMessagesRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnNotifyDisplayMessagesRequestReceived += (timestamp,
                                                                                    sender,
                                                                                    connection,
                                                                                    request) =>
@@ -1387,7 +1863,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnNotifyDisplayMessagesRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnNotifyDisplayMessagesRequestSent += (timestamp,
                                                                                 sender,
                                                                                 //connection,
                                                                                 request) =>
@@ -1401,7 +1877,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnNotifyDisplayMessagesResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnNotifyDisplayMessagesResponseReceived += (timestamp,
                                                                                     sender,
                                                                                     //connection,
                                                                                     request,
@@ -1419,7 +1895,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnNotifyDisplayMessagesResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnNotifyDisplayMessagesResponseSent += (timestamp,
                                                                                  sender,
                                                                                  connection,
                                                                                  request,
@@ -1444,7 +1920,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnLogStatusNotification
 
-            this.NetworkingNode.OCPP.IN.OnLogStatusNotificationRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnLogStatusNotificationRequestReceived += (timestamp,
                                                                                    sender,
                                                                                    connection,
                                                                                    request) =>
@@ -1458,7 +1934,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnLogStatusNotificationRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnLogStatusNotificationRequestSent += (timestamp,
                                                                                 sender,
                                                                                 //connection,
                                                                                 request) =>
@@ -1472,7 +1948,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnLogStatusNotificationResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnLogStatusNotificationResponseReceived += (timestamp,
                                                                                     sender,
                                                                                     //connection,
                                                                                     request,
@@ -1490,7 +1966,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnLogStatusNotificationResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnLogStatusNotificationResponseSent += (timestamp,
                                                                                  sender,
                                                                                  connection,
                                                                                  request,
@@ -1511,7 +1987,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnNotifyEvent
 
-            this.NetworkingNode.OCPP.IN.OnNotifyEventRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnNotifyEventRequestReceived += (timestamp,
                                                                          sender,
                                                                          connection,
                                                                          request) =>
@@ -1525,7 +2001,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnNotifyEventRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnNotifyEventRequestSent += (timestamp,
                                                                       sender,
                                                                       //connection,
                                                                       request) =>
@@ -1539,7 +2015,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnNotifyEventResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnNotifyEventResponseReceived += (timestamp,
                                                                           sender,
                                                                           //connection,
                                                                           request,
@@ -1557,7 +2033,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnNotifyEventResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnNotifyEventResponseSent += (timestamp,
                                                                        sender,
                                                                        connection,
                                                                        request,
@@ -1578,7 +2054,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnNotifyMonitoringReport
 
-            this.NetworkingNode.OCPP.IN.OnNotifyMonitoringReportRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnNotifyMonitoringReportRequestReceived += (timestamp,
                                                                                     sender,
                                                                                     connection,
                                                                                     request) =>
@@ -1592,7 +2068,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnNotifyMonitoringReportRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnNotifyMonitoringReportRequestSent += (timestamp,
                                                                                  sender,
                                                                                  //connection,
                                                                                  request) =>
@@ -1606,7 +2082,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnNotifyMonitoringReportResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnNotifyMonitoringReportResponseReceived += (timestamp,
                                                                                      sender,
                                                                                      //connection,
                                                                                      request,
@@ -1624,7 +2100,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnNotifyMonitoringReportResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnNotifyMonitoringReportResponseSent += (timestamp,
                                                                                   sender,
                                                                                   connection,
                                                                                   request,
@@ -1645,7 +2121,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnNotifyReport
 
-            this.NetworkingNode.OCPP.IN.OnNotifyReportRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnNotifyReportRequestReceived += (timestamp,
                                                                           sender,
                                                                           connection,
                                                                           request) =>
@@ -1659,7 +2135,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnNotifyReportRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnNotifyReportRequestSent += (timestamp,
                                                                        sender,
                                                                        //connection,
                                                                        request) =>
@@ -1673,7 +2149,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnNotifyReportResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnNotifyReportResponseReceived += (timestamp,
                                                                            sender,
                                                                            //connection,
                                                                            request,
@@ -1691,7 +2167,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnNotifyReportResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnNotifyReportResponseSent += (timestamp,
                                                                         sender,
                                                                         connection,
                                                                         request,
@@ -1712,7 +2188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnSecurityEventNotification
 
-            this.NetworkingNode.OCPP.IN.OnSecurityEventNotificationRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnSecurityEventNotificationRequestReceived += (timestamp,
                                                                                        sender,
                                                                                        connection,
                                                                                        request) =>
@@ -1726,7 +2202,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnSecurityEventNotificationRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnSecurityEventNotificationRequestSent += (timestamp,
                                                                                     sender,
                                                                                     //connection,
                                                                                     request) =>
@@ -1740,7 +2216,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnSecurityEventNotificationResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnSecurityEventNotificationResponseReceived += (timestamp,
                                                                                         sender,
                                                                                         //connection,
                                                                                         request,
@@ -1758,7 +2234,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnSecurityEventNotificationResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnSecurityEventNotificationResponseSent += (timestamp,
                                                                                      sender,
                                                                                      connection,
                                                                                      request,
@@ -1783,7 +2259,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnBootNotification
 
-            this.NetworkingNode.OCPP.IN.OnBootNotificationRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnBootNotificationRequestReceived += (timestamp,
                                                                               sender,
                                                                               connection,
                                                                               request) =>
@@ -1797,7 +2273,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnBootNotificationRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnBootNotificationRequestSent += (timestamp,
                                                                            sender,
                                                                            //connection,
                                                                            request) =>
@@ -1811,7 +2287,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnBootNotificationResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnBootNotificationResponseReceived += (timestamp,
                                                                                sender,
                                                                                //connection,
                                                                                request,
@@ -1829,7 +2305,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnBootNotificationResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnBootNotificationResponseSent += (timestamp,
                                                                             sender,
                                                                             connection,
                                                                             request,
@@ -1850,7 +2326,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnFirmwareStatusNotification
 
-            this.NetworkingNode.OCPP.IN.OnFirmwareStatusNotificationRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnFirmwareStatusNotificationRequestReceived += (timestamp,
                                                                                         sender,
                                                                                         connection,
                                                                                         request) =>
@@ -1864,7 +2340,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnFirmwareStatusNotificationRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnFirmwareStatusNotificationRequestSent += (timestamp,
                                                                                      sender,
                                                                                      //connection,
                                                                                      request) =>
@@ -1878,7 +2354,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnFirmwareStatusNotificationResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnFirmwareStatusNotificationResponseReceived += (timestamp,
                                                                                          sender,
                                                                                          //connection,
                                                                                          request,
@@ -1896,7 +2372,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnFirmwareStatusNotificationResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnFirmwareStatusNotificationResponseSent += (timestamp,
                                                                                       sender,
                                                                                       connection,
                                                                                       request,
@@ -1917,7 +2393,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnHeartbeat
 
-            this.NetworkingNode.OCPP.IN.OnHeartbeatRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnHeartbeatRequestReceived += (timestamp,
                                                                        sender,
                                                                        connection,
                                                                        request) =>
@@ -1931,7 +2407,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnHeartbeatRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnHeartbeatRequestSent += (timestamp,
                                                                     sender,
                                                                     //connection,
                                                                     request) =>
@@ -1945,7 +2421,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnHeartbeatResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnHeartbeatResponseReceived += (timestamp,
                                                                         sender,
                                                                         //connection,
                                                                         request,
@@ -1963,7 +2439,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnHeartbeatResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnHeartbeatResponseSent += (timestamp,
                                                                      sender,
                                                                      connection,
                                                                      request,
@@ -1984,7 +2460,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnPublishFirmwareStatusNotification
 
-            this.NetworkingNode.OCPP.IN.OnPublishFirmwareStatusNotificationRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnPublishFirmwareStatusNotificationRequestReceived += (timestamp,
                                                                                                sender,
                                                                                                connection,
                                                                                                request) =>
@@ -1998,7 +2474,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnPublishFirmwareStatusNotificationRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnPublishFirmwareStatusNotificationRequestSent += (timestamp,
                                                                                             sender,
                                                                                             //connection,
                                                                                             request) =>
@@ -2012,7 +2488,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnPublishFirmwareStatusNotificationResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnPublishFirmwareStatusNotificationResponseReceived += (timestamp,
                                                                                                 sender,
                                                                                                 //connection,
                                                                                                 request,
@@ -2030,7 +2506,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnPublishFirmwareStatusNotificationResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnPublishFirmwareStatusNotificationResponseSent += (timestamp,
                                                                                              sender,
                                                                                              connection,
                                                                                              request,
@@ -2053,13 +2529,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
-            #region HTTP-SSEs: NetworkingNode -> ChargePoint
+            #region CSMS             -> ChargingStation Messages
 
             #region Certificates
 
             #region OnCertificateSigned
 
-            this.NetworkingNode.OCPP.IN.OnCertificateSignedRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnCertificateSignedRequestReceived += (timestamp,
                                                                                sender,
                                                                                connection,
                                                                                request) =>
@@ -2073,7 +2549,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnCertificateSignedRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnCertificateSignedRequestSent += (timestamp,
                                                                             sender,
                                                                             //connection,
                                                                             request) =>
@@ -2087,7 +2563,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnCertificateSignedResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnCertificateSignedResponseReceived += (timestamp,
                                                                                 sender,
                                                                                 //connection,
                                                                                 request,
@@ -2105,7 +2581,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnCertificateSignedResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnCertificateSignedResponseSent += (timestamp,
                                                                              sender,
                                                                              connection,
                                                                              request,
@@ -2126,7 +2602,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnDeleteCertificate
 
-            this.NetworkingNode.OCPP.IN.OnDeleteCertificateRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnDeleteCertificateRequestReceived += (timestamp,
                                                                                sender,
                                                                                connection,
                                                                                request) =>
@@ -2140,7 +2616,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnDeleteCertificateRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnDeleteCertificateRequestSent += (timestamp,
                                                                             sender,
                                                                             //connection,
                                                                             request) =>
@@ -2154,7 +2630,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnDeleteCertificateResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnDeleteCertificateResponseReceived += (timestamp,
                                                                                 sender,
                                                                                 //connection,
                                                                                 request,
@@ -2172,7 +2648,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnDeleteCertificateResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnDeleteCertificateResponseSent += (timestamp,
                                                                              sender,
                                                                              connection,
                                                                              request,
@@ -2193,7 +2669,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnGetInstalledCertificateIds
 
-            this.NetworkingNode.OCPP.IN.OnGetInstalledCertificateIdsRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnGetInstalledCertificateIdsRequestReceived += (timestamp,
                                                                                         sender,
                                                                                         connection,
                                                                                         request) =>
@@ -2207,7 +2683,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnGetInstalledCertificateIdsRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnGetInstalledCertificateIdsRequestSent += (timestamp,
                                                                                      sender,
                                                                                      //connection,
                                                                                      request) =>
@@ -2221,7 +2697,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnGetInstalledCertificateIdsResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnGetInstalledCertificateIdsResponseReceived += (timestamp,
                                                                                          sender,
                                                                                          //connection,
                                                                                          request,
@@ -2239,7 +2715,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnGetInstalledCertificateIdsResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnGetInstalledCertificateIdsResponseSent += (timestamp,
                                                                                       sender,
                                                                                       connection,
                                                                                       request,
@@ -2260,7 +2736,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnInstallCertificate
 
-            this.NetworkingNode.OCPP.IN.OnInstallCertificateRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnInstallCertificateRequestReceived += (timestamp,
                                                                                 sender,
                                                                                 connection,
                                                                                 request) =>
@@ -2274,7 +2750,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnInstallCertificateRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnInstallCertificateRequestSent += (timestamp,
                                                                              sender,
                                                                              //connection,
                                                                              request) =>
@@ -2288,7 +2764,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnInstallCertificateResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnInstallCertificateResponseReceived += (timestamp,
                                                                                  sender,
                                                                                  //connection,
                                                                                  request,
@@ -2306,7 +2782,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnInstallCertificateResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnInstallCertificateResponseSent += (timestamp,
                                                                               sender,
                                                                               connection,
                                                                               request,
@@ -2327,7 +2803,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnNotifyCRL
 
-            this.NetworkingNode.OCPP.IN.OnNotifyCRLRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnNotifyCRLRequestReceived += (timestamp,
                                                                        sender,
                                                                        connection,
                                                                        request) =>
@@ -2341,7 +2817,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnNotifyCRLRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnNotifyCRLRequestSent += (timestamp,
                                                                     sender,
                                                                     //connection,
                                                                     request) =>
@@ -2355,7 +2831,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnNotifyCRLResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnNotifyCRLResponseReceived += (timestamp,
                                                                         sender,
                                                                         //connection,
                                                                         request,
@@ -2373,7 +2849,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnNotifyCRLResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnNotifyCRLResponseSent += (timestamp,
                                                                      sender,
                                                                      connection,
                                                                      request,
@@ -2398,7 +2874,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnCancelReservation
 
-            this.NetworkingNode.OCPP.IN.OnCancelReservationRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnCancelReservationRequestReceived += (timestamp,
                                                                                sender,
                                                                                connection,
                                                                                request) =>
@@ -2412,7 +2888,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnCancelReservationRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnCancelReservationRequestSent += (timestamp,
                                                                             sender,
                                                                             //connection,
                                                                             request) =>
@@ -2426,7 +2902,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnCancelReservationResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnCancelReservationResponseReceived += (timestamp,
                                                                                 sender,
                                                                                 //connection,
                                                                                 request,
@@ -2444,7 +2920,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnCancelReservationResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnCancelReservationResponseSent += (timestamp,
                                                                              sender,
                                                                              connection,
                                                                              request,
@@ -2465,7 +2941,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnClearChargingProfile
 
-            this.NetworkingNode.OCPP.IN.OnClearChargingProfileRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnClearChargingProfileRequestReceived += (timestamp,
                                                                                   sender,
                                                                                   connection,
                                                                                   request) =>
@@ -2479,7 +2955,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnClearChargingProfileRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnClearChargingProfileRequestSent += (timestamp,
                                                                                sender,
                                                                                //connection,
                                                                                request) =>
@@ -2493,7 +2969,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnClearChargingProfileResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnClearChargingProfileResponseReceived += (timestamp,
                                                                                    sender,
                                                                                    //connection,
                                                                                    request,
@@ -2511,7 +2987,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnClearChargingProfileResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnClearChargingProfileResponseSent += (timestamp,
                                                                                 sender,
                                                                                 connection,
                                                                                 request,
@@ -2532,7 +3008,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnGetChargingProfiles
 
-            this.NetworkingNode.OCPP.IN.OnGetChargingProfilesRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnGetChargingProfilesRequestReceived += (timestamp,
                                                                               sender,
                                                                               connection,
                                                                               request) =>
@@ -2546,7 +3022,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnGetChargingProfilesRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnGetChargingProfilesRequestSent += (timestamp,
                                                                            sender,
                                                                            //connection,
                                                                            request) =>
@@ -2560,7 +3036,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnGetChargingProfilesResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnGetChargingProfilesResponseReceived += (timestamp,
                                                                                sender,
                                                                                //connection,
                                                                                request,
@@ -2578,7 +3054,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnGetChargingProfilesResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnGetChargingProfilesResponseSent += (timestamp,
                                                                             sender,
                                                                             connection,
                                                                             request,
@@ -2599,7 +3075,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnGetCompositeSchedule
 
-            this.NetworkingNode.OCPP.IN.OnGetCompositeScheduleRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnGetCompositeScheduleRequestReceived += (timestamp,
                                                                               sender,
                                                                               connection,
                                                                               request) =>
@@ -2613,7 +3089,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnGetCompositeScheduleRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnGetCompositeScheduleRequestSent += (timestamp,
                                                                            sender,
                                                                            //connection,
                                                                            request) =>
@@ -2627,7 +3103,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnGetCompositeScheduleResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnGetCompositeScheduleResponseReceived += (timestamp,
                                                                                sender,
                                                                                //connection,
                                                                                request,
@@ -2645,7 +3121,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnGetCompositeScheduleResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnGetCompositeScheduleResponseSent += (timestamp,
                                                                             sender,
                                                                             connection,
                                                                             request,
@@ -2666,7 +3142,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnGetTransactionStatus
 
-            this.NetworkingNode.OCPP.IN.OnGetTransactionStatusRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnGetTransactionStatusRequestReceived += (timestamp,
                                                                               sender,
                                                                               connection,
                                                                               request) =>
@@ -2680,7 +3156,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnGetTransactionStatusRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnGetTransactionStatusRequestSent += (timestamp,
                                                                            sender,
                                                                            //connection,
                                                                            request) =>
@@ -2694,7 +3170,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnGetTransactionStatusResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnGetTransactionStatusResponseReceived += (timestamp,
                                                                                sender,
                                                                                //connection,
                                                                                request,
@@ -2712,7 +3188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnGetTransactionStatusResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnGetTransactionStatusResponseSent += (timestamp,
                                                                             sender,
                                                                             connection,
                                                                             request,
@@ -2733,7 +3209,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnNotifyAllowedEnergyTransfer
 
-            this.NetworkingNode.OCPP.IN.OnNotifyAllowedEnergyTransferRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnNotifyAllowedEnergyTransferRequestReceived += (timestamp,
                                                                               sender,
                                                                               connection,
                                                                               request) =>
@@ -2747,7 +3223,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnNotifyAllowedEnergyTransferRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnNotifyAllowedEnergyTransferRequestSent += (timestamp,
                                                                            sender,
                                                                            //connection,
                                                                            request) =>
@@ -2761,7 +3237,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnNotifyAllowedEnergyTransferResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnNotifyAllowedEnergyTransferResponseReceived += (timestamp,
                                                                                sender,
                                                                                //connection,
                                                                                request,
@@ -2779,7 +3255,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnNotifyAllowedEnergyTransferResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnNotifyAllowedEnergyTransferResponseSent += (timestamp,
                                                                             sender,
                                                                             connection,
                                                                             request,
@@ -2800,7 +3276,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnRequestStartTransaction
 
-            this.NetworkingNode.OCPP.IN.OnRequestStartTransactionRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnRequestStartTransactionRequestReceived += (timestamp,
                                                                               sender,
                                                                               connection,
                                                                               request) =>
@@ -2814,7 +3290,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnRequestStartTransactionRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnRequestStartTransactionRequestSent += (timestamp,
                                                                            sender,
                                                                            //connection,
                                                                            request) =>
@@ -2828,7 +3304,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnRequestStartTransactionResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnRequestStartTransactionResponseReceived += (timestamp,
                                                                                sender,
                                                                                //connection,
                                                                                request,
@@ -2846,7 +3322,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnRequestStartTransactionResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnRequestStartTransactionResponseSent += (timestamp,
                                                                             sender,
                                                                             connection,
                                                                             request,
@@ -2867,7 +3343,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnRequestStopTransaction
 
-            this.NetworkingNode.OCPP.IN.OnRequestStopTransactionRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnRequestStopTransactionRequestReceived += (timestamp,
                                                                               sender,
                                                                               connection,
                                                                               request) =>
@@ -2881,7 +3357,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnRequestStopTransactionRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnRequestStopTransactionRequestSent += (timestamp,
                                                                            sender,
                                                                            //connection,
                                                                            request) =>
@@ -2895,7 +3371,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnRequestStopTransactionResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnRequestStopTransactionResponseReceived += (timestamp,
                                                                                sender,
                                                                                //connection,
                                                                                request,
@@ -2913,7 +3389,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnRequestStopTransactionResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnRequestStopTransactionResponseSent += (timestamp,
                                                                             sender,
                                                                             connection,
                                                                             request,
@@ -2934,7 +3410,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnReserveNow
 
-            this.NetworkingNode.OCPP.IN.OnReserveNowRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnReserveNowRequestReceived += (timestamp,
                                                                               sender,
                                                                               connection,
                                                                               request) =>
@@ -2948,7 +3424,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnReserveNowRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnReserveNowRequestSent += (timestamp,
                                                                            sender,
                                                                            //connection,
                                                                            request) =>
@@ -2962,7 +3438,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnReserveNowResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnReserveNowResponseReceived += (timestamp,
                                                                                sender,
                                                                                //connection,
                                                                                request,
@@ -2980,7 +3456,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnReserveNowResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnReserveNowResponseSent += (timestamp,
                                                                             sender,
                                                                             connection,
                                                                             request,
@@ -3001,7 +3477,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnSetChargingProfile
 
-            this.NetworkingNode.OCPP.IN.OnSetChargingProfileRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnSetChargingProfileRequestReceived += (timestamp,
                                                                               sender,
                                                                               connection,
                                                                               request) =>
@@ -3015,7 +3491,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnSetChargingProfileRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnSetChargingProfileRequestSent += (timestamp,
                                                                            sender,
                                                                            //connection,
                                                                            request) =>
@@ -3029,7 +3505,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnSetChargingProfileResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnSetChargingProfileResponseReceived += (timestamp,
                                                                                sender,
                                                                                //connection,
                                                                                request,
@@ -3047,7 +3523,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnSetChargingProfileResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnSetChargingProfileResponseSent += (timestamp,
                                                                             sender,
                                                                             connection,
                                                                             request,
@@ -3068,7 +3544,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnUnlockConnector
 
-            this.NetworkingNode.OCPP.IN.OnUnlockConnectorRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnUnlockConnectorRequestReceived += (timestamp,
                                                                               sender,
                                                                               connection,
                                                                               request) =>
@@ -3082,7 +3558,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnUnlockConnectorRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnUnlockConnectorRequestSent += (timestamp,
                                                                            sender,
                                                                            //connection,
                                                                            request) =>
@@ -3096,7 +3572,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnUnlockConnectorResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnUnlockConnectorResponseReceived += (timestamp,
                                                                                sender,
                                                                                //connection,
                                                                                request,
@@ -3114,7 +3590,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnUnlockConnectorResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnUnlockConnectorResponseSent += (timestamp,
                                                                             sender,
                                                                             connection,
                                                                             request,
@@ -3135,7 +3611,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnUpdateDynamicSchedule
 
-            this.NetworkingNode.OCPP.IN.OnUpdateDynamicScheduleRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnUpdateDynamicScheduleRequestReceived += (timestamp,
                                                                               sender,
                                                                               connection,
                                                                               request) =>
@@ -3149,7 +3625,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnUpdateDynamicScheduleRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnUpdateDynamicScheduleRequestSent += (timestamp,
                                                                            sender,
                                                                            //connection,
                                                                            request) =>
@@ -3163,7 +3639,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnUpdateDynamicScheduleResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnUpdateDynamicScheduleResponseReceived += (timestamp,
                                                                                sender,
                                                                                //connection,
                                                                                request,
@@ -3181,7 +3657,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnUpdateDynamicScheduleResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnUpdateDynamicScheduleResponseSent += (timestamp,
                                                                             sender,
                                                                             connection,
                                                                             request,
@@ -3202,7 +3678,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnUsePriorityCharging
 
-            this.NetworkingNode.OCPP.IN.OnUsePriorityChargingRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnUsePriorityChargingRequestReceived += (timestamp,
                                                                               sender,
                                                                               connection,
                                                                               request) =>
@@ -3216,7 +3692,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnUsePriorityChargingRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnUsePriorityChargingRequestSent += (timestamp,
                                                                            sender,
                                                                            //connection,
                                                                            request) =>
@@ -3230,7 +3706,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnUsePriorityChargingResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnUsePriorityChargingResponseReceived += (timestamp,
                                                                                sender,
                                                                                //connection,
                                                                                request,
@@ -3248,7 +3724,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnUsePriorityChargingResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnUsePriorityChargingResponseSent += (timestamp,
                                                                             sender,
                                                                             connection,
                                                                             request,
@@ -3273,7 +3749,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnClearDisplayMessage
 
-            this.NetworkingNode.OCPP.IN.OnClearDisplayMessageRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnClearDisplayMessageRequestReceived += (timestamp,
                                                                               sender,
                                                                               connection,
                                                                               request) =>
@@ -3287,7 +3763,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnClearDisplayMessageRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnClearDisplayMessageRequestSent += (timestamp,
                                                                            sender,
                                                                            //connection,
                                                                            request) =>
@@ -3301,7 +3777,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnClearDisplayMessageResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnClearDisplayMessageResponseReceived += (timestamp,
                                                                                sender,
                                                                                //connection,
                                                                                request,
@@ -3319,7 +3795,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnClearDisplayMessageResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnClearDisplayMessageResponseSent += (timestamp,
                                                                             sender,
                                                                             connection,
                                                                             request,
@@ -3340,7 +3816,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnCostUpdated
 
-            this.NetworkingNode.OCPP.IN.OnCostUpdatedRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnCostUpdatedRequestReceived += (timestamp,
                                                                               sender,
                                                                               connection,
                                                                               request) =>
@@ -3354,7 +3830,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnCostUpdatedRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnCostUpdatedRequestSent += (timestamp,
                                                                            sender,
                                                                            //connection,
                                                                            request) =>
@@ -3368,7 +3844,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnCostUpdatedResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnCostUpdatedResponseReceived += (timestamp,
                                                                                sender,
                                                                                //connection,
                                                                                request,
@@ -3386,7 +3862,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnCostUpdatedResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnCostUpdatedResponseSent += (timestamp,
                                                                             sender,
                                                                             connection,
                                                                             request,
@@ -3407,7 +3883,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnCustomerInformation
 
-            this.NetworkingNode.OCPP.IN.OnCustomerInformationRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnCustomerInformationRequestReceived += (timestamp,
                                                                               sender,
                                                                               connection,
                                                                               request) =>
@@ -3421,7 +3897,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnCustomerInformationRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnCustomerInformationRequestSent += (timestamp,
                                                                            sender,
                                                                            //connection,
                                                                            request) =>
@@ -3435,7 +3911,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnCustomerInformationResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnCustomerInformationResponseReceived += (timestamp,
                                                                                sender,
                                                                                //connection,
                                                                                request,
@@ -3453,7 +3929,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnCustomerInformationResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnCustomerInformationResponseSent += (timestamp,
                                                                             sender,
                                                                             connection,
                                                                             request,
@@ -3474,7 +3950,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnGetDisplayMessages
 
-            this.NetworkingNode.OCPP.IN.OnGetDisplayMessagesRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnGetDisplayMessagesRequestReceived += (timestamp,
                                                                               sender,
                                                                               connection,
                                                                               request) =>
@@ -3488,7 +3964,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnGetDisplayMessagesRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnGetDisplayMessagesRequestSent += (timestamp,
                                                                            sender,
                                                                            //connection,
                                                                            request) =>
@@ -3502,7 +3978,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnGetDisplayMessagesResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnGetDisplayMessagesResponseReceived += (timestamp,
                                                                                sender,
                                                                                //connection,
                                                                                request,
@@ -3520,7 +3996,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnGetDisplayMessagesResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnGetDisplayMessagesResponseSent += (timestamp,
                                                                             sender,
                                                                             connection,
                                                                             request,
@@ -3541,7 +4017,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnSetDisplayMessage
 
-            this.NetworkingNode.OCPP.IN.OnSetDisplayMessageRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnSetDisplayMessageRequestReceived += (timestamp,
                                                                               sender,
                                                                               connection,
                                                                               request) =>
@@ -3555,7 +4031,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnSetDisplayMessageRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnSetDisplayMessageRequestSent += (timestamp,
                                                                            sender,
                                                                            //connection,
                                                                            request) =>
@@ -3569,7 +4045,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnSetDisplayMessageResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnSetDisplayMessageResponseReceived += (timestamp,
                                                                                sender,
                                                                                //connection,
                                                                                request,
@@ -3587,7 +4063,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnSetDisplayMessageResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnSetDisplayMessageResponseSent += (timestamp,
                                                                             sender,
                                                                             connection,
                                                                             request,
@@ -3612,7 +4088,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnChangeAvailability
 
-            this.NetworkingNode.OCPP.IN.OnChangeAvailabilityRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnChangeAvailabilityRequestReceived += (timestamp,
                                                                               sender,
                                                                               connection,
                                                                               request) =>
@@ -3626,7 +4102,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnChangeAvailabilityRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnChangeAvailabilityRequestSent += (timestamp,
                                                                            sender,
                                                                            //connection,
                                                                            request) =>
@@ -3640,7 +4116,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnChangeAvailabilityResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnChangeAvailabilityResponseReceived += (timestamp,
                                                                                sender,
                                                                                //connection,
                                                                                request,
@@ -3658,7 +4134,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnChangeAvailabilityResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnChangeAvailabilityResponseSent += (timestamp,
                                                                             sender,
                                                                             connection,
                                                                             request,
@@ -3679,7 +4155,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnClearVariableMonitoring
 
-            this.NetworkingNode.OCPP.IN.OnClearVariableMonitoringRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnClearVariableMonitoringRequestReceived += (timestamp,
                                                                               sender,
                                                                               connection,
                                                                               request) =>
@@ -3693,7 +4169,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnClearVariableMonitoringRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnClearVariableMonitoringRequestSent += (timestamp,
                                                                            sender,
                                                                            //connection,
                                                                            request) =>
@@ -3707,7 +4183,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnClearVariableMonitoringResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnClearVariableMonitoringResponseReceived += (timestamp,
                                                                                sender,
                                                                                //connection,
                                                                                request,
@@ -3725,7 +4201,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnClearVariableMonitoringResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnClearVariableMonitoringResponseSent += (timestamp,
                                                                             sender,
                                                                             connection,
                                                                             request,
@@ -3746,7 +4222,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnGetBaseReport
 
-            this.NetworkingNode.OCPP.IN.OnGetBaseReportRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnGetBaseReportRequestReceived += (timestamp,
                                                                               sender,
                                                                               connection,
                                                                               request) =>
@@ -3760,7 +4236,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnGetBaseReportRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnGetBaseReportRequestSent += (timestamp,
                                                                            sender,
                                                                            //connection,
                                                                            request) =>
@@ -3774,7 +4250,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnGetBaseReportResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnGetBaseReportResponseReceived += (timestamp,
                                                                                sender,
                                                                                //connection,
                                                                                request,
@@ -3792,7 +4268,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnGetBaseReportResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnGetBaseReportResponseSent += (timestamp,
                                                                             sender,
                                                                             connection,
                                                                             request,
@@ -3813,7 +4289,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnGetLog
 
-            this.NetworkingNode.OCPP.IN.OnGetLogRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnGetLogRequestReceived += (timestamp,
                                                                               sender,
                                                                               connection,
                                                                               request) =>
@@ -3827,7 +4303,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnGetLogRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnGetLogRequestSent += (timestamp,
                                                                            sender,
                                                                            //connection,
                                                                            request) =>
@@ -3841,7 +4317,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnGetLogResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnGetLogResponseReceived += (timestamp,
                                                                                sender,
                                                                                //connection,
                                                                                request,
@@ -3859,7 +4335,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnGetLogResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnGetLogResponseSent += (timestamp,
                                                                             sender,
                                                                             connection,
                                                                             request,
@@ -3880,7 +4356,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnGetMonitoringReport
 
-            this.NetworkingNode.OCPP.IN.OnGetMonitoringReportRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnGetMonitoringReportRequestReceived += (timestamp,
                                                                               sender,
                                                                               connection,
                                                                               request) =>
@@ -3894,7 +4370,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnGetMonitoringReportRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnGetMonitoringReportRequestSent += (timestamp,
                                                                            sender,
                                                                            //connection,
                                                                            request) =>
@@ -3908,7 +4384,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnGetMonitoringReportResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnGetMonitoringReportResponseReceived += (timestamp,
                                                                                sender,
                                                                                //connection,
                                                                                request,
@@ -3926,7 +4402,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnGetMonitoringReportResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnGetMonitoringReportResponseSent += (timestamp,
                                                                             sender,
                                                                             connection,
                                                                             request,
@@ -3947,7 +4423,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnGetReport
 
-            this.NetworkingNode.OCPP.IN.OnGetReportRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnGetReportRequestReceived += (timestamp,
                                                                               sender,
                                                                               connection,
                                                                               request) =>
@@ -3961,7 +4437,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnGetReportRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnGetReportRequestSent += (timestamp,
                                                                            sender,
                                                                            //connection,
                                                                            request) =>
@@ -3975,7 +4451,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnGetReportResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnGetReportResponseReceived += (timestamp,
                                                                                sender,
                                                                                //connection,
                                                                                request,
@@ -3993,7 +4469,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnGetReportResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnGetReportResponseSent += (timestamp,
                                                                             sender,
                                                                             connection,
                                                                             request,
@@ -4014,7 +4490,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnGetVariables
 
-            this.NetworkingNode.OCPP.IN.OnGetVariablesRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnGetVariablesRequestReceived += (timestamp,
                                                                               sender,
                                                                               connection,
                                                                               request) =>
@@ -4028,7 +4504,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnGetVariablesRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnGetVariablesRequestSent += (timestamp,
                                                                            sender,
                                                                            //connection,
                                                                            request) =>
@@ -4042,7 +4518,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnGetVariablesResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnGetVariablesResponseReceived += (timestamp,
                                                                                sender,
                                                                                //connection,
                                                                                request,
@@ -4060,7 +4536,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnGetVariablesResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnGetVariablesResponseSent += (timestamp,
                                                                             sender,
                                                                             connection,
                                                                             request,
@@ -4081,7 +4557,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnSetMonitoringBase
 
-            this.NetworkingNode.OCPP.IN.OnSetMonitoringBaseRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnSetMonitoringBaseRequestReceived += (timestamp,
                                                                               sender,
                                                                               connection,
                                                                               request) =>
@@ -4095,7 +4571,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnSetMonitoringBaseRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnSetMonitoringBaseRequestSent += (timestamp,
                                                                            sender,
                                                                            //connection,
                                                                            request) =>
@@ -4109,7 +4585,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnSetMonitoringBaseResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnSetMonitoringBaseResponseReceived += (timestamp,
                                                                                sender,
                                                                                //connection,
                                                                                request,
@@ -4127,7 +4603,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnSetMonitoringBaseResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnSetMonitoringBaseResponseSent += (timestamp,
                                                                             sender,
                                                                             connection,
                                                                             request,
@@ -4148,7 +4624,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnSetMonitoringLevel
 
-            this.NetworkingNode.OCPP.IN.OnSetMonitoringLevelRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnSetMonitoringLevelRequestReceived += (timestamp,
                                                                               sender,
                                                                               connection,
                                                                               request) =>
@@ -4162,7 +4638,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnSetMonitoringLevelRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnSetMonitoringLevelRequestSent += (timestamp,
                                                                            sender,
                                                                            //connection,
                                                                            request) =>
@@ -4176,7 +4652,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnSetMonitoringLevelResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnSetMonitoringLevelResponseReceived += (timestamp,
                                                                                sender,
                                                                                //connection,
                                                                                request,
@@ -4194,7 +4670,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnSetMonitoringLevelResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnSetMonitoringLevelResponseSent += (timestamp,
                                                                             sender,
                                                                             connection,
                                                                             request,
@@ -4215,7 +4691,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnSetNetworkProfile
 
-            this.NetworkingNode.OCPP.IN.OnSetNetworkProfileRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnSetNetworkProfileRequestReceived += (timestamp,
                                                                               sender,
                                                                               connection,
                                                                               request) =>
@@ -4229,7 +4705,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnSetNetworkProfileRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnSetNetworkProfileRequestSent += (timestamp,
                                                                            sender,
                                                                            //connection,
                                                                            request) =>
@@ -4243,7 +4719,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnSetNetworkProfileResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnSetNetworkProfileResponseReceived += (timestamp,
                                                                                sender,
                                                                                //connection,
                                                                                request,
@@ -4261,7 +4737,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnSetNetworkProfileResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnSetNetworkProfileResponseSent += (timestamp,
                                                                             sender,
                                                                             connection,
                                                                             request,
@@ -4282,7 +4758,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnSetVariableMonitoring
 
-            this.NetworkingNode.OCPP.IN.OnSetVariableMonitoringRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnSetVariableMonitoringRequestReceived += (timestamp,
                                                                               sender,
                                                                               connection,
                                                                               request) =>
@@ -4296,7 +4772,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnSetVariableMonitoringRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnSetVariableMonitoringRequestSent += (timestamp,
                                                                            sender,
                                                                            //connection,
                                                                            request) =>
@@ -4310,7 +4786,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnSetVariableMonitoringResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnSetVariableMonitoringResponseReceived += (timestamp,
                                                                                sender,
                                                                                //connection,
                                                                                request,
@@ -4328,7 +4804,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnSetVariableMonitoringResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnSetVariableMonitoringResponseSent += (timestamp,
                                                                             sender,
                                                                             connection,
                                                                             request,
@@ -4349,7 +4825,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnSetVariables
 
-            this.NetworkingNode.OCPP.IN.OnSetVariablesRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnSetVariablesRequestReceived += (timestamp,
                                                                               sender,
                                                                               connection,
                                                                               request) =>
@@ -4363,7 +4839,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnSetVariablesRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnSetVariablesRequestSent += (timestamp,
                                                                            sender,
                                                                            //connection,
                                                                            request) =>
@@ -4377,7 +4853,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnSetVariablesResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnSetVariablesResponseReceived += (timestamp,
                                                                                sender,
                                                                                //connection,
                                                                                request,
@@ -4395,7 +4871,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnSetVariablesResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnSetVariablesResponseSent += (timestamp,
                                                                             sender,
                                                                             connection,
                                                                             request,
@@ -4416,7 +4892,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnTriggerMessage
 
-            this.NetworkingNode.OCPP.IN.OnTriggerMessageRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnTriggerMessageRequestReceived += (timestamp,
                                                                               sender,
                                                                               connection,
                                                                               request) =>
@@ -4430,7 +4906,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnTriggerMessageRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnTriggerMessageRequestSent += (timestamp,
                                                                            sender,
                                                                            //connection,
                                                                            request) =>
@@ -4444,7 +4920,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnTriggerMessageResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnTriggerMessageResponseReceived += (timestamp,
                                                                                sender,
                                                                                //connection,
                                                                                request,
@@ -4462,7 +4938,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnTriggerMessageResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnTriggerMessageResponseSent += (timestamp,
                                                                             sender,
                                                                             connection,
                                                                             request,
@@ -4487,10 +4963,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnPublishFirmware
 
-            this.NetworkingNode.OCPP.IN.OnPublishFirmwareRequestReceived += (timestamp,
-                                                                              sender,
-                                                                              connection,
-                                                                              request) =>
+            NetworkingNode.OCPP.IN.OnPublishFirmwareRequestReceived += (timestamp,
+                                                                             sender,
+                                                                             connection,
+                                                                             request) =>
 
                 EventLog.SubmitEvent("OnPublishFirmwareRequestReceived",
                                      new JObject(
@@ -4501,10 +4977,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnPublishFirmwareRequestSent += (timestamp,
-                                                                           sender,
-                                                                           //connection,
-                                                                           request) =>
+            NetworkingNode.OCPP.OUT.OnPublishFirmwareRequestSent += (timestamp,
+                                                                          sender,
+                                                                          //connection,
+                                                                          request) =>
 
                 EventLog.SubmitEvent("OnPublishFirmwareRequestSent",
                                      new JObject(
@@ -4515,12 +4991,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnPublishFirmwareResponseReceived += (timestamp,
-                                                                               sender,
-                                                                               //connection,
-                                                                               request,
-                                                                               response,
-                                                                               runtime) =>
+            NetworkingNode.OCPP.IN.OnPublishFirmwareResponseReceived += (timestamp,
+                                                                              sender,
+                                                                              //connection,
+                                                                              request,
+                                                                              response,
+                                                                              runtime) =>
 
                 EventLog.SubmitEvent("OnPublishFirmwareResponseReceived",
                                      new JObject(
@@ -4533,12 +5009,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnPublishFirmwareResponseSent += (timestamp,
-                                                                            sender,
-                                                                            connection,
-                                                                            request,
-                                                                            response,
-                                                                            runtime) =>
+            NetworkingNode.OCPP.OUT.OnPublishFirmwareResponseSent += (timestamp,
+                                                                           sender,
+                                                                           connection,
+                                                                           request,
+                                                                           response,
+                                                                           runtime) =>
 
                 EventLog.SubmitEvent("OnPublishFirmwareResponseSent",
                                      new JObject(
@@ -4554,10 +5030,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnReset
 
-            this.NetworkingNode.OCPP.IN.OnResetRequestReceived += (timestamp,
-                                                                              sender,
-                                                                              connection,
-                                                                              request) =>
+            NetworkingNode.OCPP.IN.OnResetRequestReceived += (timestamp,
+                                                                   sender,
+                                                                   connection,
+                                                                   request) =>
 
                 EventLog.SubmitEvent("OnResetRequestReceived",
                                      new JObject(
@@ -4568,10 +5044,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnResetRequestSent += (timestamp,
-                                                                           sender,
-                                                                           //connection,
-                                                                           request) =>
+            NetworkingNode.OCPP.OUT.OnResetRequestSent += (timestamp,
+                                                                sender,
+                                                                //connection,
+                                                                request) =>
 
                 EventLog.SubmitEvent("OnResetRequestSent",
                                      new JObject(
@@ -4582,12 +5058,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnResetResponseReceived += (timestamp,
-                                                                               sender,
-                                                                               //connection,
-                                                                               request,
-                                                                               response,
-                                                                               runtime) =>
+            NetworkingNode.OCPP.IN.OnResetResponseReceived += (timestamp,
+                                                                    sender,
+                                                                    //connection,
+                                                                    request,
+                                                                    response,
+                                                                    runtime) =>
 
                 EventLog.SubmitEvent("OnResetResponseReceived",
                                      new JObject(
@@ -4600,12 +5076,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnResetResponseSent += (timestamp,
-                                                                            sender,
-                                                                            connection,
-                                                                            request,
-                                                                            response,
-                                                                            runtime) =>
+            NetworkingNode.OCPP.OUT.OnResetResponseSent += (timestamp,
+                                                                 sender,
+                                                                 connection,
+                                                                 request,
+                                                                 response,
+                                                                 runtime) =>
 
                 EventLog.SubmitEvent("OnResetResponseSent",
                                      new JObject(
@@ -4621,10 +5097,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnUnpublishFirmware
 
-            this.NetworkingNode.OCPP.IN.OnUnpublishFirmwareRequestReceived += (timestamp,
-                                                                              sender,
-                                                                              connection,
-                                                                              request) =>
+            NetworkingNode.OCPP.IN.OnUnpublishFirmwareRequestReceived += (timestamp,
+                                                                               sender,
+                                                                               connection,
+                                                                               request) =>
 
                 EventLog.SubmitEvent("OnUnpublishFirmwareRequestReceived",
                                      new JObject(
@@ -4635,10 +5111,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnUnpublishFirmwareRequestSent += (timestamp,
-                                                                           sender,
-                                                                           //connection,
-                                                                           request) =>
+            NetworkingNode.OCPP.OUT.OnUnpublishFirmwareRequestSent += (timestamp,
+                                                                            sender,
+                                                                            //connection,
+                                                                            request) =>
 
                 EventLog.SubmitEvent("OnUnpublishFirmwareRequestSent",
                                      new JObject(
@@ -4649,12 +5125,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnUnpublishFirmwareResponseReceived += (timestamp,
-                                                                               sender,
-                                                                               //connection,
-                                                                               request,
-                                                                               response,
-                                                                               runtime) =>
+            NetworkingNode.OCPP.IN.OnUnpublishFirmwareResponseReceived += (timestamp,
+                                                                                sender,
+                                                                                //connection,
+                                                                                request,
+                                                                                response,
+                                                                                runtime) =>
 
                 EventLog.SubmitEvent("OnUnpublishFirmwareResponseReceived",
                                      new JObject(
@@ -4667,12 +5143,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnUnpublishFirmwareResponseSent += (timestamp,
-                                                                            sender,
-                                                                            connection,
-                                                                            request,
-                                                                            response,
-                                                                            runtime) =>
+            NetworkingNode.OCPP.OUT.OnUnpublishFirmwareResponseSent += (timestamp,
+                                                                             sender,
+                                                                             connection,
+                                                                             request,
+                                                                             response,
+                                                                             runtime) =>
 
                 EventLog.SubmitEvent("OnUnpublishFirmwareResponseSent",
                                      new JObject(
@@ -4688,10 +5164,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnUpdateFirmware
 
-            this.NetworkingNode.OCPP.IN.OnUpdateFirmwareRequestReceived += (timestamp,
-                                                                              sender,
-                                                                              connection,
-                                                                              request) =>
+            NetworkingNode.OCPP.IN.OnUpdateFirmwareRequestReceived += (timestamp,
+                                                                            sender,
+                                                                            connection,
+                                                                            request) =>
 
                 EventLog.SubmitEvent("OnUpdateFirmwareRequestReceived",
                                      new JObject(
@@ -4702,10 +5178,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnUpdateFirmwareRequestSent += (timestamp,
-                                                                           sender,
-                                                                           //connection,
-                                                                           request) =>
+            NetworkingNode.OCPP.OUT.OnUpdateFirmwareRequestSent += (timestamp,
+                                                                         sender,
+                                                                         //connection,
+                                                                         request) =>
 
                 EventLog.SubmitEvent("OnUpdateFirmwareRequestSent",
                                      new JObject(
@@ -4716,12 +5192,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnUpdateFirmwareResponseReceived += (timestamp,
-                                                                               sender,
-                                                                               //connection,
-                                                                               request,
-                                                                               response,
-                                                                               runtime) =>
+            NetworkingNode.OCPP.IN.OnUpdateFirmwareResponseReceived += (timestamp,
+                                                                             sender,
+                                                                             //connection,
+                                                                             request,
+                                                                             response,
+                                                                             runtime) =>
 
                 EventLog.SubmitEvent("OnUpdateFirmwareResponseReceived",
                                      new JObject(
@@ -4734,12 +5210,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnUpdateFirmwareResponseSent += (timestamp,
-                                                                            sender,
-                                                                            connection,
-                                                                            request,
-                                                                            response,
-                                                                            runtime) =>
+            NetworkingNode.OCPP.OUT.OnUpdateFirmwareResponseSent += (timestamp,
+                                                                          sender,
+                                                                          connection,
+                                                                          request,
+                                                                          response,
+                                                                          runtime) =>
 
                 EventLog.SubmitEvent("OnUpdateFirmwareResponseSent",
                                      new JObject(
@@ -4759,7 +5235,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnAFRRSignal
 
-            this.NetworkingNode.OCPP.IN.OnAFRRSignalRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnAFRRSignalRequestReceived += (timestamp,
                                                                         sender,
                                                                         connection,
                                                                         request) =>
@@ -4773,7 +5249,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnAFRRSignalRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnAFRRSignalRequestSent += (timestamp,
                                                                      sender,
                                                                      //connection,
                                                                      request) =>
@@ -4787,7 +5263,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnAFRRSignalResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnAFRRSignalResponseReceived += (timestamp,
                                                                          sender,
                                                                          //connection,
                                                                          request,
@@ -4805,7 +5281,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnAFRRSignalResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnAFRRSignalResponseSent += (timestamp,
                                                                       sender,
                                                                       connection,
                                                                       request,
@@ -4830,7 +5306,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnClearCache
 
-            this.NetworkingNode.OCPP.IN.OnClearCacheRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnClearCacheRequestReceived += (timestamp,
                                                                         sender,
                                                                         connection,
                                                                         request) =>
@@ -4844,7 +5320,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnClearCacheRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnClearCacheRequestSent += (timestamp,
                                                                      sender,
                                                                      //connection,
                                                                      request) =>
@@ -4858,7 +5334,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnClearCacheResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnClearCacheResponseReceived += (timestamp,
                                                                          sender,
                                                                          //connection,
                                                                          request,
@@ -4876,7 +5352,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnClearCacheResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnClearCacheResponseSent += (timestamp,
                                                                       sender,
                                                                       connection,
                                                                       request,
@@ -4897,7 +5373,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnGetLocalListVersion
 
-            this.NetworkingNode.OCPP.IN.OnGetLocalListVersionRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnGetLocalListVersionRequestReceived += (timestamp,
                                                                                  sender,
                                                                                  connection,
                                                                                  request) =>
@@ -4911,7 +5387,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnGetLocalListVersionRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnGetLocalListVersionRequestSent += (timestamp,
                                                                               sender,
                                                                               //connection,
                                                                               request) =>
@@ -4925,7 +5401,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnGetLocalListVersionResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnGetLocalListVersionResponseReceived += (timestamp,
                                                                                   sender,
                                                                                   //connection,
                                                                                   request,
@@ -4943,7 +5419,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnGetLocalListVersionResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnGetLocalListVersionResponseSent += (timestamp,
                                                                                sender,
                                                                                connection,
                                                                                request,
@@ -4964,7 +5440,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnSendLocalList
 
-            this.NetworkingNode.OCPP.IN.OnSendLocalListRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnSendLocalListRequestReceived += (timestamp,
                                                                            sender,
                                                                            connection,
                                                                            request) =>
@@ -4978,7 +5454,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnSendLocalListRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnSendLocalListRequestSent += (timestamp,
                                                                         sender,
                                                                         //connection,
                                                                         request) =>
@@ -4992,7 +5468,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnSendLocalListResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnSendLocalListResponseReceived += (timestamp,
                                                                             sender,
                                                                             //connection,
                                                                             request,
@@ -5010,7 +5486,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnSendLocalListResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnSendLocalListResponseSent += (timestamp,
                                                                          sender,
                                                                          connection,
                                                                          request,
@@ -5033,10 +5509,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
+            #region CSMS            <-> ChargingStation Messages
 
             #region OnDataTransfer
 
-            this.NetworkingNode.OCPP.IN.OnDataTransferRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnDataTransferRequestReceived += (timestamp,
                                                                           sender,
                                                                           connection,
                                                                           request) =>
@@ -5050,7 +5527,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnDataTransferRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnDataTransferRequestSent += (timestamp,
                                                                        sender,
                                                                        //connection,
                                                                        request) =>
@@ -5064,7 +5541,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnDataTransferResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnDataTransferResponseReceived += (timestamp,
                                                                            sender,
                                                                            //connection,
                                                                            request,
@@ -5082,7 +5559,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnDataTransferResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnDataTransferResponseSent += (timestamp,
                                                                         sender,
                                                                         connection,
                                                                         request,
@@ -5103,7 +5580,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnBinaryDataTransfer
 
-            this.NetworkingNode.OCPP.IN.OnBinaryDataTransferRequestReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnBinaryDataTransferRequestReceived += (timestamp,
                                                                                 sender,
                                                                                 connection,
                                                                                 request) =>
@@ -5117,7 +5594,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnBinaryDataTransferRequestSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnBinaryDataTransferRequestSent += (timestamp,
                                                                              sender,
                                                                              //connection,
                                                                              request) =>
@@ -5131,7 +5608,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.IN.OnBinaryDataTransferResponseReceived += (timestamp,
+            NetworkingNode.OCPP.IN.OnBinaryDataTransferResponseReceived += (timestamp,
                                                                                  sender,
                                                                                  //connection,
                                                                                  request,
@@ -5149,7 +5626,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      ));
 
 
-            this.NetworkingNode.OCPP.OUT.OnBinaryDataTransferResponseSent += (timestamp,
+            NetworkingNode.OCPP.OUT.OnBinaryDataTransferResponseSent += (timestamp,
                                                                               sender,
                                                                               connection,
                                                                               request,
@@ -5168,6 +5645,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
+            #endregion
+
+
+            // Firmware API download messages
+            // Logdata API upload messages
+            // Diagnostics API upload messages
+
+
+        }
+
+        #endregion
+
+
+        #region TryGetChargingStation(ChargingStationId, out ChargingStation)
+
+        public Boolean TryGetChargingStation(ChargingStation_Id ChargingStationId, out ChargingStation? ChargingStation)
+        {
+
+            if (chargingStations.TryGetValue(ChargingStationId, out ChargingStation))
+                return true;
+
+            ChargingStation = null;
+            return false;
 
         }
 
@@ -5182,10 +5682,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         protected override Stream? GetResourceStream(String ResourceName)
 
-            => GetResourceStream(ResourceName,
-                                 new Tuple<String, Assembly>(NetworkingNodeWebAPI.HTTPRoot, typeof(NetworkingNodeWebAPI).Assembly),
-                                 new Tuple<String, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
-                                 new Tuple<String, Assembly>(HTTPAPI.   HTTPRoot, typeof(HTTPAPI).   Assembly));
+            => base.GetResourceStream(ResourceName,
+                                 new Tuple<string, Assembly>(HTTPAPI.HTTPRoot, typeof(HTTPAPI).Assembly),
+                                 new Tuple<string, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
+                                 new Tuple<string, Assembly>(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI.   HTTPRoot, typeof(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI).   Assembly));
 
         #endregion
 
@@ -5193,10 +5693,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         protected override MemoryStream? GetResourceMemoryStream(String ResourceName)
 
-            => GetResourceMemoryStream(ResourceName,
-                                       new Tuple<String, Assembly>(NetworkingNodeWebAPI.HTTPRoot, typeof(NetworkingNodeWebAPI).Assembly),
-                                       new Tuple<String, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
-                                       new Tuple<String, Assembly>(HTTPAPI.   HTTPRoot, typeof(HTTPAPI).   Assembly));
+            => base.GetResourceMemoryStream(ResourceName,
+                                       new Tuple<string, Assembly>(HTTPAPI.HTTPRoot, typeof(HTTPAPI).Assembly),
+                                       new Tuple<string, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
+                                       new Tuple<string, Assembly>(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI.   HTTPRoot, typeof(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI).   Assembly));
 
         #endregion
 
@@ -5204,10 +5704,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         protected override String GetResourceString(String ResourceName)
 
-            => GetResourceString(ResourceName,
-                                 new Tuple<String, Assembly>(NetworkingNodeWebAPI.HTTPRoot, typeof(NetworkingNodeWebAPI).Assembly),
-                                 new Tuple<String, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
-                                 new Tuple<String, Assembly>(HTTPAPI.   HTTPRoot, typeof(HTTPAPI).   Assembly));
+            => base.GetResourceString(ResourceName,
+                                 new Tuple<string, Assembly>(HTTPAPI.HTTPRoot, typeof(HTTPAPI).Assembly),
+                                 new Tuple<string, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
+                                 new Tuple<string, Assembly>(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI.   HTTPRoot, typeof(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI).   Assembly));
 
         #endregion
 
@@ -5215,10 +5715,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         protected override Byte[] GetResourceBytes(String ResourceName)
 
-            => GetResourceBytes(ResourceName,
-                                new Tuple<String, Assembly>(NetworkingNodeWebAPI.HTTPRoot, typeof(NetworkingNodeWebAPI).Assembly),
-                                new Tuple<String, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
-                                new Tuple<String, Assembly>(HTTPAPI.   HTTPRoot, typeof(HTTPAPI).   Assembly));
+            => base.GetResourceBytes(ResourceName,
+                                new Tuple<string, Assembly>(HTTPAPI.HTTPRoot, typeof(HTTPAPI).Assembly),
+                                new Tuple<string, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
+                                new Tuple<string, Assembly>(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI.   HTTPRoot, typeof(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI).   Assembly));
 
         #endregion
 
@@ -5226,10 +5726,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         protected override String MixWithHTMLTemplate(String ResourceName)
 
-            => MixWithHTMLTemplate(ResourceName,
-                                   new Tuple<String, Assembly>(NetworkingNodeWebAPI.HTTPRoot, typeof(NetworkingNodeWebAPI).Assembly),
-                                   new Tuple<String, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
-                                   new Tuple<String, Assembly>(HTTPAPI.   HTTPRoot, typeof(HTTPAPI).   Assembly));
+            => base.MixWithHTMLTemplate(ResourceName,
+                                   new Tuple<string, Assembly>(HTTPAPI.HTTPRoot, typeof(HTTPAPI).Assembly),
+                                   new Tuple<string, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
+                                   new Tuple<string, Assembly>(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI.   HTTPRoot, typeof(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI).   Assembly));
 
         #endregion
 
@@ -5238,11 +5738,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         protected override String MixWithHTMLTemplate(String                ResourceName,
                                                       Func<String, String>  HTMLConverter)
 
-            => MixWithHTMLTemplate(ResourceName,
+            => base.MixWithHTMLTemplate(ResourceName,
                                    HTMLConverter,
-                                   new Tuple<String, Assembly>(NetworkingNodeWebAPI.HTTPRoot, typeof(NetworkingNodeWebAPI).Assembly),
-                                   new Tuple<String, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
-                                   new Tuple<String, Assembly>(HTTPAPI.   HTTPRoot, typeof(HTTPAPI).   Assembly));
+                                   new Tuple<string, Assembly>(HTTPAPI.HTTPRoot, typeof(HTTPAPI).Assembly),
+                                   new Tuple<string, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
+                                   new Tuple<string, Assembly>(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI.   HTTPRoot, typeof(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI).   Assembly));
 
         #endregion
 
@@ -5252,12 +5752,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                       String   ResourceName,
                                                       String?  Content   = null)
 
-            => MixWithHTMLTemplate(Template,
+            => base.MixWithHTMLTemplate(Template,
                                    ResourceName,
                                    new[] {
-                                       new Tuple<String, Assembly>(NetworkingNodeWebAPI.HTTPRoot, typeof(NetworkingNodeWebAPI).Assembly),
-                                       new Tuple<String, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
-                                       new Tuple<String, Assembly>(HTTPAPI.   HTTPRoot, typeof(HTTPAPI).   Assembly)
+                                       new Tuple<string, Assembly>(HTTPAPI.HTTPRoot, typeof(HTTPAPI).Assembly),
+                                       new Tuple<string, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
+                                       new Tuple<string, Assembly>(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI.   HTTPRoot, typeof(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI).   Assembly)
                                    },
                                    Content);
 
@@ -5287,8 +5787,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             //                                         Server                     = DefaultHTTPServerName,
             //                                         Date                       = Timestamp.Now,
             //                                         AccessControlAllowOrigin   = "*",
-            //                                         AccessControlAllowMethods  = new[] { "OPTIONS", "GET" },
-            //                                         AccessControlAllowHeaders  = new[] { "Authorization" },
+            //                                         AccessControlAllowMethods  = [ "OPTIONS", "GET" ],
+            //                                         AccessControlAllowHeaders  = [ "Authorization" ],
             //                                         ContentType                = HTTPContentType.Text.HTML_UTF8,
             //                                         Content                    = ("<html><body>" +
             //                                                                          "This is an Open Charge Point Protocol v1.6 HTTP service!<br /><br />" +
@@ -5337,8 +5837,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                          Server                     = HTTPServiceName,
                                                          Date                       = Timestamp.Now,
                                                          AccessControlAllowOrigin   = "*",
-                                                         AccessControlAllowMethods  = new[] { "GET" },
-                                                         AccessControlAllowHeaders  = new[] { "Content-Type", "Accept", "Authorization" },
+                                                         AccessControlAllowMethods  = [ "GET" ],
+                                                         AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                                          ContentType                = HTTPContentType.Text.HTML_UTF8,
                                                          Content                    = MixWithHTMLTemplate("events.events.shtml").ToUTF8Bytes(),
                                                          Connection                 = "close",
@@ -5355,7 +5855,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         }
 
         #endregion
-
 
 
     }

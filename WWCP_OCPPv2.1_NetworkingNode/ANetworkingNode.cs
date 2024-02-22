@@ -176,7 +176,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
     /// <summary>
-    /// A networking node for testing.
+    /// An abstract networking node.
     /// </summary>
     public abstract class ANetworkingNode : INetworkingNode
     {
@@ -272,7 +272,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
 
-
+        public String? ClientCloseMessage
+            => "Bye!";
 
 
 
@@ -285,6 +286,59 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
         #region Events
+
+        #region WebSocket connections
+
+        ///// <summary>
+        ///// An event sent whenever the HTTP web socket server started.
+        ///// </summary>
+        //public event OnServerStartedDelegate?                 OnServerStarted;
+
+        ///// <summary>
+        ///// An event sent whenever a new TCP connection was accepted.
+        ///// </summary>
+        //public event OnValidateTCPConnectionDelegate?         OnValidateTCPConnection;
+
+        ///// <summary>
+        ///// An event sent whenever a new TCP connection was accepted.
+        ///// </summary>
+        //public event OnNewTCPConnectionDelegate?              OnNewTCPConnection;
+
+        ///// <summary>
+        ///// An event sent whenever a HTTP request was received.
+        ///// </summary>
+        //public event HTTPRequestLogDelegate?                  OnHTTPRequest;
+
+        ///// <summary>
+        ///// An event sent whenever the HTTP headers of a new web socket connection
+        ///// need to be validated or filtered by an upper layer application logic.
+        ///// </summary>
+        //public event OnValidateWebSocketConnectionDelegate?   OnValidateWebSocketConnection;
+
+        ///// <summary>
+        ///// An event sent whenever the HTTP connection switched successfully to web socket.
+        ///// </summary>
+        //public event OnCSMSNewWebSocketConnectionDelegate?    OnNewWebSocketConnection;
+
+        ///// <summary>
+        ///// An event sent whenever a reponse to a HTTP request was sent.
+        ///// </summary>
+        //public event HTTPResponseLogDelegate?                 OnHTTPResponse;
+
+        ///// <summary>
+        ///// An event sent whenever a web socket close frame was received.
+        ///// </summary>
+        //public event OnCSMSCloseMessageReceivedDelegate?      OnCloseMessageReceived;
+
+        ///// <summary>
+        ///// An event sent whenever a TCP connection was closed.
+        ///// </summary>
+        //public event OnCSMSTCPConnectionClosedDelegate?       OnTCPConnectionClosed;
+
+        ///// <summary>
+        ///// An event sent whenever the HTTP web socket server stopped.
+        ///// </summary>
+        //public event OnServerStoppedDelegate?                 OnServerStopped;
 
         #region WebSocket connections
 
@@ -338,6 +392,80 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// An event sent whenever the HTTP web socket server stopped.
         /// </summary>
         public event OnServerStoppedDelegate?                 OnServerStopped;
+
+        #endregion
+
+        #region Generic JSON Messages
+
+        /// <summary>
+        /// An event sent whenever a JSON message request was received.
+        /// </summary>
+        public event OnWebSocketJSONMessageRequestDelegate?     OnJSONMessageRequestReceived;
+
+        /// <summary>
+        /// An event sent whenever the response to a JSON message was sent.
+        /// </summary>
+        public event OnWebSocketJSONMessageResponseDelegate?    OnJSONMessageResponseSent;
+
+        /// <summary>
+        /// An event sent whenever the error response to a JSON message was sent.
+        /// </summary>
+        public event OnWebSocketTextErrorResponseDelegate?      OnJSONErrorResponseSent;
+
+
+        /// <summary>
+        /// An event sent whenever a JSON message request was sent.
+        /// </summary>
+        public event OnWebSocketJSONMessageRequestDelegate?     OnJSONMessageRequestSent;
+
+        /// <summary>
+        /// An event sent whenever the response to a JSON message request was received.
+        /// </summary>
+        public event OnWebSocketJSONMessageResponseDelegate?    OnJSONMessageResponseReceived;
+
+        /// <summary>
+        /// An event sent whenever an error response to a JSON message request was received.
+        /// </summary>
+        public event OnWebSocketTextErrorResponseDelegate?      OnJSONErrorResponseReceived;
+
+        #endregion
+
+        #region Generic Binary Messages
+
+        /// <summary>
+        /// An event sent whenever a binary message request was received.
+        /// </summary>
+        public event OnWebSocketBinaryMessageRequestDelegate?     OnBinaryMessageRequestReceived;
+
+        /// <summary>
+        /// An event sent whenever the response to a binary message was sent.
+        /// </summary>
+        public event OnWebSocketBinaryMessageResponseDelegate?    OnBinaryMessageResponseSent;
+
+        /// <summary>
+        /// An event sent whenever the error response to a binary message was sent.
+        /// </summary>
+        //public event OnWebSocketBinaryErrorResponseDelegate?      OnBinaryErrorResponseSent;
+
+
+        /// <summary>
+        /// An event sent whenever a binary message request was sent.
+        /// </summary>
+        public event OnWebSocketBinaryMessageRequestDelegate?     OnBinaryMessageRequestSent;
+
+        /// <summary>
+        /// An event sent whenever the response to a binary message request was received.
+        /// </summary>
+        public event OnWebSocketBinaryMessageResponseDelegate?    OnBinaryMessageResponseReceived;
+
+        /// <summary>
+        /// An event sent whenever the error response to a binary message request was sent.
+        /// </summary>
+        //public event OnWebSocketBinaryErrorResponseDelegate?      OnBinaryErrorResponseReceived;
+
+        #endregion
+
+
 
         #endregion
 
@@ -995,7 +1123,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         /// <param name="HTTPServiceName">An optional identification string for the HTTP server.</param>
         /// <param name="AutoStart">Start the server immediately.</param>
-        public NetworkingNodeWebAPI AttachWebAPI(HTTPHostname?                               HTTPHostname            = null,
+        public WebAPI AttachWebAPI(HTTPHostname?                               HTTPHostname            = null,
                                                  String?                                     ExternalDNSName         = null,
                                                  IPPort?                                     HTTPServerPort          = null,
                                                  HTTPPath?                                   BasePath                = null,
@@ -1028,7 +1156,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                            );
 
-            var webAPI   = new NetworkingNodeWebAPI(
+            var webAPI   = new WebAPI(
 
                                this,
                                httpAPI,
@@ -1052,9 +1180,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
-        public string? ClientCloseMessage => throw new NotImplementedException();
+        #region (virtual) HandleErrors(Module, Caller, ErrorResponse)
 
+        public virtual Task HandleErrors(String  Module,
+                                         String  Caller,
+                                         String  ErrorResponse)
+        {
 
+            return Task.CompletedTask;
+
+        }
+
+        #endregion
 
         #region (virtual) HandleErrors(Module, Caller, ExceptionOccured)
 
@@ -1062,18 +1199,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                          String     Caller,
                                          Exception  ExceptionOccured)
         {
+
             return Task.CompletedTask;
-        }
 
-        #endregion
-
-        #region (virtual) HandleErrors(Module, Caller, ErrorResponse)
-
-        public virtual Task HandleErrors(String  Module,
-                                         String  Caller,
-                                         String  ErrorResponse)
-        {
-            return Task.CompletedTask;
         }
 
         #endregion

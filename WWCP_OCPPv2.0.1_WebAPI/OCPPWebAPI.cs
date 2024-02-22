@@ -1121,8 +1121,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
             //                                         Server                     = DefaultHTTPServerName,
             //                                         Date                       = Timestamp.Now,
             //                                         AccessControlAllowOrigin   = "*",
-            //                                         AccessControlAllowMethods  = new[] { "OPTIONS", "GET" },
-            //                                         AccessControlAllowHeaders  = new[] { "Authorization" },
+            //                                         AccessControlAllowMethods  = [ "OPTIONS", "GET" ],
+            //                                         AccessControlAllowHeaders  = [ "Authorization" ],
             //                                         ContentType                = HTTPContentType.Text.HTML_UTF8,
             //                                         Content                    = ("<html><body>" +
             //                                                                          "This is an Open Charge Point Protocol v1.6 HTTP service!<br /><br />" +
@@ -1152,8 +1152,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                                           Server                     = DefaultHTTPServerName,
                                           Date                       = Timestamp.Now,
                                           AccessControlAllowOrigin   = "*",
-                                          AccessControlAllowMethods  = new[] { "OPTIONS", "GET" },
-                                          AccessControlAllowHeaders  = new[] { "Authorization" },
+                                          AccessControlAllowMethods  = [ "OPTIONS", "GET" ],
+                                          AccessControlAllowHeaders  = [ "Authorization" ],
                                           ContentType                = HTTPContentType.Application.JSON_UTF8,
                                           Content                    = JSONArray.Create(
                                                                            CSMS.ChargeBoxIds.Select(chargeBoxId => new JObject(new JProperty("@id", chargeBoxId.ToString())))
@@ -1179,8 +1179,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                                           Server                     = DefaultHTTPServerName,
                                           Date                       = Timestamp.Now,
                                           AccessControlAllowOrigin   = "*",
-                                          AccessControlAllowMethods  = new[] { "OPTIONS", "GET" },
-                                          AccessControlAllowHeaders  = new[] { "Authorization" },
+                                          AccessControlAllowMethods  = [ "OPTIONS", "GET" ],
+                                          AccessControlAllowHeaders  = [ "Authorization" ],
                                           ContentType                = HTTPContentType.Application.JSON_UTF8,
                                           Content                    = JSONArray.Create(
                                                                            CSMS.ChargeBoxes.Select(chargeBox => chargeBox.ToJSON())
@@ -1235,8 +1235,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                                           Server                     = DefaultHTTPServerName,
                                           Date                       = Timestamp.Now,
                                           AccessControlAllowOrigin   = "*",
-                                          AccessControlAllowMethods  = new[] { "OPTIONS", "GET" },
-                                          AccessControlAllowHeaders  = new[] { "Authorization" },
+                                          AccessControlAllowMethods  = [ "OPTIONS", "GET" ],
+                                          AccessControlAllowHeaders  = [ "Authorization" ],
                                           ContentType                = HTTPContentType.Application.JSON_UTF8,
                                           Content                    = ChargeBox.ToJSON().ToUTF8Bytes(Newtonsoft.Json.Formatting.None),
                                           Connection                 = "close"
@@ -1280,8 +1280,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                                                  Server                     = DefaultHTTPServerName,
                                                  Date                       = Timestamp.Now,
                                                  AccessControlAllowOrigin   = "*",
-                                                 AccessControlAllowMethods  = new[] { "GET" },
-                                                 AccessControlAllowHeaders  = new[] { "Content-Type", "Accept", "Authorization" },
+                                                 AccessControlAllowMethods  = [ "GET" ],
+                                                 AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                                  ContentType                = HTTPContentType.Text.HTML_UTF8,
                                                  Content                    = MixWithHTMLTemplate("events.events.shtml").ToUTF8Bytes(),
                                                  Connection                 = "close",

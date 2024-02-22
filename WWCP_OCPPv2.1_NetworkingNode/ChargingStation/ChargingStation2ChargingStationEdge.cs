@@ -25,7 +25,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
     [Flags]
-    public enum ChargeBox2ChargeBoxEdgeLabel
+    public enum ChargingStation2ChargingStationEdgeLabel
     {
         IsSubsidary,
         IsParent,
@@ -33,26 +33,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     }
 
 
-    public class ChargeBox2ChargeBoxEdge : MiniEdge<ChargeBox, ChargeBox2ChargeBoxEdgeLabel, ChargeBox>
+    public class ChargingStation2ChargingStationEdge : MiniEdge<ChargingStation, ChargingStation2ChargingStationEdgeLabel, ChargingStation>
     {
 
         /// <summary>
         /// Create a new miniedge.
         /// </summary>
-        /// <param name="ChargeBoxA">The source of the edge.</param>
+        /// <param name="ChargingStationA">The source of the edge.</param>
         /// <param name="EdgeLabel">The label of the edge.</param>
-        /// <param name="ChargeBoxB">The target of the edge</param>
+        /// <param name="ChargingStationB">The target of the edge</param>
         /// <param name="PrivacyLevel">The level of privacy of this edge.</param>
         /// <param name="Created">The creation timestamp of the miniedge.</param>
-        public ChargeBox2ChargeBoxEdge(ChargeBox                     ChargeBoxA,
-                                       ChargeBox2ChargeBoxEdgeLabel  EdgeLabel,
-                                       ChargeBox                     ChargeBoxB,
+        public ChargingStation2ChargingStationEdge(ChargingStation                     ChargingStationA,
+                                       ChargingStation2ChargingStationEdgeLabel  EdgeLabel,
+                                       ChargingStation                     ChargingStationB,
                                        PrivacyLevel                  PrivacyLevel  = PrivacyLevel.Private,
                                        DateTime?                     Created       = null)
 
-            : base(ChargeBoxA ?? throw new ArgumentNullException(nameof(ChargeBoxA), "The given charging station must not be null!"),
+            : base(ChargingStationA ?? throw new ArgumentNullException(nameof(ChargingStationA), "The given charging station must not be null!"),
                    EdgeLabel,
-                   ChargeBoxB ?? throw new ArgumentNullException(nameof(ChargeBoxB), "The given charging station must not be null!"),
+                   ChargingStationB ?? throw new ArgumentNullException(nameof(ChargingStationB), "The given charging station must not be null!"),
                    PrivacyLevel,
                    Created)
 

@@ -94,7 +94,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public HTTPEventSource<JObject>?                    EventLog            { get; }
 
 
-        public TestCSMS                            CSMS       { get; }
+        public ACSMS                                        CSMS                { get; }
 
         #endregion
 
@@ -107,7 +107,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="URLPathPrefix">An optional prefix for the HTTP URLs.</param>
         /// <param name="HTTPRealm">The HTTP realm, if HTTP Basic Authentication is used.</param>
         /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
-        public UploadAPI(TestCSMS                           TestCSMS,
+        public UploadAPI(ACSMS                                       TestCSMS,
                          HTTPServer                                  HTTPServer,
                          HTTPPath?                                   URLPathPrefix    = null,
                          HTTPPath?                                   BasePath         = null,
@@ -146,7 +146,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.CSMS  = TestCSMS;
 
             this.HTTPRealm      = HTTPRealm.IsNotNullOrEmpty() ? HTTPRealm : DefaultHTTPRealm;
-            this.HTTPLogins     = HTTPLogins ?? Array.Empty<KeyValuePair<string, string>>();
+            this.HTTPLogins     = HTTPLogins ?? [];
 
             RegisterURITemplates();
 
@@ -291,7 +291,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                  Server                     = DefaultHTTPServerName,
                                                  Date                       = Timestamp.Now,
                                                  AccessControlAllowOrigin   = "*",
-                                                 AccessControlAllowMethods  = new[] { "GET" },
+                                                 AccessControlAllowMethods  = [ "GET" ],
                                                  ContentType                = HTTPContentType.Application.OCTETSTREAM,
                                                  Content                    = data,
                                                  Connection                 = "close"

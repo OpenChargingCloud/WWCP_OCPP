@@ -26,21 +26,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
     /// <summary>
-    /// The result of a delete charging station request.
+    /// The result of an update charging station request.
     /// </summary>
-    public class DeleteChargeBoxResult : AEnitityResult<ChargeBox, ChargingStation_Id>
+    public class UpdateChargingStationResult : AEnitityResult<ChargingStation, ChargingStation_Id>
     {
 
         #region Properties
 
-        public ChargeBox?  ChargeBox
+        public ChargingStation?  ChargingStation
             => Entity;
 
         #endregion
 
         #region Constructor(s)
 
-        public DeleteChargeBoxResult(ChargeBox              ChargeBox,
+        public UpdateChargingStationResult(ChargingStation              ChargingStation,
                                      CommandResult          Result,
                                      EventTracking_Id?      EventTrackingId   = null,
                                      IId?                   SenderId          = null,
@@ -49,7 +49,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      IEnumerable<Warning>?  Warnings          = null,
                                      TimeSpan?              Runtime           = null)
 
-            : base(ChargeBox,
+            : base(ChargingStation,
                    Result,
                    EventTrackingId,
                    SenderId,
@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         { }
 
 
-        public DeleteChargeBoxResult(ChargingStation_Id           ChargeBoxId,
+        public UpdateChargingStationResult(ChargingStation_Id           ChargingStationId,
                                      CommandResult          Result,
                                      EventTracking_Id?      EventTrackingId   = null,
                                      IId?                   SenderId          = null,
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                      IEnumerable<Warning>?  Warnings          = null,
                                      TimeSpan?              Runtime           = null)
 
-            : base(ChargeBoxId,
+            : base(ChargingStationId,
                    Result,
                    EventTrackingId,
                    SenderId,
@@ -84,11 +84,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
-        #region (static) AdminDown      (ChargeBox,   ...)
+        #region (static) AdminDown    (ChargingStation,   ...)
 
-        public static DeleteChargeBoxResult
+        public static UpdateChargingStationResult
 
-            AdminDown(ChargeBox              ChargeBox,
+            AdminDown(ChargingStation              ChargingStation,
                       EventTracking_Id?      EventTrackingId   = null,
                       IId?                   SenderId          = null,
                       Object?                Sender            = null,
@@ -96,7 +96,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                       IEnumerable<Warning>?  Warnings          = null,
                       TimeSpan?              Runtime           = null)
 
-                => new (ChargeBox,
+                => new (ChargingStation,
                         CommandResult.AdminDown,
                         EventTrackingId,
                         SenderId,
@@ -107,11 +107,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region (static) NoOperation    (ChargeBox,   ...)
+        #region (static) NoOperation  (ChargingStation,   ...)
 
-        public static DeleteChargeBoxResult
+        public static UpdateChargingStationResult
 
-            NoOperation(ChargeBox              ChargeBox,
+            NoOperation(ChargingStation              ChargingStation,
                         EventTracking_Id?      EventTrackingId   = null,
                         IId?                   SenderId          = null,
                         Object?                Sender            = null,
@@ -119,7 +119,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         IEnumerable<Warning>?  Warnings          = null,
                         TimeSpan?              Runtime           = null)
 
-                => new (ChargeBox,
+                => new (ChargingStation,
                         CommandResult.NoOperation,
                         EventTrackingId,
                         SenderId,
@@ -131,11 +131,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
-        #region (static) Enqueued       (ChargeBox,   ...)
+        #region (static) Enqueued     (ChargingStation,   ...)
 
-        public static DeleteChargeBoxResult
+        public static UpdateChargingStationResult
 
-            Enqueued(ChargeBox              ChargeBox,
+            Enqueued(ChargingStation              ChargingStation,
                      EventTracking_Id?      EventTrackingId   = null,
                      IId?                   SenderId          = null,
                      Object?                Sender            = null,
@@ -143,7 +143,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                      IEnumerable<Warning>?  Warnings          = null,
                      TimeSpan?              Runtime           = null)
 
-                => new (ChargeBox,
+                => new (ChargingStation,
                         CommandResult.Enqueued,
                         EventTrackingId,
                         SenderId,
@@ -154,11 +154,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region (static) Success        (ChargeBox,   ...)
+        #region (static) Success      (ChargingStation,   ...)
 
-        public static DeleteChargeBoxResult
+        public static UpdateChargingStationResult
 
-            Success(ChargeBox              ChargeBox,
+            Success(ChargingStation              ChargingStation,
                     EventTracking_Id?      EventTrackingId   = null,
                     IId?                   SenderId          = null,
                     Object?                Sender            = null,
@@ -166,7 +166,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     IEnumerable<Warning>?  Warnings          = null,
                     TimeSpan?              Runtime           = null)
 
-                => new (ChargeBox,
+                => new (ChargingStation,
                         CommandResult.Success,
                         EventTrackingId,
                         SenderId,
@@ -178,35 +178,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
-        #region (static) CanNotBeRemoved(ChargeBox,   ...)
+        #region (static) ArgumentError(ChargingStation,   Description, ...)
 
-        public static DeleteChargeBoxResult
+        public static UpdateChargingStationResult
 
-            CanNotBeRemoved(ChargeBox              ChargeBox,
-                            EventTracking_Id?      EventTrackingId   = null,
-                            IId?                   SenderId          = null,
-                            Object?                Sender            = null,
-                            I18NString?            Description       = null,
-                            IEnumerable<Warning>?  Warnings          = null,
-                            TimeSpan?              Runtime           = null)
-
-                => new (ChargeBox,
-                        CommandResult.Success,
-                        EventTrackingId,
-                        SenderId,
-                        Sender,
-                        Description,
-                        Warnings,
-                        Runtime);
-
-        #endregion
-
-
-        #region (static) ArgumentError  (ChargeBox,   Description, ...)
-
-        public static DeleteChargeBoxResult
-
-            ArgumentError(ChargeBox              ChargeBox,
+            ArgumentError(ChargingStation              ChargingStation,
                           I18NString             Description,
                           EventTracking_Id?      EventTrackingId   = null,
                           IId?                   SenderId          = null,
@@ -214,7 +190,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                           IEnumerable<Warning>?  Warnings          = null,
                           TimeSpan?              Runtime           = null)
 
-                => new (ChargeBox,
+                => new (ChargingStation,
                         CommandResult.ArgumentError,
                         EventTrackingId,
                         SenderId,
@@ -225,11 +201,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region (static) ArgumentError  (ChargeBoxId, Description, ...)
+        #region (static) ArgumentError(ChargingStationId, Description, ...)
 
-        public static DeleteChargeBoxResult
+        public static UpdateChargingStationResult
 
-            ArgumentError(ChargingStation_Id           ChargeBoxId,
+            ArgumentError(ChargingStation_Id           ChargingStationId,
                           I18NString             Description,
                           EventTracking_Id?      EventTrackingId   = null,
                           IId?                   SenderId          = null,
@@ -237,7 +213,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                           IEnumerable<Warning>?  Warnings          = null,
                           TimeSpan?              Runtime           = null)
 
-                => new (ChargeBoxId,
+                => new (ChargingStationId,
                         CommandResult.ArgumentError,
                         EventTrackingId,
                         SenderId,
@@ -248,11 +224,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region (static) Error          (ChargeBox,   Description, ...)
+        #region (static) Error        (ChargingStation,   Description, ...)
 
-        public static DeleteChargeBoxResult
+        public static UpdateChargingStationResult
 
-            Error(ChargeBox              ChargeBox,
+            Error(ChargingStation              ChargingStation,
                   I18NString             Description,
                   EventTracking_Id?      EventTrackingId   = null,
                   IId?                   SenderId          = null,
@@ -260,7 +236,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                   IEnumerable<Warning>?  Warnings          = null,
                   TimeSpan?              Runtime           = null)
 
-                => new (ChargeBox,
+                => new (ChargingStation,
                         CommandResult.Error,
                         EventTrackingId,
                         SenderId,
@@ -271,11 +247,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region (static) Error          (ChargeBox,   Exception,   ...)
+        #region (static) Error        (ChargingStation,   Exception,   ...)
 
-        public static DeleteChargeBoxResult
+        public static UpdateChargingStationResult
 
-            Error(ChargeBox              ChargeBox,
+            Error(ChargingStation              ChargingStation,
                   Exception              Exception,
                   EventTracking_Id?      EventTrackingId   = null,
                   IId?                   SenderId          = null,
@@ -283,7 +259,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                   IEnumerable<Warning>?  Warnings          = null,
                   TimeSpan?              Runtime           = null)
 
-                => new (ChargeBox,
+                => new (ChargingStation,
                         CommandResult.Error,
                         EventTrackingId,
                         SenderId,
@@ -294,11 +270,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region (static) Timeout        (ChargeBox,   Timeout,     ...)
+        #region (static) Timeout      (ChargingStation,   Timeout,     ...)
 
-        public static DeleteChargeBoxResult
+        public static UpdateChargingStationResult
 
-            Timeout(ChargeBox              ChargeBox,
+            Timeout(ChargingStation              ChargingStation,
                     TimeSpan               Timeout,
                     EventTracking_Id?      EventTrackingId   = null,
                     IId?                   SenderId          = null,
@@ -306,7 +282,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     IEnumerable<Warning>?  Warnings          = null,
                     TimeSpan?              Runtime           = null)
 
-                => new (ChargeBox,
+                => new (ChargingStation,
                         CommandResult.Timeout,
                         EventTrackingId,
                         SenderId,
@@ -317,11 +293,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region (static) LockTimeout    (ChargeBox,   Timeout,     ...)
+        #region (static) LockTimeout  (ChargingStation,   Timeout,     ...)
 
-        public static DeleteChargeBoxResult
+        public static UpdateChargingStationResult
 
-            LockTimeout(ChargeBox              ChargeBox,
+            LockTimeout(ChargingStation              ChargingStation,
                         TimeSpan               Timeout,
                         EventTracking_Id?      EventTrackingId   = null,
                         IId?                   SenderId          = null,
@@ -329,7 +305,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         IEnumerable<Warning>?  Warnings          = null,
                         TimeSpan?              Runtime           = null)
 
-                => new (ChargeBox,
+                => new (ChargingStation,
                         CommandResult.LockTimeout,
                         EventTrackingId,
                         SenderId,

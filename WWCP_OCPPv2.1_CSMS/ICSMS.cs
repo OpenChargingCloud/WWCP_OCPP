@@ -17,29 +17,35 @@
 
 #region Usings
 
-using Newtonsoft.Json.Linq;
+using org.GraphDefined.Vanaheimr.Hermod;
 
-using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.HTTP;
-using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
+using cloud.charging.open.protocols.OCPP;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
+namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
+
     /// <summary>
-    /// The common interface of all charging station management systems.
+    /// The common interface of all charging station.
     /// </summary>
-    public interface INetworkingNodeService : INetworkingNode
+    public interface ICSMS : IEventSender
     {
 
+        NetworkingNode_Id  Id                    { get; }
 
-        IEnumerable<ChargingStation>           ChargingStations           { get; }
+        String?            ClientCloseMessage    { get; }
 
-     //   IEnumerable<ChargingStation_Id>  ChargingStationIds    { get; }
 
-        Boolean TryGetChargeBox(ChargingStation_Id ChargingStationId, out ChargingStation? ChargingStation);
+
+        Task HandleErrors(String     Module,
+                          String     Caller,
+                          Exception  ExceptionOccured);
+
+        Task HandleErrors(String     Module,
+                          String     Caller,
+                          String     ErrorResponse);
 
     }
 

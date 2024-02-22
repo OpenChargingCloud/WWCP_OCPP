@@ -311,7 +311,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a response to a BootNotification request was sent.
         /// </summary>
-        event OnBootNotificationResponseSentDelegate                        OnBootNotificationResponse;
+        event OnBootNotificationResponseSentDelegate                        OnBootNotificationResponseSent;
 
         #endregion
 

@@ -26,23 +26,23 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1
+namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// OCPP Charging Station WebAPI extensions.
+    /// OCPP Charging Station HTTP API extensions.
     /// </summary>
-    public static class ChargingStationWebAPIExtensions
+    public static class HTTPAPIExtensions
     {
 
     }
 
 
     /// <summary>
-    /// The OCPP Charging Station WebAPI.
+    /// The OCPP Charging Station HTTP API.
     /// </summary>
-    public class ChargingStationWebAPI : AHTTPAPIExtension<HTTPExtAPI>,
-                                         IHTTPAPIExtension<HTTPExtAPI>
+    public class HTTPAPI : AHTTPAPIExtension<HTTPExtAPI>,
+                           IHTTPAPIExtension<HTTPExtAPI>
     {
 
         #region Data
@@ -50,17 +50,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// The default HTTP URL prefix.
         /// </summary>
-        public readonly HTTPPath                   DefaultURLPathPrefix        = HTTPPath.Parse("webapi");
+        public readonly HTTPPath                   DefaultURLPathPrefix      = HTTPPath.Parse("webapi");
+
+        /// <summary>
+        /// The default HTTP server name.
+        /// </summary>
+        public const    String                     DefaultHTTPServerName     = $"Open Charging Cloud OCPP {Version.String} Charging Station HTTP API";
 
         /// <summary>
         /// The default HTTP realm, if HTTP Basic Authentication is used.
         /// </summary>
-        public const String                        DefaultHTTPRealm            = "Open Charging Cloud OCPP WebAPI";
+        public const String                        DefaultHTTPRealm          = "Open Charging Cloud OCPP Charging Station HTTP API";
 
         /// <summary>
         /// The HTTP root for embedded ressources.
         /// </summary>
-        public const String                        HTTPRoot                    = "cloud.charging.open.protocols.OCPPv2_1.WebAPI.HTTPRoot.";
+        public const String                        HTTPRoot                  = "cloud.charging.open.protocols.OCPPv2_1.ChargingStation.HTTPAPI.HTTPRoot.";
 
 
         //ToDo: http://www.iana.org/form/media-types
@@ -106,21 +111,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Constructor(s)
 
         /// <summary>
-        /// Attach the given OCPP charging station management system WebAPI to the given HTTP API.
+        /// Attach the given HTTP API to the given HTTP API.
         /// </summary>
-        /// <param name="TestChargingStation">An OCPP charging station management system.</param>
+        /// <param name="ChargingStation">A charging station.</param>
         /// <param name="HTTPAPI">A HTTP API.</param>
         /// <param name="URLPathPrefix">An optional prefix for the HTTP URLs.</param>
         /// <param name="HTTPRealm">The HTTP realm, if HTTP Basic Authentication is used.</param>
         /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
-        public ChargingStationWebAPI(TestChargingStation                         TestChargingStation,
-                                     HTTPExtAPI                                  HTTPAPI,
-                                     String?                                     HTTPServerName   = null,
-                                     HTTPPath?                                   URLPathPrefix    = null,
-                                     HTTPPath?                                   BasePath         = null,
-                                     String                                      HTTPRealm        = DefaultHTTPRealm,
-                                     IEnumerable<KeyValuePair<String, String>>?  HTTPLogins       = null,
-                                     String?                                     HTMLTemplate     = null)
+        public HTTPAPI(TestChargingStation                         ChargingStation,
+                       HTTPExtAPI                                  HTTPAPI,
+                       String?                                     HTTPServerName   = null,
+                       HTTPPath?                                   URLPathPrefix    = null,
+                       HTTPPath?                                   BasePath         = null,
+                       String                                      HTTPRealm        = DefaultHTTPRealm,
+                       IEnumerable<KeyValuePair<String, String>>?  HTTPLogins       = null,
+                       String?                                     HTMLTemplate     = null)
 
             : base(HTTPAPI,
                    HTTPServerName ?? $"OCPP {Version.String} Charging Station Web API",
@@ -130,7 +135,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         {
 
-            this.ChargingStation                = TestChargingStation;
+            this.ChargingStation     = ChargingStation;
             this.HTTPRealm           = HTTPRealm;
             this.HTTPLogins          = HTTPLogins ?? Array.Empty<KeyValuePair<String, String>>();
 
@@ -154,18 +159,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             RegisterURITemplates();
 
+            AttachChargingStation(ChargingStation);
+
+        }
+
+        #endregion
+
+
+        #region AttachChargingStation(ChargingStation)
+
+        public void AttachChargingStation(TestChargingStation ChargingStation)
+        {
+
+            //csmss.Add(ChargingStation);
+
+
+            // Wire HTTP Server Sent Events
+
+
             #region HTTPSSEs: ChargePoint   -> ChargingStation
 
             #region OnBootNotificationRequest/-Response
 
-            this.ChargingStation.OnBootNotificationRequest += async (logTimestamp,
+            ChargingStation.OnBootNotificationRequest += (timestamp,
                                                           sender,
                                                         //  connection,
                                                           request) =>
 
-                await this.EventLog.SubmitEvent("OnBootNotificationRequest",
+                EventLog.SubmitEvent("OnBootNotificationRequest",
                                                 new JObject(
-                                                    new JProperty("timestamp",         logTimestamp.           ToIso8601()),
+                                                    new JProperty("timestamp",         timestamp.           ToIso8601()),
                                                //     new JProperty("connection",        connection.             ToJSON()),
                                                     new JProperty("request",           request.                ToJSON()),
                                                     new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
@@ -173,16 +196,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                 ));
 
 
-            this.ChargingStation.OnBootNotificationResponse += async (logTimestamp,
+            ChargingStation.OnBootNotificationResponse += (timestamp,
                                                            sender,
                                                        //    connection,
                                                            request,
                                                            response,
                                                            runtime) =>
 
-                await this.EventLog.SubmitEvent("OnBootNotificationResponse",
+                EventLog.SubmitEvent("OnBootNotificationResponse",
                                                 new JObject(
-                                                    new JProperty("timestamp",         logTimestamp.           ToIso8601()),
+                                                    new JProperty("timestamp",         timestamp.           ToIso8601()),
                                                     new JProperty("eventTrackingId",   request.EventTrackingId.ToString()),
                                           //          new JProperty("connection",        connection.             ToJSON()),
                                                     new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
@@ -195,27 +218,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnHeartbeatRequest/-Response
 
-            this.ChargingStation.OnHeartbeatRequest += async (logTimestamp,
+            ChargingStation.OnHeartbeatRequest += (timestamp,
                                                             sender,
                                                             request) =>
 
-                await this.EventLog.SubmitEvent("OnHeartbeatRequest",
+                EventLog.SubmitEvent("OnHeartbeatRequest",
                                                 new JObject(
-                                                    new JProperty("timestamp",          logTimestamp.           ToIso8601()),
+                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
                                                     new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
 
-            this.ChargingStation.OnHeartbeatResponse += async (logTimestamp,
+            ChargingStation.OnHeartbeatResponse += (timestamp,
                                                              sender,
                                                              request,
                                                              response,
                                                              runtime) =>
 
-                await this.EventLog.SubmitEvent("OnHeartbeatResponse",
+                EventLog.SubmitEvent("OnHeartbeatResponse",
                                                 new JObject(
-                                                    new JProperty("timestamp",          logTimestamp.           ToIso8601()),
+                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
                                                     new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
                                                     new JProperty("eventTrackingId",    request.EventTrackingId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
@@ -228,28 +251,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnAuthorizeRequest/-Response
 
-            this.ChargingStation.OnAuthorizeRequest += async (logTimestamp,
+            ChargingStation.OnAuthorizeRequest += (timestamp,
                                                             sender,
                                                             request) =>
 
-                await this.EventLog.SubmitEvent("OnAuthorizeRequest",
+                EventLog.SubmitEvent("OnAuthorizeRequest",
                                                 new JObject(
-                                                    new JProperty("timestamp",          logTimestamp.           ToIso8601()),
+                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
                                                     new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
 
 
-            this.ChargingStation.OnAuthorizeResponse += async (logTimestamp,
+            ChargingStation.OnAuthorizeResponse += (timestamp,
                                                              sender,
                                                              request,
                                                              response,
                                                              runtime) =>
 
-                await this.EventLog.SubmitEvent("OnAuthorizeResponse",
+                EventLog.SubmitEvent("OnAuthorizeResponse",
                                                 new JObject(
-                                                    new JProperty("timestamp",          logTimestamp.           ToIso8601()),
+                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
                                                     new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
                                                     new JProperty("eventTrackingId",    request.EventTrackingId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
@@ -261,28 +284,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnStatusNotificationRequest/-Response
 
-            this.ChargingStation.OnStatusNotificationRequest += async (logTimestamp,
+            ChargingStation.OnStatusNotificationRequest += (timestamp,
                                                                      sender,
                                                                      request) =>
 
-                await this.EventLog.SubmitEvent("OnStatusNotificationRequest",
+                EventLog.SubmitEvent("OnStatusNotificationRequest",
                                                 new JObject(
-                                                    new JProperty("timestamp",          logTimestamp.           ToIso8601()),
+                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
                                                     new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
 
 
-            this.ChargingStation.OnStatusNotificationResponse += async (logTimestamp,
+            ChargingStation.OnStatusNotificationResponse += (timestamp,
                                                                       sender,
                                                                       request,
                                                                       response,
                                                                       runtime) =>
 
-                await this.EventLog.SubmitEvent("OnStatusNotificationResponse",
+                EventLog.SubmitEvent("OnStatusNotificationResponse",
                                                 new JObject(
-                                                    new JProperty("timestamp",          logTimestamp.           ToIso8601()),
+                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
                                                     new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
                                                     new JProperty("eventTrackingId",    request.EventTrackingId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
@@ -294,28 +317,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnMeterValuesRequest/-Response
 
-            this.ChargingStation.OnMeterValuesRequest += async (logTimestamp,
+            ChargingStation.OnMeterValuesRequest += (timestamp,
                                                               sender,
                                                               request) =>
 
-                await this.EventLog.SubmitEvent("OnMeterValuesRequest",
+                EventLog.SubmitEvent("OnMeterValuesRequest",
                                                 new JObject(
-                                                    new JProperty("timestamp",          logTimestamp.           ToIso8601()),
+                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
                                                     new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
 
 
-            this.ChargingStation.OnMeterValuesResponse += async (logTimestamp,
+            ChargingStation.OnMeterValuesResponse += (timestamp,
                                                                sender,
                                                                request,
                                                                response,
                                                                runtime) =>
 
-                await this.EventLog.SubmitEvent("OnMeterValuesResponse",
+                EventLog.SubmitEvent("OnMeterValuesResponse",
                                                 new JObject(
-                                                    new JProperty("timestamp",          logTimestamp.           ToIso8601()),
+                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
                                                     new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
                                                     new JProperty("eventTrackingId",    request.EventTrackingId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
@@ -328,30 +351,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnDataTransfer (RequestReceived/-OnDataTransferResponseSent)
 
-            this.ChargingStation.OnDataTransferRequestReceived += async (logTimestamp,
+            ChargingStation.OnDataTransferRequestReceived += (timestamp,
                                                                          sender,
                                                                          connection,
                                                                          request) =>
 
-                await this.EventLog.SubmitEvent("OnDataTransferRequestReceived",
+                EventLog.SubmitEvent("OnDataTransferRequestReceived",
                                                 new JObject(
-                                                    new JProperty("timestamp",          logTimestamp.             ToIso8601()),
+                                                    new JProperty("timestamp",          timestamp.             ToIso8601()),
                                                     new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
                                                     new JProperty("request",            request.                  ToJSON()),
                                                     new JProperty("eventTrackingId",    request.EventTrackingId.  ToString())
                                                 ));
 
 
-            this.ChargingStation.OnDataTransferResponseSent += async (logTimestamp,
+            ChargingStation.OnDataTransferResponseSent += (timestamp,
                                                                       sender,
                                                                       connection,
                                                                       request,
                                                                       response,
                                                                       runtime) =>
 
-                await this.EventLog.SubmitEvent("OnDataTransferResponseSent",
+                EventLog.SubmitEvent("OnDataTransferResponseSent",
                                                 new JObject(
-                                                    new JProperty("timestamp",          logTimestamp.             ToIso8601()),
+                                                    new JProperty("timestamp",          timestamp.             ToIso8601()),
                                                     new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
                                                     new JProperty("eventTrackingId",    request.EventTrackingId.  ToString()),
                                                     new JProperty("request",            request.                  ToJSON()),
@@ -363,28 +386,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnFirmwareStatusNotificationRequest/-Response
 
-            this.ChargingStation.OnFirmwareStatusNotificationRequest += async (logTimestamp,
+            ChargingStation.OnFirmwareStatusNotificationRequest += (timestamp,
                                                                              sender,
                                                                              request) =>
 
-                await this.EventLog.SubmitEvent("OnFirmwareStatusNotificationRequest",
+                EventLog.SubmitEvent("OnFirmwareStatusNotificationRequest",
                                                 new JObject(
-                                                    new JProperty("timestamp",          logTimestamp.           ToIso8601()),
+                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
                                                     new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
 
 
-            this.ChargingStation.OnFirmwareStatusNotificationResponse += async (logTimestamp,
+            ChargingStation.OnFirmwareStatusNotificationResponse += (timestamp,
                                                                               sender,
                                                                               request,
                                                                               response,
                                                                               runtime) =>
 
-                await this.EventLog.SubmitEvent("OnFirmwareStatusNotificationResponse",
+                EventLog.SubmitEvent("OnFirmwareStatusNotificationResponse",
                                                 new JObject(
-                                                    new JProperty("timestamp",          logTimestamp.           ToIso8601()),
+                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
                                                     new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
                                                     new JProperty("eventTrackingId",    request.EventTrackingId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
@@ -400,30 +423,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnResetRequest/-Response
 
-            this.ChargingStation.OnResetRequest += async (logTimestamp,
+            ChargingStation.OnResetRequest += async (timestamp,
                                                           sender,
                                                           connection,
                                                           request) =>
 
-                await this.EventLog.SubmitEvent("OnResetRequest",
+                EventLog.SubmitEvent("OnResetRequest",
                                                 new JObject(
-                                                    new JProperty("timestamp",          logTimestamp.           ToIso8601()),
+                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
                                                     new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
 
 
-            this.ChargingStation.OnResetResponse += async (logTimestamp,
+            ChargingStation.OnResetResponse += async (timestamp,
                                                            sender,
                                                            connection,
                                                            request,
                                                            response,
                                                            runtime) =>
 
-                await this.EventLog.SubmitEvent("OnResetResponse",
+                EventLog.SubmitEvent("OnResetResponse",
                                                 new JObject(
-                                                    new JProperty("timestamp",          logTimestamp.           ToIso8601()),
+                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
                                                     new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
                                                     new JProperty("eventTrackingId",    request.EventTrackingId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
@@ -435,30 +458,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnChangeAvailabilityRequest/-Response
 
-            this.ChargingStation.OnChangeAvailabilityRequest += async (logTimestamp,
+            ChargingStation.OnChangeAvailabilityRequest += async (timestamp,
                                                                        sender,
                                                                        connection,
                                                                        request) =>
 
-                await this.EventLog.SubmitEvent("OnChangeAvailabilityRequest",
+                EventLog.SubmitEvent("OnChangeAvailabilityRequest",
                                                 new JObject(
-                                                    new JProperty("timestamp",          logTimestamp.           ToIso8601()),
+                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
                                                     new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
 
 
-            this.ChargingStation.OnChangeAvailabilityResponse += async (logTimestamp,
+            ChargingStation.OnChangeAvailabilityResponse += async (timestamp,
                                                                         sender,
                                                                         connection,
                                                                         request,
                                                                         response,
                                                                         runtime) =>
 
-                await this.EventLog.SubmitEvent("OnChangeAvailabilityResponse",
+                EventLog.SubmitEvent("OnChangeAvailabilityResponse",
                                                 new JObject(
-                                                    new JProperty("timestamp",          logTimestamp.           ToIso8601()),
+                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
                                                     new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
                                                     new JProperty("eventTrackingId",    request.EventTrackingId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
@@ -470,28 +493,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnDataTransferRequest/-Response
 
-            this.ChargingStation.OnDataTransferRequestSent += async (logTimestamp,
+            ChargingStation.OnDataTransferRequestSent += async (timestamp,
                                                                      sender,
                                                                      request) =>
 
-                await this.EventLog.SubmitEvent(nameof(ChargingStation.OnDataTransferRequestSent),
+                EventLog.SubmitEvent(nameof(ChargingStation.OnDataTransferRequestSent),
                                                 new JObject(
-                                                    new JProperty("timestamp",          logTimestamp.             ToIso8601()),
+                                                    new JProperty("timestamp",          timestamp.             ToIso8601()),
                                                     new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
                                                     new JProperty("request",            request.                  ToJSON()),
                                                     new JProperty("eventTrackingId",    request.EventTrackingId.  ToString())
                                                 ));
 
 
-            this.ChargingStation.OnDataTransferResponseReceived += async (logTimestamp,
+            ChargingStation.OnDataTransferResponseReceived += async (timestamp,
                                                                           sender,
                                                                           request,
                                                                           response,
                                                                           runtime) =>
 
-                await this.EventLog.SubmitEvent(nameof(ChargingStation.OnDataTransferResponseReceived),
+                EventLog.SubmitEvent(nameof(ChargingStation.OnDataTransferResponseReceived),
                                                 new JObject(
-                                                    new JProperty("timestamp",          logTimestamp.             ToIso8601()),
+                                                    new JProperty("timestamp",          timestamp.             ToIso8601()),
                                                     new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
                                                     new JProperty("eventTrackingId",    request.EventTrackingId.  ToString()),
                                                     new JProperty("request",            request.                  ToJSON()),
@@ -503,30 +526,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnTriggerMessageRequest/-Response
 
-            this.ChargingStation.OnTriggerMessageRequest += async (logTimestamp,
+            ChargingStation.OnTriggerMessageRequest += async (timestamp,
                                                                    sender,
                                                                    connection,
                                                                    request) =>
 
-                await this.EventLog.SubmitEvent("OnTriggerMessageRequest",
+                EventLog.SubmitEvent("OnTriggerMessageRequest",
                                                 new JObject(
-                                                    new JProperty("timestamp",          logTimestamp.           ToIso8601()),
+                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
                                                     new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
 
 
-            this.ChargingStation.OnTriggerMessageResponse += async (logTimestamp,
+            ChargingStation.OnTriggerMessageResponse += async (timestamp,
                                                                     sender,
                                                                     connection,
                                                                     request,
                                                                     response,
                                                                     runtime) =>
 
-                await this.EventLog.SubmitEvent("OnTriggerMessageResponse",
+                EventLog.SubmitEvent("OnTriggerMessageResponse",
                                                 new JObject(
-                                                    new JProperty("timestamp",          logTimestamp.           ToIso8601()),
+                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
                                                     new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
                                                     new JProperty("eventTrackingId",    request.EventTrackingId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
@@ -538,30 +561,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnUpdateFirmwareRequest/-Response
 
-            this.ChargingStation.OnUpdateFirmwareRequest += async (logTimestamp,
+            ChargingStation.OnUpdateFirmwareRequest += async (timestamp,
                                                                    sender,
                                                                    connection,
                                                                    request) =>
 
-                await this.EventLog.SubmitEvent("OnUpdateFirmwareRequest",
+                EventLog.SubmitEvent("OnUpdateFirmwareRequest",
                                                 new JObject(
-                                                    new JProperty("timestamp",          logTimestamp.           ToIso8601()),
+                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
                                                     new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
 
 
-            this.ChargingStation.OnUpdateFirmwareResponse += async (logTimestamp,
+            ChargingStation.OnUpdateFirmwareResponse += async (timestamp,
                                                                     sender,
                                                                     connection,
                                                                     request,
                                                                     response,
                                                                     runtime) =>
 
-                await this.EventLog.SubmitEvent("OnUpdateFirmwareResponse",
+                EventLog.SubmitEvent("OnUpdateFirmwareResponse",
                                                 new JObject(
-                                                    new JProperty("timestamp",          logTimestamp.           ToIso8601()),
+                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
                                                     new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
                                                     new JProperty("eventTrackingId",    request.EventTrackingId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
@@ -574,30 +597,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnReserveNowRequest/-Response
 
-            this.ChargingStation.OnReserveNowRequest += async (logTimestamp,
+            ChargingStation.OnReserveNowRequest += async (timestamp,
                                                                sender,
                                                                connection,
                                                                request) =>
 
-                await this.EventLog.SubmitEvent("OnReserveNowRequest",
+                EventLog.SubmitEvent("OnReserveNowRequest",
                                                 new JObject(
-                                                    new JProperty("timestamp",          logTimestamp.           ToIso8601()),
+                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
                                                     new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
 
 
-            this.ChargingStation.OnReserveNowResponse += async (logTimestamp,
+            ChargingStation.OnReserveNowResponse += async (timestamp,
                                                                 sender,
                                                                 connection,
                                                                 request,
                                                                 response,
                                                                 runtime) =>
 
-                await this.EventLog.SubmitEvent("OnReserveNowResponse",
+                EventLog.SubmitEvent("OnReserveNowResponse",
                                                 new JObject(
-                                                    new JProperty("timestamp",          logTimestamp.           ToIso8601()),
+                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
                                                     new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
                                                     new JProperty("eventTrackingId",    request.EventTrackingId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
@@ -609,30 +632,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnCancelReservationRequest/-Response
 
-            this.ChargingStation.OnCancelReservationRequest += async (logTimestamp,
+            ChargingStation.OnCancelReservationRequest += async (timestamp,
                                                                       sender,
                                                                       connection,
                                                                       request) =>
 
-                await this.EventLog.SubmitEvent("OnCancelReservationRequest",
+                EventLog.SubmitEvent("OnCancelReservationRequest",
                                                 new JObject(
-                                                    new JProperty("timestamp",          logTimestamp.           ToIso8601()),
+                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
                                                     new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
 
 
-            this.ChargingStation.OnCancelReservationResponse += async (logTimestamp,
+            ChargingStation.OnCancelReservationResponse += async (timestamp,
                                                                        sender,
                                                                        connection,
                                                                        request,
                                                                        response,
                                                                        runtime) =>
 
-                await this.EventLog.SubmitEvent("OnCancelReservationResponse",
+                EventLog.SubmitEvent("OnCancelReservationResponse",
                                                 new JObject(
-                                                    new JProperty("timestamp",          logTimestamp.           ToIso8601()),
+                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
                                                     new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
                                                     new JProperty("eventTrackingId",    request.EventTrackingId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
@@ -644,30 +667,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnSetChargingProfileRequest/-Response
 
-            this.ChargingStation.OnSetChargingProfileRequest += async (logTimestamp,
+            ChargingStation.OnSetChargingProfileRequest += async (timestamp,
                                                                        sender,
                                                                        connection,
                                                                        request) =>
 
-                await this.EventLog.SubmitEvent("OnSetChargingProfileRequest",
+                EventLog.SubmitEvent("OnSetChargingProfileRequest",
                                                 new JObject(
-                                                    new JProperty("timestamp",          logTimestamp.           ToIso8601()),
+                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
                                                     new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
 
 
-            this.ChargingStation.OnSetChargingProfileResponse += async (logTimestamp,
+            ChargingStation.OnSetChargingProfileResponse += async (timestamp,
                                                                         sender,
                                                                         connection,
                                                                         request,
                                                                         response,
                                                                         runtime) =>
 
-                await this.EventLog.SubmitEvent("OnSetChargingProfileResponse",
+                EventLog.SubmitEvent("OnSetChargingProfileResponse",
                                                 new JObject(
-                                                    new JProperty("timestamp",          logTimestamp.           ToIso8601()),
+                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
                                                     new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
                                                     new JProperty("eventTrackingId",    request.EventTrackingId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
@@ -679,30 +702,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnClearChargingProfileRequest/-Response
 
-            this.ChargingStation.OnClearChargingProfileRequest += async (logTimestamp,
+            ChargingStation.OnClearChargingProfileRequest += async (timestamp,
                                                                          sender,
                                                                          connection,
                                                                          request) =>
 
-                await this.EventLog.SubmitEvent("OnClearChargingProfileRequest",
+                EventLog.SubmitEvent("OnClearChargingProfileRequest",
                                                 new JObject(
-                                                    new JProperty("timestamp",          logTimestamp.           ToIso8601()),
+                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
                                                     new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
 
 
-            this.ChargingStation.OnClearChargingProfileResponse += async (logTimestamp,
+            ChargingStation.OnClearChargingProfileResponse += async (timestamp,
                                                                           sender,
                                                                           connection,
                                                                           request,
                                                                           response,
                                                                           runtime) =>
 
-                await this.EventLog.SubmitEvent("OnClearChargingProfileResponse",
+                EventLog.SubmitEvent("OnClearChargingProfileResponse",
                                                 new JObject(
-                                                    new JProperty("timestamp",          logTimestamp.           ToIso8601()),
+                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
                                                     new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
                                                     new JProperty("eventTrackingId",    request.EventTrackingId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
@@ -714,30 +737,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnGetCompositeScheduleRequest/-Response
 
-            this.ChargingStation.OnGetCompositeScheduleRequest += async (logTimestamp,
+            ChargingStation.OnGetCompositeScheduleRequest += async (timestamp,
                                                                          sender,
                                                                          connection,
                                                                          request) =>
 
-                await this.EventLog.SubmitEvent("OnGetCompositeScheduleRequest",
+                EventLog.SubmitEvent("OnGetCompositeScheduleRequest",
                                                 new JObject(
-                                                    new JProperty("timestamp",          logTimestamp.           ToIso8601()),
+                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
                                                     new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
 
 
-            this.ChargingStation.OnGetCompositeScheduleResponse += async (logTimestamp,
+            ChargingStation.OnGetCompositeScheduleResponse += async (timestamp,
                                                                           sender,
                                                                           connection,
                                                                           request,
                                                                           response,
                                                                           runtime) =>
 
-                await this.EventLog.SubmitEvent("OnGetCompositeScheduleResponse",
+                EventLog.SubmitEvent("OnGetCompositeScheduleResponse",
                                                 new JObject(
-                                                    new JProperty("timestamp",          logTimestamp.           ToIso8601()),
+                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
                                                     new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
                                                     new JProperty("eventTrackingId",    request.EventTrackingId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
@@ -749,30 +772,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnUnlockConnectorRequest/-Response
 
-            this.ChargingStation.OnUnlockConnectorRequest += async (logTimestamp,
+            ChargingStation.OnUnlockConnectorRequest += async (timestamp,
                                                                     sender,
                                                                     connection,
                                                                     request) =>
 
-                await this.EventLog.SubmitEvent("OnUnlockConnectorRequest",
+                EventLog.SubmitEvent("OnUnlockConnectorRequest",
                                                 new JObject(
-                                                    new JProperty("timestamp",          logTimestamp.           ToIso8601()),
+                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
                                                     new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
 
 
-            this.ChargingStation.OnUnlockConnectorResponse += async (logTimestamp,
+            ChargingStation.OnUnlockConnectorResponse += async (timestamp,
                                                                      sender,
                                                                      connection,
                                                                      request,
                                                                      response,
                                                                      runtime) =>
 
-                await this.EventLog.SubmitEvent("OnUnlockConnectorResponse",
+                EventLog.SubmitEvent("OnUnlockConnectorResponse",
                                                 new JObject(
-                                                    new JProperty("timestamp",          logTimestamp.           ToIso8601()),
+                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
                                                     new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
                                                     new JProperty("eventTrackingId",    request.EventTrackingId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
@@ -785,30 +808,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnGetLocalListVersionRequest/-Response
 
-            this.ChargingStation.OnGetLocalListVersionRequest += async (logTimestamp,
+            ChargingStation.OnGetLocalListVersionRequest += async (timestamp,
                                                                         sender,
                                                                         connection,
                                                                         request) =>
 
-                await this.EventLog.SubmitEvent("OnGetLocalListVersionRequest",
+                EventLog.SubmitEvent("OnGetLocalListVersionRequest",
                                                 new JObject(
-                                                    new JProperty("timestamp",          logTimestamp.           ToIso8601()),
+                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
                                                     new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
 
 
-            this.ChargingStation.OnGetLocalListVersionResponse += async (logTimestamp,
+            ChargingStation.OnGetLocalListVersionResponse += async (timestamp,
                                                                          sender,
                                                                          connection,
                                                                          request,
                                                                          response,
                                                                          runtime) =>
 
-                await this.EventLog.SubmitEvent("OnGetLocalListVersionResponse",
+                EventLog.SubmitEvent("OnGetLocalListVersionResponse",
                                                 new JObject(
-                                                    new JProperty("timestamp",          logTimestamp.           ToIso8601()),
+                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
                                                     new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
                                                     new JProperty("eventTrackingId",    request.EventTrackingId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
@@ -820,30 +843,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnSendLocalListRequest/-Response
 
-            this.ChargingStation.OnSendLocalListRequest += async (logTimestamp,
+            ChargingStation.OnSendLocalListRequest += async (timestamp,
                                                                   sender,
                                                                   connection,
                                                                   request) =>
 
-                await this.EventLog.SubmitEvent("OnSendLocalListRequest",
+                EventLog.SubmitEvent("OnSendLocalListRequest",
                                                 new JObject(
-                                                    new JProperty("timestamp",          logTimestamp.           ToIso8601()),
+                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
                                                     new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
 
 
-            this.ChargingStation.OnSendLocalListResponse += async (logTimestamp,
+            ChargingStation.OnSendLocalListResponse += async (timestamp,
                                                                    sender,
                                                                    connection,
                                                                    request,
                                                                    response,
                                                                    runtime) =>
 
-                await this.EventLog.SubmitEvent("OnSendLocalListResponse",
+                EventLog.SubmitEvent("OnSendLocalListResponse",
                                                 new JObject(
-                                                    new JProperty("timestamp",          logTimestamp.           ToIso8601()),
+                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
                                                     new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
                                                     new JProperty("eventTrackingId",    request.EventTrackingId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
@@ -855,30 +878,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnClearCacheRequest/-Response
 
-            this.ChargingStation.OnClearCacheRequest += async (logTimestamp,
+            ChargingStation.OnClearCacheRequest += async (timestamp,
                                                                sender,
                                                                connection,
                                                                request) =>
 
-                await this.EventLog.SubmitEvent("OnClearCacheRequest",
+                EventLog.SubmitEvent("OnClearCacheRequest",
                                                 new JObject(
-                                                    new JProperty("timestamp",          logTimestamp.           ToIso8601()),
+                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
                                                     new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
 
 
-            this.ChargingStation.OnClearCacheResponse += async (logTimestamp,
+            ChargingStation.OnClearCacheResponse += async (timestamp,
                                                                 sender,
                                                                 connection,
                                                                 request,
                                                                 response,
                                                                 runtime) =>
 
-                await this.EventLog.SubmitEvent("OnClearCacheResponse",
+                EventLog.SubmitEvent("OnClearCacheResponse",
                                                 new JObject(
-                                                    new JProperty("timestamp",          logTimestamp.           ToIso8601()),
+                                                    new JProperty("timestamp",          timestamp.           ToIso8601()),
                                                     new JProperty("networkingNodeId",   request.DestinationNodeId.ToString()),
                                                     new JProperty("eventTrackingId",    request.EventTrackingId.ToString()),
                                                     new JProperty("request",            request.                ToJSON()),
@@ -904,7 +927,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         protected override Stream? GetResourceStream(String ResourceName)
 
             => GetResourceStream(ResourceName,
-                                 new Tuple<String, Assembly>(ChargingStationWebAPI.HTTPRoot, typeof(ChargingStationWebAPI).Assembly),
+                                 new Tuple<String, Assembly>(WebAPI.    HTTPRoot, typeof(WebAPI).    Assembly),
                                  new Tuple<String, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
                                  new Tuple<String, Assembly>(HTTPAPI.   HTTPRoot, typeof(HTTPAPI).   Assembly));
 
@@ -915,9 +938,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         protected override MemoryStream? GetResourceMemoryStream(String ResourceName)
 
             => GetResourceMemoryStream(ResourceName,
-                                       new Tuple<String, Assembly>(ChargingStationWebAPI.HTTPRoot, typeof(ChargingStationWebAPI).Assembly),
-                                       new Tuple<String, Assembly>(HTTPExtAPI.           HTTPRoot, typeof(HTTPExtAPI).           Assembly),
-                                       new Tuple<String, Assembly>(HTTPAPI.              HTTPRoot, typeof(HTTPAPI).              Assembly));
+                                       new Tuple<String, Assembly>(WebAPI.    HTTPRoot, typeof(WebAPI).    Assembly),
+                                       new Tuple<String, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
+                                       new Tuple<String, Assembly>(HTTPAPI.   HTTPRoot, typeof(HTTPAPI).   Assembly));
 
         #endregion
 
@@ -926,7 +949,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         protected override String GetResourceString(String ResourceName)
 
             => GetResourceString(ResourceName,
-                                 new Tuple<String, Assembly>(ChargingStationWebAPI.HTTPRoot, typeof(ChargingStationWebAPI).Assembly),
+                                 new Tuple<String, Assembly>(WebAPI.    HTTPRoot, typeof(WebAPI).    Assembly),
                                  new Tuple<String, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
                                  new Tuple<String, Assembly>(HTTPAPI.   HTTPRoot, typeof(HTTPAPI).   Assembly));
 
@@ -937,7 +960,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         protected override Byte[] GetResourceBytes(String ResourceName)
 
             => GetResourceBytes(ResourceName,
-                                new Tuple<String, Assembly>(ChargingStationWebAPI.HTTPRoot, typeof(ChargingStationWebAPI).Assembly),
+                                new Tuple<String, Assembly>(WebAPI.    HTTPRoot, typeof(WebAPI).    Assembly),
                                 new Tuple<String, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
                                 new Tuple<String, Assembly>(HTTPAPI.   HTTPRoot, typeof(HTTPAPI).   Assembly));
 
@@ -948,7 +971,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         protected override String MixWithHTMLTemplate(String ResourceName)
 
             => MixWithHTMLTemplate(ResourceName,
-                                   new Tuple<String, Assembly>(ChargingStationWebAPI.HTTPRoot, typeof(ChargingStationWebAPI).Assembly),
+                                   new Tuple<String, Assembly>(WebAPI.    HTTPRoot, typeof(WebAPI).    Assembly),
                                    new Tuple<String, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
                                    new Tuple<String, Assembly>(HTTPAPI.   HTTPRoot, typeof(HTTPAPI).   Assembly));
 
@@ -961,7 +984,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => MixWithHTMLTemplate(ResourceName,
                                    HTMLConverter,
-                                   new Tuple<String, Assembly>(ChargingStationWebAPI.HTTPRoot, typeof(ChargingStationWebAPI).Assembly),
+                                   new Tuple<String, Assembly>(WebAPI.    HTTPRoot, typeof(WebAPI).    Assembly),
                                    new Tuple<String, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
                                    new Tuple<String, Assembly>(HTTPAPI.   HTTPRoot, typeof(HTTPAPI).   Assembly));
 
@@ -975,11 +998,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => MixWithHTMLTemplate(Template,
                                    ResourceName,
-                                   new[] {
-                                       new Tuple<String, Assembly>(ChargingStationWebAPI.HTTPRoot, typeof(ChargingStationWebAPI).Assembly),
+                                   [
+                                       new Tuple<String, Assembly>(WebAPI.    HTTPRoot, typeof(WebAPI).    Assembly),
                                        new Tuple<String, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
                                        new Tuple<String, Assembly>(HTTPAPI.   HTTPRoot, typeof(HTTPAPI).   Assembly)
-                                   },
+                                   ],
                                    Content);
 
         #endregion
@@ -1008,8 +1031,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             //                                         Server                     = DefaultHTTPServerName,
             //                                         Date                       = Timestamp.Now,
             //                                         AccessControlAllowOrigin   = "*",
-            //                                         AccessControlAllowMethods  = new[] { "OPTIONS", "GET" },
-            //                                         AccessControlAllowHeaders  = new[] { "Authorization" },
+            //                                         AccessControlAllowMethods  = [ "OPTIONS", "GET" ],
+            //                                         AccessControlAllowHeaders  = [ "Authorization" ],
             //                                         ContentType                = HTTPContentType.Text.HTML_UTF8,
             //                                         Content                    = ("<html><body>" +
             //                                                                          "This is an Open Charge Point Protocol v1.6 HTTP service!<br /><br />" +
@@ -1058,8 +1081,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                          Server                     = HTTPServiceName,
                                                          Date                       = Timestamp.Now,
                                                          AccessControlAllowOrigin   = "*",
-                                                         AccessControlAllowMethods  = new[] { "GET" },
-                                                         AccessControlAllowHeaders  = new[] { "Content-Type", "Accept", "Authorization" },
+                                                         AccessControlAllowMethods  = [ "GET" ],
+                                                         AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                                          ContentType                = HTTPContentType.Text.HTML_UTF8,
                                                          Content                    = MixWithHTMLTemplate("events.events.shtml").ToUTF8Bytes(),
                                                          Connection                 = "close",

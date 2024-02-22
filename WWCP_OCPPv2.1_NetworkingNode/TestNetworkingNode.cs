@@ -17,32 +17,17 @@
 
 #region Usings
 
-using System.Security.Authentication;
 using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
 
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
-using org.GraphDefined.Vanaheimr.Hermod.Mail;
-using org.GraphDefined.Vanaheimr.Hermod.HTTP;
-using org.GraphDefined.Vanaheimr.Hermod.Logging;
-using org.GraphDefined.Vanaheimr.Hermod.Sockets;
-using org.GraphDefined.Vanaheimr.Hermod.Sockets.TCP;
-using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.CS;
 using cloud.charging.open.protocols.OCPP.CSMS;
-using cloud.charging.open.protocols.OCPP.WebSockets;
-using cloud.charging.open.protocols.OCPPv2_1.NN;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
-using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Crypto.Modes;
-using Org.BouncyCastle.Crypto.Engines;
-using Org.BouncyCastle.Crypto.Parameters;
 
 #endregion
 
@@ -627,21 +612,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
 
-        #region HandleErrors(Module, Caller, ExceptionOccured)
-
-        public override Task HandleErrors(String     Module,
-                                          String     Caller,
-                                          Exception  ExceptionOccured)
-        {
-
-            DebugX.LogException(ExceptionOccured, $"{Module}.{Caller}");
-
-            return Task.CompletedTask;
-
-        }
-
-        #endregion
-
         #region HandleErrors(Module, Caller, ErrorResponse)
 
         public override Task HandleErrors(String  Module,
@@ -651,7 +621,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             DebugX.Log($"{Module}.{Caller}: {ErrorResponse}");
 
-            return Task.CompletedTask;
+            return base.HandleErrors(
+                       Module,
+                       Caller,
+                       ErrorResponse
+                   );
+
+        }
+
+        #endregion
+
+        #region HandleErrors(Module, Caller, ExceptionOccured)
+
+        public override Task HandleErrors(String     Module,
+                                          String     Caller,
+                                          Exception  ExceptionOccured)
+        {
+
+            DebugX.LogException(ExceptionOccured, $"{Module}.{Caller}");
+
+            return base.HandleErrors(
+                       Module,
+                       Caller,
+                       ExceptionOccured
+                   );
 
         }
 

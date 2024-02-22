@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a response to a BootNotification was sent.
         /// </summary>
-        public event OnBootNotificationResponseSentDelegate?          OnBootNotificationResponse;
+        public event OnBootNotificationResponseSentDelegate?          OnBootNotificationResponseSent;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a BootNotification was sent.
@@ -181,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     try
                     {
 
-                        OnBootNotificationResponse?.Invoke(Timestamp.Now,
+                        OnBootNotificationResponseSent?.Invoke(Timestamp.Now,
                                                            this,
                                                            Connection,
                                                            request,
@@ -191,7 +191,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnBootNotificationResponse));
+                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnBootNotificationResponseSent));
                     }
 
                     #endregion

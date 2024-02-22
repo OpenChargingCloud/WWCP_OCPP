@@ -26,54 +26,55 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using org.GraphDefined.Vanaheimr.Hermod.HTTP.Notifications;
 
-using cloud.charging.open.protocols.OCPPv2_1.CS;
+using cloud.charging.open.protocols.OCPP.CS;
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
-    public delegate Boolean ChargeBoxProviderDelegate(ChargingStation_Id ChargeBoxId, out ChargeBox ChargeBox);
+    public delegate Boolean ChargingStationProviderDelegate(ChargingStation_Id ChargingStationId, out ChargingStation ChargingStation);
 
-    public delegate JObject ChargeBoxToJSONDelegate(ChargeBox     ChargeBox,
-                                                    Boolean       Embedded                 = false,
-                                                    InfoStatus    ExpandTags               = InfoStatus.ShowIdOnly,
-                                                    Boolean       IncludeCryptoHash        = true);
+    public delegate JObject ChargingStationToJSONDelegate(ChargingStation  ChargingStation,
+                                                          Boolean          Embedded            = false,
+                                                          InfoStatus       ExpandTags          = InfoStatus.ShowIdOnly,
+                                                          Boolean          IncludeCryptoHash   = true);
 
     /// <summary>
     /// Extension methods for chargeBoxs.
     /// </summary>
-    public static class ChargeBoxExtensions
+    public static class ChargingStationExtensions
     {
 
-        #region ToJSON(this ChargeBoxs, Skip = null, Take = null, Embedded = false, ...)
+        #region ToJSON(this ChargingStations, Skip = null, Take = null, Embedded = false, ...)
 
         /// <summary>
         /// Return a JSON representation for the given enumeration of chargeBoxs.
         /// </summary>
-        /// <param name="ChargeBoxs">An enumeration of chargeBoxs.</param>
+        /// <param name="ChargingStations">An enumeration of chargeBoxs.</param>
         /// <param name="Skip">The optional number of chargeBoxs to skip.</param>
         /// <param name="Take">The optional number of chargeBoxs to return.</param>
         /// <param name="Embedded">Whether this data is embedded into another data structure.</param>
-        public static JArray ToJSON(this IEnumerable<ChargeBox>  ChargeBoxs,
+        public static JArray ToJSON(this IEnumerable<ChargingStation>  ChargingStations,
                                     UInt64?                      Skip                  = null,
                                     UInt64?                      Take                  = null,
                                     Boolean                      Embedded              = false,
                                     InfoStatus                   ExpandTags            = InfoStatus.ShowIdOnly,
-                                    ChargeBoxToJSONDelegate      ChargeBoxToJSON       = null,
+                                    ChargingStationToJSONDelegate      ChargingStationToJSON       = null,
                                     Boolean                      IncludeCryptoHash     = true)
 
 
-            => ChargeBoxs?.Any() != true
+            => ChargingStations?.Any() != true
 
                    ? new JArray()
 
-                   : new JArray(ChargeBoxs.
+                   : new JArray(ChargingStations.
                                     Where     (chargeBox => chargeBox != null).
                                     OrderBy   (chargeBox => chargeBox.Id).
                                     SkipTakeFilter(Skip, Take).
-                                    SafeSelect(chargeBox => ChargeBoxToJSON != null
-                                                                    ? ChargeBoxToJSON (chargeBox,
+                                    SafeSelect(chargeBox => ChargingStationToJSON != null
+                                                                    ? ChargingStationToJSON (chargeBox,
                                                                                        Embedded,
                                                                                        ExpandTags,
                                                                                        IncludeCryptoHash)
@@ -91,8 +92,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <summary>
     /// A charging station.
     /// </summary>
-    public class ChargeBox : AEntity<ChargingStation_Id,
-                                     ChargeBox>
+    public class ChargingStation : AEntity<ChargingStation_Id,
+                                           ChargingStation>
     {
 
         /// <summary>
@@ -134,7 +135,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             public ChargingStationConnector(Connector_Id       Id,
-                                        OperationalStatus  OperationalStatus)
+                                            OperationalStatus  OperationalStatus)
             {
 
                 this.Id                 = Id;
@@ -151,7 +152,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// The default max size of the charging station status history.
         /// </summary>
-        public const UInt16 DefaultChargeBoxStatusHistorySize = 50;
+        public const UInt16 DefaultChargingStationStatusHistorySize = 50;
 
         /// <summary>
         /// The default JSON-LD context of organizations.
@@ -238,7 +239,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// The optional serial number of the charge point.
         /// </summary>
-        //public String?                  ChargeBoxSerialNumber       { get; }
+        //public String?                  ChargingStationSerialNumber       { get; }
 
         /// <summary>
         /// The optional firmware version of the charge point.
@@ -330,12 +331,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a boot notification request will be sent to the central system.
         /// </summary>
-        public event OnBootNotificationRequestSentDelegate?   OnBootNotificationRequest;
+        public event OnBootNotificationRequestReceivedDelegate?   OnBootNotificationRequest;
 
         /// <summary>
         /// An event fired whenever a response to a boot notification request was received.
         /// </summary>
-        public event OnBootNotificationResponseReceivedDelegate?  OnBootNotificationResponse;
+        public event OnBootNotificationResponseSentDelegate?  OnBootNotificationResponse;
 
         #endregion
 
@@ -344,12 +345,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a heartbeat request will be sent to the central system.
         /// </summary>
-        public event OnHeartbeatRequestSentDelegate?   OnHeartbeatRequest;
+        public event OnHeartbeatRequestReceivedDelegate?   OnHeartbeatRequest;
 
         /// <summary>
         /// An event fired whenever a response to a heartbeat request was received.
         /// </summary>
-        public event OnHeartbeatResponseReceivedDelegate?  OnHeartbeatResponse;
+        public event OnHeartbeatResponseSentDelegate?  OnHeartbeatResponse;
 
         #endregion
 
@@ -359,12 +360,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever an authorize request will be sent to the central system.
         /// </summary>
-        public event OnAuthorizeRequestSentDelegate?   OnAuthorizeRequest;
+        public event OnAuthorizeRequestReceivedDelegate?   OnAuthorizeRequest;
 
         /// <summary>
         /// An event fired whenever a response to an authorize request was received.
         /// </summary>
-        public event OnAuthorizeResponseReceivedDelegate?  OnAuthorizeResponse;
+        public event OnAuthorizeResponseSentDelegate?  OnAuthorizeResponse;
 
         #endregion
 
@@ -373,12 +374,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a status notification request will be sent to the central system.
         /// </summary>
-        public event OnStatusNotificationRequestSentDelegate?   OnStatusNotificationRequest;
+        public event OnStatusNotificationRequestReceivedDelegate?   OnStatusNotificationRequest;
 
         /// <summary>
         /// An event fired whenever a response to a status notification request was received.
         /// </summary>
-        public event OnStatusNotificationResponseReceivedDelegate?  OnStatusNotificationResponse;
+        public event OnStatusNotificationResponseSentDelegate?  OnStatusNotificationResponse;
 
         #endregion
 
@@ -387,12 +388,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a meter values request will be sent to the central system.
         /// </summary>
-        public event OnMeterValuesRequestSentDelegate?   OnMeterValuesRequest;
+        public event OnMeterValuesRequestReceivedDelegate?   OnMeterValuesRequest;
 
         /// <summary>
         /// An event fired whenever a response to a meter values request was received.
         /// </summary>
-        public event OnMeterValuesResponseReceivedDelegate?  OnMeterValuesResponse;
+        public event OnMeterValuesResponseSentDelegate?  OnMeterValuesResponse;
 
         #endregion
 
@@ -416,12 +417,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a firmware status notification request will be sent to the central system.
         /// </summary>
-        public event OnFirmwareStatusNotificationRequestSentDelegate?   OnFirmwareStatusNotificationRequest;
+        public event OnFirmwareStatusNotificationRequestReceivedDelegate?   OnFirmwareStatusNotificationRequest;
 
         /// <summary>
         /// An event fired whenever a response to a firmware status notification request was received.
         /// </summary>
-        public event OnFirmwareStatusNotificationResponseReceivedDelegate?  OnFirmwareStatusNotificationResponse;
+        public event OnFirmwareStatusNotificationResponseSentDelegate?  OnFirmwareStatusNotificationResponse;
 
         #endregion
 
@@ -434,12 +435,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnResetRequestReceivedDelegate?   OnResetRequest;
+        public event OnResetRequestSentDelegate?   OnResetRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event OnResetResponseSentDelegate?  OnResetResponse;
+        public event OnResetResponseReceivedDelegate?  OnResetResponse;
 
         #endregion
 
@@ -448,26 +449,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnChangeAvailabilityRequestReceivedDelegate?   OnChangeAvailabilityRequest;
+        public event OnChangeAvailabilityRequestSentDelegate?   OnChangeAvailabilityRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event OnChangeAvailabilityResponseSentDelegate?  OnChangeAvailabilityResponse;
+        public event OnChangeAvailabilityResponseReceivedDelegate?  OnChangeAvailabilityResponse;
 
         #endregion
 
-        #region OnDataTransfer (RequestReceived/-ResponseSent)
+        #region OnIncomingDataTransferRequest/-Response
 
         /// <summary>
         /// An event sent whenever a data transfer request was received.
         /// </summary>
-        public event OnDataTransferRequestReceivedDelegate?   OnDataTransferRequestReceived;
+        public event OnDataTransferRequestReceivedDelegate?  OnDataTransferRequestReceived;
 
         /// <summary>
         /// An event sent whenever a response to a data transfer request was sent.
         /// </summary>
-        public event OnDataTransferResponseSentDelegate?      OnDataTransferResponseSent;
+        public event OnDataTransferResponseSentDelegate?     OnDataTransferResponseSent;
 
         #endregion
 
@@ -476,12 +477,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnTriggerMessageRequestReceivedDelegate?   OnTriggerMessageRequest;
+        public event OnTriggerMessageRequestSentDelegate?   OnTriggerMessageRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event OnTriggerMessageResponseSentDelegate?  OnTriggerMessageResponse;
+        public event OnTriggerMessageResponseReceivedDelegate?  OnTriggerMessageResponse;
 
         #endregion
 
@@ -490,12 +491,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnUpdateFirmwareRequestReceivedDelegate?   OnUpdateFirmwareRequest;
+        public event OnUpdateFirmwareRequestSentDelegate?   OnUpdateFirmwareRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event OnUpdateFirmwareResponseSentDelegate?  OnUpdateFirmwareResponse;
+        public event OnUpdateFirmwareResponseReceivedDelegate?  OnUpdateFirmwareResponse;
 
         #endregion
 
@@ -505,12 +506,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a reserve now request was received.
         /// </summary>
-        public event OnReserveNowRequestReceivedDelegate?   OnReserveNowRequest;
+        public event OnReserveNowRequestSentDelegate?   OnReserveNowRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reserve now request was sent.
         /// </summary>
-        public event OnReserveNowResponseSentDelegate?  OnReserveNowResponse;
+        public event OnReserveNowResponseReceivedDelegate?  OnReserveNowResponse;
 
         #endregion
 
@@ -519,12 +520,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a cancel reservation request was received.
         /// </summary>
-        public event OnCancelReservationRequestReceivedDelegate?   OnCancelReservationRequest;
+        public event OnCancelReservationRequestSentDelegate?   OnCancelReservationRequest;
 
         /// <summary>
         /// An event sent whenever a response to a cancel reservation request was sent.
         /// </summary>
-        public event OnCancelReservationResponseSentDelegate?  OnCancelReservationResponse;
+        public event OnCancelReservationResponseReceivedDelegate?  OnCancelReservationResponse;
 
         #endregion
 
@@ -533,12 +534,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnSetChargingProfileRequestReceivedDelegate?   OnSetChargingProfileRequest;
+        public event OnSetChargingProfileRequestSentDelegate?   OnSetChargingProfileRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event OnSetChargingProfileResponseSentDelegate?  OnSetChargingProfileResponse;
+        public event OnSetChargingProfileResponseReceivedDelegate?  OnSetChargingProfileResponse;
 
         #endregion
 
@@ -547,12 +548,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnClearChargingProfileRequestReceivedDelegate?   OnClearChargingProfileRequest;
+        public event OnClearChargingProfileRequestSentDelegate?   OnClearChargingProfileRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event OnClearChargingProfileResponseSentDelegate?  OnClearChargingProfileResponse;
+        public event OnClearChargingProfileResponseReceivedDelegate?  OnClearChargingProfileResponse;
 
         #endregion
 
@@ -561,12 +562,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnGetCompositeScheduleRequestReceivedDelegate?   OnGetCompositeScheduleRequest;
+        public event OnGetCompositeScheduleRequestSentDelegate?   OnGetCompositeScheduleRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event OnGetCompositeScheduleResponseSentDelegate?  OnGetCompositeScheduleResponse;
+        public event OnGetCompositeScheduleResponseReceivedDelegate?  OnGetCompositeScheduleResponse;
 
         #endregion
 
@@ -575,12 +576,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnUnlockConnectorRequestReceivedDelegate?   OnUnlockConnectorRequest;
+        public event OnUnlockConnectorRequestSentDelegate?   OnUnlockConnectorRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event OnUnlockConnectorResponseSentDelegate?  OnUnlockConnectorResponse;
+        public event OnUnlockConnectorResponseReceivedDelegate?  OnUnlockConnectorResponse;
 
         #endregion
 
@@ -590,12 +591,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnGetLocalListVersionRequestReceivedDelegate?   OnGetLocalListVersionRequest;
+        public event OnGetLocalListVersionRequestSentDelegate?   OnGetLocalListVersionRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event OnGetLocalListVersionResponseSentDelegate?  OnGetLocalListVersionResponse;
+        public event OnGetLocalListVersionResponseReceivedDelegate?  OnGetLocalListVersionResponse;
 
         #endregion
 
@@ -604,12 +605,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnSendLocalListRequestReceivedDelegate?   OnSendLocalListRequest;
+        public event OnSendLocalListRequestSentDelegate?   OnSendLocalListRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event OnSendLocalListResponseSentDelegate?  OnSendLocalListResponse;
+        public event OnSendLocalListResponseReceivedDelegate?  OnSendLocalListResponse;
 
         #endregion
 
@@ -618,12 +619,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnClearCacheRequestReceivedDelegate?   OnClearCacheRequest;
+        public event OnClearCacheRequestSentDelegate?   OnClearCacheRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event OnClearCacheResponseSentDelegate?  OnClearCacheResponse;
+        public event OnClearCacheResponseReceivedDelegate?  OnClearCacheResponse;
 
         #endregion
 
@@ -641,7 +642,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// 
         /// <param name="Description">An optional multi-language charging station description.</param>
         /// <param name="ChargePointSerialNumber">An optional serial number of the charge point.</param>
-        /// <param name="ChargeBoxSerialNumber">An optional serial number of the charge point.</param>
+        /// <param name="ChargingStationSerialNumber">An optional serial number of the charge point.</param>
         /// <param name="FirmwareVersion">An optional firmware version of the charge point.</param>
         /// <param name="Iccid">An optional ICCID of the charge point's SIM card.</param>
         /// <param name="IMSI">An optional IMSI of the charge point’s SIM card.</param>
@@ -650,14 +651,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="MeterPublicKey">An optional public key of the main power meter of the charge point.</param>
         /// 
         /// <param name="ExpectHeartbeatEvery">The time span between expected heartbeat.</param>
-        public ChargeBox(ChargingStation_Id                                Id,
+        public ChargingStation(ChargingStation_Id                                Id,
                          Byte                                        NumberOfConnectors,
                          String                                      ChargePointVendor,
                          String                                      ChargePointModel,
 
                          I18NString?                                 Description                         = null,
                          String?                                     ChargePointSerialNumber             = null,
-                         //String?                                     ChargeBoxSerialNumber               = null,
+                         //String?                                     ChargingStationSerialNumber               = null,
                          String?                                     FirmwareVersion                     = null,
                          String?                                     Iccid                               = null,
                          String?                                     IMSI                                = null,
@@ -669,9 +670,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                          IEnumerable<ANotification>?                 Notifications                       = null,
 
-                         //IEnumerable<Organization2ChargeBoxEdge>?    Organization2ChargeBoxEdges         = null,
-                         IEnumerable<ChargeBox2ChargeBoxEdge>?       ChargeBox2ChargeBoxInEdges          = null,
-                         IEnumerable<ChargeBox2ChargeBoxEdge>?       ChargeBox2ChargeBoxOutEdges         = null,
+                         //IEnumerable<Organization2ChargingStationEdge>?    Organization2ChargingStationEdges         = null,
+                         IEnumerable<ChargingStation2ChargingStationEdge>?       ChargingStation2ChargingStationInEdges          = null,
+                         IEnumerable<ChargingStation2ChargingStationEdge>?       ChargingStation2ChargingStationOutEdges         = null,
 
                          JObject?                                    CustomData                          = default,
                          IEnumerable<AttachedFile>?                  AttachedFiles                       = default,
@@ -713,7 +714,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             this.Description              = Description;
             this.ChargePointSerialNumber  = ChargePointSerialNumber;
-            //this.ChargeBoxSerialNumber    = ChargeBoxSerialNumber;
+            //this.ChargingStationSerialNumber    = ChargingStationSerialNumber;
             this.FirmwareVersion          = FirmwareVersion;
             this.Iccid                    = Iccid;
             this.IMSI                     = IMSI;
@@ -730,7 +731,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
-        #region ToJSON(CustomChargeBoxSerializer = null)
+        #region ToJSON(CustomChargingStationSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
@@ -745,11 +746,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomChargeBoxSerializer">A delegate to serialize custom charging stationes.</param>
+        /// <param name="CustomChargingStationSerializer">A delegate to serialize custom charging stationes.</param>
         public JObject ToJSON(Boolean                                      Embedded                    = false,
                               InfoStatus                                   ExpandTags                  = InfoStatus.ShowIdOnly,
                               Boolean                                      IncludeLastChange           = true,
-                              CustomJObjectSerializerDelegate<ChargeBox>?  CustomChargeBoxSerializer   = null)
+                              CustomJObjectSerializerDelegate<ChargingStation>?  CustomChargingStationSerializer   = null)
         {
 
             var json = base.ToJSON(Embedded,
@@ -769,8 +770,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                            ? new JProperty("chargePointSerialNumber",   ChargePointSerialNumber)
                                            : null,
 
-                                       //ChargeBoxSerialNumber.  IsNotNullOrEmpty()
-                                       //    ? new JProperty("chargeBoxSerialNumber",     ChargeBoxSerialNumber)
+                                       //ChargingStationSerialNumber.  IsNotNullOrEmpty()
+                                       //    ? new JProperty("chargeBoxSerialNumber",     ChargingStationSerialNumber)
                                        //    : null,
 
                                        FirmwareVersion.        IsNotNullOrEmpty()
@@ -799,8 +800,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                    });
 
-            return CustomChargeBoxSerializer is not null
-                       ? CustomChargeBoxSerializer(this, json)
+            return CustomChargingStationSerializer is not null
+                       ? CustomChargingStationSerializer(this, json)
                        : json;
 
         }
@@ -808,43 +809,43 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
-        #region CopyAllLinkedDataFromBase(OldChargeBox)
+        #region CopyAllLinkedDataFromBase(OldChargingStation)
 
-        public override void CopyAllLinkedDataFromBase(ChargeBox OldChargeBox)
+        public override void CopyAllLinkedDataFromBase(ChargingStation OldChargingStation)
         {
 
-            //if (OldChargeBox._User2ChargeBox_Edges.Any() && !_User2ChargeBox_Edges.Any())
+            //if (OldChargingStation._User2ChargingStation_Edges.Any() && !_User2ChargingStation_Edges.Any())
             //{
 
-            //    AddUsers(OldChargeBox._User2ChargeBox_Edges);
+            //    AddUsers(OldChargingStation._User2ChargingStation_Edges);
 
-            //    foreach (var edge in _User2ChargeBox_Edges)
+            //    foreach (var edge in _User2ChargingStation_Edges)
             //        edge.Target = this;
 
             //}
 
-            //if (OldChargeBox._ChargeBox2ChargeBox_InEdges.Any() && !_ChargeBox2ChargeBox_InEdges.Any())
+            //if (OldChargingStation._ChargingStation2ChargingStation_InEdges.Any() && !_ChargingStation2ChargingStation_InEdges.Any())
             //{
 
-            //    AddEdges(OldChargeBox._ChargeBox2ChargeBox_InEdges);
+            //    AddEdges(OldChargingStation._ChargingStation2ChargingStation_InEdges);
 
-            //    foreach (var edge in _ChargeBox2ChargeBox_InEdges)
+            //    foreach (var edge in _ChargingStation2ChargingStation_InEdges)
             //        edge.Target = this;
 
             //}
 
-            //if (OldChargeBox._ChargeBox2ChargeBox_OutEdges.Any() && !_ChargeBox2ChargeBox_OutEdges.Any())
+            //if (OldChargingStation._ChargingStation2ChargingStation_OutEdges.Any() && !_ChargingStation2ChargingStation_OutEdges.Any())
             //{
 
-            //    AddEdges(OldChargeBox._ChargeBox2ChargeBox_OutEdges);
+            //    AddEdges(OldChargingStation._ChargingStation2ChargingStation_OutEdges);
 
-            //    foreach (var edge in _ChargeBox2ChargeBox_OutEdges)
+            //    foreach (var edge in _ChargingStation2ChargingStation_OutEdges)
             //        edge.Source = this;
 
             //}
 
-            //if (OldChargeBox._Notifications.SafeAny() && !_Notifications.SafeAny())
-            //    _Notifications.Add(OldChargeBox._Notifications);
+            //if (OldChargingStation._Notifications.SafeAny() && !_Notifications.SafeAny())
+            //    _Notifications.Add(OldChargingStation._Notifications);
 
         }
 
@@ -853,113 +854,113 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Operator overloading
 
-        #region Operator == (ChargeBoxId1, ChargeBoxId2)
+        #region Operator == (ChargingStationId1, ChargingStationId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargeBoxId1">A chargeBox identification.</param>
-        /// <param name="ChargeBoxId2">Another chargeBox identification.</param>
+        /// <param name="ChargingStationId1">A chargeBox identification.</param>
+        /// <param name="ChargingStationId2">Another chargeBox identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (ChargeBox ChargeBoxId1, ChargeBox ChargeBoxId2)
+        public static Boolean operator == (ChargingStation ChargingStationId1, ChargingStation ChargingStationId2)
         {
 
             // If both are null, or both are same instance, return true.
-            if (Object.ReferenceEquals(ChargeBoxId1, ChargeBoxId2))
+            if (Object.ReferenceEquals(ChargingStationId1, ChargingStationId2))
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) ChargeBoxId1 == null) || ((Object) ChargeBoxId2 == null))
+            if (((Object) ChargingStationId1 == null) || ((Object) ChargingStationId2 == null))
                 return false;
 
-            return ChargeBoxId1.Equals(ChargeBoxId2);
+            return ChargingStationId1.Equals(ChargingStationId2);
 
         }
 
         #endregion
 
-        #region Operator != (ChargeBoxId1, ChargeBoxId2)
+        #region Operator != (ChargingStationId1, ChargingStationId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargeBoxId1">A chargeBox identification.</param>
-        /// <param name="ChargeBoxId2">Another chargeBox identification.</param>
+        /// <param name="ChargingStationId1">A chargeBox identification.</param>
+        /// <param name="ChargingStationId2">Another chargeBox identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (ChargeBox ChargeBoxId1, ChargeBox ChargeBoxId2)
-            => !(ChargeBoxId1 == ChargeBoxId2);
+        public static Boolean operator != (ChargingStation ChargingStationId1, ChargingStation ChargingStationId2)
+            => !(ChargingStationId1 == ChargingStationId2);
 
         #endregion
 
-        #region Operator <  (ChargeBoxId1, ChargeBoxId2)
+        #region Operator <  (ChargingStationId1, ChargingStationId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargeBoxId1">A chargeBox identification.</param>
-        /// <param name="ChargeBoxId2">Another chargeBox identification.</param>
+        /// <param name="ChargingStationId1">A chargeBox identification.</param>
+        /// <param name="ChargingStationId2">Another chargeBox identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (ChargeBox ChargeBoxId1, ChargeBox ChargeBoxId2)
+        public static Boolean operator < (ChargingStation ChargingStationId1, ChargingStation ChargingStationId2)
         {
 
-            if ((Object) ChargeBoxId1 == null)
-                throw new ArgumentNullException(nameof(ChargeBoxId1), "The given ChargeBoxId1 must not be null!");
+            if ((Object) ChargingStationId1 == null)
+                throw new ArgumentNullException(nameof(ChargingStationId1), "The given ChargingStationId1 must not be null!");
 
-            return ChargeBoxId1.CompareTo(ChargeBoxId2) < 0;
+            return ChargingStationId1.CompareTo(ChargingStationId2) < 0;
 
         }
 
         #endregion
 
-        #region Operator <= (ChargeBoxId1, ChargeBoxId2)
+        #region Operator <= (ChargingStationId1, ChargingStationId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargeBoxId1">A chargeBox identification.</param>
-        /// <param name="ChargeBoxId2">Another chargeBox identification.</param>
+        /// <param name="ChargingStationId1">A chargeBox identification.</param>
+        /// <param name="ChargingStationId2">Another chargeBox identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (ChargeBox ChargeBoxId1, ChargeBox ChargeBoxId2)
-            => !(ChargeBoxId1 > ChargeBoxId2);
+        public static Boolean operator <= (ChargingStation ChargingStationId1, ChargingStation ChargingStationId2)
+            => !(ChargingStationId1 > ChargingStationId2);
 
         #endregion
 
-        #region Operator >  (ChargeBoxId1, ChargeBoxId2)
+        #region Operator >  (ChargingStationId1, ChargingStationId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargeBoxId1">A chargeBox identification.</param>
-        /// <param name="ChargeBoxId2">Another chargeBox identification.</param>
+        /// <param name="ChargingStationId1">A chargeBox identification.</param>
+        /// <param name="ChargingStationId2">Another chargeBox identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (ChargeBox ChargeBoxId1, ChargeBox ChargeBoxId2)
+        public static Boolean operator > (ChargingStation ChargingStationId1, ChargingStation ChargingStationId2)
         {
 
-            if ((Object) ChargeBoxId1 == null)
-                throw new ArgumentNullException(nameof(ChargeBoxId1), "The given ChargeBoxId1 must not be null!");
+            if ((Object) ChargingStationId1 == null)
+                throw new ArgumentNullException(nameof(ChargingStationId1), "The given ChargingStationId1 must not be null!");
 
-            return ChargeBoxId1.CompareTo(ChargeBoxId2) > 0;
+            return ChargingStationId1.CompareTo(ChargingStationId2) > 0;
 
         }
 
         #endregion
 
-        #region Operator >= (ChargeBoxId1, ChargeBoxId2)
+        #region Operator >= (ChargingStationId1, ChargingStationId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargeBoxId1">A chargeBox identification.</param>
-        /// <param name="ChargeBoxId2">Another chargeBox identification.</param>
+        /// <param name="ChargingStationId1">A chargeBox identification.</param>
+        /// <param name="ChargingStationId2">Another chargeBox identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (ChargeBox ChargeBoxId1, ChargeBox ChargeBoxId2)
-            => !(ChargeBoxId1 < ChargeBoxId2);
+        public static Boolean operator >= (ChargingStation ChargingStationId1, ChargingStation ChargingStationId2)
+            => !(ChargingStationId1 < ChargingStationId2);
 
         #endregion
 
         #endregion
 
-        #region IComparable<ChargeBox> Members
+        #region IComparable<ChargingStation> Members
 
         #region CompareTo(Object)
 
@@ -969,29 +970,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="Object">An object to compare with.</param>
         public override Int32 CompareTo(Object Object)
 
-            => Object is ChargeBox ChargeBox
-                   ? CompareTo(ChargeBox)
+            => Object is ChargingStation ChargingStation
+                   ? CompareTo(ChargingStation)
                    : throw new ArgumentException("The given object is not an chargeBox!", nameof(Object));
 
         #endregion
 
-        #region CompareTo(ChargeBox)
+        #region CompareTo(ChargingStation)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargeBox">An chargeBox object to compare with.</param>
-        public override Int32 CompareTo(ChargeBox ChargeBox)
+        /// <param name="ChargingStation">An chargeBox object to compare with.</param>
+        public override Int32 CompareTo(ChargingStation ChargingStation)
 
-            => ChargeBox is null
-                   ? throw new ArgumentNullException(nameof(ChargeBox), "The given chargeBox must not be null!")
-                   : Id.CompareTo(ChargeBox.Id);
-
-        #endregion
+            => ChargingStation is null
+                   ? throw new ArgumentNullException(nameof(ChargingStation), "The given chargeBox must not be null!")
+                   : Id.CompareTo(ChargingStation.Id);
 
         #endregion
 
-        #region IEquatable<ChargeBox> Members
+        #endregion
+
+        #region IEquatable<ChargingStation> Members
 
         #region Equals(Object)
 
@@ -1002,22 +1003,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <returns>true|false</returns>
         public override Boolean Equals(Object Object)
 
-            => Object is ChargeBox ChargeBox &&
-                  Equals(ChargeBox);
+            => Object is ChargingStation ChargingStation &&
+                  Equals(ChargingStation);
 
         #endregion
 
-        #region Equals(ChargeBox)
+        #region Equals(ChargingStation)
 
         /// <summary>
         /// Compares two chargeBoxs for equality.
         /// </summary>
-        /// <param name="ChargeBox">An chargeBox to compare with.</param>
+        /// <param name="ChargingStation">An chargeBox to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public override Boolean Equals(ChargeBox ChargeBox)
+        public override Boolean Equals(ChargingStation ChargingStation)
 
-            => ChargeBox is ChargeBox &&
-                   Id.Equals(ChargeBox.Id);
+            => ChargingStation is ChargingStation &&
+                   Id.Equals(ChargingStation.Id);
 
         #endregion
 
@@ -1044,22 +1045,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
-        #region ToBuilder(NewChargeBoxId = null)
+        #region ToBuilder(NewChargingStationId = null)
 
         /// <summary>
         /// Return a builder for this chargeBox.
         /// </summary>
-        /// <param name="NewChargeBoxId">An optional new chargeBox identification.</param>
-        public Builder ToBuilder(ChargingStation_Id? NewChargeBoxId = null)
+        /// <param name="NewChargingStationId">An optional new chargeBox identification.</param>
+        public Builder ToBuilder(ChargingStation_Id? NewChargingStationId = null)
 
-            => new (NewChargeBoxId ?? Id,
+            => new (NewChargingStationId ?? Id,
                     1, //NumberOfConnectors,
                     ChargePointVendor,
                     ChargePointModel,
 
                     Description,
                     ChargePointSerialNumber,
-                    //ChargeBoxSerialNumber,
+                    //ChargingStationSerialNumber,
                     FirmwareVersion,
                     Iccid,
                     IMSI,
@@ -1071,9 +1072,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     null, //_Notifications,
 
-                    //_User2ChargeBox_Edges,
-                    null, //_ChargeBox2ChargeBox_InEdges,
-                    null, //_ChargeBox2ChargeBox_OutEdges,
+                    //_User2ChargingStation_Edges,
+                    null, //_ChargingStation2ChargingStation_InEdges,
+                    null, //_ChargingStation2ChargingStation_OutEdges,
 
                     CustomData,
                     null, //AttachedFiles,
@@ -1088,7 +1089,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An chargeBox builder.
         /// </summary>
-        public new class Builder : AEntity<ChargingStation_Id, ChargeBox>.Builder
+        public new class Builder : AEntity<ChargingStation_Id, ChargingStation>.Builder
         {
 
             #region Properties
@@ -1117,7 +1118,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// The optional serial number of the charge point.
             /// </summary>
-           // public String                   ChargeBoxSerialNumber       { get; set; }
+           // public String                   ChargingStationSerialNumber       { get; set; }
 
             /// <summary>
             /// The optional firmware version of the charge point.
@@ -1184,34 +1185,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Edges
 
-            #region User          -> ChargeBox edges
+            #region User          -> ChargingStation edges
 
-            //protected readonly List<User2ChargeBoxEdge> _User2ChargeBox_Edges;
+            //protected readonly List<User2ChargingStationEdge> _User2ChargingStation_Edges;
 
-            //public IEnumerable<User2ChargeBoxEdge> User2ChargeBoxEdges
-            //    => _User2ChargeBox_Edges;
+            //public IEnumerable<User2ChargingStationEdge> User2ChargingStationEdges
+            //    => _User2ChargingStation_Edges;
 
 
             //#region LinkUser(Edge)
 
-            //public User2ChargeBoxEdge
+            //public User2ChargingStationEdge
 
-            //    LinkUser(User2ChargeBoxEdge Edge)
+            //    LinkUser(User2ChargingStationEdge Edge)
 
-            //    => _User2ChargeBox_Edges.AddAndReturnElement(Edge);
+            //    => _User2ChargingStation_Edges.AddAndReturnElement(Edge);
 
             //#endregion
 
             //#region LinkUser(Source, EdgeLabel, PrivacyLevel = PrivacyLevel.World)
 
-            //public User2ChargeBoxEdge
+            //public User2ChargingStationEdge
 
             //    LinkUser(User                    Source,
-            //             User2ChargeBoxEdgeLabel  EdgeLabel,
+            //             User2ChargingStationEdgeLabel  EdgeLabel,
             //             PrivacyLevel            PrivacyLevel = PrivacyLevel.World)
 
-            //    => _User2ChargeBox_Edges.
-            //           AddAndReturnElement(new User2ChargeBoxEdge(Source,
+            //    => _User2ChargingStation_Edges.
+            //           AddAndReturnElement(new User2ChargingStationEdge(Source,
             //                                                                                        EdgeLabel,
             //                                                                                        this,
             //                                                                                        PrivacyLevel));
@@ -1219,119 +1220,119 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             //#endregion
 
 
-            //#region User2ChargeBoxInEdges     (User)
+            //#region User2ChargingStationInEdges     (User)
 
             ///// <summary>
             ///// The edge labels of all (incoming) edges between the given user and this chargeBox.
             ///// </summary>
-            //public IEnumerable<User2ChargeBoxEdge> User2ChargeBoxInEdges(User User)
+            //public IEnumerable<User2ChargingStationEdge> User2ChargingStationInEdges(User User)
 
-            //    => _User2ChargeBox_Edges.
+            //    => _User2ChargingStation_Edges.
             //           Where(edge => edge.Source == User);
 
             //#endregion
 
-            //#region User2ChargeBoxInEdgeLabels(User)
+            //#region User2ChargingStationInEdgeLabels(User)
 
             ///// <summary>
             ///// The edge labels of all (incoming) edges between the given user and this chargeBox.
             ///// </summary>
-            //public IEnumerable<User2ChargeBoxEdgeLabel> User2ChargeBoxInEdgeLabels(User User)
+            //public IEnumerable<User2ChargingStationEdgeLabel> User2ChargingStationInEdgeLabels(User User)
 
-            //    => _User2ChargeBox_Edges.
+            //    => _User2ChargingStation_Edges.
             //           Where (edge => edge.Source == User).
             //           Select(edge => edge.EdgeLabel);
 
             //#endregion
 
-            //public IEnumerable<User2ChargeBoxEdge>
+            //public IEnumerable<User2ChargingStationEdge>
 
-            //    Add(IEnumerable<User2ChargeBoxEdge> Edges)
+            //    Add(IEnumerable<User2ChargingStationEdge> Edges)
 
-            //        => _User2ChargeBox_Edges.AddAndReturnList(Edges);
+            //        => _User2ChargingStation_Edges.AddAndReturnList(Edges);
 
 
             //#region UnlinkUser(EdgeLabel, User)
 
-            //public void UnlinkUser(User2ChargeBoxEdgeLabel  EdgeLabel,
+            //public void UnlinkUser(User2ChargingStationEdgeLabel  EdgeLabel,
             //                       User                    User)
             //{
 
-            //    var edges = _User2ChargeBox_Edges.
+            //    var edges = _User2ChargingStation_Edges.
             //                    Where(edge => edge.EdgeLabel == EdgeLabel &&
             //                                  edge.Source    == User).
             //                    ToArray();
 
             //    foreach (var edge in edges)
-            //        _User2ChargeBox_Edges.Remove(edge);
+            //        _User2ChargingStation_Edges.Remove(edge);
 
             //}
 
             //#endregion
 
-            //public Boolean RemoveInEdge(User2ChargeBoxEdge Edge)
-            //    => _User2ChargeBox_Edges.Remove(Edge);
+            //public Boolean RemoveInEdge(User2ChargingStationEdge Edge)
+            //    => _User2ChargingStation_Edges.Remove(Edge);
 
             #endregion
 
-            #region ChargeBox <-> ChargeBox edges
+            #region ChargingStation <-> ChargingStation edges
 
-            protected readonly List<ChargeBox2ChargeBoxEdge> _ChargeBox2ChargeBox_InEdges;
+            protected readonly List<ChargingStation2ChargingStationEdge> _ChargingStation2ChargingStation_InEdges;
 
-            public IEnumerable<ChargeBox2ChargeBoxEdge> ChargeBox2ChargeBoxInEdges
-                => _ChargeBox2ChargeBox_InEdges;
+            public IEnumerable<ChargingStation2ChargingStationEdge> ChargingStation2ChargingStationInEdges
+                => _ChargingStation2ChargingStation_InEdges;
 
             #region AddInEdge (Edge)
 
-            public ChargeBox2ChargeBoxEdge
+            public ChargingStation2ChargingStationEdge
 
-                AddInEdge(ChargeBox2ChargeBoxEdge Edge)
+                AddInEdge(ChargingStation2ChargingStationEdge Edge)
 
-                => _ChargeBox2ChargeBox_InEdges.AddAndReturnElement(Edge);
+                => _ChargingStation2ChargingStation_InEdges.AddAndReturnElement(Edge);
 
             #endregion
 
-            #region AddInEdge (EdgeLabel, SourceChargeBox, PrivacyLevel = PrivacyLevel.World)
+            #region AddInEdge (EdgeLabel, SourceChargingStation, PrivacyLevel = PrivacyLevel.World)
 
-            public ChargeBox2ChargeBoxEdge
+            public ChargingStation2ChargingStationEdge
 
-                AddInEdge (ChargeBox2ChargeBoxEdgeLabel  EdgeLabel,
-                           ChargeBox                    SourceChargeBox,
+                AddInEdge (ChargingStation2ChargingStationEdgeLabel  EdgeLabel,
+                           ChargingStation                    SourceChargingStation,
                            PrivacyLevel                    PrivacyLevel = PrivacyLevel.World)
 
-                => _ChargeBox2ChargeBox_InEdges. AddAndReturnElement(new ChargeBox2ChargeBoxEdge(SourceChargeBox,
+                => _ChargingStation2ChargingStation_InEdges. AddAndReturnElement(new ChargingStation2ChargingStationEdge(SourceChargingStation,
                                                                                                                                                     EdgeLabel,
                                                                                                                                                     this,
                                                                                                                                                     PrivacyLevel));
 
             #endregion
 
-            public IEnumerable<ChargeBox2ChargeBoxEdge>
+            public IEnumerable<ChargingStation2ChargingStationEdge>
 
-                AddInEdges(IEnumerable<ChargeBox2ChargeBoxEdge> Edges)
+                AddInEdges(IEnumerable<ChargingStation2ChargingStationEdge> Edges)
 
-                    => _ChargeBox2ChargeBox_InEdges.AddAndReturnList(Edges);
+                    => _ChargingStation2ChargingStation_InEdges.AddAndReturnList(Edges);
 
-            #region RemoveInEdges(EdgeLabel, TargetChargeBox)
+            #region RemoveInEdges(EdgeLabel, TargetChargingStation)
 
-            public Boolean RemoveInEdge(ChargeBox2ChargeBoxEdge Edge)
-                => _ChargeBox2ChargeBox_InEdges.Remove(Edge);
+            public Boolean RemoveInEdge(ChargingStation2ChargingStationEdge Edge)
+                => _ChargingStation2ChargingStation_InEdges.Remove(Edge);
 
             #endregion
 
-            #region RemoveInEdges (EdgeLabel, SourceChargeBox)
+            #region RemoveInEdges (EdgeLabel, SourceChargingStation)
 
-            public void RemoveInEdges(ChargeBox2ChargeBoxEdgeLabel EdgeLabel,
-                                      ChargeBox SourceChargeBox)
+            public void RemoveInEdges(ChargingStation2ChargingStationEdgeLabel EdgeLabel,
+                                      ChargingStation SourceChargingStation)
             {
 
-                var edges = _ChargeBox2ChargeBox_OutEdges.
+                var edges = _ChargingStation2ChargingStation_OutEdges.
                                 Where(edge => edge.EdgeLabel == EdgeLabel &&
-                                              edge.Source == SourceChargeBox).
+                                              edge.Source == SourceChargingStation).
                                 ToArray();
 
                 foreach (var edge in edges)
-                    _ChargeBox2ChargeBox_InEdges.Remove(edge);
+                    _ChargingStation2ChargingStation_InEdges.Remove(edge);
 
             }
 
@@ -1339,62 +1340,62 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
 
-            protected readonly List<ChargeBox2ChargeBoxEdge> _ChargeBox2ChargeBox_OutEdges;
+            protected readonly List<ChargingStation2ChargingStationEdge> _ChargingStation2ChargingStation_OutEdges;
 
-            public IEnumerable<ChargeBox2ChargeBoxEdge> ChargeBox2ChargeBoxOutEdges
-                => _ChargeBox2ChargeBox_OutEdges;
+            public IEnumerable<ChargingStation2ChargingStationEdge> ChargingStation2ChargingStationOutEdges
+                => _ChargingStation2ChargingStation_OutEdges;
 
             #region AddOutEdge(Edge)
 
-            public ChargeBox2ChargeBoxEdge
+            public ChargingStation2ChargingStationEdge
 
-                AddOutEdge(ChargeBox2ChargeBoxEdge Edge)
+                AddOutEdge(ChargingStation2ChargingStationEdge Edge)
 
-                => _ChargeBox2ChargeBox_OutEdges.AddAndReturnElement(Edge);
+                => _ChargingStation2ChargingStation_OutEdges.AddAndReturnElement(Edge);
 
             #endregion
 
-            #region AddOutEdge(EdgeLabel, TargetChargeBox, PrivacyLevel = PrivacyLevel.World)
+            #region AddOutEdge(EdgeLabel, TargetChargingStation, PrivacyLevel = PrivacyLevel.World)
 
-            public ChargeBox2ChargeBoxEdge
+            public ChargingStation2ChargingStationEdge
 
-                AddOutEdge(ChargeBox2ChargeBoxEdgeLabel  EdgeLabel,
-                           ChargeBox                    TargetChargeBox,
+                AddOutEdge(ChargingStation2ChargingStationEdgeLabel  EdgeLabel,
+                           ChargingStation                    TargetChargingStation,
                            PrivacyLevel                    PrivacyLevel = PrivacyLevel.World)
 
-                => _ChargeBox2ChargeBox_OutEdges.AddAndReturnElement(new ChargeBox2ChargeBoxEdge(this,
+                => _ChargingStation2ChargingStation_OutEdges.AddAndReturnElement(new ChargingStation2ChargingStationEdge(this,
                                                                                                                                                     EdgeLabel,
-                                                                                                                                                    TargetChargeBox,
+                                                                                                                                                    TargetChargingStation,
                                                                                                                                                     PrivacyLevel));
 
             #endregion
 
-            public IEnumerable<ChargeBox2ChargeBoxEdge>
+            public IEnumerable<ChargingStation2ChargingStationEdge>
 
-                AddOutEdges(IEnumerable<ChargeBox2ChargeBoxEdge> Edges)
+                AddOutEdges(IEnumerable<ChargingStation2ChargingStationEdge> Edges)
 
-                    => _ChargeBox2ChargeBox_OutEdges.AddAndReturnList(Edges);
+                    => _ChargingStation2ChargingStation_OutEdges.AddAndReturnList(Edges);
 
-            #region RemoveOutEdges(EdgeLabel, TargetChargeBox)
+            #region RemoveOutEdges(EdgeLabel, TargetChargingStation)
 
-            public Boolean RemoveOutEdge(ChargeBox2ChargeBoxEdge Edge)
-                => _ChargeBox2ChargeBox_OutEdges.Remove(Edge);
+            public Boolean RemoveOutEdge(ChargingStation2ChargingStationEdge Edge)
+                => _ChargingStation2ChargingStation_OutEdges.Remove(Edge);
 
             #endregion
 
-            #region RemoveOutEdges(EdgeLabel, TargetChargeBox)
+            #region RemoveOutEdges(EdgeLabel, TargetChargingStation)
 
-            public void RemoveOutEdges(ChargeBox2ChargeBoxEdgeLabel  EdgeLabel,
-                                       ChargeBox                    TargetChargeBox)
+            public void RemoveOutEdges(ChargingStation2ChargingStationEdgeLabel  EdgeLabel,
+                                       ChargingStation                    TargetChargingStation)
             {
 
-                var edges = _ChargeBox2ChargeBox_OutEdges.
+                var edges = _ChargingStation2ChargingStation_OutEdges.
                                 Where(edge => edge.EdgeLabel == EdgeLabel &&
-                                              edge.Target    == TargetChargeBox).
+                                              edge.Target    == TargetChargingStation).
                                 ToArray();
 
                 foreach (var edge in edges)
-                    _ChargeBox2ChargeBox_OutEdges.Remove(edge);
+                    _ChargingStation2ChargingStation_OutEdges.Remove(edge);
 
             }
 
@@ -1418,7 +1419,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                          I18NString                                  Description                         = null,
                          String                                      ChargePointSerialNumber             = null,
-                         //String                                      ChargeBoxSerialNumber               = null,
+                         //String                                      ChargingStationSerialNumber               = null,
                          String                                      FirmwareVersion                     = null,
                          String                                      Iccid                               = null,
                          String                                      IMSI                                = null,
@@ -1430,9 +1431,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                            IEnumerable<ANotification>                  Notifications                       = null,
 
-                           //IEnumerable<User2ChargeBoxEdge>          User2ChargeBoxEdges              = null,
-                           IEnumerable<ChargeBox2ChargeBoxEdge>  ChargeBox2ChargeBoxInEdges    = null,
-                           IEnumerable<ChargeBox2ChargeBoxEdge>  ChargeBox2ChargeBoxOutEdges   = null,
+                           //IEnumerable<User2ChargingStationEdge>          User2ChargingStationEdges              = null,
+                           IEnumerable<ChargingStation2ChargingStationEdge>  ChargingStation2ChargingStationInEdges    = null,
+                           IEnumerable<ChargingStation2ChargingStationEdge>  ChargingStation2ChargingStationOutEdges   = null,
 
                            JObject                                     CustomData                          = default,
                            IEnumerable<AttachedFile>                   AttachedFiles                       = default,
@@ -1458,9 +1459,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 if (Notifications.SafeAny())
                     _Notifications.Add(Notifications);
 
-               // this._User2ChargeBox_Edges             = User2ChargeBoxEdges.           IsNeitherNullNorEmpty() ? new List<User2ChargeBoxEdge>        (User2ChargeBoxEdges)            : new List<User2ChargeBoxEdge>();
-                this._ChargeBox2ChargeBox_InEdges   = ChargeBox2ChargeBoxInEdges. IsNeitherNullNorEmpty() ? new List<ChargeBox2ChargeBoxEdge>(ChargeBox2ChargeBoxInEdges)  : new List<ChargeBox2ChargeBoxEdge>();
-                this._ChargeBox2ChargeBox_OutEdges  = ChargeBox2ChargeBoxOutEdges.IsNeitherNullNorEmpty() ? new List<ChargeBox2ChargeBoxEdge>(ChargeBox2ChargeBoxOutEdges) : new List<ChargeBox2ChargeBoxEdge>();
+               // this._User2ChargingStation_Edges             = User2ChargingStationEdges.           IsNeitherNullNorEmpty() ? new List<User2ChargingStationEdge>        (User2ChargingStationEdges)            : new List<User2ChargingStationEdge>();
+                this._ChargingStation2ChargingStation_InEdges   = ChargingStation2ChargingStationInEdges. IsNeitherNullNorEmpty() ? new List<ChargingStation2ChargingStationEdge>(ChargingStation2ChargingStationInEdges)  : new List<ChargingStation2ChargingStationEdge>();
+                this._ChargingStation2ChargingStation_OutEdges  = ChargingStation2ChargingStationOutEdges.IsNeitherNullNorEmpty() ? new List<ChargingStation2ChargingStationEdge>(ChargingStation2ChargingStationOutEdges) : new List<ChargingStation2ChargingStationEdge>();
 
             }
 
@@ -1611,7 +1612,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// Return an immutable version of the chargeBox.
             /// </summary>
             /// <param name="Builder">An chargeBox builder.</param>
-            public static implicit operator ChargeBox(Builder Builder)
+            public static implicit operator ChargingStation(Builder Builder)
 
                 => Builder?.ToImmutable;
 
@@ -1619,7 +1620,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// Return an immutable version of the chargeBox.
             /// </summary>
-            public ChargeBox ToImmutable
+            public ChargingStation ToImmutable
             {
                 get
                 {
@@ -1627,14 +1628,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //if (!Branch.HasValue || Branch.Value.IsNullOrEmpty)
                     //    throw new ArgumentNullException(nameof(Branch), "The given branch must not be null or empty!");
 
-                    return new ChargeBox(Id,
+                    return new ChargingStation(Id,
                                          1,
                                          ChargePointVendor,
                                          ChargePointModel,
 
                                          Description,
                                          ChargePointSerialNumber,
-                                         //ChargeBoxSerialNumber,
+                                         //ChargingStationSerialNumber,
                                          FirmwareVersion,
                                          Iccid,
                                          IMSI,
@@ -1646,9 +1647,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                                           _Notifications,
 
-                                                          //_User2ChargeBox_Edges,
-                                                          _ChargeBox2ChargeBox_InEdges,
-                                                          _ChargeBox2ChargeBox_OutEdges,
+                                                          //_User2ChargingStation_Edges,
+                                                          _ChargingStation2ChargingStation_InEdges,
+                                                          _ChargingStation2ChargingStation_OutEdges,
 
                                                           CustomData,
                                                           AttachedFiles,
@@ -1662,43 +1663,43 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #endregion
 
 
-            #region CopyAllLinkedDataFromBase(OldChargeBox)
+            #region CopyAllLinkedDataFromBase(OldChargingStation)
 
-            public override void CopyAllLinkedDataFromBase(ChargeBox OldChargeBox)
+            public override void CopyAllLinkedDataFromBase(ChargingStation OldChargingStation)
             {
 
-                //if (OldChargeBox._User2ChargeBox_Edges.Any() && !_User2ChargeBox_Edges.Any())
+                //if (OldChargingStation._User2ChargingStation_Edges.Any() && !_User2ChargingStation_Edges.Any())
                 //{
 
-                //    Add(OldChargeBox._User2ChargeBox_Edges);
+                //    Add(OldChargingStation._User2ChargingStation_Edges);
 
-                //    foreach (var edge in _User2ChargeBox_Edges)
+                //    foreach (var edge in _User2ChargingStation_Edges)
                 //        edge.Target = this;
 
                 //}
 
-                //if (OldChargeBox._ChargeBox2ChargeBox_InEdges.Any() && !_ChargeBox2ChargeBox_InEdges.Any())
+                //if (OldChargingStation._ChargingStation2ChargingStation_InEdges.Any() && !_ChargingStation2ChargingStation_InEdges.Any())
                 //{
 
-                //    AddInEdges(OldChargeBox._ChargeBox2ChargeBox_InEdges);
+                //    AddInEdges(OldChargingStation._ChargingStation2ChargingStation_InEdges);
 
-                //    foreach (var edge in _ChargeBox2ChargeBox_InEdges)
+                //    foreach (var edge in _ChargingStation2ChargingStation_InEdges)
                 //        edge.Target = this;
 
                 //}
 
-                //if (OldChargeBox._ChargeBox2ChargeBox_OutEdges.Any() && !_ChargeBox2ChargeBox_OutEdges.Any())
+                //if (OldChargingStation._ChargingStation2ChargingStation_OutEdges.Any() && !_ChargingStation2ChargingStation_OutEdges.Any())
                 //{
 
-                //    AddOutEdges(OldChargeBox._ChargeBox2ChargeBox_OutEdges);
+                //    AddOutEdges(OldChargingStation._ChargingStation2ChargingStation_OutEdges);
 
-                //    foreach (var edge in _ChargeBox2ChargeBox_OutEdges)
+                //    foreach (var edge in _ChargingStation2ChargingStation_OutEdges)
                 //        edge.Source = this;
 
                 //}
 
-                //if (OldChargeBox._Notifications.SafeAny() && !_Notifications.SafeAny())
-                //    _Notifications.Add(OldChargeBox._Notifications);
+                //if (OldChargingStation._Notifications.SafeAny() && !_Notifications.SafeAny())
+                //    _Notifications.Add(OldChargingStation._Notifications);
 
             }
 
@@ -1829,17 +1830,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
-            #region CompareTo(ChargeBox)
+            #region CompareTo(ChargingStation)
 
             /// <summary>
             /// Compares two instances of this object.
             /// </summary>
-            /// <param name="ChargeBox">An chargeBox object to compare with.</param>
-            public override Int32 CompareTo(ChargeBox? ChargeBox)
+            /// <param name="ChargingStation">An chargeBox object to compare with.</param>
+            public override Int32 CompareTo(ChargingStation? ChargingStation)
 
-                => ChargeBox is null
-                       ? throw new ArgumentNullException(nameof(ChargeBox), "The given chargeBox must not be null!")
-                       : Id.CompareTo(ChargeBox.Id);
+                => ChargingStation is null
+                       ? throw new ArgumentNullException(nameof(ChargingStation), "The given chargeBox must not be null!")
+                       : Id.CompareTo(ChargingStation.Id);
 
 
             /// <summary>
@@ -1872,17 +1873,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
-            #region Equals(ChargeBox)
+            #region Equals(ChargingStation)
 
             /// <summary>
             /// Compares two chargeBoxs for equality.
             /// </summary>
-            /// <param name="ChargeBox">An chargeBox to compare with.</param>
+            /// <param name="ChargingStation">An chargeBox to compare with.</param>
             /// <returns>True if both match; False otherwise.</returns>
-            public override Boolean Equals(ChargeBox? ChargeBox)
+            public override Boolean Equals(ChargingStation? ChargingStation)
 
-                => ChargeBox is not null &&
-                       Id.Equals(ChargeBox.Id);
+                => ChargingStation is not null &&
+                       Id.Equals(ChargingStation.Id);
 
 
             /// <summary>

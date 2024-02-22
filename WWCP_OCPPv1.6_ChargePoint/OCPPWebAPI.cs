@@ -61,12 +61,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// The HTTP content type for serving OCPP+ XML data.
         /// </summary>
-        public static readonly HTTPContentType     OCPPPlusJSONContentType     = new HTTPContentType("application", "vnd.OCPPPlus+json", "utf-8", null, null);
+        public static readonly HTTPContentType     OCPPPlusJSONContentType     = new ("application", "vnd.OCPPPlus+json", "utf-8", null, null);
 
         /// <summary>
         /// The HTTP content type for serving OCPP+ HTML data.
         /// </summary>
-        public static readonly HTTPContentType     OCPPPlusHTMLContentType     = new HTTPContentType("application", "vnd.OCPPPlus+html", "utf-8", null, null);
+        public static readonly HTTPContentType     OCPPPlusHTMLContentType     = new ("application", "vnd.OCPPPlus+html", "utf-8", null, null);
 
         /// <summary>
         /// The unique identification of the OCPP HTTP SSE event log.
@@ -140,7 +140,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         {
 
             this.HTTPRealm           = HTTPRealm.IsNotNullOrEmpty() ? HTTPRealm : DefaultHTTPRealm;
-            this.HTTPLogins          = HTTPLogins   ?? Array.Empty<KeyValuePair<string, string>>();
+            this.HTTPLogins          = HTTPLogins   ?? [];
             //this.HTMLTemplate        = HTMLTemplate ?? GetResourceString("template.html");
 
             // Link HTTP events...
@@ -248,8 +248,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             //                                         Server                     = DefaultHTTPServerName,
             //                                         Date                       = Timestamp.Now,
             //                                         AccessControlAllowOrigin   = "*",
-            //                                         AccessControlAllowMethods  = new[] { "OPTIONS", "GET" },
-            //                                         AccessControlAllowHeaders  = new[] { "Authorization" },
+            //                                         AccessControlAllowMethods  = [ "OPTIONS", "GET" ],
+            //                                         AccessControlAllowHeaders  = [ "Authorization" ],
             //                                         ContentType                = HTTPContentType.Text.HTML_UTF8,
             //                                         Content                    = ("<html><body>" +
             //                                                                          "This is an Open Charge Point Protocol v1.6 HTTP service!<br /><br />" +
@@ -298,8 +298,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                  Server                     = DefaultHTTPServerName,
                                                  Date                       = Timestamp.Now,
                                                  AccessControlAllowOrigin   = "*",
-                                                 AccessControlAllowMethods  = new[] { "GET" },
-                                                 AccessControlAllowHeaders  = new[] { "Content-Type", "Accept", "Authorization" },
+                                                 AccessControlAllowMethods  = [ "GET" ],
+                                                 AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                                  ContentType                = HTTPContentType.Text.HTML_UTF8,
                                                  Content                    = MixWithHTMLTemplate("events.events.shtml").ToUTF8Bytes(),
                                                  Connection                 = "close",
