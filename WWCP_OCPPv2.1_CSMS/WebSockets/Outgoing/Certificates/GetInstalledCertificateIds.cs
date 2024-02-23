@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a GetInstalledCertificateIds request was sent.
         /// </summary>
-        public event OnGetInstalledCertificateIdsRequestSentDelegate?     OnGetInstalledCertificateIdsRequest;
+        public event OnGetInstalledCertificateIdsRequestSentDelegate?     OnGetInstalledCertificateIdsRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a GetInstalledCertificateIds request was sent.
         /// </summary>
-        public event OnGetInstalledCertificateIdsResponseReceivedDelegate?    OnGetInstalledCertificateIdsResponse;
+        public event OnGetInstalledCertificateIdsResponseReceivedDelegate?    OnGetInstalledCertificateIdsResponseReceived;
 
         #endregion
 
@@ -74,13 +74,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnGetInstalledCertificateIdsRequest?.Invoke(startTime,
+                OnGetInstalledCertificateIdsRequestSent?.Invoke(startTime,
                                                             this,
                                                             Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetInstalledCertificateIdsRequest));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetInstalledCertificateIdsRequestSent));
             }
 
             #endregion
@@ -150,7 +150,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnGetInstalledCertificateIdsResponse?.Invoke(endTime,
+                OnGetInstalledCertificateIdsResponseReceived?.Invoke(endTime,
                                                              this,
                                                              Request,
                                                              response,
@@ -159,7 +159,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetInstalledCertificateIdsResponse));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetInstalledCertificateIdsResponseReceived));
             }
 
             #endregion

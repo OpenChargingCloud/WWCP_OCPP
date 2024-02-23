@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a NotifyDisplayMessages request was received.
         /// </summary>
-        public event OnNotifyDisplayMessagesRequestReceivedDelegate?      OnNotifyDisplayMessagesRequest;
+        public event OnNotifyDisplayMessagesRequestReceivedDelegate?      OnNotifyDisplayMessagesRequestReceived;
 
         /// <summary>
         /// An event sent whenever a NotifyDisplayMessages was received.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a response to a NotifyDisplayMessages was sent.
         /// </summary>
-        public event OnNotifyDisplayMessagesResponseSentDelegate?     OnNotifyDisplayMessagesResponse;
+        public event OnNotifyDisplayMessagesResponseSentDelegate?     OnNotifyDisplayMessagesResponseSent;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a NotifyDisplayMessages was sent.
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     try
                     {
 
-                        OnNotifyDisplayMessagesRequest?.Invoke(Timestamp.Now,
+                        OnNotifyDisplayMessagesRequestReceived?.Invoke(Timestamp.Now,
                                                                this,
                                                                Connection,
                                                                request);
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyDisplayMessagesRequest));
+                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyDisplayMessagesRequestReceived));
                     }
 
                     #endregion
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     try
                     {
 
-                        OnNotifyDisplayMessagesResponse?.Invoke(Timestamp.Now,
+                        OnNotifyDisplayMessagesResponseSent?.Invoke(Timestamp.Now,
                                                                 this,
                                                                 Connection,
                                                                 request,
@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyDisplayMessagesResponse));
+                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyDisplayMessagesResponseSent));
                     }
 
                     #endregion

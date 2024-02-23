@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a PublishFirmware request was sent.
         /// </summary>
-        public event OnPublishFirmwareRequestSentDelegate?     OnPublishFirmwareRequest;
+        public event OnPublishFirmwareRequestSentDelegate?     OnPublishFirmwareRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a PublishFirmware request was sent.
         /// </summary>
-        public event OnPublishFirmwareResponseReceivedDelegate?    OnPublishFirmwareResponse;
+        public event OnPublishFirmwareResponseReceivedDelegate?    OnPublishFirmwareResponseReceived;
 
         #endregion
 
@@ -70,13 +70,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnPublishFirmwareRequest?.Invoke(startTime,
+                OnPublishFirmwareRequestSent?.Invoke(startTime,
                                                  this,
                                                  Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnPublishFirmwareRequest));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnPublishFirmwareRequestSent));
             }
 
             #endregion
@@ -146,7 +146,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnPublishFirmwareResponse?.Invoke(endTime,
+                OnPublishFirmwareResponseReceived?.Invoke(endTime,
                                                   this,
                                                   Request,
                                                   response,
@@ -155,7 +155,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnPublishFirmwareResponse));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnPublishFirmwareResponseReceived));
             }
 
             #endregion

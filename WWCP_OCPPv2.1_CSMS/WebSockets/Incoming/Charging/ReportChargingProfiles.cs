@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a ReportChargingProfiles request was received.
         /// </summary>
-        public event OnReportChargingProfilesRequestReceivedDelegate?     OnReportChargingProfilesRequest;
+        public event OnReportChargingProfilesRequestReceivedDelegate?     OnReportChargingProfilesRequestReceived;
 
         /// <summary>
         /// An event sent whenever a ReportChargingProfiles was received.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a response to a ReportChargingProfiles was sent.
         /// </summary>
-        public event OnReportChargingProfilesResponseSentDelegate?    OnReportChargingProfilesResponse;
+        public event OnReportChargingProfilesResponseSentDelegate?    OnReportChargingProfilesResponseSent;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a ReportChargingProfiles was sent.
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     try
                     {
 
-                        OnReportChargingProfilesRequest?.Invoke(Timestamp.Now,
+                        OnReportChargingProfilesRequestReceived?.Invoke(Timestamp.Now,
                                                                 this,
                                                                 Connection,
                                                                 request);
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnReportChargingProfilesRequest));
+                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnReportChargingProfilesRequestReceived));
                     }
 
                     #endregion
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     try
                     {
 
-                        OnReportChargingProfilesResponse?.Invoke(Timestamp.Now,
+                        OnReportChargingProfilesResponseSent?.Invoke(Timestamp.Now,
                                                                  this,
                                                                  Connection,
                                                                  request,
@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnReportChargingProfilesResponse));
+                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnReportChargingProfilesResponseSent));
                     }
 
                     #endregion

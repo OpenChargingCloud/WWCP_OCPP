@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a BinaryDataTransfer request was received.
         /// </summary>
-        public event OnBinaryDataTransferRequestReceivedDelegate?     OnIncomingBinaryDataTransferRequest;
+        public event OnBinaryDataTransferRequestReceivedDelegate?     OnBinaryDataTransferRequestReceived;
 
         /// <summary>
         /// An event sent whenever a BinaryDataTransfer request was received.
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a response to a BinaryDataTransfer request was sent.
         /// </summary>
-        public event OnBinaryDataTransferResponseSentDelegate?    OnIncomingBinaryDataTransferResponse;
+        public event OnBinaryDataTransferResponseSentDelegate?    OnBinaryDataTransferResponseSent;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a BinaryDataTransfer request was sent.
@@ -134,7 +134,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     try
                     {
 
-                        OnIncomingBinaryDataTransferRequest?.Invoke(Timestamp.Now,
+                        OnBinaryDataTransferRequestReceived?.Invoke(Timestamp.Now,
                                                                     this,
                                                                     Connection,
                                                                     request);
@@ -142,7 +142,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnIncomingBinaryDataTransferRequest));
+                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnBinaryDataTransferRequestReceived));
                     }
 
                     #endregion
@@ -175,7 +175,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     try
                     {
 
-                        OnIncomingBinaryDataTransferResponse?.Invoke(Timestamp.Now,
+                        OnBinaryDataTransferResponseSent?.Invoke(Timestamp.Now,
                                                                      this,
                                                                      Connection,
                                                                      request,
@@ -185,7 +185,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnIncomingBinaryDataTransferResponse));
+                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnBinaryDataTransferResponseSent));
                     }
 
                     #endregion

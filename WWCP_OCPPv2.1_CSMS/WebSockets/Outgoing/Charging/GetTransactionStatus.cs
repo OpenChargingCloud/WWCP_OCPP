@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a GetTransactionStatus request was sent.
         /// </summary>
-        public event OnGetTransactionStatusRequestSentDelegate?     OnGetTransactionStatusRequest;
+        public event OnGetTransactionStatusRequestSentDelegate?     OnGetTransactionStatusRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a GetTransactionStatus request was sent.
         /// </summary>
-        public event OnGetTransactionStatusResponseReceivedDelegate?    OnGetTransactionStatusResponse;
+        public event OnGetTransactionStatusResponseReceivedDelegate?    OnGetTransactionStatusResponseReceived;
 
         #endregion
 
@@ -70,13 +70,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnGetTransactionStatusRequest?.Invoke(startTime,
+                OnGetTransactionStatusRequestSent?.Invoke(startTime,
                                                       this,
                                                       Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetTransactionStatusRequest));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetTransactionStatusRequestSent));
             }
 
             #endregion
@@ -146,7 +146,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnGetTransactionStatusResponse?.Invoke(endTime,
+                OnGetTransactionStatusResponseReceived?.Invoke(endTime,
                                                        this,
                                                        Request,
                                                        response,
@@ -155,7 +155,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetTransactionStatusResponse));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetTransactionStatusResponseReceived));
             }
 
             #endregion

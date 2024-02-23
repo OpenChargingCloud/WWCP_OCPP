@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a Heartbeat request was received.
         /// </summary>
-        public event OnHeartbeatRequestReceivedDelegate?                  OnHeartbeatRequest;
+        public event OnHeartbeatRequestReceivedDelegate?                  OnHeartbeatRequestReceived;
 
         /// <summary>
         /// An event sent whenever a Heartbeat was received.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a response to a Heartbeat was sent.
         /// </summary>
-        public event OnHeartbeatResponseSentDelegate?                 OnHeartbeatResponse;
+        public event OnHeartbeatResponseSentDelegate?                 OnHeartbeatResponseSent;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a Heartbeat was sent.
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     try
                     {
 
-                        OnHeartbeatRequest?.Invoke(Timestamp.Now,
+                        OnHeartbeatRequestReceived?.Invoke(Timestamp.Now,
                                                    this,
                                                    Connection,
                                                    request);
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnHeartbeatRequest));
+                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnHeartbeatRequestReceived));
                     }
 
                     #endregion
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     try
                     {
 
-                        OnHeartbeatResponse?.Invoke(Timestamp.Now,
+                        OnHeartbeatResponseSent?.Invoke(Timestamp.Now,
                                                     this,
                                                     Connection,
                                                     request,
@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnHeartbeatResponse));
+                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnHeartbeatResponseSent));
                     }
 
                     #endregion

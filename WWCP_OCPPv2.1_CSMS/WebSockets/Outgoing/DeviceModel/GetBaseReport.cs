@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a GetBaseReport request was sent.
         /// </summary>
-        public event OnGetBaseReportRequestSentDelegate?     OnGetBaseReportRequest;
+        public event OnGetBaseReportRequestSentDelegate?     OnGetBaseReportRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a GetBaseReport request was sent.
         /// </summary>
-        public event OnGetBaseReportResponseReceivedDelegate?    OnGetBaseReportResponse;
+        public event OnGetBaseReportResponseReceivedDelegate?    OnGetBaseReportResponseReceived;
 
         #endregion
 
@@ -70,13 +70,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnGetBaseReportRequest?.Invoke(startTime,
+                OnGetBaseReportRequestSent?.Invoke(startTime,
                                                this,
                                                Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetBaseReportRequest));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetBaseReportRequestSent));
             }
 
             #endregion
@@ -146,7 +146,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnGetBaseReportResponse?.Invoke(endTime,
+                OnGetBaseReportResponseReceived?.Invoke(endTime,
                                                 this,
                                                 Request,
                                                 response,
@@ -155,7 +155,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetBaseReportResponse));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetBaseReportResponseReceived));
             }
 
             #endregion

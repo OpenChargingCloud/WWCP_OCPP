@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a Reset request was sent.
         /// </summary>
-        public event OnResetRequestSentDelegate?     OnResetRequest;
+        public event OnResetRequestSentDelegate?     OnResetRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a Reset request was sent.
         /// </summary>
-        public event OnResetResponseReceivedDelegate?    OnResetResponse;
+        public event OnResetResponseReceivedDelegate?    OnResetResponseReceived;
 
         #endregion
 
@@ -70,13 +70,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnResetRequest?.Invoke(startTime,
+                OnResetRequestSent?.Invoke(startTime,
                                        this,
                                        Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnResetRequest));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnResetRequestSent));
             }
 
             #endregion
@@ -146,7 +146,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnResetResponse?.Invoke(endTime,
+                OnResetResponseReceived?.Invoke(endTime,
                                         this,
                                         Request,
                                         response,
@@ -155,7 +155,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnResetResponse));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnResetResponseReceived));
             }
 
             #endregion

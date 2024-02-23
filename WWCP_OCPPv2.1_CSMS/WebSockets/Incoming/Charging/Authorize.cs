@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever an Authorize request was received.
         /// </summary>
-        public event OnAuthorizeRequestReceivedDelegate?                  OnAuthorizeRequest;
+        public event OnAuthorizeRequestReceivedDelegate?                  OnAuthorizeRequestReceived;
 
         /// <summary>
         /// An event sent whenever an Authorize request was received.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever an Authorize response was sent.
         /// </summary>
-        public event OnAuthorizeResponseSentDelegate?                 OnAuthorizeResponse;
+        public event OnAuthorizeResponseSentDelegate?                 OnAuthorizeResponseSent;
 
         /// <summary>
         /// An event sent whenever an Authorize WebSocket response was sent.
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     try
                     {
 
-                        OnAuthorizeRequest?.Invoke(Timestamp.Now,
+                        OnAuthorizeRequestReceived?.Invoke(Timestamp.Now,
                                                    this,
                                                    Connection,
                                                    request);
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnAuthorizeRequest));
+                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnAuthorizeRequestReceived));
                     }
 
                     #endregion
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     try
                     {
 
-                        OnAuthorizeResponse?.Invoke(Timestamp.Now,
+                        OnAuthorizeResponseSent?.Invoke(Timestamp.Now,
                                                     this,
                                                     Connection,
                                                     request,
@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnAuthorizeResponse));
+                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnAuthorizeResponseSent));
                     }
 
                     #endregion

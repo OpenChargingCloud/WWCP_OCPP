@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a SecurityEventNotification request was received.
         /// </summary>
-        public event OnSecurityEventNotificationRequestReceivedDelegate?     OnSecurityEventNotificationRequest;
+        public event OnSecurityEventNotificationRequestReceivedDelegate?     OnSecurityEventNotificationRequestReceived;
 
         /// <summary>
         /// An event sent whenever a SecurityEventNotification request was received.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a response to a SecurityEventNotification request was sent.
         /// </summary>
-        public event OnSecurityEventNotificationResponseSentDelegate?    OnSecurityEventNotificationResponse;
+        public event OnSecurityEventNotificationResponseSentDelegate?    OnSecurityEventNotificationResponseSent;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a SecurityEventNotification request was sent.
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     try
                     {
 
-                        OnSecurityEventNotificationRequest?.Invoke(Timestamp.Now,
+                        OnSecurityEventNotificationRequestReceived?.Invoke(Timestamp.Now,
                                                                    this,
                                                                    Connection,
                                                                    request);
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSecurityEventNotificationRequest));
+                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSecurityEventNotificationRequestReceived));
                     }
 
                     #endregion
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     try
                     {
 
-                        OnSecurityEventNotificationResponse?.Invoke(Timestamp.Now,
+                        OnSecurityEventNotificationResponseSent?.Invoke(Timestamp.Now,
                                                                     this,
                                                                     Connection,
                                                                     request,
@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSecurityEventNotificationResponse));
+                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSecurityEventNotificationResponseSent));
                     }
 
                     #endregion

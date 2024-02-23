@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a GetChargingProfiles request was sent.
         /// </summary>
-        public event OnGetChargingProfilesRequestSentDelegate?     OnGetChargingProfilesRequest;
+        public event OnGetChargingProfilesRequestSentDelegate?     OnGetChargingProfilesRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a GetChargingProfiles request was sent.
         /// </summary>
-        public event OnGetChargingProfilesResponseReceivedDelegate?    OnGetChargingProfilesResponse;
+        public event OnGetChargingProfilesResponseReceivedDelegate?    OnGetChargingProfilesResponseReceived;
 
         #endregion
 
@@ -70,13 +70,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnGetChargingProfilesRequest?.Invoke(startTime,
+                OnGetChargingProfilesRequestSent?.Invoke(startTime,
                                                      this,
                                                      Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetChargingProfilesRequest));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetChargingProfilesRequestSent));
             }
 
             #endregion
@@ -147,7 +147,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnGetChargingProfilesResponse?.Invoke(endTime,
+                OnGetChargingProfilesResponseReceived?.Invoke(endTime,
                                                       this,
                                                       Request,
                                                       response,
@@ -156,7 +156,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetChargingProfilesResponse));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetChargingProfilesResponseReceived));
             }
 
             #endregion

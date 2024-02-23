@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever an UpdateDynamicSchedule request was sent.
         /// </summary>
-        public event OnUpdateDynamicScheduleRequestSentDelegate?     OnUpdateDynamicScheduleRequest;
+        public event OnUpdateDynamicScheduleRequestSentDelegate?     OnUpdateDynamicScheduleRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to an UpdateDynamicSchedule request was sent.
         /// </summary>
-        public event OnUpdateDynamicScheduleResponseReceivedDelegate?    OnUpdateDynamicScheduleResponse;
+        public event OnUpdateDynamicScheduleResponseReceivedDelegate?    OnUpdateDynamicScheduleResponseReceived;
 
         #endregion
 
@@ -71,13 +71,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnUpdateDynamicScheduleRequest?.Invoke(startTime,
+                OnUpdateDynamicScheduleRequestSent?.Invoke(startTime,
                                                        this,
                                                        Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnUpdateDynamicScheduleRequest));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnUpdateDynamicScheduleRequestSent));
             }
 
             #endregion
@@ -147,7 +147,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnUpdateDynamicScheduleResponse?.Invoke(endTime,
+                OnUpdateDynamicScheduleResponseReceived?.Invoke(endTime,
                                                         this,
                                                         Request,
                                                         response,
@@ -156,7 +156,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnUpdateDynamicScheduleResponse));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnUpdateDynamicScheduleResponseReceived));
             }
 
             #endregion

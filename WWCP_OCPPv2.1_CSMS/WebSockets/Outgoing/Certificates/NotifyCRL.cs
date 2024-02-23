@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a NotifyCRL request was sent.
         /// </summary>
-        public event OnNotifyCRLRequestSentDelegate?     OnNotifyCRLRequest;
+        public event OnNotifyCRLRequestSentDelegate?     OnNotifyCRLRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a NotifyCRL request was sent.
         /// </summary>
-        public event OnNotifyCRLResponseReceivedDelegate?    OnNotifyCRLResponse;
+        public event OnNotifyCRLResponseReceivedDelegate?    OnNotifyCRLResponseReceived;
 
         #endregion
 
@@ -74,13 +74,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnNotifyCRLRequest?.Invoke(startTime,
+                OnNotifyCRLRequestSent?.Invoke(startTime,
                                            this,
                                            Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyCRLRequest));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyCRLRequestSent));
             }
 
             #endregion
@@ -150,7 +150,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnNotifyCRLResponse?.Invoke(endTime,
+                OnNotifyCRLResponseReceived?.Invoke(endTime,
                                             this,
                                             Request,
                                             response,
@@ -159,7 +159,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyCRLResponse));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyCRLResponseReceived));
             }
 
             #endregion

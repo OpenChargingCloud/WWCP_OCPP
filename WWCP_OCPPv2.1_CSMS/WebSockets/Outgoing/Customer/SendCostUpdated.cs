@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a CostUpdated request was sent.
         /// </summary>
-        public event OnCostUpdatedRequestSentDelegate?     OnCostUpdatedRequest;
+        public event OnCostUpdatedRequestSentDelegate?     OnCostUpdatedRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a CostUpdated request was sent.
         /// </summary>
-        public event OnCostUpdatedResponseReceivedDelegate?    OnCostUpdatedResponse;
+        public event OnCostUpdatedResponseReceivedDelegate?    OnCostUpdatedResponseReceived;
 
         #endregion
 
@@ -70,13 +70,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnCostUpdatedRequest?.Invoke(startTime,
+                OnCostUpdatedRequestSent?.Invoke(startTime,
                                              this,
                                              Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnCostUpdatedRequest));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnCostUpdatedRequestSent));
             }
 
             #endregion
@@ -146,7 +146,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnCostUpdatedResponse?.Invoke(endTime,
+                OnCostUpdatedResponseReceived?.Invoke(endTime,
                                               this,
                                               Request,
                                               response,
@@ -155,7 +155,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnCostUpdatedResponse));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnCostUpdatedResponseReceived));
             }
 
             #endregion

@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever an AFRR signal request was sent.
         /// </summary>
-        public event OnAFRRSignalRequestSentDelegate?     OnAFRRSignalRequest;
+        public event OnAFRRSignalRequestSentDelegate?     OnAFRRSignalRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to an AFRR signal request was sent.
         /// </summary>
-        public event OnAFRRSignalResponseReceivedDelegate?    OnAFRRSignalResponse;
+        public event OnAFRRSignalResponseReceivedDelegate?    OnAFRRSignalResponseReceived;
 
         #endregion
 
@@ -70,13 +70,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnAFRRSignalRequest?.Invoke(startTime,
+                OnAFRRSignalRequestSent?.Invoke(startTime,
                                             this,
                                             Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnAFRRSignalRequest));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnAFRRSignalRequestSent));
             }
 
             #endregion
@@ -144,7 +144,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnAFRRSignalResponse?.Invoke(endTime,
+                OnAFRRSignalResponseReceived?.Invoke(endTime,
                                              this,
                                              Request,
                                              response,
@@ -153,7 +153,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnAFRRSignalResponse));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnAFRRSignalResponseReceived));
             }
 
             #endregion

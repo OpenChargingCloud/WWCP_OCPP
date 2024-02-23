@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a CertificateSigned request was sent.
         /// </summary>
-        public event OnCertificateSignedRequestSentDelegate?     OnCertificateSignedRequest;
+        public event OnCertificateSignedRequestSentDelegate?     OnCertificateSignedRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a CertificateSigned request was sent.
         /// </summary>
-        public event OnCertificateSignedResponseReceivedDelegate?    OnCertificateSignedResponse;
+        public event OnCertificateSignedResponseReceivedDelegate?    OnCertificateSignedResponseReceived;
 
         #endregion
 
@@ -74,13 +74,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnCertificateSignedRequest?.Invoke(startTime,
+                OnCertificateSignedRequestSent?.Invoke(startTime,
                                                    this,
                                                    Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnCertificateSignedRequest));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnCertificateSignedRequestSent));
             }
 
             #endregion
@@ -150,7 +150,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnCertificateSignedResponse?.Invoke(endTime,
+                OnCertificateSignedResponseReceived?.Invoke(endTime,
                                                     this,
                                                     Request,
                                                     response,
@@ -159,7 +159,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnCertificateSignedResponse));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnCertificateSignedResponseReceived));
             }
 
             #endregion

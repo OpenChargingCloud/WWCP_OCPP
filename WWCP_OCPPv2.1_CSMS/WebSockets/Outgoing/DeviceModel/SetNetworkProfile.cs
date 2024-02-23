@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a SetNetworkProfile request was sent.
         /// </summary>
-        public event OnSetNetworkProfileRequestSentDelegate?     OnSetNetworkProfileRequest;
+        public event OnSetNetworkProfileRequestSentDelegate?     OnSetNetworkProfileRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a SetNetworkProfile request was sent.
         /// </summary>
-        public event OnSetNetworkProfileResponseReceivedDelegate?    OnSetNetworkProfileResponse;
+        public event OnSetNetworkProfileResponseReceivedDelegate?    OnSetNetworkProfileResponseReceived;
 
         #endregion
 
@@ -70,13 +70,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnSetNetworkProfileRequest?.Invoke(startTime,
+                OnSetNetworkProfileRequestSent?.Invoke(startTime,
                                                    this,
                                                    Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSetNetworkProfileRequest));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSetNetworkProfileRequestSent));
             }
 
             #endregion
@@ -149,7 +149,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnSetNetworkProfileResponse?.Invoke(endTime,
+                OnSetNetworkProfileResponseReceived?.Invoke(endTime,
                                                     this,
                                                     Request,
                                                     response,
@@ -158,7 +158,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSetNetworkProfileResponse));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSetNetworkProfileResponseReceived));
             }
 
             #endregion

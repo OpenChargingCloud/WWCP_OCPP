@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a NotifyEVChargingSchedule request was received.
         /// </summary>
-        public event OnNotifyEVChargingScheduleRequestReceivedDelegate?     OnNotifyEVChargingScheduleRequest;
+        public event OnNotifyEVChargingScheduleRequestReceivedDelegate?     OnNotifyEVChargingScheduleRequestReceived;
 
         /// <summary>
         /// An event sent whenever a NotifyEVChargingSchedule was received.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a response to a NotifyEVChargingSchedule was sent.
         /// </summary>
-        public event OnNotifyEVChargingScheduleResponseSentDelegate?    OnNotifyEVChargingScheduleResponse;
+        public event OnNotifyEVChargingScheduleResponseSentDelegate?    OnNotifyEVChargingScheduleResponseSent;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a NotifyEVChargingSchedule was sent.
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     try
                     {
 
-                        OnNotifyEVChargingScheduleRequest?.Invoke(Timestamp.Now,
+                        OnNotifyEVChargingScheduleRequestReceived?.Invoke(Timestamp.Now,
                                                                   this,
                                                                   Connection,
                                                                   request);
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyEVChargingScheduleRequest));
+                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyEVChargingScheduleRequestReceived));
                     }
 
                     #endregion
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     try
                     {
 
-                        OnNotifyEVChargingScheduleResponse?.Invoke(Timestamp.Now,
+                        OnNotifyEVChargingScheduleResponseSent?.Invoke(Timestamp.Now,
                                                                    this,
                                                                    Connection,
                                                                    request,
@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyEVChargingScheduleResponse));
+                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyEVChargingScheduleResponseSent));
                     }
 
                     #endregion

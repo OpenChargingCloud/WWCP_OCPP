@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a ClearChargingProfile request was sent.
         /// </summary>
-        public event OnClearChargingProfileRequestSentDelegate?     OnClearChargingProfileRequest;
+        public event OnClearChargingProfileRequestSentDelegate?     OnClearChargingProfileRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a ClearChargingProfile request was sent.
         /// </summary>
-        public event OnClearChargingProfileResponseReceivedDelegate?    OnClearChargingProfileResponse;
+        public event OnClearChargingProfileResponseReceivedDelegate?    OnClearChargingProfileResponseReceived;
 
         #endregion
 
@@ -70,13 +70,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnClearChargingProfileRequest?.Invoke(startTime,
+                OnClearChargingProfileRequestSent?.Invoke(startTime,
                                                       this,
                                                       Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnClearChargingProfileRequest));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnClearChargingProfileRequestSent));
             }
 
             #endregion
@@ -147,7 +147,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnClearChargingProfileResponse?.Invoke(endTime,
+                OnClearChargingProfileResponseReceived?.Invoke(endTime,
                                                        this,
                                                        Request,
                                                        response,
@@ -156,7 +156,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnClearChargingProfileResponse));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnClearChargingProfileResponseReceived));
             }
 
             #endregion

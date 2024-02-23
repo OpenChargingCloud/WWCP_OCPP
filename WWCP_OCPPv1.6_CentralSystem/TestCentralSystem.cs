@@ -478,12 +478,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever an IncomingBinaryDataTransfer request was received.
         /// </summary>
-        public event OnBinaryDataTransferRequestReceivedDelegate?   OnIncomingBinaryDataTransferRequest;
+        public event OnBinaryDataTransferRequestReceivedDelegate?   OnBinaryDataTransferRequestReceived;
 
         /// <summary>
         /// An event sent whenever a response to an IncomingBinaryDataTransfer request was sent.
         /// </summary>
-        public event OnBinaryDataTransferResponseSentDelegate?  OnIncomingBinaryDataTransferResponse;
+        public event OnBinaryDataTransferResponseSentDelegate?  OnBinaryDataTransferResponseSent;
 
         #endregion
 
@@ -3039,7 +3039,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 try
                 {
 
-                    OnIncomingBinaryDataTransferRequest?.Invoke(startTime,
+                    OnBinaryDataTransferRequestReceived?.Invoke(startTime,
                                                                 this,
                                                                 connection,
                                                                 request);
@@ -3047,7 +3047,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 }
                 catch (Exception e)
                 {
-                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnIncomingBinaryDataTransferRequest));
+                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnBinaryDataTransferRequestReceived));
                 }
 
                 #endregion
@@ -3119,7 +3119,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 try
                 {
 
-                    OnIncomingBinaryDataTransferResponse?.Invoke(Timestamp.Now,
+                    OnBinaryDataTransferResponseSent?.Invoke(Timestamp.Now,
                                                                  this,
                                                                  connection,
                                                                  request,
@@ -3129,7 +3129,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 }
                 catch (Exception e)
                 {
-                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnIncomingBinaryDataTransferResponse));
+                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnBinaryDataTransferResponseSent));
                 }
 
                 #endregion

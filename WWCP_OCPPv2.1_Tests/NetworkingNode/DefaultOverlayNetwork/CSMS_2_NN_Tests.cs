@@ -184,7 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                 var nnJSONResponseMessagesSent         = new ConcurrentList<OCPP_JSONResponseMessage>();
                 var csmsDataTransferResponsesReceived  = new ConcurrentList<DataTransferResponse>();
 
-                CSMS.OnDataTransferRequest                           += (timestamp, sender, dataTransferRequest) => {
+                CSMS.OnDataTransferRequestSent                           += (timestamp, sender, dataTransferRequest) => {
                     csmsDataTransferRequestsSent.   TryAdd(dataTransferRequest);
                     return Task.CompletedTask;
                 };
@@ -209,7 +209,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.OverlayNet
                     return Task.CompletedTask;
                 };
 
-                CSMS.                   OnDataTransferResponse       += (timestamp, sender, dataTransferRequest, dataTransferResponse, runtime) => {
+                CSMS.                   OnDataTransferResponseReceived       += (timestamp, sender, dataTransferRequest, dataTransferResponse, runtime) => {
                     csmsDataTransferResponsesReceived.TryAdd(dataTransferResponse);
                     return Task.CompletedTask;
                 };

@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a FirmwareStatusNotification request was received.
         /// </summary>
-        public event OnFirmwareStatusNotificationRequestReceivedDelegate?     OnFirmwareStatusNotificationRequest;
+        public event OnFirmwareStatusNotificationRequestReceivedDelegate?     OnFirmwareStatusNotificationRequestReceived;
 
         /// <summary>
         /// An event sent whenever a FirmwareStatusNotification request was received.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a response to a FirmwareStatusNotification request was sent.
         /// </summary>
-        public event OnFirmwareStatusNotificationResponseSentDelegate?    OnFirmwareStatusNotificationResponse;
+        public event OnFirmwareStatusNotificationResponseSentDelegate?    OnFirmwareStatusNotificationResponseSent;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a FirmwareStatusNotification request was sent.
@@ -138,7 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     try
                     {
 
-                        OnFirmwareStatusNotificationRequest?.Invoke(Timestamp.Now,
+                        OnFirmwareStatusNotificationRequestReceived?.Invoke(Timestamp.Now,
                                                                     this,
                                                                     Connection,
                                                                     request);
@@ -146,7 +146,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnFirmwareStatusNotificationRequest));
+                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnFirmwareStatusNotificationRequestReceived));
                     }
 
                     #endregion
@@ -179,7 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     try
                     {
 
-                        OnFirmwareStatusNotificationResponse?.Invoke(Timestamp.Now,
+                        OnFirmwareStatusNotificationResponseSent?.Invoke(Timestamp.Now,
                                                                      this,
                                                                      Connection,
                                                                      request,
@@ -189,7 +189,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnFirmwareStatusNotificationResponse));
+                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnFirmwareStatusNotificationResponseSent));
                     }
 
                     #endregion

@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a ClearVariableMonitoring request was sent.
         /// </summary>
-        public event OnClearVariableMonitoringRequestSentDelegate?     OnClearVariableMonitoringRequest;
+        public event OnClearVariableMonitoringRequestSentDelegate?     OnClearVariableMonitoringRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a ClearVariableMonitoring request was sent.
         /// </summary>
-        public event OnClearVariableMonitoringResponseReceivedDelegate?    OnClearVariableMonitoringResponse;
+        public event OnClearVariableMonitoringResponseReceivedDelegate?    OnClearVariableMonitoringResponseReceived;
 
         #endregion
 
@@ -70,13 +70,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnClearVariableMonitoringRequest?.Invoke(startTime,
+                OnClearVariableMonitoringRequestSent?.Invoke(startTime,
                                                          this,
                                                          Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnClearVariableMonitoringRequest));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnClearVariableMonitoringRequestSent));
             }
 
             #endregion
@@ -146,7 +146,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnClearVariableMonitoringResponse?.Invoke(endTime,
+                OnClearVariableMonitoringResponseReceived?.Invoke(endTime,
                                                           this,
                                                           Request,
                                                           response,
@@ -155,7 +155,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnClearVariableMonitoringResponse));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnClearVariableMonitoringResponseReceived));
             }
 
             #endregion

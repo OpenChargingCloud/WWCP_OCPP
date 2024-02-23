@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a ReserveNow request was sent.
         /// </summary>
-        public event OnReserveNowRequestSentDelegate?     OnReserveNowRequest;
+        public event OnReserveNowRequestSentDelegate?     OnReserveNowRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a ReserveNow request was sent.
         /// </summary>
-        public event OnReserveNowResponseReceivedDelegate?    OnReserveNowResponse;
+        public event OnReserveNowResponseReceivedDelegate?    OnReserveNowResponseReceived;
 
         #endregion
 
@@ -70,13 +70,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnReserveNowRequest?.Invoke(startTime,
+                OnReserveNowRequestSent?.Invoke(startTime,
                                             this,
                                             Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnReserveNowRequest));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnReserveNowRequestSent));
             }
 
             #endregion
@@ -148,7 +148,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnReserveNowResponse?.Invoke(endTime,
+                OnReserveNowResponseReceived?.Invoke(endTime,
                                              this,
                                              Request,
                                              response,
@@ -157,7 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnReserveNowResponse));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnReserveNowResponseReceived));
             }
 
             #endregion

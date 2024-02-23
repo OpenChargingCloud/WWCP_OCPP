@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a CancelReservation request was sent.
         /// </summary>
-        public event OnCancelReservationRequestSentDelegate?     OnCancelReservationRequest;
+        public event OnCancelReservationRequestSentDelegate?     OnCancelReservationRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a CancelReservation request was sent.
         /// </summary>
-        public event OnCancelReservationResponseReceivedDelegate?    OnCancelReservationResponse;
+        public event OnCancelReservationResponseReceivedDelegate?    OnCancelReservationResponseReceived;
 
         #endregion
 
@@ -70,13 +70,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnCancelReservationRequest?.Invoke(startTime,
+                OnCancelReservationRequestSent?.Invoke(startTime,
                                                    this,
                                                    Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnCancelReservationRequest));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnCancelReservationRequestSent));
             }
 
             #endregion
@@ -146,7 +146,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnCancelReservationResponse?.Invoke(endTime,
+                OnCancelReservationResponseReceived?.Invoke(endTime,
                                                     this,
                                                     Request,
                                                     response,
@@ -155,7 +155,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnCancelReservationResponse));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnCancelReservationResponseReceived));
             }
 
             #endregion

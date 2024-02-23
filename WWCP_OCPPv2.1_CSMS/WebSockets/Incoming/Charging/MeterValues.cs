@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a MeterValues request was received.
         /// </summary>
-        public event OnMeterValuesRequestReceivedDelegate?                OnMeterValuesRequest;
+        public event OnMeterValuesRequestReceivedDelegate?                OnMeterValuesRequestReceived;
 
         /// <summary>
         /// An event sent whenever a MeterValues request was received.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a response to a MeterValues request was sent.
         /// </summary>
-        public event OnMeterValuesResponseSentDelegate?               OnMeterValuesResponse;
+        public event OnMeterValuesResponseSentDelegate?               OnMeterValuesResponseSent;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a MeterValues request was sent.
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     try
                     {
 
-                        OnMeterValuesRequest?.Invoke(Timestamp.Now,
+                        OnMeterValuesRequestReceived?.Invoke(Timestamp.Now,
                                                      this,
                                                      Connection,
                                                      request);
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnMeterValuesRequest));
+                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnMeterValuesRequestReceived));
                     }
 
                     #endregion
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     try
                     {
 
-                        OnMeterValuesResponse?.Invoke(Timestamp.Now,
+                        OnMeterValuesResponseSent?.Invoke(Timestamp.Now,
                                                       this,
                                                       Connection,
                                                       request,
@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnMeterValuesResponse));
+                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnMeterValuesResponseSent));
                     }
 
                     #endregion

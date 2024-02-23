@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a GetCertificateStatus request was received.
         /// </summary>
-        public event OnGetCertificateStatusRequestReceivedDelegate?       OnGetCertificateStatusRequest;
+        public event OnGetCertificateStatusRequestReceivedDelegate?       OnGetCertificateStatusRequestReceived;
 
         /// <summary>
         /// An event sent whenever a GetCertificateStatus was received.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a response to a GetCertificateStatus was sent.
         /// </summary>
-        public event OnGetCertificateStatusResponseSentDelegate?      OnGetCertificateStatusResponse;
+        public event OnGetCertificateStatusResponseSentDelegate?      OnGetCertificateStatusResponseSent;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a GetCertificateStatus was sent.
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     try
                     {
 
-                        OnGetCertificateStatusRequest?.Invoke(Timestamp.Now,
+                        OnGetCertificateStatusRequestReceived?.Invoke(Timestamp.Now,
                                                               this,
                                                               Connection,
                                                               request);
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetCertificateStatusRequest));
+                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetCertificateStatusRequestReceived));
                     }
 
                     #endregion
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     try
                     {
 
-                        OnGetCertificateStatusResponse?.Invoke(Timestamp.Now,
+                        OnGetCertificateStatusResponseSent?.Invoke(Timestamp.Now,
                                                                this,
                                                                Connection,
                                                                request,
@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetCertificateStatusResponse));
+                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetCertificateStatusResponseSent));
                     }
 
                     #endregion

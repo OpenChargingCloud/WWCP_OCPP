@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a TriggerMessage request was sent.
         /// </summary>
-        public event OnTriggerMessageRequestSentDelegate?     OnTriggerMessageRequest;
+        public event OnTriggerMessageRequestSentDelegate?     OnTriggerMessageRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a TriggerMessage request was sent.
         /// </summary>
-        public event OnTriggerMessageResponseReceivedDelegate?    OnTriggerMessageResponse;
+        public event OnTriggerMessageResponseReceivedDelegate?    OnTriggerMessageResponseReceived;
 
         #endregion
 
@@ -70,13 +70,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnTriggerMessageRequest?.Invoke(startTime,
+                OnTriggerMessageRequestSent?.Invoke(startTime,
                                                 this,
                                                 Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnTriggerMessageRequest));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnTriggerMessageRequestSent));
             }
 
             #endregion
@@ -147,7 +147,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnTriggerMessageResponse?.Invoke(endTime,
+                OnTriggerMessageResponseReceived?.Invoke(endTime,
                                                  this,
                                                  Request,
                                                  response,
@@ -156,7 +156,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnTriggerMessageResponse));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnTriggerMessageResponseReceived));
             }
 
             #endregion

@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a DeleteCertificate request was sent.
         /// </summary>
-        public event OnDeleteCertificateRequestSentDelegate?     OnDeleteCertificateRequest;
+        public event OnDeleteCertificateRequestSentDelegate?     OnDeleteCertificateRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a DeleteCertificate request was sent.
         /// </summary>
-        public event OnDeleteCertificateResponseReceivedDelegate?    OnDeleteCertificateResponse;
+        public event OnDeleteCertificateResponseReceivedDelegate?    OnDeleteCertificateResponseReceived;
 
         #endregion
 
@@ -74,13 +74,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnDeleteCertificateRequest?.Invoke(startTime,
+                OnDeleteCertificateRequestSent?.Invoke(startTime,
                                                    this,
                                                    Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnDeleteCertificateRequest));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnDeleteCertificateRequestSent));
             }
 
             #endregion
@@ -151,7 +151,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnDeleteCertificateResponse?.Invoke(endTime,
+                OnDeleteCertificateResponseReceived?.Invoke(endTime,
                                                     this,
                                                     Request,
                                                     response,
@@ -160,7 +160,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnDeleteCertificateResponse));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnDeleteCertificateResponseReceived));
             }
 
             #endregion

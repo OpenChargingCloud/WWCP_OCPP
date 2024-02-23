@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a ChangeAvailability request was sent.
         /// </summary>
-        public event OnChangeAvailabilityRequestSentDelegate?     OnChangeAvailabilityRequest;
+        public event OnChangeAvailabilityRequestSentDelegate?     OnChangeAvailabilityRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a ChangeAvailability request was sent.
         /// </summary>
-        public event OnChangeAvailabilityResponseReceivedDelegate?    OnChangeAvailabilityResponse;
+        public event OnChangeAvailabilityResponseReceivedDelegate?    OnChangeAvailabilityResponseReceived;
 
         #endregion
 
@@ -70,13 +70,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnChangeAvailabilityRequest?.Invoke(startTime,
+                OnChangeAvailabilityRequestSent?.Invoke(startTime,
                                                     this,
                                                     Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnChangeAvailabilityRequest));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnChangeAvailabilityRequestSent));
             }
 
             #endregion
@@ -147,7 +147,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnChangeAvailabilityResponse?.Invoke(endTime,
+                OnChangeAvailabilityResponseReceived?.Invoke(endTime,
                                                      this,
                                                      Request,
                                                      response,
@@ -156,7 +156,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnChangeAvailabilityResponse));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnChangeAvailabilityResponseReceived));
             }
 
             #endregion

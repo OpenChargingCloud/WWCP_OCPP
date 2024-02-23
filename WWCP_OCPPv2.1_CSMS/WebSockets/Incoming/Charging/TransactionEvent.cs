@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a TransactionEvent request was received.
         /// </summary>
-        public event OnTransactionEventRequestReceivedDelegate?           OnTransactionEventRequest;
+        public event OnTransactionEventRequestReceivedDelegate?           OnTransactionEventRequestReceived;
 
         /// <summary>
         /// An event sent whenever a TransactionEvent request was received.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a TransactionEvent response was sent.
         /// </summary>
-        public event OnTransactionEventResponseSentDelegate?          OnTransactionEventResponse;
+        public event OnTransactionEventResponseSentDelegate?          OnTransactionEventResponseSent;
 
         /// <summary>
         /// An event sent whenever a TransactionEvent WebSocket response was sent.
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     try
                     {
 
-                        OnTransactionEventRequest?.Invoke(Timestamp.Now,
+                        OnTransactionEventRequestReceived?.Invoke(Timestamp.Now,
                                                           this,
                                                           Connection,
                                                           request);
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnTransactionEventRequest));
+                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnTransactionEventRequestReceived));
                     }
 
                     #endregion
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     try
                     {
 
-                        OnTransactionEventResponse?.Invoke(Timestamp.Now,
+                        OnTransactionEventResponseSent?.Invoke(Timestamp.Now,
                                                            this,
                                                            Connection,
                                                            request,
@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnTransactionEventResponse));
+                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnTransactionEventResponseSent));
                     }
 
                     #endregion

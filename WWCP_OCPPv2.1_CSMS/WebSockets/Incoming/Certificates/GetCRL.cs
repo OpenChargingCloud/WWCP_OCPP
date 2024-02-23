@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a GetCRL request was received.
         /// </summary>
-        public event OnGetCRLRequestReceivedDelegate?                     OnGetCRLRequest;
+        public event OnGetCRLRequestReceivedDelegate?                     OnGetCRLRequestReceived;
 
         /// <summary>
         /// An event sent whenever a GetCRL was received.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a response to a GetCRL was sent.
         /// </summary>
-        public event OnGetCRLResponseSentDelegate?                    OnGetCRLResponse;
+        public event OnGetCRLResponseSentDelegate?                    OnGetCRLResponseSent;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a GetCRL was sent.
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     try
                     {
 
-                        OnGetCRLRequest?.Invoke(Timestamp.Now,
+                        OnGetCRLRequestReceived?.Invoke(Timestamp.Now,
                                                 this,
                                                 Connection,
                                                 request);
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetCRLRequest));
+                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetCRLRequestReceived));
                     }
 
                     #endregion
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     try
                     {
 
-                        OnGetCRLResponse?.Invoke(Timestamp.Now,
+                        OnGetCRLResponseSent?.Invoke(Timestamp.Now,
                                                  this,
                                                  Connection,
                                                  request,
@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetCRLResponse));
+                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetCRLResponseSent));
                     }
 
                     #endregion

@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a SendLocalList request was sent.
         /// </summary>
-        public event OnSendLocalListRequestSentDelegate?     OnSendLocalListRequest;
+        public event OnSendLocalListRequestSentDelegate?     OnSendLocalListRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a SendLocalList request was sent.
         /// </summary>
-        public event OnSendLocalListResponseReceivedDelegate?    OnSendLocalListResponse;
+        public event OnSendLocalListResponseReceivedDelegate?    OnSendLocalListResponseReceived;
 
         #endregion
 
@@ -70,13 +70,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnSendLocalListRequest?.Invoke(startTime,
+                OnSendLocalListRequestSent?.Invoke(startTime,
                                                this,
                                                Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSendLocalListRequest));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSendLocalListRequestSent));
             }
 
             #endregion
@@ -151,7 +151,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnSendLocalListResponse?.Invoke(endTime,
+                OnSendLocalListResponseReceived?.Invoke(endTime,
                                                 this,
                                                 Request,
                                                 response,
@@ -160,7 +160,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSendLocalListResponse));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSendLocalListResponseReceived));
             }
 
             #endregion

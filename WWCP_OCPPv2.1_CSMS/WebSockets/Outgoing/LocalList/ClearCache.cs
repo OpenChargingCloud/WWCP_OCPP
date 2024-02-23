@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a ClearCache request was sent.
         /// </summary>
-        public event OnClearCacheRequestSentDelegate?     OnClearCacheRequest;
+        public event OnClearCacheRequestSentDelegate?     OnClearCacheRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a ClearCache request was sent.
         /// </summary>
-        public event OnClearCacheResponseReceivedDelegate?    OnClearCacheResponse;
+        public event OnClearCacheResponseReceivedDelegate?    OnClearCacheResponseReceived;
 
         #endregion
 
@@ -70,13 +70,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnClearCacheRequest?.Invoke(startTime,
+                OnClearCacheRequestSent?.Invoke(startTime,
                                             this,
                                             Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnClearCacheRequest));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnClearCacheRequestSent));
             }
 
             #endregion
@@ -146,7 +146,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnClearCacheResponse?.Invoke(endTime,
+                OnClearCacheResponseReceived?.Invoke(endTime,
                                              this,
                                              Request,
                                              response,
@@ -155,7 +155,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnClearCacheResponse));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnClearCacheResponseReceived));
             }
 
             #endregion

@@ -73,7 +73,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
                 var nnResetRequestsOUT  = new ConcurrentList<ResetRequest>();
                 var csResetRequests     = new ConcurrentList<ResetRequest>();
 
-                testCSMS01.             OnResetRequest += (timestamp, sender,             resetRequest) => {
+                testCSMS01.             OnResetRequestSent += (timestamp, sender,             resetRequest) => {
                     csmsResetRequests.TryAdd(resetRequest);
                     return Task.CompletedTask;
                 };
@@ -183,7 +183,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
                 var nnDataTransferRequestsOUT       = new ConcurrentList<DataTransferRequest>();
                 var csIncomingDataTransferRequests  = new ConcurrentList<DataTransferRequest>();
 
-                testCSMS01.             OnDataTransferRequest         += (timestamp, sender, binaryDataTransferRequest) => {
+                testCSMS01.             OnDataTransferRequestSent         += (timestamp, sender, binaryDataTransferRequest) => {
                     csmsDataTransferRequestsOUT.   TryAdd(binaryDataTransferRequest);
                     return Task.CompletedTask;
                 };
@@ -303,7 +303,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
                 var nnBinaryDataTransferRequestsOUT       = new ConcurrentList<BinaryDataTransferRequest>();
                 var csIncomingBinaryDataTransferRequests  = new ConcurrentList<BinaryDataTransferRequest>();
 
-                testCSMS01.             OnBinaryDataTransferRequest         += (timestamp, sender, binaryDataTransferRequest) => {
+                testCSMS01.             OnBinaryDataTransferRequestSent         += (timestamp, sender, binaryDataTransferRequest) => {
                     csmsBinaryDataTransferRequestsOUT.   TryAdd(binaryDataTransferRequest);
                     return Task.CompletedTask;
                 };

@@ -17,16 +17,13 @@
 
 #region Usings
 
-using System.Reflection;
+using cloud.charging.open.protocols.OCPPv2_1.CS;
+using Newtonsoft.Json.Linq;
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
+using org.GraphDefined.Vanaheimr.Illias;
 using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
-
-using Newtonsoft.Json.Linq;
-
-using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.HTTP;
-
-using cloud.charging.open.protocols.OCPPv2_1.CS;
+using System.Reflection;
 
 #endregion
 
@@ -319,7 +316,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public CustomJObjectSerializerDelegate<NotifyEVChargingScheduleRequest>?                     CustomNotifyEVChargingScheduleRequestSerializer              { get; set; }
         public CustomJObjectSerializerDelegate<NotifyEVChargingScheduleResponse>?                    CustomNotifyEVChargingScheduleResponseSerializer             { get; set; }
         public CustomJObjectSerializerDelegate<NotifyPriorityChargingRequest>?                       CustomNotifyPriorityChargingRequestSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<NotifySettlementRequest>?                             CustomNotifySettlementRequestSerializer                      { get; set; }
         public CustomJObjectSerializerDelegate<NotifyPriorityChargingResponse>?                      CustomNotifyPriorityChargingResponseSerializer               { get; set; }
+        public CustomJObjectSerializerDelegate<NotifySettlementResponse>?                            CustomNotifySettlementResponseSerializer                     { get; set; }
         public CustomJObjectSerializerDelegate<PullDynamicScheduleUpdateRequest>?                    CustomPullDynamicScheduleUpdateRequestSerializer             { get; set; }
         public CustomJObjectSerializerDelegate<PullDynamicScheduleUpdateResponse>?                   CustomPullDynamicScheduleUpdateResponseSerializer            { get; set; }
 
@@ -633,7 +632,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                   requestMessage,
                                                   cancellationToken) =>
 
-                EventLog.SubmitEvent("OnJSONMessageRequestReceived",
+                EventLog.SubmitEvent(nameof(CSMS.OnJSONMessageRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",    timestamp.          ToIso8601()),
                                          new JProperty("connection",   webSocketConnection.ToJSON()),
@@ -657,7 +656,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                responseMessage,
                                                cancellationToken) =>
 
-                EventLog.SubmitEvent("OnJSONMessageResponseSent",
+                EventLog.SubmitEvent(nameof(CSMS.OnJSONMessageResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",    timestamp.          ToIso8601()),
                                          new JProperty("connection",   webSocketConnection.ToJSON()),
@@ -679,7 +678,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                              responseMessage,
                                              cancellationToken) =>
 
-                EventLog.SubmitEvent("OnJSONErrorResponseSent",
+                EventLog.SubmitEvent(nameof(CSMS.OnJSONErrorResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",    timestamp.          ToIso8601()),
                                          new JProperty("connection",   webSocketConnection.ToJSON()),
@@ -701,7 +700,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                               requestMessage,
                                               cancellationToken) =>
 
-                EventLog.SubmitEvent("OnJSONMessageRequestSent",
+                EventLog.SubmitEvent(nameof(CSMS.OnJSONMessageRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",    timestamp.          ToIso8601()),
                                          new JProperty("connection",   webSocketConnection.ToJSON()),
@@ -725,7 +724,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                    responseMessage,
                                                    cancellationToken) =>
 
-                EventLog.SubmitEvent("OnJSONMessageResponseReceived",
+                EventLog.SubmitEvent(nameof(CSMS.OnJSONMessageResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",    timestamp.          ToIso8601()),
                                          new JProperty("connection",   webSocketConnection.ToJSON()),
@@ -747,7 +746,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                  responseMessage,
                                                  cancellationToken) =>
 
-                EventLog.SubmitEvent("OnJSONErrorResponseReceived",
+                EventLog.SubmitEvent(nameof(CSMS.OnJSONErrorResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",    timestamp.          ToIso8601()),
                                          new JProperty("connection",   webSocketConnection.ToJSON()),
@@ -772,7 +771,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                     requestMessage,
                                                     cancellationToken) =>
 
-                EventLog.SubmitEvent("OnBinaryMessageRequestReceived",
+                EventLog.SubmitEvent(nameof(CSMS.OnBinaryMessageRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",    timestamp.          ToIso8601()),
                                          new JProperty("connection",   webSocketConnection.ToJSON()),
@@ -796,7 +795,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                  responseMessage,
                                                  cancellationToken) =>
 
-                EventLog.SubmitEvent("OnBinaryMessageResponseSent",
+                EventLog.SubmitEvent(nameof(CSMS.OnBinaryMessageResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",    timestamp.          ToIso8601()),
                                          new JProperty("connection",   webSocketConnection.ToJSON()),
@@ -817,7 +816,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             //                                         responseTimestamp,
             //                                         responseMessage) =>
 
-            //    await this.EventLog.SubmitEvent("OnBinaryErrorResponseSent",
+            //    await this.EventLog.SubmitEvent(nameof(CSMS.OnBinaryErrorResponseSent),
             //                                    JSONObject.Create(
             //                                        new JProperty("timestamp",    timestamp.          ToIso8601()),
             //                                        new JProperty("connection",   webSocketConnection.ToJSON()),
@@ -839,7 +838,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 requestMessage,
                                                 cancellationToken) =>
 
-                EventLog.SubmitEvent("OnBinaryMessageRequestSent",
+                EventLog.SubmitEvent(nameof(CSMS.OnBinaryMessageRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",    timestamp.          ToIso8601()),
                                          new JProperty("connection",   webSocketConnection.ToJSON()),
@@ -863,7 +862,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      responseMessage,
                                                      cancellationToken) =>
 
-                EventLog.SubmitEvent("OnBinaryMessageResponseReceived",
+                EventLog.SubmitEvent(nameof(CSMS.OnBinaryMessageResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",    timestamp.          ToIso8601()),
                                          new JProperty("connection",   webSocketConnection.ToJSON()),
@@ -884,7 +883,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             //                                             responseTimestamp,
             //                                             responseMessage) =>
 
-            //    await this.EventLog.SubmitEvent("OnBinaryErrorResponseReceived",
+            //    await this.EventLog.SubmitEvent(nameof(CSMS.OnBinaryErrorResponseReceived),
             //                                    JSONObject.Create(
             //                                        new JProperty("timestamp",    timestamp.          ToIso8601()),
             //                                        new JProperty("connection",   webSocketConnection.ToJSON()),
@@ -896,16 +895,997 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             #endregion
 
 
-            #region ChargingStation  -> CSMS            Messages
+            #region ChargingStation  -> CSMS            Messages received
 
-            #region OnBootNotification                      (Request/-Response)
+            #region Certificates
+
+            #region OnGet15118EVCertificate                 (RequestReceived/-ResponseSent)
+
+            CSMS.OnGet15118EVCertificateRequestReceived += (timestamp,
+                                                            sender,
+                                                            connection,
+                                                            request) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnGet15118EVCertificateRequestReceived),
+                                     request.ToAbstractJSON(request.ToJSON(CustomGet15118EVCertificateRequestSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
+
+
+            CSMS.OnGet15118EVCertificateResponseSent += (timestamp,
+                                                         sender,
+                                                         connection,
+                                                         request,
+                                                         response,
+                                                         runtime) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnGet15118EVCertificateResponseSent),
+                                     response.ToAbstractJSON(request. ToJSON(CustomGet15118EVCertificateRequestSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomGet15118EVCertificateResponseSerializer,
+                                                                             CustomStatusInfoSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
+
+            #endregion
+
+            #region OnGetCertificateStatus                  (RequestReceived/-ResponseSent)
+
+            CSMS.OnGetCertificateStatusRequestReceived += (timestamp,
+                                                           sender,
+                                                           connection,
+                                                           request) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnGetCertificateStatusRequestReceived),
+                                     request.ToAbstractJSON(request.ToJSON(CustomGetCertificateStatusRequestSerializer,
+                                                                           CustomOCSPRequestDataSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
+
+
+            CSMS.OnGetCertificateStatusResponseSent += (timestamp,
+                                                        sender,
+                                                        connection,
+                                                        request,
+                                                        response,
+                                                        runtime) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnGetCertificateStatusResponseSent),
+                                     response.ToAbstractJSON(request. ToJSON(CustomGetCertificateStatusRequestSerializer,
+                                                                             CustomOCSPRequestDataSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomGetCertificateStatusResponseSerializer,
+                                                                             CustomStatusInfoSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
+
+            #endregion
+
+            #region OnGetCRL                                (RequestReceived/-ResponseSent)
+
+            CSMS.OnGetCRLRequestReceived += (timestamp,
+                                             sender,
+                                             connection,
+                                             request) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnGetCRLRequestReceived),
+                                     request.ToAbstractJSON(request.ToJSON(CustomGetCRLRequestSerializer,
+                                                                           CustomCertificateHashDataSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
+
+
+            CSMS.OnGetCRLResponseSent += (timestamp,
+                                          sender,
+                                          connection,
+                                          request,
+                                          response,
+                                          runtime) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnGetCRLResponseSent),
+                                     response.ToAbstractJSON(request. ToJSON(CustomGetCRLRequestSerializer,
+                                                                             CustomCertificateHashDataSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomGetCRLResponseSerializer,
+                                                                             CustomStatusInfoSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
+
+            #endregion
+
+            #region OnSignCertificate                       (RequestReceived/-ResponseSent)
+
+            CSMS.OnSignCertificateRequestReceived += (timestamp,
+                                                      sender,
+                                                      connection,
+                                                      request) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnSignCertificateRequestReceived),
+                                     request.ToAbstractJSON(request.ToJSON(CustomSignCertificateRequestSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
+
+
+            CSMS.OnSignCertificateResponseSent += (timestamp,
+                                                   sender,
+                                                   connection,
+                                                   request,
+                                                   response,
+                                                   runtime) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnSignCertificateResponseSent),
+                                     response.ToAbstractJSON(request. ToJSON(CustomSignCertificateRequestSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomSignCertificateResponseSerializer,
+                                                                             CustomStatusInfoSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
+
+            #endregion
+
+            #endregion
+
+            #region Charging
+
+            #region OnAuthorize                             (RequestReceived/-ResponseSent)
+
+            CSMS.OnAuthorizeRequestReceived += (timestamp,
+                                                sender,
+                                                connection,
+                                                request) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnAuthorizeRequestReceived),
+                                     request.ToAbstractJSON(request.ToJSON(CustomAuthorizeRequestSerializer,
+                                                                           CustomIdTokenSerializer,
+                                                                           CustomAdditionalInfoSerializer,
+                                                                           CustomOCSPRequestDataSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
+
+
+            CSMS.OnAuthorizeResponseSent += (timestamp,
+                                             sender,
+                                             connection,
+                                             request,
+                                             response,
+                                             runtime) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnAuthorizeResponseSent),
+                                     response.ToAbstractJSON(request. ToJSON(CustomAuthorizeRequestSerializer,
+                                                                             CustomIdTokenSerializer,
+                                                                             CustomAdditionalInfoSerializer,
+                                                                             CustomOCSPRequestDataSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomAuthorizeResponseSerializer,
+                                                                             CustomIdTokenInfoSerializer,
+                                                                             CustomIdTokenSerializer,
+                                                                             CustomAdditionalInfoSerializer,
+                                                                             CustomMessageContentSerializer,
+                                                                             CustomTransactionLimitsSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
+
+            #endregion
+
+            #region OnClearedChargingLimit                  (RequestReceived/-ResponseSent)
+
+            CSMS.OnClearedChargingLimitRequestReceived += (timestamp,
+                                                           sender,
+                                                           connection,
+                                                           request) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnClearedChargingLimitRequestReceived),
+                                     request.ToAbstractJSON(request.ToJSON(CustomClearedChargingLimitRequestSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
+
+
+            CSMS.OnClearedChargingLimitResponseSent += (timestamp,
+                                                        sender,
+                                                        connection,
+                                                        request,
+                                                        response,
+                                                        runtime) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnClearedChargingLimitResponseSent),
+                                     response.ToAbstractJSON(request. ToJSON(CustomClearedChargingLimitRequestSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomClearedChargingLimitResponseSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
+
+            #endregion
+
+            #region OnMeterValues                           (RequestReceived/-ResponseSent)
+
+            CSMS.OnMeterValuesRequestReceived += (timestamp,
+                                                  sender,
+                                                  connection,
+                                                  request) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnMeterValuesRequestReceived),
+                                     request.ToAbstractJSON(request.ToJSON(CustomMeterValuesRequestSerializer,
+                                                                           CustomMeterValueSerializer,
+                                                                           CustomSampledValueSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
+
+
+            CSMS.OnMeterValuesResponseSent += (timestamp,
+                                               sender,
+                                               connection,
+                                               request,
+                                               response,
+                                               runtime) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnMeterValuesResponseSent),
+                                     response.ToAbstractJSON(request. ToJSON(CustomMeterValuesRequestSerializer,
+                                                                             CustomMeterValueSerializer,
+                                                                             CustomSampledValueSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomMeterValuesResponseSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
+
+            #endregion
+
+            #region OnNotifyChargingLimit                   (RequestReceived/-ResponseSent)
+
+            CSMS.OnNotifyChargingLimitRequestReceived += (timestamp,
+                                                          sender,
+                                                          connection,
+                                                          request) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnNotifyChargingLimitRequestReceived),
+                                     request.ToAbstractJSON(request.ToJSON(CustomNotifyChargingLimitRequestSerializer,
+
+                                                                           CustomChargingScheduleSerializer,
+                                                                           CustomLimitBeyondSoCSerializer,
+                                                                           CustomChargingSchedulePeriodSerializer,
+                                                                           CustomV2XFreqWattEntrySerializer,
+                                                                           CustomV2XSignalWattEntrySerializer,
+                                                                           CustomSalesTariffSerializer,
+                                                                           CustomSalesTariffEntrySerializer,
+                                                                           CustomRelativeTimeIntervalSerializer,
+                                                                           CustomConsumptionCostSerializer,
+                                                                           CustomCostSerializer,
+
+                                                                           CustomAbsolutePriceScheduleSerializer,
+                                                                           CustomPriceRuleStackSerializer,
+                                                                           CustomPriceRuleSerializer,
+                                                                           CustomTaxRuleSerializer,
+                                                                           CustomOverstayRuleListSerializer,
+                                                                           CustomOverstayRuleSerializer,
+                                                                           CustomAdditionalServiceSerializer,
+
+                                                                           CustomPriceLevelScheduleSerializer,
+                                                                           CustomPriceLevelScheduleEntrySerializer,
+
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
+
+
+            CSMS.OnNotifyChargingLimitResponseSent += (timestamp,
+                                                       sender,
+                                                       connection,
+                                                       request,
+                                                       response,
+                                                       runtime) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnNotifyChargingLimitResponseSent),
+                                     response.ToAbstractJSON(request. ToJSON(CustomNotifyChargingLimitRequestSerializer,
+
+                                                                             CustomChargingScheduleSerializer,
+                                                                             CustomLimitBeyondSoCSerializer,
+                                                                             CustomChargingSchedulePeriodSerializer,
+                                                                             CustomV2XFreqWattEntrySerializer,
+                                                                             CustomV2XSignalWattEntrySerializer,
+                                                                             CustomSalesTariffSerializer,
+                                                                             CustomSalesTariffEntrySerializer,
+                                                                             CustomRelativeTimeIntervalSerializer,
+                                                                             CustomConsumptionCostSerializer,
+                                                                             CustomCostSerializer,
+
+                                                                             CustomAbsolutePriceScheduleSerializer,
+                                                                             CustomPriceRuleStackSerializer,
+                                                                             CustomPriceRuleSerializer,
+                                                                             CustomTaxRuleSerializer,
+                                                                             CustomOverstayRuleListSerializer,
+                                                                             CustomOverstayRuleSerializer,
+                                                                             CustomAdditionalServiceSerializer,
+
+                                                                             CustomPriceLevelScheduleSerializer,
+                                                                             CustomPriceLevelScheduleEntrySerializer,
+
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomNotifyChargingLimitResponseSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
+
+            #endregion
+
+            #region OnNotifyEVChargingNeeds                 (RequestReceived/-ResponseSent)
+
+            CSMS.OnNotifyEVChargingNeedsRequestReceived += (timestamp,
+                                                            sender,
+                                                            connection,
+                                                            request) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnNotifyEVChargingNeedsRequestReceived),
+                                     request.ToAbstractJSON(request.ToJSON(CustomNotifyEVChargingNeedsRequestSerializer,
+                                                                           CustomChargingNeedsSerializer,
+                                                                           CustomACChargingParametersSerializer,
+                                                                           CustomDCChargingParametersSerializer,
+                                                                           CustomV2XChargingParametersSerializer,
+                                                                           CustomEVEnergyOfferSerializer,
+                                                                           CustomEVPowerScheduleSerializer,
+                                                                           CustomEVPowerScheduleEntrySerializer,
+                                                                           CustomEVAbsolutePriceScheduleSerializer,
+                                                                           CustomEVAbsolutePriceScheduleEntrySerializer,
+                                                                           CustomEVPriceRuleSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
+
+
+            CSMS.OnNotifyEVChargingNeedsResponseSent += (timestamp,
+                                                         sender,
+                                                         connection,
+                                                         request,
+                                                         response,
+                                                         runtime) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnNotifyEVChargingNeedsResponseSent),
+                                     response.ToAbstractJSON(request. ToJSON(CustomNotifyEVChargingNeedsRequestSerializer,
+                                                                             CustomChargingNeedsSerializer,
+                                                                             CustomACChargingParametersSerializer,
+                                                                             CustomDCChargingParametersSerializer,
+                                                                             CustomV2XChargingParametersSerializer,
+                                                                             CustomEVEnergyOfferSerializer,
+                                                                             CustomEVPowerScheduleSerializer,
+                                                                             CustomEVPowerScheduleEntrySerializer,
+                                                                             CustomEVAbsolutePriceScheduleSerializer,
+                                                                             CustomEVAbsolutePriceScheduleEntrySerializer,
+                                                                             CustomEVPriceRuleSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomNotifyEVChargingNeedsResponseSerializer,
+                                                                             CustomStatusInfoSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
+
+            #endregion
+
+            #region OnNotifyEVChargingSchedule              (RequestReceived/-ResponseSent)
+
+            CSMS.OnNotifyEVChargingScheduleRequestReceived += (timestamp,
+                                                               sender,
+                                                               connection,
+                                                               request) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnNotifyEVChargingScheduleRequestReceived),
+                                     request.ToAbstractJSON(request.ToJSON(CustomNotifyEVChargingScheduleRequestSerializer,
+
+                                                                           CustomChargingScheduleSerializer,
+                                                                           CustomLimitBeyondSoCSerializer,
+                                                                           CustomChargingSchedulePeriodSerializer,
+                                                                           CustomV2XFreqWattEntrySerializer,
+                                                                           CustomV2XSignalWattEntrySerializer,
+                                                                           CustomSalesTariffSerializer,
+                                                                           CustomSalesTariffEntrySerializer,
+                                                                           CustomRelativeTimeIntervalSerializer,
+                                                                           CustomConsumptionCostSerializer,
+                                                                           CustomCostSerializer,
+
+                                                                           CustomAbsolutePriceScheduleSerializer,
+                                                                           CustomPriceRuleStackSerializer,
+                                                                           CustomPriceRuleSerializer,
+                                                                           CustomTaxRuleSerializer,
+                                                                           CustomOverstayRuleListSerializer,
+                                                                           CustomOverstayRuleSerializer,
+                                                                           CustomAdditionalServiceSerializer,
+
+                                                                           CustomPriceLevelScheduleSerializer,
+                                                                           CustomPriceLevelScheduleEntrySerializer,
+
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
+
+
+            CSMS.OnNotifyEVChargingScheduleResponseSent += (timestamp,
+                                                            sender,
+                                                            connection,
+                                                            request,
+                                                            response,
+                                                            runtime) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnNotifyEVChargingScheduleResponseSent),
+                                     response.ToAbstractJSON(request. ToJSON(CustomNotifyEVChargingScheduleRequestSerializer,
+
+                                                                             CustomChargingScheduleSerializer,
+                                                                             CustomLimitBeyondSoCSerializer,
+                                                                             CustomChargingSchedulePeriodSerializer,
+                                                                             CustomV2XFreqWattEntrySerializer,
+                                                                             CustomV2XSignalWattEntrySerializer,
+                                                                             CustomSalesTariffSerializer,
+                                                                             CustomSalesTariffEntrySerializer,
+                                                                             CustomRelativeTimeIntervalSerializer,
+                                                                             CustomConsumptionCostSerializer,
+                                                                             CustomCostSerializer,
+
+                                                                             CustomAbsolutePriceScheduleSerializer,
+                                                                             CustomPriceRuleStackSerializer,
+                                                                             CustomPriceRuleSerializer,
+                                                                             CustomTaxRuleSerializer,
+                                                                             CustomOverstayRuleListSerializer,
+                                                                             CustomOverstayRuleSerializer,
+                                                                             CustomAdditionalServiceSerializer,
+
+                                                                             CustomPriceLevelScheduleSerializer,
+                                                                             CustomPriceLevelScheduleEntrySerializer,
+
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomNotifyEVChargingScheduleResponseSerializer,
+                                                                             CustomStatusInfoSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
+
+            #endregion
+
+            #region OnNotifyPriorityCharging                (RequestReceived/-ResponseSent)
+
+            CSMS.OnNotifyPriorityChargingRequestReceived += (timestamp,
+                                                             sender,
+                                                             connection,
+                                                             request) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnNotifyPriorityChargingRequestReceived),
+                                     request.ToAbstractJSON(request.ToJSON(CustomNotifyPriorityChargingRequestSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
+
+
+            CSMS.OnNotifyPriorityChargingResponseSent += (timestamp,
+                                                          sender,
+                                                          connection,
+                                                          request,
+                                                          response,
+                                                          runtime) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnNotifyPriorityChargingResponseSent),
+                                     response.ToAbstractJSON(request. ToJSON(CustomNotifyPriorityChargingRequestSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomNotifyPriorityChargingResponseSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
+
+            #endregion
+
+            #region OnNotifySettlement                      (RequestReceived/-ResponseSent)
+
+            CSMS.OnNotifySettlementRequestReceived += (timestamp,
+                                                       sender,
+                                                       connection,
+                                                       request) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnNotifySettlementRequestReceived),
+                                     request.ToAbstractJSON(request.ToJSON(CustomNotifySettlementRequestSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
+
+
+            CSMS.OnNotifySettlementResponseSent += (timestamp,
+                                                    sender,
+                                                    connection,
+                                                    request,
+                                                    response,
+                                                    runtime) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnNotifySettlementResponseSent),
+                                     response.ToAbstractJSON(request. ToJSON(CustomNotifySettlementRequestSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomNotifySettlementResponseSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
+
+            #endregion
+
+            #region OnPullDynamicScheduleUpdate             (RequestReceived/-ResponseSent)
+
+            CSMS.OnPullDynamicScheduleUpdateRequestReceived += (timestamp,
+                                                                sender,
+                                                                connection,
+                                                                request) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnPullDynamicScheduleUpdateRequestReceived),
+                                     request.ToAbstractJSON(request.ToJSON(CustomPullDynamicScheduleUpdateRequestSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
+
+
+            CSMS.OnPullDynamicScheduleUpdateResponseSent += (timestamp,
+                                                             sender,
+                                                             connection,
+                                                             request,
+                                                             response,
+                                                             runtime) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnPullDynamicScheduleUpdateResponseSent),
+                                     response.ToAbstractJSON(request. ToJSON(CustomPullDynamicScheduleUpdateRequestSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomPullDynamicScheduleUpdateResponseSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
+
+            #endregion
+
+            #region OnReportChargingProfiles                (RequestReceived/-ResponseSent)
+
+            CSMS.OnReportChargingProfilesRequestReceived += (timestamp,
+                                                             sender,
+                                                             connection,
+                                                             request) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnReportChargingProfilesRequestReceived),
+                                     request.ToAbstractJSON(request.ToJSON(CustomReportChargingProfilesRequestSerializer,
+
+                                                                           CustomChargingProfileSerializer,
+                                                                           CustomLimitBeyondSoCSerializer,
+                                                                           CustomChargingScheduleSerializer,
+                                                                           CustomChargingSchedulePeriodSerializer,
+                                                                           CustomV2XFreqWattEntrySerializer,
+                                                                           CustomV2XSignalWattEntrySerializer,
+                                                                           CustomSalesTariffSerializer,
+                                                                           CustomSalesTariffEntrySerializer,
+                                                                           CustomRelativeTimeIntervalSerializer,
+                                                                           CustomConsumptionCostSerializer,
+                                                                           CustomCostSerializer,
+
+                                                                           CustomAbsolutePriceScheduleSerializer,
+                                                                           CustomPriceRuleStackSerializer,
+                                                                           CustomPriceRuleSerializer,
+                                                                           CustomTaxRuleSerializer,
+                                                                           CustomOverstayRuleListSerializer,
+                                                                           CustomOverstayRuleSerializer,
+                                                                           CustomAdditionalServiceSerializer,
+
+                                                                           CustomPriceLevelScheduleSerializer,
+                                                                           CustomPriceLevelScheduleEntrySerializer,
+
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
+
+
+            CSMS.OnReportChargingProfilesResponseSent += (timestamp,
+                                                          sender,
+                                                          connection,
+                                                          request,
+                                                          response,
+                                                          runtime) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnReportChargingProfilesResponseSent),
+                                     response.ToAbstractJSON(request. ToJSON(CustomReportChargingProfilesRequestSerializer,
+
+                                                                             CustomChargingProfileSerializer,
+                                                                             CustomLimitBeyondSoCSerializer,
+                                                                             CustomChargingScheduleSerializer,
+                                                                             CustomChargingSchedulePeriodSerializer,
+                                                                             CustomV2XFreqWattEntrySerializer,
+                                                                             CustomV2XSignalWattEntrySerializer,
+                                                                             CustomSalesTariffSerializer,
+                                                                             CustomSalesTariffEntrySerializer,
+                                                                             CustomRelativeTimeIntervalSerializer,
+                                                                             CustomConsumptionCostSerializer,
+                                                                             CustomCostSerializer,
+
+                                                                             CustomAbsolutePriceScheduleSerializer,
+                                                                             CustomPriceRuleStackSerializer,
+                                                                             CustomPriceRuleSerializer,
+                                                                             CustomTaxRuleSerializer,
+                                                                             CustomOverstayRuleListSerializer,
+                                                                             CustomOverstayRuleSerializer,
+                                                                             CustomAdditionalServiceSerializer,
+
+                                                                             CustomPriceLevelScheduleSerializer,
+                                                                             CustomPriceLevelScheduleEntrySerializer,
+
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomReportChargingProfilesResponseSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
+
+            #endregion
+
+            #region OnReservationStatusUpdate               (RequestReceived/-ResponseSent)
+
+            CSMS.OnReservationStatusUpdateRequestReceived += (timestamp,
+                                                              sender,
+                                                              connection,
+                                                              request) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnReservationStatusUpdateRequestReceived),
+                                     request.ToAbstractJSON(request.ToJSON(CustomReservationStatusUpdateRequestSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
+
+
+            CSMS.OnReservationStatusUpdateResponseSent += (timestamp,
+                                                           sender,
+                                                           connection,
+                                                           request,
+                                                           response,
+                                                           runtime) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnReservationStatusUpdateResponseSent),
+                                     response.ToAbstractJSON(request. ToJSON(CustomReservationStatusUpdateRequestSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomReservationStatusUpdateResponseSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
+
+            #endregion
+
+            #region OnStatusNotification                    (RequestReceived/-ResponseSent)
+
+            CSMS.OnStatusNotificationRequestReceived += (timestamp,
+                                                         sender,
+                                                         connection,
+                                                         request) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnStatusNotificationRequestReceived),
+                                     request.ToAbstractJSON(request.ToJSON(CustomStatusNotificationRequestSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
+
+
+            CSMS.OnStatusNotificationResponseSent += (timestamp,
+                                                      sender,
+                                                      connection,
+                                                      request,
+                                                      response,
+                                                      runtime) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnStatusNotificationResponseSent),
+                                     response.ToAbstractJSON(request. ToJSON(CustomStatusNotificationRequestSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomStatusNotificationResponseSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
+
+            #endregion
+
+            #region OnTransactionEvent                      (RequestReceived/-ResponseSent)
+
+            CSMS.OnTransactionEventRequestReceived += (timestamp,
+                                                       sender,
+                                                       connection,
+                                                       request) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnTransactionEventRequestReceived),
+                                     request.ToAbstractJSON(request.ToJSON(CustomTransactionEventRequestSerializer,
+                                                                           CustomTransactionSerializer,
+                                                                           CustomIdTokenSerializer,
+                                                                           CustomAdditionalInfoSerializer,
+                                                                           CustomEVSESerializer,
+                                                                           CustomMeterValueSerializer,
+                                                                           CustomSampledValueSerializer,
+                                                                           CustomSignedMeterValueSerializer,
+                                                                           CustomUnitsOfMeasureSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
+
+
+            CSMS.OnTransactionEventResponseSent += (timestamp,
+                                                    sender,
+                                                    connection,
+                                                    request,
+                                                    response,
+                                                    runtime) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnTransactionEventResponseSent),
+                                     response.ToAbstractJSON(request. ToJSON(CustomTransactionEventRequestSerializer,
+                                                                             CustomTransactionSerializer,
+                                                                             CustomIdTokenSerializer,
+                                                                             CustomAdditionalInfoSerializer,
+                                                                             CustomEVSESerializer,
+                                                                             CustomMeterValueSerializer,
+                                                                             CustomSampledValueSerializer,
+                                                                             CustomSignedMeterValueSerializer,
+                                                                             CustomUnitsOfMeasureSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomTransactionEventResponseSerializer,
+                                                                             CustomIdTokenInfoSerializer,
+                                                                             CustomIdTokenSerializer,
+                                                                             CustomAdditionalInfoSerializer,
+                                                                             CustomMessageContentSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
+
+            #endregion
+
+            #endregion
+
+            #region Customer
+
+            #region OnNotifyCustomerInformation             (RequestReceived/-ResponseSent)
+
+            CSMS.OnNotifyCustomerInformationRequestReceived += (timestamp,
+                                                                sender,
+                                                                connection,
+                                                                request) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnNotifyCustomerInformationRequestReceived),
+                                     request.ToAbstractJSON(request.ToJSON(CustomNotifyCustomerInformationRequestSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
+
+
+            CSMS.OnNotifyCustomerInformationResponseSent += (timestamp,
+                                                             sender,
+                                                             connection,
+                                                             request,
+                                                             response,
+                                                             runtime) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnNotifyCustomerInformationResponseSent),
+                                     response.ToAbstractJSON(request. ToJSON(CustomNotifyCustomerInformationRequestSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomNotifyCustomerInformationResponseSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
+
+            #endregion
+
+            #region OnNotifyDisplayMessages                 (RequestReceived/-ResponseSent)
+
+            CSMS.OnNotifyDisplayMessagesRequestReceived += (timestamp,
+                                                            sender,
+                                                            connection,
+                                                            request) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnNotifyDisplayMessagesRequestReceived),
+                                     request.ToAbstractJSON(request.ToJSON(CustomNotifyDisplayMessagesRequestSerializer,
+                                                                           CustomMessageInfoSerializer,
+                                                                           CustomMessageContentSerializer,
+                                                                           CustomComponentSerializer,
+                                                                           CustomEVSESerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
+
+
+            CSMS.OnNotifyDisplayMessagesResponseSent += (timestamp,
+                                                         sender,
+                                                         connection,
+                                                         request,
+                                                         response,
+                                                         runtime) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnNotifyDisplayMessagesResponseSent),
+                                     response.ToAbstractJSON(request. ToJSON(CustomNotifyDisplayMessagesRequestSerializer,
+                                                                             CustomMessageInfoSerializer,
+                                                                             CustomMessageContentSerializer,
+                                                                             CustomComponentSerializer,
+                                                                             CustomEVSESerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomNotifyDisplayMessagesResponseSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
+
+            #endregion
+
+            #endregion
+
+            #region DeviceModel
+
+            #region OnLogStatusNotification                 (RequestReceived/-ResponseSent)
+
+            CSMS.OnLogStatusNotificationRequestReceived += (timestamp,
+                                                            sender,
+                                                            connection,
+                                                            request) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnLogStatusNotificationRequestReceived),
+                                     request.ToAbstractJSON(request.ToJSON(CustomLogStatusNotificationRequestSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
+
+
+            CSMS.OnLogStatusNotificationResponseSent += (timestamp,
+                                                         sender,
+                                                         connection,
+                                                         request,
+                                                         response,
+                                                         runtime) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnLogStatusNotificationResponseSent),
+                                     response.ToAbstractJSON(request. ToJSON(CustomLogStatusNotificationRequestSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomLogStatusNotificationResponseSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
+
+            #endregion
+
+            #region OnNotifyEvent                           (RequestReceived/-ResponseSent)
+
+            CSMS.OnNotifyEventRequestReceived += (timestamp,
+                                                  sender,
+                                                  connection,
+                                                  request) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnNotifyEventRequestReceived),
+                                     request.ToAbstractJSON(request.ToJSON(CustomNotifyEventRequestSerializer,
+                                                                           CustomEventDataSerializer,
+                                                                           CustomComponentSerializer,
+                                                                           CustomEVSESerializer,
+                                                                           CustomVariableSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
+
+
+            CSMS.OnNotifyEventResponseSent += (timestamp,
+                                               sender,
+                                               connection,
+                                               request,
+                                               response,
+                                               runtime) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnNotifyEventResponseSent),
+                                     response.ToAbstractJSON(request. ToJSON(CustomNotifyEventRequestSerializer,
+                                                                             CustomEventDataSerializer,
+                                                                             CustomComponentSerializer,
+                                                                             CustomEVSESerializer,
+                                                                             CustomVariableSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomNotifyEventResponseSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
+
+            #endregion
+
+            #region OnNotifyMonitoringReport                (RequestReceived/-ResponseSent)
+
+            CSMS.OnNotifyMonitoringReportRequestReceived += (timestamp,
+                                                             sender,
+                                                             connection,
+                                                             request) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnNotifyMonitoringReportRequestReceived),
+                                     request.ToAbstractJSON(request.ToJSON(CustomNotifyMonitoringReportRequestSerializer,
+                                                                           CustomMonitoringDataSerializer,
+                                                                           CustomComponentSerializer,
+                                                                           CustomEVSESerializer,
+                                                                           CustomVariableSerializer,
+                                                                           CustomVariableMonitoringSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
+
+
+            CSMS.OnNotifyMonitoringReportResponseSent += (timestamp,
+                                                          sender,
+                                                          connection,
+                                                          request,
+                                                          response,
+                                                          runtime) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnNotifyMonitoringReportResponseSent),
+                                     response.ToAbstractJSON(request. ToJSON(CustomNotifyMonitoringReportRequestSerializer,
+                                                                             CustomMonitoringDataSerializer,
+                                                                             CustomComponentSerializer,
+                                                                             CustomEVSESerializer,
+                                                                             CustomVariableSerializer,
+                                                                             CustomVariableMonitoringSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomNotifyMonitoringReportResponseSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
+
+            #endregion
+
+            #region OnNotifyReport                          (RequestReceived/-ResponseSent)
+
+            CSMS.OnNotifyReportRequestReceived += (timestamp,
+                                                   sender,
+                                                   connection,
+                                                   request) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnNotifyReportRequestReceived),
+                                     request.ToAbstractJSON(request.ToJSON(CustomNotifyReportRequestSerializer,
+                                                                           CustomReportDataSerializer,
+                                                                           CustomComponentSerializer,
+                                                                           CustomEVSESerializer,
+                                                                           CustomVariableSerializer,
+                                                                           CustomVariableAttributeSerializer,
+                                                                           CustomVariableCharacteristicsSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
+
+
+            CSMS.OnNotifyReportResponseSent += (timestamp,
+                                                sender,
+                                                connection,
+                                                request,
+                                                response,
+                                                runtime) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnNotifyReportResponseSent),
+                                     response.ToAbstractJSON(request. ToJSON(CustomNotifyReportRequestSerializer,
+                                                                             CustomReportDataSerializer,
+                                                                             CustomComponentSerializer,
+                                                                             CustomEVSESerializer,
+                                                                             CustomVariableSerializer,
+                                                                             CustomVariableAttributeSerializer,
+                                                                             CustomVariableCharacteristicsSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomNotifyReportResponseSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
+
+            #endregion
+
+            #region OnSecurityEventNotification             (RequestReceived/-ResponseSent)
+
+            CSMS.OnSecurityEventNotificationRequestReceived += (timestamp,
+                                                                sender,
+                                                                connection,
+                                                                request) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnSecurityEventNotificationRequestReceived),
+                                     request.ToAbstractJSON(request.ToJSON(CustomSecurityEventNotificationRequestSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
+
+
+            CSMS.OnSecurityEventNotificationResponseSent += (timestamp,
+                                                             sender,
+                                                             connection,
+                                                             request,
+                                                             response,
+                                                             runtime) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnSecurityEventNotificationResponseSent),
+                                     response.ToAbstractJSON(request. ToJSON(CustomSecurityEventNotificationRequestSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomSecurityEventNotificationResponseSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
+
+            #endregion
+
+            #endregion
+
+            #region Firmware
+
+            #region OnBootNotification                      (RequestReceived/-ResponseSent)
 
             CSMS.OnBootNotificationRequestReceived += (timestamp,
                                                        sender,
                                                        connection,
                                                        request) =>
 
-                EventLog.SubmitEvent("OnBootNotificationRequestReceived",
+                EventLog.SubmitEvent(nameof(CSMS.OnBootNotificationRequestReceived),
                                      request.ToAbstractJSON(connection,
                                                             request.ToJSON(CustomBootNotificationRequestSerializer,
                                                                            CustomChargingStationSerializer,
@@ -920,7 +1900,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                     response,
                                                     runtime) =>
 
-                EventLog.SubmitEvent("OnBootNotificationResponseSent",
+                EventLog.SubmitEvent(nameof(CSMS.OnBootNotificationResponseSent),
                                      response.ToAbstractJSON(request. ToJSON(CustomBootNotificationRequestSerializer,
                                                                              CustomChargingStationSerializer,
                                                                              CustomSignatureSerializer,
@@ -932,1388 +1912,441 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #endregion
 
-            #region OnFirmwareStatusNotification            (Request/-Response)
+            #region OnFirmwareStatusNotification            (RequestReceived/-ResponseSent)
 
-            CSMS.OnFirmwareStatusNotificationRequest += (timestamp, sender, connection, request) =>
-                EventLog.SubmitEvent("OnFirmwareStatusNotificationRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomFirmwareStatusNotificationRequestSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
+            CSMS.OnFirmwareStatusNotificationRequestReceived += (timestamp,
+                                                                 sender,
+                                                                 connection,
+                                                                 request) =>
 
-            CSMS.OnFirmwareStatusNotificationResponse += (timestamp, sender, connection, request, response, runtime) =>
-                EventLog.SubmitEvent("OnFirmwareStatusNotificationResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomFirmwareStatusNotificationRequestSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomFirmwareStatusNotificationResponseSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
+                EventLog.SubmitEvent(nameof(CSMS.OnFirmwareStatusNotificationRequestReceived),
+                                     request.ToAbstractJSON(request.ToJSON(CustomFirmwareStatusNotificationRequestSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
 
-            #endregion
 
-            #region OnPublishFirmwareStatusNotification     (Request/-Response)
+            CSMS.OnFirmwareStatusNotificationResponseSent += (timestamp,
+                                                              sender,
+                                                              connection,
+                                                              request,
+                                                              response,
+                                                              runtime) =>
 
-            CSMS.OnPublishFirmwareStatusNotificationRequest += (timestamp, sender, connection, request) =>
-                EventLog.SubmitEvent("OnPublishFirmwareStatusNotificationRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomPublishFirmwareStatusNotificationRequestSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
-
-            CSMS.OnPublishFirmwareStatusNotificationResponse += (timestamp, sender, connection, request, response, runtime) =>
-                EventLog.SubmitEvent("OnPublishFirmwareStatusNotificationResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomPublishFirmwareStatusNotificationRequestSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomPublishFirmwareStatusNotificationResponseSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
+                EventLog.SubmitEvent(nameof(CSMS.OnFirmwareStatusNotificationResponseSent),
+                                     response.ToAbstractJSON(request. ToJSON(CustomFirmwareStatusNotificationRequestSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomFirmwareStatusNotificationResponseSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
 
             #endregion
 
-            #region OnHeartbeat                             (Request/-Response)
+            #region OnHeartbeat                             (RequestReceived/-ResponseSent)
 
-            CSMS.OnHeartbeatRequest += (timestamp, sender, connection, request) =>
-                EventLog.SubmitEvent("OnHeartbeatRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomHeartbeatRequestSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
+            CSMS.OnHeartbeatRequestReceived += (timestamp,
+                                                sender,
+                                                connection,
+                                                request) =>
 
-            CSMS.OnHeartbeatResponse += (timestamp, sender, connection, request, response, runtime) =>
-                EventLog.SubmitEvent("OnHeartbeatResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomHeartbeatRequestSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomHeartbeatResponseSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
+                EventLog.SubmitEvent(nameof(CSMS.OnHeartbeatRequestReceived),
+                                     request.ToAbstractJSON(request.ToJSON(CustomHeartbeatRequestSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
 
-            #endregion
 
-            #region OnNotifyEvent                           (Request/-Response)
+            CSMS.OnHeartbeatResponseSent += (timestamp,
+                                             sender,
+                                             connection,
+                                             request,
+                                             response,
+                                             runtime) =>
 
-            CSMS.OnNotifyEventRequest += (timestamp, sender, connection, request) =>
-                EventLog.SubmitEvent("OnNotifyEventRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomNotifyEventRequestSerializer,
-                                                                                      CustomEventDataSerializer,
-                                                                                      CustomComponentSerializer,
-                                                                                      CustomEVSESerializer,
-                                                                                      CustomVariableSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
-
-            CSMS.OnNotifyEventResponse += (timestamp, sender, connection, request, response, runtime) =>
-                EventLog.SubmitEvent("OnNotifyEventResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomNotifyEventRequestSerializer,
-                                                                                        CustomEventDataSerializer,
-                                                                                        CustomComponentSerializer,
-                                                                                        CustomEVSESerializer,
-                                                                                        CustomVariableSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomNotifyEventResponseSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
+                EventLog.SubmitEvent(nameof(CSMS.OnHeartbeatResponseSent),
+                                     response.ToAbstractJSON(request. ToJSON(CustomHeartbeatRequestSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomHeartbeatResponseSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
 
             #endregion
 
-            #region OnSecurityEventNotification             (Request/-Response)
-
-            CSMS.OnSecurityEventNotificationRequest += (timestamp, sender, connection, request) =>
-                EventLog.SubmitEvent("OnSecurityEventNotificationRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomSecurityEventNotificationRequestSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
-
-            CSMS.OnSecurityEventNotificationResponse += (timestamp, sender, connection, request, response, runtime) =>
-                EventLog.SubmitEvent("OnSecurityEventNotificationResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomSecurityEventNotificationRequestSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomSecurityEventNotificationResponseSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
-
-            #endregion
-
-            #region OnNotifyReport                          (Request/-Response)
-
-            CSMS.OnNotifyReportRequest += (timestamp, sender, connection, request) =>
-                EventLog.SubmitEvent("OnNotifyReportRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomNotifyReportRequestSerializer,
-                                                                                      CustomReportDataSerializer,
-                                                                                      CustomComponentSerializer,
-                                                                                      CustomEVSESerializer,
-                                                                                      CustomVariableSerializer,
-                                                                                      CustomVariableAttributeSerializer,
-                                                                                      CustomVariableCharacteristicsSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
-
-            CSMS.OnNotifyReportResponse += (timestamp, sender, connection, request, response, runtime) =>
-                EventLog.SubmitEvent("OnNotifyReportResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomNotifyReportRequestSerializer,
-                                                                                        CustomReportDataSerializer,
-                                                                                        CustomComponentSerializer,
-                                                                                        CustomEVSESerializer,
-                                                                                        CustomVariableSerializer,
-                                                                                        CustomVariableAttributeSerializer,
-                                                                                        CustomVariableCharacteristicsSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomNotifyReportResponseSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
-
-            #endregion
-
-            #region OnNotifyMonitoringReport                (Request/-Response)
-
-            CSMS.OnNotifyMonitoringReportRequest += (timestamp, sender, connection, request) =>
-                EventLog.SubmitEvent("OnNotifyMonitoringReportRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomNotifyMonitoringReportRequestSerializer,
-                                                                                      CustomMonitoringDataSerializer,
-                                                                                      CustomComponentSerializer,
-                                                                                      CustomEVSESerializer,
-                                                                                      CustomVariableSerializer,
-                                                                                      CustomVariableMonitoringSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
-
-            CSMS.OnNotifyMonitoringReportResponse += (timestamp, sender, connection, request, response, runtime) =>
-                EventLog.SubmitEvent("OnNotifyMonitoringReportResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomNotifyMonitoringReportRequestSerializer,
-                                                                                        CustomMonitoringDataSerializer,
-                                                                                        CustomComponentSerializer,
-                                                                                        CustomEVSESerializer,
-                                                                                        CustomVariableSerializer,
-                                                                                        CustomVariableMonitoringSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomNotifyMonitoringReportResponseSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
-
-            #endregion
-
-            #region OnLogStatusNotification                 (Request/-Response)
-
-            CSMS.OnLogStatusNotificationRequest += (timestamp, sender, connection, request) =>
-                EventLog.SubmitEvent("OnLogStatusNotificationRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomLogStatusNotificationRequestSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
-
-            CSMS.OnLogStatusNotificationResponse += (timestamp, sender, connection, request, response, runtime) =>
-                EventLog.SubmitEvent("OnLogStatusNotificationResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomLogStatusNotificationRequestSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomLogStatusNotificationResponseSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
-
-            #endregion
-
-
-            #region OnSignCertificate                       (Request/-Response)
-
-            CSMS.OnSignCertificateRequest += (timestamp, sender, connection, request) =>
-                EventLog.SubmitEvent("OnSignCertificateRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomSignCertificateRequestSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
-
-            CSMS.OnSignCertificateResponse += (timestamp, sender, connection, request, response, runtime) =>
-                EventLog.SubmitEvent("OnSignCertificateResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomSignCertificateRequestSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomSignCertificateResponseSerializer,
-                                                                                        CustomStatusInfoSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
-
-            #endregion
-
-            #region OnGet15118EVCertificate                 (Request/-Response)
-
-            CSMS.OnGet15118EVCertificateRequestReceived += (timestamp, sender, connection, request) =>
-                EventLog.SubmitEvent("OnGet15118EVCertificateRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomGet15118EVCertificateRequestSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
-
-            CSMS.OnGet15118EVCertificateResponse += (timestamp, sender, connection, request, response, runtime) =>
-                EventLog.SubmitEvent("OnGet15118EVCertificateResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomGet15118EVCertificateRequestSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomGet15118EVCertificateResponseSerializer,
-                                                                                        CustomStatusInfoSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
-
-            #endregion
-
-            #region OnGetCertificateStatus                  (Request/-Response)
-
-            CSMS.OnGetCertificateStatusRequest += (timestamp, sender, connection, request) =>
-                EventLog.SubmitEvent("OnGetCertificateStatusRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomGetCertificateStatusRequestSerializer,
-                                                                                      CustomOCSPRequestDataSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
-
-            CSMS.OnGetCertificateStatusResponse += (timestamp, sender, connection, request, response, runtime) =>
-                EventLog.SubmitEvent("OnGetCertificateStatusResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomGetCertificateStatusRequestSerializer,
-                                                                                        CustomOCSPRequestDataSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomGetCertificateStatusResponseSerializer,
-                                                                                        CustomStatusInfoSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
-
-            #endregion
-
-            #region OnGetCRL                                (Request/-Response)
-
-            CSMS.OnGetCRLRequest += (timestamp, sender, connection, request) =>
-                EventLog.SubmitEvent("OnGetCRLRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomGetCRLRequestSerializer,
-                                                                                      CustomCertificateHashDataSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
-
-            CSMS.OnGetCRLResponse += (timestamp, sender, connection, request, response, runtime) =>
-                EventLog.SubmitEvent("OnGetCRLResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomGetCRLRequestSerializer,
-                                                                                        CustomCertificateHashDataSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomGetCRLResponseSerializer,
-                                                                                        CustomStatusInfoSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
-
-            #endregion
-
-
-            #region OnReservationStatusUpdate               (Request/-Response)
-
-            CSMS.OnReservationStatusUpdateRequest += (timestamp, sender, connection, request) =>
-                EventLog.SubmitEvent("OnReservationStatusUpdateRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomReservationStatusUpdateRequestSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
-
-            CSMS.OnReservationStatusUpdateResponse += (timestamp, sender, connection, request, response, runtime) =>
-                EventLog.SubmitEvent("OnReservationStatusUpdateResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomReservationStatusUpdateRequestSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomReservationStatusUpdateResponseSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
-
-            #endregion
-
-            #region OnAuthorize                             (Request/-Response)
-
-            CSMS.OnAuthorizeRequest += (timestamp, sender, connection, request) =>
-                EventLog.SubmitEvent("OnAuthorizeRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomAuthorizeRequestSerializer,
-                                                                                      CustomIdTokenSerializer,
-                                                                                      CustomAdditionalInfoSerializer,
-                                                                                      CustomOCSPRequestDataSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
-
-            CSMS.OnAuthorizeResponse += (timestamp, sender, connection, request, response, runtime) =>
-                EventLog.SubmitEvent("OnAuthorizeResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomAuthorizeRequestSerializer,
-                                                                                        CustomIdTokenSerializer,
-                                                                                        CustomAdditionalInfoSerializer,
-                                                                                        CustomOCSPRequestDataSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomAuthorizeResponseSerializer,
-                                                                                        CustomIdTokenInfoSerializer,
-                                                                                        CustomIdTokenSerializer,
-                                                                                        CustomAdditionalInfoSerializer,
-                                                                                        CustomMessageContentSerializer,
-                                                                                        CustomTransactionLimitsSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
-
-            #endregion
-
-            #region OnNotifyEVChargingNeeds                 (Request/-Response)
-
-            CSMS.OnNotifyEVChargingNeedsRequest += (timestamp, sender, connection, request) =>
-                EventLog.SubmitEvent("OnNotifyEVChargingNeedsRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomNotifyEVChargingNeedsRequestSerializer,
-                                                                                      CustomChargingNeedsSerializer,
-                                                                                      CustomACChargingParametersSerializer,
-                                                                                      CustomDCChargingParametersSerializer,
-                                                                                      CustomV2XChargingParametersSerializer,
-                                                                                      CustomEVEnergyOfferSerializer,
-                                                                                      CustomEVPowerScheduleSerializer,
-                                                                                      CustomEVPowerScheduleEntrySerializer,
-                                                                                      CustomEVAbsolutePriceScheduleSerializer,
-                                                                                      CustomEVAbsolutePriceScheduleEntrySerializer,
-                                                                                      CustomEVPriceRuleSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
-
-            CSMS.OnNotifyEVChargingNeedsResponse += (timestamp, sender, connection, request, response, runtime) =>
-                EventLog.SubmitEvent("OnNotifyEVChargingNeedsResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomNotifyEVChargingNeedsRequestSerializer,
-                                                                                        CustomChargingNeedsSerializer,
-                                                                                        CustomACChargingParametersSerializer,
-                                                                                        CustomDCChargingParametersSerializer,
-                                                                                        CustomV2XChargingParametersSerializer,
-                                                                                        CustomEVEnergyOfferSerializer,
-                                                                                        CustomEVPowerScheduleSerializer,
-                                                                                        CustomEVPowerScheduleEntrySerializer,
-                                                                                        CustomEVAbsolutePriceScheduleSerializer,
-                                                                                        CustomEVAbsolutePriceScheduleEntrySerializer,
-                                                                                        CustomEVPriceRuleSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomNotifyEVChargingNeedsResponseSerializer,
-                                                                                        CustomStatusInfoSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
-
-            #endregion
-
-            #region OnTransactionEvent                      (Request/-Response)
-
-            CSMS.OnTransactionEventRequest += (timestamp, sender, connection, request) =>
-                EventLog.SubmitEvent("OnTransactionEventRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomTransactionEventRequestSerializer,
-                                                                                      CustomTransactionSerializer,
-                                                                                      CustomIdTokenSerializer,
-                                                                                      CustomAdditionalInfoSerializer,
-                                                                                      CustomEVSESerializer,
-                                                                                      CustomMeterValueSerializer,
-                                                                                      CustomSampledValueSerializer,
-                                                                                      CustomSignedMeterValueSerializer,
-                                                                                      CustomUnitsOfMeasureSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
-
-            CSMS.OnTransactionEventResponse += (timestamp, sender, connection, request, response, runtime) =>
-                EventLog.SubmitEvent("OnTransactionEventResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomTransactionEventRequestSerializer,
-                                                                                        CustomTransactionSerializer,
-                                                                                        CustomIdTokenSerializer,
-                                                                                        CustomAdditionalInfoSerializer,
-                                                                                        CustomEVSESerializer,
-                                                                                        CustomMeterValueSerializer,
-                                                                                        CustomSampledValueSerializer,
-                                                                                        CustomSignedMeterValueSerializer,
-                                                                                        CustomUnitsOfMeasureSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomTransactionEventResponseSerializer,
-                                                                                        CustomIdTokenInfoSerializer,
-                                                                                        CustomIdTokenSerializer,
-                                                                                        CustomAdditionalInfoSerializer,
-                                                                                        CustomMessageContentSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
-
-            #endregion
-
-            #region OnStatusNotification                    (Request/-Response)
-
-            CSMS.OnStatusNotificationRequest += (timestamp, sender, connection, request) =>
-                EventLog.SubmitEvent("OnStatusNotificationRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomStatusNotificationRequestSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
-
-            CSMS.OnStatusNotificationResponse += (timestamp, sender, connection, request, response, runtime) =>
-                EventLog.SubmitEvent("OnStatusNotificationResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomStatusNotificationRequestSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomStatusNotificationResponseSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
-
-            #endregion
-
-            #region OnMeterValues                           (Request/-Response)
-
-            CSMS.OnMeterValuesRequest += (timestamp, sender, connection, request) =>
-                EventLog.SubmitEvent("OnMeterValuesRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomMeterValuesRequestSerializer,
-                                                                                      CustomMeterValueSerializer,
-                                                                                      CustomSampledValueSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
-
-            CSMS.OnMeterValuesResponse += (timestamp, sender, connection, request, response, runtime) =>
-                EventLog.SubmitEvent("OnMeterValuesResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomMeterValuesRequestSerializer,
-                                                                                        CustomMeterValueSerializer,
-                                                                                        CustomSampledValueSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomMeterValuesResponseSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
-
-            #endregion
-
-            #region OnNotifyChargingLimit                   (Request/-Response)
-
-            CSMS.OnNotifyChargingLimitRequest += (timestamp, sender, connection, request) =>
-                EventLog.SubmitEvent("OnNotifyChargingLimitRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomNotifyChargingLimitRequestSerializer,
-
-                                                                                      CustomChargingScheduleSerializer,
-                                                                                      CustomLimitBeyondSoCSerializer,
-                                                                                      CustomChargingSchedulePeriodSerializer,
-                                                                                      CustomV2XFreqWattEntrySerializer,
-                                                                                      CustomV2XSignalWattEntrySerializer,
-                                                                                      CustomSalesTariffSerializer,
-                                                                                      CustomSalesTariffEntrySerializer,
-                                                                                      CustomRelativeTimeIntervalSerializer,
-                                                                                      CustomConsumptionCostSerializer,
-                                                                                      CustomCostSerializer,
-
-                                                                                      CustomAbsolutePriceScheduleSerializer,
-                                                                                      CustomPriceRuleStackSerializer,
-                                                                                      CustomPriceRuleSerializer,
-                                                                                      CustomTaxRuleSerializer,
-                                                                                      CustomOverstayRuleListSerializer,
-                                                                                      CustomOverstayRuleSerializer,
-                                                                                      CustomAdditionalServiceSerializer,
-
-                                                                                      CustomPriceLevelScheduleSerializer,
-                                                                                      CustomPriceLevelScheduleEntrySerializer,
-
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
-
-            CSMS.OnNotifyChargingLimitResponse += (timestamp, sender, connection, request, response, runtime) =>
-                EventLog.SubmitEvent("OnNotifyChargingLimitResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomNotifyChargingLimitRequestSerializer,
-
-                                                                                        CustomChargingScheduleSerializer,
-                                                                                        CustomLimitBeyondSoCSerializer,
-                                                                                        CustomChargingSchedulePeriodSerializer,
-                                                                                        CustomV2XFreqWattEntrySerializer,
-                                                                                        CustomV2XSignalWattEntrySerializer,
-                                                                                        CustomSalesTariffSerializer,
-                                                                                        CustomSalesTariffEntrySerializer,
-                                                                                        CustomRelativeTimeIntervalSerializer,
-                                                                                        CustomConsumptionCostSerializer,
-                                                                                        CustomCostSerializer,
-
-                                                                                        CustomAbsolutePriceScheduleSerializer,
-                                                                                        CustomPriceRuleStackSerializer,
-                                                                                        CustomPriceRuleSerializer,
-                                                                                        CustomTaxRuleSerializer,
-                                                                                        CustomOverstayRuleListSerializer,
-                                                                                        CustomOverstayRuleSerializer,
-                                                                                        CustomAdditionalServiceSerializer,
-
-                                                                                        CustomPriceLevelScheduleSerializer,
-                                                                                        CustomPriceLevelScheduleEntrySerializer,
-
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomNotifyChargingLimitResponseSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
-
-            #endregion
-
-            #region OnClearedChargingLimit                  (Request/-Response)
-
-            CSMS.OnClearedChargingLimitRequest += (timestamp, sender, connection, request) =>
-                EventLog.SubmitEvent("OnClearedChargingLimitRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomClearedChargingLimitRequestSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
-
-            CSMS.OnClearedChargingLimitResponse += (timestamp, sender, connection, request, response, runtime) =>
-                EventLog.SubmitEvent("OnClearedChargingLimitResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomClearedChargingLimitRequestSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomClearedChargingLimitResponseSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
-
-            #endregion
-
-            #region OnReportChargingProfiles                (Request/-Response)
-
-            CSMS.OnReportChargingProfilesRequest += (timestamp, sender, connection, request) =>
-                EventLog.SubmitEvent("OnReportChargingProfilesRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomReportChargingProfilesRequestSerializer,
-
-                                                                                      CustomChargingProfileSerializer,
-                                                                                      CustomLimitBeyondSoCSerializer,
-                                                                                      CustomChargingScheduleSerializer,
-                                                                                      CustomChargingSchedulePeriodSerializer,
-                                                                                      CustomV2XFreqWattEntrySerializer,
-                                                                                      CustomV2XSignalWattEntrySerializer,
-                                                                                      CustomSalesTariffSerializer,
-                                                                                      CustomSalesTariffEntrySerializer,
-                                                                                      CustomRelativeTimeIntervalSerializer,
-                                                                                      CustomConsumptionCostSerializer,
-                                                                                      CustomCostSerializer,
-
-                                                                                      CustomAbsolutePriceScheduleSerializer,
-                                                                                      CustomPriceRuleStackSerializer,
-                                                                                      CustomPriceRuleSerializer,
-                                                                                      CustomTaxRuleSerializer,
-                                                                                      CustomOverstayRuleListSerializer,
-                                                                                      CustomOverstayRuleSerializer,
-                                                                                      CustomAdditionalServiceSerializer,
-
-                                                                                      CustomPriceLevelScheduleSerializer,
-                                                                                      CustomPriceLevelScheduleEntrySerializer,
-
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
-
-            CSMS.OnReportChargingProfilesResponse += (timestamp, sender, connection, request, response, runtime) =>
-                EventLog.SubmitEvent("OnReportChargingProfilesResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomReportChargingProfilesRequestSerializer,
-
-                                                                                        CustomChargingProfileSerializer,
-                                                                                        CustomLimitBeyondSoCSerializer,
-                                                                                        CustomChargingScheduleSerializer,
-                                                                                        CustomChargingSchedulePeriodSerializer,
-                                                                                        CustomV2XFreqWattEntrySerializer,
-                                                                                        CustomV2XSignalWattEntrySerializer,
-                                                                                        CustomSalesTariffSerializer,
-                                                                                        CustomSalesTariffEntrySerializer,
-                                                                                        CustomRelativeTimeIntervalSerializer,
-                                                                                        CustomConsumptionCostSerializer,
-                                                                                        CustomCostSerializer,
-
-                                                                                        CustomAbsolutePriceScheduleSerializer,
-                                                                                        CustomPriceRuleStackSerializer,
-                                                                                        CustomPriceRuleSerializer,
-                                                                                        CustomTaxRuleSerializer,
-                                                                                        CustomOverstayRuleListSerializer,
-                                                                                        CustomOverstayRuleSerializer,
-                                                                                        CustomAdditionalServiceSerializer,
-
-                                                                                        CustomPriceLevelScheduleSerializer,
-                                                                                        CustomPriceLevelScheduleEntrySerializer,
-
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomReportChargingProfilesResponseSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
-
-            #endregion
-
-            #region OnNotifyEVChargingSchedule              (Request/-Response)
-
-            CSMS.OnNotifyEVChargingScheduleRequest += (timestamp, sender, connection, request) =>
-                EventLog.SubmitEvent("OnNotifyEVChargingScheduleRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomNotifyEVChargingScheduleRequestSerializer,
-
-                                                                                      CustomChargingScheduleSerializer,
-                                                                                      CustomLimitBeyondSoCSerializer,
-                                                                                      CustomChargingSchedulePeriodSerializer,
-                                                                                      CustomV2XFreqWattEntrySerializer,
-                                                                                      CustomV2XSignalWattEntrySerializer,
-                                                                                      CustomSalesTariffSerializer,
-                                                                                      CustomSalesTariffEntrySerializer,
-                                                                                      CustomRelativeTimeIntervalSerializer,
-                                                                                      CustomConsumptionCostSerializer,
-                                                                                      CustomCostSerializer,
-
-                                                                                      CustomAbsolutePriceScheduleSerializer,
-                                                                                      CustomPriceRuleStackSerializer,
-                                                                                      CustomPriceRuleSerializer,
-                                                                                      CustomTaxRuleSerializer,
-                                                                                      CustomOverstayRuleListSerializer,
-                                                                                      CustomOverstayRuleSerializer,
-                                                                                      CustomAdditionalServiceSerializer,
-
-                                                                                      CustomPriceLevelScheduleSerializer,
-                                                                                      CustomPriceLevelScheduleEntrySerializer,
-
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
-
-            CSMS.OnNotifyEVChargingScheduleResponse += (timestamp, sender, connection, request, response, runtime) =>
-                EventLog.SubmitEvent("OnNotifyEVChargingScheduleResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomNotifyEVChargingScheduleRequestSerializer,
-
-                                                                                        CustomChargingScheduleSerializer,
-                                                                                        CustomLimitBeyondSoCSerializer,
-                                                                                        CustomChargingSchedulePeriodSerializer,
-                                                                                        CustomV2XFreqWattEntrySerializer,
-                                                                                        CustomV2XSignalWattEntrySerializer,
-                                                                                        CustomSalesTariffSerializer,
-                                                                                        CustomSalesTariffEntrySerializer,
-                                                                                        CustomRelativeTimeIntervalSerializer,
-                                                                                        CustomConsumptionCostSerializer,
-                                                                                        CustomCostSerializer,
-
-                                                                                        CustomAbsolutePriceScheduleSerializer,
-                                                                                        CustomPriceRuleStackSerializer,
-                                                                                        CustomPriceRuleSerializer,
-                                                                                        CustomTaxRuleSerializer,
-                                                                                        CustomOverstayRuleListSerializer,
-                                                                                        CustomOverstayRuleSerializer,
-                                                                                        CustomAdditionalServiceSerializer,
-
-                                                                                        CustomPriceLevelScheduleSerializer,
-                                                                                        CustomPriceLevelScheduleEntrySerializer,
-
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomNotifyEVChargingScheduleResponseSerializer,
-                                                                                        CustomStatusInfoSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
-
-            #endregion
-
-            #region OnNotifyPriorityCharging                (Request/-Response)
-
-            CSMS.OnNotifyPriorityChargingRequest += (timestamp, sender, connection, request) =>
-                EventLog.SubmitEvent("OnNotifyPriorityChargingRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomNotifyPriorityChargingRequestSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
-
-            CSMS.OnNotifyPriorityChargingResponse += (timestamp, sender, connection, request, response, runtime) =>
-                EventLog.SubmitEvent("OnNotifyPriorityChargingResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomNotifyPriorityChargingRequestSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomNotifyPriorityChargingResponseSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
-
-            #endregion
-
-            #region OnPullDynamicScheduleUpdate             (Request/-Response)
-
-            CSMS.OnPullDynamicScheduleUpdateRequest += (timestamp, sender, connection, request) =>
-                EventLog.SubmitEvent("OnPullDynamicScheduleUpdateRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomPullDynamicScheduleUpdateRequestSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
-
-            CSMS.OnPullDynamicScheduleUpdateResponse += (timestamp, sender, connection, request, response, runtime) =>
-                EventLog.SubmitEvent("OnPullDynamicScheduleUpdateResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomPullDynamicScheduleUpdateRequestSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomPullDynamicScheduleUpdateResponseSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
-
-            #endregion
-
-
-            #region OnNotifyDisplayMessages                 (Request/-Response)
-
-            CSMS.OnNotifyDisplayMessagesRequest += (timestamp, sender, connection, request) =>
-                EventLog.SubmitEvent("OnNotifyDisplayMessagesRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomNotifyDisplayMessagesRequestSerializer,
-                                                                                      CustomMessageInfoSerializer,
-                                                                                      CustomMessageContentSerializer,
-                                                                                      CustomComponentSerializer,
-                                                                                      CustomEVSESerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
-
-            CSMS.OnNotifyDisplayMessagesResponse += (timestamp, sender, connection, request, response, runtime) =>
-                EventLog.SubmitEvent("OnNotifyDisplayMessagesResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomNotifyDisplayMessagesRequestSerializer,
-                                                                                        CustomMessageInfoSerializer,
-                                                                                        CustomMessageContentSerializer,
-                                                                                        CustomComponentSerializer,
-                                                                                        CustomEVSESerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomNotifyDisplayMessagesResponseSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
-
-            #endregion
-
-            #region OnNotifyCustomerInformation             (Request/-Response)
-
-            CSMS.OnNotifyCustomerInformationRequest += (timestamp, sender, connection, request) =>
-                EventLog.SubmitEvent("OnNotifyCustomerInformationRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomNotifyCustomerInformationRequestSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
-
-            CSMS.OnNotifyCustomerInformationResponse += (timestamp, sender, connection, request, response, runtime) =>
-                EventLog.SubmitEvent("OnNotifyCustomerInformationResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomNotifyCustomerInformationRequestSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomNotifyCustomerInformationResponseSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
+            #region OnPublishFirmwareStatusNotification     (RequestReceived/-ResponseSent)
+
+            CSMS.OnPublishFirmwareStatusNotificationRequestReceived += (timestamp,
+                                                                        sender,
+                                                                        connection,
+                                                                        request) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnPublishFirmwareStatusNotificationRequestReceived),
+                                     request.ToAbstractJSON(request.ToJSON(CustomPublishFirmwareStatusNotificationRequestSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
+
+
+            CSMS.OnPublishFirmwareStatusNotificationResponseSent += (timestamp,
+                                                                     sender,
+                                                                     connection,
+                                                                     request,
+                                                                     response,
+                                                                     runtime) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnPublishFirmwareStatusNotificationResponseSent),
+                                     response.ToAbstractJSON(request. ToJSON(CustomPublishFirmwareStatusNotificationRequestSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomPublishFirmwareStatusNotificationResponseSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
 
             #endregion
 
             #endregion
 
-            #region CSMS             -> ChargingStation Messages
+            #endregion
 
-            #region OnReset                                 (Request/-Response)
+            #region CSMS             -> ChargingStation Messages sent
 
-            CSMS.OnResetRequest += (timestamp,
-                                         sender,
-                                         request) =>
+            #region Certificates
 
-                EventLog.SubmitEvent("OnResetRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomResetRequestSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
+            #region OnCertificateSigned                     (RequestSent/-ResponseReceived)
+
+            CSMS.OnCertificateSignedRequestSent += (timestamp,
+                                                    sender,
+                                                    request) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnCertificateSignedRequestSent),
+                                     request.ToAbstractJSON(request.ToJSON(CustomCertificateSignedRequestSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
 
 
-            CSMS.OnResetResponse += (timestamp, sender, request, response, runtime) =>
-                EventLog.SubmitEvent("OnResetResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomResetRequestSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomResetResponseSerializer,
-                                                                                        CustomStatusInfoSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
+            CSMS.OnCertificateSignedResponseReceived += (timestamp,
+                                                         sender,
+                                                         request,
+                                                         response,
+                                                         runtime) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnCertificateSignedResponseReceived),
+                                     response.ToAbstractJSON(request. ToJSON(CustomCertificateSignedRequestSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomCertificateSignedResponseSerializer,
+                                                                             CustomStatusInfoSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
 
             #endregion
 
-            #region OnUpdateFirmware                        (Request/-Response)
+            #region OnDeleteCertificate                     (RequestSent/-ResponseReceived)
 
-            CSMS.OnUpdateFirmwareRequest += (timestamp,
-                                                  sender,
-                                                  request) =>
+            CSMS.OnDeleteCertificateRequestSent += (timestamp,
+                                                    sender,
+                                                    request) =>
 
-                EventLog.SubmitEvent("OnUpdateFirmwareRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomUpdateFirmwareRequestSerializer,
-                                                                                      CustomFirmwareSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
+                EventLog.SubmitEvent(nameof(CSMS.OnDeleteCertificateRequestSent),
+                                     request.ToAbstractJSON(request.ToJSON(CustomDeleteCertificateRequestSerializer,
+                                                                           CustomCertificateHashDataSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
 
 
-            CSMS.OnUpdateFirmwareResponse += (timestamp, sender, request, response, runtime) =>
-                EventLog.SubmitEvent("OnUpdateFirmwareResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomUpdateFirmwareRequestSerializer,
-                                                                                        CustomFirmwareSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomUpdateFirmwareResponseSerializer,
-                                                                                        CustomStatusInfoSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
+            CSMS.OnDeleteCertificateResponseReceived += (timestamp,
+                                                         sender,
+                                                         request,
+                                                         response,
+                                                         runtime) =>
 
-            #endregion
-
-            #region OnPublishFirmware                       (Request/-Response)
-
-            CSMS.OnPublishFirmwareRequest += (timestamp, sender, request) =>
-                EventLog.SubmitEvent("OnPublishFirmwareRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomPublishFirmwareRequestSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
-
-            CSMS.OnPublishFirmwareResponse += (timestamp, sender, request, response, runtime) =>
-                EventLog.SubmitEvent("OnPublishFirmwareResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomPublishFirmwareRequestSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomPublishFirmwareResponseSerializer,
-                                                                                        CustomStatusInfoSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
+                EventLog.SubmitEvent(nameof(CSMS.OnDeleteCertificateResponseReceived),
+                                     response.ToAbstractJSON(request. ToJSON(CustomDeleteCertificateRequestSerializer,
+                                                                             CustomCertificateHashDataSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomDeleteCertificateResponseSerializer,
+                                                                             CustomStatusInfoSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
 
             #endregion
 
-            #region OnUnpublishFirmware                     (Request/-Response)
+            #region OnGetInstalledCertificateIds            (RequestSent/-ResponseReceived)
 
-            CSMS.OnUnpublishFirmwareRequest += (timestamp, sender, request) =>
-                EventLog.SubmitEvent("OnUnpublishFirmwareRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomUnpublishFirmwareRequestSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
+            CSMS.OnGetInstalledCertificateIdsRequestSent += (timestamp,
+                                                             sender,
+                                                             request) =>
 
-            CSMS.OnUnpublishFirmwareResponse += (timestamp, sender, request, response, runtime) =>
-                EventLog.SubmitEvent("OnUnpublishFirmwareResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomUnpublishFirmwareRequestSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomUnpublishFirmwareResponseSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
+                EventLog.SubmitEvent(nameof(CSMS.OnGetInstalledCertificateIdsRequestSent),
+                                     request.ToAbstractJSON(request.ToJSON(CustomGetInstalledCertificateIdsRequestSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
 
-            #endregion
 
-            #region OnGetBaseReport                         (Request/-Response)
+            CSMS.OnGetInstalledCertificateIdsResponseReceived += (timestamp,
+                                                                  sender,
+                                                                  request,
+                                                                  response,
+                                                                  runtime) =>
 
-            CSMS.OnGetBaseReportRequest += (timestamp, sender, request) =>
-                EventLog.SubmitEvent("OnGetBaseReportRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomGetBaseReportRequestSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
-
-            CSMS.OnGetBaseReportResponse += (timestamp, sender, request, response, runtime) =>
-                EventLog.SubmitEvent("OnGetBaseReportResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomGetBaseReportRequestSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomGetBaseReportResponseSerializer,
-                                                                                        CustomStatusInfoSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
+                EventLog.SubmitEvent(nameof(CSMS.OnGetInstalledCertificateIdsResponseReceived),
+                                     response.ToAbstractJSON(request. ToJSON(CustomGetInstalledCertificateIdsRequestSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomGetInstalledCertificateIdsResponseSerializer,
+                                                                             CustomCertificateHashDataSerializer,
+                                                                             CustomStatusInfoSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
 
             #endregion
 
-            #region OnGetReport                             (Request/-Response)
+            #region OnInstallCertificate                    (RequestSent/-ResponseReceived)
 
-            CSMS.OnGetReportRequest += (timestamp, sender, request) =>
-                EventLog.SubmitEvent("OnGetReportRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomGetReportRequestSerializer,
-                                                                                      CustomComponentVariableSerializer,
-                                                                                      CustomComponentSerializer,
-                                                                                      CustomEVSESerializer,
-                                                                                      CustomVariableSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
+            CSMS.OnInstallCertificateRequestSent += (timestamp,
+                                                     sender,
+                                                     request) =>
 
-            CSMS.OnGetReportResponse += (timestamp, sender, request, response, runtime) =>
-                EventLog.SubmitEvent("OnGetReportResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomGetReportRequestSerializer,
-                                                                                        CustomComponentVariableSerializer,
-                                                                                        CustomComponentSerializer,
-                                                                                        CustomEVSESerializer,
-                                                                                        CustomVariableSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomGetReportResponseSerializer,
-                                                                                        CustomStatusInfoSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
+                EventLog.SubmitEvent(nameof(CSMS.OnInstallCertificateRequestSent),
+                                     request.ToAbstractJSON(request.ToJSON(CustomInstallCertificateRequestSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
 
-            #endregion
 
-            #region OnGetLog                                (Request/-Response)
+            CSMS.OnInstallCertificateResponseReceived += (timestamp,
+                                                          sender,
+                                                          request,
+                                                          response,
+                                                          runtime) =>
 
-            CSMS.OnGetLogRequest += (timestamp, sender, request) =>
-                EventLog.SubmitEvent("OnGetLogRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomGetLogRequestSerializer,
-                                                                                      CustomLogParametersSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
-
-            CSMS.OnGetLogResponse += (timestamp, sender, request, response, runtime) =>
-                EventLog.SubmitEvent("OnGetLogResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomGetLogRequestSerializer,
-                                                                                        CustomLogParametersSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomGetLogResponseSerializer,
-                                                                                        CustomStatusInfoSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
+                EventLog.SubmitEvent(nameof(CSMS.OnInstallCertificateResponseReceived),
+                                     response.ToAbstractJSON(request. ToJSON(CustomInstallCertificateRequestSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomInstallCertificateResponseSerializer,
+                                                                             CustomStatusInfoSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
 
             #endregion
 
-            #region OnSetVariables                          (Request/-Response)
+            #region OnNotifyCRL                             (RequestSent/-ResponseReceived)
 
-            CSMS.OnSetVariablesRequest += (timestamp, sender, request) =>
-                EventLog.SubmitEvent("OnSetVariablesRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomSetVariablesRequestSerializer,
-                                                                                      CustomSetVariableDataSerializer,
-                                                                                      CustomComponentSerializer,
-                                                                                      CustomEVSESerializer,
-                                                                                      CustomVariableSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
+            CSMS.OnNotifyCRLRequestSent += (timestamp,
+                                            sender,
+                                            request) =>
 
-            CSMS.OnSetVariablesResponse += (timestamp, sender, request, response, runtime) =>
-                EventLog.SubmitEvent("OnSetVariablesResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomSetVariablesRequestSerializer,
-                                                                                        CustomSetVariableDataSerializer,
-                                                                                        CustomComponentSerializer,
-                                                                                        CustomEVSESerializer,
-                                                                                        CustomVariableSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomSetVariablesResponseSerializer,
-                                                                                        CustomSetVariableResultSerializer,
-                                                                                        CustomComponentSerializer,
-                                                                                        CustomEVSESerializer,
-                                                                                        CustomVariableSerializer,
-                                                                                        CustomStatusInfoSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
+                EventLog.SubmitEvent(nameof(CSMS.OnNotifyCRLRequestSent),
+                                     request.ToAbstractJSON(request.ToJSON(CustomNotifyCRLRequestSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
+
+
+            CSMS.OnNotifyCRLResponseReceived += (timestamp,
+                                                 sender,
+                                                 request,
+                                                 response,
+                                                 runtime) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnNotifyCRLResponseReceived),
+                                     response.ToAbstractJSON(request. ToJSON(CustomNotifyCRLRequestSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomNotifyCRLResponseSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
 
             #endregion
 
-            #region OnGetVariables                          (Request/-Response)
+            #endregion
 
-            CSMS.OnGetVariablesRequest += (timestamp, sender, request) =>
-                EventLog.SubmitEvent("OnGetVariablesRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomGetVariablesRequestSerializer,
-                                                                                      CustomGetVariableDataSerializer,
-                                                                                      CustomComponentSerializer,
-                                                                                      CustomEVSESerializer,
-                                                                                      CustomVariableSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
+            #region Charging
 
-            CSMS.OnGetVariablesResponse += (timestamp, sender, request, response, runtime) =>
-                EventLog.SubmitEvent("OnGetVariablesResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomGetVariablesRequestSerializer,
-                                                                                        CustomGetVariableDataSerializer,
-                                                                                        CustomComponentSerializer,
-                                                                                        CustomEVSESerializer,
-                                                                                        CustomVariableSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomGetVariablesResponseSerializer,
-                                                                                        CustomGetVariableResultSerializer,
-                                                                                        CustomComponentSerializer,
-                                                                                        CustomEVSESerializer,
-                                                                                        CustomVariableSerializer,
-                                                                                        CustomStatusInfoSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
+            #region OnCancelReservation                     (RequestSent/-ResponseReceived)
+
+            CSMS.OnCancelReservationRequestSent += (timestamp,
+                                                    sender,
+                                                    request) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnCancelReservationRequestSent),
+                                     request.ToAbstractJSON(request.ToJSON(CustomCancelReservationRequestSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
+
+
+            CSMS.OnCancelReservationResponseReceived += (timestamp,
+                                                         sender,
+                                                         request,
+                                                         response,
+                                                         runtime) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnCancelReservationResponseReceived),
+                                     response.ToAbstractJSON(request. ToJSON(CustomCancelReservationRequestSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomCancelReservationResponseSerializer,
+                                                                             CustomStatusInfoSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
 
             #endregion
 
-            #region OnSetMonitoringBase                     (Request/-Response)
+            #region OnClearChargingProfile                  (RequestSent/-ResponseReceived)
 
-            CSMS.OnSetMonitoringBaseRequest += (timestamp, sender, request) =>
-                EventLog.SubmitEvent("OnSetMonitoringBaseRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomSetMonitoringBaseRequestSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
+            CSMS.OnClearChargingProfileRequestSent += (timestamp,
+                                                       sender,
+                                                       request) =>
 
-            CSMS.OnSetMonitoringBaseResponse += (timestamp, sender, request, response, runtime) =>
-                EventLog.SubmitEvent("OnSetMonitoringBaseResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomSetMonitoringBaseRequestSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomSetMonitoringBaseResponseSerializer,
-                                                                                        CustomStatusInfoSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
+                EventLog.SubmitEvent(nameof(CSMS.OnClearChargingProfileRequestSent),
+                                     request.ToAbstractJSON(request.ToJSON(CustomClearChargingProfileRequestSerializer,
+                                                                           CustomClearChargingProfileSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
 
-            #endregion
 
-            #region OnGetMonitoringReport                   (Request/-Response)
+            CSMS.OnClearChargingProfileResponseReceived += (timestamp,
+                                                            sender,
+                                                            request,
+                                                            response,
+                                                            runtime) =>
 
-            CSMS.OnGetMonitoringReportRequest += (timestamp, sender, request) =>
-                EventLog.SubmitEvent("OnGetMonitoringReportRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomGetMonitoringReportRequestSerializer,
-                                                                                      CustomComponentVariableSerializer,
-                                                                                      CustomComponentSerializer,
-                                                                                      CustomEVSESerializer,
-                                                                                      CustomVariableSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
-
-            CSMS.OnGetMonitoringReportResponse += (timestamp, sender, request, response, runtime) =>
-                EventLog.SubmitEvent("OnGetMonitoringReportResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomGetMonitoringReportRequestSerializer,
-                                                                                        CustomComponentVariableSerializer,
-                                                                                        CustomComponentSerializer,
-                                                                                        CustomEVSESerializer,
-                                                                                        CustomVariableSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomGetMonitoringReportResponseSerializer,
-                                                                                        CustomStatusInfoSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
+                EventLog.SubmitEvent(nameof(CSMS.OnClearChargingProfileResponseReceived),
+                                     response.ToAbstractJSON(request. ToJSON(CustomClearChargingProfileRequestSerializer,
+                                                                             CustomClearChargingProfileSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomClearChargingProfileResponseSerializer,
+                                                                             CustomStatusInfoSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
 
             #endregion
 
-            #region OnSetMonitoringLevel                    (Request/-Response)
+            #region OnGetChargingProfiles                   (RequestSent/-ResponseReceived)
 
-            CSMS.OnSetMonitoringLevelRequest += (timestamp, sender, request) =>
-                EventLog.SubmitEvent("OnSetMonitoringLevelRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomSetMonitoringLevelRequestSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
+            CSMS.OnGetChargingProfilesRequestSent += (timestamp,
+                                                      sender,
+                                                      request) =>
 
-            CSMS.OnSetMonitoringLevelResponse += (timestamp, sender, request, response, runtime) =>
-                EventLog.SubmitEvent("OnSetMonitoringLevelResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomSetMonitoringLevelRequestSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomSetMonitoringLevelResponseSerializer,
-                                                                                        CustomStatusInfoSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
+                EventLog.SubmitEvent(nameof(CSMS.OnGetChargingProfilesRequestSent),
+                                     request.ToAbstractJSON(request.ToJSON(CustomGetChargingProfilesRequestSerializer,
+                                                                           CustomChargingProfileCriterionSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
 
-            #endregion
 
-            #region OnSetVariableMonitoring                 (Request/-Response)
+            CSMS.OnGetChargingProfilesResponseReceived += (timestamp,
+                                                           sender,
+                                                           request,
+                                                           response,
+                                                           runtime) =>
 
-            CSMS.OnSetVariableMonitoringRequest += (timestamp, sender, request) =>
-                EventLog.SubmitEvent("OnSetVariableMonitoringRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomSetVariableMonitoringRequestSerializer,
-                                                                                      CustomSetMonitoringDataSerializer,
-                                                                                      CustomComponentSerializer,
-                                                                                      CustomEVSESerializer,
-                                                                                      CustomVariableSerializer,
-                                                                                      CustomPeriodicEventStreamParametersSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
-
-            CSMS.OnSetVariableMonitoringResponse += (timestamp, sender, request, response, runtime) =>
-                EventLog.SubmitEvent("OnSetVariableMonitoringResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomSetVariableMonitoringRequestSerializer,
-                                                                                        CustomSetMonitoringDataSerializer,
-                                                                                        CustomComponentSerializer,
-                                                                                        CustomEVSESerializer,
-                                                                                        CustomVariableSerializer,
-                                                                                        CustomPeriodicEventStreamParametersSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomSetVariableMonitoringResponseSerializer,
-                                                                                        CustomSetMonitoringResultSerializer,
-                                                                                        CustomComponentSerializer,
-                                                                                        CustomEVSESerializer,
-                                                                                        CustomVariableSerializer,
-                                                                                        CustomStatusInfoSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
+                EventLog.SubmitEvent(nameof(CSMS.OnGetChargingProfilesResponseReceived),
+                                     response.ToAbstractJSON(request. ToJSON(CustomGetChargingProfilesRequestSerializer,
+                                                                             CustomChargingProfileCriterionSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomGetChargingProfilesResponseSerializer,
+                                                                             CustomStatusInfoSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
 
             #endregion
 
-            #region OnClearVariableMonitoring               (Request/-Response)
+            #region OnGetCompositeSchedule                  (RequestSent/-ResponseReceived)
 
-            CSMS.OnClearVariableMonitoringRequest += (timestamp, sender, request) =>
-                EventLog.SubmitEvent("OnClearVariableMonitoringRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomClearVariableMonitoringRequestSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
+            CSMS.OnGetCompositeScheduleRequestSent += (timestamp,
+                                                       sender,
+                                                       request) =>
 
-            CSMS.OnClearVariableMonitoringResponse += (timestamp, sender, request, response, runtime) =>
-                EventLog.SubmitEvent("OnClearVariableMonitoringResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomClearVariableMonitoringRequestSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomClearVariableMonitoringResponseSerializer,
-                                                                                        CustomClearMonitoringResultSerializer,
-                                                                                        CustomStatusInfoSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
+                EventLog.SubmitEvent(nameof(CSMS.OnGetCompositeScheduleRequestSent),
+                                     request.ToAbstractJSON(request.ToJSON(CustomGetCompositeScheduleRequestSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
 
-            #endregion
 
-            #region OnSetNetworkProfile                     (Request/-Response)
+            CSMS.OnGetCompositeScheduleResponseReceived += (timestamp,
+                                                            sender,
+                                                            request,
+                                                            response,
+                                                            runtime) =>
 
-            CSMS.OnSetNetworkProfileRequest += (timestamp, sender, request) =>
-                EventLog.SubmitEvent("OnSetNetworkProfileRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomSetNetworkProfileRequestSerializer,
-                                                                                      CustomNetworkConnectionProfileSerializer,
-                                                                                      CustomVPNConfigurationSerializer,
-                                                                                      CustomAPNConfigurationSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
-
-            CSMS.OnSetNetworkProfileResponse += (timestamp, sender, request, response, runtime) =>
-                EventLog.SubmitEvent("OnSetNetworkProfileResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomSetNetworkProfileRequestSerializer,
-                                                                                        CustomNetworkConnectionProfileSerializer,
-                                                                                        CustomVPNConfigurationSerializer,
-                                                                                        CustomAPNConfigurationSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomSetNetworkProfileResponseSerializer,
-                                                                                        CustomStatusInfoSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
+                EventLog.SubmitEvent(nameof(CSMS.OnGetCompositeScheduleResponseReceived),
+                                     response.ToAbstractJSON(request. ToJSON(CustomGetCompositeScheduleRequestSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomGetCompositeScheduleResponseSerializer,
+                                                                             CustomCompositeScheduleSerializer,
+                                                                             CustomChargingSchedulePeriodSerializer,
+                                                                             CustomStatusInfoSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
 
             #endregion
 
-            #region OnChangeAvailability                    (Request/-Response)
+            #region OnGetTransactionStatus                  (RequestSent/-ResponseReceived)
 
-            CSMS.OnChangeAvailabilityRequest += (timestamp, sender, request) =>
-                EventLog.SubmitEvent("OnChangeAvailabilityRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomChangeAvailabilityRequestSerializer,
-                                                                                      CustomEVSESerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
+            CSMS.OnGetTransactionStatusRequestSent += (timestamp,
+                                                       sender,
+                                                       request) =>
 
-            CSMS.OnChangeAvailabilityResponse += (timestamp, sender, request, response, runtime) =>
-                EventLog.SubmitEvent("OnChangeAvailabilityResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomChangeAvailabilityRequestSerializer,
-                                                                                        CustomEVSESerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomChangeAvailabilityResponseSerializer,
-                                                                                        CustomStatusInfoSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
+                EventLog.SubmitEvent(nameof(CSMS.OnGetTransactionStatusRequestSent),
+                                     request.ToAbstractJSON(request.ToJSON(CustomGetTransactionStatusRequestSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
 
-            #endregion
 
-            #region OnTriggerMessage                        (Request/-Response)
+            CSMS.OnGetTransactionStatusResponseReceived += (timestamp,
+                                                            sender,
+                                                            request,
+                                                            response,
+                                                            runtime) =>
 
-            CSMS.OnTriggerMessageRequest += (timestamp, sender, request) =>
-                EventLog.SubmitEvent("OnTriggerMessageRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomTriggerMessageRequestSerializer,
-                                                                                      CustomEVSESerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
-
-            CSMS.OnTriggerMessageResponse += (timestamp, sender, request, response, runtime) =>
-                EventLog.SubmitEvent("OnTriggerMessageResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomTriggerMessageRequestSerializer,
-                                                                                        CustomEVSESerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomTriggerMessageResponseSerializer,
-                                                                                        CustomStatusInfoSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
+                EventLog.SubmitEvent(nameof(CSMS.OnGetTransactionStatusResponseReceived),
+                                     response.ToAbstractJSON(request. ToJSON(CustomGetTransactionStatusRequestSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomGetTransactionStatusResponseSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
 
             #endregion
 
+            #region OnNotifyAllowedEnergyTransfer           (RequestSent/-ResponseReceived)
 
-            #region OnCertificateSigned                     (Request/-Response)
+            CSMS.OnNotifyAllowedEnergyTransferRequestSent += (timestamp,
+                                                              sender,
+                                                              request) =>
 
-            CSMS.OnCertificateSignedRequest += (timestamp, sender, request) =>
-                EventLog.SubmitEvent("OnCertificateSignedRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomCertificateSignedRequestSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
+                EventLog.SubmitEvent(nameof(CSMS.OnNotifyAllowedEnergyTransferRequestSent),
+                                     request.ToAbstractJSON(request.ToJSON(CustomNotifyAllowedEnergyTransferRequestSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
 
-            CSMS.OnCertificateSignedResponse += (timestamp, sender, request, response, runtime) =>
-                EventLog.SubmitEvent("OnCertificateSignedResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomCertificateSignedRequestSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomCertificateSignedResponseSerializer,
-                                                                                        CustomStatusInfoSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
 
-            #endregion
+            CSMS.OnNotifyAllowedEnergyTransferResponseReceived += (timestamp,
+                                                                   sender,
+                                                                   request,
+                                                                   response,
+                                                                   runtime) =>
 
-            #region OnInstallCertificate                    (Request/-Response)
-
-            CSMS.OnInstallCertificateRequest += (timestamp, sender, request) =>
-                EventLog.SubmitEvent("OnInstallCertificateRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomInstallCertificateRequestSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
-
-            CSMS.OnInstallCertificateResponse += (timestamp, sender, request, response, runtime) =>
-                EventLog.SubmitEvent("OnInstallCertificateResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomInstallCertificateRequestSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomInstallCertificateResponseSerializer,
-                                                                                        CustomStatusInfoSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
+                EventLog.SubmitEvent(nameof(CSMS.OnNotifyAllowedEnergyTransferResponseReceived),
+                                     response.ToAbstractJSON(request. ToJSON(CustomNotifyAllowedEnergyTransferRequestSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomNotifyAllowedEnergyTransferResponseSerializer,
+                                                                             CustomStatusInfoSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
 
             #endregion
 
-            #region OnGetInstalledCertificateIds            (Request/-Response)
+            #region OnRequestStartTransaction               (RequestSent/-ResponseReceived)
 
-            CSMS.OnGetInstalledCertificateIdsRequest += (timestamp, sender, request) =>
-                EventLog.SubmitEvent("OnGetInstalledCertificateIdsRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomGetInstalledCertificateIdsRequestSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
+            CSMS.OnRequestStartTransactionRequestSent += (timestamp,
+                                                          sender,
+                                                          request) =>
 
-            CSMS.OnGetInstalledCertificateIdsResponse += (timestamp, sender, request, response, runtime) =>
-                EventLog.SubmitEvent("OnGetInstalledCertificateIdsResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomGetInstalledCertificateIdsRequestSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomGetInstalledCertificateIdsResponseSerializer,
-                                                                                        CustomCertificateHashDataSerializer,
-                                                                                        CustomStatusInfoSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
-
-            #endregion
-
-            #region OnDeleteCertificate                     (Request/-Response)
-
-            CSMS.OnDeleteCertificateRequest += (timestamp, sender, request) =>
-                EventLog.SubmitEvent("OnDeleteCertificateRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomDeleteCertificateRequestSerializer,
-                                                                                      CustomCertificateHashDataSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
-
-            CSMS.OnDeleteCertificateResponse += (timestamp, sender, request, response, runtime) =>
-                EventLog.SubmitEvent("OnDeleteCertificateResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomDeleteCertificateRequestSerializer,
-                                                                                        CustomCertificateHashDataSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomDeleteCertificateResponseSerializer,
-                                                                                        CustomStatusInfoSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
-
-            #endregion
-
-            #region OnNotifyCRL                             (Request/-Response)
-
-            CSMS.OnNotifyCRLRequest += (timestamp, sender, request) =>
-                EventLog.SubmitEvent("OnNotifyCRLRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomNotifyCRLRequestSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
-
-            CSMS.OnNotifyCRLResponse += (timestamp, sender, request, response, runtime) =>
-                EventLog.SubmitEvent("OnNotifyCRLResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomNotifyCRLRequestSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomNotifyCRLResponseSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
-
-            #endregion
-
-
-            #region OnGetLocalListVersion                   (Request/-Response)
-
-            CSMS.OnGetLocalListVersionRequest += (timestamp, sender, request) =>
-                EventLog.SubmitEvent("OnGetLocalListVersionRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomGetLocalListVersionRequestSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
-
-            CSMS.OnGetLocalListVersionResponse += (timestamp, sender, request, response, runtime) =>
-                EventLog.SubmitEvent("OnGetLocalListVersionResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomGetLocalListVersionRequestSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomGetLocalListVersionResponseSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
-
-            #endregion
-
-            #region OnSendLocalList                         (Request/-Response)
-
-            CSMS.OnSendLocalListRequest += (timestamp, sender, request) =>
-                EventLog.SubmitEvent("OnSendLocalListRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomSendLocalListRequestSerializer,
-                                                                                      CustomAuthorizationDataSerializer,
-                                                                                      CustomIdTokenSerializer,
-                                                                                      CustomAdditionalInfoSerializer,
-                                                                                      CustomIdTokenInfoSerializer,
-                                                                                      CustomMessageContentSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
-
-            CSMS.OnSendLocalListResponse += (timestamp, sender, request, response, runtime) =>
-                EventLog.SubmitEvent("OnSendLocalListResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomSendLocalListRequestSerializer,
-                                                                                        CustomAuthorizationDataSerializer,
-                                                                                        CustomIdTokenSerializer,
-                                                                                        CustomAdditionalInfoSerializer,
-                                                                                        CustomIdTokenInfoSerializer,
-                                                                                        CustomMessageContentSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomSendLocalListResponseSerializer,
-                                                                                        CustomStatusInfoSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
-
-            #endregion
-
-            #region OnClearCache                            (Request/-Response)
-
-            CSMS.OnClearCacheRequest += (timestamp, sender, request) =>
-                EventLog.SubmitEvent("OnClearCacheRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomClearCacheRequestSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
-
-            CSMS.OnClearCacheResponse += (timestamp, sender, request, response, runtime) =>
-                EventLog.SubmitEvent("OnClearCacheResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomClearCacheRequestSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomClearCacheResponseSerializer,
-                                                                                        CustomStatusInfoSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
-
-            #endregion
-
-
-            #region OnReserveNow                            (Request/-Response)
-
-            CSMS.OnReserveNowRequest += (timestamp, sender, request) =>
-                EventLog.SubmitEvent("OnReserveNowRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomReserveNowRequestSerializer,
-                                                                                      CustomIdTokenSerializer,
-                                                                                      CustomAdditionalInfoSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
-
-            CSMS.OnReserveNowResponse += (timestamp, sender, request, response, runtime) =>
-                EventLog.SubmitEvent("OnReserveNowResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomReserveNowRequestSerializer,
-                                                                                        CustomIdTokenSerializer,
-                                                                                        CustomAdditionalInfoSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomReserveNowResponseSerializer,
-                                                                                        CustomStatusInfoSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
-
-            #endregion
-
-            #region OnCancelReservation                     (Request/-Response)
-
-            CSMS.OnCancelReservationRequest += (timestamp, sender, request) =>
-                EventLog.SubmitEvent("OnCancelReservationRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomCancelReservationRequestSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
-
-            CSMS.OnCancelReservationResponse += (timestamp, sender, request, response, runtime) =>
-                EventLog.SubmitEvent("OnCancelReservationResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomCancelReservationRequestSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomCancelReservationResponseSerializer,
-                                                                                        CustomStatusInfoSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
-
-            #endregion
-
-            #region OnRequestStartTransaction               (Request/-Response)
-
-            CSMS.OnRequestStartTransactionRequest += (timestamp, sender, request) =>
-                EventLog.SubmitEvent("OnRequestStartTransactionRequest",
+                EventLog.SubmitEvent(nameof(CSMS.OnRequestStartTransactionRequestSent),
                                                 request.ToAbstractJSON(request.ToJSON(CustomRequestStartTransactionRequestSerializer,
 
                                                                                       CustomIdTokenSerializer,
@@ -2346,8 +2379,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                                       CustomSignatureSerializer,
                                                                                       CustomCustomDataSerializer)));
 
-            CSMS.OnRequestStartTransactionResponse += (timestamp, sender, request, response, runtime) =>
-                EventLog.SubmitEvent("OnRequestStartTransactionResponse",
+
+            CSMS.OnRequestStartTransactionResponseReceived += (timestamp,
+                                                               sender,
+                                                               request,
+                                                               response,
+                                                               runtime) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnRequestStartTransactionResponseReceived),
                                                 response.ToAbstractJSON(request. ToJSON(CustomRequestStartTransactionRequestSerializer,
 
                                                                                         CustomIdTokenSerializer,
@@ -2386,433 +2425,1215 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #endregion
 
-            #region OnRequestStopTransaction                (Request/-Response)
+            #region OnRequestStopTransaction                (RequestSent/-ResponseReceived)
 
-            CSMS.OnRequestStopTransactionRequest += (timestamp, sender, request) =>
-                EventLog.SubmitEvent("OnRequestStopTransactionRequest",
+            CSMS.OnRequestStopTransactionRequestSent += (timestamp,
+                                                         sender,
+                                                         request) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnRequestStopTransactionRequestSent),
                                                 request.ToAbstractJSON(request.ToJSON(CustomRequestStopTransactionRequestSerializer,
                                                                                       CustomSignatureSerializer,
                                                                                       CustomCustomDataSerializer)));
 
-            CSMS.OnRequestStopTransactionResponse += (timestamp, sender, request, response, runtime) =>
-                EventLog.SubmitEvent("OnRequestStopTransactionResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomRequestStopTransactionRequestSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomRequestStopTransactionResponseSerializer,
-                                                                                        CustomStatusInfoSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
+
+            CSMS.OnRequestStopTransactionResponseReceived += (timestamp,
+                                                              sender,
+                                                              request,
+                                                              response,
+                                                              runtime) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnRequestStopTransactionResponseReceived),
+                                     response.ToAbstractJSON(request. ToJSON(CustomRequestStopTransactionRequestSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomRequestStopTransactionResponseSerializer,
+                                                                             CustomStatusInfoSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
 
             #endregion
 
-            #region OnGetTransactionStatus                  (Request/-Response)
+            #region OnReserveNow                            (RequestSent/-ResponseReceived)
 
-            CSMS.OnGetTransactionStatusRequest += (timestamp, sender, request) =>
-                EventLog.SubmitEvent("OnGetTransactionStatusRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomGetTransactionStatusRequestSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
+            CSMS.OnReserveNowRequestSent += (timestamp,
+                                             sender,
+                                             request) =>
 
-            CSMS.OnGetTransactionStatusResponse += (timestamp, sender, request, response, runtime) =>
-                EventLog.SubmitEvent("OnGetTransactionStatusResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomGetTransactionStatusRequestSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomGetTransactionStatusResponseSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
+                EventLog.SubmitEvent(nameof(CSMS.OnReserveNowRequestSent),
+                                     request.ToAbstractJSON(request.ToJSON(CustomReserveNowRequestSerializer,
+                                                                           CustomIdTokenSerializer,
+                                                                           CustomAdditionalInfoSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
 
-            #endregion
 
-            #region OnSetChargingProfile                    (Request/-Response)
+            CSMS.OnReserveNowResponseReceived += (timestamp,
+                                                  sender,
+                                                  request,
+                                                  response,
+                                                  runtime) =>
 
-            CSMS.OnSetChargingProfileRequest += (timestamp, sender, request) =>
-                EventLog.SubmitEvent("OnSetChargingProfileRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomSetChargingProfileRequestSerializer,
-
-                                                                                      CustomChargingProfileSerializer,
-                                                                                      CustomLimitBeyondSoCSerializer,
-                                                                                      CustomChargingScheduleSerializer,
-                                                                                      CustomChargingSchedulePeriodSerializer,
-                                                                                      CustomV2XFreqWattEntrySerializer,
-                                                                                      CustomV2XSignalWattEntrySerializer,
-                                                                                      CustomSalesTariffSerializer,
-                                                                                      CustomSalesTariffEntrySerializer,
-                                                                                      CustomRelativeTimeIntervalSerializer,
-                                                                                      CustomConsumptionCostSerializer,
-                                                                                      CustomCostSerializer,
-
-                                                                                      CustomAbsolutePriceScheduleSerializer,
-                                                                                      CustomPriceRuleStackSerializer,
-                                                                                      CustomPriceRuleSerializer,
-                                                                                      CustomTaxRuleSerializer,
-                                                                                      CustomOverstayRuleListSerializer,
-                                                                                      CustomOverstayRuleSerializer,
-                                                                                      CustomAdditionalServiceSerializer,
-
-                                                                                      CustomPriceLevelScheduleSerializer,
-                                                                                      CustomPriceLevelScheduleEntrySerializer,
-
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
-
-            CSMS.OnSetChargingProfileResponse += (timestamp, sender, request, response, runtime) =>
-                EventLog.SubmitEvent("OnSetChargingProfileResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomSetChargingProfileRequestSerializer,
-
-                                                                                        CustomChargingProfileSerializer,
-                                                                                        CustomLimitBeyondSoCSerializer,
-                                                                                        CustomChargingScheduleSerializer,
-                                                                                        CustomChargingSchedulePeriodSerializer,
-                                                                                        CustomV2XFreqWattEntrySerializer,
-                                                                                        CustomV2XSignalWattEntrySerializer,
-                                                                                        CustomSalesTariffSerializer,
-                                                                                        CustomSalesTariffEntrySerializer,
-                                                                                        CustomRelativeTimeIntervalSerializer,
-                                                                                        CustomConsumptionCostSerializer,
-                                                                                        CustomCostSerializer,
-
-                                                                                        CustomAbsolutePriceScheduleSerializer,
-                                                                                        CustomPriceRuleStackSerializer,
-                                                                                        CustomPriceRuleSerializer,
-                                                                                        CustomTaxRuleSerializer,
-                                                                                        CustomOverstayRuleListSerializer,
-                                                                                        CustomOverstayRuleSerializer,
-                                                                                        CustomAdditionalServiceSerializer,
-
-                                                                                        CustomPriceLevelScheduleSerializer,
-                                                                                        CustomPriceLevelScheduleEntrySerializer,
-
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomSetChargingProfileResponseSerializer,
-                                                                                        CustomStatusInfoSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
+                EventLog.SubmitEvent(nameof(CSMS.OnReserveNowResponseReceived),
+                                     response.ToAbstractJSON(request. ToJSON(CustomReserveNowRequestSerializer,
+                                                                             CustomIdTokenSerializer,
+                                                                             CustomAdditionalInfoSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomReserveNowResponseSerializer,
+                                                                             CustomStatusInfoSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
 
             #endregion
 
-            #region OnGetChargingProfiles                   (Request/-Response)
+            #region OnSetChargingProfile                    (RequestSent/-ResponseReceived)
 
-            CSMS.OnGetChargingProfilesRequest += (timestamp, sender, request) =>
-                EventLog.SubmitEvent("OnGetChargingProfilesRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomGetChargingProfilesRequestSerializer,
-                                                                                      CustomChargingProfileCriterionSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
+            CSMS.OnSetChargingProfileRequestSent += (timestamp,
+                                                     sender,
+                                                     request) =>
 
-            CSMS.OnGetChargingProfilesResponse += (timestamp, sender, request, response, runtime) =>
-                EventLog.SubmitEvent("OnGetChargingProfilesResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomGetChargingProfilesRequestSerializer,
-                                                                                        CustomChargingProfileCriterionSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomGetChargingProfilesResponseSerializer,
-                                                                                        CustomStatusInfoSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
+                EventLog.SubmitEvent(nameof(CSMS.OnSetChargingProfileRequestSent),
+                                     request.ToAbstractJSON(request.ToJSON(CustomSetChargingProfileRequestSerializer,
 
-            #endregion
+                                                                           CustomChargingProfileSerializer,
+                                                                           CustomLimitBeyondSoCSerializer,
+                                                                           CustomChargingScheduleSerializer,
+                                                                           CustomChargingSchedulePeriodSerializer,
+                                                                           CustomV2XFreqWattEntrySerializer,
+                                                                           CustomV2XSignalWattEntrySerializer,
+                                                                           CustomSalesTariffSerializer,
+                                                                           CustomSalesTariffEntrySerializer,
+                                                                           CustomRelativeTimeIntervalSerializer,
+                                                                           CustomConsumptionCostSerializer,
+                                                                           CustomCostSerializer,
 
-            #region OnClearChargingProfile                  (Request/-Response)
+                                                                           CustomAbsolutePriceScheduleSerializer,
+                                                                           CustomPriceRuleStackSerializer,
+                                                                           CustomPriceRuleSerializer,
+                                                                           CustomTaxRuleSerializer,
+                                                                           CustomOverstayRuleListSerializer,
+                                                                           CustomOverstayRuleSerializer,
+                                                                           CustomAdditionalServiceSerializer,
 
-            CSMS.OnClearChargingProfileRequest += (timestamp, sender, request) =>
-                EventLog.SubmitEvent("OnClearChargingProfileRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomClearChargingProfileRequestSerializer,
-                                                                                      CustomClearChargingProfileSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
+                                                                           CustomPriceLevelScheduleSerializer,
+                                                                           CustomPriceLevelScheduleEntrySerializer,
 
-            CSMS.OnClearChargingProfileResponse += (timestamp, sender, request, response, runtime) =>
-                EventLog.SubmitEvent("OnClearChargingProfileResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomClearChargingProfileRequestSerializer,
-                                                                                        CustomClearChargingProfileSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomClearChargingProfileResponseSerializer,
-                                                                                        CustomStatusInfoSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
 
-            #endregion
 
-            #region OnGetCompositeSchedule                  (Request/-Response)
+            CSMS.OnSetChargingProfileResponseReceived += (timestamp,
+                                                          sender,
+                                                          request,
+                                                          response,
+                                                          runtime) =>
 
-            CSMS.OnGetCompositeScheduleRequest += (timestamp, sender, request) =>
-                EventLog.SubmitEvent("OnGetCompositeScheduleRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomGetCompositeScheduleRequestSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
+                EventLog.SubmitEvent(nameof(CSMS.OnSetChargingProfileResponseReceived),
+                                     response.ToAbstractJSON(request. ToJSON(CustomSetChargingProfileRequestSerializer,
 
-            CSMS.OnGetCompositeScheduleResponse += (timestamp, sender, request, response, runtime) =>
-                EventLog.SubmitEvent("OnGetCompositeScheduleResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomGetCompositeScheduleRequestSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomGetCompositeScheduleResponseSerializer,
-                                                                                        CustomCompositeScheduleSerializer,
-                                                                                        CustomChargingSchedulePeriodSerializer,
-                                                                                        CustomStatusInfoSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
+                                                                             CustomChargingProfileSerializer,
+                                                                             CustomLimitBeyondSoCSerializer,
+                                                                             CustomChargingScheduleSerializer,
+                                                                             CustomChargingSchedulePeriodSerializer,
+                                                                             CustomV2XFreqWattEntrySerializer,
+                                                                             CustomV2XSignalWattEntrySerializer,
+                                                                             CustomSalesTariffSerializer,
+                                                                             CustomSalesTariffEntrySerializer,
+                                                                             CustomRelativeTimeIntervalSerializer,
+                                                                             CustomConsumptionCostSerializer,
+                                                                             CustomCostSerializer,
 
-            #endregion
+                                                                             CustomAbsolutePriceScheduleSerializer,
+                                                                             CustomPriceRuleStackSerializer,
+                                                                             CustomPriceRuleSerializer,
+                                                                             CustomTaxRuleSerializer,
+                                                                             CustomOverstayRuleListSerializer,
+                                                                             CustomOverstayRuleSerializer,
+                                                                             CustomAdditionalServiceSerializer,
 
-            #region OnUpdateDynamicSchedule                 (Request/-Response)
+                                                                             CustomPriceLevelScheduleSerializer,
+                                                                             CustomPriceLevelScheduleEntrySerializer,
 
-            CSMS.OnUpdateDynamicScheduleRequest += (timestamp, sender, request) =>
-                EventLog.SubmitEvent("OnUpdateDynamicScheduleRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomUpdateDynamicScheduleRequestSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
-
-            CSMS.OnUpdateDynamicScheduleResponse += (timestamp, sender, request, response, runtime) =>
-                EventLog.SubmitEvent("OnUpdateDynamicScheduleResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomUpdateDynamicScheduleRequestSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomUpdateDynamicScheduleResponseSerializer,
-                                                                                        CustomStatusInfoSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomSetChargingProfileResponseSerializer,
+                                                                             CustomStatusInfoSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
 
             #endregion
 
-            #region OnNotifyAllowedEnergyTransfer           (Request/-Response)
+            #region OnUnlockConnector                       (RequestSent/-ResponseReceived)
 
-            CSMS.OnNotifyAllowedEnergyTransferRequest += (timestamp, sender, request) =>
-                EventLog.SubmitEvent("OnNotifyAllowedEnergyTransferRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomNotifyAllowedEnergyTransferRequestSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
+            CSMS.OnUnlockConnectorRequestSent += (timestamp,
+                                                  sender,
+                                                  request) =>
 
-            CSMS.OnNotifyAllowedEnergyTransferResponse += (timestamp, sender, request, response, runtime) =>
-                EventLog.SubmitEvent("OnNotifyAllowedEnergyTransferResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomNotifyAllowedEnergyTransferRequestSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomNotifyAllowedEnergyTransferResponseSerializer,
-                                                                                        CustomStatusInfoSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
+                EventLog.SubmitEvent(nameof(CSMS.OnUnlockConnectorRequestSent),
+                                     request.ToAbstractJSON(request.ToJSON(CustomUnlockConnectorRequestSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
 
-            #endregion
 
-            #region OnUsePriorityCharging                   (Request/-Response)
+            CSMS.OnUnlockConnectorResponseReceived += (timestamp,
+                                                       sender,
+                                                       request,
+                                                       response,
+                                                       runtime) =>
 
-            CSMS.OnUsePriorityChargingRequest += (timestamp, sender, request) =>
-                EventLog.SubmitEvent("OnUsePriorityChargingRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomUsePriorityChargingRequestSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
-
-            CSMS.OnUsePriorityChargingResponse += (timestamp, sender, request, response, runtime) =>
-                EventLog.SubmitEvent("OnUsePriorityChargingResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomUsePriorityChargingRequestSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomUsePriorityChargingResponseSerializer,
-                                                                                        CustomStatusInfoSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
+                EventLog.SubmitEvent(nameof(CSMS.OnUnlockConnectorResponseReceived),
+                                     response.ToAbstractJSON(request. ToJSON(CustomUnlockConnectorRequestSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomUnlockConnectorResponseSerializer,
+                                                                             CustomStatusInfoSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
 
             #endregion
 
-            #region OnUnlockConnector                       (Request/-Response)
+            #region OnUpdateDynamicSchedule                 (RequestSent/-ResponseReceived)
 
-            CSMS.OnUnlockConnectorRequest += (timestamp, sender, request) =>
-                EventLog.SubmitEvent("OnUnlockConnectorRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomUnlockConnectorRequestSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
+            CSMS.OnUpdateDynamicScheduleRequestSent += (timestamp,
+                                                        sender,
+                                                        request) =>
 
-            CSMS.OnUnlockConnectorResponse += (timestamp, sender, request, response, runtime) =>
-                EventLog.SubmitEvent("OnUnlockConnectorResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomUnlockConnectorRequestSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomUnlockConnectorResponseSerializer,
-                                                                                        CustomStatusInfoSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
-
-            #endregion
+                EventLog.SubmitEvent(nameof(CSMS.OnUpdateDynamicScheduleRequestSent),
+                                     request.ToAbstractJSON(request.ToJSON(CustomUpdateDynamicScheduleRequestSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
 
 
-            #region OnAFRRSignal                            (Request/-Response)
+            CSMS.OnUpdateDynamicScheduleResponseReceived += (timestamp,
+                                                             sender,
+                                                             request,
+                                                             response,
+                                                             runtime) =>
 
-            CSMS.OnAFRRSignalRequest += (timestamp, sender, request) =>
-                EventLog.SubmitEvent("OnAFRRSignalRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomAFRRSignalRequestSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
-
-            CSMS.OnAFRRSignalResponse += (timestamp, sender, request, response, runtime) =>
-                EventLog.SubmitEvent("OnAFRRSignalResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomAFRRSignalRequestSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomAFRRSignalResponseSerializer,
-                                                                                        CustomStatusInfoSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
+                EventLog.SubmitEvent(nameof(CSMS.OnUpdateDynamicScheduleResponseReceived),
+                                     response.ToAbstractJSON(request.ToJSON(CustomUpdateDynamicScheduleRequestSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomUpdateDynamicScheduleResponseSerializer,
+                                                                             CustomStatusInfoSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
 
             #endregion
 
+            #region OnUsePriorityCharging                   (RequestSent/-ResponseReceived)
 
-            #region OnSetDisplayMessage                     (Request/-Response)
+            CSMS.OnUsePriorityChargingRequestSent += (timestamp,
+                                                      sender,
+                                                      request) =>
 
-            CSMS.OnSetDisplayMessageRequest += (timestamp, sender, request) =>
-                EventLog.SubmitEvent("OnSetDisplayMessageRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomSetDisplayMessageRequestSerializer,
-                                                                                      CustomMessageInfoSerializer,
-                                                                                      CustomMessageContentSerializer,
-                                                                                      CustomComponentSerializer,
-                                                                                      CustomEVSESerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
+                EventLog.SubmitEvent(nameof(CSMS.OnUsePriorityChargingRequestSent),
+                                     request.ToAbstractJSON(request.ToJSON(CustomUsePriorityChargingRequestSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
 
-            CSMS.OnSetDisplayMessageResponse += (timestamp, sender, request, response, runtime) =>
-                EventLog.SubmitEvent("OnSetDisplayMessageResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomSetDisplayMessageRequestSerializer,
-                                                                                        CustomMessageInfoSerializer,
-                                                                                        CustomMessageContentSerializer,
-                                                                                        CustomComponentSerializer,
-                                                                                        CustomEVSESerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomSetDisplayMessageResponseSerializer,
-                                                                                        CustomStatusInfoSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
 
-            #endregion
+            CSMS.OnUsePriorityChargingResponseReceived += (timestamp,
+                                                           sender,
+                                                           request,
+                                                           response,
+                                                           runtime) =>
 
-            #region OnGetDisplayMessages                    (Request/-Response)
-
-            CSMS.OnGetDisplayMessagesRequest += (timestamp, sender, request) =>
-                EventLog.SubmitEvent("OnGetDisplayMessagesRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomGetDisplayMessagesRequestSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
-
-            CSMS.OnGetDisplayMessagesResponse += (timestamp, sender, request, response, runtime) =>
-                EventLog.SubmitEvent("OnGetDisplayMessagesResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomGetDisplayMessagesRequestSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomGetDisplayMessagesResponseSerializer,
-                                                                                        CustomStatusInfoSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
-
-            #endregion
-
-            #region OnClearDisplayMessage                   (Request/-Response)
-
-            CSMS.OnClearDisplayMessageRequest += (timestamp, sender, request) =>
-                EventLog.SubmitEvent("OnClearDisplayMessageRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomClearDisplayMessageRequestSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
-
-            CSMS.OnClearDisplayMessageResponse += (timestamp, sender, request, response, runtime) =>
-                EventLog.SubmitEvent("OnClearDisplayMessageResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomClearDisplayMessageRequestSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomClearDisplayMessageResponseSerializer,
-                                                                                        CustomStatusInfoSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
-
-            #endregion
-
-            #region OnCostUpdated                           (Request/-Response)
-
-            CSMS.OnCostUpdatedRequest += (timestamp, sender, request) =>
-                EventLog.SubmitEvent("OnCostUpdatedRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomCostUpdatedRequestSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
-
-            CSMS.OnCostUpdatedResponse += (timestamp, sender, request, response, runtime) =>
-                EventLog.SubmitEvent("OnCostUpdatedResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomCostUpdatedRequestSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomCostUpdatedResponseSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
-
-            #endregion
-
-            #region OnCustomerInformation                   (Request/-Response)
-
-            CSMS.OnCustomerInformationRequest += (timestamp, sender, request) =>
-                EventLog.SubmitEvent("OnCustomerInformationRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomCustomerInformationRequestSerializer,
-                                                                                      CustomIdTokenSerializer,
-                                                                                      CustomAdditionalInfoSerializer,
-                                                                                      CustomCertificateHashDataSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
-
-            CSMS.OnCustomerInformationResponse += (timestamp, sender, request, response, runtime) =>
-                EventLog.SubmitEvent("OnCustomerInformationResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomCustomerInformationRequestSerializer,
-                                                                                        CustomIdTokenSerializer,
-                                                                                        CustomAdditionalInfoSerializer,
-                                                                                        CustomCertificateHashDataSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomCustomerInformationResponseSerializer,
-                                                                                        CustomStatusInfoSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
+                EventLog.SubmitEvent(nameof(CSMS.OnUsePriorityChargingResponseReceived),
+                                     response.ToAbstractJSON(request. ToJSON(CustomUsePriorityChargingRequestSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomUsePriorityChargingResponseSerializer,
+                                                                             CustomStatusInfoSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
 
             #endregion
 
             #endregion
 
-            #region CSMS            <-> ChargingStation Messages
+            #region Customer
 
-            #region OnDataTransfer                          (Request/-Response)
+            #region OnClearDisplayMessage                   (RequestSent/-ResponseReceived)
 
-            CSMS.OnDataTransferRequest += (timestamp, sender, request) =>
-                EventLog.SubmitEvent("OnDataTransferRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomData2TransferRequestSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
+            CSMS.OnClearDisplayMessageRequestSent += (timestamp,
+                                                      sender,
+                                                      request) =>
 
-            CSMS.OnDataTransferResponse += (timestamp, sender, request, response, runtime) =>
-                EventLog.SubmitEvent("OnDataTransferResponse",
-                                                response.ToAbstractJSON(request. ToJSON(CustomData2TransferRequestSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomData2TransferResponseSerializer,
-                                                                                        CustomStatusInfoSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
+                EventLog.SubmitEvent(nameof(CSMS.OnClearDisplayMessageRequestSent),
+                                     request.ToAbstractJSON(request.ToJSON(CustomClearDisplayMessageRequestSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
 
 
+            CSMS.OnClearDisplayMessageResponseReceived += (timestamp,
+                                                           sender,
+                                                           request,
+                                                           response,
+                                                           runtime) =>
 
-            CSMS.OnDataTransferRequestReceived += (timestamp, sender, connection, request) =>
-                EventLog.SubmitEvent("OnDataTransferRequestReceived",
-                                                request.ToAbstractJSON(request.ToJSON(CustomDataTransferRequestSerializer,
-                                                                                      CustomSignatureSerializer,
-                                                                                      CustomCustomDataSerializer)));
+                EventLog.SubmitEvent(nameof(CSMS.OnClearDisplayMessageResponseReceived),
+                                     response.ToAbstractJSON(request. ToJSON(CustomClearDisplayMessageRequestSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomClearDisplayMessageResponseSerializer,
+                                                                             CustomStatusInfoSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
 
-            CSMS.OnDataTransferResponseSent += (timestamp, sender, connection, request, response, runtime) =>
-                EventLog.SubmitEvent("OnDataTransferResponseSent",
-                                                response.ToAbstractJSON(request. ToJSON(CustomDataTransferRequestSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer),
-                                                                        response.ToJSON(CustomDataTransferResponseSerializer,
-                                                                                        CustomStatusInfoSerializer,
-                                                                                        CustomSignatureSerializer,
-                                                                                        CustomCustomDataSerializer)));
+            #endregion
+
+            #region OnCostUpdated                           (RequestSent/-ResponseReceived)
+
+            CSMS.OnCostUpdatedRequestSent += (timestamp,
+                                              sender,
+                                              request) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnCostUpdatedRequestSent),
+                                     request.ToAbstractJSON(request.ToJSON(CustomCostUpdatedRequestSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
+
+
+            CSMS.OnCostUpdatedResponseReceived += (timestamp,
+                                                   sender,
+                                                   request,
+                                                   response,
+                                                   runtime) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnCostUpdatedResponseReceived),
+                                     response.ToAbstractJSON(request. ToJSON(CustomCostUpdatedRequestSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomCostUpdatedResponseSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
+
+            #endregion
+
+            #region OnCustomerInformation                   (RequestSent/-ResponseReceived)
+
+            CSMS.OnCustomerInformationRequestSent += (timestamp,
+                                                      sender,
+                                                      request) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnCustomerInformationRequestSent),
+                                     request.ToAbstractJSON(request.ToJSON(CustomCustomerInformationRequestSerializer,
+                                                                           CustomIdTokenSerializer,
+                                                                           CustomAdditionalInfoSerializer,
+                                                                           CustomCertificateHashDataSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
+
+
+            CSMS.OnCustomerInformationResponseReceived += (timestamp,
+                                                           sender,
+                                                           request,
+                                                           response,
+                                                           runtime) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnCustomerInformationResponseReceived),
+                                     response.ToAbstractJSON(request. ToJSON(CustomCustomerInformationRequestSerializer,
+                                                                             CustomIdTokenSerializer,
+                                                                             CustomAdditionalInfoSerializer,
+                                                                             CustomCertificateHashDataSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomCustomerInformationResponseSerializer,
+                                                                             CustomStatusInfoSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
+
+            #endregion
+
+            #region OnGetDisplayMessages                    (RequestSent/-ResponseReceived)
+
+            CSMS.OnGetDisplayMessagesRequestSent += (timestamp,
+                                                     sender,
+                                                     request) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnGetDisplayMessagesRequestSent),
+                                     request.ToAbstractJSON(request.ToJSON(CustomGetDisplayMessagesRequestSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
+
+
+            CSMS.OnGetDisplayMessagesResponseReceived += (timestamp,
+                                                          sender,
+                                                          request,
+                                                          response,
+                                                          runtime) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnGetDisplayMessagesResponseReceived),
+                                     response.ToAbstractJSON(request. ToJSON(CustomGetDisplayMessagesRequestSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomGetDisplayMessagesResponseSerializer,
+                                                                             CustomStatusInfoSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
+
+            #endregion
+
+            #region OnSetDisplayMessage                     (RequestSent/-ResponseReceived)
+
+            CSMS.OnSetDisplayMessageRequestSent += (timestamp,
+                                                    sender,
+                                                    request) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnSetDisplayMessageRequestSent),
+                                     request.ToAbstractJSON(request.ToJSON(CustomSetDisplayMessageRequestSerializer,
+                                                                           CustomMessageInfoSerializer,
+                                                                           CustomMessageContentSerializer,
+                                                                           CustomComponentSerializer,
+                                                                           CustomEVSESerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
+
+
+            CSMS.OnSetDisplayMessageResponseReceived += (timestamp,
+                                                         sender,
+                                                         request,
+                                                         response,
+                                                         runtime) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnSetDisplayMessageResponseReceived),
+                                     response.ToAbstractJSON(request. ToJSON(CustomSetDisplayMessageRequestSerializer,
+                                                                             CustomMessageInfoSerializer,
+                                                                             CustomMessageContentSerializer,
+                                                                             CustomComponentSerializer,
+                                                                             CustomEVSESerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomSetDisplayMessageResponseSerializer,
+                                                                             CustomStatusInfoSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
+
+            #endregion
+
+            #endregion
+
+            #region DeviceModel
+
+            #region OnChangeAvailability                    (RequestSent/-ResponseReceived)
+
+            CSMS.OnChangeAvailabilityRequestSent += (timestamp,
+                                                     sender,
+                                                     request) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnChangeAvailabilityRequestSent),
+                                     request.ToAbstractJSON(request.ToJSON(CustomChangeAvailabilityRequestSerializer,
+                                                                           CustomEVSESerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
+
+
+            CSMS.OnChangeAvailabilityResponseReceived += (timestamp,
+                                                          sender,
+                                                          request,
+                                                          response,
+                                                          runtime) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnChangeAvailabilityResponseReceived),
+                                     response.ToAbstractJSON(request. ToJSON(CustomChangeAvailabilityRequestSerializer,
+                                                                             CustomEVSESerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomChangeAvailabilityResponseSerializer,
+                                                                             CustomStatusInfoSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
+
+            #endregion
+
+            #region OnClearVariableMonitoring               (RequestSent/-ResponseReceived)
+
+            CSMS.OnClearVariableMonitoringRequestSent += (timestamp,
+                                                          sender,
+                                                          request) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnClearVariableMonitoringRequestSent),
+                                     request.ToAbstractJSON(request.ToJSON(CustomClearVariableMonitoringRequestSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
+
+
+            CSMS.OnClearVariableMonitoringResponseReceived += (timestamp,
+                                                               sender,
+                                                               request,
+                                                               response,
+                                                               runtime) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnClearVariableMonitoringResponseReceived),
+                                     response.ToAbstractJSON(request. ToJSON(CustomClearVariableMonitoringRequestSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomClearVariableMonitoringResponseSerializer,
+                                                                             CustomClearMonitoringResultSerializer,
+                                                                             CustomStatusInfoSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
+
+            #endregion
+
+            #region OnGetBaseReport                         (RequestSent/-ResponseReceived)
+
+            CSMS.OnGetBaseReportRequestSent += (timestamp,
+                                                sender,
+                                                request) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnGetBaseReportRequestSent),
+                                     request.ToAbstractJSON(request.ToJSON(CustomGetBaseReportRequestSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
+
+
+            CSMS.OnGetBaseReportResponseReceived += (timestamp,
+                                                     sender,
+                                                     request,
+                                                     response,
+                                                     runtime) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnGetBaseReportResponseReceived),
+                                     response.ToAbstractJSON(request. ToJSON(CustomGetBaseReportRequestSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomGetBaseReportResponseSerializer,
+                                                                             CustomStatusInfoSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
+
+            #endregion
+
+            #region OnGetLog                                (RequestSent/-ResponseReceived)
+
+            CSMS.OnGetLogRequestSent += (timestamp,
+                                         sender,
+                                         request) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnGetLogRequestSent),
+                                     request.ToAbstractJSON(request.ToJSON(CustomGetLogRequestSerializer,
+                                                                           CustomLogParametersSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
+
+
+            CSMS.OnGetLogResponseReceived += (timestamp,
+                                              sender,
+                                              request,
+                                              response,
+                                              runtime) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnGetLogResponseReceived),
+                                     response.ToAbstractJSON(request. ToJSON(CustomGetLogRequestSerializer,
+                                                                             CustomLogParametersSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomGetLogResponseSerializer,
+                                                                             CustomStatusInfoSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
+
+            #endregion
+
+            #region OnGetMonitoringReport                   (RequestSent/-ResponseReceived)
+
+            CSMS.OnGetMonitoringReportRequestSent += (timestamp,
+                                                      sender,
+                                                      request) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnGetMonitoringReportRequestSent),
+                                     request.ToAbstractJSON(request.ToJSON(CustomGetMonitoringReportRequestSerializer,
+                                                                           CustomComponentVariableSerializer,
+                                                                           CustomComponentSerializer,
+                                                                           CustomEVSESerializer,
+                                                                           CustomVariableSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
+
+
+            CSMS.OnGetMonitoringReportResponseReceived += (timestamp,
+                                                           sender,
+                                                           request,
+                                                           response,
+                                                           runtime) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnGetMonitoringReportResponseReceived),
+                                     response.ToAbstractJSON(request. ToJSON(CustomGetMonitoringReportRequestSerializer,
+                                                                             CustomComponentVariableSerializer,
+                                                                             CustomComponentSerializer,
+                                                                             CustomEVSESerializer,
+                                                                             CustomVariableSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomGetMonitoringReportResponseSerializer,
+                                                                             CustomStatusInfoSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
+
+            #endregion
+
+            #region OnGetReport                             (RequestSent/-ResponseReceived)
+
+            CSMS.OnGetReportRequestSent += (timestamp,
+                                            sender,
+                                            request) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnGetReportRequestSent),
+                                     request.ToAbstractJSON(request.ToJSON(CustomGetReportRequestSerializer,
+                                                                           CustomComponentVariableSerializer,
+                                                                           CustomComponentSerializer,
+                                                                           CustomEVSESerializer,
+                                                                           CustomVariableSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
+
+
+            CSMS.OnGetReportResponseReceived += (timestamp,
+                                                 sender,
+                                                 request,
+                                                 response,
+                                                 runtime) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnGetReportResponseReceived),
+                                     response.ToAbstractJSON(request. ToJSON(CustomGetReportRequestSerializer,
+                                                                             CustomComponentVariableSerializer,
+                                                                             CustomComponentSerializer,
+                                                                             CustomEVSESerializer,
+                                                                             CustomVariableSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomGetReportResponseSerializer,
+                                                                             CustomStatusInfoSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
+
+            #endregion
+
+            #region OnGetVariables                          (RequestSent/-ResponseReceived)
+
+            CSMS.OnGetVariablesRequestSent += (timestamp,
+                                               sender,
+                                               request) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnGetVariablesRequestSent),
+                                     request.ToAbstractJSON(request.ToJSON(CustomGetVariablesRequestSerializer,
+                                                                           CustomGetVariableDataSerializer,
+                                                                           CustomComponentSerializer,
+                                                                           CustomEVSESerializer,
+                                                                           CustomVariableSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
+
+
+            CSMS.OnGetVariablesResponseReceived += (timestamp,
+                                                    sender,
+                                                    request,
+                                                    response,
+                                                    runtime) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnGetVariablesResponseReceived),
+                                     response.ToAbstractJSON(request. ToJSON(CustomGetVariablesRequestSerializer,
+                                                                             CustomGetVariableDataSerializer,
+                                                                             CustomComponentSerializer,
+                                                                             CustomEVSESerializer,
+                                                                             CustomVariableSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomGetVariablesResponseSerializer,
+                                                                             CustomGetVariableResultSerializer,
+                                                                             CustomComponentSerializer,
+                                                                             CustomEVSESerializer,
+                                                                             CustomVariableSerializer,
+                                                                             CustomStatusInfoSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
+
+            #endregion
+
+            #region OnSetMonitoringBase                     (RequestSent/-ResponseReceived)
+
+            CSMS.OnSetMonitoringBaseRequestSent += (timestamp,
+                                                    sender,
+                                                    request) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnSetMonitoringBaseRequestSent),
+                                     request.ToAbstractJSON(request.ToJSON(CustomSetMonitoringBaseRequestSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
+
+
+            CSMS.OnSetMonitoringBaseResponseReceived += (timestamp,
+                                                         sender,
+                                                         request,
+                                                         response,
+                                                         runtime) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnSetMonitoringBaseResponseReceived),
+                                     response.ToAbstractJSON(request. ToJSON(CustomSetMonitoringBaseRequestSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomSetMonitoringBaseResponseSerializer,
+                                                                             CustomStatusInfoSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
+
+            #endregion
+
+            #region OnSetMonitoringLevel                    (RequestSent/-ResponseReceived)
+
+            CSMS.OnSetMonitoringLevelRequestSent += (timestamp,
+                                                     sender,
+                                                     request) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnSetMonitoringLevelRequestSent),
+                                     request.ToAbstractJSON(request.ToJSON(CustomSetMonitoringLevelRequestSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
+
+
+            CSMS.OnSetMonitoringLevelResponseReceived += (timestamp,
+                                                          sender,
+                                                          request,
+                                                          response,
+                                                          runtime) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnSetMonitoringLevelResponseReceived),
+                                     response.ToAbstractJSON(request. ToJSON(CustomSetMonitoringLevelRequestSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomSetMonitoringLevelResponseSerializer,
+                                                                             CustomStatusInfoSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
+
+            #endregion
+
+            #region OnSetNetworkProfile                     (RequestSent/-ResponseReceived)
+
+            CSMS.OnSetNetworkProfileRequestSent += (timestamp,
+                                                    sender,
+                                                    request) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnSetNetworkProfileRequestSent),
+                                     request.ToAbstractJSON(request.ToJSON(CustomSetNetworkProfileRequestSerializer,
+                                                                           CustomNetworkConnectionProfileSerializer,
+                                                                           CustomVPNConfigurationSerializer,
+                                                                           CustomAPNConfigurationSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
+
+
+            CSMS.OnSetNetworkProfileResponseReceived += (timestamp,
+                                                         sender,
+                                                         request,
+                                                         response,
+                                                         runtime) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnSetNetworkProfileResponseReceived),
+                                     response.ToAbstractJSON(request. ToJSON(CustomSetNetworkProfileRequestSerializer,
+                                                                             CustomNetworkConnectionProfileSerializer,
+                                                                             CustomVPNConfigurationSerializer,
+                                                                             CustomAPNConfigurationSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomSetNetworkProfileResponseSerializer,
+                                                                             CustomStatusInfoSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
+
+            #endregion
+
+            #region OnSetVariableMonitoring                 (RequestSent/-ResponseReceived)
+
+            CSMS.OnSetVariableMonitoringRequestSent += (timestamp,
+                                                        sender,
+                                                        request) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnSetVariableMonitoringRequestSent),
+                                     request.ToAbstractJSON(request.ToJSON(CustomSetVariableMonitoringRequestSerializer,
+                                                                           CustomSetMonitoringDataSerializer,
+                                                                           CustomComponentSerializer,
+                                                                           CustomEVSESerializer,
+                                                                           CustomVariableSerializer,
+                                                                           CustomPeriodicEventStreamParametersSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
+
+
+            CSMS.OnSetVariableMonitoringResponseReceived += (timestamp,
+                                                             sender,
+                                                             request,
+                                                             response,
+                                                             runtime) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnSetVariableMonitoringResponseReceived),
+                                     response.ToAbstractJSON(request. ToJSON(CustomSetVariableMonitoringRequestSerializer,
+                                                                             CustomSetMonitoringDataSerializer,
+                                                                             CustomComponentSerializer,
+                                                                             CustomEVSESerializer,
+                                                                             CustomVariableSerializer,
+                                                                             CustomPeriodicEventStreamParametersSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomSetVariableMonitoringResponseSerializer,
+                                                                             CustomSetMonitoringResultSerializer,
+                                                                             CustomComponentSerializer,
+                                                                             CustomEVSESerializer,
+                                                                             CustomVariableSerializer,
+                                                                             CustomStatusInfoSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
+
+            #endregion
+
+            #region OnSetVariables                          (RequestSent/-ResponseReceived)
+
+            CSMS.OnSetVariablesRequestSent += (timestamp,
+                                               sender,
+                                               request) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnSetVariablesRequestSent),
+                                     request.ToAbstractJSON(request.ToJSON(CustomSetVariablesRequestSerializer,
+                                                                           CustomSetVariableDataSerializer,
+                                                                           CustomComponentSerializer,
+                                                                           CustomEVSESerializer,
+                                                                           CustomVariableSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
+
+
+            CSMS.OnSetVariablesResponseReceived += (timestamp,
+                                                    sender,
+                                                    request,
+                                                    response,
+                                                    runtime) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnSetVariablesResponseReceived),
+                                     response.ToAbstractJSON(request. ToJSON(CustomSetVariablesRequestSerializer,
+                                                                             CustomSetVariableDataSerializer,
+                                                                             CustomComponentSerializer,
+                                                                             CustomEVSESerializer,
+                                                                             CustomVariableSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomSetVariablesResponseSerializer,
+                                                                             CustomSetVariableResultSerializer,
+                                                                             CustomComponentSerializer,
+                                                                             CustomEVSESerializer,
+                                                                             CustomVariableSerializer,
+                                                                             CustomStatusInfoSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
+
+            #endregion
+
+            #region OnTriggerMessage                        (RequestSent/-ResponseReceived)
+
+            CSMS.OnTriggerMessageRequestSent += (timestamp,
+                                                 sender,
+                                                 request) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnTriggerMessageRequestSent),
+                                     request.ToAbstractJSON(request.ToJSON(CustomTriggerMessageRequestSerializer,
+                                                                           CustomEVSESerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
+
+
+            CSMS.OnTriggerMessageResponseReceived += (timestamp,
+                                                      sender,
+                                                      request,
+                                                      response,
+                                                      runtime) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnTriggerMessageResponseReceived),
+                                     response.ToAbstractJSON(request. ToJSON(CustomTriggerMessageRequestSerializer,
+                                                                             CustomEVSESerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomTriggerMessageResponseSerializer,
+                                                                             CustomStatusInfoSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
+
+            #endregion
+
+            #endregion
+
+            #region Firmware
+
+            #region OnPublishFirmware                       (RequestSent/-ResponseReceived)
+
+            CSMS.OnPublishFirmwareRequestSent += (timestamp,
+                                                  sender,
+                                                  request) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnPublishFirmwareRequestSent),
+                                     request.ToAbstractJSON(request.ToJSON(CustomPublishFirmwareRequestSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
+
+
+            CSMS.OnPublishFirmwareResponseReceived += (timestamp,
+                                                       sender,
+                                                       request,
+                                                       response,
+                                                       runtime) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnPublishFirmwareResponseReceived),
+                                     response.ToAbstractJSON(request. ToJSON(CustomPublishFirmwareRequestSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomPublishFirmwareResponseSerializer,
+                                                                             CustomStatusInfoSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
+
+            #endregion
+
+            #region OnReset                                 (RequestSent/-ResponseReceived)
+
+            CSMS.OnResetRequestSent += (timestamp,
+                                        sender,
+                                        request) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnResetRequestSent),
+                                     request.ToAbstractJSON(request.ToJSON(CustomResetRequestSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
+
+
+            CSMS.OnResetResponseReceived += (timestamp,
+                                             sender,
+                                             request,
+                                             response,
+                                             runtime) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnResetResponseReceived),
+                                     response.ToAbstractJSON(request. ToJSON(CustomResetRequestSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomResetResponseSerializer,
+                                                                             CustomStatusInfoSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
+
+            #endregion
+
+            #region OnUnpublishFirmware                     (RequestSent/-ResponseReceived)
+
+            CSMS.OnUnpublishFirmwareRequestSent += (timestamp,
+                                                    sender,
+                                                    request) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnUnpublishFirmwareRequestSent),
+                                     request.ToAbstractJSON(request.ToJSON(CustomUnpublishFirmwareRequestSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
+
+
+            CSMS.OnUnpublishFirmwareResponseReceived += (timestamp,
+                                                         sender,
+                                                         request,
+                                                         response,
+                                                         runtime) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnUnpublishFirmwareResponseReceived),
+                                     response.ToAbstractJSON(request. ToJSON(CustomUnpublishFirmwareRequestSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomUnpublishFirmwareResponseSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
+
+            #endregion
+
+            #region OnUpdateFirmware                        (RequestSent/-ResponseReceived)
+
+            CSMS.OnUpdateFirmwareRequestSent += (timestamp,
+                                                  sender,
+                                                  request) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnUpdateFirmwareRequestSent),
+                                     request.ToAbstractJSON(request.ToJSON(CustomUpdateFirmwareRequestSerializer,
+                                                                           CustomFirmwareSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
+
+
+            CSMS.OnUpdateFirmwareResponseReceived += (timestamp,
+                                                      sender,
+                                                      request,
+                                                      response,
+                                                      runtime) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnUpdateFirmwareResponseReceived),
+                                     response.ToAbstractJSON(request. ToJSON(CustomUpdateFirmwareRequestSerializer,
+                                                                             CustomFirmwareSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomUpdateFirmwareResponseSerializer,
+                                                                             CustomStatusInfoSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
+
+            #endregion
+
+            #endregion
+
+            #region Grid
+
+            #region OnAFRRSignal                            (RequestSent/-ResponseReceived)
+
+            CSMS.OnAFRRSignalRequestSent += (timestamp,
+                                             sender,
+                                             request) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnAFRRSignalRequestSent),
+                                     request.ToAbstractJSON(request.ToJSON(CustomAFRRSignalRequestSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
+
+
+            CSMS.OnAFRRSignalResponseReceived += (timestamp,
+                                                  sender,
+                                                  request,
+                                                  response,
+                                                  runtime) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnAFRRSignalResponseReceived),
+                                     response.ToAbstractJSON(request. ToJSON(CustomAFRRSignalRequestSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomAFRRSignalResponseSerializer,
+                                                                             CustomStatusInfoSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
+
+            #endregion
+
+            #endregion
+
+            #region LocalList
+
+            #region OnClearCache                            (RequestSent/-ResponseReceived)
+
+            CSMS.OnClearCacheRequestSent += (timestamp,
+                                             sender,
+                                             request) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnClearCacheRequestSent),
+                                     request.ToAbstractJSON(request.ToJSON(CustomClearCacheRequestSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
+
+
+            CSMS.OnClearCacheResponseReceived += (timestamp,
+                                                  sender,
+                                                  request,
+                                                  response,
+                                                  runtime) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnClearCacheResponseReceived),
+                                     response.ToAbstractJSON(request. ToJSON(CustomClearCacheRequestSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomClearCacheResponseSerializer,
+                                                                             CustomStatusInfoSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
+
+            #endregion
+
+            #region OnGetLocalListVersion                   (RequestSent/-ResponseReceived)
+
+            CSMS.OnGetLocalListVersionRequestSent += (timestamp,
+                                                      sender,
+                                                      request) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnGetLocalListVersionRequestSent),
+                                     request.ToAbstractJSON(request.ToJSON(CustomGetLocalListVersionRequestSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
+
+
+            CSMS.OnGetLocalListVersionResponseReceived += (timestamp,
+                                                           sender,
+                                                           request,
+                                                           response,
+                                                           runtime) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnGetLocalListVersionResponseReceived),
+                                     response.ToAbstractJSON(request. ToJSON(CustomGetLocalListVersionRequestSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomGetLocalListVersionResponseSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
+
+            #endregion
+
+            #region OnSendLocalList                         (RequestSent/-ResponseReceived)
+
+            CSMS.OnSendLocalListRequestSent += (timestamp,
+                                                sender,
+                                                request) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnSendLocalListRequestSent),
+                                     request.ToAbstractJSON(request.ToJSON(CustomSendLocalListRequestSerializer,
+                                                                           CustomAuthorizationDataSerializer,
+                                                                           CustomIdTokenSerializer,
+                                                                           CustomAdditionalInfoSerializer,
+                                                                           CustomIdTokenInfoSerializer,
+                                                                           CustomMessageContentSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
+
+
+            CSMS.OnSendLocalListResponseReceived += (timestamp,
+                                                     sender,
+                                                     request,
+                                                     response,
+                                                     runtime) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnSendLocalListResponseReceived),
+                                     response.ToAbstractJSON(request. ToJSON(CustomSendLocalListRequestSerializer,
+                                                                             CustomAuthorizationDataSerializer,
+                                                                             CustomIdTokenSerializer,
+                                                                             CustomAdditionalInfoSerializer,
+                                                                             CustomIdTokenInfoSerializer,
+                                                                             CustomMessageContentSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomSendLocalListResponseSerializer,
+                                                                             CustomStatusInfoSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
+
+            #endregion
+
+            #endregion
+
+            #endregion
+
+            #region CSMS            <-> ChargingStation Messages exchanged
+
+            #region OnDataTransfer                          (RequestX/-ResponseX)
+
+            CSMS.OnDataTransferRequestSent += (timestamp,
+                                               sender,
+                                               request) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnDataTransferRequestSent),
+                                     request.ToAbstractJSON(request.ToJSON(CustomData2TransferRequestSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
+
+
+            CSMS.OnDataTransferResponseReceived += (timestamp,
+                                                    sender,
+                                                    request,
+                                                    response,
+                                                    runtime) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnDataTransferResponseReceived),
+                                     response.ToAbstractJSON(request. ToJSON(CustomData2TransferRequestSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomData2TransferResponseSerializer,
+                                                                             CustomStatusInfoSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
+
+
+
+            CSMS.OnDataTransferRequestReceived += (timestamp,
+                                                   sender,
+                                                   connection,
+                                                   request) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnDataTransferRequestReceived),
+                                     request.ToAbstractJSON(request.ToJSON(CustomDataTransferRequestSerializer,
+                                                                           CustomSignatureSerializer,
+                                                                           CustomCustomDataSerializer)));
+
+
+            CSMS.OnDataTransferResponseSent += (timestamp,
+                                                sender,
+                                                connection,
+                                                request,
+                                                response,
+                                                runtime) =>
+
+                EventLog.SubmitEvent(nameof(CSMS.OnDataTransferResponseSent),
+                                     response.ToAbstractJSON(request. ToJSON(CustomDataTransferRequestSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer),
+                                                             response.ToJSON(CustomDataTransferResponseSerializer,
+                                                                             CustomStatusInfoSerializer,
+                                                                             CustomSignatureSerializer,
+                                                                             CustomCustomDataSerializer)));
+
+            #endregion
+
+            #region OnBinaryDataTransfer                    (RequestX/-ResponseX)
+
+            //CSMS.OnBinaryDataTransferRequestSent += (timestamp,
+            //                                         sender,
+            //                                         request) =>
+
+            //    EventLog.SubmitEvent(nameof(CSMS.OnBinaryDataTransferRequestSent),
+            //                         request.ToAbstractJSON(request.ToJSON(CustomData2TransferRequestSerializer,
+            //                                                               CustomSignatureSerializer,
+            //                                                               CustomCustomDataSerializer)));
+
+
+            //CSMS.OnBinaryDataTransferResponseReceived += (timestamp,
+            //                                              sender,
+            //                                              request,
+            //                                              response,
+            //                                              runtime) =>
+
+            //    EventLog.SubmitEvent(nameof(CSMS.OnDataTransferResponseReceived),
+            //                         response.ToAbstractJSON(request. ToJSON(CustomData2TransferRequestSerializer,
+            //                                                                 CustomSignatureSerializer,
+            //                                                                 CustomCustomDataSerializer),
+            //                                                 response.ToJSON(CustomData2TransferResponseSerializer,
+            //                                                                 CustomStatusInfoSerializer,
+            //                                                                 CustomSignatureSerializer,
+            //                                                                 CustomCustomDataSerializer)));
+
+
+
+            //CSMS.OnBinaryDataTransferRequestReceived += (timestamp,
+            //                                             sender,
+            //                                             connection,
+            //                                             request) =>
+
+            //    EventLog.SubmitEvent(nameof(CSMS.OnDataTransferRequestReceived),
+            //                         request.ToAbstractJSON(request.ToJSON(CustomDataTransferRequestSerializer,
+            //                                                               CustomSignatureSerializer,
+            //                                                               CustomCustomDataSerializer)));
+
+
+            //CSMS.OnBinaryDataTransferResponseSent += (timestamp,
+            //                                          sender,
+            //                                          connection,
+            //                                          request,
+            //                                          response,
+            //                                          runtime) =>
+
+            //    EventLog.SubmitEvent(nameof(CSMS.OnDataTransferResponseSent),
+            //                         response.ToAbstractJSON(request. ToJSON(CustomDataTransferRequestSerializer,
+            //                                                                 CustomSignatureSerializer,
+            //                                                                 CustomCustomDataSerializer),
+            //                                                 response.ToJSON(CustomDataTransferResponseSerializer,
+            //                                                                 CustomStatusInfoSerializer,
+            //                                                                 CustomSignatureSerializer,
+            //                                                                 CustomCustomDataSerializer)));
 
             #endregion
 
@@ -2941,7 +3762,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnReset                       (Request/-Response)
 
-            CSMSChannel.OnResetRequest += async (logTimestamp,
+            CSMSChannel.OnResetRequestSent += async (logTimestamp,
                                                  sender,
                                                  request) =>
 
@@ -2954,7 +3775,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 ));
 
 
-            CSMSChannel.OnResetResponse += async (logTimestamp,
+            CSMSChannel.OnResetResponseReceived += async (logTimestamp,
                                                   sender,
                                                   request,
                                                   response,
@@ -2974,7 +3795,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnUpdateFirmware              (Request/-Response)
 
-            CSMSChannel.OnUpdateFirmwareRequest += async (logTimestamp,
+            CSMSChannel.OnUpdateFirmwareRequestSent += async (logTimestamp,
                                                           sender,
                                                           request) =>
 
@@ -2987,7 +3808,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 ));
 
 
-            CSMSChannel.OnUpdateFirmwareResponse += async (logTimestamp,
+            CSMSChannel.OnUpdateFirmwareResponseReceived += async (logTimestamp,
                                                            sender,
                                                            request,
                                                            response,
@@ -3007,7 +3828,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnPublishFirmware             (Request/-Response)
 
-            CSMSChannel.OnPublishFirmwareRequest += async (logTimestamp,
+            CSMSChannel.OnPublishFirmwareRequestSent += async (logTimestamp,
                                                            sender,
                                                            request) =>
 
@@ -3020,7 +3841,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 ));
 
 
-            CSMSChannel.OnPublishFirmwareResponse += async (logTimestamp,
+            CSMSChannel.OnPublishFirmwareResponseReceived += async (logTimestamp,
                                                             sender,
                                                             request,
                                                             response,
@@ -3040,7 +3861,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnUnpublishFirmware           (Request/-Response)
 
-            CSMSChannel.OnUnpublishFirmwareRequest += async (logTimestamp,
+            CSMSChannel.OnUnpublishFirmwareRequestSent += async (logTimestamp,
                                                              sender,
                                                              request) =>
 
@@ -3053,7 +3874,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 ));
 
 
-            CSMSChannel.OnUnpublishFirmwareResponse += async (logTimestamp,
+            CSMSChannel.OnUnpublishFirmwareResponseReceived += async (logTimestamp,
                                                               sender,
                                                               request,
                                                               response,
@@ -3073,7 +3894,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnGetBaseReport               (Request/-Response)
 
-            CSMSChannel.OnGetBaseReportRequest += async (logTimestamp,
+            CSMSChannel.OnGetBaseReportRequestSent += async (logTimestamp,
                                                          sender,
                                                          request) =>
 
@@ -3086,7 +3907,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 ));
 
 
-            CSMSChannel.OnGetBaseReportResponse += async (logTimestamp,
+            CSMSChannel.OnGetBaseReportResponseReceived += async (logTimestamp,
                                                           sender,
                                                           request,
                                                           response,
@@ -3106,7 +3927,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnGetReport                   (Request/-Response)
 
-            CSMSChannel.OnGetReportRequest += async (logTimestamp,
+            CSMSChannel.OnGetReportRequestSent += async (logTimestamp,
                                                      sender,
                                                      request) =>
 
@@ -3119,7 +3940,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 ));
 
 
-            CSMSChannel.OnGetReportResponse += async (logTimestamp,
+            CSMSChannel.OnGetReportResponseReceived += async (logTimestamp,
                                                       sender,
                                                       request,
                                                       response,
@@ -3139,7 +3960,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnGetLog                      (Request/-Response)
 
-            CSMSChannel.OnGetLogRequest += async (logTimestamp,
+            CSMSChannel.OnGetLogRequestSent += async (logTimestamp,
                                                   sender,
                                                   request) =>
 
@@ -3152,7 +3973,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 ));
 
 
-            CSMSChannel.OnGetLogResponse += async (logTimestamp,
+            CSMSChannel.OnGetLogResponseReceived += async (logTimestamp,
                                                    sender,
                                                    request,
                                                    response,
@@ -3172,7 +3993,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnSetVariables                (Request/-Response)
 
-            CSMSChannel.OnSetVariablesRequest += async (logTimestamp,
+            CSMSChannel.OnSetVariablesRequestSent += async (logTimestamp,
                                                         sender,
                                                         request) =>
 
@@ -3185,7 +4006,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 ));
 
 
-            CSMSChannel.OnSetVariablesResponse += async (logTimestamp,
+            CSMSChannel.OnSetVariablesResponseReceived += async (logTimestamp,
                                                          sender,
                                                          request,
                                                          response,
@@ -3205,7 +4026,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnGetVariables                (Request/-Response)
 
-            CSMSChannel.OnGetVariablesRequest += async (logTimestamp,
+            CSMSChannel.OnGetVariablesRequestSent += async (logTimestamp,
                                                         sender,
                                                         request) =>
 
@@ -3218,7 +4039,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 ));
 
 
-            CSMSChannel.OnGetVariablesResponse += async (logTimestamp,
+            CSMSChannel.OnGetVariablesResponseReceived += async (logTimestamp,
                                                          sender,
                                                          request,
                                                          response,
@@ -3238,7 +4059,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnSetMonitoringBase           (Request/-Response)
 
-            CSMSChannel.OnSetMonitoringBaseRequest += async (logTimestamp,
+            CSMSChannel.OnSetMonitoringBaseRequestSent += async (logTimestamp,
                                                              sender,
                                                              request) =>
 
@@ -3251,7 +4072,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 ));
 
 
-            CSMSChannel.OnSetMonitoringBaseResponse += async (logTimestamp,
+            CSMSChannel.OnSetMonitoringBaseResponseReceived += async (logTimestamp,
                                                               sender,
                                                               request,
                                                               response,
@@ -3271,7 +4092,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnGetMonitoringReport         (Request/-Response)
 
-            CSMSChannel.OnGetMonitoringReportRequest += async (logTimestamp,
+            CSMSChannel.OnGetMonitoringReportRequestSent += async (logTimestamp,
                                                                sender,
                                                                request) =>
 
@@ -3284,7 +4105,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 ));
 
 
-            CSMSChannel.OnGetMonitoringReportResponse += async (logTimestamp,
+            CSMSChannel.OnGetMonitoringReportResponseReceived += async (logTimestamp,
                                                                 sender,
                                                                 request,
                                                                 response,
@@ -3304,7 +4125,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnSetMonitoringLevel          (Request/-Response)
 
-            CSMSChannel.OnSetMonitoringLevelRequest += async (logTimestamp,
+            CSMSChannel.OnSetMonitoringLevelRequestSent += async (logTimestamp,
                                                               sender,
                                                               request) =>
 
@@ -3317,7 +4138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 ));
 
 
-            CSMSChannel.OnSetMonitoringLevelResponse += async (logTimestamp,
+            CSMSChannel.OnSetMonitoringLevelResponseReceived += async (logTimestamp,
                                                                sender,
                                                                request,
                                                                response,
@@ -3337,7 +4158,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnSetVariableMonitoring       (Request/-Response)
 
-            CSMSChannel.OnSetVariableMonitoringRequest += async (logTimestamp,
+            CSMSChannel.OnSetVariableMonitoringRequestSent += async (logTimestamp,
                                                                  sender,
                                                                  request) =>
 
@@ -3350,7 +4171,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 ));
 
 
-            CSMSChannel.OnSetVariableMonitoringResponse += async (logTimestamp,
+            CSMSChannel.OnSetVariableMonitoringResponseReceived += async (logTimestamp,
                                                                   sender,
                                                                   request,
                                                                   response,
@@ -3370,7 +4191,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnClearVariableMonitoring     (Request/-Response)
 
-            CSMSChannel.OnClearVariableMonitoringRequest += async (logTimestamp,
+            CSMSChannel.OnClearVariableMonitoringRequestSent += async (logTimestamp,
                                                                    sender,
                                                                    request) =>
 
@@ -3383,7 +4204,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 ));
 
 
-            CSMSChannel.OnClearVariableMonitoringResponse += async (logTimestamp,
+            CSMSChannel.OnClearVariableMonitoringResponseReceived += async (logTimestamp,
                                                                     sender,
                                                                     request,
                                                                     response,
@@ -3403,7 +4224,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnSetNetworkProfile           (Request/-Response)
 
-            CSMSChannel.OnSetNetworkProfileRequest += async (logTimestamp,
+            CSMSChannel.OnSetNetworkProfileRequestSent += async (logTimestamp,
                                                              sender,
                                                              request) =>
 
@@ -3416,7 +4237,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 ));
 
 
-            CSMSChannel.OnSetNetworkProfileResponse += async (logTimestamp,
+            CSMSChannel.OnSetNetworkProfileResponseReceived += async (logTimestamp,
                                                               sender,
                                                               request,
                                                               response,
@@ -3436,7 +4257,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnChangeAvailability          (Request/-Response)
 
-            CSMSChannel.OnChangeAvailabilityRequest += async (logTimestamp,
+            CSMSChannel.OnChangeAvailabilityRequestSent += async (logTimestamp,
                                                               sender,
                                                               request) =>
 
@@ -3449,7 +4270,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 ));
 
 
-            CSMSChannel.OnChangeAvailabilityResponse += async (logTimestamp,
+            CSMSChannel.OnChangeAvailabilityResponseReceived += async (logTimestamp,
                                                                sender,
                                                                request,
                                                                response,
@@ -3469,7 +4290,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnTriggerMessage              (Request/-Response)
 
-            CSMSChannel.OnTriggerMessageRequest += async (logTimestamp,
+            CSMSChannel.OnTriggerMessageRequestSent += async (logTimestamp,
                                                           sender,
                                                           request) =>
 
@@ -3482,7 +4303,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 ));
 
 
-            CSMSChannel.OnTriggerMessageResponse += async (logTimestamp,
+            CSMSChannel.OnTriggerMessageResponseReceived += async (logTimestamp,
                                                            sender,
                                                            request,
                                                            response,
@@ -3502,7 +4323,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnDataTransfer                (Request/-Response)
 
-            CSMSChannel.OnDataTransferRequest += async (logTimestamp,
+            CSMSChannel.OnDataTransferRequestSent += async (logTimestamp,
                                                         sender,
                                                         request) =>
 
@@ -3515,7 +4336,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 ));
 
 
-            CSMSChannel.OnDataTransferResponse += async (logTimestamp,
+            CSMSChannel.OnDataTransferResponseReceived += async (logTimestamp,
                                                          sender,
                                                          request,
                                                          response,
@@ -3536,7 +4357,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnCertificateSignedRequest    (Request/-Response)
 
-            CSMSChannel.OnCertificateSignedRequest += async (logTimestamp,
+            CSMSChannel.OnCertificateSignedRequestSent += async (logTimestamp,
                                                              sender,
                                                              request) =>
 
@@ -3549,7 +4370,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 ));
 
 
-            CSMSChannel.OnCertificateSignedResponse += async (logTimestamp,
+            CSMSChannel.OnCertificateSignedResponseReceived += async (logTimestamp,
                                                               sender,
                                                               request,
                                                               response,
@@ -3569,7 +4390,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnInstallCertificate          (Request/-Response)
 
-            CSMSChannel.OnInstallCertificateRequest += async (logTimestamp,
+            CSMSChannel.OnInstallCertificateRequestSent += async (logTimestamp,
                                                               sender,
                                                               request) =>
 
@@ -3582,7 +4403,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 ));
 
 
-            CSMSChannel.OnInstallCertificateResponse += async (logTimestamp,
+            CSMSChannel.OnInstallCertificateResponseReceived += async (logTimestamp,
                                                                sender,
                                                                request,
                                                                response,
@@ -3602,7 +4423,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnGetInstalledCertificateIds  (Request/-Response)
 
-            CSMSChannel.OnGetInstalledCertificateIdsRequest += async (logTimestamp,
+            CSMSChannel.OnGetInstalledCertificateIdsRequestSent += async (logTimestamp,
                                                                       sender,
                                                                       request) =>
 
@@ -3615,7 +4436,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 ));
 
 
-            CSMSChannel.OnGetInstalledCertificateIdsResponse += async (logTimestamp,
+            CSMSChannel.OnGetInstalledCertificateIdsResponseReceived += async (logTimestamp,
                                                                        sender,
                                                                        request,
                                                                        response,
@@ -3635,7 +4456,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnDeleteCertificate           (Request/-Response)
 
-            CSMSChannel.OnDeleteCertificateRequest += async (logTimestamp,
+            CSMSChannel.OnDeleteCertificateRequestSent += async (logTimestamp,
                                                              sender,
                                                              request) =>
 
@@ -3648,7 +4469,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 ));
 
 
-            CSMSChannel.OnDeleteCertificateResponse += async (logTimestamp,
+            CSMSChannel.OnDeleteCertificateResponseReceived += async (logTimestamp,
                                                               sender,
                                                               request,
                                                               response,
@@ -3668,7 +4489,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnNotifyCRLRequest            (Request/-Response)
 
-            CSMSChannel.OnNotifyCRLRequest += async (logTimestamp,
+            CSMSChannel.OnNotifyCRLRequestSent += async (logTimestamp,
                                                      sender,
                                                      request) =>
 
@@ -3681,7 +4502,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 ));
 
 
-            CSMSChannel.OnNotifyCRLResponse += async (logTimestamp,
+            CSMSChannel.OnNotifyCRLResponseReceived += async (logTimestamp,
                                                       sender,
                                                       request,
                                                       response,
@@ -3702,7 +4523,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnGetLocalListVersion         (Request/-Response)
 
-            CSMSChannel.OnGetLocalListVersionRequest += async (logTimestamp,
+            CSMSChannel.OnGetLocalListVersionRequestSent += async (logTimestamp,
                                                                sender,
                                                                request) =>
 
@@ -3715,7 +4536,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 ));
 
 
-            CSMSChannel.OnGetLocalListVersionResponse += async (logTimestamp,
+            CSMSChannel.OnGetLocalListVersionResponseReceived += async (logTimestamp,
                                                                 sender,
                                                                 request,
                                                                 response,
@@ -3735,7 +4556,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnSendLocalList               (Request/-Response)
 
-            CSMSChannel.OnSendLocalListRequest += async (logTimestamp,
+            CSMSChannel.OnSendLocalListRequestSent += async (logTimestamp,
                                                          sender,
                                                          request) =>
 
@@ -3748,7 +4569,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 ));
 
 
-            CSMSChannel.OnSendLocalListResponse += async (logTimestamp,
+            CSMSChannel.OnSendLocalListResponseReceived += async (logTimestamp,
                                                           sender,
                                                           request,
                                                           response,
@@ -3768,7 +4589,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnClearCache                  (Request/-Response)
 
-            CSMSChannel.OnClearCacheRequest += async (logTimestamp,
+            CSMSChannel.OnClearCacheRequestSent += async (logTimestamp,
                                                       sender,
                                                       request) =>
 
@@ -3781,7 +4602,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 ));
 
 
-            CSMSChannel.OnClearCacheResponse += async (logTimestamp,
+            CSMSChannel.OnClearCacheResponseReceived += async (logTimestamp,
                                                        sender,
                                                        request,
                                                        response,
@@ -3802,7 +4623,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnReserveNow                  (Request/-Response)
 
-            CSMSChannel.OnReserveNowRequest += async (logTimestamp,
+            CSMSChannel.OnReserveNowRequestSent += async (logTimestamp,
                                                       sender,
                                                       request) =>
 
@@ -3815,7 +4636,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 ));
 
 
-            CSMSChannel.OnReserveNowResponse += async (logTimestamp,
+            CSMSChannel.OnReserveNowResponseReceived += async (logTimestamp,
                                                        sender,
                                                        request,
                                                        response,
@@ -3835,7 +4656,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnCancelReservation           (Request/-Response)
 
-            CSMSChannel.OnCancelReservationRequest += async (logTimestamp,
+            CSMSChannel.OnCancelReservationRequestSent += async (logTimestamp,
                                                              sender,
                                                              request) =>
 
@@ -3848,7 +4669,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 ));
 
 
-            CSMSChannel.OnCancelReservationResponse += async (logTimestamp,
+            CSMSChannel.OnCancelReservationResponseReceived += async (logTimestamp,
                                                               sender,
                                                               request,
                                                               response,
@@ -3868,7 +4689,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnRequestStartTransaction     (Request/-Response)
 
-            CSMSChannel.OnRequestStartTransactionRequest += async (logTimestamp,
+            CSMSChannel.OnRequestStartTransactionRequestSent += async (logTimestamp,
                                                                    sender,
                                                                    request) =>
 
@@ -3881,7 +4702,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 ));
 
 
-            CSMSChannel.OnRequestStartTransactionResponse += async (logTimestamp,
+            CSMSChannel.OnRequestStartTransactionResponseReceived += async (logTimestamp,
                                                                     sender,
                                                                     request,
                                                                     response,
@@ -3901,7 +4722,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnRequestStopTransaction      (Request/-Response)
 
-            CSMSChannel.OnRequestStopTransactionRequest += async (logTimestamp,
+            CSMSChannel.OnRequestStopTransactionRequestSent += async (logTimestamp,
                                                                   sender,
                                                                   request) =>
 
@@ -3914,7 +4735,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 ));
 
 
-            CSMSChannel.OnRequestStopTransactionResponse += async (logTimestamp,
+            CSMSChannel.OnRequestStopTransactionResponseReceived += async (logTimestamp,
                                                                    sender,
                                                                    request,
                                                                    response,
@@ -3934,7 +4755,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnGetTransactionStatus        (Request/-Response)
 
-            CSMSChannel.OnGetTransactionStatusRequest += async (logTimestamp,
+            CSMSChannel.OnGetTransactionStatusRequestSent += async (logTimestamp,
                                                                 sender,
                                                                 request) =>
 
@@ -3947,7 +4768,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 ));
 
 
-            CSMSChannel.OnGetTransactionStatusResponse += async (logTimestamp,
+            CSMSChannel.OnGetTransactionStatusResponseReceived += async (logTimestamp,
                                                                  sender,
                                                                  request,
                                                                  response,
@@ -3967,7 +4788,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnSetChargingProfile          (Request/-Response)
 
-            CSMSChannel.OnSetChargingProfileRequest += async (logTimestamp,
+            CSMSChannel.OnSetChargingProfileRequestSent += async (logTimestamp,
                                                               sender,
                                                               request) =>
 
@@ -3980,7 +4801,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 ));
 
 
-            CSMSChannel.OnSetChargingProfileResponse += async (logTimestamp,
+            CSMSChannel.OnSetChargingProfileResponseReceived += async (logTimestamp,
                                                                sender,
                                                                request,
                                                                response,
@@ -4000,7 +4821,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnGetChargingProfiles         (Request/-Response)
 
-            CSMSChannel.OnGetChargingProfilesRequest += async (logTimestamp,
+            CSMSChannel.OnGetChargingProfilesRequestSent += async (logTimestamp,
                                                                sender,
                                                                request) =>
 
@@ -4013,7 +4834,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 ));
 
 
-            CSMSChannel.OnGetChargingProfilesResponse += async (logTimestamp,
+            CSMSChannel.OnGetChargingProfilesResponseReceived += async (logTimestamp,
                                                                 sender,
                                                                 request,
                                                                 response,
@@ -4033,7 +4854,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnClearChargingProfile        (Request/-Response)
 
-            CSMSChannel.OnClearChargingProfileRequest += async (logTimestamp,
+            CSMSChannel.OnClearChargingProfileRequestSent += async (logTimestamp,
                                                                 sender,
                                                                 request) =>
 
@@ -4046,7 +4867,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 ));
 
 
-            CSMSChannel.OnClearChargingProfileResponse += async (logTimestamp,
+            CSMSChannel.OnClearChargingProfileResponseReceived += async (logTimestamp,
                                                                  sender,
                                                                  request,
                                                                  response,
@@ -4066,7 +4887,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnGetCompositeSchedule        (Request/-Response)
 
-            CSMSChannel.OnGetCompositeScheduleRequest += async (logTimestamp,
+            CSMSChannel.OnGetCompositeScheduleRequestSent += async (logTimestamp,
                                                                 sender,
                                                                 request) =>
 
@@ -4079,7 +4900,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 ));
 
 
-            CSMSChannel.OnGetCompositeScheduleResponse += async (logTimestamp,
+            CSMSChannel.OnGetCompositeScheduleResponseReceived += async (logTimestamp,
                                                                  sender,
                                                                  request,
                                                                  response,
@@ -4099,7 +4920,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnUpdateDynamicSchedule       (Request/-Response)
 
-            CSMSChannel.OnUpdateDynamicScheduleRequest += async (logTimestamp,
+            CSMSChannel.OnUpdateDynamicScheduleRequestSent += async (logTimestamp,
                                                                  sender,
                                                                  request) =>
 
@@ -4112,7 +4933,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 ));
 
 
-            CSMSChannel.OnUpdateDynamicScheduleResponse += async (logTimestamp,
+            CSMSChannel.OnUpdateDynamicScheduleResponseReceived += async (logTimestamp,
                                                                   sender,
                                                                   request,
                                                                   response,
@@ -4132,7 +4953,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnNotifyAllowedEnergyTransfer (Request/-Response)
 
-            CSMSChannel.OnNotifyAllowedEnergyTransferRequest += async (logTimestamp,
+            CSMSChannel.OnNotifyAllowedEnergyTransferRequestSent += async (logTimestamp,
                                                                        sender,
                                                                        request) =>
 
@@ -4145,7 +4966,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 ));
 
 
-            CSMSChannel.OnNotifyAllowedEnergyTransferResponse += async (logTimestamp,
+            CSMSChannel.OnNotifyAllowedEnergyTransferResponseReceived += async (logTimestamp,
                                                                         sender,
                                                                         request,
                                                                         response,
@@ -4165,7 +4986,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnUsePriorityCharging         (Request/-Response)
 
-            CSMSChannel.OnUsePriorityChargingRequest += async (logTimestamp,
+            CSMSChannel.OnUsePriorityChargingRequestSent += async (logTimestamp,
                                                                sender,
                                                                request) =>
 
@@ -4178,7 +4999,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 ));
 
 
-            CSMSChannel.OnUsePriorityChargingResponse += async (logTimestamp,
+            CSMSChannel.OnUsePriorityChargingResponseReceived += async (logTimestamp,
                                                                 sender,
                                                                 request,
                                                                 response,
@@ -4198,7 +5019,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnUnlockConnector             (Request/-Response)
 
-            CSMSChannel.OnUnlockConnectorRequest += async (logTimestamp,
+            CSMSChannel.OnUnlockConnectorRequestSent += async (logTimestamp,
                                                            sender,
                                                            request) =>
 
@@ -4211,7 +5032,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 ));
 
 
-            CSMSChannel.OnUnlockConnectorResponse += async (logTimestamp,
+            CSMSChannel.OnUnlockConnectorResponseReceived += async (logTimestamp,
                                                             sender,
                                                             request,
                                                             response,
@@ -4232,7 +5053,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnSendAFRRSignal              (Request/-Response)
 
-            CSMSChannel.OnAFRRSignalRequest += async (logTimestamp,
+            CSMSChannel.OnAFRRSignalRequestSent += async (logTimestamp,
                                                       sender,
                                                       request) =>
 
@@ -4245,7 +5066,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 ));
 
 
-            CSMSChannel.OnAFRRSignalResponse += async (logTimestamp,
+            CSMSChannel.OnAFRRSignalResponseReceived += async (logTimestamp,
                                                        sender,
                                                        request,
                                                        response,
@@ -4266,7 +5087,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnSetDisplayMessage           (Request/-Response)
 
-            CSMSChannel.OnSetDisplayMessageRequest += async (logTimestamp,
+            CSMSChannel.OnSetDisplayMessageRequestSent += async (logTimestamp,
                                                              sender,
                                                              request) =>
 
@@ -4279,7 +5100,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 ));
 
 
-            CSMSChannel.OnSetDisplayMessageResponse += async (logTimestamp,
+            CSMSChannel.OnSetDisplayMessageResponseReceived += async (logTimestamp,
                                                               sender,
                                                               request,
                                                               response,
@@ -4299,7 +5120,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnGetDisplayMessages          (Request/-Response)
 
-            CSMSChannel.OnGetDisplayMessagesRequest += async (logTimestamp,
+            CSMSChannel.OnGetDisplayMessagesRequestSent += async (logTimestamp,
                                                               sender,
                                                               request) =>
 
@@ -4312,7 +5133,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 ));
 
 
-            CSMSChannel.OnGetDisplayMessagesResponse += async (logTimestamp,
+            CSMSChannel.OnGetDisplayMessagesResponseReceived += async (logTimestamp,
                                                                sender,
                                                                request,
                                                                response,
@@ -4332,7 +5153,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnClearDisplayMessage         (Request/-Response)
 
-            CSMSChannel.OnClearDisplayMessageRequest += async (logTimestamp,
+            CSMSChannel.OnClearDisplayMessageRequestSent += async (logTimestamp,
                                                                sender,
                                                                request) =>
 
@@ -4345,7 +5166,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 ));
 
 
-            CSMSChannel.OnClearDisplayMessageResponse += async (logTimestamp,
+            CSMSChannel.OnClearDisplayMessageResponseReceived += async (logTimestamp,
                                                                 sender,
                                                                 request,
                                                                 response,
@@ -4365,7 +5186,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnCostUpdated                 (Request/-Response)
 
-            CSMSChannel.OnCostUpdatedRequest += async (logTimestamp,
+            CSMSChannel.OnCostUpdatedRequestSent += async (logTimestamp,
                                                        sender,
                                                        request) =>
 
@@ -4378,7 +5199,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 ));
 
 
-            CSMSChannel.OnCostUpdatedResponse += async (logTimestamp,
+            CSMSChannel.OnCostUpdatedResponseReceived += async (logTimestamp,
                                                         sender,
                                                         request,
                                                         response,
@@ -4398,7 +5219,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnCustomerInformation         (Request/-Response)
 
-            CSMSChannel.OnCustomerInformationRequest += async (logTimestamp,
+            CSMSChannel.OnCustomerInformationRequestSent += async (logTimestamp,
                                                                sender,
                                                                request) =>
 
@@ -4411,7 +5232,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 ));
 
 
-            CSMSChannel.OnCustomerInformationResponse += async (logTimestamp,
+            CSMSChannel.OnCustomerInformationResponseReceived += async (logTimestamp,
                                                                 sender,
                                                                 request,
                                                                 response,

@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a RequestStopTransaction request was sent.
         /// </summary>
-        public event OnRequestStopTransactionRequestSentDelegate?     OnRequestStopTransactionRequest;
+        public event OnRequestStopTransactionRequestSentDelegate?     OnRequestStopTransactionRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a RequestStopTransaction request was sent.
         /// </summary>
-        public event OnRequestStopTransactionResponseReceivedDelegate?    OnRequestStopTransactionResponse;
+        public event OnRequestStopTransactionResponseReceivedDelegate?    OnRequestStopTransactionResponseReceived;
 
         #endregion
 
@@ -70,13 +70,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnRequestStopTransactionRequest?.Invoke(startTime,
+                OnRequestStopTransactionRequestSent?.Invoke(startTime,
                                                         this,
                                                         Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnRequestStopTransactionRequest));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnRequestStopTransactionRequestSent));
             }
 
             #endregion
@@ -146,7 +146,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnRequestStopTransactionResponse?.Invoke(endTime,
+                OnRequestStopTransactionResponseReceived?.Invoke(endTime,
                                                          this,
                                                          Request,
                                                          response,
@@ -155,7 +155,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnRequestStopTransactionResponse));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnRequestStopTransactionResponseReceived));
             }
 
             #endregion

@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever an UnlockConnector request was sent.
         /// </summary>
-        public event OnUnlockConnectorRequestSentDelegate?     OnUnlockConnectorRequest;
+        public event OnUnlockConnectorRequestSentDelegate?     OnUnlockConnectorRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to an UnlockConnector request was sent.
         /// </summary>
-        public event OnUnlockConnectorResponseReceivedDelegate?    OnUnlockConnectorResponse;
+        public event OnUnlockConnectorResponseReceivedDelegate?    OnUnlockConnectorResponseReceived;
 
         #endregion
 
@@ -70,13 +70,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnUnlockConnectorRequest?.Invoke(startTime,
+                OnUnlockConnectorRequestSent?.Invoke(startTime,
                                                  this,
                                                  Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnUnlockConnectorRequest));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnUnlockConnectorRequestSent));
             }
 
             #endregion
@@ -146,7 +146,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnUnlockConnectorResponse?.Invoke(endTime,
+                OnUnlockConnectorResponseReceived?.Invoke(endTime,
                                                   this,
                                                   Request,
                                                   response,
@@ -155,7 +155,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnUnlockConnectorResponse));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnUnlockConnectorResponseReceived));
             }
 
             #endregion

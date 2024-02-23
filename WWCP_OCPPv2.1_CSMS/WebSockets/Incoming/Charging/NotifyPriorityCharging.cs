@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a NotifyPriorityCharging request was received.
         /// </summary>
-        public event OnNotifyPriorityChargingRequestReceivedDelegate?     OnNotifyPriorityChargingRequest;
+        public event OnNotifyPriorityChargingRequestReceivedDelegate?     OnNotifyPriorityChargingRequestReceived;
 
         /// <summary>
         /// An event sent whenever a NotifyPriorityCharging was received.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a response to a NotifyPriorityCharging was sent.
         /// </summary>
-        public event OnNotifyPriorityChargingResponseSentDelegate?    OnNotifyPriorityChargingResponse;
+        public event OnNotifyPriorityChargingResponseSentDelegate?    OnNotifyPriorityChargingResponseSent;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a NotifyPriorityCharging was sent.
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     try
                     {
 
-                        OnNotifyPriorityChargingRequest?.Invoke(Timestamp.Now,
+                        OnNotifyPriorityChargingRequestReceived?.Invoke(Timestamp.Now,
                                                                 this,
                                                                 Connection,
                                                                 request);
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyPriorityChargingRequest));
+                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyPriorityChargingRequestReceived));
                     }
 
                     #endregion
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     try
                     {
 
-                        OnNotifyPriorityChargingResponse?.Invoke(Timestamp.Now,
+                        OnNotifyPriorityChargingResponseSent?.Invoke(Timestamp.Now,
                                                                  this,
                                                                  Connection,
                                                                  request,
@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyPriorityChargingResponse));
+                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyPriorityChargingResponseSent));
                     }
 
                     #endregion

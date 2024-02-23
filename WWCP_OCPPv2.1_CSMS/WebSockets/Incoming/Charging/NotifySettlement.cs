@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a NotifySettlement request was received.
         /// </summary>
-        public event OnNotifySettlementRequestReceivedDelegate?    OnNotifySettlementRequest;
+        public event OnNotifySettlementRequestReceivedDelegate?    OnNotifySettlementRequestReceived;
 
         /// <summary>
         /// An event sent whenever a NotifySettlement was received.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a response to a NotifySettlement was sent.
         /// </summary>
-        public event OnNotifySettlementResponseSentDelegate?       OnNotifySettlementResponse;
+        public event OnNotifySettlementResponseSentDelegate?       OnNotifySettlementResponseSent;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a NotifySettlement was sent.
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     try
                     {
 
-                        OnNotifySettlementRequest?.Invoke(Timestamp.Now,
+                        OnNotifySettlementRequestReceived?.Invoke(Timestamp.Now,
                                                                 this,
                                                                 Connection,
                                                                 request);
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifySettlementRequest));
+                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifySettlementRequestReceived));
                     }
 
                     #endregion
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     try
                     {
 
-                        OnNotifySettlementResponse?.Invoke(Timestamp.Now,
+                        OnNotifySettlementResponseSent?.Invoke(Timestamp.Now,
                                                                  this,
                                                                  Connection,
                                                                  request,
@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifySettlementResponse));
+                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifySettlementResponseSent));
                     }
 
                     #endregion

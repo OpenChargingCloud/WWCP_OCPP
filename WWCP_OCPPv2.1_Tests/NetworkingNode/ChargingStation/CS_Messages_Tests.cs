@@ -255,7 +255,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CS
                 //    return Task.CompletedTask;
                 //};
 
-                testCSMS01.             OnIncomingBinaryDataTransferRequest += (timestamp, sender, connection, incomingBinaryDataTransferRequest) => {
+                testCSMS01.             OnBinaryDataTransferRequestReceived += (timestamp, sender, connection, incomingBinaryDataTransferRequest) => {
                     csmsIncomingBinaryDataTransferRequests.TryAdd(incomingBinaryDataTransferRequest);
                     return Task.CompletedTask;
                 };

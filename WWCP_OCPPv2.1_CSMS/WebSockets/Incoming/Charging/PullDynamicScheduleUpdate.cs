@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a PullDynamicScheduleUpdate request was received.
         /// </summary>
-        public event OnPullDynamicScheduleUpdateRequestReceivedDelegate?     OnPullDynamicScheduleUpdateRequest;
+        public event OnPullDynamicScheduleUpdateRequestReceivedDelegate?     OnPullDynamicScheduleUpdateRequestReceived;
 
         /// <summary>
         /// An event sent whenever a PullDynamicScheduleUpdate was received.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a response to a PullDynamicScheduleUpdate was sent.
         /// </summary>
-        public event OnPullDynamicScheduleUpdateResponseSentDelegate?    OnPullDynamicScheduleUpdateResponse;
+        public event OnPullDynamicScheduleUpdateResponseSentDelegate?    OnPullDynamicScheduleUpdateResponseSent;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a PullDynamicScheduleUpdate was sent.
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     try
                     {
 
-                        OnPullDynamicScheduleUpdateRequest?.Invoke(Timestamp.Now,
+                        OnPullDynamicScheduleUpdateRequestReceived?.Invoke(Timestamp.Now,
                                                                    this,
                                                                    Connection,
                                                                    request);
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnPullDynamicScheduleUpdateRequest));
+                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnPullDynamicScheduleUpdateRequestReceived));
                     }
 
                     #endregion
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     try
                     {
 
-                        OnPullDynamicScheduleUpdateResponse?.Invoke(Timestamp.Now,
+                        OnPullDynamicScheduleUpdateResponseSent?.Invoke(Timestamp.Now,
                                                                     this,
                                                                     Connection,
                                                                     request,
@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnPullDynamicScheduleUpdateResponse));
+                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnPullDynamicScheduleUpdateResponseSent));
                     }
 
                     #endregion

@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a NotifyReport request was received.
         /// </summary>
-        public event OnNotifyReportRequestReceivedDelegate?               OnNotifyReportRequest;
+        public event OnNotifyReportRequestReceivedDelegate?               OnNotifyReportRequestReceived;
 
         /// <summary>
         /// An event sent whenever a NotifyReport was received.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a response to a NotifyReport was sent.
         /// </summary>
-        public event OnNotifyReportResponseSentDelegate?              OnNotifyReportResponse;
+        public event OnNotifyReportResponseSentDelegate?              OnNotifyReportResponseSent;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a NotifyReport was sent.
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     try
                     {
 
-                        OnNotifyReportRequest?.Invoke(Timestamp.Now,
+                        OnNotifyReportRequestReceived?.Invoke(Timestamp.Now,
                                                       this,
                                                       Connection,
                                                       request);
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyReportRequest));
+                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyReportRequestReceived));
                     }
 
                     #endregion
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     try
                     {
 
-                        OnNotifyReportResponse?.Invoke(Timestamp.Now,
+                        OnNotifyReportResponseSent?.Invoke(Timestamp.Now,
                                                        this,
                                                        Connection,
                                                        request,
@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyReportResponse));
+                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyReportResponseSent));
                     }
 
                     #endregion

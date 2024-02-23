@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever an UsePriorityCharging request was sent.
         /// </summary>
-        public event OnUsePriorityChargingRequestSentDelegate?     OnUsePriorityChargingRequest;
+        public event OnUsePriorityChargingRequestSentDelegate?     OnUsePriorityChargingRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to an UsePriorityCharging request was sent.
         /// </summary>
-        public event OnUsePriorityChargingResponseReceivedDelegate?    OnUsePriorityChargingResponse;
+        public event OnUsePriorityChargingResponseReceivedDelegate?    OnUsePriorityChargingResponseReceived;
 
         #endregion
 
@@ -71,13 +71,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnUsePriorityChargingRequest?.Invoke(startTime,
+                OnUsePriorityChargingRequestSent?.Invoke(startTime,
                                                      this,
                                                      Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnUsePriorityChargingRequest));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnUsePriorityChargingRequestSent));
             }
 
             #endregion
@@ -147,7 +147,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnUsePriorityChargingResponse?.Invoke(endTime,
+                OnUsePriorityChargingResponseReceived?.Invoke(endTime,
                                                       this,
                                                       Request,
                                                       response,
@@ -156,7 +156,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnUsePriorityChargingResponse));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnUsePriorityChargingResponseReceived));
             }
 
             #endregion

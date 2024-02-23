@@ -27,6 +27,9 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
+    public delegate Task UploadedFileReceivedDelegate(String FileName);
+
+
     /// <summary>
     /// The OCPP (diagnostics) UploadAPI.
     /// </summary>
@@ -98,6 +101,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+        #region Properties
+
+        public event UploadedFileReceivedDelegate? UploadedFileReceived;
+
+        #endregion
+
         #region Constructor(s)
 
         /// <summary>
@@ -166,22 +175,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             AddMethodCallback(HTTPHostname.Any,
                               HTTPMethod.PUT,
                               URLPathPrefix + "{file}",
-                              HTTPDelegate: async Request => {
+                              HTTPDelegate: async request => {
 
                                   try
                                   {
 
-                                      var filepath  = Request.Path.ToString().Replace("..", "");
-                                      var filename  = filepath.Substring(filepath.LastIndexOf("/") + 1);
+                                      var filepath  = request.Path.ToString().Replace("..", "");
+                                      var filename  = filepath[(filepath.LastIndexOf('/') + 1)..];
                                       var file      = File.Create(filename);
-                                      var data      = Request.HTTPBody;
+                                      var data      = request.HTTPBody;
 
-                                      await file.WriteAsync(data, 0, data.Length);
+                                      await file.WriteAsync(data, request.CancellationToken);
 
                                       DebugX.Log("UploadAPI: Received file '" + filename + "'!");
 
 
-                                      return new HTTPResponse.Builder(Request) {
+                                      return new HTTPResponse.Builder(request) {
                                                  HTTPStatusCode             = HTTPStatusCode.Created,
                                                  Server                     = DefaultHTTPServerName,
                                                  Date                       = Timestamp.Now,
@@ -196,7 +205,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                       DebugX.Log("UploadAPI: Could not received file: " + e.Message);
 
-                                      return new HTTPResponse.Builder(Request) {
+                                      return new HTTPResponse.Builder(request) {
                                                  HTTPStatusCode             = HTTPStatusCode.InternalServerError,
                                                  Server                     = DefaultHTTPServerName,
                                                  Date                       = Timestamp.Now,

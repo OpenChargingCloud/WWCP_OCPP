@@ -82,12 +82,12 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         /// <summary>
         /// An event sent whenever a firmware status notification request was received.
         /// </summary>
-        event OnBinaryDataTransferRequestReceivedDelegate     OnIncomingBinaryDataTransferRequest;
+        event OnBinaryDataTransferRequestReceivedDelegate     OnBinaryDataTransferRequestReceived;
 
         /// <summary>
         /// An event sent whenever a response to a firmware status notification request was sent.
         /// </summary>
-        event OnBinaryDataTransferResponseSentDelegate    OnIncomingBinaryDataTransferResponse;
+        event OnBinaryDataTransferResponseSentDelegate    OnBinaryDataTransferResponseSent;
 
         #endregion
 

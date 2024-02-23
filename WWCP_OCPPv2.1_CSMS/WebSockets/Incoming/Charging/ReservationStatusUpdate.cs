@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a ReservationStatusUpdate request was received.
         /// </summary>
-        public event OnReservationStatusUpdateRequestReceivedDelegate?     OnReservationStatusUpdateRequest;
+        public event OnReservationStatusUpdateRequestReceivedDelegate?     OnReservationStatusUpdateRequestReceived;
 
         /// <summary>
         /// An event sent whenever a ReservationStatusUpdate was received.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a response to a ReservationStatusUpdate was sent.
         /// </summary>
-        public event OnReservationStatusUpdateResponseSentDelegate?    OnReservationStatusUpdateResponse;
+        public event OnReservationStatusUpdateResponseSentDelegate?    OnReservationStatusUpdateResponseSent;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a ReservationStatusUpdate was sent.
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     try
                     {
 
-                        OnReservationStatusUpdateRequest?.Invoke(Timestamp.Now,
+                        OnReservationStatusUpdateRequestReceived?.Invoke(Timestamp.Now,
                                                                  this,
                                                                  Connection,
                                                                  request);
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnReservationStatusUpdateRequest));
+                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnReservationStatusUpdateRequestReceived));
                     }
 
                     #endregion
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     try
                     {
 
-                        OnReservationStatusUpdateResponse?.Invoke(Timestamp.Now,
+                        OnReservationStatusUpdateResponseSent?.Invoke(Timestamp.Now,
                                                                   this,
                                                                   Connection,
                                                                   request,
@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnReservationStatusUpdateResponse));
+                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnReservationStatusUpdateResponseSent));
                     }
 
                     #endregion

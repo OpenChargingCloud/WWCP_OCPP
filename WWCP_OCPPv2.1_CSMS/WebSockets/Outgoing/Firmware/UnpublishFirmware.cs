@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever an UnpublishFirmware request was sent.
         /// </summary>
-        public event OnUnpublishFirmwareRequestSentDelegate?     OnUnpublishFirmwareRequest;
+        public event OnUnpublishFirmwareRequestSentDelegate?     OnUnpublishFirmwareRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to an UnpublishFirmware request was sent.
         /// </summary>
-        public event OnUnpublishFirmwareResponseReceivedDelegate?    OnUnpublishFirmwareResponse;
+        public event OnUnpublishFirmwareResponseReceivedDelegate?    OnUnpublishFirmwareResponseReceived;
 
         #endregion
 
@@ -70,13 +70,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnUnpublishFirmwareRequest?.Invoke(startTime,
+                OnUnpublishFirmwareRequestSent?.Invoke(startTime,
                                                    this,
                                                    Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnUnpublishFirmwareRequest));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnUnpublishFirmwareRequestSent));
             }
 
             #endregion
@@ -146,7 +146,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnUnpublishFirmwareResponse?.Invoke(endTime,
+                OnUnpublishFirmwareResponseReceived?.Invoke(endTime,
                                                     this,
                                                     Request,
                                                     response,
@@ -155,7 +155,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnUnpublishFirmwareResponse));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnUnpublishFirmwareResponseReceived));
             }
 
             #endregion

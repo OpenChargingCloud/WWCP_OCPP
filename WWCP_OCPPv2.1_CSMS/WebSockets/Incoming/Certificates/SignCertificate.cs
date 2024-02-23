@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a SignCertificate request was received.
         /// </summary>
-        public event OnSignCertificateRequestReceivedDelegate?            OnSignCertificateRequest;
+        public event OnSignCertificateRequestReceivedDelegate?            OnSignCertificateRequestReceived;
 
         /// <summary>
         /// An event sent whenever a SignCertificate request was received.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a response to a SignCertificate request was sent.
         /// </summary>
-        public event OnSignCertificateResponseSentDelegate?           OnSignCertificateResponse;
+        public event OnSignCertificateResponseSentDelegate?           OnSignCertificateResponseSent;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a SignCertificate request was sent.
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     try
                     {
 
-                        OnSignCertificateRequest?.Invoke(Timestamp.Now,
+                        OnSignCertificateRequestReceived?.Invoke(Timestamp.Now,
                                                          this,
                                                          Connection,
                                                          request);
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSignCertificateRequest));
+                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSignCertificateRequestReceived));
                     }
 
                     #endregion
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     try
                     {
 
-                        OnSignCertificateResponse?.Invoke(Timestamp.Now,
+                        OnSignCertificateResponseSent?.Invoke(Timestamp.Now,
                                                           this,
                                                           Connection,
                                                           request,
@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSignCertificateResponse));
+                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSignCertificateResponseSent));
                     }
 
                     #endregion

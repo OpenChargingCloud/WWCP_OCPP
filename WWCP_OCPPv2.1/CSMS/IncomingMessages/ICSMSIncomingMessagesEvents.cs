@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a response to a Get15118EVCertificate request was sent.
         /// </summary>
-        event OnGet15118EVCertificateResponseSentDelegate                   OnGet15118EVCertificateResponse;
+        event OnGet15118EVCertificateResponseSentDelegate                   OnGet15118EVCertificateResponseSent;
 
         #endregion
 
@@ -45,12 +45,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a GetCertificateStatus request was received.
         /// </summary>
-        event OnGetCertificateStatusRequestReceivedDelegate                 OnGetCertificateStatusRequest;
+        event OnGetCertificateStatusRequestReceivedDelegate                 OnGetCertificateStatusRequestReceived;
 
         /// <summary>
         /// An event sent whenever a response to a GetCertificateStatus request was sent.
         /// </summary>
-        event OnGetCertificateStatusResponseSentDelegate                    OnGetCertificateStatusResponse;
+        event OnGetCertificateStatusResponseSentDelegate                    OnGetCertificateStatusResponseSent;
 
         #endregion
 
@@ -59,12 +59,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a GetCRL request was received.
         /// </summary>
-        event OnGetCRLRequestReceivedDelegate                               OnGetCRLRequest;
+        event OnGetCRLRequestReceivedDelegate                               OnGetCRLRequestReceived;
 
         /// <summary>
         /// An event sent whenever a response to a GetCRL request was sent.
         /// </summary>
-        event OnGetCRLResponseSentDelegate                                  OnGetCRLResponse;
+        event OnGetCRLResponseSentDelegate                                  OnGetCRLResponseSent;
 
         #endregion
 
@@ -73,12 +73,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a SignCertificate request was received.
         /// </summary>
-        event OnSignCertificateRequestReceivedDelegate                      OnSignCertificateRequest;
+        event OnSignCertificateRequestReceivedDelegate                      OnSignCertificateRequestReceived;
 
         /// <summary>
         /// An event sent whenever a response to a SignCertificate request was sent.
         /// </summary>
-        event OnSignCertificateResponseSentDelegate                         OnSignCertificateResponse;
+        event OnSignCertificateResponseSentDelegate                         OnSignCertificateResponseSent;
 
         #endregion
 
@@ -90,12 +90,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever an Authorize request was received.
         /// </summary>
-        event OnAuthorizeRequestReceivedDelegate                            OnAuthorizeRequest;
+        event OnAuthorizeRequestReceivedDelegate                            OnAuthorizeRequestReceived;
 
         /// <summary>
         /// An event sent whenever a response to an Authorize request was sent.
         /// </summary>
-        event OnAuthorizeResponseSentDelegate                               OnAuthorizeResponse;
+        event OnAuthorizeResponseSentDelegate                               OnAuthorizeResponseSent;
 
         #endregion
 
@@ -104,12 +104,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a ClearedChargingLimit request was received.
         /// </summary>
-        event OnClearedChargingLimitRequestReceivedDelegate                 OnClearedChargingLimitRequest;
+        event OnClearedChargingLimitRequestReceivedDelegate                 OnClearedChargingLimitRequestReceived;
 
         /// <summary>
         /// An event sent whenever a response to a ClearedChargingLimit request was sent.
         /// </summary>
-        event OnClearedChargingLimitResponseSentDelegate                    OnClearedChargingLimitResponse;
+        event OnClearedChargingLimitResponseSentDelegate                    OnClearedChargingLimitResponseSent;
 
         #endregion
 
@@ -118,12 +118,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a MeterValues request was received.
         /// </summary>
-        event OnMeterValuesRequestReceivedDelegate                          OnMeterValuesRequest;
+        event OnMeterValuesRequestReceivedDelegate                          OnMeterValuesRequestReceived;
 
         /// <summary>
         /// An event sent whenever a response to a MeterValues request was sent.
         /// </summary>
-        event OnMeterValuesResponseSentDelegate                             OnMeterValuesResponse;
+        event OnMeterValuesResponseSentDelegate                             OnMeterValuesResponseSent;
 
         #endregion
 
@@ -132,12 +132,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a NotifyChargingLimit request was received.
         /// </summary>
-        event OnNotifyChargingLimitRequestReceivedDelegate                  OnNotifyChargingLimitRequest;
+        event OnNotifyChargingLimitRequestReceivedDelegate                  OnNotifyChargingLimitRequestReceived;
 
         /// <summary>
         /// An event sent whenever a response to a NotifyChargingLimit request was sent.
         /// </summary>
-        event OnNotifyChargingLimitResponseSentDelegate                     OnNotifyChargingLimitResponse;
+        event OnNotifyChargingLimitResponseSentDelegate                     OnNotifyChargingLimitResponseSent;
 
         #endregion
 
@@ -146,12 +146,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a NotifyEVChargingNeeds request was received.
         /// </summary>
-        event OnNotifyEVChargingNeedsRequestReceivedDelegate                OnNotifyEVChargingNeedsRequest;
+        event OnNotifyEVChargingNeedsRequestReceivedDelegate                OnNotifyEVChargingNeedsRequestReceived;
 
         /// <summary>
         /// An event sent whenever a response to a NotifyEVChargingNeeds request was sent.
         /// </summary>
-        event OnNotifyEVChargingNeedsResponseSentDelegate                   OnNotifyEVChargingNeedsResponse;
+        event OnNotifyEVChargingNeedsResponseSentDelegate                   OnNotifyEVChargingNeedsResponseSent;
 
         #endregion
 
@@ -160,12 +160,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a NotifyEVChargingSchedule request was received.
         /// </summary>
-        event OnNotifyEVChargingScheduleRequestReceivedDelegate             OnNotifyEVChargingScheduleRequest;
+        event OnNotifyEVChargingScheduleRequestReceivedDelegate             OnNotifyEVChargingScheduleRequestReceived;
 
         /// <summary>
         /// An event sent whenever a response to a NotifyEVChargingSchedule request was sent.
         /// </summary>
-        event OnNotifyEVChargingScheduleResponseSentDelegate                OnNotifyEVChargingScheduleResponse;
+        event OnNotifyEVChargingScheduleResponseSentDelegate                OnNotifyEVChargingScheduleResponseSent;
 
         #endregion
 
@@ -174,12 +174,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a NotifyPriorityCharging request was received.
         /// </summary>
-        event OnNotifyPriorityChargingRequestReceivedDelegate               OnNotifyPriorityChargingRequest;
+        event OnNotifyPriorityChargingRequestReceivedDelegate               OnNotifyPriorityChargingRequestReceived;
 
         /// <summary>
         /// An event sent whenever a response to a NotifyPriorityCharging request was sent.
         /// </summary>
-        event OnNotifyPriorityChargingResponseSentDelegate                  OnNotifyPriorityChargingResponse;
+        event OnNotifyPriorityChargingResponseSentDelegate                  OnNotifyPriorityChargingResponseSent;
 
         #endregion
 
@@ -188,12 +188,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a NotifySettlement request was received.
         /// </summary>
-        event OnNotifySettlementRequestReceivedDelegate               OnNotifySettlementRequest;
+        event OnNotifySettlementRequestReceivedDelegate               OnNotifySettlementRequestReceived;
 
         /// <summary>
         /// An event sent whenever a response to a NotifySettlement request was sent.
         /// </summary>
-        event OnNotifySettlementResponseSentDelegate                  OnNotifySettlementResponse;
+        event OnNotifySettlementResponseSentDelegate                  OnNotifySettlementResponseSent;
 
         #endregion
 
@@ -202,12 +202,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a PullDynamicScheduleUpdate request was received.
         /// </summary>
-        event OnPullDynamicScheduleUpdateRequestReceivedDelegate            OnPullDynamicScheduleUpdateRequest;
+        event OnPullDynamicScheduleUpdateRequestReceivedDelegate            OnPullDynamicScheduleUpdateRequestReceived;
 
         /// <summary>
         /// An event sent whenever a response to a PullDynamicScheduleUpdate request was sent.
         /// </summary>
-        event OnPullDynamicScheduleUpdateResponseSentDelegate               OnPullDynamicScheduleUpdateResponse;
+        event OnPullDynamicScheduleUpdateResponseSentDelegate               OnPullDynamicScheduleUpdateResponseSent;
 
         #endregion
 
@@ -216,12 +216,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a ReportChargingProfiles request was received.
         /// </summary>
-        event OnReportChargingProfilesRequestReceivedDelegate OnReportChargingProfilesRequest;
+        event OnReportChargingProfilesRequestReceivedDelegate OnReportChargingProfilesRequestReceived;
 
         /// <summary>
         /// An event sent whenever a response to a ReportChargingProfiles request was sent.
         /// </summary>
-        event OnReportChargingProfilesResponseSentDelegate OnReportChargingProfilesResponse;
+        event OnReportChargingProfilesResponseSentDelegate OnReportChargingProfilesResponseSent;
 
         #endregion
 
@@ -230,12 +230,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a ReservationStatusUpdate request was received.
         /// </summary>
-        event OnReservationStatusUpdateRequestReceivedDelegate              OnReservationStatusUpdateRequest;
+        event OnReservationStatusUpdateRequestReceivedDelegate              OnReservationStatusUpdateRequestReceived;
 
         /// <summary>
         /// An event sent whenever a response to a ReservationStatusUpdate request was sent.
         /// </summary>
-        event OnReservationStatusUpdateResponseSentDelegate                 OnReservationStatusUpdateResponse;
+        event OnReservationStatusUpdateResponseSentDelegate                 OnReservationStatusUpdateResponseSent;
 
         #endregion
 
@@ -244,12 +244,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a StatusNotification request was received.
         /// </summary>
-        event OnStatusNotificationRequestReceivedDelegate OnStatusNotificationRequest;
+        event OnStatusNotificationRequestReceivedDelegate OnStatusNotificationRequestReceived;
 
         /// <summary>
         /// An event sent whenever a response to a StatusNotification request was sent.
         /// </summary>
-        event OnStatusNotificationResponseSentDelegate OnStatusNotificationResponse;
+        event OnStatusNotificationResponseSentDelegate OnStatusNotificationResponseSent;
 
         #endregion
 
@@ -258,12 +258,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a TransactionEvent request was received.
         /// </summary>
-        event OnTransactionEventRequestReceivedDelegate                     OnTransactionEventRequest;
+        event OnTransactionEventRequestReceivedDelegate                     OnTransactionEventRequestReceived;
 
         /// <summary>
         /// An event sent whenever a response to a TransactionEvent request was sent.
         /// </summary>
-        event OnTransactionEventResponseSentDelegate                        OnTransactionEventResponse;
+        event OnTransactionEventResponseSentDelegate                        OnTransactionEventResponseSent;
 
         #endregion
 
@@ -275,12 +275,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a notify customer information request was received.
         /// </summary>
-        event OnNotifyCustomerInformationRequestReceivedDelegate            OnNotifyCustomerInformationRequest;
+        event OnNotifyCustomerInformationRequestReceivedDelegate            OnNotifyCustomerInformationRequestReceived;
 
         /// <summary>
         /// An event sent whenever a response to a notify customer information request was sent.
         /// </summary>
-        event OnNotifyCustomerInformationResponseSentDelegate               OnNotifyCustomerInformationResponse;
+        event OnNotifyCustomerInformationResponseSentDelegate               OnNotifyCustomerInformationResponseSent;
 
         #endregion
 
@@ -289,12 +289,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a notify display messages request was received.
         /// </summary>
-        event OnNotifyDisplayMessagesRequestReceivedDelegate                OnNotifyDisplayMessagesRequest;
+        event OnNotifyDisplayMessagesRequestReceivedDelegate                OnNotifyDisplayMessagesRequestReceived;
 
         /// <summary>
         /// An event sent whenever a response to a notify display messages request was sent.
         /// </summary>
-        event OnNotifyDisplayMessagesResponseSentDelegate                   OnNotifyDisplayMessagesResponse;
+        event OnNotifyDisplayMessagesResponseSentDelegate                   OnNotifyDisplayMessagesResponseSent;
 
         #endregion
 
@@ -320,12 +320,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a FirmwareStatusNotification request was received.
         /// </summary>
-        event OnFirmwareStatusNotificationRequestReceivedDelegate           OnFirmwareStatusNotificationRequest;
+        event OnFirmwareStatusNotificationRequestReceivedDelegate           OnFirmwareStatusNotificationRequestReceived;
 
         /// <summary>
         /// An event sent whenever a response to a FirmwareStatusNotification request was sent.
         /// </summary>
-        event OnFirmwareStatusNotificationResponseSentDelegate              OnFirmwareStatusNotificationResponse;
+        event OnFirmwareStatusNotificationResponseSentDelegate              OnFirmwareStatusNotificationResponseSent;
 
         #endregion
 
@@ -334,12 +334,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a Heartbeat request was received.
         /// </summary>
-        event OnHeartbeatRequestReceivedDelegate                            OnHeartbeatRequest;
+        event OnHeartbeatRequestReceivedDelegate                            OnHeartbeatRequestReceived;
 
         /// <summary>
         /// An event sent whenever a response to a Heartbeat request was sent.
         /// </summary>
-        event OnHeartbeatResponseSentDelegate                               OnHeartbeatResponse;
+        event OnHeartbeatResponseSentDelegate                               OnHeartbeatResponseSent;
 
         #endregion
 
@@ -348,12 +348,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a PublishFirmwareStatusNotification request was received.
         /// </summary>
-        event OnPublishFirmwareStatusNotificationRequestReceivedDelegate    OnPublishFirmwareStatusNotificationRequest;
+        event OnPublishFirmwareStatusNotificationRequestReceivedDelegate    OnPublishFirmwareStatusNotificationRequestReceived;
 
         /// <summary>
         /// An event sent whenever a response to a PublishFirmwareStatusNotification request was sent.
         /// </summary>
-        event OnPublishFirmwareStatusNotificationResponseSentDelegate       OnPublishFirmwareStatusNotificationResponse;
+        event OnPublishFirmwareStatusNotificationResponseSentDelegate       OnPublishFirmwareStatusNotificationResponseSent;
 
         #endregion
 
@@ -365,12 +365,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a LogStatusNotification request was received.
         /// </summary>
-        event OnLogStatusNotificationRequestReceivedDelegate                OnLogStatusNotificationRequest;
+        event OnLogStatusNotificationRequestReceivedDelegate                OnLogStatusNotificationRequestReceived;
 
         /// <summary>
         /// An event sent whenever a response to a LogStatusNotification request was sent.
         /// </summary>
-        event OnLogStatusNotificationResponseSentDelegate                   OnLogStatusNotificationResponse;
+        event OnLogStatusNotificationResponseSentDelegate                   OnLogStatusNotificationResponseSent;
 
         #endregion
 
@@ -379,12 +379,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a NotifyEvent request was received.
         /// </summary>
-        event OnNotifyEventRequestReceivedDelegate                          OnNotifyEventRequest;
+        event OnNotifyEventRequestReceivedDelegate                          OnNotifyEventRequestReceived;
 
         /// <summary>
         /// An event sent whenever a response to a NotifyEvent request was sent.
         /// </summary>
-        event OnNotifyEventResponseSentDelegate                             OnNotifyEventResponse;
+        event OnNotifyEventResponseSentDelegate                             OnNotifyEventResponseSent;
 
         #endregion
 
@@ -393,12 +393,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a NotifyMonitoringReport request was received.
         /// </summary>
-        event OnNotifyMonitoringReportRequestReceivedDelegate               OnNotifyMonitoringReportRequest;
+        event OnNotifyMonitoringReportRequestReceivedDelegate               OnNotifyMonitoringReportRequestReceived;
 
         /// <summary>
         /// An event sent whenever a response to a NotifyMonitoringReport request was sent.
         /// </summary>
-        event OnNotifyMonitoringReportResponseSentDelegate                  OnNotifyMonitoringReportResponse;
+        event OnNotifyMonitoringReportResponseSentDelegate                  OnNotifyMonitoringReportResponseSent;
 
         #endregion
 
@@ -407,12 +407,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a NotifyReport request was received.
         /// </summary>
-        event OnNotifyReportRequestReceivedDelegate                         OnNotifyReportRequest;
+        event OnNotifyReportRequestReceivedDelegate                         OnNotifyReportRequestReceived;
 
         /// <summary>
         /// An event sent whenever a response to a NotifyReport request was sent.
         /// </summary>
-        event OnNotifyReportResponseSentDelegate                            OnNotifyReportResponse;
+        event OnNotifyReportResponseSentDelegate                            OnNotifyReportResponseSent;
 
         #endregion
 
@@ -421,12 +421,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a SecurityEventNotification request was received.
         /// </summary>
-        event OnSecurityEventNotificationRequestReceivedDelegate            OnSecurityEventNotificationRequest;
+        event OnSecurityEventNotificationRequestReceivedDelegate            OnSecurityEventNotificationRequestReceived;
 
         /// <summary>
         /// An event sent whenever a response to a SecurityEventNotification request was sent.
         /// </summary>
-        event OnSecurityEventNotificationResponseSentDelegate               OnSecurityEventNotificationResponse;
+        event OnSecurityEventNotificationResponseSentDelegate               OnSecurityEventNotificationResponseSent;
 
         #endregion
 

@@ -47,12 +47,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a BinaryDataTransfer request was sent.
         /// </summary>
-        public event OnBinaryDataTransferRequestSentDelegate?     OnBinaryDataTransferRequest;
+        public event OnBinaryDataTransferRequestSentDelegate?     OnBinaryDataTransferRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a BinaryDataTransfer request was sent.
         /// </summary>
-        public event OnBinaryDataTransferResponseReceivedDelegate?    OnBinaryDataTransferResponse;
+        public event OnBinaryDataTransferResponseReceivedDelegate?    OnBinaryDataTransferResponseReceived;
 
         #endregion
 
@@ -69,13 +69,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnBinaryDataTransferRequest?.Invoke(startTime,
+                OnBinaryDataTransferRequestSent?.Invoke(startTime,
                                                     this,
                                                     Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnBinaryDataTransferRequest));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnBinaryDataTransferRequestSent));
             }
 
             #endregion
@@ -141,7 +141,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnBinaryDataTransferResponse?.Invoke(endTime,
+                OnBinaryDataTransferResponseReceived?.Invoke(endTime,
                                                      this,
                                                      Request,
                                                      response,
@@ -150,7 +150,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnBinaryDataTransferResponse));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnBinaryDataTransferResponseReceived));
             }
 
             #endregion

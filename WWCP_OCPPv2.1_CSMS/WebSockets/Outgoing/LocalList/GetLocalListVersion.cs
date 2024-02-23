@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a GetLocalListVersion request was sent.
         /// </summary>
-        public event OnGetLocalListVersionRequestSentDelegate?     OnGetLocalListVersionRequest;
+        public event OnGetLocalListVersionRequestSentDelegate?     OnGetLocalListVersionRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a GetLocalListVersion request was sent.
         /// </summary>
-        public event OnGetLocalListVersionResponseReceivedDelegate?    OnGetLocalListVersionResponse;
+        public event OnGetLocalListVersionResponseReceivedDelegate?    OnGetLocalListVersionResponseReceived;
 
         #endregion
 
@@ -70,13 +70,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnGetLocalListVersionRequest?.Invoke(startTime,
+                OnGetLocalListVersionRequestSent?.Invoke(startTime,
                                                      this,
                                                      Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetLocalListVersionRequest));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetLocalListVersionRequestSent));
             }
 
             #endregion
@@ -146,7 +146,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnGetLocalListVersionResponse?.Invoke(endTime,
+                OnGetLocalListVersionResponseReceived?.Invoke(endTime,
                                                       this,
                                                       Request,
                                                       response,
@@ -155,7 +155,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetLocalListVersionResponse));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetLocalListVersionResponseReceived));
             }
 
             #endregion

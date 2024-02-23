@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a NotifyChargingLimit request was received.
         /// </summary>
-        public event OnNotifyChargingLimitRequestReceivedDelegate?         OnNotifyChargingLimitRequest;
+        public event OnNotifyChargingLimitRequestReceivedDelegate?         OnNotifyChargingLimitRequestReceived;
 
         /// <summary>
         /// An event sent whenever a NotifyChargingLimit was received.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a response to a NotifyChargingLimit was sent.
         /// </summary>
-        public event OnNotifyChargingLimitResponseSentDelegate?        OnNotifyChargingLimitResponse;
+        public event OnNotifyChargingLimitResponseSentDelegate?        OnNotifyChargingLimitResponseSent;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a NotifyChargingLimit was sent.
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     try
                     {
 
-                        OnNotifyChargingLimitRequest?.Invoke(Timestamp.Now,
+                        OnNotifyChargingLimitRequestReceived?.Invoke(Timestamp.Now,
                                                              this,
                                                              Connection,
                                                              request);
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyChargingLimitRequest));
+                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyChargingLimitRequestReceived));
                     }
 
                     #endregion
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     try
                     {
 
-                        OnNotifyChargingLimitResponse?.Invoke(Timestamp.Now,
+                        OnNotifyChargingLimitResponseSent?.Invoke(Timestamp.Now,
                                                               this,
                                                               Connection,
                                                               request,
@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyChargingLimitResponse));
+                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyChargingLimitResponseSent));
                     }
 
                     #endregion

@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a NotifyMonitoringReport request was received.
         /// </summary>
-        public event OnNotifyMonitoringReportRequestReceivedDelegate?     OnNotifyMonitoringReportRequest;
+        public event OnNotifyMonitoringReportRequestReceivedDelegate?     OnNotifyMonitoringReportRequestReceived;
 
         /// <summary>
         /// An event sent whenever a NotifyMonitoringReport was received.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a response to a NotifyMonitoringReport was sent.
         /// </summary>
-        public event OnNotifyMonitoringReportResponseSentDelegate?    OnNotifyMonitoringReportResponse;
+        public event OnNotifyMonitoringReportResponseSentDelegate?    OnNotifyMonitoringReportResponseSent;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a NotifyMonitoringReport was sent.
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     try
                     {
 
-                        OnNotifyMonitoringReportRequest?.Invoke(Timestamp.Now,
+                        OnNotifyMonitoringReportRequestReceived?.Invoke(Timestamp.Now,
                                                                 this,
                                                                 Connection,
                                                                 request);
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyMonitoringReportRequest));
+                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyMonitoringReportRequestReceived));
                     }
 
                     #endregion
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     try
                     {
 
-                        OnNotifyMonitoringReportResponse?.Invoke(Timestamp.Now,
+                        OnNotifyMonitoringReportResponseSent?.Invoke(Timestamp.Now,
                                                                  this,
                                                                  Connection,
                                                                  request,
@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyMonitoringReportResponse));
+                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyMonitoringReportResponseSent));
                     }
 
                     #endregion

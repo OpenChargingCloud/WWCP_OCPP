@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a GetCompositeSchedule request was sent.
         /// </summary>
-        public event OnGetCompositeScheduleRequestSentDelegate?     OnGetCompositeScheduleRequest;
+        public event OnGetCompositeScheduleRequestSentDelegate?     OnGetCompositeScheduleRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a GetCompositeSchedule request was sent.
         /// </summary>
-        public event OnGetCompositeScheduleResponseReceivedDelegate?    OnGetCompositeScheduleResponse;
+        public event OnGetCompositeScheduleResponseReceivedDelegate?    OnGetCompositeScheduleResponseReceived;
 
         #endregion
 
@@ -71,13 +71,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnGetCompositeScheduleRequest?.Invoke(startTime,
+                OnGetCompositeScheduleRequestSent?.Invoke(startTime,
                                                       this,
                                                       Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetCompositeScheduleRequest));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetCompositeScheduleRequestSent));
             }
 
             #endregion
@@ -147,7 +147,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnGetCompositeScheduleResponse?.Invoke(endTime,
+                OnGetCompositeScheduleResponseReceived?.Invoke(endTime,
                                                        this,
                                                        Request,
                                                        response,
@@ -156,7 +156,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetCompositeScheduleResponse));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetCompositeScheduleResponseReceived));
             }
 
             #endregion

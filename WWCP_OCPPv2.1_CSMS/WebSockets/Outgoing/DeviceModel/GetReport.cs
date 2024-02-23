@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a GetReport request was sent.
         /// </summary>
-        public event OnGetReportRequestSentDelegate?     OnGetReportRequest;
+        public event OnGetReportRequestSentDelegate?     OnGetReportRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a GetReport request was sent.
         /// </summary>
-        public event OnGetReportResponseReceivedDelegate?    OnGetReportResponse;
+        public event OnGetReportResponseReceivedDelegate?    OnGetReportResponseReceived;
 
         #endregion
 
@@ -70,13 +70,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnGetReportRequest?.Invoke(startTime,
+                OnGetReportRequestSent?.Invoke(startTime,
                                            this,
                                            Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetReportRequest));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetReportRequestSent));
             }
 
             #endregion
@@ -150,7 +150,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnGetReportResponse?.Invoke(endTime,
+                OnGetReportResponseReceived?.Invoke(endTime,
                                             this,
                                             Request,
                                             response,
@@ -159,7 +159,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetReportResponse));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetReportResponseReceived));
             }
 
             #endregion

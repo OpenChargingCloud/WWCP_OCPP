@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a LogStatusNotification request was received.
         /// </summary>
-        public event OnLogStatusNotificationRequestReceivedDelegate?      OnLogStatusNotificationRequest;
+        public event OnLogStatusNotificationRequestReceivedDelegate?      OnLogStatusNotificationRequestReceived;
 
         /// <summary>
         /// An event sent whenever a LogStatusNotification request was received.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a response to a LogStatusNotification request was sent.
         /// </summary>
-        public event OnLogStatusNotificationResponseSentDelegate?     OnLogStatusNotificationResponse;
+        public event OnLogStatusNotificationResponseSentDelegate?     OnLogStatusNotificationResponseSent;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a LogStatusNotification request was sent.
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     try
                     {
 
-                        OnLogStatusNotificationRequest?.Invoke(Timestamp.Now,
+                        OnLogStatusNotificationRequestReceived?.Invoke(Timestamp.Now,
                                                                this,
                                                                Connection,
                                                                request);
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnLogStatusNotificationRequest));
+                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnLogStatusNotificationRequestReceived));
                     }
 
                     #endregion
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     try
                     {
 
-                        OnLogStatusNotificationResponse?.Invoke(Timestamp.Now,
+                        OnLogStatusNotificationResponseSent?.Invoke(Timestamp.Now,
                                                                 this,
                                                                 Connection,
                                                                 request,
@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnLogStatusNotificationResponse));
+                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnLogStatusNotificationResponseSent));
                     }
 
                     #endregion

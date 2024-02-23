@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a GetLog request was sent.
         /// </summary>
-        public event OnGetLogRequestSentDelegate?     OnGetLogRequest;
+        public event OnGetLogRequestSentDelegate?     OnGetLogRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a GetLog request was sent.
         /// </summary>
-        public event OnGetLogResponseReceivedDelegate?    OnGetLogResponse;
+        public event OnGetLogResponseReceivedDelegate?    OnGetLogResponseReceived;
 
         #endregion
 
@@ -74,13 +74,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnGetLogRequest?.Invoke(startTime,
+                OnGetLogRequestSent?.Invoke(startTime,
                                         this,
                                         Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetLogRequest));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetLogRequestSent));
             }
 
             #endregion
@@ -151,7 +151,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnGetLogResponse?.Invoke(endTime,
+                OnGetLogResponseReceived?.Invoke(endTime,
                                          this,
                                          Request,
                                          response,
@@ -160,7 +160,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetLogResponse));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetLogResponseReceived));
             }
 
             #endregion

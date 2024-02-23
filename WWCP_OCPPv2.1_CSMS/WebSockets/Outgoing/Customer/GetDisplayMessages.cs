@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a GetDisplayMessages request was sent.
         /// </summary>
-        public event OnGetDisplayMessagesRequestSentDelegate?     OnGetDisplayMessagesRequest;
+        public event OnGetDisplayMessagesRequestSentDelegate?     OnGetDisplayMessagesRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a GetDisplayMessages request was sent.
         /// </summary>
-        public event OnGetDisplayMessagesResponseReceivedDelegate?    OnGetDisplayMessagesResponse;
+        public event OnGetDisplayMessagesResponseReceivedDelegate?    OnGetDisplayMessagesResponseReceived;
 
         #endregion
 
@@ -70,13 +70,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnGetDisplayMessagesRequest?.Invoke(startTime,
+                OnGetDisplayMessagesRequestSent?.Invoke(startTime,
                                                     this,
                                                     Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetDisplayMessagesRequest));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetDisplayMessagesRequestSent));
             }
 
             #endregion
@@ -146,7 +146,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnGetDisplayMessagesResponse?.Invoke(endTime,
+                OnGetDisplayMessagesResponseReceived?.Invoke(endTime,
                                                      this,
                                                      Request,
                                                      response,
@@ -155,7 +155,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetDisplayMessagesResponse));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetDisplayMessagesResponseReceived));
             }
 
             #endregion

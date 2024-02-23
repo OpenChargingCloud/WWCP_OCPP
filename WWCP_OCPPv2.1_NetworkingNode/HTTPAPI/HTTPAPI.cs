@@ -366,7 +366,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                             requestMessage,
                                                             cancellationToken) =>
 
-                EventLog.SubmitEvent("OnJSONMessageRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OnJSONMessageRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",    timestamp.          ToIso8601()),
                                          new JProperty("connection",   webSocketConnection.ToJSON()),
@@ -390,7 +390,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                          responseMessage,
                                                          cancellationToken) =>
 
-                EventLog.SubmitEvent("OnJSONMessageResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OnJSONMessageResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",    timestamp.          ToIso8601()),
                                          new JProperty("connection",   webSocketConnection.ToJSON()),
@@ -412,7 +412,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                        responseMessage,
                                                        cancellationToken) =>
 
-                EventLog.SubmitEvent("OnJSONErrorResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OnJSONErrorResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",    timestamp.          ToIso8601()),
                                          new JProperty("connection",   webSocketConnection.ToJSON()),
@@ -434,7 +434,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                         requestMessage,
                                                         cancellationToken) =>
 
-                EventLog.SubmitEvent("OnJSONMessageRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OnJSONMessageRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",    timestamp.          ToIso8601()),
                                          new JProperty("connection",   webSocketConnection.ToJSON()),
@@ -458,7 +458,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                              responseMessage,
                                                              cancellationToken) =>
 
-                EventLog.SubmitEvent("OnJSONMessageResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OnJSONMessageResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",    timestamp.          ToIso8601()),
                                          new JProperty("connection",   webSocketConnection.ToJSON()),
@@ -480,7 +480,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                            responseMessage,
                                                            cancellationToken) =>
 
-                EventLog.SubmitEvent("OnJSONErrorResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OnJSONErrorResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",    timestamp.          ToIso8601()),
                                          new JProperty("connection",   webSocketConnection.ToJSON()),
@@ -505,7 +505,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                               requestMessage,
                                                               cancellationToken) =>
 
-                EventLog.SubmitEvent("OnBinaryMessageRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OnBinaryMessageRequestReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",    timestamp.          ToIso8601()),
                                          new JProperty("connection",   webSocketConnection.ToJSON()),
@@ -529,7 +529,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                            responseMessage,
                                                            cancellationToken) =>
 
-                EventLog.SubmitEvent("OnBinaryMessageResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OnBinaryMessageResponseSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",    timestamp.          ToIso8601()),
                                          new JProperty("connection",   webSocketConnection.ToJSON()),
@@ -550,7 +550,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             //                                                  responseTimestamp,
             //                                                  responseMessage) =>
 
-            //    EventLog.SubmitEvent("OnBinaryErrorResponseSent",
+            //    EventLog.SubmitEvent(nameof(NetworkingNode.OnBinaryErrorResponseSent),
             //                         JSONObject.Create(
             //                             new JProperty("timestamp",    timestamp.          ToIso8601()),
             //                             new JProperty("connection",   webSocketConnection.ToJSON()),
@@ -572,7 +572,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                requestMessage,
                                                                cancellationToken) =>
 
-                EventLog.SubmitEvent("OnBinaryMessageRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OnBinaryMessageRequestSent),
                                      JSONObject.Create(
                                          new JProperty("timestamp",    timestamp.          ToIso8601()),
                                          new JProperty("connection",   webSocketConnection.ToJSON()),
@@ -596,7 +596,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                     responseMessage,
                                                                     cancellationToken) =>
 
-                EventLog.SubmitEvent("OnBinaryMessageResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OnBinaryMessageResponseReceived),
                                      JSONObject.Create(
                                          new JProperty("timestamp",    timestamp.          ToIso8601()),
                                          new JProperty("connection",   webSocketConnection.ToJSON()),
@@ -617,7 +617,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             //                                                      responseTimestamp,
             //                                                      responseMessage) =>
 
-            //    EventLog.SubmitEvent("OnBinaryErrorResponseReceived",
+            //    EventLog.SubmitEvent(nameof(NetworkingNode.OnBinaryErrorResponseReceived),
             //                         JSONObject.Create(
             //                             new JProperty("timestamp",    timestamp.          ToIso8601()),
             //                             new JProperty("connection",   webSocketConnection.ToJSON()),
@@ -629,18 +629,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #endregion
 
 
-            #region ChargingStation  -> CSMS            Messages
+            #region ChargingStation  -> CSMS            Message exchanged
 
             #region Certificates
 
             #region OnGet15118EVCertificate
 
             NetworkingNode.OCPP.IN.OnGet15118EVCertificateRequestReceived += (timestamp,
-                                                                                   sender,
-                                                                                   connection,
-                                                                                   request) =>
+                                                                              sender,
+                                                                              connection,
+                                                                              request) =>
 
-                EventLog.SubmitEvent("OnGet15118EVCertificateRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGet15118EVCertificateRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -650,11 +650,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnGet15118EVCertificateRequestSent += (timestamp,
-                                                                                sender,
-                                                                                //connection,
-                                                                                request) =>
+                                                                           sender,
+                                                                           //connection,
+                                                                           request) =>
 
-                EventLog.SubmitEvent("OnGet15118EVCertificateRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGet15118EVCertificateRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -664,13 +664,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnGet15118EVCertificateResponseReceived += (timestamp,
-                                                                                    sender,
-                                                                                    //connection,
-                                                                                    request,
-                                                                                    response,
-                                                                                    runtime) =>
+                                                                               sender,
+                                                                               //connection,
+                                                                               request,
+                                                                               response,
+                                                                               runtime) =>
 
-                EventLog.SubmitEvent("OnGet15118EVCertificateResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGet15118EVCertificateResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -682,13 +682,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnGet15118EVCertificateResponseSent += (timestamp,
-                                                                                 sender,
-                                                                                 connection,
-                                                                                 request,
-                                                                                 response,
-                                                                                 runtime) =>
+                                                                            sender,
+                                                                            connection,
+                                                                            request,
+                                                                            response,
+                                                                            runtime) =>
 
-                EventLog.SubmitEvent("OnGet15118EVCertificateResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGet15118EVCertificateResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -703,11 +703,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnGetCertificateStatus
 
             NetworkingNode.OCPP.IN.OnGetCertificateStatusRequestReceived += (timestamp,
-                                                                                  sender,
-                                                                                  connection,
-                                                                                  request) =>
+                                                                             sender,
+                                                                             connection,
+                                                                             request) =>
 
-                EventLog.SubmitEvent("OnGetCertificateStatusRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetCertificateStatusRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -717,11 +717,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnGetCertificateStatusRequestSent += (timestamp,
-                                                                               sender,
-                                                                               //connection,
-                                                                               request) =>
+                                                                          sender,
+                                                                          //connection,
+                                                                          request) =>
 
-                EventLog.SubmitEvent("OnGetCertificateStatusRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetCertificateStatusRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -731,13 +731,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnGetCertificateStatusResponseReceived += (timestamp,
-                                                                                   sender,
-                                                                                   //connection,
-                                                                                   request,
-                                                                                   response,
-                                                                                   runtime) =>
+                                                                              sender,
+                                                                              //connection,
+                                                                              request,
+                                                                              response,
+                                                                              runtime) =>
 
-                EventLog.SubmitEvent("OnGetCertificateStatusResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetCertificateStatusResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -749,13 +749,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnGetCertificateStatusResponseSent += (timestamp,
-                                                                                sender,
-                                                                                connection,
-                                                                                request,
-                                                                                response,
-                                                                                runtime) =>
+                                                                           sender,
+                                                                           connection,
+                                                                           request,
+                                                                           response,
+                                                                           runtime) =>
 
-                EventLog.SubmitEvent("OnGetCertificateStatusResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetCertificateStatusResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -770,11 +770,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnGetCRL
 
             NetworkingNode.OCPP.IN.OnGetCRLRequestReceived += (timestamp,
-                                                                    sender,
-                                                                    connection,
-                                                                    request) =>
+                                                               sender,
+                                                               connection,
+                                                               request) =>
 
-                EventLog.SubmitEvent("OnGetCRLRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetCRLRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -784,11 +784,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnGetCRLRequestSent += (timestamp,
-                                                                 sender,
-                                                                 //connection,
-                                                                 request) =>
+                                                            sender,
+                                                            //connection,
+                                                            request) =>
 
-                EventLog.SubmitEvent("OnGetCRLRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetCRLRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -798,13 +798,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnGetCRLResponseReceived += (timestamp,
-                                                                     sender,
-                                                                     //connection,
-                                                                     request,
-                                                                     response,
-                                                                     runtime) =>
+                                                                sender,
+                                                                //connection,
+                                                                request,
+                                                                response,
+                                                                runtime) =>
 
-                EventLog.SubmitEvent("OnGetCRLResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetCRLResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -816,13 +816,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnGetCRLResponseSent += (timestamp,
-                                                                  sender,
-                                                                  connection,
-                                                                  request,
-                                                                  response,
-                                                                  runtime) =>
+                                                             sender,
+                                                             connection,
+                                                             request,
+                                                             response,
+                                                             runtime) =>
 
-                EventLog.SubmitEvent("OnGetCRLResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetCRLResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -837,11 +837,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnSignCertificate
 
             NetworkingNode.OCPP.IN.OnSignCertificateRequestReceived += (timestamp,
-                                                                             sender,
-                                                                             connection,
-                                                                             request) =>
+                                                                        sender,
+                                                                        connection,
+                                                                        request) =>
 
-                EventLog.SubmitEvent("OnSignCertificateRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnSignCertificateRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -851,11 +851,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnSignCertificateRequestSent += (timestamp,
-                                                                          sender,
-                                                                          //connection,
-                                                                          request) =>
+                                                                     sender,
+                                                                     //connection,
+                                                                     request) =>
 
-                EventLog.SubmitEvent("OnSignCertificateRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnSignCertificateRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -865,13 +865,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnSignCertificateResponseReceived += (timestamp,
-                                                                              sender,
-                                                                              //connection,
-                                                                              request,
-                                                                              response,
-                                                                              runtime) =>
+                                                                         sender,
+                                                                         //connection,
+                                                                         request,
+                                                                         response,
+                                                                         runtime) =>
 
-                EventLog.SubmitEvent("OnSignCertificateResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnSignCertificateResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -883,13 +883,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnSignCertificateResponseSent += (timestamp,
-                                                                           sender,
-                                                                           connection,
-                                                                           request,
-                                                                           response,
-                                                                           runtime) =>
+                                                                      sender,
+                                                                      connection,
+                                                                      request,
+                                                                      response,
+                                                                      runtime) =>
 
-                EventLog.SubmitEvent("OnSignCertificateResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnSignCertificateResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -908,11 +908,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnAuthorize
 
             NetworkingNode.OCPP.IN.OnAuthorizeRequestReceived += (timestamp,
-                                                                       sender,
-                                                                       connection,
-                                                                       request) =>
+                                                                  sender,
+                                                                  connection,
+                                                                  request) =>
 
-                EventLog.SubmitEvent("OnAuthorizeRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnAuthorizeRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -922,11 +922,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnAuthorizeRequestSent += (timestamp,
-                                                                    sender,
-                                                                    //connection,
-                                                                    request) =>
+                                                               sender,
+                                                               //connection,
+                                                               request) =>
 
-                EventLog.SubmitEvent("OnAuthorizeRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnAuthorizeRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -936,13 +936,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnAuthorizeResponseReceived += (timestamp,
-                                                                        sender,
-                                                                        //connection,
-                                                                        request,
-                                                                        response,
-                                                                        runtime) =>
+                                                                   sender,
+                                                                   //connection,
+                                                                   request,
+                                                                   response,
+                                                                   runtime) =>
 
-                EventLog.SubmitEvent("OnAuthorizeResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnAuthorizeResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -954,13 +954,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnAuthorizeResponseSent += (timestamp,
-                                                                     sender,
-                                                                     connection,
-                                                                     request,
-                                                                     response,
-                                                                     runtime) =>
+                                                                sender,
+                                                                connection,
+                                                                request,
+                                                                response,
+                                                                runtime) =>
 
-                EventLog.SubmitEvent("OnAuthorizeResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnAuthorizeResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -975,11 +975,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnClearedChargingLimit
 
             NetworkingNode.OCPP.IN.OnClearedChargingLimitRequestReceived += (timestamp,
-                                                                                  sender,
-                                                                                  connection,
-                                                                                  request) =>
+                                                                             sender,
+                                                                             connection,
+                                                                             request) =>
 
-                EventLog.SubmitEvent("OnClearedChargingLimitRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnClearedChargingLimitRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -989,11 +989,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnClearedChargingLimitRequestSent += (timestamp,
-                                                                               sender,
-                                                                               //connection,
-                                                                               request) =>
+                                                                          sender,
+                                                                          //connection,
+                                                                          request) =>
 
-                EventLog.SubmitEvent("OnClearedChargingLimitRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnClearedChargingLimitRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1003,13 +1003,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnClearedChargingLimitResponseReceived += (timestamp,
-                                                                                   sender,
-                                                                                   //connection,
-                                                                                   request,
-                                                                                   response,
-                                                                                   runtime) =>
+                                                                              sender,
+                                                                              //connection,
+                                                                              request,
+                                                                              response,
+                                                                              runtime) =>
 
-                EventLog.SubmitEvent("OnClearedChargingLimitResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnClearedChargingLimitResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1021,13 +1021,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnClearedChargingLimitResponseSent += (timestamp,
-                                                                                sender,
-                                                                                connection,
-                                                                                request,
-                                                                                response,
-                                                                                runtime) =>
+                                                                           sender,
+                                                                           connection,
+                                                                           request,
+                                                                           response,
+                                                                           runtime) =>
 
-                EventLog.SubmitEvent("OnClearedChargingLimitResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnClearedChargingLimitResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1042,11 +1042,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnMeterValues
 
             NetworkingNode.OCPP.IN.OnMeterValuesRequestReceived += (timestamp,
-                                                                         sender,
-                                                                         connection,
-                                                                         request) =>
+                                                                    sender,
+                                                                    connection,
+                                                                    request) =>
 
-                EventLog.SubmitEvent("OnMeterValuesRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnMeterValuesRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1056,11 +1056,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnMeterValuesRequestSent += (timestamp,
-                                                                      sender,
-                                                                      //connection,
-                                                                      request) =>
+                                                                 sender,
+                                                                 //connection,
+                                                                 request) =>
 
-                EventLog.SubmitEvent("OnMeterValuesRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnMeterValuesRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1070,13 +1070,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnMeterValuesResponseReceived += (timestamp,
-                                                                          sender,
-                                                                          //connection,
-                                                                          request,
-                                                                          response,
-                                                                          runtime) =>
+                                                                     sender,
+                                                                     //connection,
+                                                                     request,
+                                                                     response,
+                                                                     runtime) =>
 
-                EventLog.SubmitEvent("OnMeterValuesResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnMeterValuesResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1088,13 +1088,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnMeterValuesResponseSent += (timestamp,
-                                                                       sender,
-                                                                       connection,
-                                                                       request,
-                                                                       response,
-                                                                       runtime) =>
+                                                                  sender,
+                                                                  connection,
+                                                                  request,
+                                                                  response,
+                                                                  runtime) =>
 
-                EventLog.SubmitEvent("OnMeterValuesResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnMeterValuesResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1109,11 +1109,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnNotifyChargingLimit
 
             NetworkingNode.OCPP.IN.OnNotifyChargingLimitRequestReceived += (timestamp,
-                                                                                 sender,
-                                                                                 connection,
-                                                                                 request) =>
+                                                                            sender,
+                                                                            connection,
+                                                                            request) =>
 
-                EventLog.SubmitEvent("OnNotifyChargingLimitRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnNotifyChargingLimitRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1123,11 +1123,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnNotifyChargingLimitRequestSent += (timestamp,
-                                                                              sender,
-                                                                              //connection,
-                                                                              request) =>
+                                                                         sender,
+                                                                         //connection,
+                                                                         request) =>
 
-                EventLog.SubmitEvent("OnNotifyChargingLimitRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnNotifyChargingLimitRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1137,13 +1137,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnNotifyChargingLimitResponseReceived += (timestamp,
-                                                                                  sender,
-                                                                                  //connection,
-                                                                                  request,
-                                                                                  response,
-                                                                                  runtime) =>
+                                                                             sender,
+                                                                             //connection,
+                                                                             request,
+                                                                             response,
+                                                                             runtime) =>
 
-                EventLog.SubmitEvent("OnNotifyChargingLimitResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnNotifyChargingLimitResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1155,13 +1155,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnNotifyChargingLimitResponseSent += (timestamp,
-                                                                               sender,
-                                                                               connection,
-                                                                               request,
-                                                                               response,
-                                                                               runtime) =>
+                                                                          sender,
+                                                                          connection,
+                                                                          request,
+                                                                          response,
+                                                                          runtime) =>
 
-                EventLog.SubmitEvent("OnNotifyChargingLimitResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnNotifyChargingLimitResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1176,11 +1176,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnNotifyEVChargingNeeds
 
             NetworkingNode.OCPP.IN.OnNotifyEVChargingNeedsRequestReceived += (timestamp,
-                                                                                   sender,
-                                                                                   connection,
-                                                                                   request) =>
+                                                                              sender,
+                                                                              connection,
+                                                                              request) =>
 
-                EventLog.SubmitEvent("OnNotifyEVChargingNeedsRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnNotifyEVChargingNeedsRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1190,11 +1190,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnNotifyEVChargingNeedsRequestSent += (timestamp,
-                                                                                sender,
-                                                                                //connection,
-                                                                                request) =>
+                                                                           sender,
+                                                                           //connection,
+                                                                           request) =>
 
-                EventLog.SubmitEvent("OnNotifyEVChargingNeedsRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnNotifyEVChargingNeedsRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1204,13 +1204,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnNotifyEVChargingNeedsResponseReceived += (timestamp,
-                                                                                    sender,
-                                                                                    //connection,
-                                                                                    request,
-                                                                                    response,
-                                                                                    runtime) =>
+                                                                               sender,
+                                                                               //connection,
+                                                                               request,
+                                                                               response,
+                                                                               runtime) =>
 
-                EventLog.SubmitEvent("OnNotifyEVChargingNeedsResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnNotifyEVChargingNeedsResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1222,13 +1222,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnNotifyEVChargingNeedsResponseSent += (timestamp,
-                                                                                 sender,
-                                                                                 connection,
-                                                                                 request,
-                                                                                 response,
-                                                                                 runtime) =>
+                                                                            sender,
+                                                                            connection,
+                                                                            request,
+                                                                            response,
+                                                                            runtime) =>
 
-                EventLog.SubmitEvent("OnNotifyEVChargingNeedsResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnNotifyEVChargingNeedsResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1243,11 +1243,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnNotifyEVChargingSchedule
 
             NetworkingNode.OCPP.IN.OnNotifyEVChargingScheduleRequestReceived += (timestamp,
-                                                                                      sender,
-                                                                                      connection,
-                                                                                      request) =>
+                                                                                 sender,
+                                                                                 connection,
+                                                                                 request) =>
 
-                EventLog.SubmitEvent("OnNotifyEVChargingScheduleRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnNotifyEVChargingScheduleRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1257,11 +1257,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnNotifyEVChargingScheduleRequestSent += (timestamp,
-                                                                                   sender,
-                                                                                   //connection,
-                                                                                   request) =>
+                                                                              sender,
+                                                                              //connection,
+                                                                              request) =>
 
-                EventLog.SubmitEvent("OnNotifyEVChargingScheduleRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnNotifyEVChargingScheduleRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1271,13 +1271,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnNotifyEVChargingScheduleResponseReceived += (timestamp,
-                                                                                       sender,
-                                                                                       //connection,
-                                                                                       request,
-                                                                                       response,
-                                                                                       runtime) =>
+                                                                                  sender,
+                                                                                  //connection,
+                                                                                  request,
+                                                                                  response,
+                                                                                  runtime) =>
 
-                EventLog.SubmitEvent("OnNotifyEVChargingScheduleResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnNotifyEVChargingScheduleResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1289,13 +1289,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnNotifyEVChargingScheduleResponseSent += (timestamp,
-                                                                                    sender,
-                                                                                    connection,
-                                                                                    request,
-                                                                                    response,
-                                                                                    runtime) =>
+                                                                               sender,
+                                                                               connection,
+                                                                               request,
+                                                                               response,
+                                                                               runtime) =>
 
-                EventLog.SubmitEvent("OnNotifyEVChargingScheduleResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnNotifyEVChargingScheduleResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1310,11 +1310,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnNotifyPriorityCharging
 
             NetworkingNode.OCPP.IN.OnNotifyPriorityChargingRequestReceived += (timestamp,
-                                                                                    sender,
-                                                                                    connection,
-                                                                                    request) =>
+                                                                               sender,
+                                                                               connection,
+                                                                               request) =>
 
-                EventLog.SubmitEvent("OnNotifyPriorityChargingRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnNotifyPriorityChargingRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1324,11 +1324,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnNotifyPriorityChargingRequestSent += (timestamp,
-                                                                                 sender,
-                                                                                 //connection,
-                                                                                 request) =>
+                                                                            sender,
+                                                                            //connection,
+                                                                            request) =>
 
-                EventLog.SubmitEvent("OnNotifyPriorityChargingRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnNotifyPriorityChargingRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1338,13 +1338,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnNotifyPriorityChargingResponseReceived += (timestamp,
-                                                                                     sender,
-                                                                                     //connection,
-                                                                                     request,
-                                                                                     response,
-                                                                                     runtime) =>
+                                                                                sender,
+                                                                                //connection,
+                                                                                request,
+                                                                                response,
+                                                                                runtime) =>
 
-                EventLog.SubmitEvent("OnNotifyPriorityChargingResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnNotifyPriorityChargingResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1356,13 +1356,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnNotifyPriorityChargingResponseSent += (timestamp,
-                                                                                  sender,
-                                                                                  connection,
-                                                                                  request,
-                                                                                  response,
-                                                                                  runtime) =>
+                                                                             sender,
+                                                                             connection,
+                                                                             request,
+                                                                             response,
+                                                                             runtime) =>
 
-                EventLog.SubmitEvent("OnNotifyPriorityChargingResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnNotifyPriorityChargingResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1377,11 +1377,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnNotifySettlement
 
             NetworkingNode.OCPP.IN.OnNotifySettlementRequestReceived += (timestamp,
-                                                                              sender,
-                                                                              connection,
-                                                                              request) =>
+                                                                         sender,
+                                                                         connection,
+                                                                         request) =>
 
-                EventLog.SubmitEvent("OnNotifySettlementRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnNotifySettlementRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1391,11 +1391,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnNotifySettlementRequestSent += (timestamp,
-                                                                           sender,
-                                                                           //connection,
-                                                                           request) =>
+                                                                      sender,
+                                                                      //connection,
+                                                                      request) =>
 
-                EventLog.SubmitEvent("OnNotifySettlementRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnNotifySettlementRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1405,13 +1405,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnNotifySettlementResponseReceived += (timestamp,
-                                                                               sender,
-                                                                               //connection,
-                                                                               request,
-                                                                               response,
-                                                                               runtime) =>
+                                                                          sender,
+                                                                          //connection,
+                                                                          request,
+                                                                          response,
+                                                                          runtime) =>
 
-                EventLog.SubmitEvent("OnNotifySettlementResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnNotifySettlementResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1423,13 +1423,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnNotifySettlementResponseSent += (timestamp,
-                                                                            sender,
-                                                                            connection,
-                                                                            request,
-                                                                            response,
-                                                                            runtime) =>
+                                                                       sender,
+                                                                       connection,
+                                                                       request,
+                                                                       response,
+                                                                       runtime) =>
 
-                EventLog.SubmitEvent("OnNotifySettlementResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnNotifySettlementResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1444,11 +1444,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnPullDynamicScheduleUpdate
 
             NetworkingNode.OCPP.IN.OnPullDynamicScheduleUpdateRequestReceived += (timestamp,
-                                                                                       sender,
-                                                                                       connection,
-                                                                                       request) =>
+                                                                                  sender,
+                                                                                  connection,
+                                                                                  request) =>
 
-                EventLog.SubmitEvent("OnPullDynamicScheduleUpdateRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnPullDynamicScheduleUpdateRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1458,11 +1458,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnPullDynamicScheduleUpdateRequestSent += (timestamp,
-                                                                                    sender,
-                                                                                    //connection,
-                                                                                    request) =>
+                                                                               sender,
+                                                                               //connection,
+                                                                               request) =>
 
-                EventLog.SubmitEvent("OnPullDynamicScheduleUpdateRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnPullDynamicScheduleUpdateRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1472,13 +1472,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnPullDynamicScheduleUpdateResponseReceived += (timestamp,
-                                                                                        sender,
-                                                                                        //connection,
-                                                                                        request,
-                                                                                        response,
-                                                                                        runtime) =>
+                                                                                   sender,
+                                                                                   //connection,
+                                                                                   request,
+                                                                                   response,
+                                                                                   runtime) =>
 
-                EventLog.SubmitEvent("OnPullDynamicScheduleUpdateResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnPullDynamicScheduleUpdateResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1490,13 +1490,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnPullDynamicScheduleUpdateResponseSent += (timestamp,
-                                                                                     sender,
-                                                                                     connection,
-                                                                                     request,
-                                                                                     response,
-                                                                                     runtime) =>
+                                                                                sender,
+                                                                                connection,
+                                                                                request,
+                                                                                response,
+                                                                                runtime) =>
 
-                EventLog.SubmitEvent("OnPullDynamicScheduleUpdateResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnPullDynamicScheduleUpdateResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1511,11 +1511,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnReportChargingProfiles
 
             NetworkingNode.OCPP.IN.OnReportChargingProfilesRequestReceived += (timestamp,
-                                                                                    sender,
-                                                                                    connection,
-                                                                                    request) =>
+                                                                               sender,
+                                                                               connection,
+                                                                               request) =>
 
-                EventLog.SubmitEvent("OnReportChargingProfilesRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnReportChargingProfilesRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1525,11 +1525,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnReportChargingProfilesRequestSent += (timestamp,
-                                                                                 sender,
-                                                                                 //connection,
-                                                                                 request) =>
+                                                                            sender,
+                                                                            //connection,
+                                                                            request) =>
 
-                EventLog.SubmitEvent("OnReportChargingProfilesRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnReportChargingProfilesRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1539,13 +1539,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnReportChargingProfilesResponseReceived += (timestamp,
-                                                                                     sender,
-                                                                                     //connection,
-                                                                                     request,
-                                                                                     response,
-                                                                                     runtime) =>
+                                                                                sender,
+                                                                                //connection,
+                                                                                request,
+                                                                                response,
+                                                                                runtime) =>
 
-                EventLog.SubmitEvent("OnReportChargingProfilesResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnReportChargingProfilesResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1557,13 +1557,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnReportChargingProfilesResponseSent += (timestamp,
-                                                                                  sender,
-                                                                                  connection,
-                                                                                  request,
-                                                                                  response,
-                                                                                  runtime) =>
+                                                                             sender,
+                                                                             connection,
+                                                                             request,
+                                                                             response,
+                                                                             runtime) =>
 
-                EventLog.SubmitEvent("OnReportChargingProfilesResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnReportChargingProfilesResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1578,11 +1578,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnReservationStatusUpdate
 
             NetworkingNode.OCPP.IN.OnReservationStatusUpdateRequestReceived += (timestamp,
-                                                                                     sender,
-                                                                                     connection,
-                                                                                     request) =>
+                                                                                sender,
+                                                                                connection,
+                                                                                request) =>
 
-                EventLog.SubmitEvent("OnReservationStatusUpdateRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnReservationStatusUpdateRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1592,11 +1592,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnReservationStatusUpdateRequestSent += (timestamp,
-                                                                                  sender,
-                                                                                  //connection,
-                                                                                  request) =>
+                                                                             sender,
+                                                                             //connection,
+                                                                             request) =>
 
-                EventLog.SubmitEvent("OnReservationStatusUpdateRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnReservationStatusUpdateRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1606,13 +1606,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnReservationStatusUpdateResponseReceived += (timestamp,
-                                                                                      sender,
-                                                                                      //connection,
-                                                                                      request,
-                                                                                      response,
-                                                                                      runtime) =>
+                                                                                 sender,
+                                                                                 //connection,
+                                                                                 request,
+                                                                                 response,
+                                                                                 runtime) =>
 
-                EventLog.SubmitEvent("OnReservationStatusUpdateResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnReservationStatusUpdateResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1624,13 +1624,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnReservationStatusUpdateResponseSent += (timestamp,
-                                                                                   sender,
-                                                                                   connection,
-                                                                                   request,
-                                                                                   response,
-                                                                                   runtime) =>
+                                                                              sender,
+                                                                              connection,
+                                                                              request,
+                                                                              response,
+                                                                              runtime) =>
 
-                EventLog.SubmitEvent("OnReservationStatusUpdateResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnReservationStatusUpdateResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1645,11 +1645,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnStatusNotification
 
             NetworkingNode.OCPP.IN.OnStatusNotificationRequestReceived += (timestamp,
-                                                                                sender,
-                                                                                connection,
-                                                                                request) =>
+                                                                           sender,
+                                                                           connection,
+                                                                           request) =>
 
-                EventLog.SubmitEvent("OnStatusNotificationRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnStatusNotificationRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1659,11 +1659,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnStatusNotificationRequestSent += (timestamp,
-                                                                             sender,
-                                                                             //connection,
-                                                                             request) =>
+                                                                        sender,
+                                                                        //connection,
+                                                                        request) =>
 
-                EventLog.SubmitEvent("OnStatusNotificationRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnStatusNotificationRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1673,13 +1673,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnStatusNotificationResponseReceived += (timestamp,
-                                                                                 sender,
-                                                                                 //connection,
-                                                                                 request,
-                                                                                 response,
-                                                                                 runtime) =>
+                                                                            sender,
+                                                                            //connection,
+                                                                            request,
+                                                                            response,
+                                                                            runtime) =>
 
-                EventLog.SubmitEvent("OnStatusNotificationResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnStatusNotificationResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1691,13 +1691,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnStatusNotificationResponseSent += (timestamp,
-                                                                              sender,
-                                                                              connection,
-                                                                              request,
-                                                                              response,
-                                                                              runtime) =>
+                                                                         sender,
+                                                                         connection,
+                                                                         request,
+                                                                         response,
+                                                                         runtime) =>
 
-                EventLog.SubmitEvent("OnStatusNotificationResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnStatusNotificationResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1712,11 +1712,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnTransactionEvent
 
             NetworkingNode.OCPP.IN.OnTransactionEventRequestReceived += (timestamp,
-                                                                              sender,
-                                                                              connection,
-                                                                              request) =>
+                                                                         sender,
+                                                                         connection,
+                                                                         request) =>
 
-                EventLog.SubmitEvent("OnTransactionEventRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnTransactionEventRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1726,11 +1726,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnTransactionEventRequestSent += (timestamp,
-                                                                           sender,
-                                                                           //connection,
-                                                                           request) =>
+                                                                      sender,
+                                                                      //connection,
+                                                                      request) =>
 
-                EventLog.SubmitEvent("OnTransactionEventRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnTransactionEventRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1740,13 +1740,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnTransactionEventResponseReceived += (timestamp,
-                                                                               sender,
-                                                                               //connection,
-                                                                               request,
-                                                                               response,
-                                                                               runtime) =>
+                                                                          sender,
+                                                                          //connection,
+                                                                          request,
+                                                                          response,
+                                                                          runtime) =>
 
-                EventLog.SubmitEvent("OnTransactionEventResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnTransactionEventResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1758,13 +1758,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnTransactionEventResponseSent += (timestamp,
-                                                                            sender,
-                                                                            connection,
-                                                                            request,
-                                                                            response,
-                                                                            runtime) =>
+                                                                       sender,
+                                                                       connection,
+                                                                       request,
+                                                                       response,
+                                                                       runtime) =>
 
-                EventLog.SubmitEvent("OnTransactionEventResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnTransactionEventResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1783,11 +1783,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnNotifyCustomerInformation
 
             NetworkingNode.OCPP.IN.OnNotifyCustomerInformationRequestReceived += (timestamp,
-                                                                                       sender,
-                                                                                       connection,
-                                                                                       request) =>
+                                                                                  sender,
+                                                                                  connection,
+                                                                                  request) =>
 
-                EventLog.SubmitEvent("OnNotifyCustomerInformationRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnNotifyCustomerInformationRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1797,11 +1797,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnNotifyCustomerInformationRequestSent += (timestamp,
-                                                                                    sender,
-                                                                                    //connection,
-                                                                                    request) =>
+                                                                               sender,
+                                                                               //connection,
+                                                                               request) =>
 
-                EventLog.SubmitEvent("OnNotifyCustomerInformationRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnNotifyCustomerInformationRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1811,13 +1811,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnNotifyCustomerInformationResponseReceived += (timestamp,
-                                                                                        sender,
-                                                                                        //connection,
-                                                                                        request,
-                                                                                        response,
-                                                                                        runtime) =>
+                                                                                   sender,
+                                                                                   //connection,
+                                                                                   request,
+                                                                                   response,
+                                                                                   runtime) =>
 
-                EventLog.SubmitEvent("OnNotifyCustomerInformationResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnNotifyCustomerInformationResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1829,13 +1829,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnNotifyCustomerInformationResponseSent += (timestamp,
-                                                                                     sender,
-                                                                                     connection,
-                                                                                     request,
-                                                                                     response,
-                                                                                     runtime) =>
+                                                                                sender,
+                                                                                connection,
+                                                                                request,
+                                                                                response,
+                                                                                runtime) =>
 
-                EventLog.SubmitEvent("OnNotifyCustomerInformationResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnNotifyCustomerInformationResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1850,11 +1850,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnNotifyDisplayMessages
 
             NetworkingNode.OCPP.IN.OnNotifyDisplayMessagesRequestReceived += (timestamp,
-                                                                                   sender,
-                                                                                   connection,
-                                                                                   request) =>
+                                                                              sender,
+                                                                              connection,
+                                                                              request) =>
 
-                EventLog.SubmitEvent("OnNotifyDisplayMessagesRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnNotifyDisplayMessagesRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1864,11 +1864,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnNotifyDisplayMessagesRequestSent += (timestamp,
-                                                                                sender,
-                                                                                //connection,
-                                                                                request) =>
+                                                                           sender,
+                                                                           //connection,
+                                                                           request) =>
 
-                EventLog.SubmitEvent("OnNotifyDisplayMessagesRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnNotifyDisplayMessagesRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1878,13 +1878,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnNotifyDisplayMessagesResponseReceived += (timestamp,
-                                                                                    sender,
-                                                                                    //connection,
-                                                                                    request,
-                                                                                    response,
-                                                                                    runtime) =>
+                                                                               sender,
+                                                                               //connection,
+                                                                               request,
+                                                                               response,
+                                                                               runtime) =>
 
-                EventLog.SubmitEvent("OnNotifyDisplayMessagesResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnNotifyDisplayMessagesResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1896,13 +1896,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnNotifyDisplayMessagesResponseSent += (timestamp,
-                                                                                 sender,
-                                                                                 connection,
-                                                                                 request,
-                                                                                 response,
-                                                                                 runtime) =>
+                                                                            sender,
+                                                                            connection,
+                                                                            request,
+                                                                            response,
+                                                                            runtime) =>
 
-                EventLog.SubmitEvent("OnNotifyDisplayMessagesResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnNotifyDisplayMessagesResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1921,11 +1921,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnLogStatusNotification
 
             NetworkingNode.OCPP.IN.OnLogStatusNotificationRequestReceived += (timestamp,
-                                                                                   sender,
-                                                                                   connection,
-                                                                                   request) =>
+                                                                              sender,
+                                                                              connection,
+                                                                              request) =>
 
-                EventLog.SubmitEvent("OnLogStatusNotificationRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnLogStatusNotificationRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1935,11 +1935,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnLogStatusNotificationRequestSent += (timestamp,
-                                                                                sender,
-                                                                                //connection,
-                                                                                request) =>
+                                                                           sender,
+                                                                           //connection,
+                                                                           request) =>
 
-                EventLog.SubmitEvent("OnLogStatusNotificationRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnLogStatusNotificationRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1949,13 +1949,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnLogStatusNotificationResponseReceived += (timestamp,
-                                                                                    sender,
-                                                                                    //connection,
-                                                                                    request,
-                                                                                    response,
-                                                                                    runtime) =>
+                                                                               sender,
+                                                                               //connection,
+                                                                               request,
+                                                                               response,
+                                                                               runtime) =>
 
-                EventLog.SubmitEvent("OnLogStatusNotificationResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnLogStatusNotificationResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1967,13 +1967,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnLogStatusNotificationResponseSent += (timestamp,
-                                                                                 sender,
-                                                                                 connection,
-                                                                                 request,
-                                                                                 response,
-                                                                                 runtime) =>
+                                                                            sender,
+                                                                            connection,
+                                                                            request,
+                                                                            response,
+                                                                            runtime) =>
 
-                EventLog.SubmitEvent("OnLogStatusNotificationResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnLogStatusNotificationResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -1988,11 +1988,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnNotifyEvent
 
             NetworkingNode.OCPP.IN.OnNotifyEventRequestReceived += (timestamp,
-                                                                         sender,
-                                                                         connection,
-                                                                         request) =>
+                                                                    sender,
+                                                                    connection,
+                                                                    request) =>
 
-                EventLog.SubmitEvent("OnNotifyEventRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnNotifyEventRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2002,11 +2002,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnNotifyEventRequestSent += (timestamp,
-                                                                      sender,
-                                                                      //connection,
-                                                                      request) =>
+                                                                 sender,
+                                                                 //connection,
+                                                                 request) =>
 
-                EventLog.SubmitEvent("OnNotifyEventRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnNotifyEventRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2016,13 +2016,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnNotifyEventResponseReceived += (timestamp,
-                                                                          sender,
-                                                                          //connection,
-                                                                          request,
-                                                                          response,
-                                                                          runtime) =>
+                                                                     sender,
+                                                                     //connection,
+                                                                     request,
+                                                                     response,
+                                                                     runtime) =>
 
-                EventLog.SubmitEvent("OnNotifyEventResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnNotifyEventResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2034,13 +2034,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnNotifyEventResponseSent += (timestamp,
-                                                                       sender,
-                                                                       connection,
-                                                                       request,
-                                                                       response,
-                                                                       runtime) =>
+                                                                  sender,
+                                                                  connection,
+                                                                  request,
+                                                                  response,
+                                                                  runtime) =>
 
-                EventLog.SubmitEvent("OnNotifyEventResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnNotifyEventResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2055,11 +2055,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnNotifyMonitoringReport
 
             NetworkingNode.OCPP.IN.OnNotifyMonitoringReportRequestReceived += (timestamp,
-                                                                                    sender,
-                                                                                    connection,
-                                                                                    request) =>
+                                                                               sender,
+                                                                               connection,
+                                                                               request) =>
 
-                EventLog.SubmitEvent("OnNotifyMonitoringReportRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnNotifyMonitoringReportRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2069,11 +2069,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnNotifyMonitoringReportRequestSent += (timestamp,
-                                                                                 sender,
-                                                                                 //connection,
-                                                                                 request) =>
+                                                                            sender,
+                                                                            //connection,
+                                                                            request) =>
 
-                EventLog.SubmitEvent("OnNotifyMonitoringReportRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnNotifyMonitoringReportRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2083,13 +2083,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnNotifyMonitoringReportResponseReceived += (timestamp,
-                                                                                     sender,
-                                                                                     //connection,
-                                                                                     request,
-                                                                                     response,
-                                                                                     runtime) =>
+                                                                                sender,
+                                                                                //connection,
+                                                                                request,
+                                                                                response,
+                                                                                runtime) =>
 
-                EventLog.SubmitEvent("OnNotifyMonitoringReportResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnNotifyMonitoringReportResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2101,13 +2101,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnNotifyMonitoringReportResponseSent += (timestamp,
-                                                                                  sender,
-                                                                                  connection,
-                                                                                  request,
-                                                                                  response,
-                                                                                  runtime) =>
+                                                                             sender,
+                                                                             connection,
+                                                                             request,
+                                                                             response,
+                                                                             runtime) =>
 
-                EventLog.SubmitEvent("OnNotifyMonitoringReportResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnNotifyMonitoringReportResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2122,11 +2122,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnNotifyReport
 
             NetworkingNode.OCPP.IN.OnNotifyReportRequestReceived += (timestamp,
-                                                                          sender,
-                                                                          connection,
-                                                                          request) =>
+                                                                     sender,
+                                                                     connection,
+                                                                     request) =>
 
-                EventLog.SubmitEvent("OnNotifyReportRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnNotifyReportRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2136,11 +2136,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnNotifyReportRequestSent += (timestamp,
-                                                                       sender,
-                                                                       //connection,
-                                                                       request) =>
+                                                                  sender,
+                                                                  //connection,
+                                                                  request) =>
 
-                EventLog.SubmitEvent("OnNotifyReportRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnNotifyReportRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2150,13 +2150,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnNotifyReportResponseReceived += (timestamp,
-                                                                           sender,
-                                                                           //connection,
-                                                                           request,
-                                                                           response,
-                                                                           runtime) =>
+                                                                      sender,
+                                                                      //connection,
+                                                                      request,
+                                                                      response,
+                                                                      runtime) =>
 
-                EventLog.SubmitEvent("OnNotifyReportResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnNotifyReportResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2168,13 +2168,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnNotifyReportResponseSent += (timestamp,
-                                                                        sender,
-                                                                        connection,
-                                                                        request,
-                                                                        response,
-                                                                        runtime) =>
+                                                                   sender,
+                                                                   connection,
+                                                                   request,
+                                                                   response,
+                                                                   runtime) =>
 
-                EventLog.SubmitEvent("OnNotifyReportResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnNotifyReportResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2189,11 +2189,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnSecurityEventNotification
 
             NetworkingNode.OCPP.IN.OnSecurityEventNotificationRequestReceived += (timestamp,
-                                                                                       sender,
-                                                                                       connection,
-                                                                                       request) =>
+                                                                                  sender,
+                                                                                  connection,
+                                                                                  request) =>
 
-                EventLog.SubmitEvent("OnSecurityEventNotificationRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnSecurityEventNotificationRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2203,11 +2203,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnSecurityEventNotificationRequestSent += (timestamp,
-                                                                                    sender,
-                                                                                    //connection,
-                                                                                    request) =>
+                                                                               sender,
+                                                                               //connection,
+                                                                               request) =>
 
-                EventLog.SubmitEvent("OnSecurityEventNotificationRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnSecurityEventNotificationRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2217,13 +2217,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnSecurityEventNotificationResponseReceived += (timestamp,
-                                                                                        sender,
-                                                                                        //connection,
-                                                                                        request,
-                                                                                        response,
-                                                                                        runtime) =>
+                                                                                   sender,
+                                                                                   //connection,
+                                                                                   request,
+                                                                                   response,
+                                                                                   runtime) =>
 
-                EventLog.SubmitEvent("OnSecurityEventNotificationResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnSecurityEventNotificationResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2235,13 +2235,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnSecurityEventNotificationResponseSent += (timestamp,
-                                                                                     sender,
-                                                                                     connection,
-                                                                                     request,
-                                                                                     response,
-                                                                                     runtime) =>
+                                                                                sender,
+                                                                                connection,
+                                                                                request,
+                                                                                response,
+                                                                                runtime) =>
 
-                EventLog.SubmitEvent("OnSecurityEventNotificationResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnSecurityEventNotificationResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2260,11 +2260,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnBootNotification
 
             NetworkingNode.OCPP.IN.OnBootNotificationRequestReceived += (timestamp,
-                                                                              sender,
-                                                                              connection,
-                                                                              request) =>
+                                                                         sender,
+                                                                         connection,
+                                                                         request) =>
 
-                EventLog.SubmitEvent("OnBootNotificationRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnBootNotificationRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2274,11 +2274,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnBootNotificationRequestSent += (timestamp,
-                                                                           sender,
-                                                                           //connection,
-                                                                           request) =>
+                                                                      sender,
+                                                                      //connection,
+                                                                      request) =>
 
-                EventLog.SubmitEvent("OnBootNotificationRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnBootNotificationRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2288,13 +2288,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnBootNotificationResponseReceived += (timestamp,
-                                                                               sender,
-                                                                               //connection,
-                                                                               request,
-                                                                               response,
-                                                                               runtime) =>
+                                                                          sender,
+                                                                          //connection,
+                                                                          request,
+                                                                          response,
+                                                                          runtime) =>
 
-                EventLog.SubmitEvent("OnBootNotificationResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnBootNotificationResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2306,13 +2306,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnBootNotificationResponseSent += (timestamp,
-                                                                            sender,
-                                                                            connection,
-                                                                            request,
-                                                                            response,
-                                                                            runtime) =>
+                                                                       sender,
+                                                                       connection,
+                                                                       request,
+                                                                       response,
+                                                                       runtime) =>
 
-                EventLog.SubmitEvent("OnBootNotificationResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnBootNotificationResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2327,11 +2327,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnFirmwareStatusNotification
 
             NetworkingNode.OCPP.IN.OnFirmwareStatusNotificationRequestReceived += (timestamp,
-                                                                                        sender,
-                                                                                        connection,
-                                                                                        request) =>
+                                                                                   sender,
+                                                                                   connection,
+                                                                                   request) =>
 
-                EventLog.SubmitEvent("OnFirmwareStatusNotificationRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnFirmwareStatusNotificationRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2341,11 +2341,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnFirmwareStatusNotificationRequestSent += (timestamp,
-                                                                                     sender,
-                                                                                     //connection,
-                                                                                     request) =>
+                                                                                sender,
+                                                                                //connection,
+                                                                                request) =>
 
-                EventLog.SubmitEvent("OnFirmwareStatusNotificationRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnFirmwareStatusNotificationRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2355,13 +2355,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnFirmwareStatusNotificationResponseReceived += (timestamp,
-                                                                                         sender,
-                                                                                         //connection,
-                                                                                         request,
-                                                                                         response,
-                                                                                         runtime) =>
+                                                                                    sender,
+                                                                                    //connection,
+                                                                                    request,
+                                                                                    response,
+                                                                                    runtime) =>
 
-                EventLog.SubmitEvent("OnFirmwareStatusNotificationResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnFirmwareStatusNotificationResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2373,13 +2373,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnFirmwareStatusNotificationResponseSent += (timestamp,
-                                                                                      sender,
-                                                                                      connection,
-                                                                                      request,
-                                                                                      response,
-                                                                                      runtime) =>
+                                                                                 sender,
+                                                                                 connection,
+                                                                                 request,
+                                                                                 response,
+                                                                                 runtime) =>
 
-                EventLog.SubmitEvent("OnFirmwareStatusNotificationResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnFirmwareStatusNotificationResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2394,11 +2394,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnHeartbeat
 
             NetworkingNode.OCPP.IN.OnHeartbeatRequestReceived += (timestamp,
-                                                                       sender,
-                                                                       connection,
-                                                                       request) =>
+                                                                  sender,
+                                                                  connection,
+                                                                  request) =>
 
-                EventLog.SubmitEvent("OnHeartbeatRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnHeartbeatRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2408,11 +2408,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnHeartbeatRequestSent += (timestamp,
-                                                                    sender,
-                                                                    //connection,
-                                                                    request) =>
+                                                               sender,
+                                                               //connection,
+                                                               request) =>
 
-                EventLog.SubmitEvent("OnHeartbeatRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnHeartbeatRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2422,13 +2422,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnHeartbeatResponseReceived += (timestamp,
-                                                                        sender,
-                                                                        //connection,
-                                                                        request,
-                                                                        response,
-                                                                        runtime) =>
+                                                                   sender,
+                                                                   //connection,
+                                                                   request,
+                                                                   response,
+                                                                   runtime) =>
 
-                EventLog.SubmitEvent("OnHeartbeatResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnHeartbeatResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2440,13 +2440,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnHeartbeatResponseSent += (timestamp,
-                                                                     sender,
-                                                                     connection,
-                                                                     request,
-                                                                     response,
-                                                                     runtime) =>
+                                                                sender,
+                                                                connection,
+                                                                request,
+                                                                response,
+                                                                runtime) =>
 
-                EventLog.SubmitEvent("OnHeartbeatResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnHeartbeatResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2461,11 +2461,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnPublishFirmwareStatusNotification
 
             NetworkingNode.OCPP.IN.OnPublishFirmwareStatusNotificationRequestReceived += (timestamp,
-                                                                                               sender,
-                                                                                               connection,
-                                                                                               request) =>
+                                                                                          sender,
+                                                                                          connection,
+                                                                                          request) =>
 
-                EventLog.SubmitEvent("OnPublishFirmwareStatusNotificationRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnPublishFirmwareStatusNotificationRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2475,11 +2475,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnPublishFirmwareStatusNotificationRequestSent += (timestamp,
-                                                                                            sender,
-                                                                                            //connection,
-                                                                                            request) =>
+                                                                                       sender,
+                                                                                       //connection,
+                                                                                       request) =>
 
-                EventLog.SubmitEvent("OnPublishFirmwareStatusNotificationRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnPublishFirmwareStatusNotificationRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2489,13 +2489,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnPublishFirmwareStatusNotificationResponseReceived += (timestamp,
-                                                                                                sender,
-                                                                                                //connection,
-                                                                                                request,
-                                                                                                response,
-                                                                                                runtime) =>
+                                                                                           sender,
+                                                                                           //connection,
+                                                                                           request,
+                                                                                           response,
+                                                                                           runtime) =>
 
-                EventLog.SubmitEvent("OnPublishFirmwareStatusNotificationResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnPublishFirmwareStatusNotificationResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2507,13 +2507,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnPublishFirmwareStatusNotificationResponseSent += (timestamp,
-                                                                                             sender,
-                                                                                             connection,
-                                                                                             request,
-                                                                                             response,
-                                                                                             runtime) =>
+                                                                                        sender,
+                                                                                        connection,
+                                                                                        request,
+                                                                                        response,
+                                                                                        runtime) =>
 
-                EventLog.SubmitEvent("OnPublishFirmwareStatusNotificationResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnPublishFirmwareStatusNotificationResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2529,18 +2529,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
-            #region CSMS             -> ChargingStation Messages
+            #region CSMS             -> ChargingStation Message exchanged
 
             #region Certificates
 
             #region OnCertificateSigned
 
             NetworkingNode.OCPP.IN.OnCertificateSignedRequestReceived += (timestamp,
-                                                                               sender,
-                                                                               connection,
-                                                                               request) =>
+                                                                          sender,
+                                                                          connection,
+                                                                          request) =>
 
-                EventLog.SubmitEvent("OnCertificateSignedRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnCertificateSignedRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2550,11 +2550,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnCertificateSignedRequestSent += (timestamp,
-                                                                            sender,
-                                                                            //connection,
-                                                                            request) =>
+                                                                       sender,
+                                                                       //connection,
+                                                                       request) =>
 
-                EventLog.SubmitEvent("OnCertificateSignedRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnCertificateSignedRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2564,13 +2564,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnCertificateSignedResponseReceived += (timestamp,
-                                                                                sender,
-                                                                                //connection,
-                                                                                request,
-                                                                                response,
-                                                                                runtime) =>
+                                                                           sender,
+                                                                           //connection,
+                                                                           request,
+                                                                           response,
+                                                                           runtime) =>
 
-                EventLog.SubmitEvent("OnCertificateSignedResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnCertificateSignedResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2582,13 +2582,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnCertificateSignedResponseSent += (timestamp,
-                                                                             sender,
-                                                                             connection,
-                                                                             request,
-                                                                             response,
-                                                                             runtime) =>
+                                                                        sender,
+                                                                        connection,
+                                                                        request,
+                                                                        response,
+                                                                        runtime) =>
 
-                EventLog.SubmitEvent("OnCertificateSignedResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnCertificateSignedResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2603,11 +2603,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnDeleteCertificate
 
             NetworkingNode.OCPP.IN.OnDeleteCertificateRequestReceived += (timestamp,
-                                                                               sender,
-                                                                               connection,
-                                                                               request) =>
+                                                                          sender,
+                                                                          connection,
+                                                                          request) =>
 
-                EventLog.SubmitEvent("OnDeleteCertificateRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnDeleteCertificateRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2617,11 +2617,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnDeleteCertificateRequestSent += (timestamp,
-                                                                            sender,
-                                                                            //connection,
-                                                                            request) =>
+                                                                       sender,
+                                                                       //connection,
+                                                                       request) =>
 
-                EventLog.SubmitEvent("OnDeleteCertificateRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnDeleteCertificateRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2631,13 +2631,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnDeleteCertificateResponseReceived += (timestamp,
-                                                                                sender,
-                                                                                //connection,
-                                                                                request,
-                                                                                response,
-                                                                                runtime) =>
+                                                                           sender,
+                                                                           //connection,
+                                                                           request,
+                                                                           response,
+                                                                           runtime) =>
 
-                EventLog.SubmitEvent("OnDeleteCertificateResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnDeleteCertificateResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2649,13 +2649,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnDeleteCertificateResponseSent += (timestamp,
-                                                                             sender,
-                                                                             connection,
-                                                                             request,
-                                                                             response,
-                                                                             runtime) =>
+                                                                        sender,
+                                                                        connection,
+                                                                        request,
+                                                                        response,
+                                                                        runtime) =>
 
-                EventLog.SubmitEvent("OnDeleteCertificateResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnDeleteCertificateResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2670,11 +2670,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnGetInstalledCertificateIds
 
             NetworkingNode.OCPP.IN.OnGetInstalledCertificateIdsRequestReceived += (timestamp,
-                                                                                        sender,
-                                                                                        connection,
-                                                                                        request) =>
+                                                                                   sender,
+                                                                                   connection,
+                                                                                   request) =>
 
-                EventLog.SubmitEvent("OnGetInstalledCertificateIdsRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetInstalledCertificateIdsRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2684,11 +2684,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnGetInstalledCertificateIdsRequestSent += (timestamp,
-                                                                                     sender,
-                                                                                     //connection,
-                                                                                     request) =>
+                                                                                sender,
+                                                                                //connection,
+                                                                                request) =>
 
-                EventLog.SubmitEvent("OnGetInstalledCertificateIdsRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetInstalledCertificateIdsRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2698,13 +2698,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnGetInstalledCertificateIdsResponseReceived += (timestamp,
-                                                                                         sender,
-                                                                                         //connection,
-                                                                                         request,
-                                                                                         response,
-                                                                                         runtime) =>
+                                                                                    sender,
+                                                                                    //connection,
+                                                                                    request,
+                                                                                    response,
+                                                                                    runtime) =>
 
-                EventLog.SubmitEvent("OnGetInstalledCertificateIdsResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetInstalledCertificateIdsResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2716,13 +2716,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnGetInstalledCertificateIdsResponseSent += (timestamp,
-                                                                                      sender,
-                                                                                      connection,
-                                                                                      request,
-                                                                                      response,
-                                                                                      runtime) =>
+                                                                                 sender,
+                                                                                 connection,
+                                                                                 request,
+                                                                                 response,
+                                                                                 runtime) =>
 
-                EventLog.SubmitEvent("OnGetInstalledCertificateIdsResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetInstalledCertificateIdsResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2737,11 +2737,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnInstallCertificate
 
             NetworkingNode.OCPP.IN.OnInstallCertificateRequestReceived += (timestamp,
-                                                                                sender,
-                                                                                connection,
-                                                                                request) =>
+                                                                           sender,
+                                                                           connection,
+                                                                           request) =>
 
-                EventLog.SubmitEvent("OnInstallCertificateRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnInstallCertificateRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2751,11 +2751,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnInstallCertificateRequestSent += (timestamp,
-                                                                             sender,
-                                                                             //connection,
-                                                                             request) =>
+                                                                        sender,
+                                                                        //connection,
+                                                                        request) =>
 
-                EventLog.SubmitEvent("OnInstallCertificateRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnInstallCertificateRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2765,13 +2765,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnInstallCertificateResponseReceived += (timestamp,
-                                                                                 sender,
-                                                                                 //connection,
-                                                                                 request,
-                                                                                 response,
-                                                                                 runtime) =>
+                                                                            sender,
+                                                                            //connection,
+                                                                            request,
+                                                                            response,
+                                                                            runtime) =>
 
-                EventLog.SubmitEvent("OnInstallCertificateResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnInstallCertificateResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2783,13 +2783,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnInstallCertificateResponseSent += (timestamp,
-                                                                              sender,
-                                                                              connection,
-                                                                              request,
-                                                                              response,
-                                                                              runtime) =>
+                                                                         sender,
+                                                                         connection,
+                                                                         request,
+                                                                         response,
+                                                                         runtime) =>
 
-                EventLog.SubmitEvent("OnInstallCertificateResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnInstallCertificateResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2804,11 +2804,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnNotifyCRL
 
             NetworkingNode.OCPP.IN.OnNotifyCRLRequestReceived += (timestamp,
-                                                                       sender,
-                                                                       connection,
-                                                                       request) =>
+                                                                  sender,
+                                                                  connection,
+                                                                  request) =>
 
-                EventLog.SubmitEvent("OnNotifyCRLRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnNotifyCRLRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2818,11 +2818,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnNotifyCRLRequestSent += (timestamp,
-                                                                    sender,
-                                                                    //connection,
-                                                                    request) =>
+                                                               sender,
+                                                               //connection,
+                                                               request) =>
 
-                EventLog.SubmitEvent("OnNotifyCRLRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnNotifyCRLRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2832,13 +2832,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnNotifyCRLResponseReceived += (timestamp,
-                                                                        sender,
-                                                                        //connection,
-                                                                        request,
-                                                                        response,
-                                                                        runtime) =>
+                                                                   sender,
+                                                                   //connection,
+                                                                   request,
+                                                                   response,
+                                                                   runtime) =>
 
-                EventLog.SubmitEvent("OnNotifyCRLResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnNotifyCRLResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2850,13 +2850,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnNotifyCRLResponseSent += (timestamp,
-                                                                     sender,
-                                                                     connection,
-                                                                     request,
-                                                                     response,
-                                                                     runtime) =>
+                                                                sender,
+                                                                connection,
+                                                                request,
+                                                                response,
+                                                                runtime) =>
 
-                EventLog.SubmitEvent("OnNotifyCRLResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnNotifyCRLResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2875,11 +2875,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnCancelReservation
 
             NetworkingNode.OCPP.IN.OnCancelReservationRequestReceived += (timestamp,
-                                                                               sender,
-                                                                               connection,
-                                                                               request) =>
+                                                                          sender,
+                                                                          connection,
+                                                                          request) =>
 
-                EventLog.SubmitEvent("OnCancelReservationRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnCancelReservationRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2889,11 +2889,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnCancelReservationRequestSent += (timestamp,
-                                                                            sender,
-                                                                            //connection,
-                                                                            request) =>
+                                                                       sender,
+                                                                       //connection,
+                                                                       request) =>
 
-                EventLog.SubmitEvent("OnCancelReservationRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnCancelReservationRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2903,13 +2903,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnCancelReservationResponseReceived += (timestamp,
-                                                                                sender,
-                                                                                //connection,
-                                                                                request,
-                                                                                response,
-                                                                                runtime) =>
+                                                                           sender,
+                                                                           //connection,
+                                                                           request,
+                                                                           response,
+                                                                           runtime) =>
 
-                EventLog.SubmitEvent("OnCancelReservationResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnCancelReservationResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2921,13 +2921,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnCancelReservationResponseSent += (timestamp,
-                                                                             sender,
-                                                                             connection,
-                                                                             request,
-                                                                             response,
-                                                                             runtime) =>
+                                                                        sender,
+                                                                        connection,
+                                                                        request,
+                                                                        response,
+                                                                        runtime) =>
 
-                EventLog.SubmitEvent("OnCancelReservationResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnCancelReservationResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2942,11 +2942,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnClearChargingProfile
 
             NetworkingNode.OCPP.IN.OnClearChargingProfileRequestReceived += (timestamp,
-                                                                                  sender,
-                                                                                  connection,
-                                                                                  request) =>
+                                                                             sender,
+                                                                             connection,
+                                                                             request) =>
 
-                EventLog.SubmitEvent("OnClearChargingProfileRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnClearChargingProfileRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2956,11 +2956,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnClearChargingProfileRequestSent += (timestamp,
-                                                                               sender,
-                                                                               //connection,
-                                                                               request) =>
+                                                                          sender,
+                                                                          //connection,
+                                                                          request) =>
 
-                EventLog.SubmitEvent("OnClearChargingProfileRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnClearChargingProfileRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2970,13 +2970,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnClearChargingProfileResponseReceived += (timestamp,
-                                                                                   sender,
-                                                                                   //connection,
-                                                                                   request,
-                                                                                   response,
-                                                                                   runtime) =>
+                                                                              sender,
+                                                                              //connection,
+                                                                              request,
+                                                                              response,
+                                                                              runtime) =>
 
-                EventLog.SubmitEvent("OnClearChargingProfileResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnClearChargingProfileResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -2988,13 +2988,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnClearChargingProfileResponseSent += (timestamp,
-                                                                                sender,
-                                                                                connection,
-                                                                                request,
-                                                                                response,
-                                                                                runtime) =>
+                                                                           sender,
+                                                                           connection,
+                                                                           request,
+                                                                           response,
+                                                                           runtime) =>
 
-                EventLog.SubmitEvent("OnClearChargingProfileResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnClearChargingProfileResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3009,11 +3009,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnGetChargingProfiles
 
             NetworkingNode.OCPP.IN.OnGetChargingProfilesRequestReceived += (timestamp,
-                                                                              sender,
-                                                                              connection,
-                                                                              request) =>
+                                                                            sender,
+                                                                            connection,
+                                                                            request) =>
 
-                EventLog.SubmitEvent("OnGetChargingProfilesRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetChargingProfilesRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3023,11 +3023,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnGetChargingProfilesRequestSent += (timestamp,
-                                                                           sender,
-                                                                           //connection,
-                                                                           request) =>
+                                                                         sender,
+                                                                         //connection,
+                                                                         request) =>
 
-                EventLog.SubmitEvent("OnGetChargingProfilesRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetChargingProfilesRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3037,13 +3037,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnGetChargingProfilesResponseReceived += (timestamp,
-                                                                               sender,
-                                                                               //connection,
-                                                                               request,
-                                                                               response,
-                                                                               runtime) =>
+                                                                             sender,
+                                                                             //connection,
+                                                                             request,
+                                                                             response,
+                                                                             runtime) =>
 
-                EventLog.SubmitEvent("OnGetChargingProfilesResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetChargingProfilesResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3055,13 +3055,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnGetChargingProfilesResponseSent += (timestamp,
-                                                                            sender,
-                                                                            connection,
-                                                                            request,
-                                                                            response,
-                                                                            runtime) =>
+                                                                          sender,
+                                                                          connection,
+                                                                          request,
+                                                                          response,
+                                                                          runtime) =>
 
-                EventLog.SubmitEvent("OnGetChargingProfilesResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetChargingProfilesResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3076,11 +3076,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnGetCompositeSchedule
 
             NetworkingNode.OCPP.IN.OnGetCompositeScheduleRequestReceived += (timestamp,
-                                                                              sender,
-                                                                              connection,
-                                                                              request) =>
+                                                                             sender,
+                                                                             connection,
+                                                                             request) =>
 
-                EventLog.SubmitEvent("OnGetCompositeScheduleRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetCompositeScheduleRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3090,11 +3090,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnGetCompositeScheduleRequestSent += (timestamp,
-                                                                           sender,
-                                                                           //connection,
-                                                                           request) =>
+                                                                          sender,
+                                                                          //connection,
+                                                                          request) =>
 
-                EventLog.SubmitEvent("OnGetCompositeScheduleRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetCompositeScheduleRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3104,13 +3104,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnGetCompositeScheduleResponseReceived += (timestamp,
-                                                                               sender,
-                                                                               //connection,
-                                                                               request,
-                                                                               response,
-                                                                               runtime) =>
+                                                                              sender,
+                                                                              //connection,
+                                                                              request,
+                                                                              response,
+                                                                              runtime) =>
 
-                EventLog.SubmitEvent("OnGetCompositeScheduleResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetCompositeScheduleResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3122,13 +3122,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnGetCompositeScheduleResponseSent += (timestamp,
-                                                                            sender,
-                                                                            connection,
-                                                                            request,
-                                                                            response,
-                                                                            runtime) =>
+                                                                           sender,
+                                                                           connection,
+                                                                           request,
+                                                                           response,
+                                                                           runtime) =>
 
-                EventLog.SubmitEvent("OnGetCompositeScheduleResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetCompositeScheduleResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3143,11 +3143,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnGetTransactionStatus
 
             NetworkingNode.OCPP.IN.OnGetTransactionStatusRequestReceived += (timestamp,
-                                                                              sender,
-                                                                              connection,
-                                                                              request) =>
+                                                                             sender,
+                                                                             connection,
+                                                                             request) =>
 
-                EventLog.SubmitEvent("OnGetTransactionStatusRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetTransactionStatusRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3157,11 +3157,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnGetTransactionStatusRequestSent += (timestamp,
-                                                                           sender,
-                                                                           //connection,
-                                                                           request) =>
+                                                                          sender,
+                                                                          //connection,
+                                                                          request) =>
 
-                EventLog.SubmitEvent("OnGetTransactionStatusRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetTransactionStatusRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3171,13 +3171,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnGetTransactionStatusResponseReceived += (timestamp,
-                                                                               sender,
-                                                                               //connection,
-                                                                               request,
-                                                                               response,
-                                                                               runtime) =>
+                                                                              sender,
+                                                                              //connection,
+                                                                              request,
+                                                                              response,
+                                                                              runtime) =>
 
-                EventLog.SubmitEvent("OnGetTransactionStatusResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetTransactionStatusResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3189,13 +3189,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnGetTransactionStatusResponseSent += (timestamp,
-                                                                            sender,
-                                                                            connection,
-                                                                            request,
-                                                                            response,
-                                                                            runtime) =>
+                                                                           sender,
+                                                                           connection,
+                                                                           request,
+                                                                           response,
+                                                                           runtime) =>
 
-                EventLog.SubmitEvent("OnGetTransactionStatusResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetTransactionStatusResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3210,11 +3210,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnNotifyAllowedEnergyTransfer
 
             NetworkingNode.OCPP.IN.OnNotifyAllowedEnergyTransferRequestReceived += (timestamp,
-                                                                              sender,
-                                                                              connection,
-                                                                              request) =>
+                                                                                    sender,
+                                                                                    connection,
+                                                                                    request) =>
 
-                EventLog.SubmitEvent("OnNotifyAllowedEnergyTransferRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnNotifyAllowedEnergyTransferRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3224,11 +3224,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnNotifyAllowedEnergyTransferRequestSent += (timestamp,
-                                                                           sender,
-                                                                           //connection,
-                                                                           request) =>
+                                                                                 sender,
+                                                                                 //connection,
+                                                                                 request) =>
 
-                EventLog.SubmitEvent("OnNotifyAllowedEnergyTransferRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnNotifyAllowedEnergyTransferRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3238,13 +3238,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnNotifyAllowedEnergyTransferResponseReceived += (timestamp,
-                                                                               sender,
-                                                                               //connection,
-                                                                               request,
-                                                                               response,
-                                                                               runtime) =>
+                                                                                     sender,
+                                                                                     //connection,
+                                                                                     request,
+                                                                                     response,
+                                                                                     runtime) =>
 
-                EventLog.SubmitEvent("OnNotifyAllowedEnergyTransferResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnNotifyAllowedEnergyTransferResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3256,13 +3256,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnNotifyAllowedEnergyTransferResponseSent += (timestamp,
-                                                                            sender,
-                                                                            connection,
-                                                                            request,
-                                                                            response,
-                                                                            runtime) =>
+                                                                                  sender,
+                                                                                  connection,
+                                                                                  request,
+                                                                                  response,
+                                                                                  runtime) =>
 
-                EventLog.SubmitEvent("OnNotifyAllowedEnergyTransferResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnNotifyAllowedEnergyTransferResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3277,11 +3277,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnRequestStartTransaction
 
             NetworkingNode.OCPP.IN.OnRequestStartTransactionRequestReceived += (timestamp,
-                                                                              sender,
-                                                                              connection,
-                                                                              request) =>
+                                                                                sender,
+                                                                                connection,
+                                                                                request) =>
 
-                EventLog.SubmitEvent("OnRequestStartTransactionRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnRequestStartTransactionRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3291,11 +3291,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnRequestStartTransactionRequestSent += (timestamp,
-                                                                           sender,
-                                                                           //connection,
-                                                                           request) =>
+                                                                             sender,
+                                                                             //connection,
+                                                                             request) =>
 
-                EventLog.SubmitEvent("OnRequestStartTransactionRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnRequestStartTransactionRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3305,13 +3305,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnRequestStartTransactionResponseReceived += (timestamp,
-                                                                               sender,
-                                                                               //connection,
-                                                                               request,
-                                                                               response,
-                                                                               runtime) =>
+                                                                                 sender,
+                                                                                 //connection,
+                                                                                 request,
+                                                                                 response,
+                                                                                 runtime) =>
 
-                EventLog.SubmitEvent("OnRequestStartTransactionResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnRequestStartTransactionResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3323,13 +3323,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnRequestStartTransactionResponseSent += (timestamp,
-                                                                            sender,
-                                                                            connection,
-                                                                            request,
-                                                                            response,
-                                                                            runtime) =>
+                                                                              sender,
+                                                                              connection,
+                                                                              request,
+                                                                              response,
+                                                                              runtime) =>
 
-                EventLog.SubmitEvent("OnRequestStartTransactionResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnRequestStartTransactionResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3344,11 +3344,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnRequestStopTransaction
 
             NetworkingNode.OCPP.IN.OnRequestStopTransactionRequestReceived += (timestamp,
-                                                                              sender,
-                                                                              connection,
-                                                                              request) =>
+                                                                               sender,
+                                                                               connection,
+                                                                               request) =>
 
-                EventLog.SubmitEvent("OnRequestStopTransactionRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnRequestStopTransactionRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3358,11 +3358,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnRequestStopTransactionRequestSent += (timestamp,
-                                                                           sender,
-                                                                           //connection,
-                                                                           request) =>
+                                                                            sender,
+                                                                            //connection,
+                                                                            request) =>
 
-                EventLog.SubmitEvent("OnRequestStopTransactionRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnRequestStopTransactionRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3372,13 +3372,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnRequestStopTransactionResponseReceived += (timestamp,
-                                                                               sender,
-                                                                               //connection,
-                                                                               request,
-                                                                               response,
-                                                                               runtime) =>
+                                                                                sender,
+                                                                                //connection,
+                                                                                request,
+                                                                                response,
+                                                                                runtime) =>
 
-                EventLog.SubmitEvent("OnRequestStopTransactionResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnRequestStopTransactionResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3390,13 +3390,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnRequestStopTransactionResponseSent += (timestamp,
-                                                                            sender,
-                                                                            connection,
-                                                                            request,
-                                                                            response,
-                                                                            runtime) =>
+                                                                             sender,
+                                                                             connection,
+                                                                             request,
+                                                                             response,
+                                                                             runtime) =>
 
-                EventLog.SubmitEvent("OnRequestStopTransactionResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnRequestStopTransactionResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3411,11 +3411,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnReserveNow
 
             NetworkingNode.OCPP.IN.OnReserveNowRequestReceived += (timestamp,
-                                                                              sender,
-                                                                              connection,
-                                                                              request) =>
+                                                                   sender,
+                                                                   connection,
+                                                                   request) =>
 
-                EventLog.SubmitEvent("OnReserveNowRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnReserveNowRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3425,11 +3425,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnReserveNowRequestSent += (timestamp,
-                                                                           sender,
-                                                                           //connection,
-                                                                           request) =>
+                                                                sender,
+                                                                //connection,
+                                                                request) =>
 
-                EventLog.SubmitEvent("OnReserveNowRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnReserveNowRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3439,13 +3439,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnReserveNowResponseReceived += (timestamp,
-                                                                               sender,
-                                                                               //connection,
-                                                                               request,
-                                                                               response,
-                                                                               runtime) =>
+                                                                    sender,
+                                                                    //connection,
+                                                                    request,
+                                                                    response,
+                                                                    runtime) =>
 
-                EventLog.SubmitEvent("OnReserveNowResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnReserveNowResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3457,13 +3457,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnReserveNowResponseSent += (timestamp,
-                                                                            sender,
-                                                                            connection,
-                                                                            request,
-                                                                            response,
-                                                                            runtime) =>
+                                                                 sender,
+                                                                 connection,
+                                                                 request,
+                                                                 response,
+                                                                 runtime) =>
 
-                EventLog.SubmitEvent("OnReserveNowResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnReserveNowResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3478,11 +3478,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnSetChargingProfile
 
             NetworkingNode.OCPP.IN.OnSetChargingProfileRequestReceived += (timestamp,
-                                                                              sender,
-                                                                              connection,
-                                                                              request) =>
+                                                                           sender,
+                                                                           connection,
+                                                                           request) =>
 
-                EventLog.SubmitEvent("OnSetChargingProfileRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnSetChargingProfileRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3492,11 +3492,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnSetChargingProfileRequestSent += (timestamp,
-                                                                           sender,
-                                                                           //connection,
-                                                                           request) =>
+                                                                        sender,
+                                                                        //connection,
+                                                                        request) =>
 
-                EventLog.SubmitEvent("OnSetChargingProfileRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnSetChargingProfileRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3506,13 +3506,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnSetChargingProfileResponseReceived += (timestamp,
-                                                                               sender,
-                                                                               //connection,
-                                                                               request,
-                                                                               response,
-                                                                               runtime) =>
+                                                                            sender,
+                                                                            //connection,
+                                                                            request,
+                                                                            response,
+                                                                            runtime) =>
 
-                EventLog.SubmitEvent("OnSetChargingProfileResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnSetChargingProfileResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3524,13 +3524,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnSetChargingProfileResponseSent += (timestamp,
-                                                                            sender,
-                                                                            connection,
-                                                                            request,
-                                                                            response,
-                                                                            runtime) =>
+                                                                         sender,
+                                                                         connection,
+                                                                         request,
+                                                                         response,
+                                                                         runtime) =>
 
-                EventLog.SubmitEvent("OnSetChargingProfileResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnSetChargingProfileResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3545,11 +3545,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnUnlockConnector
 
             NetworkingNode.OCPP.IN.OnUnlockConnectorRequestReceived += (timestamp,
-                                                                              sender,
-                                                                              connection,
-                                                                              request) =>
+                                                                        sender,
+                                                                        connection,
+                                                                        request) =>
 
-                EventLog.SubmitEvent("OnUnlockConnectorRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnUnlockConnectorRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3559,11 +3559,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnUnlockConnectorRequestSent += (timestamp,
-                                                                           sender,
-                                                                           //connection,
-                                                                           request) =>
+                                                                     sender,
+                                                                     //connection,
+                                                                     request) =>
 
-                EventLog.SubmitEvent("OnUnlockConnectorRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnUnlockConnectorRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3573,13 +3573,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnUnlockConnectorResponseReceived += (timestamp,
-                                                                               sender,
-                                                                               //connection,
-                                                                               request,
-                                                                               response,
-                                                                               runtime) =>
+                                                                         sender,
+                                                                         //connection,
+                                                                         request,
+                                                                         response,
+                                                                         runtime) =>
 
-                EventLog.SubmitEvent("OnUnlockConnectorResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnUnlockConnectorResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3591,13 +3591,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnUnlockConnectorResponseSent += (timestamp,
-                                                                            sender,
-                                                                            connection,
-                                                                            request,
-                                                                            response,
-                                                                            runtime) =>
+                                                                      sender,
+                                                                      connection,
+                                                                      request,
+                                                                      response,
+                                                                      runtime) =>
 
-                EventLog.SubmitEvent("OnUnlockConnectorResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnUnlockConnectorResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3616,7 +3616,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                               connection,
                                                                               request) =>
 
-                EventLog.SubmitEvent("OnUpdateDynamicScheduleRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnUpdateDynamicScheduleRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3630,7 +3630,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                            //connection,
                                                                            request) =>
 
-                EventLog.SubmitEvent("OnUpdateDynamicScheduleRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnUpdateDynamicScheduleRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3646,7 +3646,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                                response,
                                                                                runtime) =>
 
-                EventLog.SubmitEvent("OnUpdateDynamicScheduleResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnUpdateDynamicScheduleResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3664,7 +3664,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                             response,
                                                                             runtime) =>
 
-                EventLog.SubmitEvent("OnUpdateDynamicScheduleResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnUpdateDynamicScheduleResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3679,11 +3679,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnUsePriorityCharging
 
             NetworkingNode.OCPP.IN.OnUsePriorityChargingRequestReceived += (timestamp,
-                                                                              sender,
-                                                                              connection,
-                                                                              request) =>
+                                                                            sender,
+                                                                            connection,
+                                                                            request) =>
 
-                EventLog.SubmitEvent("OnUsePriorityChargingRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnUsePriorityChargingRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3693,11 +3693,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnUsePriorityChargingRequestSent += (timestamp,
-                                                                           sender,
-                                                                           //connection,
-                                                                           request) =>
+                                                                         sender,
+                                                                         //connection,
+                                                                         request) =>
 
-                EventLog.SubmitEvent("OnUsePriorityChargingRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnUsePriorityChargingRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3707,13 +3707,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnUsePriorityChargingResponseReceived += (timestamp,
-                                                                               sender,
-                                                                               //connection,
-                                                                               request,
-                                                                               response,
-                                                                               runtime) =>
+                                                                             sender,
+                                                                             //connection,
+                                                                             request,
+                                                                             response,
+                                                                             runtime) =>
 
-                EventLog.SubmitEvent("OnUsePriorityChargingResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnUsePriorityChargingResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3725,13 +3725,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnUsePriorityChargingResponseSent += (timestamp,
-                                                                            sender,
-                                                                            connection,
-                                                                            request,
-                                                                            response,
-                                                                            runtime) =>
+                                                                          sender,
+                                                                          connection,
+                                                                          request,
+                                                                          response,
+                                                                          runtime) =>
 
-                EventLog.SubmitEvent("OnUsePriorityChargingResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnUsePriorityChargingResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3750,11 +3750,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnClearDisplayMessage
 
             NetworkingNode.OCPP.IN.OnClearDisplayMessageRequestReceived += (timestamp,
-                                                                              sender,
-                                                                              connection,
-                                                                              request) =>
+                                                                            sender,
+                                                                            connection,
+                                                                            request) =>
 
-                EventLog.SubmitEvent("OnClearDisplayMessageRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnClearDisplayMessageRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3764,11 +3764,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnClearDisplayMessageRequestSent += (timestamp,
-                                                                           sender,
-                                                                           //connection,
-                                                                           request) =>
+                                                                         sender,
+                                                                         //connection,
+                                                                         request) =>
 
-                EventLog.SubmitEvent("OnClearDisplayMessageRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnClearDisplayMessageRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3778,13 +3778,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnClearDisplayMessageResponseReceived += (timestamp,
-                                                                               sender,
-                                                                               //connection,
-                                                                               request,
-                                                                               response,
-                                                                               runtime) =>
+                                                                             sender,
+                                                                             //connection,
+                                                                             request,
+                                                                             response,
+                                                                             runtime) =>
 
-                EventLog.SubmitEvent("OnClearDisplayMessageResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnClearDisplayMessageResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3796,13 +3796,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnClearDisplayMessageResponseSent += (timestamp,
-                                                                            sender,
-                                                                            connection,
-                                                                            request,
-                                                                            response,
-                                                                            runtime) =>
+                                                                          sender,
+                                                                          connection,
+                                                                          request,
+                                                                          response,
+                                                                          runtime) =>
 
-                EventLog.SubmitEvent("OnClearDisplayMessageResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnClearDisplayMessageResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3817,11 +3817,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnCostUpdated
 
             NetworkingNode.OCPP.IN.OnCostUpdatedRequestReceived += (timestamp,
-                                                                              sender,
-                                                                              connection,
-                                                                              request) =>
+                                                                    sender,
+                                                                    connection,
+                                                                    request) =>
 
-                EventLog.SubmitEvent("OnCostUpdatedRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnCostUpdatedRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3831,11 +3831,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnCostUpdatedRequestSent += (timestamp,
-                                                                           sender,
-                                                                           //connection,
-                                                                           request) =>
+                                                                 sender,
+                                                                 //connection,
+                                                                 request) =>
 
-                EventLog.SubmitEvent("OnCostUpdatedRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnCostUpdatedRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3845,13 +3845,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnCostUpdatedResponseReceived += (timestamp,
-                                                                               sender,
-                                                                               //connection,
-                                                                               request,
-                                                                               response,
-                                                                               runtime) =>
+                                                                     sender,
+                                                                     //connection,
+                                                                     request,
+                                                                     response,
+                                                                     runtime) =>
 
-                EventLog.SubmitEvent("OnCostUpdatedResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnCostUpdatedResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3863,13 +3863,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnCostUpdatedResponseSent += (timestamp,
-                                                                            sender,
-                                                                            connection,
-                                                                            request,
-                                                                            response,
-                                                                            runtime) =>
+                                                                  sender,
+                                                                  connection,
+                                                                  request,
+                                                                  response,
+                                                                  runtime) =>
 
-                EventLog.SubmitEvent("OnCostUpdatedResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnCostUpdatedResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3884,11 +3884,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnCustomerInformation
 
             NetworkingNode.OCPP.IN.OnCustomerInformationRequestReceived += (timestamp,
-                                                                              sender,
-                                                                              connection,
-                                                                              request) =>
+                                                                            sender,
+                                                                            connection,
+                                                                            request) =>
 
-                EventLog.SubmitEvent("OnCustomerInformationRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnCustomerInformationRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3898,11 +3898,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnCustomerInformationRequestSent += (timestamp,
-                                                                           sender,
-                                                                           //connection,
-                                                                           request) =>
+                                                                         sender,
+                                                                         //connection,
+                                                                         request) =>
 
-                EventLog.SubmitEvent("OnCustomerInformationRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnCustomerInformationRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3912,13 +3912,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnCustomerInformationResponseReceived += (timestamp,
-                                                                               sender,
-                                                                               //connection,
-                                                                               request,
-                                                                               response,
-                                                                               runtime) =>
+                                                                             sender,
+                                                                             //connection,
+                                                                             request,
+                                                                             response,
+                                                                             runtime) =>
 
-                EventLog.SubmitEvent("OnCustomerInformationResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnCustomerInformationResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3930,13 +3930,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnCustomerInformationResponseSent += (timestamp,
-                                                                            sender,
-                                                                            connection,
-                                                                            request,
-                                                                            response,
-                                                                            runtime) =>
+                                                                          sender,
+                                                                          connection,
+                                                                          request,
+                                                                          response,
+                                                                          runtime) =>
 
-                EventLog.SubmitEvent("OnCustomerInformationResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnCustomerInformationResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3951,11 +3951,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnGetDisplayMessages
 
             NetworkingNode.OCPP.IN.OnGetDisplayMessagesRequestReceived += (timestamp,
-                                                                              sender,
-                                                                              connection,
-                                                                              request) =>
+                                                                           sender,
+                                                                           connection,
+                                                                           request) =>
 
-                EventLog.SubmitEvent("OnGetDisplayMessagesRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetDisplayMessagesRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3965,11 +3965,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnGetDisplayMessagesRequestSent += (timestamp,
-                                                                           sender,
-                                                                           //connection,
-                                                                           request) =>
+                                                                        sender,
+                                                                        //connection,
+                                                                        request) =>
 
-                EventLog.SubmitEvent("OnGetDisplayMessagesRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetDisplayMessagesRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3979,13 +3979,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnGetDisplayMessagesResponseReceived += (timestamp,
-                                                                               sender,
-                                                                               //connection,
-                                                                               request,
-                                                                               response,
-                                                                               runtime) =>
+                                                                            sender,
+                                                                            //connection,
+                                                                            request,
+                                                                            response,
+                                                                            runtime) =>
 
-                EventLog.SubmitEvent("OnGetDisplayMessagesResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetDisplayMessagesResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -3997,13 +3997,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnGetDisplayMessagesResponseSent += (timestamp,
-                                                                            sender,
-                                                                            connection,
-                                                                            request,
-                                                                            response,
-                                                                            runtime) =>
+                                                                         sender,
+                                                                         connection,
+                                                                         request,
+                                                                         response,
+                                                                         runtime) =>
 
-                EventLog.SubmitEvent("OnGetDisplayMessagesResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetDisplayMessagesResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4018,11 +4018,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnSetDisplayMessage
 
             NetworkingNode.OCPP.IN.OnSetDisplayMessageRequestReceived += (timestamp,
-                                                                              sender,
-                                                                              connection,
-                                                                              request) =>
+                                                                          sender,
+                                                                          connection,
+                                                                          request) =>
 
-                EventLog.SubmitEvent("OnSetDisplayMessageRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnSetDisplayMessageRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4032,11 +4032,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnSetDisplayMessageRequestSent += (timestamp,
-                                                                           sender,
-                                                                           //connection,
-                                                                           request) =>
+                                                                       sender,
+                                                                       //connection,
+                                                                       request) =>
 
-                EventLog.SubmitEvent("OnSetDisplayMessageRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnSetDisplayMessageRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4046,13 +4046,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnSetDisplayMessageResponseReceived += (timestamp,
-                                                                               sender,
-                                                                               //connection,
-                                                                               request,
-                                                                               response,
-                                                                               runtime) =>
+                                                                           sender,
+                                                                           //connection,
+                                                                           request,
+                                                                           response,
+                                                                           runtime) =>
 
-                EventLog.SubmitEvent("OnSetDisplayMessageResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnSetDisplayMessageResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4064,13 +4064,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnSetDisplayMessageResponseSent += (timestamp,
-                                                                            sender,
-                                                                            connection,
-                                                                            request,
-                                                                            response,
-                                                                            runtime) =>
+                                                                        sender,
+                                                                        connection,
+                                                                        request,
+                                                                        response,
+                                                                        runtime) =>
 
-                EventLog.SubmitEvent("OnSetDisplayMessageResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnSetDisplayMessageResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4089,11 +4089,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnChangeAvailability
 
             NetworkingNode.OCPP.IN.OnChangeAvailabilityRequestReceived += (timestamp,
-                                                                              sender,
-                                                                              connection,
-                                                                              request) =>
+                                                                           sender,
+                                                                           connection,
+                                                                           request) =>
 
-                EventLog.SubmitEvent("OnChangeAvailabilityRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnChangeAvailabilityRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4103,11 +4103,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnChangeAvailabilityRequestSent += (timestamp,
-                                                                           sender,
-                                                                           //connection,
-                                                                           request) =>
+                                                                        sender,
+                                                                        //connection,
+                                                                        request) =>
 
-                EventLog.SubmitEvent("OnChangeAvailabilityRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnChangeAvailabilityRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4117,13 +4117,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnChangeAvailabilityResponseReceived += (timestamp,
-                                                                               sender,
-                                                                               //connection,
-                                                                               request,
-                                                                               response,
-                                                                               runtime) =>
+                                                                            sender,
+                                                                            //connection,
+                                                                            request,
+                                                                            response,
+                                                                            runtime) =>
 
-                EventLog.SubmitEvent("OnChangeAvailabilityResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnChangeAvailabilityResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4135,13 +4135,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnChangeAvailabilityResponseSent += (timestamp,
-                                                                            sender,
-                                                                            connection,
-                                                                            request,
-                                                                            response,
-                                                                            runtime) =>
+                                                                         sender,
+                                                                         connection,
+                                                                         request,
+                                                                         response,
+                                                                         runtime) =>
 
-                EventLog.SubmitEvent("OnChangeAvailabilityResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnChangeAvailabilityResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4156,11 +4156,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnClearVariableMonitoring
 
             NetworkingNode.OCPP.IN.OnClearVariableMonitoringRequestReceived += (timestamp,
-                                                                              sender,
-                                                                              connection,
-                                                                              request) =>
+                                                                                sender,
+                                                                                connection,
+                                                                                request) =>
 
-                EventLog.SubmitEvent("OnClearVariableMonitoringRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnClearVariableMonitoringRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4170,11 +4170,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnClearVariableMonitoringRequestSent += (timestamp,
-                                                                           sender,
-                                                                           //connection,
-                                                                           request) =>
+                                                                             sender,
+                                                                             //connection,
+                                                                             request) =>
 
-                EventLog.SubmitEvent("OnClearVariableMonitoringRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnClearVariableMonitoringRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4184,13 +4184,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnClearVariableMonitoringResponseReceived += (timestamp,
-                                                                               sender,
-                                                                               //connection,
-                                                                               request,
-                                                                               response,
-                                                                               runtime) =>
+                                                                                 sender,
+                                                                                 //connection,
+                                                                                 request,
+                                                                                 response,
+                                                                                 runtime) =>
 
-                EventLog.SubmitEvent("OnClearVariableMonitoringResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnClearVariableMonitoringResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4202,13 +4202,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnClearVariableMonitoringResponseSent += (timestamp,
-                                                                            sender,
-                                                                            connection,
-                                                                            request,
-                                                                            response,
-                                                                            runtime) =>
+                                                                              sender,
+                                                                              connection,
+                                                                              request,
+                                                                              response,
+                                                                              runtime) =>
 
-                EventLog.SubmitEvent("OnClearVariableMonitoringResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnClearVariableMonitoringResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4223,11 +4223,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnGetBaseReport
 
             NetworkingNode.OCPP.IN.OnGetBaseReportRequestReceived += (timestamp,
-                                                                              sender,
-                                                                              connection,
-                                                                              request) =>
+                                                                      sender,
+                                                                      connection,
+                                                                      request) =>
 
-                EventLog.SubmitEvent("OnGetBaseReportRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetBaseReportRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4237,11 +4237,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnGetBaseReportRequestSent += (timestamp,
-                                                                           sender,
-                                                                           //connection,
-                                                                           request) =>
+                                                                   sender,
+                                                                   //connection,
+                                                                   request) =>
 
-                EventLog.SubmitEvent("OnGetBaseReportRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetBaseReportRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4251,13 +4251,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnGetBaseReportResponseReceived += (timestamp,
-                                                                               sender,
-                                                                               //connection,
-                                                                               request,
-                                                                               response,
-                                                                               runtime) =>
+                                                                       sender,
+                                                                       //connection,
+                                                                       request,
+                                                                       response,
+                                                                       runtime) =>
 
-                EventLog.SubmitEvent("OnGetBaseReportResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetBaseReportResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4269,13 +4269,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnGetBaseReportResponseSent += (timestamp,
-                                                                            sender,
-                                                                            connection,
-                                                                            request,
-                                                                            response,
-                                                                            runtime) =>
+                                                                    sender,
+                                                                    connection,
+                                                                    request,
+                                                                    response,
+                                                                    runtime) =>
 
-                EventLog.SubmitEvent("OnGetBaseReportResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetBaseReportResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4290,11 +4290,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnGetLog
 
             NetworkingNode.OCPP.IN.OnGetLogRequestReceived += (timestamp,
-                                                                              sender,
-                                                                              connection,
-                                                                              request) =>
+                                                               sender,
+                                                               connection,
+                                                               request) =>
 
-                EventLog.SubmitEvent("OnGetLogRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetLogRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4304,11 +4304,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnGetLogRequestSent += (timestamp,
-                                                                           sender,
-                                                                           //connection,
-                                                                           request) =>
+                                                            sender,
+                                                            //connection,
+                                                            request) =>
 
-                EventLog.SubmitEvent("OnGetLogRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetLogRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4318,13 +4318,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnGetLogResponseReceived += (timestamp,
-                                                                               sender,
-                                                                               //connection,
-                                                                               request,
-                                                                               response,
-                                                                               runtime) =>
+                                                                sender,
+                                                                //connection,
+                                                                request,
+                                                                response,
+                                                                runtime) =>
 
-                EventLog.SubmitEvent("OnGetLogResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetLogResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4336,13 +4336,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnGetLogResponseSent += (timestamp,
-                                                                            sender,
-                                                                            connection,
-                                                                            request,
-                                                                            response,
-                                                                            runtime) =>
+                                                             sender,
+                                                             connection,
+                                                             request,
+                                                             response,
+                                                             runtime) =>
 
-                EventLog.SubmitEvent("OnGetLogResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetLogResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4357,11 +4357,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnGetMonitoringReport
 
             NetworkingNode.OCPP.IN.OnGetMonitoringReportRequestReceived += (timestamp,
-                                                                              sender,
-                                                                              connection,
-                                                                              request) =>
+                                                                            sender,
+                                                                            connection,
+                                                                            request) =>
 
-                EventLog.SubmitEvent("OnGetMonitoringReportRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetMonitoringReportRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4371,11 +4371,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnGetMonitoringReportRequestSent += (timestamp,
-                                                                           sender,
-                                                                           //connection,
-                                                                           request) =>
+                                                                         sender,
+                                                                         //connection,
+                                                                         request) =>
 
-                EventLog.SubmitEvent("OnGetMonitoringReportRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetMonitoringReportRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4385,13 +4385,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnGetMonitoringReportResponseReceived += (timestamp,
-                                                                               sender,
-                                                                               //connection,
-                                                                               request,
-                                                                               response,
-                                                                               runtime) =>
+                                                                             sender,
+                                                                             //connection,
+                                                                             request,
+                                                                             response,
+                                                                             runtime) =>
 
-                EventLog.SubmitEvent("OnGetMonitoringReportResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetMonitoringReportResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4403,13 +4403,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnGetMonitoringReportResponseSent += (timestamp,
-                                                                            sender,
-                                                                            connection,
-                                                                            request,
-                                                                            response,
-                                                                            runtime) =>
+                                                                          sender,
+                                                                          connection,
+                                                                          request,
+                                                                          response,
+                                                                          runtime) =>
 
-                EventLog.SubmitEvent("OnGetMonitoringReportResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetMonitoringReportResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4424,11 +4424,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnGetReport
 
             NetworkingNode.OCPP.IN.OnGetReportRequestReceived += (timestamp,
-                                                                              sender,
-                                                                              connection,
-                                                                              request) =>
+                                                                  sender,
+                                                                  connection,
+                                                                  request) =>
 
-                EventLog.SubmitEvent("OnGetReportRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetReportRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4438,11 +4438,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnGetReportRequestSent += (timestamp,
-                                                                           sender,
-                                                                           //connection,
-                                                                           request) =>
+                                                               sender,
+                                                               //connection,
+                                                               request) =>
 
-                EventLog.SubmitEvent("OnGetReportRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetReportRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4452,13 +4452,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnGetReportResponseReceived += (timestamp,
-                                                                               sender,
-                                                                               //connection,
-                                                                               request,
-                                                                               response,
-                                                                               runtime) =>
+                                                                   sender,
+                                                                   //connection,
+                                                                   request,
+                                                                   response,
+                                                                   runtime) =>
 
-                EventLog.SubmitEvent("OnGetReportResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetReportResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4470,13 +4470,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnGetReportResponseSent += (timestamp,
-                                                                            sender,
-                                                                            connection,
-                                                                            request,
-                                                                            response,
-                                                                            runtime) =>
+                                                                sender,
+                                                                connection,
+                                                                request,
+                                                                response,
+                                                                runtime) =>
 
-                EventLog.SubmitEvent("OnGetReportResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetReportResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4491,11 +4491,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnGetVariables
 
             NetworkingNode.OCPP.IN.OnGetVariablesRequestReceived += (timestamp,
-                                                                              sender,
-                                                                              connection,
-                                                                              request) =>
+                                                                     sender,
+                                                                     connection,
+                                                                     request) =>
 
-                EventLog.SubmitEvent("OnGetVariablesRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetVariablesRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4505,11 +4505,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnGetVariablesRequestSent += (timestamp,
-                                                                           sender,
-                                                                           //connection,
-                                                                           request) =>
+                                                                  sender,
+                                                                  //connection,
+                                                                  request) =>
 
-                EventLog.SubmitEvent("OnGetVariablesRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetVariablesRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4519,13 +4519,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnGetVariablesResponseReceived += (timestamp,
-                                                                               sender,
-                                                                               //connection,
-                                                                               request,
-                                                                               response,
-                                                                               runtime) =>
+                                                                      sender,
+                                                                      //connection,
+                                                                      request,
+                                                                      response,
+                                                                      runtime) =>
 
-                EventLog.SubmitEvent("OnGetVariablesResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetVariablesResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4537,13 +4537,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnGetVariablesResponseSent += (timestamp,
-                                                                            sender,
-                                                                            connection,
-                                                                            request,
-                                                                            response,
-                                                                            runtime) =>
+                                                                   sender,
+                                                                   connection,
+                                                                   request,
+                                                                   response,
+                                                                   runtime) =>
 
-                EventLog.SubmitEvent("OnGetVariablesResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetVariablesResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4558,11 +4558,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnSetMonitoringBase
 
             NetworkingNode.OCPP.IN.OnSetMonitoringBaseRequestReceived += (timestamp,
-                                                                              sender,
-                                                                              connection,
-                                                                              request) =>
+                                                                          sender,
+                                                                          connection,
+                                                                          request) =>
 
-                EventLog.SubmitEvent("OnSetMonitoringBaseRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnSetMonitoringBaseRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4572,11 +4572,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnSetMonitoringBaseRequestSent += (timestamp,
-                                                                           sender,
-                                                                           //connection,
-                                                                           request) =>
+                                                                       sender,
+                                                                       //connection,
+                                                                       request) =>
 
-                EventLog.SubmitEvent("OnSetMonitoringBaseRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnSetMonitoringBaseRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4586,13 +4586,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnSetMonitoringBaseResponseReceived += (timestamp,
-                                                                               sender,
-                                                                               //connection,
-                                                                               request,
-                                                                               response,
-                                                                               runtime) =>
+                                                                           sender,
+                                                                           //connection,
+                                                                           request,
+                                                                           response,
+                                                                           runtime) =>
 
-                EventLog.SubmitEvent("OnSetMonitoringBaseResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnSetMonitoringBaseResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4604,13 +4604,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnSetMonitoringBaseResponseSent += (timestamp,
-                                                                            sender,
-                                                                            connection,
-                                                                            request,
-                                                                            response,
-                                                                            runtime) =>
+                                                                        sender,
+                                                                        connection,
+                                                                        request,
+                                                                        response,
+                                                                        runtime) =>
 
-                EventLog.SubmitEvent("OnSetMonitoringBaseResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnSetMonitoringBaseResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4625,11 +4625,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnSetMonitoringLevel
 
             NetworkingNode.OCPP.IN.OnSetMonitoringLevelRequestReceived += (timestamp,
-                                                                              sender,
-                                                                              connection,
-                                                                              request) =>
+                                                                           sender,
+                                                                           connection,
+                                                                           request) =>
 
-                EventLog.SubmitEvent("OnSetMonitoringLevelRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnSetMonitoringLevelRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4639,11 +4639,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnSetMonitoringLevelRequestSent += (timestamp,
-                                                                           sender,
-                                                                           //connection,
-                                                                           request) =>
+                                                                        sender,
+                                                                        //connection,
+                                                                        request) =>
 
-                EventLog.SubmitEvent("OnSetMonitoringLevelRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnSetMonitoringLevelRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4653,13 +4653,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnSetMonitoringLevelResponseReceived += (timestamp,
-                                                                               sender,
-                                                                               //connection,
-                                                                               request,
-                                                                               response,
-                                                                               runtime) =>
+                                                                            sender,
+                                                                            //connection,
+                                                                            request,
+                                                                            response,
+                                                                            runtime) =>
 
-                EventLog.SubmitEvent("OnSetMonitoringLevelResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnSetMonitoringLevelResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4671,13 +4671,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnSetMonitoringLevelResponseSent += (timestamp,
-                                                                            sender,
-                                                                            connection,
-                                                                            request,
-                                                                            response,
-                                                                            runtime) =>
+                                                                         sender,
+                                                                         connection,
+                                                                         request,
+                                                                         response,
+                                                                         runtime) =>
 
-                EventLog.SubmitEvent("OnSetMonitoringLevelResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnSetMonitoringLevelResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4692,11 +4692,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnSetNetworkProfile
 
             NetworkingNode.OCPP.IN.OnSetNetworkProfileRequestReceived += (timestamp,
-                                                                              sender,
-                                                                              connection,
-                                                                              request) =>
+                                                                          sender,
+                                                                          connection,
+                                                                          request) =>
 
-                EventLog.SubmitEvent("OnSetNetworkProfileRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnSetNetworkProfileRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4706,11 +4706,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnSetNetworkProfileRequestSent += (timestamp,
-                                                                           sender,
-                                                                           //connection,
-                                                                           request) =>
+                                                                       sender,
+                                                                       //connection,
+                                                                       request) =>
 
-                EventLog.SubmitEvent("OnSetNetworkProfileRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnSetNetworkProfileRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4720,13 +4720,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnSetNetworkProfileResponseReceived += (timestamp,
-                                                                               sender,
-                                                                               //connection,
-                                                                               request,
-                                                                               response,
-                                                                               runtime) =>
+                                                                           sender,
+                                                                           //connection,
+                                                                           request,
+                                                                           response,
+                                                                           runtime) =>
 
-                EventLog.SubmitEvent("OnSetNetworkProfileResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnSetNetworkProfileResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4738,13 +4738,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnSetNetworkProfileResponseSent += (timestamp,
-                                                                            sender,
-                                                                            connection,
-                                                                            request,
-                                                                            response,
-                                                                            runtime) =>
+                                                                        sender,
+                                                                        connection,
+                                                                        request,
+                                                                        response,
+                                                                        runtime) =>
 
-                EventLog.SubmitEvent("OnSetNetworkProfileResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnSetNetworkProfileResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4763,7 +4763,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                               connection,
                                                                               request) =>
 
-                EventLog.SubmitEvent("OnSetVariableMonitoringRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnSetVariableMonitoringRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4777,7 +4777,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                            //connection,
                                                                            request) =>
 
-                EventLog.SubmitEvent("OnSetVariableMonitoringRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnSetVariableMonitoringRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4793,7 +4793,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                                response,
                                                                                runtime) =>
 
-                EventLog.SubmitEvent("OnSetVariableMonitoringResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnSetVariableMonitoringResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4811,7 +4811,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                             response,
                                                                             runtime) =>
 
-                EventLog.SubmitEvent("OnSetVariableMonitoringResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnSetVariableMonitoringResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4826,11 +4826,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnSetVariables
 
             NetworkingNode.OCPP.IN.OnSetVariablesRequestReceived += (timestamp,
-                                                                              sender,
-                                                                              connection,
-                                                                              request) =>
+                                                                     sender,
+                                                                     connection,
+                                                                     request) =>
 
-                EventLog.SubmitEvent("OnSetVariablesRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnSetVariablesRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4840,11 +4840,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnSetVariablesRequestSent += (timestamp,
-                                                                           sender,
-                                                                           //connection,
-                                                                           request) =>
+                                                                  sender,
+                                                                  //connection,
+                                                                  request) =>
 
-                EventLog.SubmitEvent("OnSetVariablesRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnSetVariablesRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4854,13 +4854,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnSetVariablesResponseReceived += (timestamp,
-                                                                               sender,
-                                                                               //connection,
-                                                                               request,
-                                                                               response,
-                                                                               runtime) =>
+                                                                      sender,
+                                                                      //connection,
+                                                                      request,
+                                                                      response,
+                                                                      runtime) =>
 
-                EventLog.SubmitEvent("OnSetVariablesResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnSetVariablesResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4872,13 +4872,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnSetVariablesResponseSent += (timestamp,
-                                                                            sender,
-                                                                            connection,
-                                                                            request,
-                                                                            response,
-                                                                            runtime) =>
+                                                                   sender,
+                                                                   connection,
+                                                                   request,
+                                                                   response,
+                                                                   runtime) =>
 
-                EventLog.SubmitEvent("OnSetVariablesResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnSetVariablesResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4893,11 +4893,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnTriggerMessage
 
             NetworkingNode.OCPP.IN.OnTriggerMessageRequestReceived += (timestamp,
-                                                                              sender,
-                                                                              connection,
-                                                                              request) =>
+                                                                       sender,
+                                                                       connection,
+                                                                       request) =>
 
-                EventLog.SubmitEvent("OnTriggerMessageRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnTriggerMessageRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4907,11 +4907,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnTriggerMessageRequestSent += (timestamp,
-                                                                           sender,
-                                                                           //connection,
-                                                                           request) =>
+                                                                    sender,
+                                                                    //connection,
+                                                                    request) =>
 
-                EventLog.SubmitEvent("OnTriggerMessageRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnTriggerMessageRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4921,13 +4921,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnTriggerMessageResponseReceived += (timestamp,
-                                                                               sender,
-                                                                               //connection,
-                                                                               request,
-                                                                               response,
-                                                                               runtime) =>
+                                                                        sender,
+                                                                        //connection,
+                                                                        request,
+                                                                        response,
+                                                                        runtime) =>
 
-                EventLog.SubmitEvent("OnTriggerMessageResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnTriggerMessageResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4939,13 +4939,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnTriggerMessageResponseSent += (timestamp,
-                                                                            sender,
-                                                                            connection,
-                                                                            request,
-                                                                            response,
-                                                                            runtime) =>
+                                                                     sender,
+                                                                     connection,
+                                                                     request,
+                                                                     response,
+                                                                     runtime) =>
 
-                EventLog.SubmitEvent("OnTriggerMessageResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnTriggerMessageResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4964,11 +4964,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnPublishFirmware
 
             NetworkingNode.OCPP.IN.OnPublishFirmwareRequestReceived += (timestamp,
-                                                                             sender,
-                                                                             connection,
-                                                                             request) =>
+                                                                        sender,
+                                                                        connection,
+                                                                        request) =>
 
-                EventLog.SubmitEvent("OnPublishFirmwareRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnPublishFirmwareRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4978,11 +4978,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnPublishFirmwareRequestSent += (timestamp,
-                                                                          sender,
-                                                                          //connection,
-                                                                          request) =>
+                                                                     sender,
+                                                                     //connection,
+                                                                     request) =>
 
-                EventLog.SubmitEvent("OnPublishFirmwareRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnPublishFirmwareRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -4992,13 +4992,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnPublishFirmwareResponseReceived += (timestamp,
-                                                                              sender,
-                                                                              //connection,
-                                                                              request,
-                                                                              response,
-                                                                              runtime) =>
+                                                                         sender,
+                                                                         //connection,
+                                                                         request,
+                                                                         response,
+                                                                         runtime) =>
 
-                EventLog.SubmitEvent("OnPublishFirmwareResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnPublishFirmwareResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -5010,13 +5010,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnPublishFirmwareResponseSent += (timestamp,
-                                                                           sender,
-                                                                           connection,
-                                                                           request,
-                                                                           response,
-                                                                           runtime) =>
+                                                                      sender,
+                                                                      connection,
+                                                                      request,
+                                                                      response,
+                                                                      runtime) =>
 
-                EventLog.SubmitEvent("OnPublishFirmwareResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnPublishFirmwareResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -5031,11 +5031,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnReset
 
             NetworkingNode.OCPP.IN.OnResetRequestReceived += (timestamp,
-                                                                   sender,
-                                                                   connection,
-                                                                   request) =>
+                                                              sender,
+                                                              connection,
+                                                              request) =>
 
-                EventLog.SubmitEvent("OnResetRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnResetRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -5045,11 +5045,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnResetRequestSent += (timestamp,
-                                                                sender,
-                                                                //connection,
-                                                                request) =>
+                                                           sender,
+                                                           //connection,
+                                                           request) =>
 
-                EventLog.SubmitEvent("OnResetRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnResetRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -5059,13 +5059,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnResetResponseReceived += (timestamp,
-                                                                    sender,
-                                                                    //connection,
-                                                                    request,
-                                                                    response,
-                                                                    runtime) =>
+                                                               sender,
+                                                               //connection,
+                                                               request,
+                                                               response,
+                                                               runtime) =>
 
-                EventLog.SubmitEvent("OnResetResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnResetResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -5077,13 +5077,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnResetResponseSent += (timestamp,
-                                                                 sender,
-                                                                 connection,
-                                                                 request,
-                                                                 response,
-                                                                 runtime) =>
+                                                            sender,
+                                                            connection,
+                                                            request,
+                                                            response,
+                                                            runtime) =>
 
-                EventLog.SubmitEvent("OnResetResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnResetResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -5098,11 +5098,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnUnpublishFirmware
 
             NetworkingNode.OCPP.IN.OnUnpublishFirmwareRequestReceived += (timestamp,
-                                                                               sender,
-                                                                               connection,
-                                                                               request) =>
+                                                                          sender,
+                                                                          connection,
+                                                                          request) =>
 
-                EventLog.SubmitEvent("OnUnpublishFirmwareRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnUnpublishFirmwareRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -5112,11 +5112,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnUnpublishFirmwareRequestSent += (timestamp,
-                                                                            sender,
-                                                                            //connection,
-                                                                            request) =>
+                                                                       sender,
+                                                                       //connection,
+                                                                       request) =>
 
-                EventLog.SubmitEvent("OnUnpublishFirmwareRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnUnpublishFirmwareRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -5126,13 +5126,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnUnpublishFirmwareResponseReceived += (timestamp,
-                                                                                sender,
-                                                                                //connection,
-                                                                                request,
-                                                                                response,
-                                                                                runtime) =>
+                                                                           sender,
+                                                                           //connection,
+                                                                           request,
+                                                                           response,
+                                                                           runtime) =>
 
-                EventLog.SubmitEvent("OnUnpublishFirmwareResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnUnpublishFirmwareResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -5144,13 +5144,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnUnpublishFirmwareResponseSent += (timestamp,
-                                                                             sender,
-                                                                             connection,
-                                                                             request,
-                                                                             response,
-                                                                             runtime) =>
+                                                                        sender,
+                                                                        connection,
+                                                                        request,
+                                                                        response,
+                                                                        runtime) =>
 
-                EventLog.SubmitEvent("OnUnpublishFirmwareResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnUnpublishFirmwareResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -5165,11 +5165,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnUpdateFirmware
 
             NetworkingNode.OCPP.IN.OnUpdateFirmwareRequestReceived += (timestamp,
-                                                                            sender,
-                                                                            connection,
-                                                                            request) =>
+                                                                       sender,
+                                                                       connection,
+                                                                       request) =>
 
-                EventLog.SubmitEvent("OnUpdateFirmwareRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnUpdateFirmwareRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -5179,11 +5179,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnUpdateFirmwareRequestSent += (timestamp,
-                                                                         sender,
-                                                                         //connection,
-                                                                         request) =>
+                                                                    sender,
+                                                                    //connection,
+                                                                    request) =>
 
-                EventLog.SubmitEvent("OnUpdateFirmwareRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnUpdateFirmwareRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -5193,13 +5193,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnUpdateFirmwareResponseReceived += (timestamp,
-                                                                             sender,
-                                                                             //connection,
-                                                                             request,
-                                                                             response,
-                                                                             runtime) =>
+                                                                        sender,
+                                                                        //connection,
+                                                                        request,
+                                                                        response,
+                                                                        runtime) =>
 
-                EventLog.SubmitEvent("OnUpdateFirmwareResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnUpdateFirmwareResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -5211,13 +5211,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnUpdateFirmwareResponseSent += (timestamp,
-                                                                          sender,
-                                                                          connection,
-                                                                          request,
-                                                                          response,
-                                                                          runtime) =>
+                                                                     sender,
+                                                                     connection,
+                                                                     request,
+                                                                     response,
+                                                                     runtime) =>
 
-                EventLog.SubmitEvent("OnUpdateFirmwareResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnUpdateFirmwareResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -5236,11 +5236,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnAFRRSignal
 
             NetworkingNode.OCPP.IN.OnAFRRSignalRequestReceived += (timestamp,
-                                                                        sender,
-                                                                        connection,
-                                                                        request) =>
+                                                                   sender,
+                                                                   connection,
+                                                                   request) =>
 
-                EventLog.SubmitEvent("OnAFRRSignalRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnAFRRSignalRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -5250,11 +5250,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnAFRRSignalRequestSent += (timestamp,
-                                                                     sender,
-                                                                     //connection,
-                                                                     request) =>
+                                                                sender,
+                                                                //connection,
+                                                                request) =>
 
-                EventLog.SubmitEvent("OnAFRRSignalRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnAFRRSignalRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -5264,13 +5264,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnAFRRSignalResponseReceived += (timestamp,
-                                                                         sender,
-                                                                         //connection,
-                                                                         request,
-                                                                         response,
-                                                                         runtime) =>
+                                                                    sender,
+                                                                    //connection,
+                                                                    request,
+                                                                    response,
+                                                                    runtime) =>
 
-                EventLog.SubmitEvent("OnAFRRSignalResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnAFRRSignalResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -5282,13 +5282,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnAFRRSignalResponseSent += (timestamp,
-                                                                      sender,
-                                                                      connection,
-                                                                      request,
-                                                                      response,
-                                                                      runtime) =>
+                                                                 sender,
+                                                                 connection,
+                                                                 request,
+                                                                 response,
+                                                                 runtime) =>
 
-                EventLog.SubmitEvent("OnAFRRSignalResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnAFRRSignalResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -5307,11 +5307,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnClearCache
 
             NetworkingNode.OCPP.IN.OnClearCacheRequestReceived += (timestamp,
-                                                                        sender,
-                                                                        connection,
-                                                                        request) =>
+                                                                   sender,
+                                                                   connection,
+                                                                   request) =>
 
-                EventLog.SubmitEvent("OnClearCacheRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnClearCacheRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -5321,11 +5321,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnClearCacheRequestSent += (timestamp,
-                                                                     sender,
-                                                                     //connection,
-                                                                     request) =>
+                                                                sender,
+                                                                //connection,
+                                                                request) =>
 
-                EventLog.SubmitEvent("OnClearCacheRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnClearCacheRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -5335,13 +5335,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnClearCacheResponseReceived += (timestamp,
-                                                                         sender,
-                                                                         //connection,
-                                                                         request,
-                                                                         response,
-                                                                         runtime) =>
+                                                                    sender,
+                                                                    //connection,
+                                                                    request,
+                                                                    response,
+                                                                    runtime) =>
 
-                EventLog.SubmitEvent("OnClearCacheResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnClearCacheResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -5353,13 +5353,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnClearCacheResponseSent += (timestamp,
-                                                                      sender,
-                                                                      connection,
-                                                                      request,
-                                                                      response,
-                                                                      runtime) =>
+                                                                 sender,
+                                                                 connection,
+                                                                 request,
+                                                                 response,
+                                                                 runtime) =>
 
-                EventLog.SubmitEvent("OnClearCacheResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnClearCacheResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -5374,11 +5374,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnGetLocalListVersion
 
             NetworkingNode.OCPP.IN.OnGetLocalListVersionRequestReceived += (timestamp,
-                                                                                 sender,
-                                                                                 connection,
-                                                                                 request) =>
+                                                                            sender,
+                                                                            connection,
+                                                                            request) =>
 
-                EventLog.SubmitEvent("OnGetLocalListVersionRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetLocalListVersionRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -5388,11 +5388,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnGetLocalListVersionRequestSent += (timestamp,
-                                                                              sender,
-                                                                              //connection,
-                                                                              request) =>
+                                                                         sender,
+                                                                         //connection,
+                                                                         request) =>
 
-                EventLog.SubmitEvent("OnGetLocalListVersionRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetLocalListVersionRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -5402,13 +5402,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnGetLocalListVersionResponseReceived += (timestamp,
-                                                                                  sender,
-                                                                                  //connection,
-                                                                                  request,
-                                                                                  response,
-                                                                                  runtime) =>
+                                                                             sender,
+                                                                             //connection,
+                                                                             request,
+                                                                             response,
+                                                                             runtime) =>
 
-                EventLog.SubmitEvent("OnGetLocalListVersionResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnGetLocalListVersionResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -5420,13 +5420,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnGetLocalListVersionResponseSent += (timestamp,
-                                                                               sender,
-                                                                               connection,
-                                                                               request,
-                                                                               response,
-                                                                               runtime) =>
+                                                                          sender,
+                                                                          connection,
+                                                                          request,
+                                                                          response,
+                                                                          runtime) =>
 
-                EventLog.SubmitEvent("OnGetLocalListVersionResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnGetLocalListVersionResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -5441,11 +5441,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnSendLocalList
 
             NetworkingNode.OCPP.IN.OnSendLocalListRequestReceived += (timestamp,
-                                                                           sender,
-                                                                           connection,
-                                                                           request) =>
+                                                                      sender,
+                                                                      connection,
+                                                                      request) =>
 
-                EventLog.SubmitEvent("OnSendLocalListRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnSendLocalListRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -5455,11 +5455,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnSendLocalListRequestSent += (timestamp,
-                                                                        sender,
-                                                                        //connection,
-                                                                        request) =>
+                                                                   sender,
+                                                                   //connection,
+                                                                   request) =>
 
-                EventLog.SubmitEvent("OnSendLocalListRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnSendLocalListRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -5469,13 +5469,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnSendLocalListResponseReceived += (timestamp,
-                                                                            sender,
-                                                                            //connection,
-                                                                            request,
-                                                                            response,
-                                                                            runtime) =>
+                                                                       sender,
+                                                                       //connection,
+                                                                       request,
+                                                                       response,
+                                                                       runtime) =>
 
-                EventLog.SubmitEvent("OnSendLocalListResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnSendLocalListResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -5487,13 +5487,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnSendLocalListResponseSent += (timestamp,
-                                                                         sender,
-                                                                         connection,
-                                                                         request,
-                                                                         response,
-                                                                         runtime) =>
+                                                                    sender,
+                                                                    connection,
+                                                                    request,
+                                                                    response,
+                                                                    runtime) =>
 
-                EventLog.SubmitEvent("OnSendLocalListResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnSendLocalListResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -5509,16 +5509,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
-            #region CSMS            <-> ChargingStation Messages
+            #region CSMS            <-> ChargingStation Message exchanged
 
             #region OnDataTransfer
 
             NetworkingNode.OCPP.IN.OnDataTransferRequestReceived += (timestamp,
-                                                                          sender,
-                                                                          connection,
-                                                                          request) =>
+                                                                     sender,
+                                                                     connection,
+                                                                     request) =>
 
-                EventLog.SubmitEvent("OnDataTransferRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnDataTransferRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -5528,11 +5528,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnDataTransferRequestSent += (timestamp,
-                                                                       sender,
-                                                                       //connection,
-                                                                       request) =>
+                                                                  sender,
+                                                                  //connection,
+                                                                  request) =>
 
-                EventLog.SubmitEvent("OnDataTransferRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnDataTransferRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -5542,13 +5542,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnDataTransferResponseReceived += (timestamp,
-                                                                           sender,
-                                                                           //connection,
-                                                                           request,
-                                                                           response,
-                                                                           runtime) =>
+                                                                      sender,
+                                                                      //connection,
+                                                                      request,
+                                                                      response,
+                                                                      runtime) =>
 
-                EventLog.SubmitEvent("OnDataTransferResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnDataTransferResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -5560,13 +5560,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnDataTransferResponseSent += (timestamp,
-                                                                        sender,
-                                                                        connection,
-                                                                        request,
-                                                                        response,
-                                                                        runtime) =>
+                                                                   sender,
+                                                                   connection,
+                                                                   request,
+                                                                   response,
+                                                                   runtime) =>
 
-                EventLog.SubmitEvent("OnDataTransferResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnDataTransferResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -5581,11 +5581,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #region OnBinaryDataTransfer
 
             NetworkingNode.OCPP.IN.OnBinaryDataTransferRequestReceived += (timestamp,
-                                                                                sender,
-                                                                                connection,
-                                                                                request) =>
+                                                                           sender,
+                                                                           connection,
+                                                                           request) =>
 
-                EventLog.SubmitEvent("OnBinaryDataTransferRequestReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnBinaryDataTransferRequestReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -5595,11 +5595,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnBinaryDataTransferRequestSent += (timestamp,
-                                                                             sender,
-                                                                             //connection,
-                                                                             request) =>
+                                                                        sender,
+                                                                        //connection,
+                                                                        request) =>
 
-                EventLog.SubmitEvent("OnBinaryDataTransferRequestSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnBinaryDataTransferRequestSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -5609,13 +5609,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.IN.OnBinaryDataTransferResponseReceived += (timestamp,
-                                                                                 sender,
-                                                                                 //connection,
-                                                                                 request,
-                                                                                 response,
-                                                                                 runtime) =>
+                                                                            sender,
+                                                                            //connection,
+                                                                            request,
+                                                                            response,
+                                                                            runtime) =>
 
-                EventLog.SubmitEvent("OnBinaryDataTransferResponseReceived",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.IN.OnBinaryDataTransferResponseReceived),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),
@@ -5627,13 +5627,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             NetworkingNode.OCPP.OUT.OnBinaryDataTransferResponseSent += (timestamp,
-                                                                              sender,
-                                                                              connection,
-                                                                              request,
-                                                                              response,
-                                                                              runtime) =>
+                                                                         sender,
+                                                                         connection,
+                                                                         request,
+                                                                         response,
+                                                                         runtime) =>
 
-                EventLog.SubmitEvent("OnBinaryDataTransferResponseSent",
+                EventLog.SubmitEvent(nameof(NetworkingNode.OCPP.OUT.OnBinaryDataTransferResponseSent),
                                      new JObject(
                                          new JProperty("timestamp",   timestamp. ToIso8601()),
                                          new JProperty("sender",      sender),

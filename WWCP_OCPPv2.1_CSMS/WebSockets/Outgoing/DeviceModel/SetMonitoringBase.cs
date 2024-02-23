@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a SetMonitoringBase request was sent.
         /// </summary>
-        public event OnSetMonitoringBaseRequestSentDelegate?     OnSetMonitoringBaseRequest;
+        public event OnSetMonitoringBaseRequestSentDelegate?     OnSetMonitoringBaseRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a SetMonitoringBase request was sent.
         /// </summary>
-        public event OnSetMonitoringBaseResponseReceivedDelegate?    OnSetMonitoringBaseResponse;
+        public event OnSetMonitoringBaseResponseReceivedDelegate?    OnSetMonitoringBaseResponseReceived;
 
         #endregion
 
@@ -70,13 +70,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnSetMonitoringBaseRequest?.Invoke(startTime,
+                OnSetMonitoringBaseRequestSent?.Invoke(startTime,
                                                    this,
                                                    Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSetMonitoringBaseRequest));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSetMonitoringBaseRequestSent));
             }
 
             #endregion
@@ -146,7 +146,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnSetMonitoringBaseResponse?.Invoke(endTime,
+                OnSetMonitoringBaseResponseReceived?.Invoke(endTime,
                                                     this,
                                                     Request,
                                                     response,
@@ -155,7 +155,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSetMonitoringBaseResponse));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSetMonitoringBaseResponseReceived));
             }
 
             #endregion

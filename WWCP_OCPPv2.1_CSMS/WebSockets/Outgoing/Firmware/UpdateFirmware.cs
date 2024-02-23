@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever an UpdateFirmware request was sent.
         /// </summary>
-        public event OnUpdateFirmwareRequestSentDelegate?     OnUpdateFirmwareRequest;
+        public event OnUpdateFirmwareRequestSentDelegate?     OnUpdateFirmwareRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to an UpdateFirmware request was sent.
         /// </summary>
-        public event OnUpdateFirmwareResponseReceivedDelegate?    OnUpdateFirmwareResponse;
+        public event OnUpdateFirmwareResponseReceivedDelegate?    OnUpdateFirmwareResponseReceived;
 
         #endregion
 
@@ -70,13 +70,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnUpdateFirmwareRequest?.Invoke(startTime,
+                OnUpdateFirmwareRequestSent?.Invoke(startTime,
                                                 this,
                                                 Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnUpdateFirmwareRequest));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnUpdateFirmwareRequestSent));
             }
 
             #endregion
@@ -147,7 +147,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnUpdateFirmwareResponse?.Invoke(endTime,
+                OnUpdateFirmwareResponseReceived?.Invoke(endTime,
                                                  this,
                                                  Request,
                                                  response,
@@ -156,7 +156,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnUpdateFirmwareResponse));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnUpdateFirmwareResponseReceived));
             }
 
             #endregion

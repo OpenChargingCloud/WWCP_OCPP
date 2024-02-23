@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a SetVariables request was sent.
         /// </summary>
-        public event OnSetVariablesRequestSentDelegate?     OnSetVariablesRequest;
+        public event OnSetVariablesRequestSentDelegate?     OnSetVariablesRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a SetVariables request was sent.
         /// </summary>
-        public event OnSetVariablesResponseReceivedDelegate?    OnSetVariablesResponse;
+        public event OnSetVariablesResponseReceivedDelegate?    OnSetVariablesResponseReceived;
 
         #endregion
 
@@ -70,13 +70,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnSetVariablesRequest?.Invoke(startTime,
+                OnSetVariablesRequestSent?.Invoke(startTime,
                                               this,
                                               Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSetVariablesRequest));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSetVariablesRequestSent));
             }
 
             #endregion
@@ -151,7 +151,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnSetVariablesResponse?.Invoke(endTime,
+                OnSetVariablesResponseReceived?.Invoke(endTime,
                                                this,
                                                Request,
                                                response,
@@ -160,7 +160,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSetVariablesResponse));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSetVariablesResponseReceived));
             }
 
             #endregion

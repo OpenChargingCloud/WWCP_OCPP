@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a CustomerInformation request was sent.
         /// </summary>
-        public event OnCustomerInformationRequestSentDelegate?     OnCustomerInformationRequest;
+        public event OnCustomerInformationRequestSentDelegate?     OnCustomerInformationRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a CustomerInformation request was sent.
         /// </summary>
-        public event OnCustomerInformationResponseReceivedDelegate?    OnCustomerInformationResponse;
+        public event OnCustomerInformationResponseReceivedDelegate?    OnCustomerInformationResponseReceived;
 
         #endregion
 
@@ -70,13 +70,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnCustomerInformationRequest?.Invoke(startTime,
+                OnCustomerInformationRequestSent?.Invoke(startTime,
                                                      this,
                                                      Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnCustomerInformationRequest));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnCustomerInformationRequestSent));
             }
 
             #endregion
@@ -149,7 +149,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnCustomerInformationResponse?.Invoke(endTime,
+                OnCustomerInformationResponseReceived?.Invoke(endTime,
                                                       this,
                                                       Request,
                                                       response,
@@ -158,7 +158,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnCustomerInformationResponse));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnCustomerInformationResponseReceived));
             }
 
             #endregion
