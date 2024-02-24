@@ -2,26 +2,27 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <RootNamespace>WWCP_OCPPv2._1_NetworkingNode</RootNamespace>
+    <RootNamespace>cloud.charging.open.protocols.OCPPv2_1.NetworkingNode</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="WebAPI\HTTPRoot\css\events\events.css" />
-    <None Remove="WebAPI\HTTPRoot\css\events\events.min.css" />
-    <None Remove="WebAPI\HTTPRoot\css\template.css" />
-    <None Remove="WebAPI\HTTPRoot\css\template.min.css" />
-    <None Remove="WebAPI\HTTPRoot\defaults\defaults.ts" />
-    <None Remove="WebAPI\HTTPRoot\defaults\_defaults.scss" />
-    <None Remove="WebAPI\HTTPRoot\events\events.js" />
-    <None Remove="WebAPI\HTTPRoot\events\events.js.map" />
-    <None Remove="WebAPI\HTTPRoot\events\events.scss" />
-    <None Remove="WebAPI\HTTPRoot\events\events.ts" />
-    <None Remove="WebAPI\HTTPRoot\events\index.shtml" />
-    <None Remove="WebAPI\HTTPRoot\js\date.format.js" />
-    <None Remove="WebAPI\HTTPRoot\template.html" />
-    <None Remove="WebAPI\HTTPRoot\template.scss" />
+    <None Remove="HTTPAPI\DownloadAPI\HTTPRoot\LICENSE.txt" />
+    <None Remove="HTTPAPI\WebAPI\HTTPRoot\css\events\events.css" />
+    <None Remove="HTTPAPI\WebAPI\HTTPRoot\css\events\events.min.css" />
+    <None Remove="HTTPAPI\WebAPI\HTTPRoot\css\template.css" />
+    <None Remove="HTTPAPI\WebAPI\HTTPRoot\css\template.min.css" />
+    <None Remove="HTTPAPI\WebAPI\HTTPRoot\defaults\defaults.ts" />
+    <None Remove="HTTPAPI\WebAPI\HTTPRoot\defaults\_defaults.scss" />
+    <None Remove="HTTPAPI\WebAPI\HTTPRoot\events\events.js" />
+    <None Remove="HTTPAPI\WebAPI\HTTPRoot\events\events.js.map" />
+    <None Remove="HTTPAPI\WebAPI\HTTPRoot\events\events.scss" />
+    <None Remove="HTTPAPI\WebAPI\HTTPRoot\events\events.ts" />
+    <None Remove="HTTPAPI\WebAPI\HTTPRoot\events\index.shtml" />
+    <None Remove="HTTPAPI\WebAPI\HTTPRoot\js\date.format.js" />
+    <None Remove="HTTPAPI\WebAPI\HTTPRoot\template.html" />
+    <None Remove="HTTPAPI\WebAPI\HTTPRoot\template.scss" />
     <None Remove="OCPPAdapter\Forwarding\CS\BinaryDataStreamsExtensions\.gitkeep" />
     <None Remove="OCPPAdapter\Incoming\CSMS\BinaryDataStreamsExtensions\.gitkeep" />
     <None Remove="OCPPAdapter\Outgoing\CS\BinaryDataStreamsExtensions\.gitkeep" />
@@ -35,20 +36,21 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="WebAPI\HTTPRoot\css\events\events.css" />
-    <EmbeddedResource Include="WebAPI\HTTPRoot\css\events\events.min.css" />
-    <EmbeddedResource Include="WebAPI\HTTPRoot\css\template.css" />
-    <EmbeddedResource Include="WebAPI\HTTPRoot\css\template.min.css" />
-    <EmbeddedResource Include="WebAPI\HTTPRoot\defaults\defaults.ts" />
-    <EmbeddedResource Include="WebAPI\HTTPRoot\defaults\_defaults.scss" />
-    <EmbeddedResource Include="WebAPI\HTTPRoot\events\events.js" />
-    <EmbeddedResource Include="WebAPI\HTTPRoot\events\events.js.map" />
-    <EmbeddedResource Include="WebAPI\HTTPRoot\events\events.scss" />
-    <EmbeddedResource Include="WebAPI\HTTPRoot\events\events.ts" />
-    <EmbeddedResource Include="WebAPI\HTTPRoot\events\index.shtml" />
-    <EmbeddedResource Include="WebAPI\HTTPRoot\js\date.format.js" />
-    <EmbeddedResource Include="WebAPI\HTTPRoot\template.html" />
-    <EmbeddedResource Include="WebAPI\HTTPRoot\template.scss" />
+    <EmbeddedResource Include="HTTPAPI\DownloadAPI\HTTPRoot\LICENSE.txt" />
+    <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\css\events\events.css" />
+    <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\css\events\events.min.css" />
+    <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\css\template.css" />
+    <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\css\template.min.css" />
+    <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\defaults\defaults.ts" />
+    <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\defaults\_defaults.scss" />
+    <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\events\events.js" />
+    <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\events\events.js.map" />
+    <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\events\events.scss" />
+    <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\events\events.ts" />
+    <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\events\index.shtml" />
+    <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\js\date.format.js" />
+    <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\template.html" />
+    <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\template.scss" />
   </ItemGroup>
 
   <ItemGroup>

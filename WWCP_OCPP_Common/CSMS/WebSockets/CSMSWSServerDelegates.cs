@@ -297,6 +297,7 @@ namespace cloud.charging.open.protocols.OCPP
                                                                   Byte[]                      ResponseMessage,
                                                                   CancellationToken           CancellationToken);
 
+
     //public delegate Task OnWebSocketBinaryErrorResponseDelegate  (DateTime                    Timestamp,
     //                                                              CSMSWSServer                Server,
     //                                                              WebSocketServerConnection   Connection,

@@ -371,10 +371,9 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
             #region Setup CSMS v2.1 (compatible with v2.0.1)
 
             var testCSMSv2_1 = new OCPPv2_1.TestCSMS(
-                                   Id:                      NetworkingNode_Id.Parse("OCPPv2.1-Test-01"),
-                                   RequireAuthentication:   false,
-                                   HTTPUploadPort:          IPPort.Parse(9921),
-                                   DNSClient:               dnsClient
+                                   Id:                     NetworkingNode_Id.Parse("OCPPv2.1-Test-01"),
+                                   RequireAuthentication:  false,
+                                   DNSClient:              dnsClient
                                );
 
             testCSMSv2_1.AttachWebSocketService(
@@ -889,19 +888,19 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                         //   getlog https://api2.ocpp.charging.cloud:9901 security
                                         var response = await testCentralSystemV1_6.GetLog(
                                                            new OCPPv1_6.CS.GetLogRequest(
-                                                               NetworkingNodeId:    NetworkingNode_Id.Parse(chargingStationId),
-                                                               LogType:        commandArray[2].ToLower() switch {
-                                                                                    "security"  => OCPPv1_6.LogTypes.SecurityLog,
-                                                                                    _           => OCPPv1_6.LogTypes.DiagnosticsLog
-                                                                               },
-                                                               LogRequestId:   RandomExtensions.RandomInt32(),
-                                                               Log:            new OCPPv1_6.LogParameters(
-                                                                                   RemoteLocation:    URL.Parse(commandArray[1]),
-                                                                                   OldestTimestamp:   null,
-                                                                                   LatestTimestamp:   null
-                                                                               ),
-                                                               Retries:        null,
-                                                               RetryInterval:  null
+                                                               NetworkingNodeId:   NetworkingNode_Id.Parse(chargingStationId),
+                                                               LogType:            commandArray[2].ToLower() switch {
+                                                                                        "security"  => OCPPv1_6.LogTypes.SecurityLog,
+                                                                                        _           => OCPPv1_6.LogTypes.DiagnosticsLog
+                                                                                   },
+                                                               LogRequestId:       RandomExtensions.RandomInt32(),
+                                                               Log:                new OCPPv1_6.LogParameters(
+                                                                                       RemoteLocation:    URL.Parse(commandArray[1]),
+                                                                                       OldestTimestamp:   null,
+                                                                                       LatestTimestamp:   null
+                                                                                   ),
+                                                               Retries:            null,
+                                                               RetryInterval:      null
                                                            )
                                                        );
 
@@ -912,30 +911,32 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                     else
                                     {
 
+                                        var fileUploadAuth  = testCSMSv2_1.HTTPUploadAPI.GenerateNewFileUploadAuthentication();
+
                                         //   getlog http://172.20.101.28:9921 security
                                         //   getlog https://api2.ocpp.charging.cloud:9901 diagnostics
                                         //   getlog https://api2.ocpp.charging.cloud:9901 security
                                         //   getlog https://api2.ocpp.charging.cloud:9901 datacollector
-                                        var response = await testCSMSv2_1.GetLog(
-                                                           new OCPPv2_1.CSMS.GetLogRequest(
-                                                               NetworkingNodeId:      NetworkingNode_Id.Parse(chargingStationId),
-                                                               LogType:         commandArray[2].ToLower() switch {
-                                                                                     "security"       => OCPPv2_1.LogType.SecurityLog,
-                                                                                     "datacollector"  => OCPPv2_1.LogType.DataCollectorLog,
-                                                                                     _                => OCPPv2_1.LogType.DiagnosticsLog
-                                                                                },
-                                                               LogRequestId:    1,
-                                                               Log:             new OCPPv2_1.LogParameters(
-                                                                                    RemoteLocation:    URL.Parse(commandArray[1]),
-                                                                                    OldestTimestamp:   null,
-                                                                                    LatestTimestamp:   null
-                                                                                ),
-                                                               Retries:         null,
-                                                               RetryInterval:   null
-                                                           )
-                                                       );
+                                        var response        = await testCSMSv2_1.GetLog(
+                                                                  new OCPPv2_1.CSMS.GetLogRequest(
+                                                                      NetworkingNodeId:   NetworkingNode_Id.Parse(chargingStationId),
+                                                                      LogType:            commandArray[2].ToLower() switch {
+                                                                                               "security"       => LogType.SecurityLog,
+                                                                                               "datacollector"  => LogType.DataCollectorLog,
+                                                                                               _                => LogType.DiagnosticsLog
+                                                                                          },
+                                                                      LogRequestId:       1,
+                                                                      Log:                new LogParameters(
+                                                                                              RemoteLocation:    URL.Parse($"{commandArray[1]}/{fileUploadAuth.PathPrefix}/"),
+                                                                                              OldestTimestamp:   null,
+                                                                                              LatestTimestamp:   null
+                                                                                          ),
+                                                                      Retries:            null,
+                                                                      RetryInterval:      null
+                                                                  )
+                                                              );
 
-                                        DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                        DebugX.Log($"{commandArray.AggregateWith(" ")} => {response.Runtime.TotalMilliseconds} ms");
                                         DebugX.Log(response.ToJSON().ToString());
 
                                     }

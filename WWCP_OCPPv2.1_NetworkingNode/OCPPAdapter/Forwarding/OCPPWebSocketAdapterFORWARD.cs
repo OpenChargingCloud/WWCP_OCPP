@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Data
 
-        private   readonly  INetworkingNode                                 parentNetworkingNode;
+        private   readonly  NN.INetworkingNode                              parentNetworkingNode;
 
         protected readonly  Dictionary<String, MethodInfo>                  forwardingMessageProcessorsLookup   = [];
 
@@ -73,8 +73,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         /// <param name="NetworkingNode">The parent networking node.</param>
         /// <param name="DefaultResult">The default forwarding result.</param>
-        public OCPPWebSocketAdapterFORWARD(INetworkingNode   NetworkingNode,
-                                           ForwardingResult  DefaultResult   = ForwardingResult.DROP)
+        public OCPPWebSocketAdapterFORWARD(NN.INetworkingNode  NetworkingNode,
+                                           ForwardingResult    DefaultResult = ForwardingResult.DROP)
         {
 
             this.parentNetworkingNode  = NetworkingNode;

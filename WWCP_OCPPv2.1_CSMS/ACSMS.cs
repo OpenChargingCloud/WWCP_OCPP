@@ -51,24 +51,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         private          readonly  HashSet<SignaturePolicy>                                                      signaturePolicies            = [];
 
-        private          readonly  HashSet<CSMS.ICSMSChannel>                                                    csmsChannelServers         = [];
+        private          readonly  HashSet<CSMS.ICSMSChannel>                                                    csmsChannelServers           = [];
 
-        private          readonly  ConcurrentDictionary<NetworkingNode_Id, Tuple<CSMS.ICSMSChannel, DateTime>>   connectedNetworkingNodes    = [];
+        private          readonly  ConcurrentDictionary<NetworkingNode_Id, Tuple<CSMS.ICSMSChannel, DateTime>>   connectedNetworkingNodes     = [];
         private          readonly  ConcurrentDictionary<NetworkingNode_Id, NetworkingNode_Id>                    reachableViaNetworkingHubs   = [];
 
-        private          readonly  HTTPExtAPI                                                                    TestAPI;
+        private          readonly  HTTPExtAPI                                                                    CSMSAPI;
 
-        private          readonly  WebAPI                                                                        WebAPI;
+        
 
         protected static readonly  SemaphoreSlim                                                                 ChargingStationSemaphore     = new (1, 1);
 
         protected static readonly  TimeSpan                                                                      SemaphoreSlimTimeout         = TimeSpan.FromSeconds(5);
 
-        public    static readonly  IPPort                                                                        DefaultHTTPUploadPort        = IPPort.Parse(9901);
-
         private                    Int64                                                                         internalRequestId            = 900000;
 
-        private                    TimeSpan                                                                      defaultRequestTimeout        = TimeSpan.FromSeconds(30);
+        private          readonly  TimeSpan                                                                      defaultRequestTimeout        = TimeSpan.FromSeconds(30);
 
         #endregion
 
@@ -86,9 +84,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             => this.Id.ToString();
 
 
-        public UploadAPI  HTTPUploadAPI             { get; }
 
-        public IPPort     HTTPUploadPort            { get; }
+        public WebAPI       WebAPI                    { get; }
+
+        public UploadAPI    HTTPUploadAPI             { get; }
+
+        public DownloadAPI  HTTPDownloadAPI           { get; }
+
+
+
+
 
         public DNSClient  DNSClient                 { get; }
 
@@ -1987,11 +1992,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="RequireAuthentication">Require a HTTP Basic Authentication of all charging boxes.</param>
         public ACSMS(NetworkingNode_Id  Id,
                      Boolean            RequireAuthentication   = true,
-                     TimeSpan?          DefaultRequestTimeout   = null,
-                     IPPort?            HTTPUploadPort          = null,
-                     DNSClient?         DNSClient               = null,
 
-                     SignaturePolicy?   SignaturePolicy         = null)
+                     IPPort?            HTTPUploadPort          = null,
+                     IPPort?            HTTPDownloadPort        = null,
+
+                     SignaturePolicy?   SignaturePolicy         = null,
+
+                     TimeSpan?          DefaultRequestTimeout   = null,
+                     DNSClient?         DNSClient               = null)
 
         {
 
@@ -2001,54 +2009,98 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.Id                      = Id;
             this.RequireAuthentication   = RequireAuthentication;
             this.DefaultRequestTimeout   = DefaultRequestTimeout ?? defaultRequestTimeout;
-            this.HTTPUploadPort          = HTTPUploadPort        ?? DefaultHTTPUploadPort;
+            this.DNSClient               = DNSClient ?? new DNSClient(SearchForIPv6DNSServers: false);
 
-            Directory.CreateDirectory(Path.Combine(AppContext.BaseDirectory, "HTTPSSEs"));
+            this.signaturePolicies.Add(SignaturePolicy ?? new SignaturePolicy());
 
-            this.TestAPI                 = new HTTPExtAPI(
-                                               HTTPServerPort:         IPPort.Parse(3502),
-                                               HTTPServerName:         "GraphDefined OCPP Test Central System",
-                                               HTTPServiceName:        "GraphDefined OCPP Test Central System Service",
-                                               APIRobotEMailAddress:   EMailAddress.Parse("GraphDefined OCPP Test Central System Robot <robot@charging.cloud>"),
-                                               APIRobotGPGPassphrase:  "test123",
-                                               SMTPClient:             new NullMailer(),
-                                               DNSClient:              DNSClient,
-                                               AutoStart:              true
-                                           );
+            //Directory.CreateDirectory(Path.Combine(AppContext.BaseDirectory, "HTTPSSEs"));
 
-            this.TestAPI.HTTPServer.AddAuth(request => {
 
-                #region Allow some URLs for anonymous access...
+            #region Setup generic HTTP API
 
-                if (request.Path.StartsWith(TestAPI.URLPathPrefix + "/webapi"))
+            this.CSMSAPI           = new HTTPExtAPI(
+                                         HTTPServerPort:         IPPort.Parse(3502),
+                                         HTTPServerName:         "GraphDefined OCPP Test CSMS",
+                                         HTTPServiceName:        "GraphDefined OCPP Test CSMS Service",
+                                         APIRobotEMailAddress:   EMailAddress.Parse("GraphDefined OCPP Test CSMS Robot <robot@charging.cloud>"),
+                                         APIRobotGPGPassphrase:  "test123",
+                                         SMTPClient:             new NullMailer(),
+                                         DNSClient:              DNSClient,
+                                         AutoStart:              true
+                                     );
+
+            #endregion
+
+            var webAPIPrefix       = "webapi";
+            var uploadAPIPrefix    = "uploads";
+            var downloadAPIPrefix  = "downloads";
+
+            #region Setup Web-/Upload-/DownloadAPIs
+
+            this.WebAPI            = new WebAPI(
+                                         this,
+                                         CSMSAPI,
+
+                                         URLPathPrefix: HTTPPath.Parse(webAPIPrefix)
+
+                                     );
+
+            Directory.CreateDirectory(Path.Combine(AppContext.BaseDirectory, "UploadAPI"));
+
+            this.HTTPUploadAPI     = new UploadAPI(
+                                         this,
+                                         HTTPUploadPort.HasValue
+                                             ? new HTTPServer(
+                                                   HTTPUploadPort.Value,
+                                                   UploadAPI.DefaultHTTPServerName,
+                                                   UploadAPI.DefaultHTTPServiceName
+                                               )
+                                             : CSMSAPI.HTTPServer,
+
+                                         URLPathPrefix:   HTTPPath.Parse(uploadAPIPrefix),
+                                         FileSystemPath:  Path.Combine(AppContext.BaseDirectory, "UploadAPI")
+
+                                     );
+
+            this.HTTPDownloadAPI   = new DownloadAPI(
+                                         this,
+                                         HTTPDownloadPort.HasValue
+                                             ? new HTTPServer(
+                                                   HTTPDownloadPort.Value,
+                                                   DownloadAPI.DefaultHTTPServerName,
+                                                   DownloadAPI.DefaultHTTPServiceName
+                                               )
+                                             : CSMSAPI.HTTPServer,
+
+                                         URLPathPrefix:   HTTPPath.Parse(downloadAPIPrefix),
+                                         FileSystemPath:  Path.Combine(AppContext.BaseDirectory, "DownloadAPI")
+
+                                     );
+
+            #endregion
+
+            #region HTTP API Security Settings
+
+            this.CSMSAPI.HTTPServer.AddAuth(request => {
+
+                var ss1 = CSMSAPI.URLPathPrefix;
+                var ss2 = CSMSAPI.URLPathPrefix + webAPIPrefix;
+
+
+                // Allow some URLs for anonymous access...
+                if (request.Path.StartsWith(CSMSAPI.URLPathPrefix + webAPIPrefix)    ||
+                    request.Path.StartsWith(CSMSAPI.URLPathPrefix + HTTPUploadAPI.  URLPathPrefix) ||
+                    request.Path.StartsWith(CSMSAPI.URLPathPrefix + HTTPDownloadAPI.URLPathPrefix))
                 {
                     return HTTPExtAPI.Anonymous;
                 }
-
-                #endregion
 
                 return null;
 
             });
 
+            #endregion
 
-            this.HTTPUploadAPI           = new UploadAPI(
-                                               this,
-                                               new HTTPServer(
-                                                   this.HTTPUploadPort,
-                                                   "Open Charging Cloud OCPP Upload Server",
-                                                   "Open Charging Cloud OCPP Upload Service"
-                                               )
-                                           );
-
-            this.WebAPI                  = new WebAPI(
-                                               this,
-                                               TestAPI
-                                           );
-
-            this.DNSClient               = DNSClient ?? new DNSClient(SearchForIPv6DNSServers: false);
-
-            this.signaturePolicies.Add(SignaturePolicy ?? new SignaturePolicy());
 
         }
 

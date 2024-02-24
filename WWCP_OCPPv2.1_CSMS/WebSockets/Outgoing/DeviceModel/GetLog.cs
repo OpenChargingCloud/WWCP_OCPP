@@ -48,7 +48,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a GetLog request was sent.
         /// </summary>
-        public event OnGetLogRequestSentDelegate?     OnGetLogRequestSent;
+        public event OnGetLogRequestSentDelegate?         OnGetLogRequestSent;
 
         /// <summary>
         /// An event sent whenever a response to a GetLog request was sent.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public async Task<GetLogResponse> GetLog(GetLogRequest Request)
         {
 
-            #region Send OnGetLogRequest event
+            #region Send OnGetLogRequestSent event
 
             var startTime = Timestamp.Now;
 
@@ -75,8 +75,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             {
 
                 OnGetLogRequestSent?.Invoke(startTime,
-                                        this,
-                                        Request);
+                                            this,
+                                            Request);
             }
             catch (Exception e)
             {
@@ -144,7 +144,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             }
 
 
-            #region Send OnGetLogResponse event
+            #region Send OnGetLogResponseReceived event
 
             var endTime = Timestamp.Now;
 
@@ -152,10 +152,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             {
 
                 OnGetLogResponseReceived?.Invoke(endTime,
-                                         this,
-                                         Request,
-                                         response,
-                                         endTime - startTime);
+                                                 this,
+                                                 Request,
+                                                 response,
+                                                 endTime - startTime);
 
             }
             catch (Exception e)

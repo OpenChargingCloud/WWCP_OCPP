@@ -42,7 +42,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Data
 
-        private   readonly  INetworkingNode                 parentNetworkingNode;
+        private   readonly  NN.INetworkingNode              parentNetworkingNode;
 
         protected readonly  Dictionary<String, MethodInfo>  incomingMessageProcessorsLookup   = [];
 
@@ -102,7 +102,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Create a new OCPP adapter for accepting incoming messages.
         /// </summary>
         /// <param name="NetworkingNode">The parent networking node.</param>
-        public OCPPWebSocketAdapterIN(INetworkingNode NetworkingNode)
+        public OCPPWebSocketAdapterIN(NN.INetworkingNode NetworkingNode)
         {
 
             this.parentNetworkingNode = NetworkingNode;

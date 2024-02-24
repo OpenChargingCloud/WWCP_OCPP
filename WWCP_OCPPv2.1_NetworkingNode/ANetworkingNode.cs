@@ -17,6 +17,7 @@
 
 #region Usings
 
+using System.Collections.Concurrent;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 
@@ -25,6 +26,7 @@ using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.Mail;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
+using org.GraphDefined.Vanaheimr.Hermod.SMTP;
 using org.GraphDefined.Vanaheimr.Hermod.Logging;
 using org.GraphDefined.Vanaheimr.Hermod.Sockets;
 using org.GraphDefined.Vanaheimr.Hermod.Sockets.TCP;
@@ -32,7 +34,7 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.WebSockets;
-using cloud.charging.open.protocols.OCPPv2_1.NN;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS;
 
 #endregion
 
@@ -178,7 +180,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <summary>
     /// An abstract networking node.
     /// </summary>
-    public abstract class ANetworkingNode : INetworkingNode
+    public abstract class ANetworkingNode : NN.INetworkingNode
     {
 
         #region Data
@@ -186,10 +188,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         private readonly  HashSet<OCPPWebSocketServer>  ocppWebSocketServers            = [];
         private readonly  List<OCPPWebSocketClient>     ocppWebSocketClients            = [];
 
+        //private          readonly  ConcurrentDictionary<NetworkingNode_Id, Tuple<CSMS.ICSMSChannel, DateTime>>   connectedNetworkingNodes     = [];
+        private          readonly  ConcurrentDictionary<NetworkingNode_Id, NetworkingNode_Id>                    reachableViaNetworkingHubs   = [];
+
+        private          readonly  HTTPExtAPI                                                                    NetworkingNodeAPI;
+
         /// <summary>
         /// The default time span between maintenance tasks.
         /// </summary>
-        public static readonly  TimeSpan                DefaultMaintenanceEvery         = TimeSpan.FromMinutes(1);
+        public    static readonly  TimeSpan                                                                      DefaultMaintenanceEvery      = TimeSpan.FromMinutes(1);
 
         #endregion
 
@@ -253,6 +260,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public DateTime?                   CSMSTime                   { get; set; } = Timestamp.Now;
 
 
+
+
+
+        public WebAPI                      WebAPI                     { get; }
+
+        public UploadAPI                   HTTPUploadAPI              { get; }
+
+        public DownloadAPI                 HTTPDownloadAPI            { get; }
+
+
+
         /// <summary>
         /// Disable all maintenance tasks.
         /// </summary>
@@ -268,12 +286,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public IOCPPAdapter                OCPP                       { get; }
 
 
-
-
-
-
         public String? ClientCloseMessage
             => "Bye!";
+
+
+
 
 
 
@@ -400,33 +417,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a JSON message request was received.
         /// </summary>
-        public event OnWebSocketJSONMessageRequestDelegate?     OnJSONMessageRequestReceived;
+        public event CSMS.OnWebSocketJSONMessageRequestDelegate?     OnJSONMessageRequestReceived;
 
         /// <summary>
         /// An event sent whenever the response to a JSON message was sent.
         /// </summary>
-        public event OnWebSocketJSONMessageResponseDelegate?    OnJSONMessageResponseSent;
+        public event CSMS.OnWebSocketJSONMessageResponseDelegate?    OnJSONMessageResponseSent;
 
         /// <summary>
         /// An event sent whenever the error response to a JSON message was sent.
         /// </summary>
-        public event OnWebSocketTextErrorResponseDelegate?      OnJSONErrorResponseSent;
+        public event CSMS.OnWebSocketTextErrorResponseDelegate?      OnJSONErrorResponseSent;
 
 
         /// <summary>
         /// An event sent whenever a JSON message request was sent.
         /// </summary>
-        public event OnWebSocketJSONMessageRequestDelegate?     OnJSONMessageRequestSent;
+        public event CSMS.OnWebSocketJSONMessageRequestDelegate?     OnJSONMessageRequestSent;
 
         /// <summary>
         /// An event sent whenever the response to a JSON message request was received.
         /// </summary>
-        public event OnWebSocketJSONMessageResponseDelegate?    OnJSONMessageResponseReceived;
+        public event CSMS.OnWebSocketJSONMessageResponseDelegate?    OnJSONMessageResponseReceived;
 
         /// <summary>
         /// An event sent whenever an error response to a JSON message request was received.
         /// </summary>
-        public event OnWebSocketTextErrorResponseDelegate?      OnJSONErrorResponseReceived;
+        public event CSMS.OnWebSocketTextErrorResponseDelegate?      OnJSONErrorResponseReceived;
 
         #endregion
 
@@ -435,12 +452,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a binary message request was received.
         /// </summary>
-        public event OnWebSocketBinaryMessageRequestDelegate?     OnBinaryMessageRequestReceived;
+        public event CSMS.OnWebSocketBinaryMessageRequestDelegate?     OnBinaryMessageRequestReceived;
 
         /// <summary>
         /// An event sent whenever the response to a binary message was sent.
         /// </summary>
-        public event OnWebSocketBinaryMessageResponseDelegate?    OnBinaryMessageResponseSent;
+        public event CSMS.OnWebSocketBinaryMessageResponseDelegate?    OnBinaryMessageResponseSent;
 
         /// <summary>
         /// An event sent whenever the error response to a binary message was sent.
@@ -451,12 +468,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a binary message request was sent.
         /// </summary>
-        public event OnWebSocketBinaryMessageRequestDelegate?     OnBinaryMessageRequestSent;
+        public event CSMS.OnWebSocketBinaryMessageRequestDelegate?     OnBinaryMessageRequestSent;
 
         /// <summary>
         /// An event sent whenever the response to a binary message request was received.
         /// </summary>
-        public event OnWebSocketBinaryMessageResponseDelegate?    OnBinaryMessageResponseReceived;
+        public event CSMS.OnWebSocketBinaryMessageResponseDelegate?    OnBinaryMessageResponseReceived;
 
         /// <summary>
         /// An event sent whenever the error response to a binary message request was sent.
@@ -464,8 +481,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         //public event OnWebSocketBinaryErrorResponseDelegate?      OnBinaryErrorResponseReceived;
 
         #endregion
-
-
 
         #endregion
 
@@ -491,6 +506,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                Boolean            DisableSendHeartbeats       = false,
                                TimeSpan?          SendHeartbeatsEvery         = null,
                                TimeSpan?          DefaultRequestTimeout       = null,
+
+                               IPPort?            HTTPUploadPort              = null,
+                               IPPort?            HTTPDownloadPort            = null,
 
                                Boolean            DisableMaintenanceTasks     = false,
                                TimeSpan?          MaintenanceEvery            = null,
@@ -532,46 +550,86 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             //Directory.CreateDirectory(Path.Combine(AppContext.BaseDirectory, "HTTPSSEs"));
 
-            //this.TestAPI                 = new HTTPExtAPI(
-            //                                   HTTPServerPort:         IPPort.Parse(3502),
-            //                                   HTTPServerName:         "GraphDefined OCPP Test Central System",
-            //                                   HTTPServiceName:        "GraphDefined OCPP Test Central System Service",
-            //                                   APIRobotEMailAddress:   EMailAddress.Parse("GraphDefined OCPP Test Central System Robot <robot@charging.cloud>"),
-            //                                   APIRobotGPGPassphrase:  "test123",
-            //                                   SMTPClient:             new NullMailer(),
-            //                                   DNSClient:              DNSClient,
-            //                                   AutoStart:              true
-            //                               );
+            #region Setup generic HTTP API
 
-            //this.TestAPI.HTTPServer.AddAuth(request => {
+            this.NetworkingNodeAPI  = new HTTPExtAPI(
+                                          HTTPServerPort:         IPPort.Parse(3532),
+                                          HTTPServerName:         "GraphDefined OCPP Test Central System",
+                                          HTTPServiceName:        "GraphDefined OCPP Test Central System Service",
+                                          APIRobotEMailAddress:   EMailAddress.Parse("GraphDefined OCPP Test Central System Robot <robot@charging.cloud>"),
+                                          APIRobotGPGPassphrase:  "test123",
+                                          SMTPClient:             new NullMailer(),
+                                          DNSClient:              DNSClient,
+                                          AutoStart:              true
+                                      );
 
-            //    #region Allow some URLs for anonymous access...
+            #endregion
 
-            //    if (request.Path.StartsWith(TestAPI.URLPathPrefix + "/webapi"))
-            //    {
-            //        return HTTPExtAPI.Anonymous;
-            //    }
+            #region HTTP API Security Settings
 
-            //    #endregion
+            var webAPIPrefix        = "webapi";
+            var uploadAPIPrefix     = "uploads";
+            var downloadAPIPrefix   = "downloads";
 
-            //    return null;
+            this.NetworkingNodeAPI.HTTPServer.AddAuth(request => {
 
-            //});
+                // Allow some URLs for anonymous access...
+                if (request.Path.StartsWith(NetworkingNodeAPI.URLPathPrefix + webAPIPrefix)    ||
+                    request.Path.StartsWith(NetworkingNodeAPI.URLPathPrefix + uploadAPIPrefix) ||
+                    request.Path.StartsWith(NetworkingNodeAPI.URLPathPrefix + downloadAPIPrefix))
+                {
+                    return HTTPExtAPI.Anonymous;
+                }
 
+                return null;
 
-            //this.HTTPUploadAPI           = new CSMS.NetworkingNodeUploadAPI(
-            //                                   this,
-            //                                   new HTTPServer(
-            //                                       this.HTTPUploadPort,
-            //                                       "Open Charging Cloud OCPP Upload Server",
-            //                                       "Open Charging Cloud OCPP Upload Service"
-            //                                   )
-            //                               );
+            });
 
-            //this.WebAPI                  = new NetworkingNodeWebAPI(
-            //                                   TestAPI
-            //                               );
-            //this.WebAPI.AttachCSMS(this);
+            #endregion
+
+            #region Setup Web-/Upload-/DownloadAPIs
+
+            this.WebAPI             = new WebAPI(
+                                          this,
+                                          NetworkingNodeAPI,
+
+                                          URLPathPrefix: HTTPPath.Parse(webAPIPrefix)
+
+                                      );
+
+            Directory.CreateDirectory(Path.Combine(AppContext.BaseDirectory, "UploadAPI"));
+
+            this.HTTPUploadAPI      = new UploadAPI(
+                                          this,
+                                          HTTPUploadPort.HasValue
+                                              ? new HTTPServer(
+                                                    HTTPUploadPort.Value,
+                                                    UploadAPI.DefaultHTTPServerName,
+                                                    UploadAPI.DefaultHTTPServiceName
+                                                )
+                                              : NetworkingNodeAPI.HTTPServer,
+
+                                          URLPathPrefix:   HTTPPath.Parse(uploadAPIPrefix),
+                                          FileSystemPath:  Path.Combine(AppContext.BaseDirectory, "UploadAPI")
+
+                                      );
+
+            this.HTTPDownloadAPI    = new DownloadAPI(
+                                          this,
+                                          HTTPDownloadPort.HasValue
+                                              ? new HTTPServer(
+                                                    HTTPDownloadPort.Value,
+                                                    DownloadAPI.DefaultHTTPServerName,
+                                                    DownloadAPI.DefaultHTTPServiceName
+                                                )
+                                              : NetworkingNodeAPI.HTTPServer,
+
+                                          URLPathPrefix:   HTTPPath.Parse(downloadAPIPrefix),
+                                          FileSystemPath:  Path.Combine(AppContext.BaseDirectory, "DownloadAPI")
+
+                                      );
+
+            #endregion
 
         }
 

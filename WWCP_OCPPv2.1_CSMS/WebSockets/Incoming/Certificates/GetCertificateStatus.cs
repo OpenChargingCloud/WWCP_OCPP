@@ -52,27 +52,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a GetCertificateStatus WebSocket request was received.
         /// </summary>
-        public event OnOCPPJSONRequestLogDelegate?                OnGetCertificateStatusWSRequest;
+        public event OnOCPPJSONRequestLogDelegate?                     OnGetCertificateStatusWSRequest;
 
         /// <summary>
         /// An event sent whenever a GetCertificateStatus request was received.
         /// </summary>
-        public event OnGetCertificateStatusRequestReceivedDelegate?       OnGetCertificateStatusRequestReceived;
+        public event OnGetCertificateStatusRequestReceivedDelegate?    OnGetCertificateStatusRequestReceived;
 
         /// <summary>
         /// An event sent whenever a GetCertificateStatus was received.
         /// </summary>
-        public event OnGetCertificateStatusDelegate?              OnGetCertificateStatus;
+        public event OnGetCertificateStatusDelegate?                   OnGetCertificateStatus;
 
         /// <summary>
         /// An event sent whenever a response to a GetCertificateStatus was sent.
         /// </summary>
-        public event OnGetCertificateStatusResponseSentDelegate?      OnGetCertificateStatusResponseSent;
+        public event OnGetCertificateStatusResponseSentDelegate?       OnGetCertificateStatusResponseSent;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a GetCertificateStatus was sent.
         /// </summary>
-        public event OnOCPPJSONRequestJSONResponseLogDelegate?    OnGetCertificateStatusWSResponse;
+        public event OnOCPPJSONRequestJSONResponseLogDelegate?         OnGetCertificateStatusWSResponse;
 
         #endregion
 
@@ -118,8 +118,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             #endregion
 
 
-            OCPP_JSONResponseMessage?  OCPPResponse        = null;
-            OCPP_JSONRequestErrorMessage?     OCPPErrorResponse   = null;
+            OCPP_JSONResponseMessage?      OCPPResponse        = null;
+            OCPP_JSONRequestErrorMessage?  OCPPErrorResponse   = null;
 
             try
             {
@@ -132,15 +132,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                          out var errorResponse,
                                                          CustomGetCertificateStatusRequestParser) && request is not null) {
 
-                    #region Send OnGetCertificateStatusRequest event
+                    #region Send OnGetCertificateStatusRequestReceived event
 
                     try
                     {
 
                         OnGetCertificateStatusRequestReceived?.Invoke(Timestamp.Now,
-                                                              this,
-                                                              Connection,
-                                                              request);
+                                                                      this,
+                                                                      Connection,
+                                                                      request);
 
                     }
                     catch (Exception e)
@@ -173,17 +173,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                     #endregion
 
-                    #region Send OnGetCertificateStatusResponse event
+                    #region Send OnGetCertificateStatusResponseSent event
 
                     try
                     {
 
                         OnGetCertificateStatusResponseSent?.Invoke(Timestamp.Now,
-                                                               this,
-                                                               Connection,
-                                                               request,
-                                                               response,
-                                                               response.Runtime);
+                                                                   this,
+                                                                   Connection,
+                                                                   request,
+                                                                   response,
+                                                                   response.Runtime);
 
                     }
                     catch (Exception e)
@@ -258,7 +258,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             return new Tuple<OCPP_JSONResponseMessage?,
                              OCPP_JSONRequestErrorMessage?>(OCPPResponse,
-                                                     OCPPErrorResponse);
+                                                            OCPPErrorResponse);
 
         }
 

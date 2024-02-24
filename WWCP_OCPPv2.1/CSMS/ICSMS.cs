@@ -25,7 +25,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// The common interface of all central systems.
+    /// The common interface of all charging station management systems.
     /// </summary>
     public interface ICSMS : ICSMSOutgoingMessages,
                              ICSMSOutgoingMessagesEvents,

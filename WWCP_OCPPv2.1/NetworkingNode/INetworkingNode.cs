@@ -2254,7 +2254,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
 
 
     /// <summary>
-    /// The common interface of all charging station.
+    /// The common interface of all networking nodes.
     /// </summary>
     public interface INetworkingNode : IEventSender
     {
@@ -2286,6 +2286,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
                           String     ErrorResponse);
 
 
+
+       // TimeSpan                   DefaultRequestTimeout    { get; }
+
+       // Request_Id                 NextRequestId            { get; }
+
+       // SignaturePolicy?           SignaturePolicy          { get; }
+
+
+       //// IEnumerable<ICSMSChannel>  CSMSChannels             { get; }
+
+
+       // Byte[]  GetEncryptionKey     (NetworkingNode_Id DestinationNodeId, UInt16? KeyId = null);
+       // Byte[]  GetDecryptionKey     (NetworkingNode_Id SourceNodeId,      UInt16? KeyId = null);
+
+       // UInt64  GetEncryptionNonce   (NetworkingNode_Id DestinationNodeId, UInt16? KeyId = null);
+       // UInt64  GetEncryptionCounter (NetworkingNode_Id DestinationNodeId, UInt16? KeyId = null);
+
+
     }
+
 
 }

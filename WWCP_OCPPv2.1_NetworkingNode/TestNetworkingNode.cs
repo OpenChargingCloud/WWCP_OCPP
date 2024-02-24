@@ -28,6 +28,7 @@ using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.CS;
 using cloud.charging.open.protocols.OCPP.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
@@ -62,6 +63,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                   SignaturePolicy?   SignaturePolicy             = null,
                                   SignaturePolicy?   ForwardingSignaturePolicy   = null,
 
+                                  IPPort?            HTTPUploadPort              = null,
+                                  IPPort?            HTTPDownloadPort            = null,
+
                                   Boolean            DisableSendHeartbeats       = false,
                                   TimeSpan?          SendHeartbeatsEvery         = null,
                                   TimeSpan?          DefaultRequestTimeout       = null,
@@ -84,6 +88,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                    DisableSendHeartbeats,
                    SendHeartbeatsEvery,
                    DefaultRequestTimeout,
+
+                   HTTPUploadPort,
+                   HTTPDownloadPort,
 
                    DisableMaintenanceTasks,
                    MaintenanceEvery,

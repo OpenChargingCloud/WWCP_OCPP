@@ -50,20 +50,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Id">The unique identification of this central system.</param>
         /// <param name="RequireAuthentication">Require a HTTP Basic Authentication of all charging boxes.</param>
         public TestCSMS(NetworkingNode_Id  Id,
-                        Boolean            RequireAuthentication   = true,
-                        TimeSpan?          DefaultRequestTimeout   = null,
-                        IPPort?            HTTPUploadPort          = null,
-                        DNSClient?         DNSClient               = null,
 
-                        SignaturePolicy?   SignaturePolicy         = null)
+                        Boolean            RequireAuthentication   = true,
+
+                        IPPort?            HTTPUploadPort          = null,
+                        IPPort?            HTTPDownloadPort        = null,
+
+                        SignaturePolicy?   SignaturePolicy         = null,
+
+                        TimeSpan?          DefaultRequestTimeout   = null,
+                        DNSClient?         DNSClient               = null)
 
             : base(Id,
-                   RequireAuthentication,
-                   DefaultRequestTimeout,
-                   HTTPUploadPort,
-                   DNSClient,
 
-                   SignaturePolicy)
+                   RequireAuthentication,
+
+                   HTTPUploadPort,
+                   HTTPDownloadPort,
+
+                   SignaturePolicy,
+
+                   DefaultRequestTimeout,
+                   DNSClient)
 
         {
 

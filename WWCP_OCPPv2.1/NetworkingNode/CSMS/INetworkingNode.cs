@@ -25,7 +25,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 {
 
     /// <summary>
-    /// The common interface of all central systems.
+    /// The common interface of all networking nodes.
     /// </summary>
     public interface INetworkingNode : INetworkingNodeOutgoingMessages,
                                        INetworkingNodeIncomingMessageEvents

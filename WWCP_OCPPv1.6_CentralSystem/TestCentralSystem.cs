@@ -7325,8 +7325,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             {
 
                 OnGetLogRequest?.Invoke(startTime,
-                                       this,
-                                       Request);
+                                        this,
+                                        Request);
             }
             catch (Exception e)
             {
@@ -7382,10 +7382,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             {
 
                 OnGetLogResponse?.Invoke(endTime,
-                                        this,
-                                        Request,
-                                        response,
-                                        endTime - startTime);
+                                         this,
+                                         Request,
+                                         response,
+                                         endTime - startTime);
 
             }
             catch (Exception e)
