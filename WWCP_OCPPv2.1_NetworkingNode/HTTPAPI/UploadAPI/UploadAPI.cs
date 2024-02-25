@@ -284,6 +284,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
                                       #endregion
 
+                                      Directory.CreateDirectory(Path.Combine(FileSystemPath, fileUploadAuth));
+
                                       var fileStream   = File.Create(Path.Combine(FileSystemPath, fileName));
                                       var fileContent  = request.HTTPBody;
 
@@ -393,6 +395,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                                                  };
 
                                       #endregion
+
+                                      Directory.CreateDirectory(Path.Combine(FileSystemPath, fileUploadAuth));
 
                                       var fileStream   = File.Create(Path.Combine(FileSystemPath, fileName));
                                       var fileContent  = request.HTTPBody;

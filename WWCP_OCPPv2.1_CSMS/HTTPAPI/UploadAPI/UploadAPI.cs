@@ -160,21 +160,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region GenerateNewFileUploadAuthentication(Length = 30, Timeout = null)
+        #region GenerateNewFileUploadAuthentication(Length = 42, Timeout = null)
 
         /// <summary>
         /// Generate a new file upload authentication.
         /// </summary>
-        /// <param name="Length">The optional requested length of the path prefix.</param>
+        /// <param name="Length">The optional requested length of the path prefix (>20).</param>
         /// <param name="Timeout">The optional timeout of the requested file upload authentication.</param>
-        public FileUploadAuthentication GenerateNewFileUploadAuthentication(UInt16     Length    = 30,
+        public FileUploadAuthentication GenerateNewFileUploadAuthentication(UInt16     Length    = 42,
                                                                             TimeSpan?  Timeout   = null)
         {
 
-            var auth = new FileUploadAuthentication(
-                           RandomExtensions.RandomString(Length),
-                           Timestamp.Now + (Timeout ?? TimeSpan.FromMinutes(15))
-                       );
+            var now   = Timestamp.Now;
+            var auth  = new FileUploadAuthentication(
+                            now.ToString("yyyyMMddHHmmss") + RandomExtensions.RandomString((UInt16) (Math.Max(20U, Length) - 14)),
+                            now + (Timeout ?? TimeSpan.FromMinutes(15))
+                        );
 
             validFileUploadAuths.Add(auth.PathPrefix,
                                      auth);
@@ -284,7 +285,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                       #endregion
 
-                                      var fileStream   = File.Create(Path.Combine(FileSystemPath, fileName));
+                                      Directory.CreateDirectory(Path.Combine(FileSystemPath, fileUploadAuth));
+
+                                      var fileStream   = File.Create(Path.Combine(FileSystemPath, fileUploadAuth, fileName));
                                       var fileContent  = request.HTTPBody;
 
                                       await fileStream.WriteAsync(fileContent, request.CancellationToken);
@@ -393,6 +396,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                  };
 
                                       #endregion
+
+                                      Directory.CreateDirectory(Path.Combine(FileSystemPath, fileUploadAuth));
 
                                       var fileStream   = File.Create(Path.Combine(FileSystemPath, fileName));
                                       var fileContent  = request.HTTPBody;
