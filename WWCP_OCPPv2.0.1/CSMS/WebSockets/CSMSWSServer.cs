@@ -1988,13 +1988,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
 
         #endregion
 
-        #region (protected) ProcessNewWebSocketConnection(LogTimestamp, Server, Connection, EventTrackingId, SharedSubprotocols, CancellationToken)
+        #region (protected) ProcessNewWebSocketConnection(LogTimestamp, Server, Connection, SharedSubprotocols, EventTrackingId, CancellationToken)
 
         protected Task ProcessNewWebSocketConnection(DateTime                   LogTimestamp,
                                                      IWebSocketServer           Server,
                                                      WebSocketServerConnection  Connection,
-                                                     EventTracking_Id           EventTrackingId,
                                                      IEnumerable<String>        SharedSubprotocols,
+                                                     EventTracking_Id           EventTrackingId,
                                                      CancellationToken          CancellationToken)
         {
 

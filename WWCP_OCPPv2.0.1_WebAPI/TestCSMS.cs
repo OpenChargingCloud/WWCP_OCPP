@@ -1085,7 +1085,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 
         #region OnCloseMessage
 
-        public event OnCloseMessageDelegate?                     OnCloseMessage;
+        public event OnCloseMessageReceivedDelegate?            OnCloseMessage;
 
         #endregion
 

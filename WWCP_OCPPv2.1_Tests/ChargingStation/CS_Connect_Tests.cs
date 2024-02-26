@@ -141,7 +141,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
             // OnValidateWebSocketConnection
 
-            testBackendWebSockets01.OnNewWebSocketConnection      += (timestamp, server, connection, eventTrackingId, sharedSubprotocols, cancellationToken) => {
+            testBackendWebSockets01.OnNewWebSocketConnection      += (timestamp, server, newConnection, networkingNodeId, sharedSubprotocols, eventTrackingId, cancellationToken) => {
                 return Task.CompletedTask;
             };
 

@@ -27,8 +27,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <summary>
     /// The common interface of all CSMS HTTP Web Sockets channels.
     /// </summary>
-    public interface ICSMSWebsocketsChannel : ICSMSChannel,
-                                              IWebSocketServer
+    public interface ICSMSWebsocketsChannel : ICSMSChannel
+                                         //     IWebSocketServer,
+                                         //     OCPP.IWebSocketServerEvents
     { }
 
 }

@@ -31,7 +31,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     public interface ICSMSChannel : ICSMSOutgoingMessages,
                                     ICSMSOutgoingMessagesEvents,
                                     ICSMSIncomingMessages,
-                                    ICSMSIncomingMessagesEvents
+                                    ICSMSIncomingMessagesEvents,
+                                    IWebSocketServerEvents
     {
 
         void AddStaticRouting   (NetworkingNode_Id DestinationNodeId,

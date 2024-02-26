@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// The HTTP root for embedded ressources.
         /// </summary>
-        public new const    String    HTTPRoot               = "cloud.charging.open.protocols.OCPPv2_1.CSMS.WebAPI.HTTPRoot.";
+        public new const    String    HTTPRoot               = "cloud.charging.open.protocols.OCPPv2_1.CSMS.HTTPAPI.WebAPI.HTTPRoot.";
 
         #endregion
 
@@ -117,7 +117,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         protected override Stream? GetResourceStream(String ResourceName)
 
             => GetResourceStream(ResourceName,
-                                 new Tuple<String, Assembly>(WebAPI.HTTPRoot, typeof(WebAPI).Assembly),
+                                 new Tuple<String, Assembly>(WebAPI.    HTTPRoot, typeof(WebAPI).    Assembly),
                                  new Tuple<String, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
                                  new Tuple<String, Assembly>(HTTPAPI.   HTTPRoot, typeof(HTTPAPI).   Assembly));
 
@@ -128,7 +128,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         protected override MemoryStream? GetResourceMemoryStream(String ResourceName)
 
             => GetResourceMemoryStream(ResourceName,
-                                       new Tuple<String, Assembly>(WebAPI.HTTPRoot, typeof(WebAPI).Assembly),
+                                       new Tuple<String, Assembly>(WebAPI.    HTTPRoot, typeof(WebAPI).    Assembly),
                                        new Tuple<String, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
                                        new Tuple<String, Assembly>(HTTPAPI.   HTTPRoot, typeof(HTTPAPI).   Assembly));
 
@@ -139,7 +139,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         protected override String GetResourceString(String ResourceName)
 
             => GetResourceString(ResourceName,
-                                 new Tuple<String, Assembly>(WebAPI.HTTPRoot, typeof(WebAPI).Assembly),
+                                 new Tuple<String, Assembly>(WebAPI.    HTTPRoot, typeof(WebAPI).    Assembly),
                                  new Tuple<String, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
                                  new Tuple<String, Assembly>(HTTPAPI.   HTTPRoot, typeof(HTTPAPI).   Assembly));
 
@@ -150,7 +150,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         protected override Byte[] GetResourceBytes(String ResourceName)
 
             => GetResourceBytes(ResourceName,
-                                new Tuple<String, Assembly>(WebAPI.HTTPRoot, typeof(WebAPI).Assembly),
+                                new Tuple<String, Assembly>(WebAPI.    HTTPRoot, typeof(WebAPI).    Assembly),
                                 new Tuple<String, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
                                 new Tuple<String, Assembly>(HTTPAPI.   HTTPRoot, typeof(HTTPAPI).   Assembly));
 
@@ -161,7 +161,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         protected override String MixWithHTMLTemplate(String ResourceName)
 
             => MixWithHTMLTemplate(ResourceName,
-                                   new Tuple<String, Assembly>(WebAPI.HTTPRoot, typeof(WebAPI).Assembly),
+                                   new Tuple<String, Assembly>(WebAPI.    HTTPRoot, typeof(WebAPI).    Assembly),
                                    new Tuple<String, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
                                    new Tuple<String, Assembly>(HTTPAPI.   HTTPRoot, typeof(HTTPAPI).   Assembly));
 
@@ -174,7 +174,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             => MixWithHTMLTemplate(ResourceName,
                                    HTMLConverter,
-                                   new Tuple<String, Assembly>(WebAPI.HTTPRoot, typeof(WebAPI).Assembly),
+                                   new Tuple<String, Assembly>(WebAPI.    HTTPRoot, typeof(WebAPI).    Assembly),
                                    new Tuple<String, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
                                    new Tuple<String, Assembly>(HTTPAPI.   HTTPRoot, typeof(HTTPAPI).   Assembly));
 
@@ -188,11 +188,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             => MixWithHTMLTemplate(Template,
                                    ResourceName,
-                                   new[] {
-                                       new Tuple<String, Assembly>(WebAPI.HTTPRoot, typeof(WebAPI).Assembly),
+                                   [
+                                       new Tuple<String, Assembly>(WebAPI.    HTTPRoot, typeof(WebAPI).    Assembly),
                                        new Tuple<String, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
                                        new Tuple<String, Assembly>(HTTPAPI.   HTTPRoot, typeof(HTTPAPI).   Assembly)
-                                   },
+                                   ],
                                    Content);
 
         #endregion
@@ -206,8 +206,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #region Allow some URLs for anonymous access...
 
-                if (request.Path.StartsWith(URLPathPrefix + "/js")        ||
-                    request.Path.StartsWith(URLPathPrefix + "/events")    ||
+                if (request.Path.StartsWith(URLPathPrefix)                      ||
+                    request.Path.StartsWith(URLPathPrefix + "/js")              ||
+                    request.Path.StartsWith(URLPathPrefix + "/events")          ||
                     request.Path.StartsWith(URLPathPrefix + "/chargingStation") ||
                     request.Path.StartsWith(URLPathPrefix + "/chargingStations"))
                 {
@@ -236,9 +237,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             HTTPBaseAPI.MapResourceAssemblyFolder(
                 HTTPHostname.Any,
-                URLPathPrefix + "web",
-                "default",
-                DefaultFilename: "index.html"
+                URLPathPrefix,
+                HTTPRoot, //"default",
+                DefaultFilename:       "index.html",
+                RequireAuthentication:  false
             );
 
             #endregion

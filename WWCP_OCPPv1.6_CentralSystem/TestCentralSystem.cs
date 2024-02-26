@@ -31,6 +31,7 @@ using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.CSMS;
 using cloud.charging.open.protocols.OCPPv1_6.CS;
 using Newtonsoft.Json.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 #endregion
 
@@ -1543,12 +1544,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             #region OnTCPConnectionClosed
 
-            centralSystemServer.OnTCPConnectionClosed += async (timestamp,
-                                                                server,
-                                                                connection,
-                                                                eventTrackingId,
-                                                                reason,
-                                                                cancellationToken) => {
+            centralSystemServer.OnCSMSTCPConnectionClosed += async (timestamp,
+                                                                    csmsChannel,
+                                                                    connection,
+                                                                    networkingNodeId,
+                                                                    eventTrackingId,
+                                                                    reason,
+                                                                    cancellationToken) => {
 
                 var onTCPConnectionClosed = OnTCPConnectionClosed;
                 if (onTCPConnectionClosed is not null)
@@ -1557,11 +1559,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                     {
 
                         await Task.WhenAll(onTCPConnectionClosed.GetInvocationList().
-                                               OfType <OnTCPConnectionClosedDelegate>().
+                                               OfType <OnCSMSTCPConnectionClosedDelegate>().
                                                Select (loggingDelegate => loggingDelegate.Invoke(
                                                                               timestamp,
-                                                                              server,
+                                                                              centralSystemServer,
                                                                               connection,
+                                                                              networkingNodeId,
                                                                               eventTrackingId,
                                                                               reason,
                                                                               cancellationToken

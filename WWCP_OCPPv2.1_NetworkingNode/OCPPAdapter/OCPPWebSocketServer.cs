@@ -512,13 +512,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region (protected) ProcessNewWebSocketConnection (LogTimestamp, Server, Connection, EventTrackingId, SharedSubprotocols, CancellationToken)
+        #region (protected) ProcessNewWebSocketConnection (LogTimestamp, Server, Connection, SharedSubprotocols, EventTrackingId, CancellationToken)
 
         protected async Task ProcessNewWebSocketConnection(DateTime                   LogTimestamp,
                                                            IWebSocketServer           Server,
                                                            WebSocketServerConnection  Connection,
-                                                           EventTracking_Id           EventTrackingId,
                                                            IEnumerable<String>        SharedSubprotocols,
+                                                           EventTracking_Id           EventTrackingId,
                                                            CancellationToken          CancellationToken)
         {
 

@@ -46,11 +46,12 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
     /// accepting connections from charging stations or other networking nodes
     /// to invoke OCPP commands.
     /// </summary>
-    public abstract class AOCPPWebSocketServer : WebSocketServer,
-                                                 ICSMSChannel
+    public abstract class AOCPPWebSocketServer : ICSMSChannel
     {
 
         #region Data
+
+        private readonly WebSocketServer webSocketServer;
 
         /// <summary>
         /// The default HTTP server name.
@@ -85,11 +86,57 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
 
         #region Properties
 
+        public Boolean                                 DisableWebSocketPings
+        {
+            get { return webSocketServer.DisableWebSocketPings; }
+            set { webSocketServer.DisableWebSocketPings = value; }
+        }
+        public DNSClient?                              DNSClient
+            => webSocketServer.DNSClient;
+        public String                                  HTTPServiceName
+            => webSocketServer.HTTPServiceName;
+        public IIPAddress                              IPAddress
+            => webSocketServer.IPAddress;
+        public IPPort                                  IPPort
+            => webSocketServer.IPPort;
+        public IPSocket                                IPSocket
+            => webSocketServer.IPSocket;
+        public Boolean                                 IsRunning
+            => webSocketServer.IsRunning;
+        public HashSet<String>                         SecWebSocketProtocols
+            => webSocketServer.SecWebSocketProtocols;
+        public Boolean                                 ServerThreadIsBackground
+            => webSocketServer.ServerThreadIsBackground;
+        public ServerThreadNameCreatorDelegate         ServerThreadNameCreator
+            => webSocketServer.ServerThreadNameCreator;
+        public ServerThreadPriorityDelegate            ServerThreadPrioritySetter
+            => webSocketServer.ServerThreadPrioritySetter;
+        public TimeSpan?                               SlowNetworkSimulationDelay
+        {
+            get { return webSocketServer.SlowNetworkSimulationDelay; }
+            set { webSocketServer.SlowNetworkSimulationDelay = value; }
+        }
+        public IEnumerable<WebSocketServerConnection>  WebSocketConnections
+            => webSocketServer.WebSocketConnections;
+        public TimeSpan                                WebSocketPingEvery
+        {
+            get { return webSocketServer.WebSocketPingEvery; }
+            set { webSocketServer.WebSocketPingEvery = value; }
+        }
+
+
+
+
+
+
+
+
+
         /// <summary>
         /// The sender identification.
         /// </summary>
         String IEventSender.Id
-            => HTTPServiceName;
+            => webSocketServer.HTTPServiceName;
 
         public NetworkingNode_Id                                  NetworkingNodeId         { get; }
 
@@ -125,7 +172,190 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
 
         #region Events
 
+        /// <summary>
+        /// An event sent whenever the HTTP web socket server started.
+        /// </summary>
+        public event OnServerStartedDelegate?                OnServerStarted
+        {
+            add    { webSocketServer.OnServerStarted += value; }
+            remove { webSocketServer.OnServerStarted -= value; }
+        }
+
+        /// <summary>
+        /// An event sent whenever a new TCP connection was accepted.
+        /// </summary>
+        public event OnValidateTCPConnectionDelegate?        OnValidateTCPConnection
+        {
+            add    { webSocketServer.OnValidateTCPConnection += value; }
+            remove { webSocketServer.OnValidateTCPConnection -= value; }
+        }
+
+        /// <summary>
+        /// An event sent whenever a new TCP connection was accepted.
+        /// </summary>
+        public event OnNewTCPConnectionDelegate?             OnNewTCPConnection
+        {
+            add    { webSocketServer.OnNewTCPConnection += value; }
+            remove { webSocketServer.OnNewTCPConnection -= value; }
+        }
+
+        /// <summary>
+        /// An event sent whenever a TCP connection was closed.
+        /// </summary>
+        public event OnCSMSTCPConnectionClosedDelegate?      OnTCPConnectionClosed;
+        //{
+        //    add    { webSocketServer.OnTCPConnectionClosed += value; }
+        //    remove { webSocketServer.OnTCPConnectionClosed -= value; }
+        //}
+
+        /// <summary>
+        /// An event sent whenever a HTTP request was received.
+        /// </summary>
+        public event HTTPRequestLogDelegate?                 OnHTTPRequest
+        {
+            add    { webSocketServer.OnHTTPRequest += value; }
+            remove { webSocketServer.OnHTTPRequest -= value; }
+        }
+
+        /// <summary>
+        /// An event sent whenever the HTTP headers of a new web socket connection
+        /// need to be validated or filtered by an upper layer application logic.
+        /// </summary>
+        public event OnValidateWebSocketConnectionDelegate?  OnValidateWebSocketConnection
+        {
+            add    { webSocketServer.OnValidateWebSocketConnection += value; }
+            remove { webSocketServer.OnValidateWebSocketConnection -= value; }
+        }
+
+        /// <summary>
+        /// An event sent whenever the HTTP connection switched successfully to web socket.
+        /// </summary>
+        public event OnCSMSNewWebSocketConnectionDelegate?   OnNewWebSocketConnection;
+        //{
+        //    add    { webSocketServer.OnNewWebSocketConnection += value; }
+        //    remove { webSocketServer.OnNewWebSocketConnection -= value; }
+        //}
+
+        /// <summary>
+        /// An event sent whenever a reponse to a HTTP request was sent.
+        /// </summary>
+        public event HTTPResponseLogDelegate?                OnHTTPResponse
+        {
+            add    { webSocketServer.OnHTTPResponse += value; }
+            remove { webSocketServer.OnHTTPResponse -= value; }
+        }
+
+        /// <summary>
+        /// An event sent whenever a web socket frame was received.
+        /// </summary>
+        public event OnWebSocketFrameDelegate?               OnWebSocketFrameReceived
+        {
+            add    { webSocketServer.OnWebSocketFrameReceived += value; }
+            remove { webSocketServer.OnWebSocketFrameReceived -= value; }
+        }
+
+        /// <summary>
+        /// An event sent whenever a web socket frame was sent.
+        /// </summary>
+        public event OnWebSocketFrameDelegate?               OnWebSocketFrameSent
+        {
+            add    { webSocketServer.OnWebSocketFrameSent += value; }
+            remove { webSocketServer.OnWebSocketFrameSent -= value; }
+        }
+
+
+        /// <summary>
+        /// An event sent whenever a text message was received.
+        /// </summary>
+        public event OnWebSocketTextMessageDelegate?         OnTextMessageReceived
+        {
+            add    { webSocketServer.OnTextMessageReceived += value; }
+            remove { webSocketServer.OnTextMessageReceived -= value; }
+        }
+
+        /// <summary>
+        /// An event sent whenever a web socket frame was sent.
+        /// </summary>
+        public event OnWebSocketTextMessageDelegate?         OnTextMessageSent
+        {
+            add    { webSocketServer.OnTextMessageSent += value; }
+            remove { webSocketServer.OnTextMessageSent -= value; }
+        }
+
+        /// <summary>
+        /// An event sent whenever a binary message was received.
+        /// </summary>
+        public event OnWebSocketBinaryMessageDelegate?       OnBinaryMessageReceived
+        {
+            add    { webSocketServer.OnBinaryMessageReceived += value; }
+            remove { webSocketServer.OnBinaryMessageReceived -= value; }
+        }
+
+        /// <summary>
+        /// An event sent whenever a web socket frame was sent.
+        /// </summary>
+        public event OnWebSocketBinaryMessageDelegate?       OnBinaryMessageSent
+        {
+            add    { webSocketServer.OnBinaryMessageSent += value; }
+            remove { webSocketServer.OnBinaryMessageSent -= value; }
+        }
+
+        /// <summary>
+        /// An event sent whenever a web socket ping frame was received.
+        /// </summary>
+        public event OnWebSocketFrameDelegate?               OnPingMessageReceived
+        {
+            add    { webSocketServer.OnPingMessageReceived += value; }
+            remove { webSocketServer.OnPingMessageReceived -= value; }
+        }
+
+        /// <summary>
+        /// An event sent whenever a web socket ping frame was sent.
+        /// </summary>
+        public event OnWebSocketFrameDelegate?               OnPingMessageSent
+        {
+            add    { webSocketServer.OnPingMessageSent += value; }
+            remove { webSocketServer.OnPingMessageSent -= value; }
+        }
+
+        /// <summary>
+        /// An event sent whenever a web socket pong frame was received.
+        /// </summary>
+        public event OnWebSocketFrameDelegate?               OnPongMessageReceived
+        {
+            add    { webSocketServer.OnPongMessageReceived += value; }
+            remove { webSocketServer.OnPongMessageReceived -= value; }
+        }
+
+        /// <summary>
+        /// An event sent whenever a web socket close frame was received.
+        /// </summary>
+        public event OnCSMSCloseMessageReceivedDelegate?     OnCloseMessageReceived;
+        //{
+        //    add    { webSocketServer.OnCloseMessageReceived += value; }
+        //    remove { webSocketServer.OnCloseMessageReceived -= value; }
+        //}
+
+        /// <summary>
+        /// An event sent whenever the HTTP web socket server stopped.
+        /// </summary>
+        public event OnServerStoppedDelegate?                OnServerStopped
+        {
+            add    { webSocketServer.OnServerStopped += value; }
+            remove { webSocketServer.OnServerStopped -= value; }
+        }
+
+
+
+
+
+
         #region Common Connection Management
+
+        /// <summary>
+        /// An event sent whenever the HTTP connection switched successfully to web socket.
+        /// </summary>
+     //   public event OnCSMSNewWebSocketConnectionDelegate?    OnNewWebSocketConnection;  //ToDo: Fix me!
 
         /// <summary>
         /// An event sent whenever the HTTP connection switched successfully to web socket.
@@ -135,7 +365,17 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         /// <summary>
         /// An event sent whenever a web socket close frame was received.
         /// </summary>
+     //   public event OnCSMSCloseMessageReceivedDelegate?      OnCloseMessageReceived;  //ToDo: Fix me!
+
+        /// <summary>
+        /// An event sent whenever a web socket close frame was received.
+        /// </summary>
         public event OnCSMSCloseMessageReceivedDelegate?      OnCSMSCloseMessageReceived;
+
+        /// <summary>
+        /// An event sent whenever a TCP connection was closed.
+        /// </summary>
+     //   public event OnCSMSTCPConnectionClosedDelegate?       OnTCPConnectionClosed;  //ToDo: Fix me!
 
         /// <summary>
         /// An event sent whenever a TCP connection was closed.
@@ -267,44 +507,70 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                                     DNSClient?                           DNSClient                    = null,
                                     Boolean                              AutoStart                    = false)
 
-            : base(IPAddress,
-                   TCPPort ?? IPPort.Parse(8000),
-                   HTTPServiceName,
-
-                   SupportedOCPPWebSocketSubprotocols,
-                   DisableWebSocketPings,
-                   WebSocketPingEvery,
-                   SlowNetworkSimulationDelay,
-
-                   ServerCertificateSelector,
-                   ClientCertificateValidator,
-                   ClientCertificateSelector,
-                   AllowedTLSProtocols,
-                   ClientCertificateRequired,
-                   CheckCertificateRevocation,
-
-                   ServerThreadNameCreator,
-                   ServerThreadPrioritySetter,
-                   ServerThreadIsBackground,
-                   ConnectionIdBuilder,
-                   ConnectionTimeout,
-                   MaxClientConnections,
-
-                   DNSClient,
-                   false)
-
         {
 
-            this.NetworkingNodeId                = NetworkingNodeId;
-            this.RequireAuthentication           = RequireAuthentication;
+            webSocketServer                                 = new WebSocketServer(
+                                                                  IPAddress,
+                                                                  TCPPort ?? IPPort.Parse(8000),
+                                                                  HTTPServiceName,
 
-            base.OnValidateTCPConnection        += ValidateTCPConnection;
-            base.OnValidateWebSocketConnection  += ValidateWebSocketConnection;
-            base.OnNewWebSocketConnection       += ProcessNewWebSocketConnection;
-            base.OnCloseMessageReceived         += ProcessCloseMessage;
+                                                                  SupportedOCPPWebSocketSubprotocols,
+                                                                  DisableWebSocketPings,
+                                                                  WebSocketPingEvery,
+                                                                  SlowNetworkSimulationDelay,
+
+                                                                  ServerCertificateSelector,
+                                                                  ClientCertificateValidator,
+                                                                  ClientCertificateSelector,
+                                                                  AllowedTLSProtocols,
+                                                                  ClientCertificateRequired,
+                                                                  CheckCertificateRevocation,
+
+                                                                  ServerThreadNameCreator,
+                                                                  ServerThreadPrioritySetter,
+                                                                  ServerThreadIsBackground,
+                                                                  ConnectionIdBuilder,
+                                                                  ConnectionTimeout,
+                                                                  MaxClientConnections,
+
+                                                                  DNSClient,
+                                                                  false
+                                                              );
+
+            this.NetworkingNodeId                           = NetworkingNodeId;
+            this.RequireAuthentication                      = RequireAuthentication;
+
+            webSocketServer.OnValidateTCPConnection        += ValidateTCPConnection;
+            webSocketServer.OnValidateWebSocketConnection  += ValidateWebSocketConnection;
+            webSocketServer.OnNewWebSocketConnection       += ProcessNewWebSocketConnection;
+            webSocketServer.OnCloseMessageReceived         += ProcessCloseMessage;
+
+            webSocketServer.OnTextMessage                  += (timestamp,
+                                                               server,
+                                                               connection,
+                                                               eventTrackingId,
+                                                               requestTimestamp,
+                                                               textMessage,
+                                                               cancellationToken) => ProcessTextMessage(requestTimestamp,
+                                                                                                        connection,
+                                                                                                        textMessage,
+                                                                                                        eventTrackingId,
+                                                                                                        cancellationToken);
+
+            webSocketServer.OnBinaryMessage                += (timestamp,
+                                                               server,
+                                                               connection,
+                                                               eventTrackingId,
+                                                               requestTimestamp,
+                                                               textMessage,
+                                                               cancellationToken) => ProcessBinaryMessage(requestTimestamp,
+                                                                                                          connection,
+                                                                                                          textMessage,
+                                                                                                          eventTrackingId,
+                                                                                                          cancellationToken);
 
             if (AutoStart)
-                Start();
+                webSocketServer.Start();
 
         }
 
@@ -386,7 +652,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                 return Task.FromResult<HTTPResponse?>(
                            new HTTPResponse.Builder() {
                                HTTPStatusCode  = HTTPStatusCode.BadRequest,
-                               Server          = HTTPServiceName,
+                               Server          = webSocketServer.HTTPServiceName,
                                Date            = Timestamp.Now,
                                ContentType     = HTTPContentType.Application.JSON_UTF8,
                                Content         = JSONObject.Create(
@@ -398,17 +664,17 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                            }.AsImmutable);
 
             }
-            else if (!SecWebSocketProtocols.Overlaps(Connection.HTTPRequest?.SecWebSocketProtocol ?? Array.Empty<String>()))
+            else if (!webSocketServer.SecWebSocketProtocols.Overlaps(Connection.HTTPRequest?.SecWebSocketProtocol ?? Array.Empty<String>()))
             {
 
-                var error = $"This WebSocket service only supports {(SecWebSocketProtocols.Select(id => $"'{id}'").AggregateWith(", "))}!";
+                var error = $"This WebSocket service only supports {(webSocketServer.SecWebSocketProtocols.Select(id => $"'{id}'").AggregateWith(", "))}!";
 
                 DebugX.Log(error);
 
                 return Task.FromResult<HTTPResponse?>(
                            new HTTPResponse.Builder() {
                                HTTPStatusCode  = HTTPStatusCode.BadRequest,
-                               Server          = HTTPServiceName,
+                               Server          = webSocketServer.HTTPServiceName,
                                Date            = Timestamp.Now,
                                ContentType     = HTTPContentType.Application.JSON_UTF8,
                                Content         = JSONObject.Create(
@@ -447,7 +713,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                 return Task.FromResult<HTTPResponse?>(
                            new HTTPResponse.Builder() {
                                HTTPStatusCode  = HTTPStatusCode.Unauthorized,
-                               Server          = HTTPServiceName,
+                               Server          = webSocketServer.HTTPServiceName,
                                Date            = Timestamp.Now,
                                Connection      = "close"
                            }.AsImmutable);
@@ -462,13 +728,13 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
 
         #endregion
 
-        #region (protected) ProcessNewWebSocketConnection(LogTimestamp, Server, Connection, EventTrackingId, SharedSubprotocols, CancellationToken)
+        #region (protected) ProcessNewWebSocketConnection(LogTimestamp, Server, Connection, SharedSubprotocols, EventTrackingId, CancellationToken)
 
         protected async Task ProcessNewWebSocketConnection(DateTime                   LogTimestamp,
                                                            IWebSocketServer           Server,
                                                            WebSocketServerConnection  Connection,
-                                                           EventTracking_Id           EventTrackingId,
                                                            IEnumerable<String>        SharedSubprotocols,
+                                                           EventTracking_Id           EventTrackingId,
                                                            CancellationToken          CancellationToken)
         {
 
@@ -573,8 +839,8 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                                                                                            this,
                                                                                            Connection,
                                                                                            networkingNodeId,
-                                                                                           EventTrackingId,
                                                                                            SharedSubprotocols,
+                                                                                           EventTrackingId,
                                                                                            CancellationToken)).
                                          ToArray();
 
@@ -669,15 +935,15 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         /// <param name="TextMessage">The received text message.</param>
         /// <param name="EventTrackingId">An optional event tracking identification.</param>
         /// <param name="CancellationToken">The cancellation token.</param>
-        public override async Task<WebSocketTextMessageResponse> ProcessTextMessage(DateTime                   RequestTimestamp,
-                                                                                    WebSocketServerConnection  Connection,
-                                                                                    String                     TextMessage,
-                                                                                    EventTracking_Id           EventTrackingId,
-                                                                                    CancellationToken          CancellationToken)
+        public async Task<WebSocketTextMessageResponse> ProcessTextMessage(DateTime                   RequestTimestamp,
+                                                                           WebSocketServerConnection  Connection,
+                                                                           String                     TextMessage,
+                                                                           EventTracking_Id           EventTrackingId,
+                                                                           CancellationToken          CancellationToken)
         {
 
-            OCPP_JSONResponseMessage?  OCPPResponse        = null;
-            OCPP_JSONRequestErrorMessage?     OCPPErrorResponse   = null;
+            OCPP_JSONResponseMessage?      OCPPResponse        = null;
+            OCPP_JSONRequestErrorMessage?  OCPPErrorResponse   = null;
 
             try
             {
@@ -1034,11 +1300,11 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         /// <param name="BinaryMessage">The received binary message.</param>
         /// <param name="EventTrackingId">An optional event tracking identification.</param>
         /// <param name="CancellationToken">The cancellation token.</param>
-        public override async Task<WebSocketBinaryMessageResponse> ProcessBinaryMessage(DateTime                   RequestTimestamp,
-                                                                                        WebSocketServerConnection  Connection,
-                                                                                        Byte[]                     BinaryMessage,
-                                                                                        EventTracking_Id           EventTrackingId,
-                                                                                        CancellationToken          CancellationToken)
+        public async Task<WebSocketBinaryMessageResponse> ProcessBinaryMessage(DateTime                   RequestTimestamp,
+                                                                               WebSocketServerConnection  Connection,
+                                                                               Byte[]                     BinaryMessage,
+                                                                               EventTracking_Id           EventTrackingId,
+                                                                               CancellationToken          CancellationToken)
         {
 
             OCPP_BinaryResponseMessage?  OCPPResponse        = null;
@@ -1259,12 +1525,12 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
             if (reachableViaNetworkingHubs.TryGetValue(lookUpNetworkingNodeId, out var networkingHubId))
             {
                 lookUpNetworkingNodeId = networkingHubId;
-                return WebSocketConnections.Where(connection => connection.TryGetCustomDataAs<NetworkingNode_Id>(networkingNodeId_WebSocketKey) == lookUpNetworkingNodeId).
+                return webSocketServer.WebSocketConnections.Where(connection => connection.TryGetCustomDataAs<NetworkingNode_Id>(networkingNodeId_WebSocketKey) == lookUpNetworkingNodeId).
                     Select(x => new Tuple<WebSocketServerConnection, NetworkingMode>(x, NetworkingMode.OverlayNetwork));
             }
 
-            return WebSocketConnections.Where (connection => connection.TryGetCustomDataAs<NetworkingNode_Id>(networkingNodeId_WebSocketKey) == lookUpNetworkingNodeId).
-                                        Select(x => new Tuple<WebSocketServerConnection, NetworkingMode>(x, NetworkingMode.Standard));
+            return webSocketServer.WebSocketConnections.Where (connection => connection.TryGetCustomDataAs<NetworkingNode_Id>(networkingNodeId_WebSocketKey) == lookUpNetworkingNodeId).
+                                                        Select(x => new Tuple<WebSocketServerConnection, NetworkingMode>(x, NetworkingMode.Standard));
 
         }
 
@@ -1338,7 +1604,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                     foreach (var webSocketConnection in webSocketConnections)
                     {
 
-                        if (SendStatus.Success == await SendTextMessage(
+                        if (SendStatus.Success == await webSocketServer.SendTextMessage(
                                                             webSocketConnection.Item1,
                                                             ocppTextMessage,
                                                             EventTrackingId,
@@ -1366,7 +1632,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                                                            OfType<OnWebSocketTextMessageDelegate>().
                                                            Select(loggingDelegate => loggingDelegate.Invoke(
                                                                                           Timestamp.Now,
-                                                                                          this,
+                                                                                          webSocketServer,
                                                                                           webSocketConnection.Item1,
                                                                                           EventTrackingId,
                                                                                           ocppTextMessage,
@@ -1387,7 +1653,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
 
                         }
 
-                        RemoveConnection(webSocketConnection.Item1);
+                        webSocketServer.RemoveConnection(webSocketConnection.Item1);
 
                     }
 
@@ -1463,7 +1729,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                     foreach (var webSocketConnection in webSocketConnections)
                     {
 
-                        if (SendStatus.Success == await SendBinaryMessage(
+                        if (SendStatus.Success == await webSocketServer.SendBinaryMessage(
                                                             webSocketConnection.Item1,
                                                             ocppBinaryMessage,
                                                             EventTrackingId,
@@ -1480,7 +1746,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                                 var loggerTasks = requestLogger.GetInvocationList().
                                                                 OfType <OnWebSocketBinaryMessageDelegate>().
                                                                 Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
-                                                                                                                  this,
+                                                                                                                  webSocketServer,
                                                                                                                   webSocketConnection.Item1,
                                                                                                                   EventTrackingId,
                                                                                                                   ocppBinaryMessage,
@@ -1504,7 +1770,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
 
                         }
 
-                        RemoveConnection(webSocketConnection.Item1);
+                        webSocketServer.RemoveConnection(webSocketConnection.Item1);
 
                     }
 
@@ -1859,6 +2125,37 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
             return Task.CompletedTask;
 
         }
+
+        #endregion
+
+
+
+        #region Start()
+
+        /// <summary>
+        /// Start the HTTP web socket listener thread.
+        /// </summary>
+        public void Start()
+        {
+            webSocketServer.Start();
+        }
+
+        #endregion
+
+        #region Shutdown(Message = null, Wait = true)
+
+        /// <summary>
+        /// Shutdown the HTTP web socket listener thread.
+        /// </summary>
+        /// <param name="Message">An optional shutdown message.</param>
+        /// <param name="Wait">Wait until the server finally shutted down.</param>
+        public Task Shutdown(String?  Message   = null,
+                             Boolean  Wait      = true)
+
+            => webSocketServer.Shutdown(
+                                   Message,
+                                   Wait
+                               );
 
         #endregion
 

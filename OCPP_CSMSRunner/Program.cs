@@ -221,7 +221,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
             };
 
-            testCentralSystemV1_6.OnNewWebSocketConnection       += async (timestamp, server, connection, chargeBoxId, eventTrackingId, sharedSubprotocols, cancellationToken) => {
+            testCentralSystemV1_6.OnNewWebSocketConnection       += async (timestamp, server, connection, chargeBoxId, sharedSubprotocols, eventTrackingId, cancellationToken) => {
 
                 await DebugLog(
                     $"New HTTP web socket connection from '{chargeBoxId}' ({connection.RemoteSocket}) using '{sharedSubprotocols.AggregateWith(", ")}'",
@@ -267,9 +267,17 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
             #region JSON Messages
 
-            (testCentralSystemV1_6.CentralSystemServers.First() as org.GraphDefined.Vanaheimr.Hermod.WebSocket.WebSocketServer).OnTextMessageReceived += async (timestamp, server, connection, eventTrackingId, requestMessage, cancellationToken) => {
+            testCentralSystemV1_6.CentralSystemServers.First().OnJSONMessageRequestReceived += async (timestamp,
+                                                                                                      server,
+                                                                                                      connection,
+                                                                                                      destinationId,
+                                                                                                      networkPath,
+                                                                                                      eventTrackingId,
+                                                                                                      requestTimestamp,
+                                                                                                      requestMessage,
+                                                                                                      cancellationToken) => {
 
-                DebugX.Log(String.Concat("Received a web socket TEXT message: '", requestMessage, "'!"));
+                DebugX.Log($"Received a web socket JSON message: '{requestMessage.ToString(Formatting.None)}'!");
 
                 var chargeBoxId = "xxx";
 
@@ -291,13 +299,24 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
             };
 
-            (testCentralSystemV1_6.CentralSystemServers.First() as org.GraphDefined.Vanaheimr.Hermod.WebSocket.WebSocketServer).OnTextMessageSent        += async (timestamp, server, connection, eventTrackingId, requestMessage, cancellationToken) => {
-                DebugX.Log(String.Concat("Sent     a web socket TEXT message: '", requestMessage, "'!"));
+            testCentralSystemV1_6.CentralSystemServers.First().OnJSONMessageRequestSent += async (timestamp,
+                                                                                                  server,
+                                                                                                  connection,
+                                                                                                  destinationId,
+                                                                                                  networkPath,
+                                                                                                  eventTrackingId,
+                                                                                                  requestTimestamp,
+                                                                                                  requestMessage,
+                                                                                                  cancellationToken) => {
+
+                DebugX.Log($"Sent     a web socket TEXT message: '{requestMessage.ToString(Formatting.None)}'!");
+
                 //lock (testCentralSystemV1_6)
                 //{
                 //    File.AppendAllText(Path.Combine(AppContext.BaseDirectory, "TextMessages.log"),
                 //                       String.Concat(timestamp.ToIso8601(), "\tOUT\t", connection.TryGetCustomData("chargingStationId"), "\t", connection.RemoteSocket, "\t", requestMessage, Environment.NewLine));
                 //}
+
             };
 
 
@@ -404,7 +423,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
             };
 
-            testCSMSv2_1.OnNewWebSocketConnection         += async (timestamp, server, connection, networkingNodeId, eventTrackingId, sharedSubprotocols, cancellationToken) => {
+            testCSMSv2_1.OnNewWebSocketConnection         += async (timestamp, server, connection, networkingNodeId, sharedSubprotocols, eventTrackingId, cancellationToken) => {
 
                 await DebugLog(
                     $"New HTTP web socket connection from '{networkingNodeId}' ({connection.RemoteSocket}) using '{sharedSubprotocols.AggregateWith(", ")}'",
@@ -481,15 +500,15 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
             #region JSON Messages
 
-            testCSMSv2_1.OnJSONMessageRequestReceived     += async (timestamp, server, connection, destinationNodeId, networkPath, eventTrackingId, requestTimestamp, requestMessage,     cancellationToken) => {
+            testCSMSv2_1.OnJSONMessageRequestReceived     += async (timestamp, server, connection, destinationId, networkPath, eventTrackingId, requestTimestamp, requestMessage,     cancellationToken) => {
 
                 await DebugLog(
-                    $"Received a JSON web socket request from '{destinationNodeId}': '{requestMessage.ToString(Formatting.None)}'!",
+                    $"Received a JSON web socket request from '{destinationId}': '{requestMessage.ToString(Formatting.None)}'!",
                     cancellationToken
                 );
 
                 await WriteToLogfileV2_1(
-                    $"{requestTimestamp.ToIso8601()}\tREQ IN\t{destinationNodeId}\t{connection.RemoteSocket}\t{requestMessage.ToString(Formatting.None)}",
+                    $"{requestTimestamp.ToIso8601()}\tREQ IN\t{destinationId}\t{connection.RemoteSocket}\t{requestMessage.ToString(Formatting.None)}",
                     cancellationToken
                 );
 
@@ -509,15 +528,15 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
             };
 
-            testCSMSv2_1.OnJSONMessageRequestSent         += async (timestamp, server, connection, destinationNodeId, networkPath, eventTrackingId, requestTimestamp, requestMessage,     cancellationToken) => {
+            testCSMSv2_1.OnJSONMessageRequestSent         += async (timestamp, server, connection, destinationId, networkPath, eventTrackingId, requestTimestamp, requestMessage,     cancellationToken) => {
 
                 await DebugLog(
-                    $"Sent a JSON web socket request to '{destinationNodeId}': '{requestMessage.ToString(Formatting.None)}'!",
+                    $"Sent a JSON web socket request to '{destinationId}': '{requestMessage.ToString(Formatting.None)}'!",
                     cancellationToken
                 );
 
                 await WriteToLogfileV2_1(
-                    $"{requestTimestamp.ToIso8601()}\tREQ OUT\t{destinationNodeId}\t{connection.RemoteSocket}\t{requestMessage.ToString(Formatting.None)}",
+                    $"{requestTimestamp.ToIso8601()}\tREQ OUT\t{destinationId}\t{connection.RemoteSocket}\t{requestMessage.ToString(Formatting.None)}",
                     cancellationToken
                 );
 
@@ -541,57 +560,57 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
             #region Binary Messages
 
-            testCSMSv2_1.OnBinaryMessageRequestReceived   += async (timestamp, server, connection, destinationNodeId, networkPath, eventTrackingId, requestTimestamp, requestMessage,     cancellationToken) => {
+            testCSMSv2_1.OnBinaryMessageRequestReceived   += async (timestamp, server, connection, destinationId, networkPath, eventTrackingId, requestTimestamp, requestMessage,     cancellationToken) => {
 
                 await DebugLog(
-                    $"Received a binary web socket request from '{destinationNodeId}': '{requestMessage.ToBase64()}'!",
+                    $"Received a binary web socket request from '{destinationId}': '{requestMessage.ToBase64()}'!",
                     cancellationToken
                 );
 
                 await WriteToLogfileV2_1(
-                    $"{requestTimestamp.ToIso8601()}\tREQ IN\t{destinationNodeId}\t{connection.RemoteSocket}\t{requestMessage.ToBase64()}",
+                    $"{requestTimestamp.ToIso8601()}\tREQ IN\t{destinationId}\t{connection.RemoteSocket}\t{requestMessage.ToBase64()}",
                     cancellationToken
                 );
 
             };
 
-            testCSMSv2_1.OnBinaryMessageResponseSent      += async (timestamp, server, connection, destinationNodeId, networkPath, eventTrackingId, requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, binaryResponseMessage, cancellationToken) => {
+            testCSMSv2_1.OnBinaryMessageResponseSent      += async (timestamp, server, connection, destinationId, networkPath, eventTrackingId, requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, binaryResponseMessage, cancellationToken) => {
 
                 await DebugLog(
-                    $"Sent a binary web socket response to '{destinationNodeId}': '{binaryResponseMessage.ToBase64()}'!",
+                    $"Sent a binary web socket response to '{destinationId}': '{binaryResponseMessage.ToBase64()}'!",
                     cancellationToken
                 );
 
                 await WriteToLogfileV2_1(
-                    $"{responseTimestamp.ToIso8601()}\tRES OUT\t{destinationNodeId}\t{connection.RemoteSocket}\t{binaryResponseMessage.ToBase64()}",
+                    $"{responseTimestamp.ToIso8601()}\tRES OUT\t{destinationId}\t{connection.RemoteSocket}\t{binaryResponseMessage.ToBase64()}",
                     cancellationToken
                 );
 
             };
 
-            testCSMSv2_1.OnBinaryMessageRequestSent       += async (timestamp, server, connection, destinationNodeId, networkPath, eventTrackingId, requestTimestamp, requestMessage,     cancellationToken) => {
+            testCSMSv2_1.OnBinaryMessageRequestSent       += async (timestamp, server, connection, destinationId, networkPath, eventTrackingId, requestTimestamp, requestMessage,     cancellationToken) => {
 
                 await DebugLog(
-                    $"Sent a binary web socket request to '{destinationNodeId}': '{requestMessage.ToBase64()}'!",
+                    $"Sent a binary web socket request to '{destinationId}': '{requestMessage.ToBase64()}'!",
                     cancellationToken
                 );
 
                 await WriteToLogfileV2_1(
-                    $"{requestTimestamp.ToIso8601()}\tREQ OUT\t{destinationNodeId}\t{connection.RemoteSocket}\t{requestMessage.ToBase64()}",
+                    $"{requestTimestamp.ToIso8601()}\tREQ OUT\t{destinationId}\t{connection.RemoteSocket}\t{requestMessage.ToBase64()}",
                     cancellationToken
                 );
 
             };
 
-            testCSMSv2_1.OnBinaryMessageResponseReceived  += async (timestamp, server, connection, destinationNodeId, networkPath, eventTrackingId, requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, binaryResponseMessage, cancellationToken) => {
+            testCSMSv2_1.OnBinaryMessageResponseReceived  += async (timestamp, server, connection, destinationId, networkPath, eventTrackingId, requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, binaryResponseMessage, cancellationToken) => {
 
                 await DebugLog(
-                    $"Received a binary web socket response from '{destinationNodeId}': '{binaryResponseMessage.ToBase64()}'!",
+                    $"Received a binary web socket response from '{destinationId}': '{binaryResponseMessage.ToBase64()}'!",
                     cancellationToken
                 );
 
                 await WriteToLogfileV2_1(
-                    $"{responseTimestamp.ToIso8601()}\tRES IN\t{destinationNodeId}\t{connection.RemoteSocket}\t{binaryResponseMessage.ToBase64()}",
+                    $"{responseTimestamp.ToIso8601()}\tRES IN\t{destinationId}\t{connection.RemoteSocket}\t{binaryResponseMessage.ToBase64()}",
                     cancellationToken
                 );
 

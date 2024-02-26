@@ -1,7 +1,0 @@
-HTTP/1.1 201 Created
-Date: Sat, 24 Feb 2024 19:59:26 GMT
-Server: Open Charging Cloud OCPP v2.1 CSMS Upload API
-Access-Control-Allow-Origin: *
-Access-Control-Allow-Methods: PUT
-Connection: close
-
