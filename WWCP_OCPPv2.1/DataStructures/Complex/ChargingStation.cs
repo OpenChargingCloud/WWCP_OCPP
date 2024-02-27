@@ -77,14 +77,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Model">The model of the charging station.</param>
         /// <param name="VendorName">The vendor name/identification (not necessarily unique).</param>
         /// <param name="SerialNumber">An optional vendor-specific charging station identifier.</param>
-        /// <param name="Modem">An optional wireless communication module.</param>
         /// <param name="FirmwareVersion">The optional firmware version of the charging station.</param>
+        /// <param name="Modem">An optional wireless communication module.</param>
         /// <param name="CustomData">Optional custom data to allow to store any kind of customer specific data.</param>
         public ChargingStation(String       Model,
                                String       VendorName,
                                String?      SerialNumber      = null,
-                               Modem?       Modem             = null,
                                String?      FirmwareVersion   = null,
+                               Modem?       Modem             = null,
                                CustomData?  CustomData        = null)
 
             : base(CustomData)
@@ -94,8 +94,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.Model            = Model;
             this.VendorName       = VendorName;
             this.SerialNumber     = SerialNumber;
-            this.Modem            = Modem;
             this.FirmwareVersion  = FirmwareVersion;
+            this.Modem            = Modem;
+
+            unchecked
+            {
+
+                hashCode = this.Model.           GetHashCode()       * 13 ^
+                           this.VendorName.      GetHashCode()       * 11 ^
+                          (this.SerialNumber?.   GetHashCode() ?? 0) *  7 ^
+                          (this.Modem?.          GetHashCode() ?? 0) *  5 ^
+                          (this.FirmwareVersion?.GetHashCode() ?? 0) *  3 ^
+                           base.                 GetHashCode();
+
+            }
 
         }
 
@@ -174,7 +186,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region (static) TryParse(JSON, out ChargingStation, out ErrorResponse, ...)
+        #region (static) TryParse(JSON,   out ChargingStation, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a custom data object.
@@ -226,6 +238,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
+                #region FirmwareVersion    [optional]
+
+                var FirmwareVersion = JSON.GetOptional("firmwareVersion");
+
+                #endregion
+
                 #region Modem              [optional]
 
                 if (JSON.ParseOptionalJSON("modem",
@@ -237,12 +255,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     if (ErrorResponse is not null)
                         return false;
                 }
-
-                #endregion
-
-                #region FirmwareVersion    [optional]
-
-                var FirmwareVersion = JSON.GetOptional("firmwareVersion");
 
                 #endregion
 
@@ -266,8 +278,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       Model,
                                       VendorName,
                                       SerialNumber,
-                                      Modem,
                                       FirmwareVersion,
+                                      Modem,
                                       CustomData
                                   );
 
@@ -289,7 +301,106 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region ToJSON(CustomChargingStationSerializer = null, CustomModemSerializer = null, ...)
+        #region (static) TryParse(Binary, out ChargingStation, out ErrorResponse, CustomChargingStationParser = null)
+
+        /// <summary>
+        /// Try to parse the given binary representation of a charging station.
+        /// </summary>
+        /// <param name="Binary">The binary to be parsed.</param>
+        /// <param name="ChargingStation">The parsed charging station.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomChargingStationParser">An optional delegate to parse custom charging stations.</param>
+        public static Boolean TryParse(Byte[]                                        Binary,
+                                       [NotNullWhen(true)]  out ChargingStation?     ChargingStation,
+                                       [NotNullWhen(false)] out String?              ErrorResponse,
+                                       CustomBinaryParserDelegate<ChargingStation>?  CustomChargingStationParser   = null)
+        {
+
+            ChargingStation          = null;
+            ErrorResponse            = null;
+
+            String? model            = null;
+            String? vendorName       = null;
+            String? serialNumber     = null;
+            String? firmwareVersion  = null;
+            Modem?  modem            = null;
+
+            try
+            {
+
+                var stream        = new MemoryStream(Binary);
+                var binaryFormat  = BinaryFormatsExtensions.Parse(stream.ReadUInt16());
+
+                switch (binaryFormat)
+                {
+
+                    #region Compact Format
+
+                    case BinaryFormats.Compact:
+                    {
+
+                        var modelLength            = (Byte) stream.ReadByte();
+                        model                      = stream.ReadUTF8String(modelLength);
+
+                        var vendorNameLength       = (Byte) stream.ReadByte();
+                        vendorName                 = stream.ReadUTF8String(vendorNameLength);
+
+                        var serialNumberLength     = (Byte) stream.ReadByte();
+                        serialNumber               = serialNumberLength    > 0
+                                                         ? stream.ReadUTF8String(serialNumberLength)
+                                                         : null;
+
+                        var firmwareVersionLength  = (Byte) stream.ReadByte();
+                        firmwareVersion            = firmwareVersionLength > 0
+                                                         ? stream.ReadUTF8String(firmwareVersionLength)
+                                                         : null;
+
+                        if (!Modem.TryParse(stream, binaryFormat, out modem, out ErrorResponse))
+                            return false;
+
+                    }
+                    break;
+
+                    #endregion
+
+                }
+
+
+                if (model      is not null &&
+                    vendorName is not null)
+                {
+
+                    ChargingStation = new ChargingStation(
+                                              model,
+                                              vendorName,
+                                              serialNumber,
+                                              firmwareVersion,
+                                              modem
+                                          );
+
+                    if (CustomChargingStationParser is not null)
+                        ChargingStation = CustomChargingStationParser(Binary,
+                                                                      ChargingStation);
+
+                    return true;
+
+                }
+
+                ErrorResponse = "The given binary representation of a charging station is invalid!";
+                return false;
+
+            }
+            catch (Exception e)
+            {
+                ErrorResponse = "The given binary representation of a charging station is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToJSON  (CustomChargingStationSerializer = null, CustomModemSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
@@ -329,6 +440,57 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             return CustomChargingStationSerializer is not null
                        ? CustomChargingStationSerializer(this, json)
                        : json;
+
+        }
+
+        #endregion
+
+        #region ToBinary(CustomChargingStationSerializer = null, CustomModemSerializer = null)
+
+        /// <summary>
+        /// Return a binary representation of this object.
+        /// </summary>
+        /// <param name="CustomChargingStationSerializer">A delegate to serialize custom charging stations.</param>
+        /// <param name="CustomModemSerializer">A delegate to serialize custom modems.</param>
+        public Byte[] ToBinary(CustomBinarySerializerDelegate<ChargingStation>?  CustomChargingStationSerializer   = null,
+                               CustomBinarySerializerDelegate<Modem>?            CustomModemSerializer             = null)
+        {
+
+            var binaryStream          = new MemoryStream();
+
+            var binaryFormat          = BinaryFormats.Compact;
+            binaryStream.Write    (binaryFormat.AsBytes(), 0, 2);
+
+
+            var modelBytes            = Model.           ToString().SubstringMax(255).ToUTF8Bytes();
+            binaryStream.WriteByte((Byte) modelBytes.     Length);
+            binaryStream.Write    (modelBytes,            0, modelBytes.       Length);
+
+            var vendorNameBytes       = VendorName.      ToString().SubstringMax(255).ToUTF8Bytes();
+            binaryStream.WriteByte((Byte) vendorNameBytes.Length);
+            binaryStream.Write    (vendorNameBytes,       0, vendorNameBytes.  Length);
+
+            var serialNumberBytes     = SerialNumber?.   ToString().SubstringMax(255).ToUTF8Bytes() ?? [];
+            binaryStream.WriteByte((Byte) serialNumberBytes.Length);
+            binaryStream.Write    (serialNumberBytes,     0, serialNumberBytes.Length);
+
+            var firmwareVersionBytes  = FirmwareVersion?.ToString().SubstringMax(255).ToUTF8Bytes() ?? [];
+            binaryStream.WriteByte((Byte) firmwareVersionBytes.Length);
+            binaryStream.Write    (firmwareVersionBytes,  0, firmwareVersionBytes.Length);
+
+            var modemBytes            = Modem?.ToBinary(CustomModemSerializer) ?? [];
+            if (modemBytes.Length > 0)
+            {
+                binaryStream.WriteByte((Byte) modemBytes.Length);
+                binaryStream.Write    (modemBytes,        0, modemBytes.Length);
+            }
+
+
+            var binary = binaryStream.ToArray();
+
+            return CustomChargingStationSerializer is not null
+                       ? CustomChargingStationSerializer(this, binary)
+                       : binary;
 
         }
 
@@ -428,26 +590,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Model.           GetHashCode()       * 13 ^
-                       VendorName.      GetHashCode()       * 11 ^
-
-                      (SerialNumber?.   GetHashCode() ?? 0) *  7 ^
-                      (Modem?.          GetHashCode() ?? 0) *  5 ^
-                      (FirmwareVersion?.GetHashCode() ?? 0) *  3 ^
-
-                      base.             GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 
@@ -458,10 +607,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public override String ToString()
 
-            => String.Concat("model: ",         Model,
-                             ", vendor name: ", VendorName,
-                             SerialNumber    is not null ? ", serial number: "    + SerialNumber    : "",
-                             FirmwareVersion is not null ? ", firmware version: " + FirmwareVersion : "");
+            => String.Concat(
+
+                   $"model: '{Model}', vendor name: '{VendorName}'",
+
+                   SerialNumber    is not null
+                       ? $", serial number: {SerialNumber}"
+                       : "",
+
+                   FirmwareVersion is not null
+                       ? $", firmware version: {FirmwareVersion}"
+                       : "",
+
+                   Modem           is not null
+                       ? $", modem: {Modem}"
+                       : ""
+
+               );
 
         #endregion
 

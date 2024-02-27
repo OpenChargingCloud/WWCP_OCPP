@@ -472,6 +472,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
 
+        public Byte[] ToBinary(CustomBinarySerializerDelegate<BootNotificationRequest>?  CustomBootNotificationRequestSerializer   = null,
+                               CustomBinarySerializerDelegate<OCPP.Signature>?           CustomBinarySignatureSerializer           = null,
+                               Boolean                                                   IncludeSignatures                         = true)
+        {
+
+            var binaryStream = new MemoryStream();
+
+            var binary = binaryStream.ToArray();
+
+            return CustomBootNotificationRequestSerializer is not null
+                       ? CustomBootNotificationRequestSerializer(this, binary)
+                       : binary;
+
+        }
+
+
         #region Operator overloading
 
         #region Operator == (BootNotificationRequest1, BootNotificationRequest2)

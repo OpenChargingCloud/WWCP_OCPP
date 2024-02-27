@@ -84,8 +84,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NN
                                NetworkingNode.Model,
                                NetworkingNode.VendorName,
                                NetworkingNode.SerialNumber,
-                               NetworkingNode.Modem,
                                NetworkingNode.FirmwareVersion,
+                               NetworkingNode.Modem,
                                NetworkingNode.CustomData
                            ),
                            BootReason,

@@ -79,8 +79,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                ChargingStation.Model,
                                ChargingStation.VendorName,
                                ChargingStation.SerialNumber,
-                               ChargingStation.Modem,
                                ChargingStation.FirmwareVersion,
+                               ChargingStation.Modem,
                                ChargingStation.CustomData
                            ),
                            BootReason,

@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -101,7 +103,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region (static) Parse   (JSON, CustomModemParser = null)
+        #region (static) Parse   (JSON,                       CustomModemParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a communication module.
@@ -128,7 +130,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region (static) TryParse(ModemJSON, out Modem, out ErrorResponse, CustomModemParser = null)
+        #region (static) Parse   (BinaryStream, BinaryFormat, CustomModemParser = null)
+
+        /// <summary>
+        /// Parse the given JSON representation of a communication module.
+        /// </summary>
+        /// <param name="BinaryStream">The binary stream to be parsed.</param>
+        /// <param name="BinaryFormat">The binary format to be used for parsing.</param>
+        /// <param name="CustomModemParser">An optional delegate to parse custom modem values.</param>
+        public static Modem Parse(MemoryStream                        BinaryStream,
+                                  BinaryFormats                       BinaryFormat,
+                                  CustomBinaryParserDelegate<Modem>?  CustomModemParser   = null)
+        {
+
+            if (TryParse(BinaryStream,
+                         BinaryFormat,
+                         out var modem,
+                         out var errorResponse,
+                         CustomModemParser) &&
+                modem is not null)
+            {
+                return modem;
+            }
+
+            throw new ArgumentException($"The given '{BinaryFormat}' binary representation of a modem is invalid: {errorResponse}",
+                                        nameof(BinaryStream));
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(ModemJSON,                  out Modem, out ErrorResponse, CustomModemParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -137,9 +169,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="Modem">The parsed communication module.</param>
-        public static Boolean TryParse(JObject      JSON,
-                                       out Modem?   Modem,
-                                       out String?  ErrorResponse)
+        public static Boolean TryParse(JObject                            JSON,
+                                       [MaybeNullWhen(true)] out Modem?   Modem,
+                                       [NotNullWhen(false)]  out String?  ErrorResponse)
 
             => TryParse(JSON,
                         out Modem,
@@ -154,8 +186,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Modem">The parsed communication module.</param>
         /// <param name="CustomModemParser">An optional delegate to parse custom modem values.</param>
         public static Boolean TryParse(JObject                              JSON,
-                                       out Modem?                           Modem,
-                                       out String?                          ErrorResponse,
+                                       [MaybeNullWhen(true)] out Modem?     Modem,
+                                       [NotNullWhen(false)]  out String?    ErrorResponse,
                                        CustomJObjectParserDelegate<Modem>?  CustomModemParser   = null)
         {
 
@@ -235,7 +267,82 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region ToJSON(CustomModemSerializer = null, CustomCustomDataSerializer = null)
+        #region (static) TryParse(BinaryStream, BinaryFormat, out Modem, out ErrorResponse, CustomModemParser = null)
+
+        /// <summary>
+        /// Try to parse the given binary representation of a modem.
+        /// </summary>
+        /// <param name="BinaryStream">The binary stream to be parsed.</param>
+        /// <param name="BinaryFormat">The binary format to be used for parsing.</param>
+        /// <param name="Modem">The parsed modem.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomModemParser">An optional delegate to parse custom modems.</param>
+        public static Boolean TryParse(MemoryStream                        BinaryStream,
+                                       BinaryFormats                       BinaryFormat,
+                                       [MaybeNullWhen(true)] out Modem?    Modem,
+                                       [NotNullWhen(false)]  out String?   ErrorResponse,
+                                       CustomBinaryParserDelegate<Modem>?  CustomModemParser   = null)
+        {
+
+            ErrorResponse  = null;
+
+            String? ICCID  = null;
+            String? IMSI   = null;
+
+            try
+            {
+
+                switch (BinaryFormat)
+                {
+
+                    #region Compact Format
+
+                    case BinaryFormats.Compact:
+                    {
+
+                        var ICCIDLength  = (Byte) BinaryStream.ReadByte();
+                        ICCID            = BinaryStream.ReadUTF8String(ICCIDLength);
+
+                        var IMSILength   = (Byte) BinaryStream.ReadByte();
+                        IMSI             = BinaryStream.ReadUTF8String(IMSILength);
+
+                    }
+                    break;
+
+                    #endregion
+
+                }
+
+
+                Modem = ICCID is not null &&
+                        IMSI  is not null
+
+                            ? new Modem(
+                                  ICCID,
+                                  IMSI
+                              )
+
+                            : null;
+
+                //if (CustomModemParser is not null)
+                //    Modem = CustomModemParser(Binary,
+                //                              Modem);
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                Modem          = null;
+                ErrorResponse  = "The given binary representation of a modem is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToJSON  (CustomModemSerializer = null, CustomCustomDataSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
@@ -248,11 +355,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var json = JSONObject.Create(
 
-                           IMSI is not null
+                           ICCID      is not null
                                ? new JProperty("iccid",        ICCID)
                                : null,
 
-                           IMSI is not null
+                           IMSI       is not null
                                ? new JProperty("imsi",         IMSI)
                                : null,
 
@@ -265,6 +372,41 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             return CustomModemSerializer is not null
                        ? CustomModemSerializer(this, json)
                        : json;
+
+        }
+
+        #endregion
+
+        #region ToBinary(CustomModemSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomModemSerializer">A delegate to serialize custom modems.</param>
+        public Byte[] ToBinary(CustomBinarySerializerDelegate<Modem>?  CustomModemSerializer   = null)
+        {
+
+            if (ICCID is null &&
+                IMSI  is null)
+            {
+                return [];
+            }
+
+            var binaryStream          = new MemoryStream();
+
+            var iccidBytes            = ICCID?.ToString().SubstringMax(255).ToUTF8Bytes() ?? [];
+            binaryStream.WriteByte((Byte) iccidBytes.Length);
+            binaryStream.Write    (iccidBytes,  0, iccidBytes.Length);
+
+            var imsiBytes             = IMSI?. ToString().SubstringMax(255).ToUTF8Bytes() ?? [];
+            binaryStream.WriteByte((Byte) imsiBytes. Length);
+            binaryStream.Write    (imsiBytes,   0, imsiBytes. Length);
+
+            var binary = binaryStream.ToArray();
+
+            return CustomModemSerializer is not null
+                       ? CustomModemSerializer(this, binary)
+                       : binary;
 
         }
 
@@ -384,11 +526,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             => new String?[] {
 
                     ICCID is not null
-                        ? "ICCID: " + ICCID
+                        ? $"ICCID: {ICCID}"
                         : null,
 
                     IMSI  is not null
-                        ? "IMSI: "  + IMSI
+                        ? $"IMSI: {IMSI}"
                         : null
 
                }.Where(text => text is not null).
