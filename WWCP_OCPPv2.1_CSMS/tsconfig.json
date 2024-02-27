@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "module": "system",
+    "noImplicitAny": false,
+    "sourceMap": true,
+    "allowJs": false
+  },
+  "files": [
+    "HTTPAPI/WebAPI/HTTPRoot/events/events.ts"
+  ]
+}

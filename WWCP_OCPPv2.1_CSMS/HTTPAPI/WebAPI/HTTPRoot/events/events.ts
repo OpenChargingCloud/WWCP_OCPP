@@ -1,4 +1,4 @@
-﻿///<reference path="../../../../../../libs/UsersAPI/UsersAPI/HTTPRoot/libs/date.format.ts" />
+﻿///<reference path="../../../../../../../libs/UsersAPI/UsersAPI/HTTPRoot/libs/date.format.ts" />
 
 function StartEventsSSE() {
 
@@ -58,7 +58,7 @@ function StartEventsSSE() {
         div.className         = "logLine";
         div.style.color       = "#" + connectionColor.textcolor;
         div.style.background  = "#" + connectionColor.background;
-        div.innerHTML         = "<div class=\"timestamp\">"       + new Date(timestamp).format('dd.mm.yyyy HH:MM:ss') + "</div>" +
+        div.innerHTML         = "<div class=\"timestamp\">"       + timestamp       + "</div>" + //  new Date(timestamp).format('dd.mm.yyyy HH:MM:ss') + "</div>" +
                                 "<div class=\"roamingNetwork\">"  + roamingNetwork  + "</div>" +
                                 "<div class=\"eventTrackingId\">" + eventTrackingId + "</div>" +
                                 "<div class=\"command\">"         + command         + "</div>" +
@@ -91,7 +91,7 @@ function StartEventsSSE() {
 
 
     const eventsSource = window.EventSource !== undefined
-                             ? new EventSource('/events')
+                             ? new EventSource('events')
                              : null;
 
     if (eventsSource !== null)
@@ -105,6 +105,8 @@ function StartEventsSSE() {
             console.debug(event);
         };
 
+
+        // {"timestamp":"2024-02-26T21:53:54.019Z","connection":{"localSocket":"127.0.0.1:9920","remoteSocket":"127.0.0.1:64675","customData":{"networkingNodeId":"GD001"}},"message":[2,"100000","BootNotification",{"chargingStation":{"model":"mm","vendorName":"vv"},"reason":"ApplicationReset"}]}
 
 
         eventsSource.addEventListener('OnNewTCPConnection',            function (event) {
@@ -151,7 +153,7 @@ function StartEventsSSE() {
 
         }, false);
 
-        eventsSource.addEventListener('OnJSONMessageRequestReceived',  function (event) {
+        eventsSource.addEventListener('OnJSONMessageRequestReceived2',  function (event) {
 
             try
             {
@@ -173,7 +175,7 @@ function StartEventsSSE() {
 
         }, false);
 
-        eventsSource.addEventListener('OnJSONMessageResponseSent',     function (event) {
+        eventsSource.addEventListener('OnJSONMessageResponseSent2',     function (event) {
 
             try
             {
@@ -263,7 +265,7 @@ function StartEventsSSE() {
 
 
 
-        eventsSource.addEventListener('OnBootNotificationRequest',   function (event) {
+        eventsSource.addEventListener('OnBootNotificationRequestReceived',   function (event) {
 
             try
             {
@@ -271,11 +273,11 @@ function StartEventsSSE() {
                 const request = JSON.parse((event as MessageEvent).data);
 
                 CreateLogEntry(request.timestamp,
-                               request.chargeBoxId,
+                               request.destinationNodeId,
                                request.eventTrackingId,
                                "OnBootNotification",
                                JSON.stringify(request.data),
-                               request.connection.remoteSocket // ConnectionColorKey
+                               request.networkPath[0] // ConnectionColorKey
                               );
 
             }
@@ -285,7 +287,7 @@ function StartEventsSSE() {
 
         }, false);
 
-        eventsSource.addEventListener('OnBootNotificationResponse',  function (event) {
+        eventsSource.addEventListener('OnBootNotificationResponseSent',      function (event) {
 
             try
             {
