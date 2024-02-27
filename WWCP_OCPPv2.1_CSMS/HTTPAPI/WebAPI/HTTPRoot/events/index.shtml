@@ -1,4 +1,4 @@
-﻿<link href="../css/events/events.min.css" type="text/css" rel="stylesheet" />
+﻿<link href="css/events/events.min.css" type="text/css" rel="stylesheet" />
 
 <script type="text/javascript" src="/js/date.format.js"></script>
 <script type="text/javascript" src="../defaults/defaults.js"></script>
