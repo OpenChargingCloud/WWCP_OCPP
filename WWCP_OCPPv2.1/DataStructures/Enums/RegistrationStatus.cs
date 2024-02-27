@@ -69,18 +69,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="RegistrationStatus">The parsed registration status.</param>
         public static Boolean TryParse(String Text, out RegistrationStatus RegistrationStatus)
         {
-            switch (Text.Trim())
+            switch (Text.Trim().ToLower())
             {
 
-                case "Accepted":
+                case "accepted":
                     RegistrationStatus = RegistrationStatus.Accepted;
                     return true;
 
-                case "Pending":
+                case "pending":
                     RegistrationStatus = RegistrationStatus.Pending;
                     return true;
 
-                case "Rejected":
+                case "rejected":
                     RegistrationStatus = RegistrationStatus.Rejected;
                     return true;
 

@@ -109,6 +109,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public TimeSpan   DefaultRequestTimeout     { get; }
 
+        /// <summary>
+        /// The default charging station registration status.
+        /// </summary>
+        public RegistrationStatus  DefaultRegistrationStatus    { get; set; } = OCPPv2_1.RegistrationStatus.Rejected;
+
+
 
         /// <summary>
         /// An enumeration of central system servers.
@@ -2956,7 +2962,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     response  = new BootNotificationResponse(
                                     Request:      request,
-                                    Status:       RegistrationStatus.Accepted,
+                                    Status:       DefaultRegistrationStatus, //RegistrationStatus.Accepted,
                                     CurrentTime:  Timestamp.Now,
                                     Interval:     TimeSpan.FromMinutes(5),
                                     StatusInfo:   null,
@@ -6821,7 +6827,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        #region CSMS -> Charging Station Messages
+        #region CSMS -> Charging Station Messages and Responses
 
         #region NextRequestId
 

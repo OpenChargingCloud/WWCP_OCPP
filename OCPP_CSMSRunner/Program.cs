@@ -30,6 +30,7 @@ using OCPPv1_6 = cloud.charging.open.protocols.OCPPv1_6;
 using OCPPv2_1 = cloud.charging.open.protocols.OCPPv2_1;
 using cloud.charging.open.protocols.OCPPv2_1;
 using cloud.charging.open.protocols.OCPP;
+using System.Runtime.CompilerServices;
 
 #endregion
 
@@ -693,6 +694,24 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                             {
                                 testCentralSystemV1_6.AddHTTPBasicAuth        (NetworkingNode_Id.Parse(chargingStationId), commandArray[2]);
                                 testCSMSv2_1.         AddOrUpdateHTTPBasicAuth(NetworkingNode_Id.Parse(chargingStationId), commandArray[2]);
+                            }
+
+                            #endregion
+
+                            #region SetDefaultRegistrationStatus
+
+                            //   SetDefaultRegistrationStatus rejected
+                            //   SetDefaultRegistrationStatus pending
+                            //   SetDefaultRegistrationStatus accepted
+                            if (command.Equals("SetDefaultRegistrationStatus", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 2)
+                            {
+
+                                if (OCPPv2_1.RegistrationStatusExtensions.TryParse(commandArray[1], out var registrationStatus))
+                                    testCSMSv2_1.DefaultRegistrationStatus = registrationStatus;
+
+                                else
+                                    DebugX.Log($"Invalid default charging station registration status '{commandArray[1]}'!");
+
                             }
 
                             #endregion
