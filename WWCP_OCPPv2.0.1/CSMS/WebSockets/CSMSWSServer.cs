@@ -1960,11 +1960,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
                     if (ChargingBoxLogins.TryGetValue(ChargeBox_Id.Parse(basicAuthentication.Username), out var password) &&
                         basicAuthentication.Password == password)
                     {
-                        DebugX.Log(nameof(CSMSWSServer), " connection from " + Connection.RemoteSocket + " using authorization: " + basicAuthentication.Username + "/" + basicAuthentication.Password);
+                        DebugX.Log(nameof(CSMSWSServer), $" connection from {Connection.RemoteSocket} using authorization: '{basicAuthentication.Username}' / '{basicAuthentication.Password}");
                         return Task.FromResult<HTTPResponse?>(null);
                     }
                     else
-                        DebugX.Log(nameof(CSMSWSServer), " connection from " + Connection.RemoteSocket + " invalid authorization: " + basicAuthentication.Username + "/" + basicAuthentication.Password);
+                        DebugX.Log(nameof(CSMSWSServer), $" connection from {Connection.RemoteSocket} invalid authorization: '{basicAuthentication.Username}' / '{basicAuthentication.Password}!");
 
                 }
                 else

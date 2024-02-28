@@ -380,6 +380,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                    //        "reason":           "FirmwareUpdate"
                    //    }
                    // ]
+                   NetworkingMode.Unknown or
                    NetworkingMode.Standard
                        => new (2,
                                RequestId.ToString(),

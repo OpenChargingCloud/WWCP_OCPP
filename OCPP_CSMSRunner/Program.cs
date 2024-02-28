@@ -392,7 +392,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
             var testCSMSv2_1 = new OCPPv2_1.TestCSMS(
                                    Id:                     NetworkingNode_Id.Parse("OCPPv2.1-Test-01"),
-                                   RequireAuthentication:  false,
+                                   RequireAuthentication:  true,
                                    DNSClient:              dnsClient
                                );
 
@@ -529,6 +529,8 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
             };
 
+
+
             testCSMSv2_1.OnJSONMessageRequestSent         += async (timestamp, server, connection, destinationId, networkPath, eventTrackingId, requestTimestamp, requestMessage,     cancellationToken) => {
 
                 await DebugLog(
@@ -552,6 +554,30 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
                 await WriteToLogfileV2_1(
                     $"{responseTimestamp.ToIso8601()}\tRES IN\t{networkingNodeId}\t{connection.RemoteSocket}\t{jsonResponseMessage.ToString(Formatting.None)}",
+                    cancellationToken
+                );
+
+            };
+
+            testCSMSv2_1.OnJSONErrorResponseReceived  += async (timestamp, server, connection,
+                                                                //networkingNodeId, networkPath,
+                                                                eventTrackingId,
+                                                                requestTimestamp,
+                                                                textRequestMessage, //ToDo: Just be JSON!
+                                                                binaryRequestMessage,
+                                                                responseTimestamp,
+                                                                textResponseMessage, //ToDo: Just be JSON!
+                                                                cancellationToken)   => {
+
+                var networkingNodeId = "-";
+
+                await DebugLog(
+                    $"Received a JSON web socket response from '{networkingNodeId}': '{textResponseMessage}'!",
+                    cancellationToken
+                );
+
+                await WriteToLogfileV2_1(
+                    $"{responseTimestamp.ToIso8601()}\tERR IN\t{networkingNodeId}\t{connection.RemoteSocket}\t{textResponseMessage}",
                     cancellationToken
                 );
 
@@ -690,7 +716,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                             #region AddHTTPBasicAuth
 
                             //   AddHTTPBasicAuth abcd1234
-                            if (command.Equals("AddHTTPBasicAuth", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 2)
+                            if (command.Equals("AddHTTPBasicAuth", StringComparison.OrdinalIgnoreCase) && commandArray.Length == 3)
                             {
                                 testCentralSystemV1_6.AddHTTPBasicAuth        (NetworkingNode_Id.Parse(chargingStationId), commandArray[2]);
                                 testCSMSv2_1.         AddOrUpdateHTTPBasicAuth(NetworkingNode_Id.Parse(chargingStationId), commandArray[2]);
@@ -1176,6 +1202,34 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
                                 // SetNetworkProfile
 
+                                #region SetNetworkProfile
+
+                                // SetNetworkProfile
+                                if (command == "SetNetworkProfile".ToLower() && commandArray.Length == 1)
+                                {
+
+                                    var response = await testCSMSv2_1.SetNetworkProfile(
+                                                       new OCPPv2_1.CSMS.SetNetworkProfileRequest(
+                                                           NetworkingNodeId:           NetworkingNode_Id.Parse(chargingStationId),
+                                                           ConfigurationSlot:          1,
+                                                           NetworkConnectionProfile:   new NetworkConnectionProfile(
+                                                                                           Version:             OCPPVersion.OCPP20,
+                                                                                           Transport:           TransportProtocols.JSON,
+                                                                                           CentralServiceURL:   URL.Parse("wss://api1.ocpp.charging.cloud"),
+                                                                                           MessageTimeout:      TimeSpan.FromSeconds(10),
+                                                                                           SecurityProfile:     SecurityProfiles.SecurityProfile3,
+                                                                                           NetworkInterface:    NetworkInterface.Wired0
+                                                                                       )
+                                                       )
+                                                   );
+
+                                    DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                    DebugX.Log(response.ToJSON().ToString());
+
+                                }
+
+                                #endregion
+
                                 #region Change Availability
 
                                 //   ChangeAvailability operative
@@ -1283,7 +1337,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                 //   TriggerMessage FirmwareStatusNotification
                                 //   TriggerMessage Heartbeat
                                 //   TriggerMessage MeterValues
-                                //   TriggerMessage SignChargePointCertificate
+                                //   TriggerMessage SignChargingStationCertificate
                                 if (command == "TriggerMessage".ToLower() && commandArray.Length == 2)
                                 {
 
@@ -1319,10 +1373,10 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                                RequestedMessage:   commandArray[1].ToLower() switch {
                                                                                        "bootnotification"                => cloud.charging.open.protocols.OCPP.MessageTrigger.BootNotification,
                                                                                        "logstatusnotification"           => cloud.charging.open.protocols.OCPP.MessageTrigger.LogStatusNotification,
-                                                                                       "diagnosticsstatusnotification"   => cloud.charging.open.protocols.OCPP.MessageTrigger.DiagnosticsStatusNotification,
+                                                                                       //"diagnosticsstatusnotification"   => cloud.charging.open.protocols.OCPP.MessageTrigger.DiagnosticsStatusNotification,
                                                                                        "firmwarestatusnotification"      => cloud.charging.open.protocols.OCPP.MessageTrigger.FirmwareStatusNotification,
                                                                                        "metervalues"                     => cloud.charging.open.protocols.OCPP.MessageTrigger.MeterValues,
-                                                                                       "SignChargingStationCertificate"  => cloud.charging.open.protocols.OCPP.MessageTrigger.SignChargingStationCertificate,
+                                                                                       "signchargingstationcertificate"  => cloud.charging.open.protocols.OCPP.MessageTrigger.SignChargingStationCertificate,
                                                                                        "statusnotification"              => cloud.charging.open.protocols.OCPP.MessageTrigger.StatusNotification,
                                                                                        _                                 => cloud.charging.open.protocols.OCPP.MessageTrigger.Heartbeat
                                                                                    }
@@ -1964,7 +2018,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                 #region ClearCache
 
                                 //   clearcache GD002
-                                if (command == "clearcache"             && commandArray.Length == 2)
+                                if (command == "clearcache"             && commandArray.Length == 1)
                                 {
 
                                     if (ocppVersion == ocppVersion1_6)

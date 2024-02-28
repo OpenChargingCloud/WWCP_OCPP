@@ -25,6 +25,11 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.OCPP;
 
+using Org.BouncyCastle.Pkcs;
+using Org.BouncyCastle.Asn1.Pkcs;
+using Org.BouncyCastle.X509;
+using Org.BouncyCastle.OpenSsl;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.CS
@@ -95,25 +100,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public SignCertificateRequest(NetworkingNode_Id        NetworkingNodeId,
-                                      String                   CSR,
-                                      Int32                    SignCertificateRequestId,
-                                      CertificateSigningUse?   CertificateType     = null,
+        public SignCertificateRequest(NetworkingNode_Id             DestinationNodeId,
+                                      String                        CSR,
+                                      Int32                         SignCertificateRequestId,
+                                      CertificateSigningUse?        CertificateType     = null,
 
-                                      IEnumerable<KeyPair>?    SignKeys            = null,
-                                      IEnumerable<SignInfo>?   SignInfos           = null,
+                                      IEnumerable<KeyPair>?         SignKeys            = null,
+                                      IEnumerable<SignInfo>?        SignInfos           = null,
                                       IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                                      CustomData?              CustomData          = null,
+                                      CustomData?                   CustomData          = null,
 
-                                      Request_Id?              RequestId           = null,
-                                      DateTime?                RequestTimestamp    = null,
-                                      TimeSpan?                RequestTimeout      = null,
-                                      EventTracking_Id?        EventTrackingId     = null,
-                                      NetworkPath?             NetworkPath         = null,
-                                      CancellationToken        CancellationToken   = default)
+                                      Request_Id?                   RequestId           = null,
+                                      DateTime?                     RequestTimestamp    = null,
+                                      TimeSpan?                     RequestTimeout      = null,
+                                      EventTracking_Id?             EventTrackingId     = null,
+                                      NetworkPath?                  NetworkPath         = null,
+                                      CancellationToken             CancellationToken   = default)
 
-            : base(NetworkingNodeId,
+            : base(DestinationNodeId,
                    nameof(SignCertificateRequest)[..^7],
 
                    SignKeys,
@@ -135,7 +140,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             this.SignCertificateRequestId  = SignCertificateRequestId;
             this.CertificateType           = CertificateType;
 
-
             unchecked
             {
 
@@ -151,7 +155,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
 
-        //ToDo: Update schema documentation after the official release of OCPP v2.1!
+        //ToDo: This request has a breaking change in OCPP v2.1!
+        //      Update schema documentation after the official release of OCPP v2.1!
 
         #region Documentation
 
@@ -207,7 +212,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomSignCertificateRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, DestinationNodeId, NetworkPath, CustomSignCertificateRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a sign certificate request.
@@ -219,14 +224,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomSignCertificateRequestParser">A delegate to parse custom SignCertificate requests.</param>
         public static SignCertificateRequest Parse(JObject                                               JSON,
                                                    Request_Id                                            RequestId,
-                                                   NetworkingNode_Id                                     NetworkingNodeId,
+                                                   NetworkingNode_Id                                     DestinationNodeId,
                                                    NetworkPath                                           NetworkPath,
                                                    CustomJObjectParserDelegate<SignCertificateRequest>?  CustomSignCertificateRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         NetworkingNodeId,
+                         DestinationNodeId,
                          NetworkPath,
                          out var signCertificateRequest,
                          out var errorResponse,
@@ -242,7 +247,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out SignCertificateRequest, out ErrorResponse, CustomSignCertificateRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, DestinationNodeId, NetworkPath, out SignCertificateRequest, out ErrorResponse, CustomSignCertificateRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a sign certificate request.
@@ -256,7 +261,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomSignCertificateRequestParser">A delegate to parse custom sign certificate requests.</param>
         public static Boolean TryParse(JObject                                               JSON,
                                        Request_Id                                            RequestId,
-                                       NetworkingNode_Id                                     NetworkingNodeId,
+                                       NetworkingNode_Id                                     DestinationNodeId,
                                        NetworkPath                                           NetworkPath,
                                        [NotNullWhen(true)]  out SignCertificateRequest?      SignCertificateRequest,
                                        [NotNullWhen(false)] out String?                      ErrorResponse,
@@ -272,23 +277,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 if (!JSON.ParseMandatoryText("csr",
                                              "certificate signing request",
-                                             out String CSR,
+                                             out String? CSR,
                                              out ErrorResponse))
                 {
                     return false;
                 }
 
-                #endregion
+                Pkcs10CertificationRequest? parsedCSR = null;
 
-                #region SignCertificateRequestId    [mandatory]
-
-                if (!JSON.ParseMandatory("requestId",
-                                         "sign certificate request identification",
-                                         out Int32 SignCertificateRequestId,
-                                         out ErrorResponse))
+                try
                 {
+
+                    using (var reader = new StringReader(CSR))
+                    {
+                        var pemReader = new PemReader(reader);
+                        parsedCSR = (Pkcs10CertificationRequest)pemReader.ReadObject();
+                    }
+
+                } catch (Exception e)
+                {
+                    ErrorResponse = e.Message;
                     return false;
                 }
+
+                if (!parsedCSR.Verify())
+                {
+                    ErrorResponse = "The certificate signing request could not be verified!";
+                    return false;
+                }
+
+                #endregion
+
+                #region SignCertificateRequestId    [mandatory]  // FixMe!!!
+
+                //ToDo: In OCPP v2.0.1 is does not exist!
+
+                //    if (!JSON.ParseMandatory("requestId",
+                //                             "sign certificate request identification",
+                //                             out Int32 SignCertificateRequestId,
+                //                             out ErrorResponse))
+                //    {
+                //        return false;
+                //    }
 
                 #endregion
 
@@ -337,9 +367,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 SignCertificateRequest = new SignCertificateRequest(
 
-                                             NetworkingNodeId,
+                                             DestinationNodeId,
                                              CSR,
-                                             SignCertificateRequestId,
+                                             1, //SignCertificateRequestId,
                                              CertificateType,
 
                                              null,

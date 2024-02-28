@@ -90,12 +90,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     SetVariableStatus = SetVariableStatus.UnknownVariable;
                     return true;
 
-                case "NotSupportedAttributeTypes":
-                    SetVariableStatus = SetVariableStatus.NotSupportedAttributeTypes;
+                case "NotSupportedAttributeType":
+                    SetVariableStatus = SetVariableStatus.NotSupportedAttributeType;
                     return true;
 
                 case "Rejected":
                     SetVariableStatus = SetVariableStatus.Rejected;
+                    return true;
+
+                case "RebootRequired":
+                    SetVariableStatus = SetVariableStatus.RebootRequired;
                     return true;
 
                 default:
@@ -113,12 +117,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public static String AsText(this SetVariableStatus SetVariableStatus)
 
             => SetVariableStatus switch {
-                   SetVariableStatus.Accepted                    => "Accepted",
-                   SetVariableStatus.UnknownComponent            => "UnknownComponent",
-                   SetVariableStatus.UnknownVariable             => "UnknownVariable",
-                   SetVariableStatus.NotSupportedAttributeTypes  => "NotSupportedAttributeTypes",
-                   SetVariableStatus.Rejected                    => "Rejected",
-                   _                                             => "Unknown"
+                   SetVariableStatus.Accepted                   => "Accepted",
+                   SetVariableStatus.UnknownComponent           => "UnknownComponent",
+                   SetVariableStatus.UnknownVariable            => "UnknownVariable",
+                   SetVariableStatus.NotSupportedAttributeType  => "NotSupportedAttributeType",
+                   SetVariableStatus.Rejected                   => "Rejected",
+                   SetVariableStatus.RebootRequired             => "RebootRequired",
+                   _                                            => "Unknown"
                };
 
         #endregion
@@ -155,7 +160,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// The requested attribute type is not supported.
         /// </summary>
-        NotSupportedAttributeTypes,
+        NotSupportedAttributeType,
 
         /// <summary>
         /// Missing access rights to set the variable.
@@ -179,7 +184,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// The request was rejected.
         /// </summary>
-        Rejected
+        Rejected,
+
+        /// <summary>
+        /// A reboot is required.
+        /// </summary>
+        RebootRequired
 
     }
 

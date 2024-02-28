@@ -86,22 +86,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public ClearChargingProfileRequest(NetworkingNode_Id        NetworkingNodeId,
-                                           ChargingProfile_Id?      ChargingProfileId         = null,
-                                           ClearChargingProfile?    ChargingProfileCriteria   = null,
+        public ClearChargingProfileRequest(NetworkingNode_Id             NetworkingNodeId,
+                                           ChargingProfile_Id?           ChargingProfileId         = null,
+                                           ClearChargingProfile?         ChargingProfileCriteria   = null,
 
-                                           IEnumerable<KeyPair>?    SignKeys                  = null,
-                                           IEnumerable<SignInfo>?   SignInfos                 = null,
+                                           IEnumerable<KeyPair>?         SignKeys                  = null,
+                                           IEnumerable<SignInfo>?        SignInfos                 = null,
                                            IEnumerable<OCPP.Signature>?  Signatures                = null,
 
-                                           CustomData?              CustomData                = null,
+                                           CustomData?                   CustomData                = null,
 
-                                           Request_Id?              RequestId                 = null,
-                                           DateTime?                RequestTimestamp          = null,
-                                           TimeSpan?                RequestTimeout            = null,
-                                           EventTracking_Id?        EventTrackingId           = null,
-                                           NetworkPath?             NetworkPath               = null,
-                                           CancellationToken        CancellationToken         = default)
+                                           Request_Id?                   RequestId                 = null,
+                                           DateTime?                     RequestTimestamp          = null,
+                                           TimeSpan?                     RequestTimeout            = null,
+                                           EventTracking_Id?             EventTrackingId           = null,
+                                           NetworkPath?                  NetworkPath               = null,
+                                           CancellationToken             CancellationToken         = default)
 
             : base(NetworkingNodeId,
                    nameof(ClearChargingProfileRequest)[..^7],
@@ -383,7 +383,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             var json = JSONObject.Create(
 
                            ChargingProfileId.HasValue
-                               ? new JProperty("chargingProfileId",         ChargingProfileId.Value.ToString())
+                               ? new JProperty("chargingProfileId",         ChargingProfileId.Value.Value)
                                : null,
 
                            ChargingProfileCriteria is not null

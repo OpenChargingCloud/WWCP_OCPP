@@ -283,6 +283,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                    //        "heartbeatInterval":  300
                    //    }
                    // ]
+                   NetworkingMode.Unknown or
                    NetworkingMode.Standard
                        => new (3,
                                RequestId.ToString(),

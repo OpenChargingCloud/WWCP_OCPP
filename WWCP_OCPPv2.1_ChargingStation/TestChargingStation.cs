@@ -3471,7 +3471,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                                     if (variableConfig.Attributes?.Mutability == MutabilityTypes.ReadOnly)
                                                         setVariableResults.Add(new SetVariableResult(
-                                                                                   Status:                SetVariableStatus.Rejected,
+                                                                                   AttributeStatus:                SetVariableStatus.Rejected,
                                                                                    Component:             setVariableData.Component,
                                                                                    Variable:              setVariableData.Variable,
                                                                                    AttributeType:         variableConfig.Attributes?.Type,
@@ -3492,7 +3492,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                                         if (rr.ErrorMessage is not null)
                                                             setVariableResults.Add(new SetVariableResult(
-                                                                                   Status:                SetVariableStatus.Rejected,
+                                                                                   AttributeStatus:                SetVariableStatus.Rejected,
                                                                                    Component:             setVariableData.Component,
                                                                                    Variable:              setVariableData.Variable,
                                                                                    AttributeType:         variableConfig.Attributes?.Type,
@@ -3502,7 +3502,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                                         else
                                                             setVariableResults.Add(new SetVariableResult(
-                                                                                   Status:                SetVariableStatus.Accepted,
+                                                                                   AttributeStatus:                SetVariableStatus.Accepted,
                                                                                    Component:             setVariableData.Component,
                                                                                    Variable:              setVariableData.Variable,
                                                                                    AttributeType:         variableConfig.Attributes?.Type,
@@ -3521,7 +3521,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                         if (!variableFound)
                                             setVariableResults.Add(
                                                 new SetVariableResult(
-                                                    Status:      SetVariableStatus.UnknownVariable,
+                                                    AttributeStatus:      SetVariableStatus.UnknownVariable,
                                                     Component:   setVariableData.Component,
                                                     Variable:    setVariableData.Variable
                                                 )
@@ -3530,7 +3530,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                         else if (!variableInstanceFound)
                                             setVariableResults.Add(
                                                 new SetVariableResult(
-                                                    Status:      SetVariableStatus.UnknownVariable,
+                                                    AttributeStatus:      SetVariableStatus.UnknownVariable,
                                                     Component:   setVariableData.Component,
                                                     Variable:    setVariableData.Variable
                                                 )
@@ -3542,7 +3542,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                 if (!componentInstanceFound)
                                     setVariableResults.Add(
                                         new SetVariableResult(
-                                            Status:      SetVariableStatus.UnknownComponent,
+                                            AttributeStatus:      SetVariableStatus.UnknownComponent,
                                             Component:   setVariableData.Component,
                                             Variable:    setVariableData.Variable
                                         )
@@ -3553,7 +3553,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                             else
                                 setVariableResults.Add(
                                     new SetVariableResult(
-                                        Status:               SetVariableStatus.UnknownComponent,
+                                        AttributeStatus:               SetVariableStatus.UnknownComponent,
                                         Component:            setVariableData.Component,
                                         Variable:             setVariableData.Variable,
                                         AttributeStatusInfo:  new StatusInfo(
@@ -3578,7 +3578,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     else
                         setVariableResults.AddRange(request.VariableData.Select(setVariableData => new SetVariableResult(
-                                                                                                       Status:                SetVariableStatus.Rejected,
+                                                                                                       AttributeStatus:                SetVariableStatus.Rejected,
                                                                                                        Component:             setVariableData.Component,
                                                                                                        Variable:              setVariableData.Variable,
                                                                                                        AttributeType:         setVariableData.AttributeType,

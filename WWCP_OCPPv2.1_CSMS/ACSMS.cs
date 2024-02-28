@@ -19,8 +19,18 @@
 
 using System.Reflection;
 using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json.Linq;
+
+using Org.BouncyCastle.X509;
+using Org.BouncyCastle.Math;
+using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.Pkcs;
+using Org.BouncyCastle.Asn1.X509;
+using Org.BouncyCastle.Security;
+using Org.BouncyCastle.Crypto.Operators;
+using Org.BouncyCastle.OpenSsl;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
@@ -28,14 +38,13 @@ using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.Mail;
 using org.GraphDefined.Vanaheimr.Hermod.SMTP;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
+using org.GraphDefined.Vanaheimr.Hermod.Sockets;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
-using org.GraphDefined.Vanaheimr.Hermod.Sockets;
-using System.Diagnostics.CodeAnalysis;
-
+using Org.BouncyCastle.Utilities;
 
 #endregion
 
@@ -2378,50 +2387,50 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnCSMSNewWebSocketConnection
 
-            //CSMSChannel.OnCSMSNewWebSocketConnection += async (timestamp,
-            //                                                   csmsChannel,
-            //                                                   newConnection,
-            //                                                   networkingNodeId,
-            //                                                   eventTrackingId,
-            //                                                   sharedSubprotocols,
-            //                                                   cancellationToken) => {
+            CSMSChannel.OnCSMSNewWebSocketConnection += async (timestamp,
+                                                               csmsChannel,
+                                                               newConnection,
+                                                               networkingNodeId,
+                                                               eventTrackingId,
+                                                               sharedSubprotocols,
+                                                               cancellationToken) => {
 
-            //    // A new connection from the same networking node/charging station will replace the older one!
-            //    if (!connectedNetworkingNodes.TryAdd(networkingNodeId, new Tuple<CSMS.ICSMSChannel, DateTime>(csmsChannel as CSMS.ICSMSChannel, timestamp)))
-            //        connectedNetworkingNodes[networkingNodeId]       = new Tuple<CSMS.ICSMSChannel, DateTime>(csmsChannel as CSMS.ICSMSChannel, timestamp);
+                // A new connection from the same networking node/charging station will replace the older one!
+                if (!connectedNetworkingNodes.TryAdd(networkingNodeId, new Tuple<CSMS.ICSMSChannel, DateTime>(csmsChannel as CSMS.ICSMSChannel, timestamp)))
+                    connectedNetworkingNodes[networkingNodeId]       = new Tuple<CSMS.ICSMSChannel, DateTime>(csmsChannel as CSMS.ICSMSChannel, timestamp);
 
 
-            //    var onNewWebSocketConnection = OnNewWebSocketConnection;
-            //    if (onNewWebSocketConnection is not null)
-            //    {
-            //        try
-            //        {
+                var onNewWebSocketConnection = OnNewWebSocketConnection;
+                if (onNewWebSocketConnection is not null)
+                {
+                    try
+                    {
 
-            //            await Task.WhenAll(onNewWebSocketConnection.GetInvocationList().
-            //                                   OfType <OnCSMSNewWebSocketConnectionDelegate>().
-            //                                   Select (loggingDelegate => loggingDelegate.Invoke(
-            //                                                                  timestamp,
-            //                                                                  csmsChannel,
-            //                                                                  newConnection,
-            //                                                                  networkingNodeId,
-            //                                                                  eventTrackingId,
-            //                                                                  sharedSubprotocols,
-            //                                                                  cancellationToken
-            //                                                              )).
-            //                                   ToArray());
+                        await Task.WhenAll(onNewWebSocketConnection.GetInvocationList().
+                                               OfType <OnCSMSNewWebSocketConnectionDelegate>().
+                                               Select (loggingDelegate => loggingDelegate.Invoke(
+                                                                              timestamp,
+                                                                              csmsChannel,
+                                                                              newConnection,
+                                                                              networkingNodeId,
+                                                                              eventTrackingId,
+                                                                              sharedSubprotocols,
+                                                                              cancellationToken
+                                                                          )).
+                                               ToArray());
 
-            //        }
-            //        catch (Exception e)
-            //        {
-            //            await HandleErrors(
-            //                      nameof(TestCSMS),
-            //                      nameof(OnNewWebSocketConnection),
-            //                      e
-            //                  );
-            //        }
-            //    }
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestCSMS),
+                                  nameof(OnNewWebSocketConnection),
+                                  e
+                              );
+                    }
+                }
 
-            //};
+            };
 
             #endregion
 
@@ -2964,7 +2973,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                     Request:      request,
                                     Status:       DefaultRegistrationStatus, //RegistrationStatus.Accepted,
                                     CurrentTime:  Timestamp.Now,
-                                    Interval:     TimeSpan.FromMinutes(5),
+                                    Interval:     TimeSpan.FromSeconds(30),
                                     StatusInfo:   null,
                                     CustomData:   null
                                 );
@@ -4234,6 +4243,64 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 // CertificateType
 
                 DebugX.Log("OnSignCertificate: " + request.DestinationNodeId);
+
+
+                //Pkcs10CertificationRequest? parsedCSR = null;
+                //String? ErrorResponse = null;
+
+                //try
+                //{
+
+                //    using (var reader = new StringReader(request.CSR))
+                //    {
+                //        var pemReader = new PemReader(reader);
+                //        parsedCSR = (Pkcs10CertificationRequest)pemReader.ReadObject();
+                //    }
+
+                //} catch (Exception e)
+                //{
+                //    ErrorResponse = e.Message;
+                //}
+
+                //if (!parsedCSR.Verify())
+                //{
+                //    ErrorResponse = "The certificate signing request could not be verified!";
+                //}
+
+
+                //var serialNumber  = BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(Int64.MaxValue), new SecureRandom());
+                //var issuer        = caCertificate.SubjectDN;
+                //var subject       = parsedCSR.GetCertificationRequestInfo().Subject;
+                //var notBefore     = DateTime.UtcNow.Date;
+                //var notAfter      = notBefore.AddYears(1); // Valid for 1 year
+
+                //X509V3CertificateGenerator certGen = new X509V3CertificateGenerator();
+                //certGen.SetSerialNumber(serialNumber);
+                //certGen.SetIssuerDN(issuer);
+                //certGen.SetNotBefore(notBefore);
+                //certGen.SetNotAfter(notAfter);
+                //certGen.SetSubjectDN(subject);
+                //certGen.SetPublicKey(parsedCSR.GetPublicKey());
+                //certGen.SetSignatureAlgorithm("SHA256WithRSAEncryption");
+
+                //// Add extensions here - for example, basic constraints
+                //certGen.AddExtension(X509Extensions.BasicConstraints, true, new BasicConstraints(false));
+
+                //// Sign the certificate using the CA's private key
+                //ISignatureFactory sigGen = new Asn1SignatureFactory("SHA256WithRSAEncryption", caPrivateKey.Private, new SecureRandom());
+
+                //// Sign the CSR and generate a certificate
+                //X509Certificate signedCertificate = certGen.Generate(sigGen);
+
+
+
+                //String? signedCertPem = null;
+
+                //using (var reader = new StringReader(pem))
+                //{
+                //    var pemReader = new PemReader(reader);
+                //    signedCertPem = (Pkcs10CertificationRequest)pemReader.ReadObject();
+                //}
 
 
                 var response = !SignaturePolicy.VerifyRequestMessage(
@@ -9951,7 +10018,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region GetChargingProfiles         (Request)
 
         /// <summary>
-        /// Set the charging profile of the given charging station connector.
+        /// Get the charging profiles of the given charging station connector.
         /// </summary>
         /// <param name="Request">A GetChargingProfiles request.</param>
         public async Task<CS.GetChargingProfilesResponse> GetChargingProfiles(GetChargingProfilesRequest Request)

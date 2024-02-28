@@ -700,11 +700,11 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                     if (NetworkingNodeLogins.TryGetValue(NetworkingNode_Id.Parse(basicAuthentication.Username), out var password) &&
                         basicAuthentication.Password == password)
                     {
-                        DebugX.Log(nameof(AOCPPWebSocketServer), " connection from " + Connection.RemoteSocket + " using authorization: " + basicAuthentication.Username + "/" + basicAuthentication.Password);
+                        DebugX.Log(nameof(AOCPPWebSocketServer), $" connection from {Connection.RemoteSocket} using authorization: '{basicAuthentication.Username}' / '{basicAuthentication.Password}'");
                         return Task.FromResult<HTTPResponse?>(null);
                     }
                     else
-                        DebugX.Log(nameof(AOCPPWebSocketServer), " connection from " + Connection.RemoteSocket + " invalid authorization: " + basicAuthentication.Username + "/" + basicAuthentication.Password);
+                        DebugX.Log(nameof(AOCPPWebSocketServer), $" connection from {Connection.RemoteSocket} invalid authorization: '{basicAuthentication.Username}' / '{basicAuthentication.Password}'!");
 
                 }
                 else
@@ -758,7 +758,19 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                         Connection.TryAddCustomData(networkingNodeId_WebSocketKey, networkingNodeId);
 
                         if (!connectedNetworkingNodes.TryGetValue(networkingNodeId, out var value))
+                        {
+
                             connectedNetworkingNodes.TryAdd(networkingNodeId, new Tuple<WebSocketServerConnection, DateTime>(Connection, Timestamp.Now));
+
+                            OnNewWebSocketConnection?.Invoke(Timestamp.Now,
+                                                             this,
+                                                             Connection,
+                                                             NetworkingNode_Id.Zero,
+                                                             SharedSubprotocols,
+                                                             EventTrackingId,
+                                                             CancellationToken);
+
+                        }
 
                         else
                         {
@@ -768,7 +780,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                             var oldNetworkingNode_WebSocketConnection = value.Item1;
 
                             connectedNetworkingNodes.TryRemove(networkingNodeId, out _);
-                            connectedNetworkingNodes.TryAdd   (networkingNodeId, new Tuple<WebSocketServerConnection, DateTime>(Connection, Timestamp.Now));
+                            connectedNetworkingNodes.TryAdd(networkingNodeId, new Tuple<WebSocketServerConnection, DateTime>(Connection, Timestamp.Now));
 
                             try
                             {
@@ -1014,7 +1026,8 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                             OCPPResponse.NetworkingMode == NetworkingMode.Unknown &&
                            !connectedNetworkingNodes.ContainsKey(OCPPResponse.DestinationId))
                         {
-                            OCPPResponse.NetworkingMode = NetworkingMode.OverlayNetwork;
+                            //ToDo: Fix me!
+                            //OCPPResponse.NetworkingMode = NetworkingMode.OverlayNetwork;
                         }
 
                     }
@@ -1193,7 +1206,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                                                                                       sendRequestState.JSONRequest?.  ToJSON().ToString(JSONFormatting) ?? "",
                                                                                       sendRequestState.BinaryRequest?.ToByteArray()                     ?? [],
                                                                                       Timestamp.Now,
-                                                                                      sendRequestState.JSONResponse?. ToString() ?? "",
+                                                                                      sendRequestState.JSONRequestErrorMessage?. ToString() ?? "",
                                                                                       CancellationToken
                                                                                   )).
                                                        ToArray());

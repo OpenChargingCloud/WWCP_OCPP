@@ -732,19 +732,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.That(setVariablesResponse.SetVariableResults.Count,     Is.EqualTo(5));
 
                 var firstResult  = setVariablesResponse.SetVariableResults.First();
-                Assert.That(firstResult. Status,                               Is.EqualTo(SetVariableStatus.Accepted));
+                Assert.That(firstResult. AttributeStatus,                               Is.EqualTo(SetVariableStatus.Accepted));
 
                 var secondResult = setVariablesResponse.SetVariableResults.Skip(1).First();
-                Assert.That(secondResult.Status,                               Is.EqualTo(SetVariableStatus.UnknownComponent));
+                Assert.That(secondResult.AttributeStatus,                               Is.EqualTo(SetVariableStatus.UnknownComponent));
 
                 var thirdResult  = setVariablesResponse.SetVariableResults.Skip(2).First();
-                Assert.That(thirdResult. Status,                               Is.EqualTo(SetVariableStatus.UnknownComponent));
+                Assert.That(thirdResult. AttributeStatus,                               Is.EqualTo(SetVariableStatus.UnknownComponent));
 
                 var fourthResult = setVariablesResponse.SetVariableResults.Skip(3).First();
-                Assert.That(fourthResult.Status,                               Is.EqualTo(SetVariableStatus.UnknownVariable));
+                Assert.That(fourthResult.AttributeStatus,                               Is.EqualTo(SetVariableStatus.UnknownVariable));
 
                 var fifthResult  = setVariablesResponse.SetVariableResults.Skip(4).First();
-                Assert.That(fifthResult. Status,                               Is.EqualTo(SetVariableStatus.UnknownVariable));
+                Assert.That(fifthResult. AttributeStatus,                               Is.EqualTo(SetVariableStatus.UnknownVariable));
 
 
             }
@@ -860,13 +860,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.That(setVariablesResponse.SetVariableResults.Count(),   Is.EqualTo(3));
 
                 var firstResult  = setVariablesResponse.SetVariableResults.First();
-                Assert.That(firstResult. Status,                               Is.EqualTo(SetVariableStatus.Accepted));
+                Assert.That(firstResult. AttributeStatus,                               Is.EqualTo(SetVariableStatus.Accepted));
 
                 var secondResult = setVariablesResponse.SetVariableResults.Skip(1).First();
-                Assert.That(secondResult.Status,                               Is.EqualTo(SetVariableStatus.Rejected));
+                Assert.That(secondResult.AttributeStatus,                               Is.EqualTo(SetVariableStatus.Rejected));
 
                 var thirdResult  = setVariablesResponse.SetVariableResults.Skip(2).First();
-                Assert.That(thirdResult. Status,                               Is.EqualTo(SetVariableStatus.Accepted));
+                Assert.That(thirdResult. AttributeStatus,                               Is.EqualTo(SetVariableStatus.Accepted));
 
             }
 

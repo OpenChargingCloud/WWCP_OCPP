@@ -41,10 +41,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Properties
 
         /// <summary>
-        /// The status of the set variable request.
+        /// The result status of setting the variable.
         /// </summary>
         [Mandatory]
-        public SetVariableStatus  Status                  { get; }
+        public SetVariableStatus  AttributeStatus         { get; }
 
         /// <summary>
         /// The component for which the variable monitor is created or updated.
@@ -78,12 +78,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Create a new set variable result.
         /// </summary>
-        /// <param name="Status">The result status of the set variable request.</param>
+        /// <param name="AttributeStatus">The result status of setting the variable.</param>
         /// <param name="Component">The component for which the variable monitor is created or updated.</param>
         /// <param name="Variable">The variable for which the variable monitor is created or updated.</param>
         /// <param name="AttributeType">The optional type of the attribute: Actual, Target, MinSet, MaxSet [Default: actual]</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public SetVariableResult(SetVariableStatus  Status,
+        public SetVariableResult(SetVariableStatus  AttributeStatus,
                                  Component          Component,
                                  Variable           Variable,
                                  AttributeTypes?    AttributeType         = null,
@@ -94,17 +94,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         {
 
-            this.Status               = Status;
+            this.AttributeStatus      = AttributeStatus;
             this.Component            = Component;
             this.Variable             = Variable;
             this.AttributeType        = AttributeType;
             this.AttributeStatusInfo  = AttributeStatusInfo;
 
-
             unchecked
             {
 
-                hashCode = this.Status.              GetHashCode()       * 13 ^
+                hashCode = this.AttributeStatus.     GetHashCode()       * 13 ^
                            this.Component.           GetHashCode()       * 11 ^
                            this.Variable.            GetHashCode()       *  7 ^
                           (this.AttributeType?.      GetHashCode() ?? 0) *  5 ^
@@ -121,7 +120,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Documentation
 
         // "SetVariableResultType": {
-        //   "description": "Class to hold result of SetVariableMonitoring request.\r\n",
         //   "javaType": "SetVariableResult",
         //   "type": "object",
         //   "additionalProperties": false,
@@ -129,34 +127,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //     "customData": {
         //       "$ref": "#/definitions/CustomDataType"
         //     },
-        //     "id": {
-        //       "description": "Id given to the VariableMonitor by the Charging Station. The Id is only returned when status is accepted. Installed VariableMonitors should have unique id's but the id's of removed Installed monitors should have unique id's but the id's of removed monitors MAY be reused.\r\n",
-        //       "type": "integer"
+        //     "attributeType": {
+        //       "$ref": "#/definitions/AttributeEnumType"
         //     },
-        //     "statusInfo": {
+        //     "attributeStatus": {
+        //       "$ref": "#/definitions/SetVariableStatusEnumType"
+        //     },
+        //     "attributeStatusInfo": {
         //       "$ref": "#/definitions/StatusInfoType"
-        //     },
-        //     "status": {
-        //       "$ref": "#/definitions/SetMonitoringStatusEnumType"
-        //     },
-        //     "type": {
-        //       "$ref": "#/definitions/MonitorEnumType"
         //     },
         //     "component": {
         //       "$ref": "#/definitions/ComponentType"
         //     },
         //     "variable": {
         //       "$ref": "#/definitions/VariableType"
-        //     },
-        //     "severity": {
-        //       "description": "The severity that will be assigned to an event that is triggered by this monitor. The severity range is 0-9, with 0 as the highest and 9 as the lowest severity level.\r\n\r\nThe severity levels have the following meaning: +\r\n*0-Danger* +\r\nIndicates lives are potentially in danger. Urgent attention is needed and action should be taken immediately. +\r\n*1-Hardware Failure* +\r\nIndicates that the Charging Station is unable to continue regular operations due to Hardware issues. Action is required. +\r\n*2-System Failure* +\r\nIndicates that the Charging Station is unable to continue regular operations due to software or minor hardware issues. Action is required. +\r\n*3-Critical* +\r\nIndicates a critical error. Action is required. +\r\n*4-Error* +\r\nIndicates a non-urgent error. Action is required. +\r\n*5-Alert* +\r\nIndicates an alert event. Default severity for any type of event.  +\r\n*6-Warning* +\r\nIndicates a warning event. Action may be required. +\r\n*7-Notice* +\r\nIndicates an unusual event. No immediate action is required. +\r\n*8-Informational* +\r\nIndicates a regular operational event. May be used for reporting, measuring throughput, etc. No action is required. +\r\n*9-Debug* +\r\nIndicates information useful to developers for debugging, not useful during operations.\r\n\r\n",
-        //       "type": "integer"
         //     }
         //   },
         //   "required": [
-        //     "status",
-        //     "type",
-        //     "severity",
+        //     "attributeStatus",
         //     "component",
         //     "variable"
         //   ]
@@ -229,12 +217,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 SetVariableResult = default;
 
-                #region Status                 [mandatory]
+                #region AttributeStatus        [mandatory]
 
-                if (!JSON.ParseMandatory("status",
-                                         "status",
+                if (!JSON.ParseMandatory("attributeStatus",
+                                         "attribute status",
                                          SetVariableStatusExtensions.TryParse,
-                                         out SetVariableStatus Status,
+                                         out SetVariableStatus AttributeStatus,
                                          out ErrorResponse))
                 {
                     return false;
@@ -318,7 +306,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
                 SetVariableResult = new SetVariableResult(
-                                        Status,
+                                        AttributeStatus,
                                         Component,
                                         Variable,
                                         AttributeType,
@@ -365,7 +353,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var json = JSONObject.Create(
 
-                                 new JProperty("status",                Status.             AsText()),
+                                 new JProperty("status",                AttributeStatus.    AsText()),
 
                                  new JProperty("component",             Component.          ToJSON(CustomComponentSerializer,
                                                                                                    CustomEVSESerializer,
@@ -468,7 +456,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => SetVariableResult is not null &&
 
-               Status.     Equals(Equals(SetVariableResult.Status))      &&
+               AttributeStatus.     Equals(Equals(SetVariableResult.AttributeStatus))      &&
                Component.  Equals(Equals(SetVariableResult.Component))   &&
                Variable.   Equals(Equals(SetVariableResult.Variable))    &&
 
@@ -505,15 +493,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => String.Concat(
 
-                   "Component/variable: '",
-                   Component.ToString(),
-                   "' / '",
-                   Variable. ToString(),
-                   "': ",
-                   Status.   AsText(),
+                   $"Component/variable: '{Component}'/'{Variable}': {AttributeStatus.AsText()}",
 
                    AttributeType.HasValue
-                       ? " [" + AttributeType.Value.AsText() + "]"
+                       ? $" [{AttributeType.Value.AsText()}]"
                        : ""
 
                );

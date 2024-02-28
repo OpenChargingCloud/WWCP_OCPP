@@ -110,9 +110,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                         TimeSpan            MessageTimeout,
                                         SecurityProfiles    SecurityProfile,
                                         NetworkInterface    NetworkInterface,
-                                        VPNConfiguration?   VPNConfiguration,
-                                        APNConfiguration?   APNConfiguration,
-                                        CustomData?         CustomData   = null)
+                                        VPNConfiguration?   VPNConfiguration   = null,
+                                        APNConfiguration?   APNConfiguration   = null,
+                                        CustomData?         CustomData         = null)
 
             : base(CustomData)
 

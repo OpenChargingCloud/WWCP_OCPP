@@ -484,11 +484,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     if (NetworkingNodeLogins.TryGetValue(NetworkingNode_Id.Parse(basicAuthentication.Username), out var password) &&
                         basicAuthentication.Password == password)
                     {
-                        DebugX.Log(nameof(OCPPWebSocketServer), " connection from " + Connection.RemoteSocket + " using authorization: " + basicAuthentication.Username + "/" + basicAuthentication.Password);
+                        DebugX.Log(nameof(OCPPWebSocketServer), $" connection from {Connection.RemoteSocket} using authorization: '{basicAuthentication.Username}' / '{basicAuthentication.Password}'");
                         return Task.FromResult<HTTPResponse?>(null);
                     }
                     else
-                        DebugX.Log(nameof(OCPPWebSocketServer), " connection from " + Connection.RemoteSocket + " invalid authorization: " + basicAuthentication.Username + "/" + basicAuthentication.Password);
+                        DebugX.Log(nameof(OCPPWebSocketServer), $" connection from {Connection.RemoteSocket} invalid authorization: '{basicAuthentication.Username}' / '{basicAuthentication.Password}'!");
 
                 }
                 else
