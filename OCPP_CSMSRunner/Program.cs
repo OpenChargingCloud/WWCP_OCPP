@@ -1041,6 +1041,36 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
                                 }
 
+                                //   SetDefaultVariables component variable value
+                                if (command == "SetDefaultVariables".ToLower() && commandArray.Length == 4)
+                                {
+
+                                    var response = await testCSMSv2_1.SetVariables(
+                                                       new OCPPv2_1.CSMS.SetVariablesRequest(
+                                                           NetworkingNodeId:   NetworkingNode_Id.Parse(chargingStationId),
+                                                           VariableData:       new[] {
+                                                                                   new OCPPv2_1.SetVariableData(
+                                                                                       new OCPPv2_1.Component(
+                                                                                           Name:       commandArray[1],
+                                                                                           Instance:   null,
+                                                                                           EVSE:       null
+                                                                                       ),
+                                                                                       new OCPPv2_1.Variable(
+                                                                                           Name:       commandArray[2],
+                                                                                           Instance:   "Default"
+                                                                                       ),
+                                                                                       commandArray[3]
+                                                                                       //OCPPv2_1.AttributeTypes.Actual
+                                                                                   )
+                                                                               }
+                                                       )
+                                                   );
+
+                                    DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                    DebugX.Log(response.ToJSON().ToString());
+
+                                }
+
                                 #endregion
 
                                 #region GetVariables
@@ -1338,6 +1368,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                 //   TriggerMessage Heartbeat
                                 //   TriggerMessage MeterValues
                                 //   TriggerMessage SignChargingStationCertificate
+                                //   TriggerMessage StatusNotification
                                 if (command == "TriggerMessage".ToLower() && commandArray.Length == 2)
                                 {
 
@@ -2017,7 +2048,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
                                 #region ClearCache
 
-                                //   clearcache GD002
+                                //   clearcache
                                 if (command == "clearcache"             && commandArray.Length == 1)
                                 {
 
@@ -2305,7 +2336,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                                                                                            NumberPhases:  3
                                                                                                                        )
                                                                                                                    },
-                                                                                         Duration:                 TimeSpan.FromDays(7),
+                                                                                         Duration:                 TimeSpan.FromDays(1),
                                                                                          StartSchedule:            DateTime.Parse("2023-03-29T00:00:00Z").ToUniversalTime()
 
                                                                                      ),
@@ -2333,11 +2364,11 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                                                        0,
                                                                                        OCPPv2_1.ChargingProfilePurpose.TxDefaultProfile,
                                                                                        OCPPv2_1.ChargingProfileKinds.Recurring,
-                                                                                       new[] {
+                                                                                       [
                                                                                            new OCPPv2_1.ChargingSchedule(
                                                                                                Id:                       OCPPv2_1.ChargingSchedule_Id.Parse("1"),
                                                                                                ChargingRateUnit:         OCPPv2_1.ChargingRateUnits.Amperes,
-                                                                                               ChargingSchedulePeriods:  new[] {
+                                                                                               ChargingSchedulePeriods:  [
                                                                                                                              new OCPPv2_1.ChargingSchedulePeriod(
                                                                                                                                  StartPeriod:     TimeSpan.FromHours(0),  // == 00:00 Uhr
                                                                                                                                  Limit:           OCPPv2_1.ChargingRateValue.Parse(16, OCPPv2_1.ChargingRateUnits.Amperes),
@@ -2353,16 +2384,15 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                                                                                                  Limit:           OCPPv2_1.ChargingRateValue.Parse(12, OCPPv2_1.ChargingRateUnits.Amperes),
                                                                                                                                  NumberOfPhases:  3
                                                                                                                              )
-                                                                                                                         },
-                                                                                               Duration:                 TimeSpan.FromDays(7),
+                                                                                                                         ],
+                                                                                               Duration:                 TimeSpan.FromDays(1),
                                                                                                StartSchedule:            DateTime.Parse("2023-03-29T00:00:00Z").ToUniversalTime()
-                                                                                   
                                                                                            )
-                                                                                       },
+                                                                                       ],
                                                                                        null, //Transaction_Id.TryParse(5678),
                                                                                        OCPPv2_1.RecurrencyKinds.Daily,
                                                                                        DateTime.Parse("2022-11-01T00:00:00Z").ToUniversalTime(),
-                                                                                       DateTime.Parse("2023-12-01T00:00:00Z").ToUniversalTime()
+                                                                                       DateTime.Now.AddDays(7).ToUniversalTime()
                                                                                    )
                                                                )
                                                            );
@@ -2373,6 +2403,60 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                     }
 
                                 }
+
+                                //   setprofile3 1
+                                if (command == "setprofile3"            && commandArray.Length == 2)
+                                {
+
+                                        var response = await testCSMSv2_1.SetChargingProfile(
+                                                           new OCPPv2_1.CSMS.SetChargingProfileRequest(
+                                                               NetworkingNodeId:   NetworkingNode_Id.Parse(chargingStationId),
+                                                               EVSEId:             OCPPv2_1.EVSE_Id.     Parse(commandArray[1]),
+                                                               ChargingProfile:    new OCPPv2_1.ChargingProfile(
+                                                                                       OCPPv2_1.ChargingProfile_Id.Parse("50"),
+                                                                                       0,
+                                                                                       OCPPv2_1.ChargingProfilePurpose.TxDefaultProfile,
+                                                                                       OCPPv2_1.ChargingProfileKinds.Recurring,
+                                                                                       [
+                                                                                           new OCPPv2_1.ChargingSchedule(
+                                                                                               Id:                       OCPPv2_1.ChargingSchedule_Id.Parse("1"),
+                                                                                               ChargingRateUnit:         OCPPv2_1.ChargingRateUnits.Watts,
+                                                                                               ChargingSchedulePeriods:  [
+                                                                                                                             new OCPPv2_1.ChargingSchedulePeriod(
+                                                                                                                                 StartPeriod:     TimeSpan.FromHours(0),  // == 00:00 Uhr
+                                                                                                                                 Limit:           OCPPv2_1.ChargingRateValue.Parse(16, OCPPv2_1.ChargingRateUnits.Watts),
+                                                                                                                                 NumberOfPhases:  3
+                                                                                                                             ),
+                                                                                                                             new OCPPv2_1.ChargingSchedulePeriod(
+                                                                                                                                 StartPeriod:     TimeSpan.FromHours(8),  // == 08:00 Uhr
+                                                                                                                                 Limit:           OCPPv2_1.ChargingRateValue.Parse(6,  OCPPv2_1.ChargingRateUnits.Watts),
+                                                                                                                                 NumberOfPhases:  3
+                                                                                                                             ),
+                                                                                                                             new OCPPv2_1.ChargingSchedulePeriod(
+                                                                                                                                 StartPeriod:     TimeSpan.FromHours(20), // == 20:00 Uhr
+                                                                                                                                 Limit:           OCPPv2_1.ChargingRateValue.Parse(12, OCPPv2_1.ChargingRateUnits.Watts),
+                                                                                                                                 NumberOfPhases:  3
+                                                                                                                             )
+                                                                                                                         ],
+                                                                                               Duration:                 TimeSpan.FromDays(1),
+                                                                                               StartSchedule:            DateTime.Parse("2023-03-29T00:00:00Z").ToUniversalTime()
+                                                                                           )
+                                                                                       ],
+                                                                                       null, //Transaction_Id.TryParse(5678),
+                                                                                       OCPPv2_1.RecurrencyKinds.Daily,
+                                                                                       DateTime.Parse("2022-11-01T00:00:00Z").ToUniversalTime(),
+                                                                                       DateTime.Now.AddDays(7).ToUniversalTime()
+                                                                                   )
+                                                               )
+                                                           );
+
+                                        DebugX.Log(commandArray.AggregateWith(" ") + " => " + response.Runtime.TotalMilliseconds + " ms");
+                                        DebugX.Log(response.ToJSON().ToString());
+
+                                }
+
+
+
 
                                 //   setprofile2 GD002 1
                                 if (command == "setprofile2"            && commandArray.Length == 3)
@@ -2389,7 +2473,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                                                    OCPPv1_6.ChargingProfileKinds.Recurring,
                                                                                    new OCPPv1_6.ChargingSchedule(
                                                                                        ChargingRateUnit:         OCPPv1_6.ChargingRateUnits.Amperes,
-                                                                                       ChargingSchedulePeriods:  new OCPPv1_6.ChargingSchedulePeriod[] {
+                                                                                       ChargingSchedulePeriods:  [
                                                                                                                      new OCPPv1_6.ChargingSchedulePeriod(
                                                                                                                          StartPeriod:   TimeSpan.FromHours(0),  // == 00:00 Uhr
                                                                                                                          Limit:         11,
@@ -2405,7 +2489,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                                                                                          Limit:         11,
                                                                                                                          NumberPhases:  3
                                                                                                                      )
-                                                                                                                 },
+                                                                                                                 ],
                                                                                        Duration:                 TimeSpan.FromDays(7),
                                                                                        StartSchedule:            DateTime.Parse("2023-03-29T00:00:00Z").ToUniversalTime()
                                                                                
@@ -2503,7 +2587,8 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
                                         var response = await testCSMSv2_1.ClearChargingProfile(
                                                            new OCPPv2_1.CSMS.ClearChargingProfileRequest(
-                                                               NetworkingNodeId:   NetworkingNode_Id.Parse(chargingStationId)
+                                                               NetworkingNodeId:    NetworkingNode_Id.Parse(chargingStationId),
+                                                               ChargingProfileId:   ChargingProfile_Id.Parse(50)
                                                            )
                                                        );
 
