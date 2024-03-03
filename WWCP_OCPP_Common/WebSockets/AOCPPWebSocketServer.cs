@@ -20,6 +20,7 @@
 using System.Reflection;
 using System.Collections.Concurrent;
 using System.Security.Authentication;
+using System.Security.Cryptography.X509Certificates;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -29,13 +30,9 @@ using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.Sockets;
-using org.GraphDefined.Vanaheimr.Hermod.Sockets.TCP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
-using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.WebSockets;
-using System.Text.Json.Nodes;
-using System.Security.Cryptography.X509Certificates;
 
 #endregion
 
@@ -477,7 +474,10 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
         /// <param name="HTTPServiceName">An optional identification string for the HTTP service.</param>
         /// <param name="IPAddress">An IP address to listen on.</param>
         /// <param name="TCPPort">An optional TCP port for the HTTP server.</param>
+        /// <param name="Description">An optional description of this HTTP Web Socket service.</param>
+        /// 
         /// <param name="RequireAuthentication">Require a HTTP Basic Authentication of all charging boxes.</param>
+        /// 
         /// <param name="DNSClient">An optional DNS client to use.</param>
         /// <param name="AutoStart">Start the server immediately.</param>
         public AOCPPWebSocketServer(NetworkingNode_Id                    NetworkingNodeId,
@@ -485,6 +485,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                                     String                               HTTPServiceName              = DefaultHTTPServiceName,
                                     IIPAddress?                          IPAddress                    = null,
                                     IPPort?                              TCPPort                      = null,
+                                    I18NString?                          Description                  = null,
 
                                     Boolean                              RequireAuthentication        = true,
                                     Boolean                              DisableWebSocketPings        = false,
@@ -514,6 +515,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                                                                   IPAddress,
                                                                   TCPPort ?? IPPort.Parse(8000),
                                                                   HTTPServiceName,
+                                                                  Description,
 
                                                                   SupportedOCPPWebSocketSubprotocols,
                                                                   DisableWebSocketPings,

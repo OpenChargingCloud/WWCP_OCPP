@@ -114,7 +114,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="HTTPServiceName">An optional identification string for the HTTP service.</param>
         /// <param name="IPAddress">An IP address to listen on.</param>
         /// <param name="TCPPort">An optional TCP port for the HTTP server.</param>
+        /// <param name="Description">An optional description of this HTTP Web Socket service.</param>
+        /// 
         /// <param name="RequireAuthentication">Require a HTTP Basic Authentication of all charging boxes.</param>
+        /// 
         /// <param name="DNSClient">An optional DNS client to use.</param>
         /// <param name="AutoStart">Start the server immediately.</param>
         public CentralSystemWSServer(NetworkingNode_Id                    NetworkingNodeId,
@@ -122,6 +125,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                      String                               HTTPServiceName              = DefaultHTTPServiceName,
                                      IIPAddress?                          IPAddress                    = null,
                                      IPPort?                              TCPPort                      = null,
+                                     I18NString?                          Description                  = null,
 
                                      Boolean                              RequireAuthentication        = true,
                                      Boolean                              DisableWebSocketPings        = false,
@@ -152,6 +156,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                    HTTPServiceName,
                    IPAddress,
                    TCPPort,
+                   Description,
 
                    RequireAuthentication,
                    DisableWebSocketPings,

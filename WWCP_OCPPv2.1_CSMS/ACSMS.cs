@@ -2256,11 +2256,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="HTTPServerName">An optional identification string for the HTTP server.</param>
         /// <param name="IPAddress">An IP address to listen on.</param>
         /// <param name="TCPPort">An optional TCP port for the HTTP server.</param>
+        /// <param name="Description">An optional description of this HTTP Web Socket service.</param>
+        /// 
         /// <param name="DNSClient">An optional DNS client to use.</param>
         /// <param name="AutoStart">Start the server immediately.</param>
         public CSMSWSServer AttachWebSocketService(String                               HTTPServerName               = CSMSWSServer.DefaultHTTPServiceName,
                                                    IIPAddress?                          IPAddress                    = null,
                                                    IPPort?                              TCPPort                      = null,
+                                                   I18NString?                          Description                  = null,
 
                                                    Boolean                              DisableWebSocketPings        = false,
                                                    TimeSpan?                            WebSocketPingEvery           = null,
@@ -2291,6 +2294,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                         HTTPServerName,
                                         IPAddress,
                                         TCPPort,
+                                        Description,
 
                                         RequireAuthentication,
                                         DisableWebSocketPings,
