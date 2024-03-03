@@ -813,7 +813,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                          TimeSpan?                            WebSocketPingEvery           = null,
                                                          TimeSpan?                            SlowNetworkSimulationDelay   = null,
 
-                                                         ServerCertificateSelectorDelegate?   ServerCertificateSelector    = null,
+                                                         Func<X509Certificate2>?              ServerCertificateSelector    = null,
                                                          RemoteCertificateValidationHandler?  ClientCertificateValidator   = null,
                                                          LocalCertificateSelectionHandler?    ClientCertificateSelector    = null,
                                                          SslProtocols?                        AllowedTLSProtocols          = null,

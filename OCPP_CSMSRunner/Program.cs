@@ -18,19 +18,32 @@
 #region Usings
 
 using System.Diagnostics;
+using System.Security.Cryptography;
 
 using Newtonsoft.Json;
+
+using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.Security;
+using Org.BouncyCastle.Crypto.Generators;
+using Org.BouncyCastle.X509;
+using Org.BouncyCastle.Pkcs;
+using Org.BouncyCastle.Math;
+using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.OpenSsl;
+using Org.BouncyCastle.Asn1.X9;
+using Org.BouncyCastle.Asn1.X509;
+using Org.BouncyCastle.Utilities;
+using Org.BouncyCastle.Crypto.Operators;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
+using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1;
 using OCPPv1_6 = cloud.charging.open.protocols.OCPPv1_6;
 using OCPPv2_1 = cloud.charging.open.protocols.OCPPv2_1;
-using cloud.charging.open.protocols.OCPPv2_1;
-using cloud.charging.open.protocols.OCPP;
-using System.Runtime.CompilerServices;
 
 #endregion
 
@@ -154,6 +167,108 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                    CancellationToken);
 
 
+        static System.Security.Cryptography.ECDsa ConvertFromPkcs8(byte[] pkcs8)
+        {
+            using (var ms     = new MemoryStream(pkcs8))
+            using (var reader = new BinaryReader(ms))
+            {
+                var ecdsa = System.Security.Cryptography.ECDsa.Create();
+                ecdsa.ImportPkcs8PrivateKey(reader.ReadBytes((int) ms.Length), out _);
+                return ecdsa;
+            }
+        }
+
+        #region ToDotNet(this Certificate, PrivateKey = null)
+
+        static ECDsa ToDotNetECDsa(ECPrivateKeyParameters privateKeyParameters)
+        {
+
+            var domainParameters  = privateKeyParameters.Parameters;
+            var curveParams       = domainParameters.Curve;
+            var q                 = domainParameters.G.Multiply(privateKeyParameters.D).Normalize();
+
+            var ecdsa             = ECDsa.Create(new ECParameters() {
+                                        Curve = ECCurve.CreateFromOid(new Oid(curveParams.ToString())),
+                                        D     = privateKeyParameters.D.ToByteArrayUnsigned(),
+                                        Q     = new ECPoint {
+                                                    X = q.AffineXCoord.GetEncoded(),
+                                                    Y = q.AffineYCoord.GetEncoded()
+                                                }
+                                    });
+
+            return ecdsa;
+
+        }
+
+
+        /// <summary>
+        /// Convert the Bouncy Castle certificate to a .NET certificate.
+        /// </summary>
+        /// <param name="Certificate">A Bouncy Castle certificate.</param>
+        /// <param name="PrivateKey">An optional private key to be included.</param>
+        static System.Security.Cryptography.X509Certificates.X509Certificate2? ToDotNet(X509Certificate                Certificate,
+                                                                                        AsymmetricKeyParameter?        PrivateKey       = null,
+                                                                                        IEnumerable<X509Certificate>?  CACertificates   = null)
+        {
+
+            if (PrivateKey is null)
+                return new (Certificate.GetEncoded());
+
+            if (PrivateKey is RsaPrivateCrtKeyParameters rsaPrivateKey)
+            {
+
+                var store             = new Pkcs12StoreBuilder().Build();
+                var certificateEntry  = new X509CertificateEntry(Certificate);
+
+                store.SetCertificateEntry(Certificate.SubjectDN.ToString(),
+                                          certificateEntry);
+
+                store.SetKeyEntry        (Certificate.SubjectDN.ToString(),
+                                          new AsymmetricKeyEntry(rsaPrivateKey),
+                                          [ certificateEntry ]);
+
+                foreach (var caCertificate in (CACertificates ?? []))
+                {
+                    store.SetCertificateEntry(caCertificate.SubjectDN.ToString(),
+                                              new X509CertificateEntry(caCertificate));
+                }
+
+                using (var pfxStream = new MemoryStream())
+                {
+
+                    var password = RandomExtensions.RandomString(10);
+
+                    store.Save(pfxStream,
+                               password.ToCharArray(),
+                               new SecureRandom());
+
+                    return new System.Security.Cryptography.X509Certificates.X509Certificate2(
+                               pfxStream.ToArray(),
+                               password,
+                               System.Security.Cryptography.X509Certificates.X509KeyStorageFlags.Exportable
+                           );
+
+                }
+
+            }
+
+            if (PrivateKey is ECPrivateKeyParameters eccPrivateKey)
+            {
+
+                //var dotNetCertificate = new System.Security.Cryptography.X509Certificates.X509Certificate2(Certificate.GetEncoded());
+                //var ecdsa             = ToDotNetECDsa(eccPrivateKey);
+
+                //return dotNetCertificate.CopyWithPrivateKey(ecdsa);
+
+            }
+
+            return null;
+
+        }
+
+        #endregion
+
+
         /// <summary>
         /// Start the OCPP CSMS Test Application.
         /// </summary>
@@ -180,6 +295,669 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
             #endregion
 
+
+            #region Setup PKI
+
+            #region Data
+
+            AsymmetricCipherKeyPair? rootCA_ECC_KeyPair           = null;
+            X509Certificate?         rootCA_ECC_Certificate       = null;
+
+            AsymmetricCipherKeyPair? rootCA_RSA_KeyPair           = null;
+            X509Certificate?         rootCA_RSA_Certificate       = null;
+
+            AsymmetricCipherKeyPair? serverCA_ECC_KeyPair         = null;
+            X509Certificate?         serverCA_ECC_Certificate     = null;
+
+            AsymmetricCipherKeyPair? serverCA_RSA_KeyPair         = null;
+            X509Certificate?         serverCA_RSA_Certificate     = null;
+
+            AsymmetricCipherKeyPair? clientCA_ECC_KeyPair         = null;
+            X509Certificate?         clientCA_ECC_Certificate     = null;
+
+            AsymmetricCipherKeyPair? clientCA_RSA_KeyPair         = null;
+            X509Certificate?         clientCA_RSA_Certificate     = null;
+
+
+            AsymmetricCipherKeyPair? server1_ECC_KeyPair          = null;
+            X509Certificate?         server1_ECC_Certificate      = null;
+
+            AsymmetricCipherKeyPair? server1_RSA_KeyPair          = null;
+            X509Certificate?         server1_RSA_Certificate      = null;
+
+
+            AsymmetricCipherKeyPair? client1_ECC_KeyPair          = null;
+            X509Certificate?         client1_ECC_Certificate      = null;
+
+            AsymmetricCipherKeyPair? client1_RSA_KeyPair          = null;
+            X509Certificate?         client1_RSA_Certificate      = null;
+
+            #endregion
+
+            #region Crypto defaults
+
+            var secureRandom                    = new SecureRandom();
+            var eccSignatureAlgorithm           = "SHA256withECDSA";
+            var rsaSignatureAlgorithm           = "SHA256WithRSA";
+
+            var eccCurve                        = ECNamedCurveTable.GetByName("secp256r1");
+            var eccDomainParameters             = new ECDomainParameters(eccCurve.Curve, eccCurve.G, eccCurve.N, eccCurve.H, eccCurve.GetSeed());
+            var eccKeyGenParams                 = new ECKeyGenerationParameters(eccDomainParameters, secureRandom);
+
+            Directory.CreateDirectory(Path.Combine(AppContext.BaseDirectory, "pki"));
+            var rootCA_ECC_privateKeyFile       = Path.Combine(AppContext.BaseDirectory, "pki", "rootCA_ECC.key");
+            var rootCA_ECC_certificateFile      = Path.Combine(AppContext.BaseDirectory, "pki", "rootCA_ECC.cert");
+            var rootCA_RSA_privateKeyFile       = Path.Combine(AppContext.BaseDirectory, "pki", "rootCA_RSA.key");
+            var rootCA_RSA_certificateFile      = Path.Combine(AppContext.BaseDirectory, "pki", "rootCA_RSA.cert");
+
+            var serverCA_ECC_privateKeyFile     = Path.Combine(AppContext.BaseDirectory, "pki", "serverCA_ECC.key");
+            var serverCA_ECC_certificateFile    = Path.Combine(AppContext.BaseDirectory, "pki", "serverCA_ECC.cert");
+            var serverCA_RSA_privateKeyFile     = Path.Combine(AppContext.BaseDirectory, "pki", "serverCA_RSA.key");
+            var serverCA_RSA_certificateFile    = Path.Combine(AppContext.BaseDirectory, "pki", "serverCA_RSA.cert");
+
+            var clientCA_ECC_privateKeyFile     = Path.Combine(AppContext.BaseDirectory, "pki", "clientCA_ECC.key");
+            var clientCA_ECC_certificateFile    = Path.Combine(AppContext.BaseDirectory, "pki", "clientCA_ECC.cert");
+            var clientCA_RSA_privateKeyFile     = Path.Combine(AppContext.BaseDirectory, "pki", "clientCA_RSA.key");
+            var clientCA_RSA_certificateFile    = Path.Combine(AppContext.BaseDirectory, "pki", "clientCA_RSA.cert");
+
+
+            var server1_ECC_privateKeyFile      = Path.Combine(AppContext.BaseDirectory, "pki", "server1_ECC.key");
+            var server1_ECC_certificateFile     = Path.Combine(AppContext.BaseDirectory, "pki", "server1_ECC.cert");
+            var server1_ECC_pfx                 = Path.Combine(AppContext.BaseDirectory, "pki", "server1_ECC.pfx");
+
+            var server1_RSA_privateKeyFile      = Path.Combine(AppContext.BaseDirectory, "pki", "server1_RSA.key");
+            var server1_RSA_certificateFile     = Path.Combine(AppContext.BaseDirectory, "pki", "server1_RSA.cert");
+            var server1_RSA_pfx                 = Path.Combine(AppContext.BaseDirectory, "pki", "server1_RSA.pfx");
+
+
+            var client1_ECC_privateKeyFile      = Path.Combine(AppContext.BaseDirectory, "pki", "client1_ECC.key");
+            var client1_ECC_certificateFile     = Path.Combine(AppContext.BaseDirectory, "pki", "client1_ECC.cert");
+
+            var client1_RSA_privateKeyFile      = Path.Combine(AppContext.BaseDirectory, "pki", "client1_RSA.key");
+            var client1_RSA_certificateFile     = Path.Combine(AppContext.BaseDirectory, "pki", "client1_RSA.cert");
+
+            #endregion
+
+            #region Try to reload crypto data from disc
+
+            try
+            {
+
+                using (var reader = File.OpenText(rootCA_ECC_privateKeyFile))
+                {
+                    rootCA_ECC_KeyPair     = (AsymmetricCipherKeyPair)   new PemReader(reader).ReadObject();
+                }
+
+                using (var reader = File.OpenText(rootCA_ECC_certificateFile))
+                {
+                    rootCA_ECC_Certificate = (X509Certificate)           new PemReader(reader).ReadObject();
+                }
+
+                using (var reader = File.OpenText(rootCA_RSA_privateKeyFile))
+                {
+                    rootCA_RSA_KeyPair     = (AsymmetricCipherKeyPair)   new PemReader(reader).ReadObject();
+                }
+
+                using (var reader = File.OpenText(rootCA_RSA_certificateFile))
+                {
+                    rootCA_RSA_Certificate = (X509Certificate)           new PemReader(reader).ReadObject();
+                }
+
+
+
+                using (var reader = File.OpenText(serverCA_ECC_privateKeyFile))
+                {
+                    serverCA_ECC_KeyPair     = (AsymmetricCipherKeyPair) new PemReader(reader).ReadObject();
+                }
+
+                using (var reader = File.OpenText(serverCA_ECC_certificateFile))
+                {
+                    serverCA_ECC_Certificate = (X509Certificate)         new PemReader(reader).ReadObject();
+                }
+
+                using (var reader = File.OpenText(serverCA_RSA_privateKeyFile))
+                {
+                    serverCA_RSA_KeyPair     = (AsymmetricCipherKeyPair) new PemReader(reader).ReadObject();
+                }
+
+                using (var reader = File.OpenText(serverCA_RSA_certificateFile))
+                {
+                    serverCA_RSA_Certificate = (X509Certificate)         new PemReader(reader).ReadObject();
+                }
+
+
+
+                using (var reader = File.OpenText(clientCA_ECC_privateKeyFile))
+                {
+                    clientCA_ECC_KeyPair     = (AsymmetricCipherKeyPair) new PemReader(reader).ReadObject();
+                }
+
+                using (var reader = File.OpenText(clientCA_ECC_certificateFile))
+                {
+                    clientCA_ECC_Certificate = (X509Certificate)         new PemReader(reader).ReadObject();
+                }
+
+                using (var reader = File.OpenText(clientCA_RSA_privateKeyFile))
+                {
+                    clientCA_RSA_KeyPair     = (AsymmetricCipherKeyPair) new PemReader(reader).ReadObject();
+                }
+
+                using (var reader = File.OpenText(clientCA_RSA_certificateFile))
+                {
+                    clientCA_RSA_Certificate = (X509Certificate)         new PemReader(reader).ReadObject();
+                }
+
+
+
+                using (var reader = File.OpenText(server1_ECC_privateKeyFile))
+                {
+                    server1_ECC_KeyPair       = (AsymmetricCipherKeyPair) new PemReader(reader).ReadObject();
+                }
+
+                using (var reader = File.OpenText(server1_ECC_certificateFile))
+                {
+                    server1_ECC_Certificate   = (X509Certificate)         new PemReader(reader).ReadObject();
+                }
+
+                using (var reader = File.OpenText(server1_RSA_privateKeyFile))
+                {
+                    server1_RSA_KeyPair       = (AsymmetricCipherKeyPair) new PemReader(reader).ReadObject();
+                }
+
+                using (var reader = File.OpenText(server1_RSA_certificateFile))
+                {
+                    server1_RSA_Certificate   = (X509Certificate)         new PemReader(reader).ReadObject();
+                }
+
+
+
+                using (var reader = File.OpenText(client1_ECC_privateKeyFile))
+                {
+                    client1_ECC_KeyPair       = (AsymmetricCipherKeyPair) new PemReader(reader).ReadObject();
+                }
+
+                using (var reader = File.OpenText(client1_ECC_certificateFile))
+                {
+                    client1_ECC_Certificate   = (X509Certificate)         new PemReader(reader).ReadObject();
+                }
+
+                using (var reader = File.OpenText(client1_RSA_privateKeyFile))
+                {
+                    client1_RSA_KeyPair       = (AsymmetricCipherKeyPair) new PemReader(reader).ReadObject();
+                }
+
+                using (var reader = File.OpenText(client1_RSA_certificateFile))
+                {
+                    client1_RSA_Certificate   = (X509Certificate)         new PemReader(reader).ReadObject();
+                }
+
+            }
+            catch
+            { }
+
+            #endregion
+
+
+            if (rootCA_ECC_KeyPair         is null)
+            {
+
+                var keyPairGenerator  = new ECKeyPairGenerator();
+                keyPairGenerator.Init(eccKeyGenParams);
+                rootCA_ECC_KeyPair        = keyPairGenerator.GenerateKeyPair();
+
+                using (var writer = new StreamWriter(rootCA_ECC_privateKeyFile))
+                {
+                    var pemWriter = new PemWriter(writer);
+                    pemWriter.WriteObject(rootCA_ECC_KeyPair.Private);
+                    pemWriter.Writer.Flush();
+                }
+
+            }
+
+            if (rootCA_ECC_Certificate     is null)
+            {
+
+                var certificateGenerator  = new X509V3CertificateGenerator();
+                var subjectDN             = new X509Name("CN=Open Charging Cloud - Root CA, O=GraphDefined GmbH, L=Jena, C=Germany");
+
+                certificateGenerator.SetIssuerDN    (subjectDN); // self-signed
+                certificateGenerator.SetSubjectDN   (subjectDN);
+                certificateGenerator.SetNotBefore   (Timestamp.Now.AddDays (-3));
+                certificateGenerator.SetNotAfter    (Timestamp.Now.AddYears(23));
+                certificateGenerator.SetPublicKey   (rootCA_ECC_KeyPair.Public);
+                certificateGenerator.SetSerialNumber(BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(long.MaxValue), secureRandom));
+
+                certificateGenerator.AddExtension   (X509Extensions.BasicConstraints,
+                                                     critical: true,
+                                                     new BasicConstraints(cA: true));
+
+                certificateGenerator.AddExtension   (X509Extensions.KeyUsage,
+                                                     critical: true,
+                                                     new KeyUsage(
+                                                         KeyUsage.DigitalSignature |
+                                                         KeyUsage.KeyCertSign |
+                                                         KeyUsage.CrlSign
+                                                     ));
+
+                rootCA_ECC_Certificate = certificateGenerator.Generate(new Asn1SignatureFactory(eccSignatureAlgorithm, rootCA_ECC_KeyPair.Private, secureRandom));
+
+                using (var writer = new StreamWriter(rootCA_ECC_certificateFile))
+                {
+                    var pemWriter = new PemWriter(writer);
+                    pemWriter.WriteObject(rootCA_ECC_Certificate);
+                    pemWriter.Writer.Flush();
+                }
+
+            }
+
+            if (rootCA_RSA_KeyPair         is null)
+            {
+
+                var rsaKeyPairGenerator = new RsaKeyPairGenerator();
+                rsaKeyPairGenerator.Init(new KeyGenerationParameters(secureRandom, 2048));
+                rootCA_RSA_KeyPair = rsaKeyPairGenerator.GenerateKeyPair();
+
+                using (var writer = new StreamWriter(rootCA_RSA_privateKeyFile))
+                {
+                    var pemWriter = new PemWriter(writer);
+                    pemWriter.WriteObject(rootCA_RSA_KeyPair.Private);
+                    pemWriter.Writer.Flush();
+                }
+
+            }
+
+            if (rootCA_RSA_Certificate     is null)
+            {
+
+                var certificateGenerator  = new X509V3CertificateGenerator();
+                var subjectDN             = new X509Name("CN=Open Charging Cloud - Root CA, O=GraphDefined GmbH, L=Jena, C=Germany");
+
+                certificateGenerator.SetIssuerDN    (subjectDN); // self-signed
+                certificateGenerator.SetSubjectDN   (subjectDN);
+                certificateGenerator.SetNotBefore   (Timestamp.Now.AddDays (-3));
+                certificateGenerator.SetNotAfter    (Timestamp.Now.AddYears(23));
+                certificateGenerator.SetPublicKey   (rootCA_RSA_KeyPair.Public);
+                certificateGenerator.SetSerialNumber(BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(long.MaxValue), secureRandom));
+
+                certificateGenerator.AddExtension   (X509Extensions.BasicConstraints,
+                                                     critical: true,
+                                                     new BasicConstraints(cA: true));
+
+                certificateGenerator.AddExtension   (X509Extensions.KeyUsage,
+                                                     critical: true,
+                                                     new KeyUsage(
+                                                         KeyUsage.DigitalSignature |
+                                                         KeyUsage.KeyCertSign |
+                                                         KeyUsage.CrlSign
+                                                     ));
+
+                rootCA_RSA_Certificate = certificateGenerator.Generate(new Asn1SignatureFactory(rsaSignatureAlgorithm, rootCA_RSA_KeyPair.Private, secureRandom));
+
+                using (var writer = new StreamWriter(rootCA_RSA_certificateFile))
+                {
+                    var pemWriter = new PemWriter(writer);
+                    pemWriter.WriteObject(rootCA_RSA_Certificate);
+                    pemWriter.Writer.Flush();
+                }
+
+            }
+
+
+            if (serverCA_ECC_KeyPair       is null)
+            {
+
+                var keyPairGenerator  = new ECKeyPairGenerator();
+                keyPairGenerator.Init(eccKeyGenParams);
+                serverCA_ECC_KeyPair      = keyPairGenerator.GenerateKeyPair();
+
+                using (var writer = new StreamWriter(serverCA_ECC_privateKeyFile))
+                {
+                    var pemWriter = new PemWriter(writer);
+                    pemWriter.WriteObject(serverCA_ECC_KeyPair.Private);
+                    pemWriter.Writer.Flush();
+                }
+
+            }
+
+            if (serverCA_ECC_Certificate   is null)
+            {
+
+                var certificateGenerator  = new X509V3CertificateGenerator();
+
+                certificateGenerator.SetIssuerDN    (new X509Name(rootCA_ECC_Certificate.SubjectDN.ToString()));
+                certificateGenerator.SetSubjectDN   (new X509Name("CN=Open Charging Cloud - Server CA, O=GraphDefined GmbH, L=Jena, C=Germany"));
+                certificateGenerator.SetNotBefore   (Timestamp.Now.AddDays (-2));
+                certificateGenerator.SetNotAfter    (Timestamp.Now.AddYears(+5));
+                certificateGenerator.SetPublicKey   (serverCA_ECC_KeyPair.Public);
+                certificateGenerator.SetSerialNumber(BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(long.MaxValue), secureRandom));
+
+                certificateGenerator.AddExtension   (X509Extensions.BasicConstraints,
+                                                     critical: true,
+                                                     // A CA certificate, but it cannot be used to sign other CA certificates,
+                                                     // only end-entity certificates.
+                                                     new BasicConstraints(0));
+
+                certificateGenerator.AddExtension   (X509Extensions.KeyUsage,
+                                                     critical: true,
+                                                     new KeyUsage(
+                                                         KeyUsage.DigitalSignature |
+                                                         KeyUsage.KeyCertSign |
+                                                         KeyUsage.CrlSign
+                                                     ));
+
+                serverCA_ECC_Certificate = certificateGenerator.Generate(new Asn1SignatureFactory(eccSignatureAlgorithm, rootCA_ECC_KeyPair.Private, secureRandom));
+
+                using (var writer = new StreamWriter(serverCA_ECC_certificateFile))
+                {
+                    var pemWriter = new PemWriter(writer);
+                    pemWriter.WriteObject(serverCA_ECC_Certificate);
+                    pemWriter.Writer.Flush();
+                }
+
+            }
+
+            if (serverCA_RSA_KeyPair       is null)
+            {
+
+                var rsaKeyPairGenerator = new RsaKeyPairGenerator();
+                rsaKeyPairGenerator.Init(new KeyGenerationParameters(secureRandom, 2048));
+                serverCA_RSA_KeyPair = rsaKeyPairGenerator.GenerateKeyPair();
+
+                using (var writer = new StreamWriter(serverCA_RSA_privateKeyFile))
+                {
+                    var pemWriter = new PemWriter(writer);
+                    pemWriter.WriteObject(serverCA_RSA_KeyPair.Private);
+                    pemWriter.Writer.Flush();
+                }
+
+            }
+
+            if (serverCA_RSA_Certificate   is null)
+            {
+
+                var certificateGenerator  = new X509V3CertificateGenerator();
+
+                certificateGenerator.SetIssuerDN    (new X509Name(rootCA_RSA_Certificate.SubjectDN.ToString()));
+                certificateGenerator.SetSubjectDN   (new X509Name("CN=Open Charging Cloud - Server CA, O=GraphDefined GmbH, L=Jena, C=Germany"));
+                certificateGenerator.SetNotBefore   (Timestamp.Now.AddDays (-3));
+                certificateGenerator.SetNotAfter    (Timestamp.Now.AddYears(23));
+                certificateGenerator.SetPublicKey   (serverCA_RSA_KeyPair.Public);
+                certificateGenerator.SetSerialNumber(BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(long.MaxValue), secureRandom));
+
+                certificateGenerator.AddExtension   (X509Extensions.BasicConstraints,
+                                                     critical: true,
+                                                     // A CA certificate, but it cannot be used to sign other CA certificates,
+                                                     // only end-entity certificates.
+                                                     new BasicConstraints(0));
+
+                certificateGenerator.AddExtension   (X509Extensions.KeyUsage,
+                                                     critical: true,
+                                                     new KeyUsage(
+                                                         KeyUsage.DigitalSignature |
+                                                         KeyUsage.KeyCertSign |
+                                                         KeyUsage.CrlSign
+                                                     ));
+
+                serverCA_RSA_Certificate = certificateGenerator.Generate(new Asn1SignatureFactory(rsaSignatureAlgorithm, rootCA_RSA_KeyPair.Private, secureRandom));
+
+                using (var writer = new StreamWriter(serverCA_RSA_certificateFile))
+                {
+                    var pemWriter = new PemWriter(writer);
+                    pemWriter.WriteObject(serverCA_RSA_Certificate);
+                    pemWriter.Writer.Flush();
+                }
+
+            }
+
+
+            if (clientCA_ECC_KeyPair       is null)
+            {
+
+                var keyPairGenerator  = new ECKeyPairGenerator();
+                keyPairGenerator.Init(eccKeyGenParams);
+                clientCA_ECC_KeyPair      = keyPairGenerator.GenerateKeyPair();
+
+                using (var writer = new StreamWriter(clientCA_ECC_privateKeyFile))
+                {
+                    var pemWriter = new PemWriter(writer);
+                    pemWriter.WriteObject(clientCA_ECC_KeyPair.Private);
+                    pemWriter.Writer.Flush();
+                }
+
+            }
+
+            if (clientCA_ECC_Certificate   is null)
+            {
+
+                var certificateGenerator  = new X509V3CertificateGenerator();
+
+                certificateGenerator.SetIssuerDN    (new X509Name(rootCA_ECC_Certificate.SubjectDN.ToString()));
+                certificateGenerator.SetSubjectDN   (new X509Name("CN=Open Charging Cloud - Client CA, O=GraphDefined GmbH, L=Jena, C=Germany"));
+                certificateGenerator.SetNotBefore   (Timestamp.Now.AddDays (-2));
+                certificateGenerator.SetNotAfter    (Timestamp.Now.AddYears(+5));
+                certificateGenerator.SetPublicKey   (clientCA_ECC_KeyPair.Public);
+                certificateGenerator.SetSerialNumber(BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(long.MaxValue), secureRandom));
+
+                certificateGenerator.AddExtension   (X509Extensions.BasicConstraints,
+                                                     critical: true,
+                                                     // A CA certificate, but it cannot be used to sign other CA certificates,
+                                                     // only end-entity certificates.
+                                                     new BasicConstraints(0));
+
+                certificateGenerator.AddExtension   (X509Extensions.KeyUsage,
+                                                     critical: true,
+                                                     new KeyUsage(
+                                                         KeyUsage.DigitalSignature |
+                                                         KeyUsage.KeyCertSign |
+                                                         KeyUsage.CrlSign
+                                                     ));
+
+                clientCA_ECC_Certificate = certificateGenerator.Generate(new Asn1SignatureFactory(eccSignatureAlgorithm, rootCA_ECC_KeyPair.Private, secureRandom));
+
+                using (var writer = new StreamWriter(clientCA_ECC_certificateFile))
+                {
+                    var pemWriter = new PemWriter(writer);
+                    pemWriter.WriteObject(clientCA_ECC_Certificate);
+                    pemWriter.Writer.Flush();
+                }
+
+            }
+
+            if (clientCA_RSA_KeyPair       is null)
+            {
+
+                var rsaKeyPairGenerator = new RsaKeyPairGenerator();
+                rsaKeyPairGenerator.Init(new KeyGenerationParameters(secureRandom, 2048));
+                clientCA_RSA_KeyPair = rsaKeyPairGenerator.GenerateKeyPair();
+
+                using (var writer = new StreamWriter(clientCA_RSA_privateKeyFile))
+                {
+                    var pemWriter = new PemWriter(writer);
+                    pemWriter.WriteObject(clientCA_RSA_KeyPair.Private);
+                    pemWriter.Writer.Flush();
+                }
+
+            }
+
+            if (clientCA_RSA_Certificate   is null)
+            {
+
+                var certificateGenerator  = new X509V3CertificateGenerator();
+
+                certificateGenerator.SetIssuerDN    (new X509Name(rootCA_ECC_Certificate.SubjectDN.ToString()));
+                certificateGenerator.SetSubjectDN   (new X509Name("CN=Open Charging Cloud - Client CA, O=GraphDefined GmbH, L=Jena, C=Germany"));
+                certificateGenerator.SetNotBefore   (Timestamp.Now.AddDays (-3));
+                certificateGenerator.SetNotAfter    (Timestamp.Now.AddYears(23));
+                certificateGenerator.SetPublicKey   (clientCA_RSA_KeyPair.Public);
+                certificateGenerator.SetSerialNumber(BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(long.MaxValue), secureRandom));
+
+                certificateGenerator.AddExtension   (X509Extensions.BasicConstraints,
+                                                     critical: true,
+                                                     // A CA certificate, but it cannot be used to sign other CA certificates,
+                                                     // only end-entity certificates.
+                                                     new BasicConstraints(0));
+
+                certificateGenerator.AddExtension   (X509Extensions.KeyUsage,
+                                                     critical: true,
+                                                     new KeyUsage(
+                                                         KeyUsage.DigitalSignature |
+                                                         KeyUsage.KeyCertSign |
+                                                         KeyUsage.CrlSign
+                                                     ));
+
+                clientCA_RSA_Certificate = certificateGenerator.Generate(new Asn1SignatureFactory(rsaSignatureAlgorithm, rootCA_RSA_KeyPair.Private, secureRandom));
+
+                using (var writer = new StreamWriter(clientCA_RSA_certificateFile))
+                {
+                    var pemWriter = new PemWriter(writer);
+                    pemWriter.WriteObject(clientCA_RSA_Certificate);
+                    pemWriter.Writer.Flush();
+                }
+
+            }
+
+
+            if (server1_ECC_KeyPair        is null)
+            {
+
+                var keyPairGenerator  = new ECKeyPairGenerator();
+                keyPairGenerator.Init(eccKeyGenParams);
+                server1_ECC_KeyPair        = keyPairGenerator.GenerateKeyPair();
+
+                using (var writer = new StreamWriter(server1_ECC_privateKeyFile))
+                {
+                    var pemWriter = new PemWriter(writer);
+                    pemWriter.WriteObject(server1_ECC_KeyPair.Private);
+                    pemWriter.Writer.Flush();
+                }
+
+            }
+
+            if (server1_ECC_Certificate    is null)
+            {
+
+                var certificateGenerator  = new X509V3CertificateGenerator();
+
+                certificateGenerator.SetIssuerDN    (new X509Name(serverCA_ECC_Certificate.SubjectDN.ToString()));
+                certificateGenerator.SetSubjectDN   (new X509Name("CN=api1.charging.cloud, O=GraphDefined GmbH, L=Jena, C=Germany"));
+                certificateGenerator.SetNotBefore   (Timestamp.Now.AddDays  (-1));
+                certificateGenerator.SetNotAfter    (Timestamp.Now.AddMonths(+3));
+                certificateGenerator.SetPublicKey   (server1_ECC_KeyPair.Public);
+                certificateGenerator.SetSerialNumber(BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(long.MaxValue), secureRandom));
+
+                certificateGenerator.AddExtension   (X509Extensions.KeyUsage,         critical: true, new KeyUsage        (KeyUsage.DigitalSignature | KeyUsage.KeyEncipherment));
+                certificateGenerator.AddExtension   (X509Extensions.ExtendedKeyUsage, critical: true, new ExtendedKeyUsage(KeyPurposeID.id_kp_serverAuth));
+
+                certificateGenerator.AddExtension   (X509Extensions.SubjectAlternativeName, critical: false, new GeneralNames([
+                                                                                                                                  new (GeneralName.DnsName,   "api1.charging.cloud"),
+                                                                                                                                  new (GeneralName.IPAddress, "127.0.0.1"),
+                                                                                                                                  new (GeneralName.IPAddress, "172.23.144.1")
+                                                                                                                              ]));
+
+                server1_ECC_Certificate = certificateGenerator.Generate(new Asn1SignatureFactory(eccSignatureAlgorithm, serverCA_ECC_KeyPair.Private, secureRandom));
+
+                using (var writer = new StreamWriter(server1_ECC_certificateFile))
+                {
+                    var pemWriter = new PemWriter(writer);
+                    pemWriter.WriteObject(server1_ECC_Certificate);
+                    pemWriter.Writer.Flush();
+                }
+
+            }
+
+
+            if (server1_RSA_KeyPair        is null)
+            {
+
+                var rsaKeyPairGenerator = new RsaKeyPairGenerator();
+                rsaKeyPairGenerator.Init(new KeyGenerationParameters(secureRandom, 2048));
+                server1_RSA_KeyPair = rsaKeyPairGenerator.GenerateKeyPair();
+
+                using (var writer = new StreamWriter(server1_RSA_privateKeyFile))
+                {
+                    var pemWriter = new PemWriter(writer);
+                    pemWriter.WriteObject(server1_RSA_KeyPair.Private);
+                    pemWriter.Writer.Flush();
+                }
+
+            }
+
+            if (server1_RSA_Certificate    is null)
+            {
+
+                var certificateGenerator  = new X509V3CertificateGenerator();
+
+                certificateGenerator.SetIssuerDN    (new X509Name(serverCA_RSA_Certificate.SubjectDN.ToString()));
+                certificateGenerator.SetSubjectDN   (new X509Name("CN=api1.charging.cloud, O=GraphDefined GmbH, L=Jena, C=Germany"));
+                certificateGenerator.SetNotBefore   (Timestamp.Now.AddDays  (-1));
+                certificateGenerator.SetNotAfter    (Timestamp.Now.AddMonths(+3));
+                certificateGenerator.SetPublicKey   (server1_RSA_KeyPair.Public);
+                certificateGenerator.SetSerialNumber(BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(long.MaxValue), secureRandom));
+
+                certificateGenerator.AddExtension   (X509Extensions.KeyUsage,               critical: true,  new KeyUsage        (KeyUsage.DigitalSignature | KeyUsage.KeyEncipherment));
+                certificateGenerator.AddExtension   (X509Extensions.ExtendedKeyUsage,       critical: true,  new ExtendedKeyUsage(KeyPurposeID.id_kp_serverAuth));
+
+                certificateGenerator.AddExtension   (X509Extensions.SubjectAlternativeName, critical: false, new GeneralNames([
+                                                                                                                                  new (GeneralName.DnsName,   "api1.charging.cloud"),
+                                                                                                                                  new (GeneralName.IPAddress, "127.0.0.1"),
+                                                                                                                                  new (GeneralName.IPAddress, "172.23.144.1")
+                                                                                                                              ]));
+
+                server1_RSA_Certificate = certificateGenerator.Generate(new Asn1SignatureFactory(rsaSignatureAlgorithm, serverCA_RSA_KeyPair.Private, secureRandom));
+
+                using (var writer = new StreamWriter(server1_RSA_certificateFile))
+                {
+                    var pemWriter = new PemWriter(writer);
+                    pemWriter.WriteObject(server1_RSA_Certificate);
+                    pemWriter.Writer.Flush();
+                }
+
+            }
+
+
+            if (client1_RSA_KeyPair        is null)
+            {
+
+                var rsaKeyPairGenerator = new RsaKeyPairGenerator();
+                rsaKeyPairGenerator.Init(new KeyGenerationParameters(secureRandom, 2048));
+                client1_RSA_KeyPair = rsaKeyPairGenerator.GenerateKeyPair();
+
+                using (var writer = new StreamWriter(client1_RSA_privateKeyFile))
+                {
+                    var pemWriter = new PemWriter(writer);
+                    pemWriter.WriteObject(client1_RSA_KeyPair.Private);
+                    pemWriter.Writer.Flush();
+                }
+
+            }
+
+            if (client1_RSA_Certificate    is null)
+            {
+
+                var certificateGenerator  = new X509V3CertificateGenerator();
+
+                certificateGenerator.SetIssuerDN    (new X509Name(clientCA_RSA_Certificate.SubjectDN.ToString()));
+                certificateGenerator.SetSubjectDN   (new X509Name("CN=client1, O=GraphDefined GmbH, L=Jena, C=Germany"));
+                certificateGenerator.SetNotBefore   (Timestamp.Now.AddDays  (-1));
+                certificateGenerator.SetNotAfter    (Timestamp.Now.AddMonths(+3));
+                certificateGenerator.SetPublicKey   (client1_RSA_KeyPair.Public);
+                certificateGenerator.SetSerialNumber(BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(long.MaxValue), secureRandom));
+
+                certificateGenerator.AddExtension   (X509Extensions.KeyUsage,         critical: true, new KeyUsage        (KeyUsage.NonRepudiation | KeyUsage.DigitalSignature | KeyUsage.KeyEncipherment));
+                certificateGenerator.AddExtension   (X509Extensions.ExtendedKeyUsage, critical: true, new ExtendedKeyUsage(KeyPurposeID.id_kp_clientAuth));
+
+                client1_RSA_Certificate = certificateGenerator.Generate(new Asn1SignatureFactory(rsaSignatureAlgorithm, clientCA_RSA_KeyPair.Private, secureRandom));
+
+                using (var writer = new StreamWriter(client1_RSA_certificateFile))
+                {
+                    var pemWriter = new PemWriter(writer);
+                    pemWriter.WriteObject(client1_RSA_Certificate);
+                    pemWriter.Writer.Flush();
+                }
+
+            }
+
+            #endregion
 
             #region Setup Central System v1.6
 
@@ -392,9 +1170,10 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
             var testCSMSv2_1 = new OCPPv2_1.TestCSMS(
                                    Id:                     NetworkingNode_Id.Parse("OCPPv2.1-Test-01"),
-                                   RequireAuthentication:  true,
+                                   RequireAuthentication:  false,
                                    DNSClient:              dnsClient
                                );
+
 
             testCSMSv2_1.AttachWebSocketService(
                 TCPPort:                     IPPort.Parse(9920),
@@ -402,6 +1181,141 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                 //SlowNetworkSimulationDelay:  TimeSpan.FromMilliseconds(10),
                 AutoStart:                   true
             );
+
+
+            // cat serverCA.cert rootCA.cert > caChain.cert
+            // openssl s_client -connect 127.0.0.1:9921 -CAfile caChain.cert -showcerts
+            // openssl ec   -in server1ECC.key  -pubout 2>/dev/null | openssl dgst -sha256
+            // openssl x509 -in server1ECC.cert -pubkey -noout      | openssl dgst -sha256
+            //
+            // openssl pkcs12 -export -out server1ECC.pfx -inkey server1ECC.key -in server1ECC.cert -certfile caChain.cert
+            // openssl pkcs12 -in server1ECC.pfx - nokeys - passin pass:
+            //
+            // openssl ecparam -name secp256r1 -genkey -out secp256r1key.pem
+            // MSYS_NO_PATHCONV=1 openssl req -new -key secp256r1key.pem -out secp256r1req.pem -subj '/C=US/ST=YourState/L=YourCity/O=YourOrganization/CN=yourname'
+            // openssl x509 -req -in secp256r1req.pem -CA serverCA.cert -CAkey serverCA.key -CAcreateserial -out secp256r1cert.pem -days 365 -sha256
+            testCSMSv2_1.AttachWebSocketService(
+                TCPPort:                     IPPort.Parse(9921),
+                ServerCertificateSelector:   () => //new System.Security.Cryptography.X509Certificates.X509Certificate2(server1ECC_pfx, "", System.Security.Cryptography.X509Certificates.X509KeyStorageFlags.PersistKeySet),
+                                                   System.Security.Cryptography.X509Certificates.X509Certificate2.CreateFromPemFile(server1_ECC_certificateFile, server1_ECC_privateKeyFile), //Path.Combine(AppContext.BaseDirectory, "pki", "server1ECC_fixed.key")),//
+
+                                                   /// Authentication failed because the platform does not support ephemeral keys.
+                                                   //System.Security.Cryptography.X509Certificates.X509Certificate2.CreateFromPemFile(
+                                                   //    Path.Combine(AppContext.BaseDirectory, "pki", "secp256r1cert.pem"),
+                                                   //    Path.Combine(AppContext.BaseDirectory, "pki", "secp256r1key.pem")
+                                                   //),
+                DisableWebSocketPings:       false,
+
+                //SlowNetworkSimulationDelay:  TimeSpan.FromMilliseconds(10),
+                AutoStart:                   true
+            );
+
+
+            // cat serverCA_RSA.cert rootCA_RSA.cert > caChain_RSA.cert
+
+            // openssl s_client -connect 127.0.0.1:9922 -CAfile caChain_RSA.cert -showcerts
+            // CONNECTED(00000160)
+            // Can't use SSL_get_servername
+            // depth=2 CN = Open Charging Cloud - Root CA, O = GraphDefined GmbH, L = Jena, C = Germany
+            // verify return:1
+            // depth=1 CN = Open Charging Cloud - Server CA, O = GraphDefined GmbH, L = Jena, C = Germany
+            // verify return:1
+            // depth=0 CN = api1.charging.cloud, O = GraphDefined GmbH, L = Jena, C = Germany
+            // verify return:1
+            // ---
+            // Certificate chain
+            //  0 s:CN = api1.charging.cloud, O = GraphDefined GmbH, L = Jena, C = Germany
+            //    i:CN = Open Charging Cloud - Server CA, O = GraphDefined GmbH, L = Jena, C = Germany
+            //    a:PKEY: rsaEncryption, 2048 (bit); sigalg: RSA-SHA256
+            //    v:NotBefore: Mar  2 00:34:59 2024 GMT; NotAfter: Jun  3 00:34:59 2024 GMT
+
+            // openssl s_client -connect 127.0.0.1:9922 -CAfile caChain.cert -showcerts -cert client1RSA.cert -key client1RSA.key
+            testCSMSv2_1.AttachWebSocketService(
+                TCPPort:                     IPPort.Parse(9922),
+                ServerCertificateSelector:   () => ToDotNet(server1_RSA_Certificate, server1_RSA_KeyPair.Private)!,
+                                                   //NotWorking:  System.Security.Cryptography.X509Certificates.X509Certificate2.CreateFromPemFile(server1RSA_certificateFile, server1RSA_privateKeyFile),
+                                                   //NotWorking:  ConvertToX509Certificate2(server1RSA_Certificate, server1RSA_KeyPair.Private),
+                                                   //IsWorking:   new System.Security.Cryptography.X509Certificates.X509Certificate2(server1RSA_pfx, "", System.Security.Cryptography.X509Certificates.X509KeyStorageFlags.PersistKeySet),
+                AllowedTLSProtocols:         System.Security.Authentication.SslProtocols.Tls12,
+
+
+                // openssl.exe x509 -in client1RSA.cert -text -noout
+                // 
+                //ClientCertificateRequired:    true,
+                //ClientCertificateValidator:   (a, b, c, d)    => {
+                //                                                     return (true, []);
+                //                                                 },
+                //ClientCertificateSelector:    (a, b, c, d, e) => {
+                //                                                     return d;
+                //                                                 },
+
+                DisableWebSocketPings:        false,
+
+                //SlowNetworkSimulationDelay:  TimeSpan.FromMilliseconds(10),
+                AutoStart:                   true
+            );
+
+
+            // cat serverCA_RSA.cert clientCA_RSA.cert rootCA_RSA.cert > caChain_RSA.cert
+
+            // openssl s_client -connect 127.0.0.1:9923 -cert client1_RSA.cert -key client1_RSA.key -CAfile caChain_RSA.cert -showcerts
+            testCSMSv2_1.AttachWebSocketService(
+                TCPPort:                     IPPort.Parse(9923),
+                ServerCertificateSelector:   () => ToDotNet(server1_RSA_Certificate, server1_RSA_KeyPair.Private)!,
+                                                   //NotWorking:  System.Security.Cryptography.X509Certificates.X509Certificate2.CreateFromPemFile(server1RSA_certificateFile, server1RSA_privateKeyFile),
+                                                   //NotWorking:  ConvertToX509Certificate2(server1RSA_Certificate, server1RSA_KeyPair.Private),
+                                                   //IsWorking:   new System.Security.Cryptography.X509Certificates.X509Certificate2(server1RSA_pfx, "", System.Security.Cryptography.X509Certificates.X509KeyStorageFlags.PersistKeySet),
+                AllowedTLSProtocols:         System.Security.Authentication.SslProtocols.Tls12,
+
+
+                // openssl.exe x509 -in client1RSA.cert -text -noout
+                ClientCertificateRequired:    true,
+                ClientCertificateValidator:   (a, b, c, d)    => {
+                                                                     return (true, []);
+                                                                 },
+                ClientCertificateSelector:    (a, b, c, d, e) => {
+                                                                     return d;
+                                                                 },
+
+                DisableWebSocketPings:        false,
+
+                //SlowNetworkSimulationDelay:  TimeSpan.FromMilliseconds(10),
+                AutoStart:                   true
+            );
+
+
+            // Win11:
+            //  - Import RootCA to "Trusted Root Certification Authorities" for the entire computer
+            //  - Import ServerCA to "Intermediate Certification Authorities" for the entire computer
+            //  - Verify via "certmgr"
+
+            // Win11 WSL (Debian):
+            //  - sudo wget -qO /usr/local/bin/websocat https://github.com/vi/websocat/releases/latest/download/websocat.x86_64-unknown-linux-musl
+            //  - chmod +x /usr/local/bin/websocat
+            //
+            //  - websocat --protocol ocpp2.1 --basic-auth a:b -v ws://172.23.144.1:9920
+            // [INFO  websocat::lints] Auto-inserting the line mode
+            // [INFO  websocat::stdio_threaded_peer] get_stdio_peer (threaded)
+            // [INFO  websocat::ws_client_peer] get_ws_client_peer
+            // [INFO  websocat::ws_client_peer] Connected to ws
+            // [2,"100000","BootNotification",{"chargingStation":{"model":"aa","vendorName":"bb"},"reason":"ApplicationReset"}]
+            // [3,"100000",{"status":"Rejected","currentTime":"2024-03-03T11:46:59.076Z","interval":30}]
+            // [INFO  websocat::ws_peer] Received WebSocket ping
+            //
+            //  - export SSL_CERT_FILE=/home/ahzf/OCPPTests/caChain_RSA.cert
+            //  - websocat --protocol ocpp2.1 --basic-auth a:b -v wss://172.23.144.1:9922
+            // [INFO  websocat::lints] Auto-inserting the line mode
+            // [INFO  websocat::stdio_threaded_peer] get_stdio_peer (threaded)
+            // [INFO  websocat::ws_client_peer] get_ws_client_peer
+            // [INFO  websocat::ws_client_peer] Connected to ws
+            // [2,"100000","BootNotification",{"chargingStation":{"model":"aa","vendorName":"bb"},"reason":"ApplicationReset"}]
+            // [3,"100000",{"status":"Rejected","currentTime":"2024-03-03T11:43:54.364Z","interval":30}]
+            // [INFO  websocat::ws_peer] Received WebSocket ping
+
+
+            testCSMSv2_1.AddOrUpdateHTTPBasicAuth(NetworkingNode_Id.Parse("a"), "b");
+
+
 
             //      var webSocketServerV2_1        = testCSMSv2_1.CSMSServers.First() as WebSocketServer;
 

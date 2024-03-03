@@ -32,6 +32,7 @@ using cloud.charging.open.protocols.OCPP.WebSockets;
 using cloud.charging.open.protocols.OCPP.CSMS;
 using cloud.charging.open.protocols.OCPP.CS;
 using cloud.charging.open.protocols.OCPPv1_6.CP;
+using System.Security.Cryptography.X509Certificates;
 
 #endregion
 
@@ -127,7 +128,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                      TimeSpan?                            WebSocketPingEvery           = null,
                                      TimeSpan?                            SlowNetworkSimulationDelay   = null,
 
-                                     ServerCertificateSelectorDelegate?   ServerCertificateSelector    = null,
+                                     Func<X509Certificate2>?              ServerCertificateSelector    = null,
                                      RemoteCertificateValidationHandler?  ClientCertificateValidator   = null,
                                      LocalCertificateSelectionHandler?    ClientCertificateSelector    = null,
                                      SslProtocols?                        AllowedTLSProtocols          = null,
@@ -145,9 +146,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                      Boolean                              AutoStart                    = false)
 
             : base(NetworkingNodeId,
-                   new[] {
+                   [
                        Version.WebSocketSubProtocolId
-                   },
+                   ],
                    HTTPServiceName,
                    IPAddress,
                    TCPPort,

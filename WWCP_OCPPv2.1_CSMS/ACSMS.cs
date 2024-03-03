@@ -19,7 +19,9 @@
 
 using System.Reflection;
 using System.Collections.Concurrent;
+using System.Security.Authentication;
 using System.Diagnostics.CodeAnalysis;
+using System.Security.Cryptography.X509Certificates;
 
 using Newtonsoft.Json.Linq;
 
@@ -31,6 +33,7 @@ using Org.BouncyCastle.Asn1.X509;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.Crypto.Operators;
 using Org.BouncyCastle.OpenSsl;
+using Org.BouncyCastle.Utilities;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
@@ -40,11 +43,11 @@ using org.GraphDefined.Vanaheimr.Hermod.SMTP;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.Sockets;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Sockets.TCP;
 
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
-using Org.BouncyCastle.Utilities;
 
 #endregion
 
@@ -2255,20 +2258,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="TCPPort">An optional TCP port for the HTTP server.</param>
         /// <param name="DNSClient">An optional DNS client to use.</param>
         /// <param name="AutoStart">Start the server immediately.</param>
-        public CSMSWSServer AttachWebSocketService(String       HTTPServerName               = CSMSWSServer.DefaultHTTPServiceName,
-                                                   IIPAddress?  IPAddress                    = null,
-                                                   IPPort?      TCPPort                      = null,
+        public CSMSWSServer AttachWebSocketService(String                               HTTPServerName               = CSMSWSServer.DefaultHTTPServiceName,
+                                                   IIPAddress?                          IPAddress                    = null,
+                                                   IPPort?                              TCPPort                      = null,
 
-                                                   Boolean      DisableWebSocketPings        = false,
-                                                   TimeSpan?    WebSocketPingEvery           = null,
-                                                   TimeSpan?    SlowNetworkSimulationDelay   = null,
+                                                   Boolean                              DisableWebSocketPings        = false,
+                                                   TimeSpan?                            WebSocketPingEvery           = null,
+                                                   TimeSpan?                            SlowNetworkSimulationDelay   = null,
 
-                                                   DNSClient?   DNSClient                    = null,
-                                                   Boolean      AutoStart                    = false)
+                                                   Func<X509Certificate2>?              ServerCertificateSelector    = null,
+                                                   RemoteCertificateValidationHandler?  ClientCertificateValidator   = null,
+                                                   LocalCertificateSelectionHandler?    ClientCertificateSelector    = null,
+                                                   SslProtocols?                        AllowedTLSProtocols          = null,
+                                                   Boolean?                             ClientCertificateRequired    = null,
+                                                   Boolean?                             CheckCertificateRevocation   = null,
+
+                                                   ServerThreadNameCreatorDelegate?     ServerThreadNameCreator      = null,
+                                                   ServerThreadPriorityDelegate?        ServerThreadPrioritySetter   = null,
+                                                   Boolean?                             ServerThreadIsBackground     = null,
+                                                   ConnectionIdBuilder?                 ConnectionIdBuilder          = null,
+                                                   TimeSpan?                            ConnectionTimeout            = null,
+                                                   UInt32?                              MaxClientConnections         = null,
+
+                                                   DNSClient?                           DNSClient                    = null,
+                                                   Boolean                              AutoStart                    = false)
         {
 
             var csmsChannelServer = new CSMSWSServer(
+
                                         this,
+
                                         HTTPServerName,
                                         IPAddress,
                                         TCPPort,
@@ -2278,8 +2297,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                         WebSocketPingEvery,
                                         SlowNetworkSimulationDelay,
 
+                                        ServerCertificateSelector,
+                                        ClientCertificateValidator,
+                                        ClientCertificateSelector,
+                                        AllowedTLSProtocols,
+                                        ClientCertificateRequired,
+                                        CheckCertificateRevocation,
+
+                                        ServerThreadNameCreator,
+                                        ServerThreadPrioritySetter,
+                                        ServerThreadIsBackground,
+                                        ConnectionIdBuilder,
+                                        ConnectionTimeout,
+                                        MaxClientConnections,
+
                                         DNSClient: DNSClient ?? this.DNSClient,
                                         AutoStart: false
+
                                     );
 
             AttachCSMSChannel(csmsChannelServer);

@@ -34,6 +34,7 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_0_1.CS;
 using cloud.charging.open.protocols.OCPPv2_0_1.WebSockets;
+using System.Security.Cryptography.X509Certificates;
 
 #endregion
 
@@ -1818,7 +1819,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
                             TimeSpan?                            WebSocketPingEvery           = null,
                             TimeSpan?                            SlowNetworkSimulationDelay   = null,
 
-                            ServerCertificateSelectorDelegate?   ServerCertificateSelector    = null,
+                            Func<X509Certificate2>?              ServerCertificateSelector    = null,
                             RemoteCertificateValidationHandler?  ClientCertificateValidator   = null,
                             LocalCertificateSelectionHandler?    ClientCertificateSelector    = null,
                             SslProtocols?                        AllowedTLSProtocols          = null,

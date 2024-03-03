@@ -35,6 +35,7 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.WebSockets;
 using System.Text.Json.Nodes;
+using System.Security.Cryptography.X509Certificates;
 
 #endregion
 
@@ -490,7 +491,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                                     TimeSpan?                            WebSocketPingEvery           = null,
                                     TimeSpan?                            SlowNetworkSimulationDelay   = null,
 
-                                    ServerCertificateSelectorDelegate?   ServerCertificateSelector    = null,
+                                    Func<X509Certificate2>?              ServerCertificateSelector    = null,
                                     RemoteCertificateValidationHandler?  ClientCertificateValidator   = null,
                                     LocalCertificateSelectionHandler?    ClientCertificateSelector    = null,
                                     SslProtocols?                        AllowedTLSProtocols          = null,
@@ -664,7 +665,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                            }.AsImmutable);
 
             }
-            else if (!webSocketServer.SecWebSocketProtocols.Overlaps(Connection.HTTPRequest?.SecWebSocketProtocol ?? Array.Empty<String>()))
+            else if (!webSocketServer.SecWebSocketProtocols.Overlaps(Connection.HTTPRequest?.SecWebSocketProtocol ?? []))
             {
 
                 var error = $"This WebSocket service only supports {(webSocketServer.SecWebSocketProtocols.Select(id => $"'{id}'").AggregateWith(", "))}!";
